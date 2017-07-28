@@ -1,0 +1,23 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.vpc.scholar</groupId>
+    <artifactId>scholar-mw</artifactId>
+    <version>3.1.2</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hadrumaths/hadrumaths-java</module>
+        <module>hadrumaths/hadrumaths-java-test</module>
+        <module>hadrumaths/hadrumaths-scala</module>
+        <module>hadrumaths/hadrumaths-scala-examples</module>
+        <module>hadrumaths/hadrumaths-scala-helloworld</module>
+        <module>hadruwaves/hadruwaves-java</module>
+        <module>hadruwaves/hadruwaves-java-examples</module>
+        <module>hadruwaves/hadruwaves-java-test</module>
+        <module>hadruwaves/hadruwaves-scala</module>
+        <module>hadruwaves/hadruwaves-scala-examples</module>
+        <module>hadruwaves/hadruwaves-scala-helloworld</module>
+        <module>hadruwaves/hadruwaves-puppets</module>
+    </modules>
+
+</project>
