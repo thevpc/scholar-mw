@@ -291,7 +291,7 @@ object MathScala {
 
     def !!(): Expr = simplify
 
-    def unary_- : Expr = if (value.isInstanceOf[Complex]) value.asInstanceOf[Complex].neg() else new Neg(Any.unwrap(value))
+    def unary_- : Expr = Maths.neg(value)
 
     def :+(v: ExprList): ExprList = {
       var e = new ArrayExprList();

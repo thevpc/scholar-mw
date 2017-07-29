@@ -1,0 +1,39 @@
+package net.vpc.scholar.hadrumaths.symbolic;
+
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
+
+/**
+ * Created by vpc on 4/30/14.
+ */
+public class Abs extends GenericFunctionX implements Cloneable{
+    public Abs(Expr arg) {
+        super("abs",arg);
+    }
+
+
+    public Complex evalComplex(Complex c){
+        return c.abs();
+    }
+
+    protected double evalDouble(double c){
+        return Maths.abs(c);
+    }
+
+    @Override
+    public DoubleToDouble getReal() {
+        return this;
+    }
+    @Override
+    public DoubleToDouble getImag() {
+        return FunctionFactory.DZEROXY;
+    }
+
+    @Override
+    public Expr newInstance(Expr argument) {
+        return new Abs(argument);
+    }
+
+}

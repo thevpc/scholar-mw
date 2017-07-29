@@ -75,7 +75,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
     public Expr mul(Expr a, Expr b) {
         ExprList all = new ArrayExprList();
         //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
-        for (Expr expr : new Expr[]{a,b}) {
+        for (Expr expr : new Expr[]{a, b}) {
             if (expr instanceof Mul) {
                 all.addAll(expr.getSubExpressions());
             } else {
@@ -127,14 +127,117 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
     }
 
     @Override
-    public Expr abs(Expr a) {
-        if (a.isComplex()) {
-            return ((a.toComplex().abs()));
+    public Expr lt(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) < 0 ? one() : zero();
         }
-        if (a instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.abs(((DoubleValue) a).getValue()), a.getDomain());
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new LtExpr(a, b);
+    }
+
+    @Override
+    public Expr lte(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) <= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new LteExpr(a, b);
+    }
+
+    @Override
+    public Expr gt(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) > 0 ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new GtExpr(a, b);
+    }
+
+    @Override
+    public Expr gte(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) >= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new GteExpr(a, b);
+    }
+    @Override
+    public Expr eq(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) == 0 ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) == 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new EqExpr(a, b);
+    }
+
+    @Override
+    public Expr ne(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((a.toComplex().compareTo(b.toComplex()))) != 0 ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf(Double.compare(((DoubleValue) a).getValue(), (((DoubleValue) b).getValue())) != 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new NeExpr(a, b);
+    }
+
+    @Override
+    public Expr and(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((!a.toComplex().isZero() && !b.toComplex().isZero())) ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf((((DoubleValue) a).getValue()!=0 && (((DoubleValue) b).getValue())!=0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new AndExpr(a, b);
+    }
+
+    @Override
+    public Expr or(Expr a, Expr b) {
+        if (a.isComplex() && b.isComplex()) {
+            return ((!a.toComplex().isZero() || !b.toComplex().isZero())) ? one() : zero();
+        }
+        if (a instanceof DoubleValue && b instanceof DoubleValue) {
+            return DoubleValue.valueOf((((DoubleValue) a).getValue()!=0 || (((DoubleValue) b).getValue())!=0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+        }
+        return new OrExpr(a, b);
+    }
+
+    @Override
+    public Expr If(Expr cond, Expr exp1, Expr exp2) {
+        return new IfThenElse(cond, exp1, exp2);
+    }
+
+    @Override
+    public Expr not(Expr e) {
+        if (e.isComplex()) {
+            return ((e.toComplex().isZero()))?one():zero();
+        }
+        if (e instanceof DoubleValue) {
+            return DoubleValue.valueOf(((DoubleValue) e).getValue()==0?1:0, e.getDomain());
+        }
+        return new NotExpr(e);
+    }
+
+    @Override
+    public Expr abs(Expr e) {
+        if (e.isComplex()) {
+            return ((e.toComplex().abs()));
+        }
+        if (e instanceof DoubleValue) {
+            return DoubleValue.valueOf(Maths.abs(((DoubleValue) e).getValue()), e.getDomain());
+        }
+        return new Abs(e);
     }
 
     @Override
@@ -145,7 +248,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.atan(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Neg(e);
     }
 
     @Override
@@ -156,7 +259,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.conj(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Conj(e);
     }
 
     @Override
@@ -167,7 +270,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.inv(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Inv(e);
     }
 
     @Override
@@ -178,7 +281,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.sin(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Sin(e);
     }
 
     @Override
@@ -189,7 +292,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.cos(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Cos(e);
     }
 
     @Override
@@ -200,7 +303,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.tan(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Tan(e);
     }
 
     @Override
@@ -211,7 +314,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.cotan(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Cotan(e);
     }
 
     @Override
@@ -222,7 +325,18 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.sinh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Sinh(e);
+    }
+
+    @Override
+    public Expr sincard(Expr e) {
+        if (e.isComplex()) {
+            return (e.toComplex().sincard());
+        }
+        if (e instanceof DoubleValue) {
+            return DoubleValue.valueOf(Maths.sincard(((DoubleValue) e).getValue()), e.getDomain());
+        }
+        return new Sincard(e);
     }
 
     @Override
@@ -233,7 +347,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.cosh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Cosh(e);
     }
 
     @Override
@@ -244,7 +358,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.tanh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Conj(e);
     }
 
     @Override
@@ -255,7 +369,8 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.cotanh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");    }
+        return new Cotanh(e);
+    }
 
     @Override
     public Expr asinh(Expr e) {
@@ -265,7 +380,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.asinh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Asinh(e);
     }
 
     @Override
@@ -276,7 +391,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.acosh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Acosh(e);
     }
 
     @Override
@@ -287,7 +402,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.asin(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Asin(e);
     }
 
     @Override
@@ -298,7 +413,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.acos(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Acos(e);
     }
 
     @Override
@@ -309,7 +424,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.atan(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Atan(e);
     }
 
     @Override
@@ -320,7 +435,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.arg(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Arg(e);
     }
 
     @Override
@@ -346,7 +461,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.acotan(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Acotan(e);
     }
 
     @Override
@@ -357,7 +472,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.exp(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Exp(e);
     }
 
     @Override
@@ -368,7 +483,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.log(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Log(e);
     }
 
     @Override
@@ -379,18 +494,18 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.log10(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Log10(e);
     }
 
     @Override
-    public Expr db(Expr a) {
-        if (a.isComplex()) {
-            return (a.toComplex().db());
+    public Expr db(Expr e) {
+        if (e.isComplex()) {
+            return (e.toComplex().db());
         }
-        if (a instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.db(((DoubleValue) a).getValue()), a.getDomain());
+        if (e instanceof DoubleValue) {
+            return DoubleValue.valueOf(Maths.db(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Db(e);
     }
 
     @Override
@@ -401,7 +516,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.db2(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Db2(e);
     }
 
     @Override
@@ -412,7 +527,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.sqr(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Sqr(e);
     }
 
     @Override
@@ -423,7 +538,7 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.sqrt(((DoubleValue) e).getValue()), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Sqrt(e);
     }
 
     @Override
@@ -432,9 +547,9 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
             return (e.toComplex().sqrt(n));
         }
         if (e instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.sqrt(((DoubleValue) e).getValue(),n), e.getDomain());
+            return DoubleValue.valueOf(Maths.sqrt(((DoubleValue) e).getValue(), n), e.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Sqrtn(e, n);
     }
 
     @Override
@@ -443,9 +558,9 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
             return (a.toComplex().pow(b.toComplex()));
         }
         if (a instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(),b.toDouble()), a.getDomain());
+            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(), b.toDouble()), a.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Pow(a, b);
     }
 
     @Override
@@ -454,9 +569,9 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
             return (a.toComplex().pow(b));
         }
         if (a instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(),b), a.getDomain());
+            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(), b), a.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Pow(a, Maths.expr(b));
     }
 
     @Override
@@ -465,9 +580,9 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
             return (a.toComplex().pow(b));
         }
         if (a instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(),b), a.getDomain());
+            return DoubleValue.valueOf(Maths.pow(((DoubleValue) a).getValue(), b), a.getDomain());
         }
-        throw new IllegalArgumentException("Not Supported Yet");
+        return new Pow(a, Maths.expr(b));
     }
 
     @Override

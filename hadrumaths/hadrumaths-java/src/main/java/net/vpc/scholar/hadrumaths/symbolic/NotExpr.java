@@ -18,7 +18,7 @@ public class NotExpr extends GenericFunctionX implements Cloneable{
     }
 
     protected double evalDouble(double c){
-        return c==0?0:1;
+        return c==0?1:0;
     }
 
     @Override

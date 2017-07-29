@@ -3094,115 +3094,115 @@ public final class Maths {
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="expression functions">
     public static Expr If(Expr cond, Expr exp1, Expr exp2) {
-        return new IfThenElse(cond, exp1, exp2);
+        return EXPR_VECTOR_SPACE.If(cond, exp1, exp2);
     }
 
     public static Expr or(Expr a, Expr b) {
-        return new OrExpr(a, b);
+        return EXPR_VECTOR_SPACE.or(a, b);
     }
 
     public static Expr and(Expr a, Expr b) {
-        return new AndExpr(a, b);
+        return EXPR_VECTOR_SPACE.and(a, b);
     }
 
     public static Expr not(Expr a) {
-        return new NotExpr(a);
+        return EXPR_VECTOR_SPACE.not(a);
     }
 
     public static Expr eq(Expr a, Expr b) {
-        return new EqExpr(a, b);
+        return EXPR_VECTOR_SPACE.eq(a, b);
     }
 
     public static Expr ne(Expr a, Expr b) {
-        return new NeExpr(a, b);
+        return EXPR_VECTOR_SPACE.ne(a, b);
     }
 
     public static Expr gte(Expr a, Expr b) {
-        return new GteExpr(a, b);
+        return EXPR_VECTOR_SPACE.gte(a, b);
     }
 
     public static Expr gt(Expr a, Expr b) {
-        return new GtExpr(a, b);
+        return EXPR_VECTOR_SPACE.gt(a, b);
     }
 
     public static Expr lte(Expr a, Expr b) {
-        return new LteExpr(a, b);
+        return EXPR_VECTOR_SPACE.lte(a, b);
     }
 
     public static Expr lt(Expr a, Expr b) {
-        return new LtExpr(a, b);
+        return EXPR_VECTOR_SPACE.lt(a, b);
     }
 
     public static Expr cos(Expr e) {
-        return new Cos(e);
+        return EXPR_VECTOR_SPACE.cos(e);
     }
 
     public static Expr cosh(Expr e) {
-        return new Cosh(e);
+        return EXPR_VECTOR_SPACE.cosh(e);
     }
 
     public static Expr sin(Expr e) {
-        return new Sin(e);
+        return EXPR_VECTOR_SPACE.sin(e);
     }
 
     public static Expr sincard(Expr e) {
-        return new Sincard(e);
+        return EXPR_VECTOR_SPACE.sincard(e);
     }
 
     public static Expr sinh(Expr e) {
-        return new Sinh(e);
+        return EXPR_VECTOR_SPACE.sinh(e);
     }
 
     public static Expr tan(Expr e) {
-        return new Tan(e);
+        return EXPR_VECTOR_SPACE.tan(e);
     }
 
     public static Expr tanh(Expr e) {
-        return new Tanh(e);
+        return EXPR_VECTOR_SPACE.tanh(e);
     }
 
     public static Expr cotan(Expr e) {
-        return new Cotan(e);
+        return EXPR_VECTOR_SPACE.cotan(e);
     }
 
     public static Expr cotanh(Expr e) {
-        return new Cotanh(e);
+        return EXPR_VECTOR_SPACE.cotanh(e);
     }
 
     public static Expr sqr(Expr e) {
-        return new Sqr(e);
+        return EXPR_VECTOR_SPACE.sqr(e);
     }
 
     public static Expr sqrt(Expr e) {
-        return new Sqrt(e);
+        return EXPR_VECTOR_SPACE.sqrt(e);
     }
 
     public static Expr inv(Expr e) {
-        return new Inv(e);
+        return EXPR_VECTOR_SPACE.inv(e);
     }
 
     public static Expr neg(Expr e) {
-        return new Neg(e);
+        return EXPR_VECTOR_SPACE.neg(e);
     }
 
     public static Expr exp(Expr e) {
-        return new Exp(e);
+        return EXPR_VECTOR_SPACE.exp(e);
     }
 
     public static Expr atan(Expr e) {
-        return new Atan(e);
+        return EXPR_VECTOR_SPACE.atan(e);
     }
 
     public static Expr acotan(Expr e) {
-        return new Acotan(e);
+        return EXPR_VECTOR_SPACE.acotan(e);
     }
 
     public static Expr acos(Expr e) {
-        return new Acos(e);
+        return EXPR_VECTOR_SPACE.acos(e);
     }
 
     public static Expr asin(Expr e) {
-        return new Asin(e);
+        return EXPR_VECTOR_SPACE.asin(e);
     }
 
     public static Complex integrate(Expr e) {
@@ -3374,13 +3374,29 @@ public final class Maths {
             return CZERO;
         }
         List<Expr> all = new ArrayList<>();
+        Complex c = Complex.ZERO;
+        Queue<Expr> t = new LinkedList<>();
         for (int i = 0; i < len; i++) {
             Expr e = sequence.get(i);
-            if (e instanceof Plus) {
-                all.addAll(e.getSubExpressions());
-            } else {
-                all.add(e);
+            t.add(e);
+            while (!t.isEmpty()) {
+                Expr e2 = t.remove();
+                if (e2 instanceof Plus) {
+                    t.addAll(e2.getSubExpressions());
+                } else {
+                    if (e2.isComplex()) {
+                        c = c.add(e2.toComplex());
+                    } else {
+                        all.add(e2);
+                    }
+                }
             }
+        }
+        if(all.isEmpty()){
+            return c;
+        }
+        if(!c.isZero()){
+            all.add(c);
         }
         return new Plus(all);
     }
@@ -4081,6 +4097,7 @@ public final class Maths {
     public static class Config {
 
         private static final DumpManager dumpManager = new DumpManager();
+        static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
         private static int simplifierCacheSize = 2000;
         private static float largeMatrixThreshold = 0.7f;
         private static boolean debugExpressionRewrite = false;
@@ -4105,20 +4122,10 @@ public final class Maths {
         private static String rootCachePath = "${user.home}/.cache/mathcache";
         private static String defaultCacheFolderName = "default";
         private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
-        static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
         //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
         private static ScalarProductOperator defaultScalarProductOperator = null;
         private static FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
         private static PropertyChangeSupport pcs = new PropertyChangeSupport(Config.class);
-
-        public static boolean isDevelopmentMode() {
-            return developmentMode;
-        }
-
-        public static void setDevelopmentMode(boolean developmentMode) {
-            Config.developmentMode = developmentMode;
-        }
-
         private static DoubleFormatter defaultDblFormat = new DoubleFormatter() {
             @Override
             public String formatDouble(double value) {
@@ -4133,6 +4140,14 @@ public final class Maths {
                 return d.format(value);
             }
         };
+
+        public static boolean isDevelopmentMode() {
+            return developmentMode;
+        }
+
+        public static void setDevelopmentMode(boolean developmentMode) {
+            Config.developmentMode = developmentMode;
+        }
 
         public static FrequencyFormatter getFrequencyFormatter() {
             return frequencyFormatter;
@@ -4215,7 +4230,7 @@ public final class Maths {
         }
 
         public static void setExpressionWriterCacheEnabled(boolean enabled) {
-            boolean old=expressionWriterCacheEnabled;
+            boolean old = expressionWriterCacheEnabled;
             expressionWriterCacheEnabled = enabled;
             pcs.firePropertyChange("expressionWriterCacheEnabled", old, enabled);
         }
@@ -4290,7 +4305,7 @@ public final class Maths {
         }
 
         public static void setCacheExpressionPropertiesEnabled(boolean cacheExpressionPropertiesEnabled) {
-            boolean old=Config.cacheExpressionPropertiesEnabled;
+            boolean old = Config.cacheExpressionPropertiesEnabled;
             Config.cacheExpressionPropertiesEnabled = cacheExpressionPropertiesEnabled;
             cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
             pcs.firePropertyChange("cacheEnabled", old, Config.cacheExpressionPropertiesEnabled);

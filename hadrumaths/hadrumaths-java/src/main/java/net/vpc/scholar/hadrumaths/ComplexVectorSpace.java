@@ -112,6 +112,11 @@ public class ComplexVectorSpace implements VectorSpace<Complex> {
     }
 
     @Override
+    public Complex sincard(Complex complex) {
+        return complex.sincard();
+    }
+
+    @Override
     public Complex cosh(Complex complex) {
         return complex.cosh();
     }
@@ -239,5 +244,55 @@ public class ComplexVectorSpace implements VectorSpace<Complex> {
     @Override
     public Class<Complex> getItemType() {
         return Complex.class;
+    }
+
+    @Override
+    public Complex lt(Complex a, Complex b) {
+        return a.compareTo(b) < 0 ? one() : zero();
+    }
+
+    @Override
+    public Complex lte(Complex a, Complex b) {
+        return a.compareTo(b) <= 0 ? one() : zero();
+    }
+
+    @Override
+    public Complex gt(Complex a, Complex b) {
+        return a.compareTo(b) > 0 ? one() : zero();
+    }
+
+    @Override
+    public Complex gte(Complex a, Complex b) {
+        return a.compareTo(b) >= 0 ? one() : zero();
+    }
+
+    @Override
+    public Complex eq(Complex a, Complex b) {
+        return a.equals(b) ? one() : zero();
+    }
+
+    @Override
+    public Complex ne(Complex a, Complex b) {
+        return (!a.equals(b)) ? one() : zero();
+    }
+
+    @Override
+    public Complex not(Complex a) {
+        return a.isZero() ? one() : zero();
+    }
+
+    @Override
+    public Complex and(Complex a, Complex b) {
+        return (!a.isZero() && !a.isZero()) ? one() : zero();
+    }
+
+    @Override
+    public Complex or(Complex a, Complex b) {
+        return (!a.isZero() || !a.isZero()) ? one() : zero();
+    }
+
+    @Override
+    public Complex If(Complex cond, Complex exp1, Complex exp2) {
+        return !cond.isZero() ? exp1 : exp2;
     }
 }

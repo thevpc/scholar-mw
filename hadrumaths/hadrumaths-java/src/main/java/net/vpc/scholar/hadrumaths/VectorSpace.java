@@ -47,6 +47,8 @@ public interface VectorSpace<T> {
 
     T sinh(T t);
 
+    T sincard(T t);
+
     T cosh(T t);
 
     T tanh(T t);
@@ -94,6 +96,26 @@ public interface VectorSpace<T> {
     T pow(T a, double b);
 
     T npow(T t, int n);
+
+    T lt(T a, T b);
+
+    T lte(T a, T b);
+
+    T gt(T a, T b);
+
+    T gte(T a, T b);
+
+    T eq(T a, T b);
+
+    T ne(T a, T b);
+
+    T not(T a);
+
+    T and(T a, T b);
+
+    T or(T a, T b);
+
+    T If(T cond, T exp1, T exp2);
 
     T parse(String string);
 }
