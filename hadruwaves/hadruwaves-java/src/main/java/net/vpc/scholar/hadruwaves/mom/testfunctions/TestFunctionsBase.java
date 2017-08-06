@@ -3,7 +3,6 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
@@ -78,8 +77,8 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
     }
 
     @Override
-    public ExprList list() {
-        return new ArrayExprList(arr());
+    public TList<Expr> list() {
+        return Maths.exprList(arr());
     }
 
     @Override
@@ -422,7 +421,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
 
     @Override
-    public synchronized ExprList toList() {
+    public synchronized TList<Expr> toList() {
         return list();
     }
 

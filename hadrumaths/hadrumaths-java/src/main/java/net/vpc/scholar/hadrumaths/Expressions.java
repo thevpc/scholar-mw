@@ -21,7 +21,7 @@ public class Expressions {
 
 
 //    public static <T extends Expr> T mul(Expr e, double value) {
-//        return transform(e, ExpressionTransformFactory.doubleMul(value));
+//        return eval(e, ExpressionTransformFactory.doubleMul(value));
 //    }
 
     public static <T extends Expr> T crossDomainXY(Expr e, Domain value) {

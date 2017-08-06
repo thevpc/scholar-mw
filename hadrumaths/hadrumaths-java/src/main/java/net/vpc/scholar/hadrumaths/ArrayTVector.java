@@ -10,38 +10,38 @@ import java.io.Serializable;
 /**
  * Created by vpc on 4/11/16.
  */
-public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable{
+public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable {
     private T[] elements;
     private VectorSpace<T> componentVectorSpace;
     private Class<T> componentType;
+
     public ArrayTVector(TVector<T> other) throws IOException {
         super(other.isRow());
-        this.componentType=other.getComponentType();
-        this.componentVectorSpace=other.getComponentVectorSpace();
-        elements=ArrayUtils.newArray(this.componentType,other.size());
-        System.arraycopy(other.toArray(),0,elements,0,elements.length);
+        this.componentType = other.getComponentType();
+        this.componentVectorSpace = other.getComponentVectorSpace();
+        elements = ArrayUtils.newArray(this.componentType, other.size());
+        System.arraycopy(other.toArray(), 0, elements, 0, elements.length);
     }
 
-    public ArrayTVector(VectorSpace<T> vectorSpace,T[] elements, boolean row) {
+    public ArrayTVector(VectorSpace<T> vectorSpace, T[] elements, boolean row) {
         super(row);
         this.elements = elements;
         this.componentVectorSpace = vectorSpace;
         this.componentType = componentVectorSpace.getItemType();
     }
 
-    public static final <T> TVector<T> Row(VectorSpace<T> vectorSpace,T[] elements){
-        return new ArrayTVector<T>(vectorSpace,elements,true);
-    }
-
-    public static final <T> TVector<T> Column(VectorSpace<T> vectorSpace,T[] elements){
-        return new ArrayTVector<T>(vectorSpace,elements,false);
-    }
-
-    public ArrayTVector(File file) throws IOException{
+    public ArrayTVector(File file) throws IOException {
         super(false);
         read(file);
     }
 
+    public static <T> TVector<T> Row(VectorSpace<T> vectorSpace, T[] elements) {
+        return new ArrayTVector<T>(vectorSpace, elements, true);
+    }
+
+    public static <T> TVector<T> Column(VectorSpace<T> vectorSpace, T[] elements) {
+        return new ArrayTVector<T>(vectorSpace, elements, false);
+    }
 
     @Override
     public Class<T> getComponentType() {
@@ -50,79 +50,79 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable{
 
     @Override
     public TVector<T> transpose() {
-        T[] elements0= ArrayUtils.newArray(getComponentType(),size());
-        System.arraycopy(elements,0,elements0,0,elements0.length);
-        return new ArrayTVector<T>(getComponentVectorSpace(),elements0,!isRow());
+        T[] elements0 = ArrayUtils.newArray(getComponentType(), size());
+        System.arraycopy(elements, 0, elements0, 0, elements0.length);
+        return new ArrayTVector<T>(getComponentVectorSpace(), elements0, !isRow());
     }
 
 
-    public TMatrix<T> toMatrix(){
-        if(rowType){
-            T[] e2= ArrayUtils.newArray(getComponentType(),elements.length);
-            System.arraycopy(elements,0,e2,0,e2.length);
+    public TMatrix<T> toMatrix() {
+        if (rowType) {
+            T[] e2 = ArrayUtils.newArray(getComponentType(), elements.length);
+            System.arraycopy(elements, 0, e2, 0, e2.length);
             return Maths.Config.getDefaultMatrixFactory(getComponentType()).newRowMatrix(e2);
-        }else{
+        } else {
             return Maths.Config.getDefaultMatrixFactory(getComponentType()).newColumnMatrix(elements);
         }
     }
 
-    public T get(int i){
+    public T get(int i) {
         return elements[i];
     }
 
-    public void set(int i, T complex){
-        elements[i]=complex;
+    public void set(int i, T complex) {
+        elements[i] = complex;
     }
 
-    public T[] toArray(){
+    public T[] toArray() {
         return elements;
     }
 
-    public int size(){
+    public int size() {
         return elements.length;
     }
 
 
-    public void read(File file) throws IOException{
-        TMatrix<T> m= Maths.loadTMatrix(getComponentType(),file);
+    public void read(File file) throws IOException {
+        TMatrix<T> m = Maths.loadTMatrix(getComponentType(), file);
 
-        elements=m.getColumnCount()==0?m.getRow(0).toArray() : m.getColumn(0).toArray();
-        rowType =m.getColumnCount()==0;
+        elements = m.getColumnCount() == 0 ? m.getRow(0).toArray() : m.getColumn(0).toArray();
+        rowType = m.getColumnCount() == 0;
     }
 
-    public void read(BufferedReader reader) throws IOException{
-        TMatrix<T> m= Maths.Config.getDefaultMatrixFactory(getComponentType()).newZeros(1, 1);
+    public void read(BufferedReader reader) throws IOException {
+        TMatrix<T> m = Maths.Config.getDefaultMatrixFactory(getComponentType()).newZeros(1, 1);
         m.read(reader);
-        elements=m.getColumnCount()==0?m.getRow(0).toArray() : m.getColumn(0).toArray();
-        rowType =m.getColumnCount()==0;
+        elements = m.getColumnCount() == 0 ? m.getRow(0).toArray() : m.getColumn(0).toArray();
+        rowType = m.getColumnCount() == 0;
     }
 
-    public T scalarProduct(TVector<T> other){
+    public T scalarProduct(TVector<T> other, boolean hermitian) {
         int max = Math.max(elements.length, other.size());
         VectorSpace<T> space = getComponentVectorSpace();
-        T d= space.zero();
+        T d = space.zero();
         for (int i = 0; i < max; i++) {
-            d= space.add(d, space.mul(elements[i],other.get(i)));
+            d = space.add(d, space.mul(elements[i], other.get(i)));
         }
         return d;
     }
 
-    public T scalarProductAll(TVector<T> ... other){
+    public T scalarProductAll(boolean hermitian, TVector<T>... other) {
         int max = elements.length;
-        for (TVector<T> v:other) {
+        for (TVector<T> v : other) {
             int size = v.size();
-            if(size >max){
-                max= size;
+            if (size > max) {
+                max = size;
             }
         }
         VectorSpace<T> space = getComponentVectorSpace();
-        T d= space.zero();
+        T d = space.zero();
         for (int i = 0; i < max; i++) {
             T el = elements[i];
-            for (TVector<T> v:other) {
-                el= space.mul(el,v.get(i));
+            for (TVector<T> v : other) {
+                el = space.mul(el, v.get(i));
             }
-            d= space.add(d,el);
+            d = space.add(d, el);
         }
         return d;
     }
@@ -131,4 +131,5 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable{
     public VectorSpace<T> getComponentVectorSpace() {
         return componentVectorSpace;
     }
+
 }

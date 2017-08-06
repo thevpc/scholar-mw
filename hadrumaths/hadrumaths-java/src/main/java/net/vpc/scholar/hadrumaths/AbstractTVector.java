@@ -1,11 +1,16 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by vpc on 4/11/16.
@@ -52,7 +57,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public T apply(int i) {
+    public final T apply(int i) {
         return get(i);
     }
 
@@ -75,7 +80,16 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return all;
     }
 
-//    @Override
+    @Override
+    public <R> R[] toArray(Class<R> type) {
+        R[] all = ArrayUtils.newArray(type, size());
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            all[i] = (R) get(i);
+        }
+        return all;
+    }
+    //    @Override
 //    public double[] toDoubleArray() {
 //        double[] all = new double[size()];
 //        int size = size();
@@ -85,32 +99,68 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 //        return all;
 //    }
 
-    public T scalarProduct(TVector<T> other) {
+    public T scalarProduct(TVector<T> other, boolean hermitian) {
         int max = Math.max(size(), other.size());
-        T d = getComponentVectorSpace().zero();
+        VectorSpace<T> cs = getComponentVectorSpace();
+        RepeatableOp<T> d = cs.addRepeatableOp();
         for (int i = 0; i < max; i++) {
-            d = getComponentVectorSpace().add(d, getComponentVectorSpace().mul(get(i),other.get(i)));
+            d.append(cs.mul(get(i),other.get(i)));
         }
-        return d;
+        return d.eval();
     }
 
-    public T scalarProductAll(TVector<T>... other) {
-        int max = size();
+    @Override
+    public TVector<T> scalarProduct(T other, boolean hermitian) {
+        return Maths.columnTVector(getComponentType(), size(), new TVectorCell<T>() {
+            @Override
+            public T get(int index) {
+                return getComponentVectorSpace().scalarProduct(get(index),other, hermitian);
+            }
+        });
+    }
+
+    @Override
+    public TVector<T> rscalarProduct(T other, boolean hermitian) {
+        return Maths.columnTVector(getComponentType(), size(), new TVectorCell<T>() {
+            @Override
+            public T get(int index) {
+                return getComponentVectorSpace().scalarProduct(other,get(index), hermitian);
+            }
+        });
+    }
+
+
+    public TVector<T> scalarProductToVector(boolean hermitian, TVector<T>... other) {
+        return Maths.columnTVector(getComponentType(),other.length, new TVectorCell<T>() {
+            @Override
+            public T get(int index) {
+                return scalarProduct(other[index], hermitian);
+            }
+        });
+    }
+
+    public T scalarProductAll(boolean hermitian, TVector<T>... other) {
+        int currSize = size();
         for (TVector<T> v : other) {
             int size = v.size();
-            if (size > max) {
-                max = size;
+            if(size!=currSize){
+                throw new IllegalArgumentException("Unable to scalar product vectors of distinct sizes "+currSize+"<>"+size);
+            }
+            if(!acceptsType(v.getComponentType())){
+                throw new IllegalArgumentException("Unexpected Type "+getComponentType()+"<>"+v.getComponentType());
             }
         }
-        T d = getComponentVectorSpace().zero();
-        for (int i = 0; i < max; i++) {
-            T el = get(i);
+        VectorSpace<T> cs = getComponentVectorSpace();
+        RepeatableOp<T> d = cs.addRepeatableOp();
+        for (int i = 0; i < currSize; i++) {
+            RepeatableOp<T> el = cs.mulRepeatableOp();
+            el.append(get(i));
             for (TVector<T> v : other) {
-                el = getComponentVectorSpace().mul(el,v.get(i));
+                el.append(v.get(i));
             }
-            d = getComponentVectorSpace().add(d,el);
+            d.append(el.eval());
         }
-        return d;
+        return d.eval();
     }
 
     @Override
@@ -136,22 +186,24 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     protected TVector<T> newArrayVector(T[] all,boolean row){
-        return new ArrayTVector<T>(getComponentVectorSpace(),all, isRow());
+        return new ArrayTVector<T>(getComponentVectorSpace(),all, row);
     }
     
     @Override
     public TVector<T> dotmul(TVector<T> other) {
         T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().mul(get(i),other.get(i));
+            all[i] = cs.mul(get(i),other.get(i));
         }
         return newArrayVector(all, isRow());
     }
 
     public TVector<T> sqr() {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().sqr(get(i));
+            all[i] = cs.sqr(get(i));
         }
         return newArrayVector(all, isRow());
     }
@@ -159,8 +211,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> dotdiv(TVector<T> other) {
         T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().div(get(i),other.get(i));
+            all[i] = cs.div(get(i),other.get(i));
         }
         return newArrayVector(all, isRow());
     }
@@ -168,8 +221,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> dotpow(TVector<T> other) {
         T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().pow(get(i),other.get(i));
+            all[i] = cs.pow(get(i),other.get(i));
         }
         return newArrayVector(all, isRow());
     }
@@ -178,8 +232,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> inv() {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().inv(get(i));
+            all[i] = cs.inv(get(i));
         }
         return newArrayVector(all, isRow());
     }
@@ -187,8 +242,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> add(TVector<T> other) {
         T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().add(get(i),other.get(i));
+            all[i] = cs.add(get(i),other.get(i));
         }
         return newArrayVector(all, isRow());
     }
@@ -196,8 +252,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> add(T other) {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().add(get(i),other);
+            all[i] = cs.add(get(i),other);
         }
         return newArrayVector(all, isRow());
     }
@@ -205,8 +262,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> mul(T other) {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().mul(get(i),other);
+            all[i] = cs.mul(get(i),other);
         }
         return newArrayVector(all, isRow());
     }
@@ -214,8 +272,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> sub(T other) {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().sub(get(i),other);
+            all[i] = cs.sub(get(i),other);
         }
         return newArrayVector(all, isRow());
     }
@@ -223,8 +282,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> div(T other) {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().div(get(i),other);
+            all[i] = cs.div(get(i),other);
         }
         return newArrayVector(all, isRow());
     }
@@ -232,8 +292,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> dotpow(T other) {
         T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
-            all[i] = getComponentVectorSpace().pow(get(i),other);
+            all[i] = cs.pow(get(i),other);
         }
         return newArrayVector(all, isRow());
     }
@@ -241,27 +302,29 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public T sum() {
         int size = size();
+        VectorSpace<T> cs = getComponentVectorSpace();
         if (size == 0) {
-            return getComponentVectorSpace().zero();
+            return cs.zero();
         }
-        T c = get(0);
-        for (int i = 1; i < size; i++) {
-            c = getComponentVectorSpace().add(c,get(i));
+        RepeatableOp<T> c = cs.addRepeatableOp();
+        for (int i = 0; i < size; i++) {
+            c.append(get(i));
         }
-        return c;
+        return c.eval();
     }
 
     @Override
     public T prod() {
         int size = size();
+        VectorSpace<T> cs = getComponentVectorSpace();
         if (size == 0) {
-            return getComponentVectorSpace().one();
+            return cs.one();
         }
-        T c = get(0);
-        for (int i = 1; i < size; i++) {
-            c = getComponentVectorSpace().mul(c,get(i));
+        RepeatableOp<T> c = cs.mulRepeatableOp();
+        for (int i = 0; i < size; i++) {
+            c.append(get(i));
         }
-        return c;
+        return c.eval();
     }
 
     @Override
@@ -270,9 +333,10 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         if (size == 0) {
             return Double.NaN;
         }
-        double c = getComponentVectorSpace().absdbl(get(0));
+        VectorSpace<T> cs = getComponentVectorSpace();
+        double c = cs.absdbl(get(0));
         for (int i = 1; i < size; i++) {
-            double d = getComponentVectorSpace().absdbl(get(i));
+            double d = cs.absdbl(get(i));
             c = Math.max(c, d);
         }
         return c;
@@ -284,9 +348,10 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         if (size == 0) {
             return Double.NaN;
         }
-        double c = getComponentVectorSpace().absdbl(get(0));
+        VectorSpace<T> cs = getComponentVectorSpace();
+        double c = cs.absdbl(get(0));
         for (int i = 1; i < size; i++) {
-            double d = getComponentVectorSpace().absdbl(get(i));
+            double d = cs.absdbl(get(i));
             c = Math.min(c, d);
         }
         return c;
@@ -295,15 +360,8 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public T avg() {
         int size = size();
-        if (size == 0) {
-            return getComponentVectorSpace().zero();
-        }
-        T c = (get(0));
-        for (int i = 1; i < size; i++) {
-            c= getComponentVectorSpace().add(c,get(i));
-        }
-        c= getComponentVectorSpace().div(c, getComponentVectorSpace().convert(size));
-        return c;
+        VectorSpace<T> cs = getComponentVectorSpace();
+        return cs.div(sum(), cs.convert(size));
     }
 
     @Override
@@ -578,6 +636,11 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
+    public boolean isDouble() {
+        return isComplex() && toComplex().isDouble();
+    }
+
+    @Override
     public Complex toComplex() {
         if(!isComplex()){
             throw new ClassCastException();
@@ -586,4 +649,113 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
 
+    @Override
+    public VectorSpace<T> getComponentVectorSpace() {
+        return Maths.getVectorSpace(getComponentType());
+    }
+
+    @Override
+    public <E extends T> E[] toArray(E[] a) {
+        if (a.length < size()) {
+            a = ArrayUtils.newArray(Expr.class, size());
+        }
+        for (int i = 0; i < size(); i++) {
+            a[i] = (E) get(i);
+        }
+        return a;
+    }
+
+    public TVector<T> eval(ElementOp<T> op) {
+        return new ReadOnlyTVector<>(
+                getComponentType(), new TVectorModel<T>() {
+            @Override
+            public T get(int index) {
+                T t = AbstractTVector.this.get(index);
+                return op.eval(index,t);
+            }
+
+            @Override
+            public int size() {
+                return AbstractTVector.this.size();
+            }
+        },isRow()
+        );
+    }
+
+    public <R> TVector<R> transform(Class<R> toType,TTransform<T,R> op) {
+        return new ReadOnlyTVector<R>(
+                toType, new TVectorModel<R>() {
+            @Override
+            public R get(int index) {
+                T t = AbstractTVector.this.get(index);
+                return op.transform(index,t);
+            }
+
+            @Override
+            public int size() {
+                return AbstractTVector.this.size();
+            }
+        },isRow()
+        );
+    }
+
+    @Override
+    public boolean acceptsType(Class type) {
+        return getComponentType().isAssignableFrom(type);
+    }
+
+    @Override
+    public List<T> toJList() {
+        return new ArrayList<T>(Arrays.asList(toArray()));
+    }
+
+    @Override
+    public <R> TVector<R> to(Class<R> other) {
+        return  new ReadOnlyTVector<R>(
+                other, new TVectorModel<R>() {
+            @Override
+            public R get(int index) {
+                T t = AbstractTVector.this.get(index);
+                return (R)t;
+            }
+
+            @Override
+            public int size() {
+                return AbstractTVector.this.size();
+            }
+        },isRow()
+        );
+    }
+
+    public T scalarProduct(TMatrix<T> v, boolean hermitian) {
+        return scalarProduct(v.toVector(), hermitian);
+    }
+
+    public TVector<T> setParam(String name, Object value) {
+        return eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> cs = getComponentVectorSpace();
+                return cs.setParam(e,name,value);
+            }
+        });
+    }
+
+    public TVector<T> setParam(TParam param, Object value) {
+        return eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> cs = getComponentVectorSpace();
+                return cs.setParam(e,param.getName(),value);
+            }
+        });
+    }
+
+    @Override
+    public void forEachIndex(TVectorItemAction<T> action) {
+        int i=0;
+        for (T t : this) {
+            action.run(i++,t);
+        }
+    }
 }

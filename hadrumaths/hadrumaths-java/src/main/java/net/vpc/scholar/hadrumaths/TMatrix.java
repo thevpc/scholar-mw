@@ -172,9 +172,9 @@ public interface TMatrix<T> extends Normalizable {
 
     TMatrix<T> subMatrix(int row, int col, int rows, int cols);
 
-    List<? extends TVector<T>> getRows();
+    TVector<TVector<T>> getRows();
 
-    List<? extends TVector<T>> getColumns();
+    TVector<TVector<T>> getColumns();
 
     int getRowCount();
 
@@ -253,22 +253,22 @@ public interface TMatrix<T> extends Normalizable {
     TMatrix<T> solve(TMatrix<T> B, SolveStrategy solveStrategy);
 
 
-    void store(String file) throws IOException;
+    void store(String file) throws RuntimeIOException;
 
-    void store(File file) throws IOException;
+    void store(File file) throws RuntimeIOException;
 
-    void store(PrintStream stream) throws IOException;
+    void store(PrintStream stream) throws RuntimeIOException;
 
-    void store(String file, String commentsChar, String varName) throws IOException;
+    void store(String file, String commentsChar, String varName) throws RuntimeIOException;
 
-    void store(File file, String commentsChar, String varName) throws IOException;
+    void store(File file, String commentsChar, String varName) throws RuntimeIOException;
 
 
-    void store(PrintStream stream, String commentsChar, String varName) throws IOException;
+    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
 
-    void read(BufferedReader reader) throws IOException;
+    void read(BufferedReader reader) throws RuntimeIOException;
 
-    void read(File file) throws IOException;
+    void read(File file) throws RuntimeIOException;
 
     void read(String reader);
 
@@ -276,9 +276,9 @@ public interface TMatrix<T> extends Normalizable {
 
     TVector<T> row(int row);
 
-    List<? extends TVector<T>> rows();
+    TVector<TVector<T>> rows();
 
-    List<? extends TVector<T>> columns();
+    TVector<TVector<T>> columns();
 
     TVector<T> getColumn(int column);
 
@@ -343,9 +343,9 @@ public interface TMatrix<T> extends Normalizable {
 
     TVector<T> toVector();
 
-    T scalarProduct(TMatrix<T> m);
+    T scalarProduct(TMatrix<T> m, boolean hermitian);
 
-    T scalarProduct(TVector<T> v);
+    T scalarProduct(TVector<T> v, boolean hermitian);
 
     TMatrix<T> cos();
 

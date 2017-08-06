@@ -1,9 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 
 /**
@@ -180,9 +176,14 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 
     public abstract Matrix subMatrix(int row, int col, int rows, int cols);
 
-    public abstract List<Vector> getRows();
-
-    public abstract List<Vector> getColumns();
+//    public abstract TVector<Vector> getRows();
+//
+//    public abstract TVector<Vector> getColumns();
+//
+//    public abstract List<TVector<Complex>> rows();
+//    //
+//    public abstract List<TVector<Complex>> columns();
+//    //
 //
 //    public abstract int getRowCount();
 //
@@ -283,11 +284,7 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
     public abstract Vector getRow(int row);
 
     public abstract Vector row(int row);
-//
-    public abstract List<Vector> rows();
-//
-    public abstract List<Vector> columns();
-//
+
     public abstract Vector getColumn(int column);
 
     public abstract Vector column(int column);

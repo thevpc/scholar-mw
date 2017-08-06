@@ -227,7 +227,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public boolean isComplexImpl() {
-        return false;
+        return a==0 && b==0 && getDomain().isFull();
     }
 
     @Override
@@ -237,12 +237,16 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public Complex toComplex() {
+        Expr c = simplify();
+        if(c instanceof Complex){
+            return (Complex) c;
+        }
         throw new ClassCastException();
     }
 
     @Override
     public double toDouble() {
-        throw new ClassCastException();
+        return toComplex().toDouble();
     }
 
     @Override

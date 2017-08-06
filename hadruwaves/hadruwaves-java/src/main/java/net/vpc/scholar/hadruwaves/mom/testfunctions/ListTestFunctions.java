@@ -9,17 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.vpc.scholar.hadrumaths.ArrayExprList;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
@@ -60,7 +57,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         return this;
     }
 
-    public ListTestFunctions add(ExprList f) {
+    public ListTestFunctions add(TVector<Expr> f) {
         if (f != null) {
             list.add(f);
         }
@@ -81,10 +78,10 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         return this;
     }
 
-    public ExprList toList(){
-        ArrayExprList found=new ArrayExprList();
+    public TList<Expr> toList(){
+        TList<Expr> found=Maths.exprList();
         for (Object expr : list) {
-            found.addAll(linearizeFunctions(expr));
+            found.appendAll(linearizeFunctions(expr));
         }
         return found;
     }
@@ -114,9 +111,9 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
             }else{
                 throw new IllegalArgumentException("Unsupported Expr "+i);
             }
-        }else if(i instanceof ExprList){
+        }else if(i instanceof TVector && Expr.class.isAssignableFrom(((TVector) i).getComponentType())){
             List<DoubleToVector> found=new ArrayList<DoubleToVector>();
-            for (Expr expr : ((ExprList) i)) {
+            for (Expr expr : ((TVector<Expr>) i)) {
                 found.addAll(linearizeFunctions(expr));
             }
             return found;
@@ -141,7 +138,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
 
     @Override
     protected DoubleToVector[] gpImpl(ComputationMonitor monitor) {
-        List<DoubleToVector> all = (List) toList().toExprJList();
+        List<DoubleToVector> all = (List) toList().toJList();
         return all.toArray(new DoubleToVector[all.size()]);
     }
 
@@ -208,8 +205,8 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         list.addAll(other.list);
         return this;
     }
-    public ListTestFunctions addAll(ExprList other){
-        list.addAll(other.toExprJList());
+    public ListTestFunctions addAll(TVector<Expr> other){
+        list.addAll(other.toJList());
         return this;
     }
     public ListTestFunctions addAll(List<Expr> other){

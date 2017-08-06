@@ -348,7 +348,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
             double[][] ret = expression.toDD().computeDouble(x, y, d0, r2);
             ret=convertBackXYZValues(new double[][][]{ret})[0];
             if (ranges != null) {
-                //transform r
+                //eval r
                 ranges.set(convertBackRange(r));
             }
             return ret;

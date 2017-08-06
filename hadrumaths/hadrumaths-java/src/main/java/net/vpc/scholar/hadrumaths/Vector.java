@@ -32,14 +32,18 @@ public interface Vector extends Normalizable, Iterable<Complex>,TVector<Complex>
     int size();
 
 
-    void store(String file) throws IOException;
+    void store(String file) throws RuntimeIOException;
 
-    void store(File file) throws IOException;
+    void store(File file) throws RuntimeIOException;
 
-    void store(PrintStream stream) throws IOException;
+    void store(PrintStream stream) throws RuntimeIOException;
 
-    void store(PrintStream stream, String commentsChar, String varName) throws IOException;
+    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
 
+
+    Vector scalarProductToVector(boolean hermitian, Vector... other);
+
+    Vector scalarProductToVector(boolean hermitian, TVector<Complex>... other);
 
 //    Complex scalarProduct(Vector other);
 //

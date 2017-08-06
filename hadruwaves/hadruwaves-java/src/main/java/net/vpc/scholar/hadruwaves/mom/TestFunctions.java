@@ -1,9 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
@@ -23,11 +24,11 @@ public interface TestFunctions {
 
     DoubleToVector gp(int p);
 
-    ExprList list();
+    TList<Expr> list();
 
     DoubleToVector apply(int index);
 
-    ExprList toList();
+    TList<Expr> toList();
     DoubleToVector[] arr();
 
     DoubleToVector[] arr(ComputationMonitor monitor, ObjectCache objectCache);

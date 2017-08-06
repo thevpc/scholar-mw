@@ -14,8 +14,8 @@ object ConditionalFunctions {
     var n=param("n")
     var fn=((1*(n===1))+(2*(n!==1))).setName("f${n}")
     var gn=If(n===1, 1, 2).setName("g${n}")
-    var fn_s=seq(fn,n,1,2).toList
-    var gn_s=seq(gn,n,1,2).toList
+    var fn_s=seq(fn,n,1,2)
+    var gn_s=seq(gn,n,1,2)
     println(fn.toString)
     println(fn_s)
     println(gn)
@@ -35,8 +35,8 @@ object ConditionalFunctions {
     var fn=((sin(X)*(n===1))+(cos(X)*(n!==1))).setName("f${n}")
     var gn=If(n===1, sin(X), cos(X)).setName("g${n}")
 
-    var fn_s=seq(fn,n,1,2).toList
-    var gn_s=seq(gn,n,1,2).toList
+    var fn_s=seq(fn,n,1,2)
+    var gn_s=seq(gn,n,1,2)
     println(fn.toString)
     println(fn_s)
     println(gn)

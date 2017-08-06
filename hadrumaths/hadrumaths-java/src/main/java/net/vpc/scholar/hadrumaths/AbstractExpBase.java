@@ -39,6 +39,10 @@ public abstract class AbstractExpBase implements Expr {
         return getDomain();
     }
 
+    @Override
+    public double toDouble() {
+        return toComplex().toDouble();
+    }
 
 
 }

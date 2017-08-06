@@ -48,7 +48,7 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
             for (int n = 0; n < max; n++) {
                 gfps[q][n] = Maths.scalarProduct(
                         indexes[n].fn.getComponent(Axis.X),
-                        cache_essai[q].getComponent(Axis.X)
+                        cache_essai[q].getComponent(Axis.X),true
                 );
 //                progress++;
 //                monitor.setProgress(1.0*progress/(cache_essai.length*max));

@@ -9,6 +9,10 @@ public class DoubleArray implements ToDoubleArrayAware{
     public DoubleArray() {
     }
 
+    public DoubleArray(int initialSize) {
+        values=new ArrayList<>(initialSize);
+    }
+
     public DoubleArray(List<Double> values) {
         this.values = values;
     }

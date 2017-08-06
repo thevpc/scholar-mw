@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.ArrayExprList;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
@@ -89,7 +86,7 @@ public class Rooftop extends Ref implements Cloneable{
         this.nx=nx;
         this.ny=ny;
         this.d=d;
-        ExprList list = new ArrayExprList();
+        TList<Expr> list = Maths.exprList();
         if (xside && yside) {
             throw new Error("Not yet supported");
         } else if (xside) {
@@ -99,7 +96,7 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = (-1);
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(false, d1);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "E");
@@ -108,7 +105,7 @@ public class Rooftop extends Ref implements Cloneable{
             while (m0 < nx) {
                 Domain d0 = Domain.forBounds(m0 / 2.0 * w + d.xmin(), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftop(true, false, d0);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "X");
@@ -118,7 +115,7 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = nx;
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(true, d1);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "E");
@@ -130,7 +127,7 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = (-1);
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(false, d1);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "N");
@@ -139,7 +136,7 @@ public class Rooftop extends Ref implements Cloneable{
             while (m0 < ny) {
                 Domain d0 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftop(false, true, d0);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "Y");
@@ -149,7 +146,7 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = ny;
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(true, d1);
-                list.add(rooftop);
+                list.append(rooftop);
                 rooftop.getProperties().put("SequenceType", "Rooftop");
                 rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
                 rooftop.getProperties().put("SequencePattern", "S");

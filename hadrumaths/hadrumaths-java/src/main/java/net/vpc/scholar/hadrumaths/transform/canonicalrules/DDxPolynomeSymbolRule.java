@@ -3,15 +3,15 @@
 // * To change this template file, choose Tools | Templates
 // * and open the template in the editor.
 // */
-//package net.vpc.scholar.math.transform.canonicalrules;
+//package net.vpc.scholar.math.eval.canonicalrules;
 //
 //import net.vpc.scholar.math.Expr;
 //import net.vpc.scholar.math.Maths;
 //import net.vpc.scholar.math.functions.Domain;
 //import net.vpc.scholar.math.functions.FunctionFactory;
 //import net.vpc.scholar.math.functions.dfx.DDxPolynome;
-//import net.vpc.scholar.math.transform.ExpressionRewriter;
-//import net.vpc.scholar.math.transform.ExpressionRewriterRule;
+//import net.vpc.scholar.math.eval.ExpressionRewriter;
+//import net.vpc.scholar.math.eval.ExpressionRewriterRule;
 //
 //import java.util.ArrayList;
 //import java.util.List;

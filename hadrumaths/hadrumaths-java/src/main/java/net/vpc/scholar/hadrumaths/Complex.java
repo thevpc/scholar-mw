@@ -274,10 +274,6 @@ public class Complex extends Number implements Expr, Cloneable, IConstantValue, 
         return new Complex(real + c.real, imag + c.imag);
     }
 
-    public Complex square() {
-        return mul(this);
-    }
-
     public Complex npow(int n) {
         if (equals(ONE)) {
             return ONE;
@@ -681,14 +677,14 @@ public class Complex extends Number implements Expr, Cloneable, IConstantValue, 
         }
     }
 
-    public double angle() {
+    public Complex angle() {
         //workaround
 //        if(real==0){
 //            return imag>=0?Math.PI/2:-Math.PI/2;
 //        }else if(imag==0){
 //            return real>=0?0:Math.PI;
 //        }
-        return Math.atan2(imag, real);
+        return Complex.valueOf(Math.atan2(imag, real));
     }
 
     public Complex sqr() {
@@ -712,7 +708,7 @@ public class Complex extends Number implements Expr, Cloneable, IConstantValue, 
             return real >= 0 ? Complex.valueOf(Math.sqrt(real), 0) : new Complex(0, Math.sqrt(-real));
         } else {
             double r = Math.sqrt(absdbl());
-            double theta = angle() / 2;
+            double theta = angle().toDouble() / 2;
             return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
         }
     }
@@ -742,13 +738,13 @@ public class Complex extends Number implements Expr, Cloneable, IConstantValue, 
 //            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
-            double angle = angle();
+            double angle = angle().toDouble();
             double theta = angle * power;
             return new Complex(r * Maths.cos2(theta), r * Maths.sin2(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
-            double theta = angle() * power;
+            double theta = angle().toDouble() * power;
             Complex c = new Complex(r * Maths.cos2(theta), r * Maths.sin2(theta));
             return c.inv();
         }

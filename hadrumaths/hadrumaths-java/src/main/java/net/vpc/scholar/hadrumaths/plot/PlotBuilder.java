@@ -197,6 +197,30 @@ public class PlotBuilder {
         return xsamples(xsamples).ysamples(ysamples);
     }
 
+    public PlotBuilder xsamples(TList xvalue) {
+        return xsamples(Maths.toDoubleArray(xvalue));
+    }
+
+    public PlotBuilder xsamples(DoubleArray xvalue) {
+        return xsamples(xvalue.toDoubleArray());
+    }
+
+    public PlotBuilder ysamples(TList yvalue) {
+        return ysamples(Maths.toDoubleArray(yvalue));
+    }
+
+    public PlotBuilder ysamples(DoubleArray yvalue) {
+        return ysamples(yvalue.toDoubleArray());
+    }
+
+    public PlotBuilder zsamples(TList yvalue) {
+        return zsamples(Maths.toDoubleArray(yvalue));
+    }
+
+    public PlotBuilder zsamples(DoubleArray yvalue) {
+        return zsamples(yvalue.toDoubleArray());
+    }
+
     public PlotBuilder xsamples(double[] xvalue) {
         if (samples instanceof AbsoluteSamples) {
             AbsoluteSamples a=(AbsoluteSamples) samples;
@@ -464,7 +488,7 @@ public class PlotBuilder {
                 typeAndValue = PlotTypesHelper.resolveType(o);
                 o = typeAndValue.value;
                 if (!PlotTypesHelper.isComponentType(o)) {
-                    throw new IllegalArgumentException("Unsupported " + (o == null ? "null" : o.getClass().getName()) + " as " + o);
+                    throw new IllegalArgumentException("Unsupported plot type " + (o == null ? "null" : o.getClass().getName()));
                 }
 //                if (s.equals("object") || s.equals("null")) {
                 //TODO should i return a container instead?
@@ -523,7 +547,7 @@ public class PlotBuilder {
 //        for (Object o : list) {
 //            if (o instanceof Expr) {
 //                all.add("Expr", o);
-//            } else if (o instanceof ExprList) {
+//            } else if (o instanceof TVector[Expr]) {
 //                for (Expr expr : ((ExprList) o)) {
 //                    all.add("Expr", expr);
 //                }

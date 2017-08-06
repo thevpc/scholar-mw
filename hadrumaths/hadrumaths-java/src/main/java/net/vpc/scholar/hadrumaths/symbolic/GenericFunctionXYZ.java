@@ -236,9 +236,9 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
                 ) {
             throw new IllegalArgumentException("Dimension mismatch");
         }
-        return Maths.matrix(rowCount, columnCount, new CellFactory() {
+        return Maths.matrix(rowCount, columnCount, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
+            public Complex get(int row, int column) {
                 return evalComplex(x.get(row, column), y.get(row, column), z.get(row, column));
             }
         });

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 
 /**
@@ -26,5 +27,10 @@ public class OrExpr extends ComparatorExpr implements Cloneable{
     @Override
     public Expr newInstance(Expr xargument,Expr yargument) {
         return new OrExpr(xargument,yargument);
+    }
+
+    @Override
+    public Domain getDomainImpl() {
+        return getXArgument().getDomain().union(getYArgument().getDomain());
     }
 }

@@ -512,14 +512,14 @@ public class PersistenceCache implements PersistentCacheConfig {
     }
 
     /**
-     * retrieve cache item named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
+     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
      *
-     * @param cacheItemName cache item name to evaluated
+     * @param cacheItemName cache get name to evaluated
      * @param evaluator     evaluator invoked when value could not be retrieved
      * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
      *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
      *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
-     * @param <T>           cache item type/class
+     * @param <T>           cache get type/class
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
     public <T> T evaluate(final String cacheItemName, ComputationMonitor monitor, final Evaluator2 evaluator, final Object... args) {
@@ -533,14 +533,14 @@ public class PersistenceCache implements PersistentCacheConfig {
     }
 
     /**
-     * retrieve cache item named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
+     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
      *
-     * @param cacheItemName cache item name to evaluated
+     * @param cacheItemName cache get name to evaluated
      * @param evaluator     evaluator invoked when value could not be retrieved
      * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
      *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
      *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
-     * @param <T>           cache item type/class
+     * @param <T>           cache get type/class
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
     public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ComputationMonitor monitor,final Evaluator2 evaluator, final Object... args) {

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 /**
 * Created by vpc on 4/28/14.
 */
-public interface CellFactory {
+public interface TMatrixCell<T> {
 
-    Complex item(int row, int column);
+    T get(int row, int column);
 }

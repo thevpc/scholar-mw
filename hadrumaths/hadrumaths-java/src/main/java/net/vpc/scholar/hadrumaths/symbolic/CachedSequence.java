@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.TVectorCell;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,27 +13,28 @@ import java.util.List;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class CachedSequence extends AbstractExprList {
+class CachedSequence<T> extends AbstractTList<T> {
     private int size;
-    private List<Expr> cache = new ArrayList<>();
-    private ExprSeqCellIterator it;
+    private List<T> cache = new ArrayList<>();
+    private TVectorCell<T> it;
     private boolean updated = false;
 
-    public CachedSequence(int size, Expr[] cache, ExprSeqCellIterator it) {
+    public CachedSequence(Class<T> componentType,int size, T[] cache, TVectorCell<T> it) {
+        super(componentType);
         this.size = size;
         this.cache.addAll(Arrays.asList(cache));
         this.it = it;
     }
 
     @Override
-    public int length() {
+    public int size() {
         return size;
     }
 
     @Override
-    public Expr get(int index) {
+    public T get(int index) {
         if (index < size && !updated) {
-            Expr old = cache.get(index);
+            T old = cache.get(index);
             if (old == null) {
                 old = it.get(index);
                 cache.set(index, old);
@@ -53,35 +57,37 @@ class CachedSequence extends AbstractExprList {
     }
 
     @Override
-    public void set(int index, Expr e) {
+    public void set(int index, T e) {
         cache.set(index, e);
     }
 
     @Override
-    public void addAll(ExprList e) {
+    public void appendAll(TVector<T> e) {
         setUpdated();
-        cache.addAll(e.toExprJList());
+        for (T expr : e) {
+            cache.add(expr);
+        }
     }
 
     @Override
-    public void add(Expr e) {
+    public void append(T e) {
         setUpdated();
         cache.add(e);
     }
 
     @Override
-    public void addAll(Collection<? extends Expr> e) {
+    public void appendAll(Collection<? extends T> e) {
         setUpdated();
         cache.addAll(e);
     }
 
     @Override
-    public ExprList copy() {
+    public TList<T> copy() {
         try {
             if(true){
                 throw new IllegalArgumentException("How to copy this?");
             }
-            return (ExprList) clone();
+            return (TList<T>) clone();
         } catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("Unsupported Clone");
         }

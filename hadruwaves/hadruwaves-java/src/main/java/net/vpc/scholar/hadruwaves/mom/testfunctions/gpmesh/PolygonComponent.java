@@ -112,7 +112,7 @@ public class PolygonComponent extends JComponent {
 //        for (Polygon polygon : polygonListForPaint) {
 //            meshZones.addAll(meshalgo.meshPolygon(polygon));
 //        }
-//        meshZones = pattern.transform(meshZones, to);
+//        meshZones = pattern.eval(meshZones, to);
 
         Graphics2D g2d = (Graphics2D) g;
         g.setColor(Color.RED);
@@ -394,10 +394,10 @@ public class PolygonComponent extends JComponent {
 //        for (Polygon polygon : polygons) {
 //            meshZones.addAll(meshalgo.meshPolygon(polygon));
 //        }
-//        meshZones = pattern.transform(meshZones, to);
+//        meshZones = pattern.eval(meshZones, to);
 //        synchronized (polygons) {
-//            if (transform != null) {
-//                g2d.setTransform(transform);
+//            if (eval != null) {
+//                g2d.setTransform(eval);
 //            }
 //            for (Polygon polygon : polygons) {
 //                Area area2 = polygon.toArea();
@@ -628,8 +628,8 @@ public class PolygonComponent extends JComponent {
 //        g2d.drawRect((int) b.xmin, (int) b.ymin, (int) b.xwidth, (int) b.ywidth);
 //        synchronized (polygons) {
 //            for (Polygon polygon : polygons) {
-//                if (transform != null) {
-//                    g2d.setTransform(transform);
+//                if (eval != null) {
+//                    g2d.setTransform(eval);
 //                }
 //                Area area2 = polygon.toArea();
 //                if (polygonForegroundColor != null) {
@@ -928,10 +928,10 @@ public class PolygonComponent extends JComponent {
     private void rebuild() {
         transform = null;
         if (translateX != 0 || translateY != 0) {
-//            if(transform==null){
+//            if(eval==null){
             transform = AffineTransform.getTranslateInstance(translateX, translateY);
 //            }else{
-//                transform.translate(translateX,translateY);
+//                eval.translate(translateX,translateY);
 //            }
         }
         if (rotateX != 0) {

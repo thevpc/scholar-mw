@@ -87,7 +87,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
     };
 
-    public Plus(ExprList list) {
+    public Plus(TVector<Expr> list) {
         this(list.toArray());
     }
 

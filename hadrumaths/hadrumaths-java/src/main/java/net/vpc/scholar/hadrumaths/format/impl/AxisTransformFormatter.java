@@ -25,13 +25,13 @@ public class AxisTransformFormatter implements Formatter<AxisTransform> {
         String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
         switch (o.getDomainDimension()){
             case 1:{
-                return "transform"+o.getAxis()[0]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
+                return "eval"+o.getAxis()[0]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
             }
             case 2:{
-                return "transform"+o.getAxis()[0]+o.getAxis()[1]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
+                return "eval"+o.getAxis()[0]+o.getAxis()[1]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
             }
             case 3:{
-                return "transform"+o.getAxis()[0]+o.getAxis()[1]+o.getAxis()[2]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
+                return "eval"+o.getAxis()[0]+o.getAxis()[1]+o.getAxis()[2]+"("+FormatFactory.format(o.getSubExpressions().get(0))+")";
             }
             default:{
                 throw new IllegalArgumentException("Unsupported dim "+o.getDomainDimension());

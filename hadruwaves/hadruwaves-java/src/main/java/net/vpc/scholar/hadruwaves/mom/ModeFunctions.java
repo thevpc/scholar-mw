@@ -1,12 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.AxisXY;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
@@ -45,12 +41,12 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     ModeFunctions setSize(int fnMax);
 
-    ExprList list();
+    TList<Expr> list();
 
     DoubleToVector get(int index);
     DoubleToVector apply(int index);
 
-    ExprList toList();
+    TList<Expr> toList();
 
     DoubleToVector[] toArray();
 

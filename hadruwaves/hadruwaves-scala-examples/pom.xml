@@ -52,6 +52,14 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>https://oss.sonatype.org/content/groups/scala-tools</url>
         </repository>
+        <repository>
+            <id>vpc-public-maven</id>
+            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

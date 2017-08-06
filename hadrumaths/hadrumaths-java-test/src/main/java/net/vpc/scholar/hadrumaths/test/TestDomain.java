@@ -45,9 +45,9 @@ public class TestDomain {
         AbsoluteSamples times = domain.times(50);
         double[] x = times.getX();
         double[] y = times.getY();
-        Matrix c = matrix(30, 30, new CellFactory() {
+        Matrix c = matrix(30, 30, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
+            public Complex get(int row, int column) {
                 return new Complex(Math.sin(row*Math.PI/10) * Math.cos(column*Math.PI/10));
 //                return new Complex((row*Math.PI/10) * (column*Math.PI/10));
             }

@@ -44,8 +44,8 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
         if (level < 0) {
             throw new IllegalArgumentException("Impossible");
             //dans le cas ou on veut modeliser
-//            DPolygon[] transform = getTransform();
-//            for (DPolygon rectangle2D : transform) {
+//            DPolygon[] eval = getTransform();
+//            for (DPolygon rectangle2D : eval) {
 //                add(rectangle2D
 ////                        new Polygon(
 ////                        new double[]{rectangle2D.getX(), rectangle2D.getX() + rectangle2D.getWidth(), rectangle2D.getX() + rectangle2D.getWidth(), rectangle2D.getX()},

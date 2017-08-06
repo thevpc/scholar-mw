@@ -3,7 +3,6 @@ package net.vpc.scholar.hadruwaves.mom.modes;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.*;
@@ -335,12 +334,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized ExprList list() {
-        return new ArrayExprList(arr());
+    public synchronized TList<Expr> list() {
+        return Maths.exprList(arr());
     }
 
     @Override
-    public synchronized ExprList toList() {
+    public synchronized TList<Expr> toList() {
         return list();
     }
 

@@ -146,18 +146,18 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public Matrix newMatrix(int rows, int cols, CellFactory cellFactory) {
+    public Matrix newMatrix(int rows, int cols, MatrixCell cellFactory) {
         return newMatrix(rows,cols, CellIteratorType.FULL, cellFactory);
     }
 
     @Override
-    public Matrix newMatrix(int rows, int columns, CellIteratorType it, CellFactory item) {
+    public Matrix newMatrix(int rows, int columns, CellIteratorType it, MatrixCell item) {
         Matrix e = newMatrix(rows, columns);
         switch (it) {
             case FULL: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
-                        e.set(i, j, item.item(i, j));
+                        e.set(i, j, item.get(i, j));
                     }
                 }
                 break;
@@ -167,7 +167,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
                     for (int j = 0; j < i; j++) {
                         e.set(i, j, Complex.ZERO);
                     }
-                    e.set(i, i, item.item(i, i));
+                    e.set(i, i, item.get(i, i));
                     for (int j = i + 1; j < columns; j++) {
                         e.set(i, j, Complex.ZERO);
                     }
@@ -180,7 +180,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
                         e.set(i, j, e.get(j,i));
                     }
                     for (int j = i; j < columns; j++) {
-                        e.set(i, j, item.item(i, j));
+                        e.set(i, j, item.get(i, j));
                     }
                 }
                 break;
@@ -191,7 +191,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
                         e.set(i, j, e.get(j,i).conj());
                     }
                     for (int j = i; j < columns; j++) {
-                        e.set(i, j, item.item(i, j));
+                        e.set(i, j, item.get(i, j));
                     }
                 }
                 break;
@@ -218,77 +218,77 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public  Matrix newColumnMatrix(int rows, final VCellFactory cellFactory) {
-        return newMatrix(rows, 1, CellIteratorType.FULL, new CellFactory() {
+    public  Matrix newColumnMatrix(int rows, final VectorCell cellFactory) {
+        return newMatrix(rows, 1, CellIteratorType.FULL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(row);
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
             }
         });
     }
 
     @Override
-    public  Matrix newRowMatrix(int columns, final VCellFactory cellFactory) {
-        return newMatrix(1, columns, CellIteratorType.FULL, new CellFactory() {
+    public  Matrix newRowMatrix(int columns, final VectorCell cellFactory) {
+        return newMatrix(1, columns, CellIteratorType.FULL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(column);
+            public Complex get(int row, int column) {
+                return cellFactory.get(column);
             }
         });
     }
 
     @Override
-    public Matrix newSymmetric(int rows, int cols, CellFactory cellFactory) {
+    public Matrix newSymmetric(int rows, int cols, MatrixCell cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.SYMETRIC, cellFactory);
     }
 
     @Override
-    public Matrix newHermitian(int rows, int cols, CellFactory cellFactory) {
+    public Matrix newHermitian(int rows, int cols, MatrixCell cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.HERMITIAN, cellFactory);
     }
 
     @Override
-    public Matrix newDiagonal(int rows, int cols, CellFactory cellFactory) {
+    public Matrix newDiagonal(int rows, int cols, MatrixCell cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.DIAGONAL, cellFactory);
     }
 
     @Override
-    public Matrix newDiagonal(int rows, final VCellFactory cellFactory) {
-        return newMatrix(rows, rows, CellIteratorType.DIAGONAL, new CellFactory() {
+    public Matrix newDiagonal(int rows, final VectorCell cellFactory) {
+        return newMatrix(rows, rows, CellIteratorType.DIAGONAL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(row);
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
             }
         });
     }
 
     @Override
     public Matrix newDiagonal(final Complex... c) {
-        return newMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new CellFactory() {
+        return newMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
+            public Complex get(int row, int column) {
                 return c[row];
             }
         });
     }
 
     @Override
-    public  Matrix newMatrix(int dim, CellFactory cellFactory) {
+    public  Matrix newMatrix(int dim, MatrixCell cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.FULL, cellFactory);
     }
 
     @Override
-    public  Matrix newSymmetric(int dim, CellFactory cellFactory) {
+    public  Matrix newSymmetric(int dim, MatrixCell cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.SYMETRIC, cellFactory);
     }
 
     @Override
-    public  Matrix newHermitian(int dim, CellFactory cellFactory) {
+    public  Matrix newHermitian(int dim, MatrixCell cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.HERMITIAN, cellFactory);
     }
 
     @Override
-    public Matrix newDiagonal(int dim, CellFactory cellFactory) {
+    public Matrix newDiagonal(int dim, MatrixCell cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.DIAGONAL, cellFactory);
     }
 
@@ -405,7 +405,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public Matrix load(File file) throws IOException {
+    public Matrix load(File file) throws RuntimeIOException {
         Matrix m = newMatrix(1, 1);
         m.read(file);
         return m;

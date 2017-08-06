@@ -43,35 +43,35 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newMatrix(double[][] complex);
 
-    TMatrix<T> newMatrix(int rows, int cols, CellFactory cellFactory);
+    TMatrix<T> newMatrix(int rows, int cols, MatrixCell cellFactory);
 
-    TMatrix<T> newMatrix(int rows, int columns, CellIteratorType it, CellFactory item);
+    TMatrix<T> newMatrix(int rows, int columns, CellIteratorType it, MatrixCell item);
 
     TMatrix<T> newColumnMatrix(T... values);
 
     TMatrix<T> newRowMatrix(T... values);
 
-    TMatrix<T> newColumnMatrix(int rows, VCellFactory cellFactory);
+    TMatrix<T> newColumnMatrix(int rows, VectorCell cellFactory);
 
-    TMatrix<T> newRowMatrix(int columns, VCellFactory cellFactory);
+    TMatrix<T> newRowMatrix(int columns, VectorCell cellFactory);
 
-    TMatrix<T> newSymmetric(int rows, int cols, CellFactory cellFactory);
+    TMatrix<T> newSymmetric(int rows, int cols, MatrixCell cellFactory);
 
-    TMatrix<T> newHermitian(int rows, int cols, CellFactory cellFactory);
+    TMatrix<T> newHermitian(int rows, int cols, MatrixCell cellFactory);
 
-    TMatrix<T> newDiagonal(int rows, int cols, CellFactory cellFactory);
+    TMatrix<T> newDiagonal(int rows, int cols, MatrixCell cellFactory);
 
-    TMatrix<T> newDiagonal(int rows, VCellFactory cellFactory);
+    TMatrix<T> newDiagonal(int rows, VectorCell cellFactory);
 
     TMatrix<T> newDiagonal(T... c);
 
-    TMatrix<T> newMatrix(int dim, CellFactory cellFactory);
+    TMatrix<T> newMatrix(int dim, MatrixCell cellFactory);
 
-    TMatrix<T> newSymmetric(int dim, CellFactory cellFactory);
+    TMatrix<T> newSymmetric(int dim, MatrixCell cellFactory);
 
-    TMatrix<T> newHermitian(int dim, CellFactory cellFactory);
+    TMatrix<T> newHermitian(int dim, MatrixCell cellFactory);
 
-    TMatrix<T> newDiagonal(int dim, CellFactory cellFactory);
+    TMatrix<T> newDiagonal(int dim, MatrixCell cellFactory);
 
     TMatrix<T> newRandomReal(int m, int n);
 

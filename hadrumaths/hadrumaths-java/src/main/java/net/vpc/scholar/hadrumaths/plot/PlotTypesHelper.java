@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.CollectionUtils;
 
 import java.lang.reflect.Array;
@@ -83,7 +82,7 @@ public class PlotTypesHelper {
     public static boolean isComponentType(Object obj) {
         if (obj.getClass().isArray()) {
             return true;
-        } else if (obj instanceof ExprList) {
+        } else if (obj instanceof TVector) {
             return true;
         } else if (obj instanceof Collection) {
             return true;
@@ -100,8 +99,8 @@ public class PlotTypesHelper {
             for (int i = 0; i < l; i++) {
                 initial.add(Array.get(obj,i));
             }
-        }else if(obj instanceof ExprList){
-            initial.addAll(((ExprList) obj).toExprJList());
+        }else if(obj instanceof TVector){
+            initial.addAll(Arrays.asList(((TVector) obj).toArray()));
         }else if(obj instanceof Collection){
             initial.addAll((Collection) obj);
         }else if(obj instanceof Iterable){
@@ -154,8 +153,8 @@ public class PlotTypesHelper {
         if (obj instanceof DoubleValue && ((DoubleValue) obj).getDomain().isFull()) {
             return new TypeAndValue("number", ((DoubleValue) obj).getValue());
         }
-        if (obj instanceof Matrix) {
-            Matrix m = (Matrix) obj;
+        if (obj instanceof TMatrix) {
+            TMatrix m = (TMatrix) obj;
             int c = m.getColumnCount();
             int r = m.getRowCount();
             if(c ==1){
@@ -164,7 +163,7 @@ public class PlotTypesHelper {
                 }
                 return resolveComponentType(m.getColumn(0));
             }
-            for (Vector o : m.getRows()) {
+            for (Object o : m.getRows()) {
                 TypeAndValue typeAndValue = resolveType(o);
                 if(typeAndValue.type.equals("complex[]")){
                     return new TypeAndValue("complex[][]",obj);
@@ -309,8 +308,8 @@ public class PlotTypesHelper {
             throw new IllegalArgumentException("Not an Object Array");
         } else if (obj instanceof Vector) {
             return ((Vector) obj).toArray();
-        } else if (obj instanceof ExprList) {
-            return toObjectArray(((ExprList) obj).toExprJList());
+        } else if (obj instanceof TVector) {
+            return toObjectArray(((TVector) obj).toArray());
         } else if (obj instanceof Collection) {
             return (((Collection) obj).toArray());
         } else if (obj instanceof Iterable) {
@@ -333,8 +332,8 @@ public class PlotTypesHelper {
             return arr;
         } else if (obj instanceof Collection) {
             return toComplexArray2(((Collection) obj).toArray());
-        } else if (obj instanceof Matrix) {
-            return ((Matrix) obj).getArray();
+        } else if (obj instanceof TMatrix) {
+            return toComplexArray2(((TMatrix) obj).getArray());
         } else if (obj instanceof Vector) {
             return ((Vector) obj).toMatrix().getArray();
         }
@@ -373,8 +372,8 @@ public class PlotTypesHelper {
                 arr[i] = toDouble(Array.get(obj, i));
             }
             return arr;
-        } else if (obj instanceof ExprList) {
-            return ((ExprList) obj).toDoubleArray();
+        } else if (obj instanceof TVector) {
+            return toDoubleArray(((TVector) obj).toArray());
         } else if (obj instanceof Collection) {
             return toDoubleArray(((Collection) obj).toArray());
         }

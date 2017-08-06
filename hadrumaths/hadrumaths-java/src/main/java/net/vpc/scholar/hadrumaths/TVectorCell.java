@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 /**
 * Created by vpc on 4/28/14.
 */
-public interface TCellFactory<T> {
+public interface TVectorCell<T> {
 
-    T item(int row, int column);
+    T get(int index);
 }

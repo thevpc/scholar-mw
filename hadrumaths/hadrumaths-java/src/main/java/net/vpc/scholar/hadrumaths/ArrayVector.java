@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vpc on 4/11/16.
@@ -11,7 +13,7 @@ import java.io.Serializable;
 public class ArrayVector extends AbstractVector implements Serializable{
     private Complex[] elements;
 
-    public ArrayVector(Vector other) throws IOException {
+    public ArrayVector(TVector<Complex> other) {
         super(other.isRow());
         elements=new Complex[other.size()];
         System.arraycopy(other.toArray(),0,elements,0,elements.length);
@@ -86,11 +88,11 @@ public class ArrayVector extends AbstractVector implements Serializable{
 
     public Complex scalarProduct(Vector other){
         int max = Math.max(elements.length, other.size());
-        Complex d=Complex.ZERO;
+        MutableComplex d=new MutableComplex();
         for (int i = 0; i < max; i++) {
-            d=d.add(elements[i].mul(other.get(i)));
+            d.add(elements[i].mul(other.get(i)));
         }
-        return d;
+        return d.toComplex();
     }
 
     public Complex scalarProductAll(Vector ... other){
@@ -101,16 +103,18 @@ public class ArrayVector extends AbstractVector implements Serializable{
                 max= size;
             }
         }
-        Complex d=Complex.ZERO;
+        MutableComplex d=new MutableComplex();
         for (int i = 0; i < max; i++) {
-            Complex el = elements[i];
+            MutableComplex c=new MutableComplex(1,0);
+            c.mul(elements[i]);
             for (Vector v:other) {
-                el=el.mul(v.get(i));
+                c.mul(v.get(i));
             }
-            d=d.add(el);
+            d.add(c.toComplex());
         }
-        return d;
+        return d.toComplex();
     }
+
 
     @Override
     public Class<Complex> getComponentType() {

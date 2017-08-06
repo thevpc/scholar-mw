@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 /**
 * Created by vpc on 4/28/14.
 */
-public interface VCellFactory {
+public interface VectorCell {
 
-    Complex item(int index);
+    Complex get(int index);
 }

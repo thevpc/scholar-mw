@@ -1,7 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
+import java.util.List;
+
 public interface VectorSpace<T> {
     Class<T> getItemType();
+
+    <R> R convertTo(T value, Class<R> t);
+
+    <R> T convertFrom(R value, Class<R> t);
 
     T convert(double d);
 
@@ -16,6 +22,15 @@ public interface VectorSpace<T> {
     T nan();
 
     T add(T a, T b);
+
+
+    RepeatableOp<T> addRepeatableOp();
+
+    RepeatableOp<T> mulRepeatableOp();
+
+    T addAll(List<T> b);
+
+    T mulAll(List<T> b);
 
     T sub(T a, T b);
 
@@ -118,4 +133,8 @@ public interface VectorSpace<T> {
     T If(T cond, T exp1, T exp2);
 
     T parse(String string);
+
+    T scalarProduct(T a, T b, boolean hermitian);
+
+    T setParam(T a, String paramName, Object b);
 }

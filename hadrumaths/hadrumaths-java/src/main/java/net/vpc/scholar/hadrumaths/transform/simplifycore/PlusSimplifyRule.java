@@ -276,7 +276,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
         }
 
         if (grouped.domainxy.size() > 0 || !grouped.complex.isReal()) {
-            //transform x to xy no more needed!
+            //eval x to xy no more needed!
 //            for (DomainX domain : grouped.domainx.keySet().toArray(new DomainX[grouped.domainx.size()])) {
 //                for (IDDx expression : grouped.get(domain)) {
 //                    DomainX dx = expression.getDomain();

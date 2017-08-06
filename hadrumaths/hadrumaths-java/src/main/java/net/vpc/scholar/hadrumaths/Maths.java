@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -183,6 +184,7 @@ public final class Maths {
     public static final double Qe = 1.60217656535E-19;//C
     public static final VectorSpace<Complex> COMPLEX_VECTOR_SPACE = new ComplexVectorSpace();
     public static final VectorSpace<Expr> EXPR_VECTOR_SPACE = new ExprVectorSpace();
+    public static final VectorSpace<Double> DOUBLE_VECTOR_SPACE = new DoubleVectorSpace();
     public static final int X_AXIS = 0;
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
@@ -210,6 +212,28 @@ public final class Maths {
         @Override
         public double distance(Vector a, Vector b) {
             return a.toMatrix().getError(b.toMatrix());
+        }
+    };
+    public static final TStoreManager<Matrix> MATRIX_STORE_MANAGER=new TStoreManager<Matrix>() {
+        @Override
+        public void store(Matrix item,File file) {
+            item.store(file);
+        }
+
+        @Override
+        public Matrix load(File file) {
+            return Config.defaultMatrixFactory.load(file);
+        }
+    };
+    public static final TStoreManager<Vector> VECTOR_STORE_MANAGER=new TStoreManager<Vector>() {
+        @Override
+        public void store(Vector item,File file) {
+            item.store(file);
+        }
+
+        @Override
+        public Vector load(File file) {
+            return Config.defaultMatrixFactory.load(file).toVector();
         }
     };
     //</editor-fold>
@@ -375,12 +399,12 @@ public final class Maths {
         return Config.defaultMatrixFactory.newMatrix(complex);
     }
 
-    public static Matrix matrix(int rows, int cols, CellFactory cellFactory) {
+    public static Matrix matrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newMatrix(rows, cols, cellFactory);
     }
 
 //    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newMatrix(rows, cols, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
     public static Matrix columnMatrix(final Complex... values) {
@@ -407,11 +431,11 @@ public final class Maths {
         return Config.defaultMatrixFactory.newRowMatrix(values);
     }
 
-    public static Matrix columnMatrix(int rows, final VCellFactory cellFactory) {
+    public static Matrix columnMatrix(int rows, final VectorCell cellFactory) {
         return Config.defaultMatrixFactory.newColumnMatrix(rows, cellFactory);
     }
 
-    public static Matrix rowMatrix(int columns, final VCellFactory cellFactory) {
+    public static Matrix rowMatrix(int columns, final VectorCell cellFactory) {
         return Config.defaultMatrixFactory.newRowMatrix(columns, cellFactory);
     }
 
@@ -423,26 +447,26 @@ public final class Maths {
 //    }
 //
 //    public static Matrix symmetricMatrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newSymmetric(rows, cols, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newSymmetric(rows, cols, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
-    public static Matrix symmetricMatrix(int rows, int cols, CellFactory cellFactory) {
+    public static Matrix symmetricMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newSymmetric(rows, cols, cellFactory);
     }
 
-    public static Matrix hermitianMatrix(int rows, int cols, CellFactory cellFactory) {
+    public static Matrix hermitianMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newHermitian(rows, cols, cellFactory);
     }
 
 //    public static Matrix hermitianMatrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newHermitian(rows, cols, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newHermitian(rows, cols, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
-    public static Matrix diagonalMatrix(int rows, int cols, CellFactory cellFactory) {
+    public static Matrix diagonalMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newDiagonal(rows, cols, cellFactory);
     }
 
-    public static Matrix diagonalMatrix(int rows, final VCellFactory cellFactory) {
+    public static Matrix diagonalMatrix(int rows, final VectorCell cellFactory) {
         return Config.defaultMatrixFactory.newDiagonal(rows, cellFactory);
     }
 
@@ -450,40 +474,40 @@ public final class Maths {
         return Config.defaultMatrixFactory.newDiagonal(c);
     }
 
-    public static Matrix matrix(int dim, CellFactory cellFactory) {
+    public static Matrix matrix(int dim, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newMatrix(dim, cellFactory);
     }
 
 //    public static Matrix matrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newMatrix(dim, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newMatrix(dim, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
     public static Matrix matrix(int rows, int columns) {
         return Config.defaultMatrixFactory.newMatrix(rows, columns);
     }
 
-    public static Matrix symmetricMatrix(int dim, CellFactory cellFactory) {
+    public static Matrix symmetricMatrix(int dim, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newMatrix(dim, cellFactory);
     }
 
-    public static Matrix hermitianMatrix(int dim, CellFactory cellFactory) {
+    public static Matrix hermitianMatrix(int dim, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newHermitian(dim, cellFactory);
     }
 
-    public static Matrix diagonalMatrix(int dim, CellFactory cellFactory) {
+    public static Matrix diagonalMatrix(int dim, MatrixCell cellFactory) {
         return Config.defaultMatrixFactory.newDiagonal(dim, cellFactory);
     }
 
 //    public static Matrix symmetricMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newMatrix(dim, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newMatrix(dim, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
 //    public static Matrix hermitianMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newHermitian(dim, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newHermitian(dim, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
 //    public static Matrix diagonalMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newDiagonal(dim, new I2ToComplexCellFactory(cellFactory));
+//        return Config.defaultMatrixFactory.newDiagonal(dim, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
     public static Matrix randomRealMatrix(int m, int n) {
@@ -526,24 +550,60 @@ public final class Maths {
         return Config.defaultMatrixFactory.newRandomImag(m, n);
     }
 
-    public static <T> TMatrix<T> loadTMatrix(Class<T> componentType, File file) throws IOException {
+    public static <T> TMatrix<T> loadTMatrix(Class<T> componentType, File file) throws RuntimeIOException {
         throw new IllegalArgumentException("TODO");
     }
 
-    public static Matrix loadMatrix(File file) throws IOException {
+    public static Matrix loadMatrix(File file) throws RuntimeIOException {
         return Config.defaultMatrixFactory.load(file);
     }
 
-    public static Matrix matrix(File file) throws IOException {
+    public static Matrix matrix(File file) throws RuntimeIOException {
         return Config.defaultMatrixFactory.load(file);
     }
 
-    public static void storeMatrix(Matrix m, String file) throws IOException {
+    public static void storeMatrix(Matrix m, String file) throws RuntimeIOException {
         m.store(file == null ? (File) null : new File(file));
     }
 
-    public static void storeMatrix(Matrix m, File file) throws IOException {
+    public static void storeMatrix(Matrix m, File file) throws RuntimeIOException {
         m.store(file);
+    }
+
+    public static Matrix loadOrEvalMatrix(String file,TItem<Matrix> item) throws RuntimeIOException {
+        return loadOrEvalMatrix(new File(file),item);
+    }
+
+    public static Vector loadOrEvalVector(String file,TItem<Vector> item) throws RuntimeIOException {
+        return loadOrEvalVector(new File(file),item);
+    }
+
+    public static Matrix loadOrEvalMatrix(File file,TItem<Matrix> item) throws RuntimeIOException {
+        return loadOrEval(Matrix.class,file, item);
+    }
+
+    public static Vector loadOrEvalVector(File file,TItem<Vector> item) throws RuntimeIOException {
+        return loadOrEval(Vector.class,file, item);
+    }
+
+    public static <T> T loadOrEval(Class<T> type,File file,TItem<T> item) throws RuntimeIOException {
+        TStoreManager<T> t=null;
+        if(type.equals(Matrix.class)) {
+            t = (TStoreManager<T>) MATRIX_STORE_MANAGER;
+        }else if(type.equals(Matrix.class)){
+            t=(TStoreManager<T>) VECTOR_STORE_MANAGER;
+        }else{
+            throw new IllegalArgumentException("Unsupported store type "+type);
+        }
+        if(file.exists()){
+            System.out.println("loading "+file.getAbsolutePath()+" ...");
+            return t.load(file);
+        }else{
+            T tt = item.get();
+            System.out.println("storing "+file.getAbsolutePath()+" ...");
+            t.store(tt,file);
+            return tt;
+        }
     }
 
     public static Matrix loadMatrix(String file) throws IOException {
@@ -610,18 +670,54 @@ public final class Maths {
     }
 
 
-    public static Vector columnVector(int rows, final VCellFactory cellFactory) {
+    public static TVector<Expr> columnVector(Expr[] expr) {
+        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE,expr,false);
+    }
+    public static TVector<Expr> rowVector(Expr[] expr) {
+        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE,expr,true);
+    }
+    public static TVector<Expr> columnEVector(int rows, final TVectorCell<Expr> cellFactory) {
+        return columnTVector(Expr.class, rows, cellFactory);
+    }
+
+    public static TVector<Expr> rowEVector(int rows, final TVectorCell<Expr> cellFactory) {
+        return rowTVector(Expr.class, rows, cellFactory);
+    }
+
+    public static <T> TVector<T> columnTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
+        return new UpdatableTVector<>(
+                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+                false
+        );
+    }
+
+    public static <T> TVector<T> rowTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
+        return new UpdatableTVector<>(
+                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+                true
+        );
+    }
+
+    public static <T> TVector<T> columnTVector(Class<T> cls, int rows, final TVectorCell<T> cellFactory) {
+        return columnTVector(cls,new TVectorModelFromCell<>(rows,cellFactory));
+    }
+
+    public static <T> TVector<T> rowTVector(Class<T> cls, int rows, final TVectorCell<T> cellFactory) {
+        return rowTVector(cls,new TVectorModelFromCell<>(rows,cellFactory));
+    }
+
+    public static Vector columnVector(int rows, final VectorCell cellFactory) {
         Complex[] arr = new Complex[rows];
         for (int i = 0; i < rows; i++) {
-            arr[i] = cellFactory.item(i);
+            arr[i] = cellFactory.get(i);
         }
         return columnVector(arr);
     }
 
-    public static Vector rowVector(int columns, final VCellFactory cellFactory) {
+    public static Vector rowVector(int columns, final VectorCell cellFactory) {
         Complex[] arr = new Complex[columns];
         for (int i = 0; i < columns; i++) {
-            arr[i] = cellFactory.item(i);
+            arr[i] = cellFactory.get(i);
         }
         return rowVector(arr);
     }
@@ -630,7 +726,7 @@ public final class Maths {
 //        Int2ComplexCellFactory cc = new Int2ComplexCellFactory(cellFactory);
 //        Complex[] arr = new Complex[rows];
 //        for (int i = 0; i < rows; i++) {
-//            arr[i] = cc.item(i);
+//            arr[i] = cc.get(i);
 //        }
 //        return columnVector(arr);
 //    }
@@ -639,7 +735,7 @@ public final class Maths {
 //        Int2ComplexCellFactory cc = new Int2ComplexCellFactory(cellFactory);
 //        Complex[] arr = new Complex[columns];
 //        for (int i = 0; i < columns; i++) {
-//            arr[i] = cc.item(i);
+//            arr[i] = cc.get(i);
 //        }
 //        return rowVector(arr);
 //    }
@@ -987,6 +1083,23 @@ public final class Maths {
         return x.toComplex();
     }
 
+    public static Complex sumc(TVectorModel<Complex> c) {
+        MutableComplex x = new MutableComplex(0, 0);
+        int size = c.size();
+        for (int i = 0; i < size; i++) {
+            x.add(c.get(i));
+        }
+        return x.toComplex();
+    }
+
+    public static Complex sumc(int size,TVectorCell<Complex> c) {
+        MutableComplex x = new MutableComplex(0, 0);
+        for (int i = 0; i < size; i++) {
+            x.add(c.get(i));
+        }
+        return x.toComplex();
+    }
+
 
     /**
      * ----------- from colt Evaluates the series of Chebyshev polynomials Ti at
@@ -1305,6 +1418,19 @@ public final class Maths {
         return null;
     }
 
+    public static Vector tvectorToVector(TVector v){
+        return new ReadOnlyVector(new TVectorModel<Complex>() {
+            @Override
+            public int size() {
+                return v.size();
+            }
+
+            @Override
+            public Complex get(int index) {
+                return (Complex) v.get(index);
+            }
+        }, v.isRow());
+    }
 
     public static Complex pow(Complex a, Complex b) {
         return a.pow(b);
@@ -1488,11 +1614,11 @@ public final class Maths {
         return r;
     }
 
-    public static ExprList sineSeq(String borders, int m, int n, Domain domain) {
+    public static TList sineSeq(String borders, int m, int n, Domain domain) {
         return sineSeq(borders, m, n, domain, PlaneAxis.XY);
     }
 
-    public static ExprList sineSeq(String borders, int m, int n, Domain domain, PlaneAxis plane) {
+    public static TList sineSeq(String borders, int m, int n, Domain domain, PlaneAxis plane) {
         DoubleParam mm = new DoubleParam("m");
         DoubleParam nn = new DoubleParam("n");
         switch (plane) {
@@ -1533,11 +1659,12 @@ public final class Maths {
         return new Any(expr(e));
     }
 
-    public static ExprList seq() {
-        return new ArrayExprList();
+    @Deprecated
+    public static TList<Expr> seq() {
+        return exprList();
     }
 
-    public static ExprList seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, Int2Filter filter) {
+    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, Int2Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax));
         if (filter != null) {
             List<double[]> list = new ArrayList<>();
@@ -1555,7 +1682,7 @@ public final class Maths {
         return seq(pattern, m, n, cross);
     }
 
-    public static ExprList seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, DoubleParam p, int pmax, Int3Filter filter) {
+    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, DoubleParam p, int pmax, Int3Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax), dsteps(0, pmax), filter == null ? null : new Double3Filter() {
             @Override
             public boolean accept(double a, double b, double c) {
@@ -1565,33 +1692,33 @@ public final class Maths {
         return seq(pattern, m, n, p, cross);
     }
 
-    public static ExprList seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax) {
+    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax) {
         return seq(pattern, m, n, cross(dsteps(0, mmax), dsteps(0, nmax)));
     }
 
-    public static ExprList seq(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
+    public static TList<Expr> seq(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
         return seq(pattern, m, n, cross(mvalues, nvalues));
     }
 
-    public static ExprList seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final double[][] values) {
+    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final double[][] values) {
         return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern));
     }
 
-    public static ExprList seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final DoubleParam p, final double[][] values) {
+    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final DoubleParam p, final double[][] values) {
         return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length,
                 new SimpleSeqMulti(pattern, new DoubleParam[]{m, n, p}, values)
         );
     }
 
-    public static ExprList seq(final Expr pattern, final DoubleParam[] m, final double[][] values) {
+    public static TList<Expr> seq(final Expr pattern, final DoubleParam[] m, final double[][] values) {
         return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values));
     }
 
-    public static ExprList seq(final Expr pattern, final DoubleParam m, int min, int max) {
+    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, int min, int max) {
         return seq(pattern, m, dsteps(min, max, 1));
     }
 
-    public static ExprList seq(final Expr pattern, final DoubleParam m, final double[] values) {
+    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final double[] values) {
         return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
     }
 
@@ -1762,21 +1889,6 @@ public final class Maths {
         return EXPR_VECTOR_SPACE.imag(e);
     }
 
-    public static ExprList imag(ExprList e) {
-        ArrayExprList item2 = new ArrayExprList();
-        for (Expr expr : e) {
-            item2.add(imag(expr));
-        }
-        return item2;
-    }
-
-    public static ExprList real(ExprList e) {
-        ArrayExprList item2 = new ArrayExprList();
-        for (Expr expr : e) {
-            item2.add(real(expr));
-        }
-        return item2;
-    }
 
     public static Complex complexValue(Expr e) {
         return e.simplify().toComplex();
@@ -2213,29 +2325,66 @@ public final class Maths {
         }
     }
 
-    public static ExprList abs(ExprList a) {
-        return a.transform(new ElementOp() {
+    public static <T extends Expr> TList<T> preload(TList<T> list) {
+        return DefaultExprSequenceFactory.INSTANCE.newPreloadedSequence(list.length(), list);
+    }
+
+    public static <T extends Expr> TList<T> withCache(TList<T> list) {
+        //DefaultExprSequenceFactory.INSTANCE.newCachedSequence(length(), this);
+        return DefaultExprSequenceFactory.INSTANCE.newCachedSequence(list.length(), list);
+    }
+
+//    public static <T extends Expr> TList<T> simplify(TList<T> list) {
+//        //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(length(), new SimplifiedSeq(this));
+//        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(list.length(), new SimplifiedSeq(list));
+//    }
+
+    public static <T> TList<T> abs(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
             @Override
-            public Expr eval(int index, Expr e) {
-                return abs(e);
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.abs(e);
+            }
+        });
+    }
+    public static <T> TList<T> db(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.db(e);
             }
         });
     }
 
-    public static ExprList db(ExprList a) {
-        return a.transform(new ElementOp() {
+    public static <T> TList<T> db2(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
             @Override
-            public Expr eval(int index, Expr e) {
-                return db(e);
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.db2(e);
             }
         });
     }
 
-    public static ExprList db2(ExprList a) {
-        return a.transform(new ElementOp() {
+
+    public static <T> TList<T> real(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
             @Override
-            public Expr eval(int index, Expr e) {
-                return db2(e);
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.real(e);
+            }
+        });
+    }
+
+    public static <T> TList<T> imag(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.imag(e);
             }
         });
     }
@@ -3217,9 +3366,7 @@ public final class Maths {
             Mul m = (Mul) e;
             if (m.size() == 2) {
                 Expr expression = m.getExpression(0);
-                //scalar product will conjugate the first argument!
-                expression = conj(expression);
-                return scalarProduct(domain, expression, m.getExpression(1));
+                return scalarProduct(domain, expression, m.getExpression(1),false);
             } else if (m.size() > 2) {
                 List<Expr> first = new ArrayList<Expr>();
                 List<Expr> second = new ArrayList<Expr>();
@@ -3230,17 +3377,15 @@ public final class Maths {
                         second.add(m.getExpression(i));
                     }
                 }
-                Expr firsts = conj(new Mul(first.toArray(new Expr[first.size()])));
+                Expr firsts = (new Mul(first.toArray(new Expr[first.size()])));
                 Mul seconds = new Mul(second.toArray(new Expr[second.size()]));
-                return scalarProduct(domain, firsts,
-                        seconds
-                );
+                return scalarProduct(domain, firsts,seconds,false);
             }
         }
         throw new RuntimeException("Unsupported");
     }
 
-    public static Expr sum(int size, Int2Expr f) {
+    public static Expr sum(int size, TVectorCell<Expr> f) {
         return Maths.sum(seq(size, f));
     }
 
@@ -3269,33 +3414,23 @@ public final class Maths {
 ////        System.out.println(gf);
 //    }
 
-    public static ExprList seq(int size1, Int2Expr f) {
-        return new AbstractUpdatableExprSequence() {
-            @Override
-            public int lengthImpl() {
-                return size1;
-            }
-
-            @Override
-            public Expr getImpl(int index) {
-                return f.eval(index);
-            }
-        };
+    public static TList<Expr> seq(int size1, TVectorCell<Expr> f) {
+        return new UpdatableExprSequence(Expr.class, new TVectorModelFromCell(size1,f));
     }
 
-    public static ExprList seq(int size1, int size2, Int2ToExpr f) {
+    public static TList<Expr> seq(int size1, int size2, Int2ToExpr f) {
         int sizeFull = size1 * size2;
-        return new AbstractUpdatableExprSequence() {
+        return new UpdatableExprSequence(Expr.class, new TVectorModel() {
             @Override
-            public int lengthImpl() {
+            public int size() {
                 return sizeFull;
             }
 
             @Override
-            public Expr getImpl(int index) {
+            public Expr get(int index) {
                 return f.eval(index / size2, index % size2);
             }
-        };
+        });
     }
 
     private static ScalarProductCache resolveBestScalarProductCache(int rows, int columns) {
@@ -3307,27 +3442,27 @@ public final class Maths {
         return new MemScalarProductCache();
     }
 
-    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, boolean hermitian, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
-        c.evaluate(null, fn, gp, AxisXY.XY, monitor);
+        c.evaluate(null, fn, gp, hermitian,AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, boolean hermitian,ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
-        c.evaluate(sp, fn, gp, AxisXY.XY, monitor);
+        c.evaluate(sp, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
-        c.evaluate(sp, fn, gp, axis, monitor);
+        c.evaluate(sp, fn, gp, hermitian, axis, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
-        c.evaluate(null, fn, gp, axis, monitor);
+        c.evaluate(null, fn, gp, hermitian, axis, monitor);
         return c;
     }
 
@@ -3368,92 +3503,130 @@ public final class Maths {
         return DoubleValue.valueOf(1, Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, a, b));
     }
 
-    public static Expr sum(ExprList sequence) {
-        int len = sequence.length();
-        if (len == 0) {
-            return CZERO;
-        }
-        List<Expr> all = new ArrayList<>();
-        Complex c = Complex.ZERO;
-        Queue<Expr> t = new LinkedList<>();
-        for (int i = 0; i < len; i++) {
-            Expr e = sequence.get(i);
-            t.add(e);
-            while (!t.isEmpty()) {
-                Expr e2 = t.remove();
-                if (e2 instanceof Plus) {
-                    t.addAll(e2.getSubExpressions());
-                } else {
-                    if (e2.isComplex()) {
-                        c = c.add(e2.toComplex());
-                    } else {
-                        all.add(e2);
-                    }
-                }
-            }
-        }
-        if(all.isEmpty()){
-            return c;
-        }
-        if(!c.isZero()){
-            all.add(c);
-        }
-        return new Plus(all);
-    }
+//    public static <T> Expr sum(TList<T> sequence) {
+//        int len = sequence.length();
+//        if (len == 0) {
+//            return CZERO;
+//        }
+//        List<Expr> all = new ArrayList<>();
+//        MutableComplex c = new MutableComplex();
+//        Queue<Expr> t = new LinkedList<>();
+//        for (int i = 0; i < len; i++) {
+//            Expr e = (Expr)sequence.get(i);
+//            t.add(e);
+//            while (!t.isEmpty()) {
+//                Expr e2 = t.remove();
+//                if (e2 instanceof Plus) {
+//                    t.addAll(e2.getSubExpressions());
+//                } else {
+//                    if (e2.isComplex()) {
+//                        c.add(e2.toComplex());
+//                    } else {
+//                        all.add(e2);
+//                    }
+//                }
+//            }
+//        }
+//        if (all.isEmpty()) {
+//            return c.toComplex();
+//        }
+//        if (!c.isZero()) {
+//            all.add(c.toComplex());
+//        }
+//        return new Plus(all);
+//    }
 
     public static double scalarProduct(DoubleToDouble f1, DoubleToDouble f2) {
         return Config.getDefaultScalarProductOperator().evalDD(null, f1, f2);
     }
 
-    public static Complex scalarProduct(Domain domain, Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(domain, f1, f2);
+    public static Vector scalarProduct(Expr f1, TVector<Expr> f2,boolean hermitian) {
+        VectorCell spfact = new VectorCell() {
+            @Override
+            public Complex get(int index) {
+                return scalarProduct(f1, f2.get(index),hermitian);
+            }
+        };
+        return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Complex scalarProduct(Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(f1, f2);
+    public static Matrix scalarProduct(Expr f1, TMatrix<Expr> f2,boolean hermitian) {
+        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
+            @Override
+            public Complex get(int row, int column) {
+                return scalarProduct(f1, f2.get(row, column),hermitian);
+            }
+        });
+    }
+
+    public static Vector scalarProduct(TVector<Expr> f2, Expr f1,boolean hermitian) {
+        VectorCell spfact = new VectorCell() {
+            @Override
+            public Complex get(int index) {
+                return scalarProduct(f2.get(index), f1,hermitian);
+            }
+        };
+        return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
+    }
+
+    public static Matrix scalarProduct(TMatrix<Expr> f2, Expr f1,boolean hermitian) {
+        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
+            @Override
+            public Complex get(int row, int column) {
+                return scalarProduct(f2.get(row, column), f1,hermitian);
+            }
+        });
+    }
+
+    public static Complex scalarProduct(Domain domain, Expr f1, Expr f2, boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(domain, f1, f2, hermitian);
+    }
+
+    public static Complex scalarProduct(Expr f1, Expr f2,boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(f1, f2, hermitian);
     }
 //    public static Complex scalarProduct(DomainXY domain, IDCxy f1, IDCxy f2) {
 //        return getDefaultScalarProductOperator().process(domain, f1, f2);
 //    }//
 
-    public static Matrix scalarProductMatrix(ExprList g, ExprList f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, null).toMatrix();
+    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f,boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, null).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(ExprList g, ExprList f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, null);
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,null);
     }
 
-    public static ScalarProductCache scalarProduct(ExprList g, ExprList f, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, monitor);
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
     }
 
-    public static Matrix scalarProductMatrix(ExprList g, ExprList f, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, monitor).toMatrix();
+    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f,boolean hermitian, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(ExprList g, ExprList f, AxisXY axis, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, axis, monitor);
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,axis, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, null).toMatrix();
+    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f,boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,null).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, null);
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f,boolean hermitian) {
+        return Config.getDefaultScalarProductOperator().eval(g,f, hermitian, null);
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, monitor);
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, boolean hermitian, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, monitor).toMatrix();
+    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, boolean hermitian, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, axis, monitor);
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, axis, monitor);
     }
 
     //    public static String scalarProductToMatlabString(DFunctionXY f1, DFunctionXY f2, DomainXY domain0, ToMatlabStringParam... format) {
@@ -3463,35 +3636,221 @@ public final class Maths {
 //    public static String scalarProductToMatlabString(DomainXY domain0,CFunctionXY f1, CFunctionXY f2, ToMatlabStringParam... format) {
 //        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
 //    }
-    public static ExprList exprList(Expr... vector) {
-        return new ArrayExprList(vector);
+    public static TList<Expr> exprList(int size) {
+        return new ArrayExprList<Expr>(Expr.class,size);
+    }
+    public static TList<Expr> exprList(Expr... vector) {
+        return new ArrayExprList<Expr>(Expr.class,vector);
     }
 
-    public static ExprList exprList(Vector vector) {
-        ArrayExprList exprs = new ArrayExprList(vector.size());
-        for (Complex o : vector) {
-            exprs.add(o);
+    public static TList<Complex> complexList() {
+        return new ArrayExprList<>(Complex.class,0);
+    }
+
+    public static TList<Complex> complexList(int size) {
+        return new ArrayExprList<>(Complex.class,size);
+    }
+
+    public static TList<Complex> complexList(Complex... vector) {
+        return new ArrayExprList<>(Complex.class,vector);
+    }
+
+    public static <T> TList<T> listOf(Class<T> type) {
+        return new ArrayTList<T>(type,0);
+    }
+    public static <T> TList<T> list(TVector<T> vector) {
+        TList<T> exprs = listOf(vector.getComponentType());
+        for (T o : vector) {
+            exprs.append(o);
         }
         return exprs;
     }
 
-    public static ExprList exprList(Matrix vector) {
-        return exprList(vector.toVector());
+    public static TList<Expr> exprList(Matrix vector) {
+        TList<Expr> exprs = exprList();
+        Vector complexes = vector.toVector();
+        exprs.appendAll((TVector) complexes);
+        return exprs;
     }
 
-    public static ExprList exprList() {
-        return new ArrayExprList();
+    public static <T> TVector<T> scalarMatrixToVector(boolean hermitian,TVector<T> vector,TVector<TVector<T>> vectors){
+        Class<T> a = vector.getComponentType();
+        Class<T> b = vectors.get(0).getComponentType();
+        return vector.scalarProductToVector(hermitian,vectors.toArray(new TVector[vectors.size()]));
     }
 
-    public static Expr sum(Expr... e) {
-        ExprList all = new ArrayExprList();
-        //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
-        for (Expr expr : e) {
-            if (expr instanceof Plus) {
-                all.addAll(expr.getSubExpressions());
-            } else {
-                all.add(expr);
+    public static TList<Expr> exprList() {
+        return new ArrayExprList<Expr>(Expr.class,0);
+    }
+
+    public static <T> TList<T> concat(TList<T> ... a) {
+        TList<T> ts = listOf(a[0].getComponentType());
+        for (TList<T> t : a) {
+            ts.appendAll(t);
+        }
+        return ts;
+    }
+
+    public static TList<Double> doubleList() {
+        return new ArrayTList<Double>(Double.class,0);
+    }
+
+    public static TList<Double> doubleList(double[] items) {
+        ArrayTList<Double> doubles = new ArrayTList<>(Double.class, items.length);
+        for (double item : items) {
+            doubles.add(item);
+        }
+        return doubles;
+    }
+
+    public static TList<Double> doubleList(int size) {
+        return new ArrayTList<Double>(Double.class,size);
+    }
+
+    public static TList<Integer> intList() {
+        return new ArrayTList<Integer>(Integer.class,0);
+    }
+
+    public static TList<Integer> intList(int[] items) {
+        ArrayTList<Integer> doubles = new ArrayTList<>(Integer.class, items.length);
+        for (int item : items) {
+            doubles.add(item);
+        }
+        return doubles;
+    }
+
+    public static TList<Integer> intList(int size) {
+        return new ArrayTList<Integer>(Integer.class,size);
+    }
+
+    public static <T> T sumt(Class<T> type,T... arr) {
+        if(type.equals(Complex.class)){
+            return (T) sum((Complex[]) arr);
+        }
+        if(type.equals(Expr.class)){
+            return (T) sum((Expr[]) arr);
+        }
+        VectorSpace<T> s = getVectorSpace(type);
+        T a = s.zero();
+        for (int i = 0; i < arr.length; i++) {
+            a=s.add(a,arr[i]);
+        }
+        return a;
+    }
+
+    public static <T> T sumt(Class<T> type,TVectorModel<T> arr) {
+        if(type.equals(Complex.class)){
+            return (T) sumc((TVectorModel<Complex>) arr);
+        }
+        if(type.equals(Expr.class)){
+            return (T) sum((TVectorModel<Expr>) arr);
+        }
+        VectorSpace<T> s = getVectorSpace(type);
+        T a = s.zero();
+        int size = arr.size();
+        for (int i = 0; i < size; i++) {
+            a=s.add(a,arr.get(i));
+        }
+        return a;
+    }
+
+    public static <T> T sumt(Class<T> type,int size,TVectorCell<T> arr) {
+        return sumt(type, new TVectorModelFromCell<>(size, arr));
+    }
+
+    public static <T> T mult(Class<T> type,T... arr) {
+        if(type.equals(Complex.class)){
+            return (T) mul((Complex[]) arr);
+        }
+        if(type.equals(Expr.class)){
+            return (T) mul((Expr[]) arr);
+        }
+        VectorSpace<T> s = getVectorSpace(type);
+        T a = s.one();
+        for (int i = 0; i < arr.length; i++) {
+            a=s.mul(a,arr[i]);
+        }
+        return a;
+    }
+
+    public static <T> T mult(Class<T> type,TVectorModel<T> arr) {
+        if(type.equals(Complex.class)){
+            return (T) mulc((TVectorModel<Complex>) arr);
+        }
+        if(type.equals(Expr.class)){
+            return (T) mul((TVectorModel<Expr>) arr);
+        }
+        VectorSpace<T> s = getVectorSpace(type);
+        T a = s.one();
+        int size = arr.size();
+        for (int i = 0; i < size; i++) {
+            a=s.mul(a,arr.get(i));
+        }
+        return a;
+    }
+
+    public static Expr sum(Expr... arr) {
+        int len = arr.length;
+        if (len == 0) {
+            return CZERO;
+        }
+        List<Expr> all = new ArrayList<>();
+        MutableComplex c = new MutableComplex();
+        Queue<Expr> t = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            Expr e = arr[i];
+            t.add(e);
+            while (!t.isEmpty()) {
+                Expr e2 = t.remove();
+                if (e2 instanceof Plus) {
+                    t.addAll(e2.getSubExpressions());
+                } else {
+                    if (e2.isComplex()) {
+                        c.add(e2.toComplex());
+                    } else {
+                        all.add(e2);
+                    }
+                }
             }
+        }
+        if (all.isEmpty()) {
+            return c.toComplex();
+        }
+        if (!c.isZero()) {
+            all.add(c.toComplex());
+        }
+        return new Plus(all);
+    }
+
+    public static Expr sum(TVectorModel<Expr> arr) {
+        int len = arr.size();
+        if (len == 0) {
+            return CZERO;
+        }
+        List<Expr> all = new ArrayList<>();
+        MutableComplex c = new MutableComplex();
+        Queue<Expr> t = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            Expr e = arr.get(i);
+            t.add(e);
+            while (!t.isEmpty()) {
+                Expr e2 = t.remove();
+                if (e2 instanceof Plus) {
+                    t.addAll(e2.getSubExpressions());
+                } else {
+                    if (e2.isComplex()) {
+                        c.add(e2.toComplex());
+                    } else {
+                        all.add(e2);
+                    }
+                }
+            }
+        }
+        if (all.isEmpty()) {
+            return c.toComplex();
+        }
+        if (!c.isZero()) {
+            all.add(c.toComplex());
         }
         return new Plus(all);
     }
@@ -3500,17 +3859,111 @@ public final class Maths {
         return EXPR_VECTOR_SPACE.mul(a, b);
     }
 
-    public static Expr mul(Expr... e) {
-        ArrayExprList all = new ArrayExprList();
-        //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
-        for (Expr expr : e) {
-            if (expr instanceof Mul) {
-                all.addAll(expr.getSubExpressions());
-            } else {
-                all.add(expr);
+    public static TVector<Expr> dotmul(TVector<Expr> ... arr) {
+        VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
+        return new ReadOnlyTVector<>(arr[0].getComponentType(), new TVectorModel<Expr>() {
+            @Override
+            public int size() {
+                return arr[0].size();
+            }
+
+            @Override
+            public Expr get(int index) {
+                Expr e=arr[0].get(index);
+                for (int i = 1; i < arr.length; i++) {
+                    TVector<Expr> v = arr[i];
+                    e = componentVectorSpace.mul(e, v.get(index));
+                }
+                return e;
+            }
+        }, arr[0].isRow());
+    }
+    public static TVector<Expr> dotdiv(TVector<Expr> ... arr) {
+        VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
+        return new ReadOnlyTVector<>(arr[0].getComponentType(), new TVectorModel<Expr>() {
+            @Override
+            public int size() {
+                return arr[0].size();
+            }
+
+            @Override
+            public Expr get(int index) {
+                Expr e=arr[0].get(index);
+                for (int i = 1; i < arr.length; i++) {
+                    TVector<Expr> v = arr[i];
+                    e = componentVectorSpace.div(e, v.get(index));
+                }
+                return e;
+            }
+        }, arr[0].isRow());
+    }
+
+    public static Expr mulc(TVectorModel<Complex> arr) {
+        int len = arr.size();
+        if (len == 0) {
+            return CZERO;
+        }
+        MutableComplex c = new MutableComplex(1,0);
+        for (int i = 0; i < len; i++) {
+            Complex complex = arr.get(i);
+            if(complex.isZero()){
+                return CZERO;
+            }
+            c.mul(complex);
+        }
+        return c.toComplex();
+    }
+
+    public static Expr mul(TVectorModel<Expr> arr) {
+        int len = arr.size();
+        if (len == 0) {
+            return CZERO;
+        }
+        List<Expr> all = new ArrayList<>();
+        MutableComplex c = new MutableComplex(1,0);
+        Queue<Expr> t = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            Expr e = arr.get(i);
+            t.add(e);
+            while (!t.isEmpty()) {
+                Expr e2 = t.remove();
+                if (e2 instanceof Mul) {
+                    t.addAll(e2.getSubExpressions());
+                } else {
+                    if (e2.isComplex()) {
+                        Complex v=e2.toComplex();
+                        if(c.isZero()){
+                            return CZERO;
+                        }
+                        c.mul(v);
+                    } else {
+                        all.add(e2);
+                    }
+                }
             }
         }
-        return new Mul(all);
+        Complex complex = c.toComplex();
+        if (all.isEmpty()) {
+            return complex;
+        }
+        if (!complex.equals(CONE)) {
+            all.add(0,complex);
+        }
+        return new Mul(all.toArray(new Expr[all.size()]));
+    }
+
+    public static Expr mul(Expr... e) {
+        return mul(new TVectorModel<Expr>() {
+            @Override
+            public int size() {
+                return e.length;
+            }
+
+            @Override
+            public Expr get(int index) {
+                return e[index];
+            }
+        });
     }
 
     public static Expr pow(Expr a, Expr b) {
@@ -3519,6 +3972,19 @@ public final class Maths {
 
     public static Expr sub(Expr a, Expr b) {
         return EXPR_VECTOR_SPACE.sub(a, b);
+    }
+
+    public static Expr add(Expr a, double b) {
+        return add(a,Complex.valueOf(b));
+    }
+    public static Expr mul(Expr a, double b) {
+        return mul(a,Complex.valueOf(b));
+    }
+    public static Expr sub(Expr a, double b) {
+        return sub(a,Complex.valueOf(b));
+    }
+    public static Expr div(Expr a, double b) {
+        return div(a,Complex.valueOf(b));
     }
 
     public static Expr add(Expr a, Expr b) {
@@ -3554,8 +4020,67 @@ public final class Maths {
         return DoubleValue.valueOf(value, Domain.FULLX);
     }
 
+    public static <T> TVector<Expr> expr(TVector<T> vector) {
+        return vector.to(Expr.class);
+    }
+
+    public static TMatrix<Expr> expr(TMatrix<Complex> matrix) {
+        return new ReadOnlyTMatrix<Expr>(Expr.class, new TMatrixModel<Expr>() {
+            @Override
+            public Expr get(int row, int column) {
+                return matrix.get(row, column);
+            }
+
+            @Override
+            public int getColumnCount() {
+                return matrix.getColumnCount();
+            }
+
+            @Override
+            public int getRowCount() {
+                return matrix.getRowCount();
+            }
+        });
+    }
+
+    public static <T> TMatrix<T> tmatrix(Class<T> type,TMatrixModel<T> model) {
+        return new ReadOnlyTMatrix<T>(type,model);
+    }
+
+    public static <T> TMatrix<T> tmatrix(Class<T> type,int rows,int columns,TMatrixCell<T> model) {
+        return tmatrix(type, new TMatrixModel<T>() {
+            @Override
+            public int getColumnCount() {
+                return rows;
+            }
+
+            @Override
+            public int getRowCount() {
+                return columns;
+            }
+
+            @Override
+            public T get(int row, int column) {
+                return model.get(row,column);
+            }
+        });
+    }
+
     public static Expr expr(Domain d) {
         return DoubleValue.valueOf(1, d);
+    }
+
+    public static <T> T simplify(T a) {
+        if(a instanceof Expr){
+            return (T) simplify((Expr)a);
+        }
+        if(a instanceof TList){
+            return (T) simplify((TList)a);
+        }
+        if(a instanceof TVector){
+            return (T) simplify((TVector)a);
+        }
+        return a;
     }
 
     public static Expr simplify(Expr a) {
@@ -3565,15 +4090,16 @@ public final class Maths {
     public static double norm(Expr a) {
         //TODO conjugate a
         Expr aCong = a;
-        Complex c = Config.getDefaultScalarProductOperator().eval(a, aCong);
+        Complex c = Config.getDefaultScalarProductOperator().eval(a, aCong,true);
         return sqrt(c).absdbl();
     }
 
-    public static ExprList normalize(ExprList a) {
-        return a.transform(new ElementOp() {
+    public static <T> TList<T> normalize(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
             @Override
-            public Expr eval(int index, Expr e) {
-                return normalize(e);
+            public T eval(int index, T e) {
+                Expr n = normalize((Expr)e).simplify();
+                return (T) n;
             }
         });
     }
@@ -3610,156 +4136,228 @@ public final class Maths {
         return DefaultDoubleToVector.create(fx.toDC(), fy.toDC(), fz.toDC());
     }
 
-    public static ExprList cos(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(cos(x));
+    public static <T> TVector<T> cos(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.cos(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> cosh(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.cosh(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> sin(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.sin(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> sinh(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.sinh(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> tan(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.tan(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> tanh(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.tanh(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> cotan(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.cotan(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> cotanh(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.cotanh(e);
+            }
+        });
+    }
+
+
+    public static <T> TVector<T> sqr(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.sqr(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> sqrt(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.sqrt(e);
+            }
+        });
+    }
+
+
+    public static <T> TVector<T> inv(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.inv(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> neg(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.neg(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> exp(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.exp(e);
+            }
+        });
+    }
+
+    public static <T> TVector<T> simplify(TVector<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                return (T) simplify(e);
+            }
+        });
+    }
+
+    public static <T> TList<T> simplify(TList<T> a) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                return (T) simplify((Expr)e);
+            }
+        });
+    }
+
+
+
+    public static <T> TList<T> addAll(TList<T> e, T... expressions) {
+        Class<T> st = e.getComponentType();
+        TList<T> n = listOf(st);
+        VectorSpace<T> s = getVectorSpace(st);
+        for (T x : e) {
+            T t = sumt(st, expressions);
+            n.append((T) s.add(x, t));
         }
         return n;
     }
 
-    public static ExprList cosh(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(cosh(x));
+    public static <T> TList<T> mulAll(TList<T> e, T... expressions) {
+        Class<T> st = e.getComponentType();
+        TList<T> n = listOf(st);
+        VectorSpace<T> s = getVectorSpace(st);
+        for (T x : e) {
+            T t = mult(st, expressions);
+            n.append((T) s.mul(x, t));
         }
         return n;
     }
 
-    public static ExprList sin(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sin(x));
-        }
-        return n;
+    public static <T> TList<T> pow(TList<T> a, T b) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.pow(e,b);
+            }
+        });
     }
 
-    public static ExprList sinh(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sinh(x));
-        }
-        return n;
+    public static <T> TList<T> sub(TList<T> a, T b) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.sub(e,b);
+            }
+        });
     }
 
-    public static ExprList tan(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(tan(x));
-        }
-        return n;
+    public static <T> TList<T> div(TList<T> a, T b) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.div(e,b);
+            }
+        });
     }
 
-    public static ExprList tanh(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(tanh(x));
-        }
-        return n;
+    public static <T> TList<T> add(TList<T> a, T b) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.add(e,b);
+            }
+        });
     }
 
-    public static ExprList cotan(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(cotan(x));
-        }
-        return n;
-    }
-
-    public static ExprList cotanh(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(cotanh(x));
-        }
-        return n;
-    }
-
-    public static ExprList sqr(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sqr(x));
-        }
-        return n;
-    }
-
-    public static ExprList sqrt(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sqrt(x));
-        }
-        return n;
-    }
-
-    public static ExprList inv(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(inv(x));
-        }
-        return n;
-    }
-
-    public static ExprList neg(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(neg(x));
-        }
-        return n;
-    }
-
-    public static ExprList exp(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(exp(x));
-        }
-        return n;
-    }
-
-    public static ExprList add(ExprList e, Expr... expressions) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sum(x, sum(expressions)));
-        }
-        return n;
-    }
-
-    public static ExprList mul(ExprList e, Expr... expressions) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(mul(x, mul(expressions)));
-        }
-        return n;
-    }
-
-    public static ExprList pow(ExprList e, Expr b) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(pow(x, b));
-        }
-        return n;
-    }
-
-    public static ExprList sub(ExprList e, Expr b) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(sub(x, b));
-        }
-        return n;
-    }
-
-    public static ExprList div(ExprList e, Expr b) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(div(x, b));
-        }
-        return n;
-    }
-
-    public static ExprList simplify(ExprList e) {
-        ExprList n = new ArrayExprList(e.size());
-        for (Expr x : e) {
-            n.add(simplify(x));
-        }
-        return n;
+    public static <T> TList<T> mul(TList<T> a, T b) {
+        return a.eval(new ElementOp<T>() {
+            @Override
+            public T eval(int index, T e) {
+                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
+                return (T) vectorSpace.mul(e,b);
+            }
+        });
     }
 
 //</editor-fold>
@@ -3835,15 +4433,15 @@ public final class Maths {
     }
 
 
-    public static Complex sumc(int size, Int2Complex f) {
-        MutableComplex c = new MutableComplex();
-        int i = 0;
-        while (i < size) {
-            c.add(f.eval(i));
-            i++;
-        }
-        return c.toComplex();
-    }
+//    public static Complex sumc(int size, Int2Complex f) {
+//        MutableComplex c = new MutableComplex();
+//        int i = 0;
+//        while (i < size) {
+//            c.add(f.eval(i));
+//            i++;
+//        }
+//        return c.toComplex();
+//    }
 
 
     public static <T> T invokeMonitoredAction(ComputationMonitor mon, String messagePrefix, MonitoredAction<T> run) {
@@ -3856,6 +4454,27 @@ public final class Maths {
 
     public static Chronometer chrono(String name) {
         return new Chronometer(name);
+    }
+
+    public static Chronometer chrono(String name,Runnable r) {
+        Chronometer c = new Chronometer(name).start();
+        r.run();
+        Chronometer stop = c.stop();
+        System.out.println(stop.toString());
+        return c;
+    }
+
+    public static <V> V chrono(String name,Callable<V> r) {
+//        System.out.println("Start "+name);
+        Chronometer c = new Chronometer(name).start();
+        V v= null;
+        try {
+            v = r.call();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        System.out.println(c.stop().toString());
+        return v;
     }
 
     public static SolverExecutorService solverExecutorService(int threads) {
@@ -4058,6 +4677,14 @@ public final class Maths {
         return b.getError(a);
     }
 
+    public static <T extends Expr> DoubleArray toDoubleArray(TList<T> c) {
+        DoubleArray a=new DoubleArray(c.size());
+        for (T o : c) {
+            a.add(o.toDouble());
+        }
+        return a;
+    }
+
     public static double toDouble(Complex c, ComplexAsDouble d) {
         if (d == null) {
             return c.absdbl();
@@ -4092,7 +4719,28 @@ public final class Maths {
     public static Complex complex(TMatrix t) {
         return t.toComplex();
     }
+
+    public static Matrix matrix(TMatrix t) {
+        return new MatrixFromTMatrix(t);
+    }
+
+    public static TMatrix<Expr> ematrix(TMatrix t) {
+        return new EMatrixFromTMatrix(t);
+    }
     //</editor-fold>
+
+    public static <T> VectorSpace<T> getVectorSpace(Class<T> cls) {
+        if (Complex.class.isAssignableFrom(cls)) {
+            return (VectorSpace<T>) Maths.COMPLEX_VECTOR_SPACE;
+        }
+        if (Double.class.isAssignableFrom(cls)) {
+            return (VectorSpace<T>) Maths.DOUBLE_VECTOR_SPACE;
+        }
+        if (Expr.class.isAssignableFrom(cls)) {
+            return (VectorSpace<T>) Maths.EXPR_VECTOR_SPACE;
+        }
+        throw new IllegalArgumentException("Not yet supported "+cls);
+    }
 
     public static class Config {
 

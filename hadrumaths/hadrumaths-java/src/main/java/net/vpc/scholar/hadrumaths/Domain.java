@@ -688,6 +688,9 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         }
     }
 
+    public Domain union(Domain other) {
+        return expand(other);
+    }
     /**
      * expand the domain to help including the given domain
      *

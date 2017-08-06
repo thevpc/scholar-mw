@@ -940,6 +940,7 @@ public abstract class AbstractMatrix extends Matrix {
         }
         return X;
     }
+
     public Matrix db2() {
         int rows = getRowCount();
         int columns = getColumnCount();
@@ -1126,36 +1127,6 @@ public abstract class AbstractMatrix extends Matrix {
         Matrix m = createMatrix(rows, cols);
         m.set(row, col, this);
         return m;
-    }
-
-    @Override
-    public List<Vector> getRows() {
-        return new AbstractList<Vector>() {
-            @Override
-            public Vector get(int index) {
-                return getRow(index);
-            }
-
-            @Override
-            public int size() {
-                return getRowCount();
-            }
-        };
-    }
-
-    @Override
-    public List<Vector> getColumns() {
-        return new AbstractList<Vector>() {
-            @Override
-            public Vector get(int index) {
-                return getColumn(index);
-            }
-
-            @Override
-            public int size() {
-                return getColumnCount();
-            }
-        };
     }
 
     public Matrix transpose() {
@@ -1695,12 +1666,13 @@ public abstract class AbstractMatrix extends Matrix {
         return solve(B, Maths.Config.getDefaultMatrixSolveStrategy());
     }
 
-    protected Matrix castToMatrix(TMatrix<Complex> a){
-        if(a instanceof Matrix){
+    protected Matrix castToMatrix(TMatrix<Complex> a) {
+        if (a instanceof Matrix) {
             return (Matrix) a;
         }
         throw new IllegalArgumentException("Not Supported yet");
     }
+
     public Matrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy) {
         switch (solveStrategy) {
             case DEFAULT: {
@@ -1781,52 +1753,64 @@ public abstract class AbstractMatrix extends Matrix {
 //        }
 //        return B;
     //    }
-    public void store(String file) throws IOException {
+    public void store(String file) throws RuntimeIOException {
         store(new File(file));
     }
 
-    public void store(File file) throws IOException {
+    public void store(File file) throws RuntimeIOException {
         FileOutputStream fileOutputStream = null;
         try {
-            store(new PrintStream(fileOutputStream = new FileOutputStream(file)));
-        } finally {
-            if (fileOutputStream != null) {
-                fileOutputStream.close();
+            try {
+                store(new PrintStream(fileOutputStream = new FileOutputStream(file)));
+            } finally {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
-    public void store(PrintStream stream) throws IOException {
+    public void store(PrintStream stream) throws RuntimeIOException {
         store(stream, null, null);
     }
 
 
-    public void store(String file, String commentsChar, String varName) throws IOException {
+    public void store(String file, String commentsChar, String varName) throws RuntimeIOException {
         PrintStream out = null;
         try {
-            out = new PrintStream(file);
-            store(out, commentsChar, varName);
-        } finally {
-            if (out != null) {
-                out.close();
+            try {
+                out = new PrintStream(file);
+                store(out, commentsChar, varName);
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
-    public void store(File file, String commentsChar, String varName) throws IOException {
+    public void store(File file, String commentsChar, String varName) throws RuntimeIOException {
         PrintStream out = null;
         try {
-            out = new PrintStream(file);
-            store(out, commentsChar, varName);
-        } finally {
-            if (out != null) {
-                out.close();
+            try {
+                out = new PrintStream(file);
+                store(out, commentsChar, varName);
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
 
-    public void store(PrintStream stream, String commentsChar, String varName) throws IOException {
+    public void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException {
         int columns = getColumnCount();
         int rows = getRowCount();
         int[] colsWidth = new int[columns];
@@ -1881,8 +1865,6 @@ public abstract class AbstractMatrix extends Matrix {
         BufferedReader r = null;
         try {
             read(r = new BufferedReader(new StringReader(reader)));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
         } finally {
             if (r != null) {
                 try {
@@ -1894,18 +1876,22 @@ public abstract class AbstractMatrix extends Matrix {
         }
     }
 
-    public void read(File file) throws IOException {
+    public void read(File file) throws RuntimeIOException {
         BufferedReader r = null;
         try {
-            read(r = new BufferedReader(new FileReader(file)));
-        } finally {
-            if (r != null) {
-                r.close();
+            try {
+                read(r = new BufferedReader(new FileReader(file)));
+            } finally {
+                if (r != null) {
+                    r.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
-    public void read(BufferedReader reader) throws IOException {
+    public void read(BufferedReader reader) throws RuntimeIOException {
         int rows = getRowCount();
         int columns = getColumnCount();
         ArrayList<ArrayList<Complex>> l = new ArrayList<ArrayList<Complex>>(rows > 0 ? rows : 10);
@@ -1915,38 +1901,48 @@ public abstract class AbstractMatrix extends Matrix {
         final int LINE = 1;
         final int END = 2;
         int pos = START;
-        while (pos != END) {
-            line = reader.readLine();
-            if (line == null) {
-                break;
-            }
-            line = line.trim();
-            if (pos == START) {
-                boolean isFirstLine = (line.startsWith("["));
-                if (!isFirstLine) {
-                    throw new IOException("Expected a '[' but found '" + line + "'");
+        try {
+            try {
+                while (pos != END) {
+                    line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    line = line.trim();
+                    if (pos == START) {
+                        boolean isFirstLine = (line.startsWith("["));
+                        if (!isFirstLine) {
+                            throw new RuntimeIOException("Expected a '[' but found '" + line + "'");
+                        }
+                        line = line.substring(1, line.length());
+                        pos = LINE;
+                    }
+                    if (line.endsWith("]")) {
+                        line = line.substring(0, line.length() - 1);
+                        pos = END;
+                    }
+                    StringTokenizer stLines = new StringTokenizer(line, ";");
+                    while (stLines.hasMoreTokens()) {
+                        StringTokenizer stRow = new StringTokenizer(stLines.nextToken(), " \t");
+                        ArrayList<Complex> c = new ArrayList<Complex>();
+                        int someCols = 0;
+                        while (stRow.hasMoreTokens()) {
+                            c.add(Complex.valueOf(stRow.nextToken()));
+                            someCols++;
+                        }
+                        cols = Math.max(cols, someCols);
+                        if (c.size() > 0) {
+                            l.add(c);
+                        }
+                    }
                 }
-                line = line.substring(1, line.length());
-                pos = LINE;
-            }
-            if (line.endsWith("]")) {
-                line = line.substring(0, line.length() - 1);
-                pos = END;
-            }
-            StringTokenizer stLines = new StringTokenizer(line, ";");
-            while (stLines.hasMoreTokens()) {
-                StringTokenizer stRow = new StringTokenizer(stLines.nextToken(), " \t");
-                ArrayList<Complex> c = new ArrayList<Complex>();
-                int someCols = 0;
-                while (stRow.hasMoreTokens()) {
-                    c.add(Complex.valueOf(stRow.nextToken()));
-                    someCols++;
-                }
-                cols = Math.max(cols, someCols);
-                if (c.size() > 0) {
-                    l.add(c);
+            } finally {
+                if (reader != null) {
+                    reader.close();
                 }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
 
         if (rows == l.size() && columns == cols) {
@@ -1962,34 +1958,45 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     @Override
-    public List<Vector> rows() {
-        return new AbstractList<Vector>() {
-            @Override
-            public Vector get(int index) {
-                return getRow(index);
-            }
-
+    public TVector<TVector<Complex>> getRows() {
+        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector((Class)TVector.class, new TVectorModel<TVector<Complex>>() {
             @Override
             public int size() {
                 return getRowCount();
             }
-        };
+
+            @Override
+            public TVector<Complex> get(int index) {
+                return getRow(index);
+            }
+        });
     }
 
     @Override
-    public List<Vector> columns() {
-        return new AbstractList<Vector>() {
-            @Override
-            public Vector get(int index) {
-                return getColumn(index);
-            }
-
+    public TVector<TVector<Complex>> getColumns() {
+        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector((Class)TVector.class, new TVectorModel<TVector<Complex>>() {
             @Override
             public int size() {
                 return getColumnCount();
             }
-        };
+
+            @Override
+            public TVector<Complex> get(int index) {
+                return getColumn(index);
+            }
+        });
     }
+
+    @Override
+    public final TVector<TVector<Complex>> rows() {
+        return getRows();
+    }
+
+    @Override
+    public final TVector<TVector<Complex>> columns() {
+        return getColumns();
+    }
+
 
     @Override
     public Vector row(int row) {
@@ -2015,12 +2022,12 @@ public abstract class AbstractMatrix extends Matrix {
         throw new RuntimeException("Not a vector");
     }
 
-    public Complex scalarProduct(TMatrix<Complex> m) {
-        return toVector().scalarProduct(castToMatrix(m).toVector());
+    public Complex scalarProduct(TMatrix<Complex> m, boolean hermitian) {
+        return toVector().scalarProduct(castToMatrix(m).toVector(), hermitian);
     }
 
-    public Complex scalarProduct(TVector<Complex> v) {
-        return toVector().scalarProduct(v);
+    public Complex scalarProduct(TVector<Complex> v, boolean hermitian) {
+        return toVector().scalarProduct(v, hermitian);
     }
 
     public boolean isColumn() {
@@ -2241,7 +2248,7 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     public void set(Matrix[][] subMatrixes) {
-        set((TMatrix<Complex>[][])subMatrixes);
+        set((TMatrix<Complex>[][]) subMatrixes);
     }
 
     public void set(TMatrix<Complex>[][] subMatrixes) {
@@ -2331,15 +2338,16 @@ public abstract class AbstractMatrix extends Matrix {
         return get(vectorIndex);
     }
 
-    private boolean isSquare(){
-        return getColumnCount()==getRowCount();
+    private boolean isSquare() {
+        return getColumnCount() == getRowCount();
     }
 
-    private void checkSquare(){
-        if(!isSquare()){
+    private void checkSquare() {
+        if (!isSquare()) {
             throw new IllegalArgumentException("Expected Square Matrix");
         }
     }
+
     public Matrix pow(double rexp) {
         checkSquare();
         int exp = (int) rexp;
@@ -2369,7 +2377,6 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     //////////////////////////////////////////////////////////////////
-
 
 
 }

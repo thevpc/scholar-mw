@@ -5,7 +5,7 @@
 //import net.vpc.scholar.math.Out;
 //import net.vpc.scholar.math.functions.Domain;
 //import net.vpc.scholar.math.functions.Range;
-//import net.vpc.scholar.math.transform.*;
+//import net.vpc.scholar.math.eval.*;
 //
 //import java.util.Collections;
 //import java.util.List;
@@ -15,9 +15,9 @@
 //    static {
 //        ExpressionTransformFactory.setExpressionTransformer(DDxCos.class, DomainXYMultiplierTransform.class, new ExpressionTransformer() {
 //
-//            public Expr transform(Expr expression, ExpressionTransform transform) {
+//            public Expr eval(Expr expression, ExpressionTransform eval) {
 //                DDxCos e = (DDxCos) expression;
-//                DomainXYMultiplierTransform t = (DomainXYMultiplierTransform) transform;
+//                DomainXYMultiplierTransform t = (DomainXYMultiplierTransform) eval;
 //                return new DDxCos(
 //                        t.getValue() == null ? e.domain : e.domain.intersect(t.getValue().getDomainX()),
 //                        e.amp, e.a, e.b
@@ -26,9 +26,9 @@
 //        });
 //        ExpressionTransformFactory.setExpressionTransformer(DDxCos.class, DomainXYMultiplierTransform.class, new ExpressionTransformer() {
 //
-//            public Expr transform(Expr expression, ExpressionTransform transform) {
+//            public Expr eval(Expr expression, ExpressionTransform eval) {
 //                DDxCos e = (DDxCos) expression;
-//                DoubleMultiplierTransform t = (DoubleMultiplierTransform) transform;
+//                DoubleMultiplierTransform t = (DoubleMultiplierTransform) eval;
 //                return new DDxCos(
 //                        e.domain,
 //                        e.amp * t.getValue(), e.a, e.b

@@ -1,51 +1,51 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.ArrayExprList;
-import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.*;
 
 import java.util.Collection;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class PreloadedSequence extends AbstractExprList {
-    final ArrayExprList cache;
+class PreloadedSequence<T> extends AbstractTList<T> {
+    final TList<T> cache;
 
-    public PreloadedSequence(int size, ExprSeqCellIterator it) {
-        cache = new ArrayExprList();
+    public PreloadedSequence(Class<T> componenetType,int size, TVectorCell<T> it) {
+        super(componenetType);
+        cache = Maths.listOf(componenetType);
         for (int i = 0; i < size; i++) {
-            cache.add(it.get(i));
+            cache.append(it.get(i));
         }
     }
 
     @Override
-    public int length() {
+    public int size() {
         return cache.size();
     }
 
     @Override
-    public Expr get(int index) {
+    public T get(int index) {
         return cache.get(index);
     }
 
     @Override
-    public void set(int index, Expr e) {
+    public void set(int index, T e) {
         cache.set(index, e);
     }
 
     @Override
-    public void addAll(ExprList e) {
-        cache.addAll(e);
+    public void appendAll(TVector<T> e) {
+        cache.appendAll(e);
     }
 
     @Override
-    public void add(Expr e) {
-        cache.add(e);
+    public void append(T e) {
+        cache.append(e);
     }
 
     @Override
-    public void addAll(Collection<? extends Expr> e) {
-        cache.addAll(e);
+    public void appendAll(Collection<? extends T> e) {
+        cache.appendAll(e);
     }
 
     @Override

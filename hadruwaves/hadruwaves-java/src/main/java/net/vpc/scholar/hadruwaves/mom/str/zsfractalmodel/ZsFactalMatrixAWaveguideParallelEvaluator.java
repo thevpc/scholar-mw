@@ -52,7 +52,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 if (op != null) {//op==null si k==1
                     //System.out.println("op = " + opValue.getMatrix());
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(),true, str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
@@ -104,7 +104,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                 if (op != null) {//op==null si k==1
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(),true, str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = 0; q < g.length; q++) {

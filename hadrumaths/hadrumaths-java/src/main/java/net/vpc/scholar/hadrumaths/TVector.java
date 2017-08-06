@@ -1,11 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.symbolic.TParam;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 
-public interface TVector<T> extends Normalizable, Iterable<T> {
+public interface TVector<T> extends Normalizable, Iterable<T>,TVectorModel<T> {
 
     Class<T> getComponentType();
 
@@ -25,11 +28,17 @@ public interface TVector<T> extends Normalizable, Iterable<T> {
 
     T apply(int i);
 
-    void set(int i, T complex);
+    void set(int i, T value);
 
-    void update(int i, T complex);
+    void update(int i, T value);
+
+    <R> R[] toArray(Class<R> type);
 
     T[] toArray();
+
+    List<T> toJList();
+
+    <P extends T> T[] toArray(P[] a);
 
     int size();
 
@@ -43,9 +52,19 @@ public interface TVector<T> extends Normalizable, Iterable<T> {
     void store(PrintStream stream, String commentsChar, String varName) throws IOException;
 
 
-    T scalarProduct(TVector<T> other);
+    T scalarProduct(TMatrix<T> v, boolean hermitian);
 
-    T scalarProductAll(TVector<T>... other);
+    TVector<T> scalarProduct(T other, boolean hermitian);
+
+    TVector<T> rscalarProduct(T other, boolean hermitian);
+
+    T scalarProduct(TVector<T> other, boolean hermitian);
+
+    T scalarProductAll(boolean hermitian, TVector<T>... other);
+
+    <R> TVector<R> to(Class<R> other);
+
+    TVector<T> scalarProductToVector(boolean hermitian, TVector<T>... other);
 
     TVector<T> dotmul(TVector<T> other);
 
@@ -146,4 +165,17 @@ public interface TVector<T> extends Normalizable, Iterable<T> {
 
     TVector<T> acotan();
 
+    boolean isDouble();
+
+    TVector<T> eval(ElementOp<T> op);
+
+    <R> TVector<R> transform(Class<R> toType,TTransform<T,R> op);
+
+    boolean acceptsType(Class type);
+
+    TVector<T> setParam(TParam param, Object value) ;
+
+    TVector<T> setParam(String name, Object value);
+
+    void forEachIndex(TVectorItemAction<T> action);
 }

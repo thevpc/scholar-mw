@@ -200,8 +200,8 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
 //        this.properties = properties;
 //    }
 
-    public Complex scalarProduct(DoubleToVector other) {
-        return Maths.scalarProduct(this, other);
+    public Complex scalarProduct(DoubleToVector other,boolean hemitian) {
+        return Maths.scalarProduct(this, other,hemitian);
     }
 
     public DoubleToVector add(DoubleToVector other) {

@@ -141,7 +141,7 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
         if (popupMenu == null) {
             popupMenu = new JPopupMenu();
             JMenuItem item = null;
-//        item = new JMenuItem("Couleur");
+//        get = new JMenuItem("Couleur");
             ButtonGroup group = new ButtonGroup();
             item = new JCheckBoxMenuItem("Couleur", true);
             group.add(item);
@@ -153,7 +153,7 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
             });
             popupMenu.add(item);
 
-//        item = new JMenuItem("Variation de Gris");
+//        get = new JMenuItem("Variation de Gris");
             item = new JCheckBoxMenuItem("Variation de Gris", false);
             item.addActionListener(new SerializableActionListener() {
                 public void actionPerformed(ActionEvent e) {

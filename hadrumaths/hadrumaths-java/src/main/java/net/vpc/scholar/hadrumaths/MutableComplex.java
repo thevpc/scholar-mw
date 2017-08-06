@@ -332,6 +332,10 @@ public class MutableComplex {
 //        return this;
     }
 
+    public boolean isZero(){
+        return real==0 && imag==0;
+    }
+
     public Complex toComplex() {
         return Complex.valueOf(real, imag);
     }

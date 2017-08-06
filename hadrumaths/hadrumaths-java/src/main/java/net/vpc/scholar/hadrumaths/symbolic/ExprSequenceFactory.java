@@ -1,20 +1,24 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.TVectorCell;
 
 /**
  * Created by vpc on 2/14/15.
  */
-public interface ExprSequenceFactory {
-    ExprList newSequence(Expr pattern, DoubleParam[] vars, int[] max);
+public interface ExprSequenceFactory<T extends Expr> {
+    Class<T> getComponentType();
 
-    ExprList newSequence(Expr pattern, DoubleParam[] vars, double[][] values);
+    TList<T> newSequence(T pattern, DoubleParam[] vars, int[] max);
 
-    ExprList newSequence(int size, ExprSeqCellIterator it);
+    TList<T> newSequence(T pattern, DoubleParam[] vars, double[][] values);
 
-    ExprList newPreloadedSequence(int size, ExprSeqCellIterator it);
+    TList<T> newSequence(int size, TVectorCell<T> it);
 
-    ExprList newCachedSequence(int size, ExprSeqCellIterator it);
+    TList<T> newPreloadedSequence(int size, TVectorCell<T> it);
 
-    ExprList newUnmodifiableSequence(int size, ExprSeqCellIterator it);
+    TList<T> newCachedSequence(int size, TVectorCell<T> it);
+
+    TList<T> newUnmodifiableSequence(int size, TVectorCell<T> it);
 }

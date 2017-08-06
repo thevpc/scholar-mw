@@ -1,14 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
-import net.vpc.scholar.hadrumaths.symbolic.ExprSeqCellIterator;
 
 import java.util.Arrays;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SimpleSeqMulti implements ExprSeqCellIterator {
+class SimpleSeqMulti implements TVectorCell<Expr> {
     private final Expr pattern;
     private final DoubleParam[] m;
     private final double[][] values;

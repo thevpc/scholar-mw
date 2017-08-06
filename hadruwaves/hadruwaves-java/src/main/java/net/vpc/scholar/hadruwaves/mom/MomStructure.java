@@ -11,7 +11,6 @@ import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.ExprList;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.TLog;
 import net.vpc.scholar.hadrumaths.util.TLogNull;
@@ -1175,8 +1174,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return this;
     }
 
-    public MomStructure setTestFunctions(ExprList expr) {
-        return setTestFunctions(TestFunctionsFactory.createList().addAll(expr.toList()));
+    public MomStructure setTestFunctions(TVector<Expr> expr) {
+        return setTestFunctions(TestFunctionsFactory.createList().addAll(expr));
     }
 
     public MomStructure testFunctions(TestFunctions gpEssaiType) {
@@ -1198,7 +1197,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        return gpEssaiType;
 //    }
     //
-    public MomStructure testFunctions(ExprList expr) {
+    public MomStructure testFunctions(TVector<Expr> expr) {
         return setTestFunctions(expr);
     }
 
@@ -1716,7 +1715,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         ComputationMonitor[] mon = ComputationMonitorFactory.split(monitor, 2);
         fnModeFunctions.getModes(mon[0], getObjectCache());
         HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
-        return getScalarProductOperator().eval(gpTestFunctions.arr(), fnModeFunctions.arr(), axis.toAxisXY(), mon[1]);
+        return getScalarProductOperator().eval(gpTestFunctions.arr(), fnModeFunctions.arr(),true, axis.toAxisXY(), mon[1]);
     }
 
     /**

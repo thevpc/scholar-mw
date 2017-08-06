@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.ArrayExprList;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
@@ -11,13 +12,14 @@ import java.util.Arrays;
 /**
  * Created by vpc on 5/30/14.
  */
-public class ParamExprList extends AbstractExprList implements ExprList, Dumpable,Cloneable {
+public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Cloneable {
     double[][] values;
     private Expr pattern;
     private DoubleParam[] vars;
     private String valuesDesc;
 
     ParamExprList(Expr pattern, DoubleParam[] vars, double[][] values, String valuesDesc) {
+        super(Expr.class);
         this.pattern = pattern;
         this.vars = vars;
         this.values = values;
@@ -77,9 +79,9 @@ public class ParamExprList extends AbstractExprList implements ExprList, Dumpabl
         return new ParamExprList(pattern, vars, values, Maths.dump(values));
     }
 
-    @Override
+//    @Override
     public ArrayExprList toList() {
-        ArrayExprList list = new ArrayExprList(values.length);
+        ArrayExprList list = new ArrayExprList(getComponentType(),values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getName();
@@ -92,13 +94,13 @@ public class ParamExprList extends AbstractExprList implements ExprList, Dumpabl
             for (int i = 0; i < vname.length; i++) {
                 e = e.setProperty(vname[i], value[i]);
             }
-            list.add(e);
+            list.append(e);
         }
         return list;
     }
 
     @Override
-    public int length() {
+    public int size() {
         return values.length;
     }
 
@@ -155,9 +157,9 @@ public class ParamExprList extends AbstractExprList implements ExprList, Dumpabl
     }
 
     @Override
-    public ExprList copy() {
+    public TList<Expr> copy() {
         try {
-            return (ExprList) super.clone();
+            return (TList<Expr>) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("Unsupported clone");
         }

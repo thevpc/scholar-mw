@@ -3,14 +3,14 @@
 // * To change this template file, choose Tools | Templates
 // * and open the template in the editor.
 // */
-//package net.vpc.scholar.math.transform.navigaterules;
+//package net.vpc.scholar.math.eval.navigaterules;
 //
 //import net.vpc.scholar.math.AbstractExprPropertyAware;
 //import net.vpc.scholar.math.Expr;
 //import net.vpc.scholar.math.IDoubleToDouble;
 //import net.vpc.scholar.math.functions.dfx.DDxyToDDx;
-//import net.vpc.scholar.math.transform.ExpressionRewriter;
-//import net.vpc.scholar.math.transform.ExpressionRewriterRule;
+//import net.vpc.scholar.math.eval.ExpressionRewriter;
+//import net.vpc.scholar.math.eval.ExpressionRewriterRule;
 //
 ///**
 // *

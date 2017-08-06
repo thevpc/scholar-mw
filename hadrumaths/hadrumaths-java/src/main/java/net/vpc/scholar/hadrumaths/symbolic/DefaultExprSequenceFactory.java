@@ -1,32 +1,34 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.TVectorCell;
 
 /**
  * Created by vpc on 2/14/15.
  */
-public class DefaultExprSequenceFactory extends AbstractExprSequenceFactory{
+public class DefaultExprSequenceFactory<T extends Expr> extends AbstractExprSequenceFactory<T>{
     public static final ExprSequenceFactory INSTANCE=new DefaultExprSequenceFactory();
     @Override
-    public ExprList newSequence(final int size, final ExprSeqCellIterator it) {
+    public TList<T> newSequence(final int size, final TVectorCell<T> it) {
         return newPreloadedSequence(size,it);
     }
 
     @Override
-    public ExprList newPreloadedSequence(final int size, final ExprSeqCellIterator it) {
+    public TList<T> newPreloadedSequence(final int size, final TVectorCell<T> it) {
 
-        return new PreloadedSequence(size, it);
+        return new PreloadedSequence(getComponentType(), size, it);
     }
 
     @Override
-    public ExprList newUnmodifiableSequence(final int size, final ExprSeqCellIterator it) {
-        return new UnmodifiableSequence(size, it);
+    public TList<T> newUnmodifiableSequence(final int size, final TVectorCell<T> it) {
+        return new UnmodifiableSequence(getComponentType(),size, it);
     }
 
     @Override
-    public ExprList newCachedSequence(final int size, final ExprSeqCellIterator it) {
+    public TList<T> newCachedSequence(final int size, final TVectorCell<T> it) {
         final Expr[] cache=new Expr[size];
-        return new CachedSequence(size, cache, it);
+        return new CachedSequence(getComponentType(),size, cache, it);
     }
 
 }

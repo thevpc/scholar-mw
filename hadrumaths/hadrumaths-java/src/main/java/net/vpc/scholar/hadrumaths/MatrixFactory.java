@@ -43,35 +43,35 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
 
     Matrix newMatrix(double[][] complex);
 
-    Matrix newMatrix(int rows, int cols, CellFactory cellFactory);
+    Matrix newMatrix(int rows, int cols, MatrixCell cellFactory);
 
-    Matrix newMatrix(int rows, int columns, CellIteratorType it, CellFactory item);
+    Matrix newMatrix(int rows, int columns, CellIteratorType it, MatrixCell item);
 
     Matrix newColumnMatrix(Complex... values);
 
     Matrix newRowMatrix(Complex... values);
 
-    Matrix newColumnMatrix(int rows, VCellFactory cellFactory);
+    Matrix newColumnMatrix(int rows, VectorCell cellFactory);
 
-    Matrix newRowMatrix(int columns, VCellFactory cellFactory);
+    Matrix newRowMatrix(int columns, VectorCell cellFactory);
 
-    Matrix newSymmetric(int rows, int cols, CellFactory cellFactory);
+    Matrix newSymmetric(int rows, int cols, MatrixCell cellFactory);
 
-    Matrix newHermitian(int rows, int cols, CellFactory cellFactory);
+    Matrix newHermitian(int rows, int cols, MatrixCell cellFactory);
 
-    Matrix newDiagonal(int rows, int cols, CellFactory cellFactory);
+    Matrix newDiagonal(int rows, int cols, MatrixCell cellFactory);
 
-    Matrix newDiagonal(int rows, VCellFactory cellFactory);
+    Matrix newDiagonal(int rows, VectorCell cellFactory);
 
     Matrix newDiagonal(Complex... c);
 
-    Matrix newMatrix(int dim, CellFactory cellFactory);
+    Matrix newMatrix(int dim, MatrixCell cellFactory);
 
-    Matrix newSymmetric(int dim, CellFactory cellFactory);
+    Matrix newSymmetric(int dim, MatrixCell cellFactory);
 
-    Matrix newHermitian(int dim, CellFactory cellFactory);
+    Matrix newHermitian(int dim, MatrixCell cellFactory);
 
-    Matrix newDiagonal(int dim, CellFactory cellFactory);
+    Matrix newDiagonal(int dim, MatrixCell cellFactory);
 
     Matrix newRandomReal(int m, int n);
 
@@ -93,7 +93,7 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
 
     Matrix newRandomImag(int m, int n);
 
-    Matrix load(File file) throws IOException;
+    Matrix load(File file) throws RuntimeIOException;
 
     void close();
 

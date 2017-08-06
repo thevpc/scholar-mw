@@ -4,12 +4,15 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 
 public class ParametrizedScalarProduct extends GenericFunctionXY {
-    public ParametrizedScalarProduct(Expr xargument, Expr yargument) {
-        super("**",xargument, yargument);
+    private boolean hermitian;
+    public ParametrizedScalarProduct(Expr xargument, Expr yargument,boolean hermitian) {
+        super(hermitian?"**":"***",xargument, yargument);
+        this.hermitian=hermitian;
     }
 
-    public ParametrizedScalarProduct(String functionName, Expr xargument, Expr yargument, FunctionType lowerFunctionType) {
+    public ParametrizedScalarProduct(String functionName, Expr xargument, Expr yargument, FunctionType lowerFunctionType,boolean hermitian) {
         super(functionName,xargument, yargument, lowerFunctionType);
+        this.hermitian=hermitian;
     }
 
     @Override
@@ -29,11 +32,15 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Expr newInstance(Expr xargument, Expr yargument) {
-        return new ParametrizedScalarProduct(xargument,yargument);
+        return new ParametrizedScalarProduct(xargument,yargument,hermitian);
     }
 
     @Override
     public String toString() {
         return "("+getXArgument()+getFunctionName()+getYArgument()+")";
+    }
+
+    public boolean isHermitian() {
+        return hermitian;
     }
 }

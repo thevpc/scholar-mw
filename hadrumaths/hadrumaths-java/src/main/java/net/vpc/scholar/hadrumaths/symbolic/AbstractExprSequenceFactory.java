@@ -2,12 +2,18 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TList;
 
 /**
  * Created by vpc on 2/14/15.
  */
-public abstract class AbstractExprSequenceFactory implements ExprSequenceFactory {
-    public ExprList newSequence(Expr pattern, DoubleParam[] vars, int[] max) {
+public abstract class AbstractExprSequenceFactory<T extends Expr> implements ExprSequenceFactory<T> {
+    @Override
+    public Class<T> getComponentType() {
+        return (Class<T>) Expr.class;
+    }
+
+    public TList<T> newSequence(T pattern, DoubleParam[] vars, int[] max) {
         StringBuilder valuesDesc = new StringBuilder();
         if (vars.length < 1) {
             throw new IllegalArgumentException("Missing vars");
@@ -45,10 +51,10 @@ public abstract class AbstractExprSequenceFactory implements ExprSequenceFactory
                 throw new IllegalArgumentException("Too many vars " + vars.length + ">2, unsupported yet");
             }
         }
-        return new ParamExprList(pattern, vars, values, valuesDesc.toString());
+        return (TList<T>) new ParamExprList(pattern, vars, values, valuesDesc.toString());
     }
 
-    public ExprList newSequence(Expr pattern, DoubleParam[] vars, double[][] values) {
+    public TList<Expr> newSequence(Expr pattern, DoubleParam[] vars, double[][] values) {
         return new ParamExprList(pattern, vars, values, Maths.dump(values));
     }
 

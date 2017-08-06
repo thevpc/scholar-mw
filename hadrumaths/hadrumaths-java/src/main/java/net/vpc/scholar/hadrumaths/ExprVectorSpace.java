@@ -3,9 +3,73 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
-public class ExprVectorSpace implements VectorSpace<Expr> {
+public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
+
+    @Override
+    public <R> R convertTo(Expr value,Class<R> t) {
+        if(t.equals(Complex.class)){
+            return (R) value.toComplex();
+        }
+        if(t.equals(Double.class)){
+            return (R) Double.valueOf(value.toDouble());
+        }
+        if(t.equals(Matrix.class)){
+            return (R) Maths.matrix(1, 1, new MatrixCell() {
+                @Override
+                public Complex get(int row, int column) {
+                    return value.toComplex();
+                }
+            });
+        }
+        if(t.equals(TMatrix.class)){
+            return (R) Maths.tmatrix(Expr.class, 1, 1, new TMatrixCell<Expr>() {
+                @Override
+                public Expr get(int row, int column) {
+                    return value;
+                }
+            });
+        }
+        if(t.equals(Vector.class)){
+            return (R) Maths.columnVector(new Complex[]{value.toComplex()});
+        }
+        if(t.equals(TVector.class)){
+            return (R) Maths.columnTVector(Expr.class, 1, new TVectorCell<Expr>() {
+                @Override
+                public Expr get(int index) {
+                    return value;
+                }
+            });
+        }
+        throw new ClassCastException();
+    }
+
+    @Override
+    public <R> Expr convertFrom(R value, Class<R> t) {
+        if(t.equals(Complex.class)){
+            return (Complex) value;
+        }
+        if(t.equals(Double.class)){
+            return (Complex) Complex.valueOf((Double)value);
+        }
+        if(t.equals(Matrix.class)){
+            return (Complex) ((Matrix)value).toComplex();
+        }
+        if(t.equals(TMatrix.class)){
+            return (Complex) ((TMatrix)value).toComplex();
+        }
+        if(t.equals(Vector.class)){
+            return (Complex) ((Vector)value).toComplex();
+        }
+        if(t.equals(TVector.class)){
+            return (Complex) ((TVector)value).toComplex();
+        }
+        throw new ClassCastException();
+    }
+
     @Override
     public Expr convert(double d) {
         return Complex.valueOf(d);
@@ -73,13 +137,13 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
 
     @Override
     public Expr mul(Expr a, Expr b) {
-        ExprList all = new ArrayExprList();
+        TList<Expr> all = Maths.exprList();
         //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
         for (Expr expr : new Expr[]{a, b}) {
             if (expr instanceof Mul) {
-                all.addAll(expr.getSubExpressions());
+                all.appendAll(expr.getSubExpressions());
             } else {
-                all.add(expr);
+                all.append(expr);
             }
         }
         return new Mul(all);
@@ -593,5 +657,104 @@ public class ExprVectorSpace implements VectorSpace<Expr> {
     @Override
     public Class<Expr> getItemType() {
         return Expr.class;
+    }
+
+    @Override
+    public Expr scalarProduct(Expr a, Expr b, boolean hermitian) {
+        return Maths.Config.getDefaultScalarProductOperator().eval(a,b,hermitian);
+    }
+
+    @Override
+    public Expr setParam(Expr a, String paramName, Object b) {
+        if(b instanceof Expr) {
+            return a.setParam(paramName, ((Expr) b));
+        }
+        if(b instanceof Number) {
+            return a.setParam(paramName, ((Number) b).doubleValue());
+        }
+        throw new IllegalArgumentException("Unsupported param type");
+    }
+
+    @Override
+    public RepeatableOp<Expr> addRepeatableOp() {
+        return new RepeatableOp<Expr>() {
+            MutableComplex c = new MutableComplex(0,0);
+            Queue<Expr> t = new LinkedList<>();
+            List<Expr> all = new ArrayList<>();
+            @Override
+            public void append(Expr item) {
+                t.add(item);
+                while (!t.isEmpty()) {
+                    Expr e2 = t.remove();
+                    if (e2 instanceof Plus) {
+                        t.addAll(e2.getSubExpressions());
+                    } else {
+                        if (e2.isComplex()) {
+                            Complex v=e2.toComplex();
+                            c.add(v);
+                        } else {
+                            all.add(e2);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public Expr eval() {
+                Complex complex = c.toComplex();
+                if (all.isEmpty()) {
+                    return complex;
+                }
+                if (!complex.equals(Maths.CONE)) {
+                    all.add(0,complex);
+                }
+                return new Plus(all.toArray(new Expr[all.size()]));
+            }
+        };
+    }
+    @Override
+    public RepeatableOp<Expr> mulRepeatableOp() {
+        return new RepeatableOp<Expr>() {
+            MutableComplex c = new MutableComplex(1,0);
+            Queue<Expr> t = new LinkedList<>();
+            List<Expr> all = new ArrayList<>();
+            boolean zero=false;
+            @Override
+            public void append(Expr item) {
+                if(zero){
+                    return;
+                }
+                t.add(item);
+                while (!t.isEmpty()) {
+                    Expr e2 = t.remove();
+                    if (e2 instanceof Mul) {
+                        t.addAll(e2.getSubExpressions());
+                    } else {
+                        if (e2.isComplex()) {
+                            Complex v=e2.toComplex();
+                            if(c.isZero()){
+                                zero=true;
+                                return;
+                            }
+                            c.mul(v);
+                        } else {
+                            all.add(e2);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public Expr eval() {
+                Complex complex = c.toComplex();
+                if (all.isEmpty()) {
+                    return complex;
+                }
+                if (!complex.equals(Maths.CONE)) {
+                    all.add(0,complex);
+                }
+                return new Mul(all.toArray(new Expr[all.size()]));
+            }
+        };
     }
 }

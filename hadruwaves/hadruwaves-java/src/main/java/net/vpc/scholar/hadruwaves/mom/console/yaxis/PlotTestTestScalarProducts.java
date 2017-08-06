@@ -51,7 +51,7 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
 //                }
                         gfps[q][n] = Maths.scalarProduct(
                                 _testFunctions.gp(n),
-                                _testFunctions.gp(q));
+                                _testFunctions.gp(q),true);
                         ComputationMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
                     }

@@ -136,4 +136,19 @@ public abstract class AxisFunction extends AbstractComposedFunction {
     }
 
     public abstract Axis getAxis();
+
+    @Override
+    public boolean isComplexImpl() {
+        return false;
+    }
+
+    @Override
+    public boolean isDoubleImpl() {
+        return false;
+    }
+
+    @Override
+    public boolean isMatrixImpl() {
+        return false;
+    }
 }

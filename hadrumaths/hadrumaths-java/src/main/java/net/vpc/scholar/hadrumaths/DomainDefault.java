@@ -1030,7 +1030,7 @@
 //        return isUnconstrainedX() && isUnconstrainedY() && isUnconstrainedZ();
 //    }
 //
-//    public DomainDefault transform(Axis a1, Axis a2, Axis a3, int dim) {
+//    public DomainDefault eval(Axis a1, Axis a2, Axis a3, int dim) {
 //        double xmin = Double.NaN;
 //        double xmax = Double.NaN;
 //        double ymin = Double.NaN;

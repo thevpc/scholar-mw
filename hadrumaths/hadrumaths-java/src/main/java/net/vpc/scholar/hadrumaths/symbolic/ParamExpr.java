@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by vpc on 4/29/14.
  */
-public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/DoubleToDouble,DoubleToComplex,DoubleToMatrix,DoubleToVector {
+public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/TParam,DoubleToDouble,DoubleToComplex,DoubleToMatrix,DoubleToVector {
     private String paramName;
     protected ParamExpr(String name) {
         paramName=this.name = name;

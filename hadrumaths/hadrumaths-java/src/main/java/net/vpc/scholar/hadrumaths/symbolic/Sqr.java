@@ -14,7 +14,7 @@ public class Sqr extends GenericFunctionX implements Cloneable{
 
 
     public Complex evalComplex(Complex c){
-        return c.square();
+        return c.sqr();
     }
 
     protected double evalDouble(double c){

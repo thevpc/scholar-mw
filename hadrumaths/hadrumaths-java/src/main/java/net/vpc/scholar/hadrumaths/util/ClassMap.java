@@ -9,23 +9,6 @@ import java.util.*;
  */
 public class ClassMap<V> {
 
-    private static Comparator<Class> CLASS_HIERARCHY_COMPARATOR = new Comparator<Class>() {
-        @Override
-        public int compare(Class o1, Class o2) {
-            if (o1.isAssignableFrom(o2)) {
-                return 1;
-            } else if (o2.isAssignableFrom(o1)) {
-                return -1;
-            }
-            if (o1.isInterface() && !o2.isInterface()) {
-                return 1;
-            }
-            if (o2.isInterface() && !o1.isInterface()) {
-                return -1;
-            }
-            return 0;
-        }
-    };
 
     private static final long serialVersionUID = -1010101010101001057L;
     private HashMap<Class, V> values;
@@ -58,7 +41,7 @@ public class ClassMap<V> {
     public Class[] getKeys(Class classKey) {
         Class[] keis = cachedHierarchy.get(classKey);
         if (keis == null) {
-            keis = findClassHierarchy(classKey,keyType);
+            keis = PlatformUtils.findClassHierarchy(classKey,keyType);
             cachedHierarchy.put(classKey, keis);
         }
         return keis;
@@ -107,30 +90,6 @@ public class ClassMap<V> {
     }
 
 
-    public static Class[] findClassHierarchy(Class clazz, Class baseType) {
-        HashSet<Class> seen = new HashSet<Class>();
-        Queue<Class> queue = new LinkedList<Class>();
-        List<Class> result = new LinkedList<Class>();
-        queue.add(clazz);
-        while (!queue.isEmpty()) {
-            Class i = queue.remove();
-            if(baseType==null || baseType.isAssignableFrom(i)) {
-                if (!seen.contains(i)) {
-                    seen.add(i);
-                    result.add(i);
-                    if (i.getSuperclass() != null) {
-                        queue.add(i.getSuperclass());
-                    }
-                    for (Class ii : i.getInterfaces()) {
-                        queue.add(ii);
-                    }
-                }
-            }
-        }
-        Collections.sort(result, CLASS_HIERARCHY_COMPARATOR);
-        return result.toArray(new Class[result.size()]);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,7 +107,7 @@ public class ClassMap<V> {
     @Override
     public int hashCode() {
         int result = 0;
-        //transform map hashcode according to names and not class references
+        //eval map hashcode according to names and not class references
         if(values != null){
             int h = 0;
             Iterator<Map.Entry<Class,V>> i = values.entrySet().iterator();

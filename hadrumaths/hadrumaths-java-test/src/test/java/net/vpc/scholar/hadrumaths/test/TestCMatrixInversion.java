@@ -27,10 +27,10 @@
 //            if (this == o) return true;
 //            if (o == null || getClass() != o.getClass()) return false;
 //
-//            Item item = (Item) o;
+//            Item get = (Item) o;
 //
-//            if (time != item.time) return false;
-//            if (strategy != item.strategy) return false;
+//            if (time != get.time) return false;
+//            if (strategy != get.strategy) return false;
 //
 //            return true;
 //        }
@@ -97,16 +97,16 @@
 //        long start = System.currentTimeMillis();
 //        CMatrix cMatrix = m.inv(strategy);
 //        long end = System.currentTimeMillis();
-//        Item item = new Item(strategy, end - start);
-//        System.out.println("\t[" + m.getRowCount() + "] " + item);
+//        Item get = new Item(strategy, end - start);
+//        System.out.println("\t[" + m.getRowCount() + "] " + get);
 ////        System.out.println(cMatrix);
 ////        System.out.println("----------------------------------------");
-//        return item;
+//        return get;
 //    }
 //
 //    public static CMatrix generateMatrix(int n) {
-//        CMatrix m = new CMatrix(n, n, CMatrix.CellIterator.FULL, new CMatrix.CellFactory() {
-//            public Complex item(int row, int column) {
+//        CMatrix m = new CMatrix(n, n, CMatrix.CellIterator.FULL, new CMatrix.MatrixCell() {
+//            public Complex get(int row, int column) {
 //                if (row == column) {
 //                    return new Complex((row+1)*(column+1));
 //                } else if(column==0){

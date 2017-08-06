@@ -113,11 +113,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     @Override
-    public double toDouble() {
-        throw new ClassCastException(toString()+" of type "+getClass().getName()+" cannot be casted to Double");
-    }
-
-    @Override
     public Matrix toMatrix() {
         throw new ClassCastException(toString()+" of type "+getClass().getName()+" cannot be casted to Matrix");
     }

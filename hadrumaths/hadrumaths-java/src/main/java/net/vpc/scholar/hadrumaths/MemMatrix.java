@@ -19,19 +19,19 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     private Complex[][] elements;
 
     //    public static void main(String[] args) {
-//        System.out.println(new CMatrix(4, 4, CellIterator.HERMITIAN, new CellFactory() {
-//            public Complex item(int row, int column) {
+//        System.out.println(new CMatrix(4, 4, CellIterator.HERMITIAN, new MatrixCell() {
+//            public Complex get(int row, int column) {
 //                return new Complex(row + 1, column + 1);
 //            }
 //        }));
 //    }
-    MemMatrix(int rows, int columns, CellIteratorType it, CellFactory item) {
+    MemMatrix(int rows, int columns, CellIteratorType it, MatrixCell item) {
         elements = new Complex[rows][columns];
         switch (it) {
             case FULL: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
-                        elements[i][j] = item.item(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -41,7 +41,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                     for (int j = 0; j < i; j++) {
                         elements[i][j] = Complex.ZERO;
                     }
-                    elements[i][i] = item.item(i, i);
+                    elements[i][i] = item.get(i, i);
                     for (int j = i + 1; j < columns; j++) {
                         elements[i][j] = Complex.ZERO;
                     }
@@ -54,7 +54,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                         elements[i][j] = elements[j][i];
                     }
                     for (int j = i; j < columns; j++) {
-                        elements[i][j] = item.item(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -65,7 +65,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                         elements[i][j] = elements[j][i].conj();
                     }
                     for (int j = i; j < columns; j++) {
-                        elements[i][j] = item.item(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -85,8 +85,6 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         BufferedReader r = null;
         try {
             read(r = new BufferedReader(new StringReader(matrix)));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
         } finally {
             if (r != null) {
                 try {
@@ -98,15 +96,19 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         }
     }
 
-    public MemMatrix(File file) throws IOException {
+    public MemMatrix(File file) throws RuntimeIOException {
         elements = new Complex[0][0];
         BufferedReader r = null;
         try {
-            read(r = new BufferedReader(new FileReader(file)));
-        } finally {
-            if (r != null) {
-                r.close();
+            try {
+                read(r = new BufferedReader(new FileReader(file)));
+            } finally {
+                if (r != null) {
+                    r.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
@@ -429,7 +431,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         return new MemMatrix(complex);
     }
 
-    public static MemMatrix newMatrix(int rows, int cols, CellFactory cellFactory) {
+    public static MemMatrix newMatrix(int rows, int cols, MatrixCell cellFactory) {
         return new MemMatrix(rows, cols, CellIteratorType.FULL, cellFactory);
     }
 
@@ -445,67 +447,67 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         return new MemMatrix(new Complex[][]{values});
     }
 
-    public static MemMatrix newColumnVector(int rows, final VCellFactory cellFactory) {
-        return new MemMatrix(rows, 1, CellIteratorType.FULL, new CellFactory() {
+    public static MemMatrix newColumnVector(int rows, final VectorCell cellFactory) {
+        return new MemMatrix(rows, 1, CellIteratorType.FULL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(row);
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
             }
         });
     }
 
-    public static MemMatrix newRowVector(int columns, final VCellFactory cellFactory) {
-        return new MemMatrix(1, columns, CellIteratorType.FULL, new CellFactory() {
+    public static MemMatrix newRowVector(int columns, final VectorCell cellFactory) {
+        return new MemMatrix(1, columns, CellIteratorType.FULL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(column);
+            public Complex get(int row, int column) {
+                return cellFactory.get(column);
             }
         });
     }
 
-    public static MemMatrix newSymmetric(int rows, int cols, CellFactory cellFactory) {
+    public static MemMatrix newSymmetric(int rows, int cols, MatrixCell cellFactory) {
         return new MemMatrix(rows, cols, CellIteratorType.SYMETRIC, cellFactory);
     }
 
-    public static MemMatrix newHermitian(int rows, int cols, CellFactory cellFactory) {
+    public static MemMatrix newHermitian(int rows, int cols, MatrixCell cellFactory) {
         return new MemMatrix(rows, cols, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    public static MemMatrix newDiagonal(int rows, int cols, CellFactory cellFactory) {
+    public static MemMatrix newDiagonal(int rows, int cols, MatrixCell cellFactory) {
         return new MemMatrix(rows, cols, CellIteratorType.DIAGONAL, cellFactory);
     }
 
-    public static MemMatrix newDiagonal(int rows, final VCellFactory cellFactory) {
-        return new MemMatrix(rows, rows, CellIteratorType.DIAGONAL, new CellFactory() {
+    public static MemMatrix newDiagonal(int rows, final VectorCell cellFactory) {
+        return new MemMatrix(rows, rows, CellIteratorType.DIAGONAL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
-                return cellFactory.item(row);
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
             }
         });
     }
 
     public static MemMatrix newDiagonal(final Complex... c) {
-        return new MemMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new CellFactory() {
+        return new MemMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new MatrixCell() {
             @Override
-            public Complex item(int row, int column) {
+            public Complex get(int row, int column) {
                 return c[row];
             }
         });
     }
 
-    public static MemMatrix newMatrix(int dim, CellFactory cellFactory) {
+    public static MemMatrix newMatrix(int dim, MatrixCell cellFactory) {
         return new MemMatrix(dim, dim, CellIteratorType.FULL, cellFactory);
     }
 
-    public static MemMatrix newSymmetric(int dim, CellFactory cellFactory) {
+    public static MemMatrix newSymmetric(int dim, MatrixCell cellFactory) {
         return new MemMatrix(dim, dim, CellIteratorType.SYMETRIC, cellFactory);
     }
 
-    public static MemMatrix newHermitian(int dim, CellFactory cellFactory) {
+    public static MemMatrix newHermitian(int dim, MatrixCell cellFactory) {
         return new MemMatrix(dim, dim, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    public static MemMatrix newDiagonal(int dim, CellFactory cellFactory) {
+    public static MemMatrix newDiagonal(int dim, MatrixCell cellFactory) {
         return new MemMatrix(dim, dim, CellIteratorType.DIAGONAL, cellFactory);
     }
 
@@ -1856,13 +1858,14 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 //        return B;
     //    }
     @Override
-    public void store(String file) throws IOException {
+    public void store(String file) {
         store(new File(file));
     }
 
     @Override
-    public void store(File file) throws IOException {
+    public void store(File file) {
         FileOutputStream fileOutputStream = null;
+        try {
         try {
             store(new PrintStream(fileOutputStream = new FileOutputStream(file)));
         } finally {
@@ -1870,17 +1873,21 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                 fileOutputStream.close();
             }
         }
+        }catch(IOException ex){
+            throw new RuntimeIOException(ex);
+        }
     }
 
     @Override
-    public void store(PrintStream stream) throws IOException {
+    public void store(PrintStream stream) {
         store(stream, null, null);
     }
 
 
     @Override
-    public void store(String file, String commentsChar, String varName) throws IOException {
+    public void store(String file, String commentsChar, String varName) {
         PrintStream out = null;
+        try {
         try {
             out = new PrintStream(file);
             store(out, commentsChar, varName);
@@ -1889,11 +1896,15 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                 out.close();
             }
         }
+        }catch(IOException ex){
+            throw new RuntimeIOException(ex);
+        }
     }
 
     @Override
-    public void store(File file, String commentsChar, String varName) throws IOException {
+    public void store(File file, String commentsChar, String varName) {
         PrintStream out = null;
+        try {
         try {
             out = new PrintStream(file);
             store(out, commentsChar, varName);
@@ -1902,11 +1913,14 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                 out.close();
             }
         }
+        }catch(IOException ex){
+            throw new RuntimeIOException(ex);
+        }
     }
 
 
     @Override
-    public void store(PrintStream stream, String commentsChar, String varName) throws IOException {
+    public void store(PrintStream stream, String commentsChar, String varName) {
         int[] colsWidth = new int[getColumnCount()];
         for (Complex[] element : elements) {
             for (int j = 0; j < element.length; j++) {
@@ -1957,7 +1971,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
 
     @Override
-    public void read(BufferedReader reader) throws IOException {
+    public void read(BufferedReader reader) {
         ArrayList<ArrayList<Complex>> l = new ArrayList<ArrayList<Complex>>(elements.length > 0 ? elements.length : 10);
         String line;
         int cols = 0;
@@ -1965,38 +1979,48 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         final int LINE = 1;
         final int END = 2;
         int pos = START;
-        while (pos != END) {
-            line = reader.readLine();
-            if (line == null) {
-                break;
-            }
-            line = line.trim();
-            if (pos == START) {
-                boolean isFirstLine = (line.startsWith("["));
-                if (!isFirstLine) {
-                    throw new IOException("Expected a '[' but found '" + line + "'");
+        try {
+            try {
+                while (pos != END) {
+                    line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    line = line.trim();
+                    if (pos == START) {
+                        boolean isFirstLine = (line.startsWith("["));
+                        if (!isFirstLine) {
+                            throw new RuntimeIOException("Expected a '[' but found '" + line + "'");
+                        }
+                        line = line.substring(1, line.length());
+                        pos = LINE;
+                    }
+                    if (line.endsWith("]")) {
+                        line = line.substring(0, line.length() - 1);
+                        pos = END;
+                    }
+                    StringTokenizer stLines = new StringTokenizer(line, ";");
+                    while (stLines.hasMoreTokens()) {
+                        StringTokenizer stRow = new StringTokenizer(stLines.nextToken(), " \t");
+                        ArrayList<Complex> c = new ArrayList<Complex>();
+                        int someCols = 0;
+                        while (stRow.hasMoreTokens()) {
+                            c.add(Complex.valueOf(stRow.nextToken()));
+                            someCols++;
+                        }
+                        cols = Math.max(cols, someCols);
+                        if (c.size() > 0) {
+                            l.add(c);
+                        }
+                    }
                 }
-                line = line.substring(1, line.length());
-                pos = LINE;
-            }
-            if (line.endsWith("]")) {
-                line = line.substring(0, line.length() - 1);
-                pos = END;
-            }
-            StringTokenizer stLines = new StringTokenizer(line, ";");
-            while (stLines.hasMoreTokens()) {
-                StringTokenizer stRow = new StringTokenizer(stLines.nextToken(), " \t");
-                ArrayList<Complex> c = new ArrayList<Complex>();
-                int someCols = 0;
-                while (stRow.hasMoreTokens()) {
-                    c.add(Complex.valueOf(stRow.nextToken()));
-                    someCols++;
-                }
-                cols = Math.max(cols, someCols);
-                if (c.size() > 0) {
-                    l.add(c);
+            } finally {
+                if (reader != null) {
+                    reader.close();
                 }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
         Complex[][] e;
         if (elements.length == l.size() && elements[0].length == cols) {
