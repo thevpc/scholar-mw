@@ -88,7 +88,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
         ArrayExprList list = new ArrayExprList(getComponentType(), isRow(), values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
-            vname[i] = vars[i].getName();
+            vname[i] = vars[i].getParamName();
         }
         for (double[] value : values) {
             Expr e = pattern;
@@ -113,7 +113,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
         Expr e = pattern;
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
-            vname[i] = vars[i].getName();
+            vname[i] = vars[i].getParamName();
         }
         double[] value = values[index];
         for (int i = 0; i < vname.length; i++) {
@@ -133,7 +133,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
             if (varsString.length() > 0) {
                 varsString.append(", ");
             }
-            varsString.append(var.getName());
+            varsString.append(var.getParamName());
         }
         h.add("vars", varsString);
         h.add("values", valuesDesc);

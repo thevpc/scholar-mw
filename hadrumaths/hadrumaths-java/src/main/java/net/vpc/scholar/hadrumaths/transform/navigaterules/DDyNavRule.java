@@ -5,8 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DDy;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -33,7 +33,7 @@ public class DDyNavRule implements ExpressionRewriterRule {
         RewriteResult a = ruleset.rewrite(base);
         if(a.isRewritten()){
             Expr e2 = new DDy(a.getValue().toDD(),ee.getDefaultX(),ee.getDefaultZ());
-            e2= AbstractExprPropertyAware.copyProperties(e, e2);
+            e2= Any.copyProperties(e, e2);
             return RewriteResult.bestEffort(e2);
         }
         return RewriteResult.unmodified(e);

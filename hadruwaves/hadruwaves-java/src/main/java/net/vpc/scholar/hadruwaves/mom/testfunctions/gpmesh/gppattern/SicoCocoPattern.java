@@ -44,7 +44,7 @@ public final class SicoCocoPattern extends AbstractGpPatternPQ {
                 fx,
                 fy
         );
-        return f.setName("sico(" + (p+1) + "x," + q + "y),coco(" + p + "x," + q + "y)")
+        return f.setTitle("sico(" + (p+1) + "x," + q + "y),coco(" + p + "x," + q + "y)")
         .setProperty("Type", "SicoCoco")
         .setProperty("p", p)
         .setProperty("q", q).toDV();

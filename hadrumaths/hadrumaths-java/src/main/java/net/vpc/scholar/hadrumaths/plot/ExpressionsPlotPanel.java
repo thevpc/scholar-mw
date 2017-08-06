@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.surface.HeatMapPlot;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.JTableHelper;
 import net.vpc.scholar.hadrumaths.util.swingext.*;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
@@ -13,8 +13,6 @@ import org.jfree.chart.plot.DefaultDrawingSupplier;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -1197,9 +1195,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             ComplexAsDouble complexValue = ComplexAsDouble.REAL;
             HashSet<String> title = new HashSet<String>();
             for (int i = 0; i < selectedFunctions.length; i++) {
-                titles[i] = getAxisExpression(selectedFunctions[i], ax).getName();
+                titles[i] = getAxisExpression(selectedFunctions[i], ax).getTitle();
                 if (titles[i] == null) {
-                    titles[i] = (String) selectedFunctions[i].getName();
+                    titles[i] = (String) selectedFunctions[i].getTitle();
                 }
                 if (titles[i] == null) {
                     titles[i] = String.valueOf(i + 1);
@@ -1246,9 +1244,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             ComplexAsDouble complexValue = ComplexAsDouble.REAL;
             HashSet<String> title = new HashSet<String>();
             for (int i = 0; i < selectedFunctions.length; i++) {
-                titles[i] = getAxisExpression(selectedFunctions[i], ax).getName();
+                titles[i] = getAxisExpression(selectedFunctions[i], ax).getTitle();
                 if (titles[i] == null) {
-                    titles[i] = (String) selectedFunctions[i].getName();
+                    titles[i] = (String) selectedFunctions[i].getTitle();
                 }
                 if (titles[i] == null) {
                     titles[i] = String.valueOf(i + 1);
@@ -1660,7 +1658,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         boolean withY = false;
         Expr[] functions = m.getExpressions();
         if (functions == null) {
-            m.setExpressions(functions = new Expr[0]);
+            m.setExpressions(functions = ArrayUtils.EMPTY_EXPR_ARRAY);
         }
         for (Expr ff : functions) {
             if (!ff.isInvariant(Axis.X)) {

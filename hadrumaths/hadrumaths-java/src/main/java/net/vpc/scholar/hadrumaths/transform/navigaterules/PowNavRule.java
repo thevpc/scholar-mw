@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Pow;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -35,7 +35,7 @@ public class PowNavRule implements ExpressionRewriterRule {
             return RewriteResult.unmodified(e);
         }
         Expr eee = Maths.pow(a.getValue(), b.getValue());
-        eee= AbstractExprPropertyAware.copyProperties(e, eee);
+        eee= Any.copyProperties(e, eee);
         return RewriteResult.bestEffort(eee);
     }
 

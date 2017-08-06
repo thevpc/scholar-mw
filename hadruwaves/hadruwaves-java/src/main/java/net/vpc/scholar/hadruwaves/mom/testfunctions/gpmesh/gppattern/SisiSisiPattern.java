@@ -63,7 +63,7 @@ public final class SisiSisiPattern extends AbstractGpPatternPQ {
                         d
                 )
         )
-        .setName("sin" + p_i + "(" + p + "x)sin" + q_i + "(" + q + "y)")
+        .setTitle("sin" + p_i + "(" + p + "x)sin" + q_i + "(" + q + "y)")
                 .setProperty("Type", "SinXY")
                 .setProperty("q", q0)
                 .setProperty("p", p0).toDV();

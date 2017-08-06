@@ -11,6 +11,10 @@ public class Asin extends TrigoFunctionX implements Cloneable {
         super("asin", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "asin";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.asin();

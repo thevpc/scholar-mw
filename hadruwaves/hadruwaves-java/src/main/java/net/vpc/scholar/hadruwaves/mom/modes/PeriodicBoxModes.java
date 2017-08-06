@@ -65,14 +65,14 @@ public class PeriodicBoxModes extends BoxModes {
                 DoubleToVector ff = Maths.vector(
                         FunctionFactory.CZEROXY,
                         (new DoubleValue(-1 / sqrt_ab, domain)));
-                ff = (DoubleToVector) ff.setName(name);
+                ff = (DoubleToVector) ff.setTitle(name);
                 return ff;
             } else {
                 //TODO verifier ca stp
                 DoubleToVector ff = Maths.vector(
                         new CExp(By / sqrt_ab, -bx, -by, domain),
                         new CExp(-Bx / sqrt_ab, -bx, -by, domain));
-                ff = (DoubleToVector) ff.setName(name);
+                ff = (DoubleToVector) ff.setTitle(name);
                 return ff;
 //                return new CFunctionXY2D(name,
 //                        new CFunctionXY(new DCstFunctionXY(1 / sqrt_ab, domain)),
@@ -84,13 +84,13 @@ public class PeriodicBoxModes extends BoxModes {
                 DoubleToVector ff = Maths.vector(
                         (new DoubleValue(1 / sqrt_ab, domain)),
                         FunctionFactory.CZEROXY);
-                ff = (DoubleToVector) ff.setName(name);
+                ff = (DoubleToVector) ff.setTitle(name);
                 return ff;
             } else {
                 DoubleToVector ff = Maths.vector(
                         new CExp(-Bx / sqrt_ab + alphax, -bx, -by, domain),
                         new CExp(-By / sqrt_ab + betay, -bx, -by, domain));
-                ff = (DoubleToVector) ff.setName(name);
+                ff = (DoubleToVector) ff.setTitle(name);
                 return ff;
             }
         }

@@ -48,8 +48,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
 //        this(name, fx, fy, null);
 //    }
 
-    private DefaultDoubleToVector(String name, DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim, Map<String, Object> properties) {
-        this.name = name;
+    private DefaultDoubleToVector(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim, Map<String, Object> properties) {
         switch (dim){
             case 1:{
                 components = new DoubleToComplex[]{fx};
@@ -114,15 +113,15 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx) {
-        return new DefaultDoubleToVector(null, fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1, null);
+        return new DefaultDoubleToVector(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1, null);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy) {
-        return new DefaultDoubleToVector(null, fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2, null);
+        return new DefaultDoubleToVector(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2, null);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz) {
-        return new DefaultDoubleToVector(null, fx, fy, fz, 3, null);
+        return new DefaultDoubleToVector(fx, fy, fz, 3, null);
     }
 
     @Override
@@ -243,13 +242,13 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
         Map<String, Object> properties = hasProperties()?getProperties():null;
         switch (getComponentSize()) {
             case 1: {
-                return new DefaultDoubleToVector(getName(), (DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1, properties);
             }
             case 2: {
-                return new DefaultDoubleToVector(getName(), (DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2, properties);
             }
             case 3: {
-                return new DefaultDoubleToVector(getName(), (DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3, properties);
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
@@ -291,8 +290,8 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
                     throw new IllegalArgumentException("Unsupported");
                 }
             }
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -311,7 +310,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
         }
         if (changed) {
             Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -331,7 +330,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
         }
         if (changed) {
             Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

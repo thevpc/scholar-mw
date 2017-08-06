@@ -23,7 +23,7 @@ public class PiecewiseSineXFunctionXY extends PieceXFunction implements Cloneabl
             throw new IllegalArgumentException("Unsupported Axis " + axis);
         }
         this.factor = factor;
-        name=("PiecewiseSine" + nbrPeriods);
+//        name=("PiecewiseSine" + nbrPeriods);
     }
 
     public PiecewiseSineXFunctionXY(final Domain domain, final Axis axis, final double factor, int nbrPeriods, final boolean startWithCrest) {
@@ -32,7 +32,7 @@ public class PiecewiseSineXFunctionXY extends PieceXFunction implements Cloneabl
             throw new IllegalArgumentException("Unsupported Axis " + axis);
         }
         this.factor = factor;
-        name=("PiecewiseSine" + nbrPeriods);
+//        name=("PiecewiseSine" + nbrPeriods);
     }
 
     public PiecewiseSineXFunctionXY(final Domain domain, final Axis axis, final double factor) {

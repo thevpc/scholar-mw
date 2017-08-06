@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Neg;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -32,7 +32,7 @@ public class NegNavRule implements ExpressionRewriterRule {
         RewriteResult a = ruleset.rewrite(ee.getExpression());
         if(a.isRewritten()){
             Expr eee = Maths.neg(a.getValue());
-            eee= AbstractExprPropertyAware.copyProperties(e, eee);
+            eee= Any.copyProperties(e, eee);
             return a.isBestEffort()?RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
         }
         return RewriteResult.unmodified(e);

@@ -674,7 +674,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
             @Override
             public Complex eval(int index, Complex e) {
                 VectorSpace<Complex> cs = getComponentVectorSpace();
-                return cs.setParam(e,param.getName(),value);
+                return cs.setParam(e,param.getParamName(),value);
             }
         });
     }

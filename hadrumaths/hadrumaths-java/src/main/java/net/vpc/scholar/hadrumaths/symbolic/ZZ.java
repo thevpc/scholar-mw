@@ -17,6 +17,11 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     @Override
+    public String getFunctionName() {
+        return "Z";
+    }
+
+    @Override
     public Axis getAxis() {
         return Axis.Z;
     }
@@ -24,7 +29,7 @@ public class ZZ extends AxisFunction implements Cloneable {
     @Override
     public Expr newInstance(Expr... arguments) {
         Expr xx = new ZZ(getDomain());
-        xx=copyProperties(this, xx);
+        xx= Any.copyProperties(this, xx);
         return xx;
     }
     @Override

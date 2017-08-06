@@ -14,13 +14,16 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     protected Domain _cache_domain;
     @NonStateField
     private Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper = new GenericFunctionXYBinaryExprHelper();
-
+    private Expr xargument;
+    private Expr yargument;
     protected GenericFunctionXY(String functionName,Expr xargument, Expr yargument) {
         this(functionName,xargument, yargument, null);
     }
 
     protected GenericFunctionXY(String functionName,Expr xargument, Expr yargument, FunctionType lowerFunctionType) {
-        super(functionName,xargument, yargument);
+        super();
+        this.xargument=xargument;
+        this.yargument=yargument;
         if (!xargument.getComponentDimension().equals(yargument.getComponentDimension())) {
             throw new IllegalArgumentException("Dimension Mismatch " + xargument.getComponentDimension() + " vs " + yargument.getComponentDimension());
         }
@@ -55,11 +58,16 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     }
 
     public Expr getXArgument() {
-        return getArguments()[0];
+        return xargument;
     }
 
     public Expr getYArgument() {
-        return getArguments()[1];
+        return yargument;
+    }
+
+    @Override
+    public Expr[] getArguments() {
+        return new Expr[]{xargument,yargument};
     }
 
     @Override
@@ -297,14 +305,16 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         GenericFunctionXY that = (GenericFunctionXY) o;
 
         if (functionType != that.functionType) return false;
-
-        return true;
+        if (xargument != null ? !xargument.equals(that.xargument) : that.xargument != null) return false;
+        return yargument != null ? yargument.equals(that.yargument) : that.yargument == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + functionType.hashCode();
+        result = 31 * result + (functionType != null ? functionType.hashCode() : 0);
+        result = 31 * result + (xargument != null ? xargument.hashCode() : 0);
+        result = 31 * result + (yargument != null ? yargument.hashCode() : 0);
         return result;
     }
 
@@ -384,15 +394,10 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         Expr yb = ya.setParam(name, value);
         if (xa != xb || ya != yb) {
             Expr e = newInstance(xb,yb);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
-    }
-
-    @Override
-    public boolean isUpdatableName() {
-        return false;
     }
 
     @Override

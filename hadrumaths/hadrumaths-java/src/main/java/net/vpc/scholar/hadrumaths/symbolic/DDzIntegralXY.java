@@ -105,8 +105,8 @@ public class DDzIntegralXY extends AbstractDoubleToDouble implements Cloneable{
         DoubleToDouble updated = (DoubleToDouble) last.setParam(name, value);
         if (updated != last) {
             Expr e = new DDzIntegralXY(updated, integral, x0, x1,y0,y1);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }

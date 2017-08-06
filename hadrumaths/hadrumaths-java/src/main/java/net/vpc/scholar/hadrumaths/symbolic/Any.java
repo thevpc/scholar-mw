@@ -12,6 +12,7 @@ import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
             }
         });
     }
+    protected String name;
+    private Map<String, Object> properties;
 
     public Expr object;
 
@@ -40,19 +43,52 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return !(e instanceof Any) ? e : (((Any) e).object);
     }
 
-    public String getName() {
-        return object.getName();
+    public static Expr copyProperties(Expr a, Expr b) {
+        if(a.hasProperties()) {
+            b=b.setProperties(a.getProperties());
+        }
+        if(a.getTitle()!=null){
+            b=b.setTitle(a.getTitle());
+        }
+        return b;
+    }
+
+    public static Expr updateTitleVars(Expr b, String paramName, Expr paramValue) {
+        String paramValueS=paramName==null?"":paramValue.toString();
+        if(b.getTitle()!=null && b.getTitle().contains("${"+paramName+"}")){
+            return b.setTitle(b.getTitle().replace("${"+paramName+"}",paramValueS));
+        }
+        return b;
+    }
+
+    public static Expr updateTitleVars(Expr b, String paramName, double paramValue) {
+        String paramValueS=String.valueOf(paramValue);
+        if(b.getTitle()!=null && b.getTitle().contains("${"+paramName+"}")){
+            return b.setTitle(b.getTitle().replace("${"+paramName+"}",paramValueS));
+        }
+        return b;
+    }
+
+    public String getTitle() {
+        return object.getTitle();
     }
 
     @Override
-    public Expr setName(String name) {
-        return wrap(object.setName(name));
+    public Expr setTitle(String name) {
+        this.name=name;
+        return this;
     }
 
     @Override
     public Expr clone() {
         Any cloned = (Any) super.clone();
-        cloned.object = object.clone();
+//        cloned.object = object.clone();
+        if (properties != null && properties.size()>0) {
+            cloned.properties = new HashMap<String, Object>(properties.size());
+            for (Map.Entry<String, Object> e : properties.entrySet()) {
+                cloned.properties.put(e.getKey(), e.getValue());
+            }
+        }
         return cloned;
     }
 
@@ -385,11 +421,11 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
 
     @Override
     public Any setParam(String name, double value) {
-        return
-                wrap(
+        Any a=wrap(
                         object.setParam(name, value)
-                )
-        ;
+                );
+        copyProperties(this, a);
+        return a;
     }
 
     @Override
@@ -398,7 +434,9 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         if(e==object) {
             return this;
         }
-        return wrap(e);
+        Any a=wrap(e);
+        copyProperties(this, a);
+        return a;
     }
 
     @Override
@@ -406,15 +444,15 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return String.valueOf(object);
     }
 
-    @Override
-    public Map<String, Object> getProperties() {
-        return getObject().getProperties();
-    }
-
-    @Override
-    public Expr setProperties(Map<String, Object> map) {
-        return wrap(getObject().setProperties(map));
-    }
+//    @Override
+//    public Map<String, Object> getProperties() {
+//        return getObject().getProperties();
+//    }
+//
+//    @Override
+//    public Expr setProperties(Map<String, Object> map) {
+//        return wrap(getObject().setProperties(map));
+//    }
 
     @Override
     public Expr simplify() {
@@ -645,22 +683,66 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public boolean hasProperties() {
-        return object.hasProperties();
-    }
-
-    @Override
-    public Object getProperty(String name) {
-        return object.getProperty(name);
-    }
-
-    @Override
     public Expr setProperty(String name, Object value) {
-        return wrap(object.setProperty(name,value));
+        setSelfProperty(name, value);
+        return this;
+    }
+    
+
+    public void setSelfProperty(String name, Object value) {
+        if(value==null){
+            if(properties!=null){
+                properties.remove(name);
+            }
+        }else{
+            if(properties==null){
+                properties=new HashMap<String, Object>(2);
+            }
+            properties.put(name, value);
+        }
     }
 
     @Override
     public Expr normalize() {
         return wrap(object.normalize());
     }
+
+    @Override
+    public boolean hasProperties() {
+        return properties!=null && properties.size()>0;
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        return properties!=null ? properties.get(name):null;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>(2);
+        }
+        return properties;
+    }
+
+    @Override
+    public Expr setProperties(Map<String, Object> map) {
+        setSelfProperties(map);
+        return this;
+//        if(map!=null && !map.isEmpty()){
+//            Any a=(Any) clone();
+//            a.setSelfProperties(map);
+//        }
+//        return this;
+    }
+
+    public void setSelfProperties(Map<String, Object> map) {
+        if(map!=null && !map.isEmpty()){
+            if (properties == null) {
+                properties = new HashMap<String, Object>(2);
+            }
+            properties.putAll(map);
+        }
+    }
+
 }

@@ -12,6 +12,11 @@ public class Sin extends TrigoFunctionX implements Cloneable {
         super("sin",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "sin";
+    }
+
 
     public Complex evalComplex(Complex c) {
         return c.sin();

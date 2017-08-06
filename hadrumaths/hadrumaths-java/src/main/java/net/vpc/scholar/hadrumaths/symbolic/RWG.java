@@ -78,7 +78,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
         FinalInfo i=new FinalInfo();
         i.max = max;
         i.domain = max == 0 ? Domain.EMPTYXY : triangle1.getDomain().expand(triangle2.getDomain());
-        name=("RWGFunctionXY");
+//        name=("RWGFunctionXY");
         if (triangle1.isTriangular() && triangle2.isTriangular()) {
             i.polygon1=triangle1;
             i.polygon2=triangle2;

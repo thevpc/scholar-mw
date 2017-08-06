@@ -80,7 +80,6 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
 //        if(b!=0 && domain.getDimension()<=1){
 //            throw new IllegalArgumentException("Domain dimension mismatch");
 //        }
-        name=("Linear");
     }
 
     public double computeDouble0(double x, double y,double z) {

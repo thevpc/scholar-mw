@@ -7,12 +7,9 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
+import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.GenericFunctionX;
-import net.vpc.scholar.hadrumaths.symbolic.IConstantValue;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
@@ -42,7 +39,7 @@ public class GenericFunctionXSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.unmodified(e);
         }
         Expr a = ee.newInstance(arg2.getValue());
-        a= AbstractExprPropertyAware.copyProperties(e, a);
+        a= Any.copyProperties(e, a);
         return arg2.newVal(a);
     }
     @Override

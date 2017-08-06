@@ -11,6 +11,11 @@ public class GteExpr extends ComparatorExpr implements Cloneable{
         super(">=",xarg,yarg,FunctionType.DOUBLE);
     }
 
+    @Override
+    public String getFunctionName() {
+        return ">=";
+    }
+
     public Complex evalComplex(Complex x,Complex y){
         return x.compareTo(y)>=0?Complex.ONE:Complex.ZERO;
     }

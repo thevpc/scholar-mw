@@ -133,14 +133,14 @@ public interface Expr extends Serializable {
      */
     Expr normalize();
 
-    String getName();
+    String getTitle();
 
     /**
      * create a clone expression with changed name
      *
      * @param name
      */
-    Expr setName(String name);
+    Expr setTitle(String name);
 
     int getDomainDimension();
 

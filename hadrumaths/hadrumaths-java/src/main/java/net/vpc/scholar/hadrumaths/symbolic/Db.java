@@ -12,6 +12,10 @@ public class Db extends TrigoFunctionX implements Cloneable {
         super("db", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "db";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.db();

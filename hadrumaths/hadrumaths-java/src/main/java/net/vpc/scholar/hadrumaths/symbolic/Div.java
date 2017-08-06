@@ -216,8 +216,8 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -236,7 +236,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -256,7 +256,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

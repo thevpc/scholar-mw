@@ -28,7 +28,7 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
         this.c = c;
         this.d = d;
         this.e = e;
-        name=("Ux");
+//        name=("Ux");
     }
 
     @Override

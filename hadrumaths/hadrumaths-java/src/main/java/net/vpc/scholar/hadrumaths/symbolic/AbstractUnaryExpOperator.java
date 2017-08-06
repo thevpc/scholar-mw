@@ -6,10 +6,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -114,8 +111,8 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
         Expr updated = expression.setParam(name, value);
         if(updated!=expression) {
             Expr e = newInstance(updated);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -125,7 +122,7 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
         Expr updated = expression.composeX(xreplacement);
         if(updated!=expression) {
             Expr e = newInstance(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -136,7 +133,7 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
         Expr updated = expression.composeY(yreplacement);
         if(updated!=expression) {
             Expr e = newInstance(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

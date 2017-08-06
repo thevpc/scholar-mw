@@ -9,6 +9,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
         super("if", xarg, yarg, zarg, FunctionType.DOUBLE);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "If";
+    }
+
     protected Complex evalComplex(Complex x, Complex y, Complex z) {
         if (!x.isZero()) {
             return y;

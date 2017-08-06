@@ -781,7 +781,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             return (TVector<R>) this;
         }
         //should i check default types?
-        if(other.equals(Complex.class)){
+        if(Complex.class.isAssignableFrom(other)){
             return (TVector<R>) new ReadOnlyVector(
                     new TVectorModel() {
                 @Override
@@ -838,16 +838,16 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> cs = getComponentVectorSpace();
-                return cs.setParam(e, param.getName(), value);
+                return cs.setParam(e, param.getParamName(), value);
             }
         });
     }
 
     @Override
     public void forEachIndex(TVectorItemAction<T> action) {
-        int i = 0;
-        for (T t : this) {
-            action.run(i++, t);
+        int max = size();
+        for (int i = 0; i < max; i++) {
+            action.run(i, get(i));
         }
     }
 }

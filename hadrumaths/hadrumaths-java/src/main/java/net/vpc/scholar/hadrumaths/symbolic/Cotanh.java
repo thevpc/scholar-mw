@@ -12,6 +12,11 @@ public class Cotanh extends TrigoFunctionX implements Cloneable{
         super("cotanh",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "cotanh";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.cotanh();

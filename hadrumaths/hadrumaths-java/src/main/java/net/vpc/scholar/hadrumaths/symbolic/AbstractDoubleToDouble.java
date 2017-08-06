@@ -13,68 +13,12 @@ import net.vpc.scholar.hadrumaths.FormatFactory;
  */
 public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware implements DoubleToDouble {
 
-    //    /**
-//     * &lt;this,other&gt;
-//     *
-//     * @param other
-//     * @return
-//     */
-//    public double scalarProduct(DFunctionXY other) {
-//        return this.scalarProduct(other);
-//    }
-//
-//    /**
-//     * &lt;this,other&gt;
-//     *
-//     * @param other
-//     * @return
-//     */
-//    public abstract double leftScalarProduct(DomainXY domain, DFunctionXY other);
-//
-//    /**
-//     * &lt;other,this&gt;
-//     *
-//     * @param other
-//     * @return
-//     */
-//    public abstract double rightScalarProduct(DomainXY domain, DFunctionXY other);
     protected Domain domain;
 
     public AbstractDoubleToDouble(Domain domain) {
         this.domain = domain;
-//        if(domain==null){
-//            throw new NullPointerException();
-//        }
     }
 
-    //    private static int locateIndexEqualOrJustAfter(double[] d,double value){
-//        int min=0;
-//        int max=d.length-1;
-//        while(min!=max){
-//            if(d[min]>=value){
-//                return min;
-//            }
-//        }
-//    }
-
-
-
-//    public int[] ranges(double[] x, double[] y, Domain d0) {
-//        return (d0 == null ? domain : domain.intersect(d0)).rangesArray(x, y);
-//    }
-
-//    public double[] compute(double[] x, double y, DomainXY d0) {
-//        double[] r = new double[x.length];
-//        int[] abcd = (d0 == null ? domain : domain.intersect(d0)).rangesArray(x, new double[]{y});
-//        if (abcd != null) {
-//            int ax = abcd[0];
-//            int bx = abcd[1];
-//            for (int xIndex = ax; xIndex <= bx; xIndex++) {
-//                r[xIndex] = compute(x[xIndex], y);
-//            }
-//        }
-//        return r;
-//    }
     public double[] computeDouble(double x, double[] y, Domain d0) {
         double[] r = new double[y.length];
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(new double[]{x}, y);
@@ -416,7 +360,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return m;
     }
 
-//    @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] d = computeDouble(x, y, z, d0, ranges);
         Matrix[][][] m = new Matrix[d.length][d[0].length][d[0][0].length];
@@ -429,16 +372,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         }
         return m;
     }
-
-//    @Override
-//    public Matrix computeMatrix(double x, double y, double z) {
-//        return computeComplex(x, y, z).toMatrix();
-//    }
-
-//    @Override
-//    public Complex computeComplex(double x, double y, double z) {
-//        return new Complex(computeDouble(x,y,z));
-//    }
 
     @Override
     public final double computeDouble(double x) {

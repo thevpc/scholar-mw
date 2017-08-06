@@ -11,6 +11,11 @@ public class Cosh extends TrigoFunctionX implements Cloneable{
         super("cosh",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "cosh";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.cosh();

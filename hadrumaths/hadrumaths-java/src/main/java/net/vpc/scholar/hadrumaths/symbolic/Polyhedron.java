@@ -34,7 +34,7 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
         super(max == 0 ? Domain.EMPTYXY : polygon.getDomain());
         this.max = max;
         this.polygon = polygon;
-        name=("Polyedre");
+//        name=("Polyedre");
         if (polygon.isRectangular()) {
             isRectangle = true;
         } else

@@ -34,8 +34,8 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     protected Ref() {
     }
 
-    public String getName() {
-        return object.getName();
+    public String getTitle() {
+        return object.getTitle();
     }
 
 

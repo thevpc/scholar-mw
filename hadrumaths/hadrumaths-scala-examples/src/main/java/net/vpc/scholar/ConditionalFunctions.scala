@@ -12,8 +12,8 @@ object ConditionalFunctions {
   def main1(): Unit = {
     val dom = domain(0 -> 2 * PI, 0 -> 2 * PI)
     var n=param("n")
-    var fn=((1*(n===1))+(2*(n!==1))).setName("f${n}")
-    var gn=If(n===1, 1, 2).setName("g${n}")
+    var fn=((1*(n===1))+(2*(n!==1))).setTitle("f${n}")
+    var gn=If(n===1, 1, 2).setTitle("g${n}")
     var fn_s=seq(fn,n,1,2)
     var gn_s=seq(gn,n,1,2)
     println(fn.toString)
@@ -32,8 +32,8 @@ object ConditionalFunctions {
   def main2(): Unit = {
     val dom = domain(0 -> 2 * PI, 0 -> 2 * PI)
     var n=param("n")
-    var fn=((sin(X)*(n===1))+(cos(X)*(n!==1))).setName("f${n}")
-    var gn=If(n===1, sin(X), cos(X)).setName("g${n}")
+    var fn=((sin(X)*(n===1))+(cos(X)*(n!==1))).setTitle("f${n}")
+    var gn=If(n===1, sin(X), cos(X)).setTitle("g${n}")
 
     var fn_s=seq(fn,n,1,2)
     var gn_s=seq(gn,n,1,2)
@@ -53,7 +53,7 @@ object ConditionalFunctions {
   def main3(): Unit = {
     val dom = domain(0 -> 2 * PI, 0 -> 2 * PI)
     var n=param("n")
-    var fn=((sin(X)*(n===1))+(cos(X)*(n!==1))).setName("f${n}")*dom
+    var fn=((sin(X)*(n===1))+(cos(X)*(n!==1))).setTitle("f${n}")*dom
     println(fn)
     fn=fn(n->4)
     println(fn)

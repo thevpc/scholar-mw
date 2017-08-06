@@ -36,7 +36,7 @@ public final class SisiCocoPattern extends AbstractGpPatternPQ {
                         d
                 ))
         )
-                .setName("sisi(" + p + "x," + q + "y),coco(" + p + "x," + q + "y)")
+                .setTitle("sisi(" + p + "x," + q + "y),coco(" + p + "x," + q + "y)")
                 .setProperty("Type", "SisiCoco")
 //            properties.put("i", index);
                 .setProperty("p", p)

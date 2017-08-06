@@ -20,7 +20,7 @@ class SimpleSeq1 implements TVectorCell<Expr> {
 
     public Expr get(int index) {
         double value = values[index];
-        String mname = m.getName();
+        String mname = m.getParamName();
         Expr e = pattern.setParam(mname, value);
 //                e.getProperties().put(mname, value);
         return e;

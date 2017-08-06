@@ -7,7 +7,6 @@ package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
@@ -195,7 +194,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         if (!modified) {
             return RewriteResult.unmodified(e);
         }
-        curr=AbstractExprPropertyAware.copyProperties(e,curr);
+        curr= Any.copyProperties(e,curr);
         if (rulesByClass.size()==1 && bestEfforts==1){
             return RewriteResult.bestEffort(curr);
         }

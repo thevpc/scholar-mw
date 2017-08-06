@@ -12,6 +12,10 @@ public class Exp extends GenericFunctionX implements Cloneable{
         super("exp",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "exp";
+    }
 
     public Complex evalComplex(Complex c){
         return c.exp();

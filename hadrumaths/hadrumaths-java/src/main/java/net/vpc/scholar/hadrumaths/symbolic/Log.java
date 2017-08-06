@@ -12,6 +12,11 @@ public class Log extends TrigoFunctionX implements Cloneable {
         super("log", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "log";
+    }
+
 
     public Complex evalComplex(Complex c) {
         return c.log();

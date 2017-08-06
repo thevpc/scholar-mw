@@ -11,6 +11,10 @@ public class Sinh extends TrigoFunctionX implements Cloneable {
         super("sinh", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "sinh";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.sinh();

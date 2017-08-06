@@ -12,6 +12,11 @@ public class Arg extends TrigoFunctionX implements Cloneable {
         super("arg", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "arg";
+    }
+
 
     public Complex evalComplex(Complex c) {
         return c.arg();

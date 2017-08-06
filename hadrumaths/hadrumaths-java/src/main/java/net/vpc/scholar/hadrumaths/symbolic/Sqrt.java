@@ -11,6 +11,10 @@ public class Sqrt extends GenericFunctionX implements Cloneable{
         super("sqrt",arg,FunctionType.COMPLEX);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "sqrt";
+    }
 
     public Complex evalComplex(Complex c){
         return c.sqrt();

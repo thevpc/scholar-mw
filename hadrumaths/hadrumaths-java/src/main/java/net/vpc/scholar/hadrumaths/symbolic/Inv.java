@@ -270,8 +270,8 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.setParam(name, value);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -281,7 +281,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.composeX(xreplacement);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -292,7 +292,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.composeY(yreplacement);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

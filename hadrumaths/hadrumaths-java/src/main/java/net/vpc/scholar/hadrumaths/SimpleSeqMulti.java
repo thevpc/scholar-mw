@@ -22,12 +22,12 @@ class SimpleSeqMulti implements TVectorCell<Expr> {
         double[] value = values[index];
         String[] mnames = new String[m.length];
         for (int i = 0; i < mnames.length; i++) {
-            mnames[i] = m[i].getName();
+            mnames[i] = m[i].getParamName();
         }
         Expr e = pattern;
         for (int i = 0; i < mnames.length; i++) {
-            e = e.setParam(m[i].getName(), value[i]);
-            e = e.setProperty(m[i].getName(), value[i]);
+            e = e.setParam(m[i].getParamName(), value[i]);
+            e = e.setProperty(m[i].getParamName(), value[i]);
         }
 //                Map<String, Object> props = e.getProperties();
 //                for (int i = 0; i < mnames.length; i++) {

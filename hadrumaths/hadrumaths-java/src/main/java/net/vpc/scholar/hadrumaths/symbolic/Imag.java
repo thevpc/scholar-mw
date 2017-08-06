@@ -92,8 +92,8 @@ public class Imag extends DCxyToDDxy implements Cloneable{
         DoubleToComplex updated = old.setParam(name, value).toDC();
         if (updated != old) {
             Expr e = new Imag(updated);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }

@@ -167,7 +167,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("AxisIndex", xi);
                         xi++;
                         DoubleToVector d = Maths.vector(cFunctionXY2D.getComponent(Axis.X), FunctionFactory.CZEROXY);
-                        d = (DoubleToVector) d.setName("[X] " + cFunctionXY2D.getName());
+                        d = (DoubleToVector) d.setTitle("[X] " + cFunctionXY2D.getTitle());
                         d = (DoubleToVector) d.setProperties(properties);
                         goodX.add(d);
                     }
@@ -180,7 +180,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("AxisIndex", yi);
                         yi++;
                         DoubleToVector o = Maths.vector(FunctionFactory.CZEROXY, cFunctionXY2D.getComponent(Axis.Y));
-                        o = (DoubleToVector) o.setName("[Y] " + cFunctionXY2D.getName());
+                        o = (DoubleToVector) o.setTitle("[Y] " + cFunctionXY2D.getTitle());
                         o = (DoubleToVector) o.setProperties(properties);
                         goodY.add(o);
                     }

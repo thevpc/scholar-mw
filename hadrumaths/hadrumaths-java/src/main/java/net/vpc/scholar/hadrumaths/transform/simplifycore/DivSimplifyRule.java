@@ -5,13 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
-import net.vpc.scholar.hadrumaths.symbolic.Div;
+import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.IConstantValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -54,7 +51,7 @@ public class DivSimplifyRule implements ExpressionRewriterRule {
         }
 
         Expr eee = Maths.div(ar.getValue(), br.getValue());
-        eee= AbstractExprPropertyAware.copyProperties(e, eee);
+        eee= Any.copyProperties(e, eee);
         return (ar.isBestEffort() && br.isBestEffort())?RewriteResult.bestEffort(eee):RewriteResult.newVal(eee);
     }
     @Override

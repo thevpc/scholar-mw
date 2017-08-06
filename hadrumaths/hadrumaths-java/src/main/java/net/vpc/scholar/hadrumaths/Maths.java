@@ -339,6 +339,7 @@ public final class Maths {
             }
         }
     }
+    private static final Logger $log=Logger.getLogger(Maths.class.getName());
 
     //    public static String getAxisLabel(int axis){
 //        switch(axis){
@@ -706,12 +707,17 @@ public final class Maths {
             throw new IllegalArgumentException("Unsupported store type " + type);
         }
         if (file.exists()) {
-            System.out.println("loading " + file.getAbsolutePath() + " ...");
-            return t.load(file);
+            $log.log(Level.INFO, "loading " + file.getAbsolutePath() + " ...");
+            T load = t.load(file);
+            return load;
         } else {
+            Chronometer cr=chrono();
             T tt = item.get();
-            System.out.println("storing " + file.getAbsolutePath() + " ...");
+            cr.stop();
+            Chronometer cr2=chrono();
             t.store(tt, file);
+            cr2.stop();
+            $log.log(Level.INFO, "exec time " +cr+ ". stored in "+cr2+" to file " + file.getAbsolutePath() + " ...");
             return tt;
         }
     }
@@ -3888,10 +3894,10 @@ public final class Maths {
     }
 
     public static <T> T sumt(Class<T> type, T... arr) {
-        if (type.equals(Complex.class)) {
+        if (Complex.class.isAssignableFrom(type)) {
             return (T) sum((Complex[]) arr);
         }
-        if (type.equals(Expr.class)) {
+        if (Expr.class.isAssignableFrom(type)) {
             return (T) sum((Expr[]) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
@@ -3903,10 +3909,10 @@ public final class Maths {
     }
 
     public static <T> T sumt(Class<T> type, TVectorModel<T> arr) {
-        if (type.equals(Complex.class)) {
+        if (Complex.class.isAssignableFrom(type)) {
             return (T) sumc((TVectorModel<Complex>) arr);
         }
-        if (type.equals(Expr.class)) {
+        if (Expr.class.isAssignableFrom(type)) {
             return (T) sum((TVectorModel<Expr>) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
@@ -3923,10 +3929,10 @@ public final class Maths {
     }
 
     public static <T> T mult(Class<T> type, T... arr) {
-        if (type.equals(Complex.class)) {
+        if (Complex.class.isAssignableFrom(type)) {
             return (T) mul((Complex[]) arr);
         }
-        if (type.equals(Expr.class)) {
+        if (Expr.class.isAssignableFrom(type)) {
             return (T) mul((Expr[]) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
@@ -3938,10 +3944,10 @@ public final class Maths {
     }
 
     public static <T> T mult(Class<T> type, TVectorModel<T> arr) {
-        if (type.equals(Complex.class)) {
+        if (Complex.class.isAssignableFrom(type)) {
             return (T) mulc((TVectorModel<Complex>) arr);
         }
-        if (type.equals(Expr.class)) {
+        if (Expr.class.isAssignableFrom(type)) {
             return (T) mul((TVectorModel<Expr>) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
@@ -4283,7 +4289,7 @@ public final class Maths {
         }
         Expr mul = mul(a, n);
         //preserve names and properties
-        mul = AbstractExprPropertyAware.copyProperties(a, mul);
+        mul = Any.copyProperties(a, mul);
         return mul;
     }
 
@@ -4636,7 +4642,7 @@ public final class Maths {
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
 
         PlatformUtils.gc2();
-        System.out.println(name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return c;
     }
 
@@ -4654,7 +4660,7 @@ public final class Maths {
         c.stop();
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
         PlatformUtils.gc2();
-        System.out.println(name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return v;
     }
 

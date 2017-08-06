@@ -285,8 +285,8 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -305,7 +305,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -325,7 +325,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

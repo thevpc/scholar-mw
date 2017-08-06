@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -64,7 +64,7 @@ public class VDiscreteNavRule implements ExpressionRewriterRule {
                     break;
                 }
             }
-            e2= AbstractExprPropertyAware.copyProperties(e, e2);
+            e2= Any.copyProperties(e, e2);
             return bestEfforts==length? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
         }
         return RewriteResult.unmodified(e);

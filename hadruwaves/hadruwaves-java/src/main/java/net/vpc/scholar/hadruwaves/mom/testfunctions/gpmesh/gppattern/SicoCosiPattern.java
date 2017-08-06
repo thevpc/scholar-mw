@@ -36,7 +36,7 @@ public final class SicoCosiPattern extends AbstractGpPatternPQ {
                         d
                 ))
         );
-        return f.setName("sico(" + p + "x," + q + "y),cosi(" + p + "x," + q + "y)")
+        return f.setTitle("sico(" + p + "x," + q + "y),cosi(" + p + "x," + q + "y)")
         .setProperty("Type", "SicoCosi")
         .setProperty("p", p)
         .setProperty("q", q).toDV();

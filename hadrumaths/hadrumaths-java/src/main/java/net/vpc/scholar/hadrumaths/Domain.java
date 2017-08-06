@@ -625,9 +625,16 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
 //        double x2=Math.min(xmax,other.xmax);
 //        double y1=Math.max(ymin,other.ymin);
 //        double y2=Math.min(ymax,other.ymax);
-        int dim = Math.max(this.dimension(), other.dimension());
-        double x1 = max(xmin(), other.xmin());
-        double x2 = min(xmax(), other.xmax());
+        int d_t = this.dimension();
+        int d_o = other.dimension();
+        int dim = Math.max(d_t, d_o);
+        double x1_t = xmin();
+        double x2_t = xmax();
+        double x1_o = other.xmin();
+        double x2_o = other.xmax();
+
+        double x1 = max(x1_t, x1_o);
+        double x2 = min(x2_t, x2_o);
         // some workaround
         double delta = x1 - x2;
         if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
@@ -635,22 +642,22 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         }
 
         switch (dim) {
-            case 1:
-                return forBounds(x1, x2);
-            case 2: {
-                double y1 = max(ymin(), other.ymin());
-                double y2 = min(ymax(), other.ymax());
-                x2 = max(x2, x1);
-                y2 = max(y2, y1);
-                delta = y1 - y2;
-                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
-                    y1 = y2 = 0.0D;
+            case 1: {
+                if(d_t==1 && x1==x1_t && x2==x2_t){
+                    return this;
                 }
-                return forBounds(x1, x2, y1, y2);
+                if(d_o==1 && x1==x1_o && x2==x2_o){
+                    return other;
+                }
+                return forBounds(x1, x2);
             }
-            case 3: {
-                double y1 = max(ymin(), other.ymin());
-                double y2 = min(ymax(), other.ymax());
+            case 2: {
+                double y1_t = ymin();
+                double y1_o = other.ymin();
+                double y2_t = ymax();
+                double y2_o = other.ymax();
+                double y1 = max(y1_t, y1_o);
+                double y2 = min(y2_t, y2_o);
                 x2 = max(x2, x1);
                 y2 = max(y2, y1);
                 delta = y1 - y2;
@@ -658,13 +665,51 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
                     y1 = y2 = 0.0D;
                 }
 
-                double z1 = max(zmin(), other.zmin());
-                double z2 = min(zmax(), other.zmax());
+                if(d_t==2 && x1==x1_t && x2==x2_t && y1==y1_t && y2==y2_t){
+                    return this;
+                }
+                if(d_o==2 && x1==x1_o && x2==x2_o && y1==y1_o && y2==y2_o){
+                    return other;
+                }
+
+                return forBounds(x1, x2, y1, y2);
+            }
+            case 3: {
+                double y1_t = ymin();
+                double y1_o = other.ymin();
+                double y2_t = ymax();
+                double y2_o = other.ymax();
+                double y1 = max(y1_t, y1_o);
+                double y2 = min(y2_t, y2_o);
+
+
+                x2 = max(x2, x1);
+                y2 = max(y2, y1);
+                delta = y1 - y2;
+                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
+                    y1 = y2 = 0.0D;
+                }
+
+                double z1_t = zmin();
+                double z1_o = other.zmin();
+                double z2_t = zmax();
+                double z2_o = other.zmax();
+                double z1 = max(z1_t, z1_o);
+                double z2 = min(z2_t, z2_o);
+
                 z2 = max(z2, z1);
                 delta = z1 - z2;
                 if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
                     z1 = z2 = 0.0D;
                 }
+
+                if(d_t==2 && x1==x1_t && x2==x2_t && y1==y1_t && y2==y2_t && z1==z1_t && z2==z2_t){
+                    return this;
+                }
+                if(d_o==2 && x1==x1_o && x2==x2_o && y1==y1_o && y2==y2_o && z1==z1_o && z2==z2_o){
+                    return other;
+                }
+
                 return forBounds(x1, x2, y1, y2, z1, z2);
             }
         }

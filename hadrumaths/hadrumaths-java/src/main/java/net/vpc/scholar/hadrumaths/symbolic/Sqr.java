@@ -12,6 +12,11 @@ public class Sqr extends GenericFunctionX implements Cloneable{
         super("sqr",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "sqr";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.sqr();

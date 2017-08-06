@@ -12,6 +12,11 @@ public class Cos extends TrigoFunctionX implements Cloneable {
         super("cos", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "cos";
+    }
+
 
     public Complex evalComplex(Complex c) {
         return c.cos();

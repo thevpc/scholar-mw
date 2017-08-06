@@ -9,6 +9,11 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
         super(hermitian?"**":"***",xargument, yargument);
         this.hermitian=hermitian;
     }
+    @Override
+    public String getFunctionName() {
+        return hermitian?"**":"***";
+    }
+
 
     public ParametrizedScalarProduct(String functionName, Expr xargument, Expr yargument, FunctionType lowerFunctionType,boolean hermitian) {
         super(functionName,xargument, yargument, lowerFunctionType);

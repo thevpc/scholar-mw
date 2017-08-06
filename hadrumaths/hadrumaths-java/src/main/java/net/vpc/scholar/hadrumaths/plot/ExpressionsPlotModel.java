@@ -4,6 +4,7 @@ import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Samples;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class ExpressionsPlotModel implements PlotModel {
     private int xprec=-1;
     private int yprec=-1;
     private ComplexAsDouble complexAsDouble=ComplexAsDouble.ABS;
-    private Expr[] expressions =new Expr[0];
+    private Expr[] expressions = ArrayUtils.EMPTY_EXPR_ARRAY;
     private ExpressionsPlotPanel.ShowType showType= ExpressionsPlotPanel.ShowType.CURVE_FX;
     private Map<String, Object> properties;
     private Set<ExternalLibrary> preferredLibraries;

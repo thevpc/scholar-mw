@@ -11,6 +11,10 @@ public class Tanh extends TrigoFunctionX implements Cloneable{
         super("tanh",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "tanh";
+    }
 
     public Complex evalComplex(Complex c){
         return c.tanh();

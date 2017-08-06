@@ -48,7 +48,7 @@ public final class SinxCosxPattern extends RectMeshAttachGpPattern {
                         domain2
                 ))
         );
-        return f.setName("sico(" + index + ")").toDV();
+        return f.setTitle("sico(" + index + ")").toDV();
     }
 
 }

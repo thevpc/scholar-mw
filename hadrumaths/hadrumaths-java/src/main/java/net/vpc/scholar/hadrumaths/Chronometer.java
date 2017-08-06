@@ -60,6 +60,7 @@ public class Chronometer {
 
     public Chronometer(String name) {
         this.name = name;
+        start();
     }
 
     public Chronometer setName(String desc) {

@@ -5,6 +5,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 //import net.vpc.scholar.math.functions.dfxy.DoubleX;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,74 +13,13 @@ import java.util.Map;
  * Created by vpc on 4/29/14.
  */
 public abstract class AbstractExprPropertyAware extends AbstractExpBase{
-    protected String name;
-    private Map<String, Object> properties;
     protected int _cache_isProperties;//new BitSet(40);
 
     public AbstractExprPropertyAware() {
     }
 
-    public static Expr copyProperties(Expr a, Expr b) {
-        if(a.hasProperties()) {
-            b=b.setProperties(a.getProperties());
-        }
-        if(a.getName()!=null){
-            b=b.setName(a.getName());
-        }
-        return b;
-    }
-    public static Expr updateNameVars(Expr b,String paramName,Expr paramValue) {
-        String paramValueS=paramName==null?"":paramValue.toString();
-        if(b.getName()!=null && b.getName().contains("${"+paramName+"}")){
-            return b.setName(b.getName().replace("${"+paramName+"}",paramValueS));
-        }
-        return b;
-    }
-    public static Expr updateNameVars(Expr b,String paramName,double paramValue) {
-        String paramValueS=String.valueOf(paramValue);
-        if(b.getName()!=null && b.getName().contains("${"+paramName+"}")){
-            return b.setName(b.getName().replace("${"+paramName+"}",paramValueS));
-        }
-        return b;
-    }
 
-    @Override
-    public boolean hasProperties() {
-        return properties!=null && properties.size()>0;
-    }
 
-    @Override
-    public Object getProperty(String name) {
-        return properties!=null ? properties.get(name):null;
-    }
-
-    @Override
-    public Expr setProperty(String name, Object value) {
-        HashMap<String, Object> m=new HashMap<>(1);
-        m.put(name,value);
-        return setProperties(m);
-    }
-
-    @Override
-    public Map<String, Object> getProperties() {
-        if (properties == null) {
-            properties = new HashMap<String, Object>(2);
-        }
-        return properties;
-    }
-
-    @Override
-    public Expr setProperties(Map<String, Object> map) {
-        if(map!=null && !map.isEmpty()){
-            AbstractExprPropertyAware a=(AbstractExprPropertyAware) clone();
-            if (a.properties == null) {
-                a.properties = new HashMap<String, Object>(2);
-            }
-            a.properties.putAll(map);
-            return a;
-        }
-        return this;
-    }
 
     protected boolean hasParamsImpl() {
         for (Expr expression : getSubExpressions()) {
@@ -91,9 +31,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
 
-    public Expr setParam(String name, double value) {
-        return setParam(name, DoubleValue.valueOf(value, Domain.FULL(getDomainDimension())));
-    }
 
     protected boolean isDoubleImpl() {
         return false;
@@ -120,17 +57,17 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     @Override
     public Expr clone() {
         AbstractExprPropertyAware clone = (AbstractExprPropertyAware) super.clone();
-        if (properties != null) {
-            clone.properties = new HashMap<String, Object>(Math.max(1,properties.size()));
-            for (Map.Entry<String, Object> e : properties.entrySet()) {
-                Object v = null;
-//                    if(e.getValue()!=null && e.getValue() instanceof Cloneable){
-//                        v=e.getValue().clone();
-//                    }
-                clone.properties.put(e.getKey(), e.getValue());
-            }
-        }
-        clone.name = name;
+//        if (properties != null) {
+//            clone.properties = new HashMap<String, Object>(Math.max(1,properties.size()));
+//            for (Map.Entry<String, Object> e : properties.entrySet()) {
+//                Object v = null;
+////                    if(e.getValue()!=null && e.getValue() instanceof Cloneable){
+////                        v=e.getValue().clone();
+////                    }
+//                clone.properties.put(e.getKey(), e.getValue());
+//            }
+//        }
+//        clone.name = name;
 //            clone._cache_isProperties = _cache_isProperties==null?null:(BitSet) _cache_isProperties.clone();
         return clone;
     }
@@ -163,16 +100,17 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 
         AbstractExprPropertyAware that = (AbstractExprPropertyAware) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (properties != null ? !properties.equals(that.properties) : that.properties != null) return false;
+//        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+//        if (properties != null ? !properties.equals(that.properties) : that.properties != null) return false;
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (properties != null ? properties.hashCode() : 0);
-        return result;
+        return 31;//super.hashCode();
+//        int result = name != null ? name.hashCode() : 0;
+//        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+//        return result;
     }
 
 
@@ -190,32 +128,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     @Override
     public Expr normalize() {
         return Maths.normalize(this);
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, double value) {
-        return setParam(paramExpr.getName(), value);
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, Expr value) {
-        return setParam(paramExpr.getName(), value);
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Expr setName(String name) {
-        if(isUpdatableName()) {
-            AbstractExprPropertyAware r = (AbstractExprPropertyAware) clone();
-            r.name = name;
-            return r;
-        }else{
-            return this;
-        }
     }
 
 //    public Matrix computeMatrix(double x, double y, double z) {
@@ -516,9 +428,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
 
-    public boolean isUpdatableName(){
-        return true;
-    }
     protected abstract Domain getDomainImpl() ;
     protected abstract boolean isInvariantImpl(Axis axis) ;
     protected abstract boolean isZeroImpl() ;

@@ -22,7 +22,7 @@ final public class RooftopXFunctionXY extends PieceXFunction implements Cloneabl
         }
         this.crestValue = crestValue;
         this.axis = axis;
-        name=("RoofTop" + nbrPeriods);
+//        name=("RoofTop" + nbrPeriods);
     }
 
     public RooftopXFunctionXY getSymmetricX() {

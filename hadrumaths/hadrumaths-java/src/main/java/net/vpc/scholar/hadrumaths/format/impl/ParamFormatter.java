@@ -18,7 +18,7 @@ public class ParamFormatter implements Formatter<ParamExpr> {
 
     @Override
     public String format(ParamExpr o, FormatParam... format) {
-        return o.getName();
+        return o.getParamName();
     }
 
 }

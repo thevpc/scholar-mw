@@ -12,6 +12,11 @@ public class NotExpr extends GenericFunctionX implements Cloneable{
         super("not",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "not";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.isZero()?Complex.ONE:Complex.ZERO;

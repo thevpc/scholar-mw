@@ -5,10 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -68,7 +68,7 @@ public class VDCxyNavRule implements ExpressionRewriterRule {
                     throw new IllegalArgumentException("Invalid dim");
                 }
             }
-            e2= AbstractExprPropertyAware.copyProperties(e, e2);
+            e2= Any.copyProperties(e, e2);
             if(bestEfforts==length) {
                 return RewriteResult.bestEffort(e2);
             }

@@ -12,6 +12,10 @@ public class CustomCCFunctionXYExpr extends GenericFunctionXY implements Cloneab
         super(definition.getName(),xarg,yarg,FunctionType.COMPLEX);
         this.definition=definition;
     }
+    @Override
+    public String getFunctionName() {
+        return definition.getName();
+    }
 
     public Complex evalComplex(Complex x, Complex y){
         return definition.getEval().evalComplex(x,y);

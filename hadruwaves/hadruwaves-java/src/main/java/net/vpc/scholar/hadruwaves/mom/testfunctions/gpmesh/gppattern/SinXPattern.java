@@ -57,7 +57,7 @@ public final class SinXPattern extends RectMeshAttachGpPattern {
                         d
                 )
         );
-        return f.setName("0,sinX" + p_i + "(" + p + "x)")
+        return f.setTitle("0,sinX" + p_i + "(" + p + "x)")
         .setProperty("Type", "SinX")
         .setProperty("p", p0).toDV();
     }

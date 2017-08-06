@@ -68,7 +68,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         Object value=values == null ? null : values.get(title);
         if(value==null){
             if("Name".equals(title)){
-                return expr.getName();
+                return expr.getTitle();
             }else if("Selected".equals(title)){
                 return selected[rowIndex];
             }

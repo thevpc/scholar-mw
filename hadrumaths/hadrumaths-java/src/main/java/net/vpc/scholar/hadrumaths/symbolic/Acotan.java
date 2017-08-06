@@ -11,6 +11,10 @@ public class Acotan extends TrigoFunctionX implements Cloneable {
         super("acotan", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "acotan";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.acotan();

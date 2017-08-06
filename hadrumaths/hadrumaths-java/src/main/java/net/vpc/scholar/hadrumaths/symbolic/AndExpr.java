@@ -11,6 +11,11 @@ public class AndExpr extends ComparatorExpr implements Cloneable{
         super("&&",xarg,yarg,FunctionType.DOUBLE);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "&&";
+    }
+
     public Complex evalComplex(Complex x, Complex y){
         return (x.isZero() || y.isZero())?Complex.ZERO:Complex.ONE;
     }

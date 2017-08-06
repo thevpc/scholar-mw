@@ -42,14 +42,14 @@ public final class FunctionFactory extends AbstractFactory{
 //                //                )
 //        );
 //    }
-    public static final DoubleToDouble DZEROX = DoubleValue.valueOf(0, Domain.ZEROX).setName("0").toDD();
-    public static final DoubleToDouble DZEROXY = DoubleValue.valueOf(0, Domain.ZEROXY).setName("0").toDD();
-    public static final DoubleToDouble DZEROXYZ = DoubleValue.valueOf(0, Domain.ZEROXYZ).setName("0").toDD();
+    public static final DoubleToDouble DZEROX = DoubleValue.valueOf(0, Domain.ZEROX).setTitle("0").toDD();
+    public static final DoubleToDouble DZEROXY = DoubleValue.valueOf(0, Domain.ZEROXY).setTitle("0").toDD();
+    public static final DoubleToDouble DZEROXYZ = DoubleValue.valueOf(0, Domain.ZEROXYZ).setTitle("0").toDD();
 
 
-    public static final DoubleToComplex CZEROX = new ComplexValue(CZERO, Domain.ZEROX).setName("0").toDC();
-    public static final DoubleToComplex CZEROXY = new ComplexValue(CZERO, Domain.ZEROXY).setName("0").toDC();
-    public static final DoubleToComplex CZEROXYZ = new ComplexValue(CZERO, Domain.ZEROXYZ).setName("0").toDC();
+    public static final DoubleToComplex CZEROX = new ComplexValue(CZERO, Domain.ZEROX).setTitle("0").toDC();
+    public static final DoubleToComplex CZEROXY = new ComplexValue(CZERO, Domain.ZEROXY).setTitle("0").toDC();
+    public static final DoubleToComplex CZEROXYZ = new ComplexValue(CZERO, Domain.ZEROXYZ).setTitle("0").toDC();
 
 //    //    public static final DFunctionVector2D DZERO_XY2D = new DFunctionVector2D(DZEROXY, DZEROXY);
 //    public static final DoubleToVector VZEROXY2 = (DoubleToVector) Maths.vector(CZEROXY, CZEROXY).setName("0");

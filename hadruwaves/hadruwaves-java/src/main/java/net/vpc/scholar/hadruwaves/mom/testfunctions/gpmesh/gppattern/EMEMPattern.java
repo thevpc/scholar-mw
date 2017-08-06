@@ -50,7 +50,7 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
                     (FunctionFactory.DZEROXY),
                     (expr(1.0 / Math.sqrt(a * b), domain))
             );
-            fn=(DoubleToVector) fn.setName("EMEM" + mode + m + "" + n);
+            fn=(DoubleToVector) fn.setTitle("EMEM" + mode + m + "" + n);
         } else {
             double u = 1;
             if (m != 0 && n != 0) {
@@ -84,20 +84,20 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
                     /**cos**/(m * Math.PI / a), -(m * Math.PI / a) * domain.xmin(),
                     /**cos**/(n * Math.PI / b), -(n * Math.PI / b) * domain.ymin(),
                     domain
-            ).setName("nx.sin(" + m + "PIx/a)sin(" + n + "PIx/b)").toDD();
+            ).setTitle("nx.sin(" + m + "PIx/a)sin(" + n + "PIx/b)").toDD();
 
             DoubleToDouble fy = FunctionFactory.cosXcosY(
                     ny,
                     /**cos**/(m * Math.PI / a), -(m * Math.PI / a) * domain.xmin(),
                     /**cos**/(n * Math.PI / b), -(n * Math.PI / b) * domain.ymin(),
                     domain
-            ).setName("nx.cos(" + m + "PIx/a)cos(" + n + "PIx/b)").toDD();
+            ).setTitle("nx.cos(" + m + "PIx/a)cos(" + n + "PIx/b)").toDD();
 
             //if(fx.isNull() && fy.isNull()){
             //    System.out.println("null for "+i);
             //}
             fn = Maths.vector(fx, fy);
-            fn=(DoubleToVector) fn.setName("EMEM" + m + "" + n);
+            fn=(DoubleToVector) fn.setTitle("EMEM" + m + "" + n);
         }
         return fn;
     }

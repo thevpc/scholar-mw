@@ -11,6 +11,11 @@ public class Acos extends TrigoFunctionX implements Cloneable {
         super("acos", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "acos";
+    }
+
 
     public Complex evalComplex(Complex c) {
         return c.acos();

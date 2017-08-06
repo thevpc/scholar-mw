@@ -42,7 +42,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
 
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         for (VDiscrete yvalue : yvalues) {
-            String plotTitle = toString() + "-" + yvalue.getName();
+            String plotTitle = toString() + "-" + yvalue.getTitle();
             if (plotTitle.length() > 0 && p.getSerieTitle().toString().length() > 0) {
                 plotTitle += " : ";
             }
@@ -50,7 +50,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
             all.add(new ConsoleActionCubesPlot(
                     yvalue, //values
                     plotTitle, //title
-                    yvalue.getName(), //group
+                    yvalue.getTitle(), //group
                     getInfiniteValue(), // infiniteValue
                     getPlotType(), //plotType
                     new WindowPath(p.getPreferredPath(), getName())//preferredPath
@@ -104,7 +104,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         ParamSet theX = p.getAxis().getX();
         double xmultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
-            referenceMatrix = (VDiscrete) computeValue(p.getStructure(), monitor0, p).setName("[Ref]");
+            referenceMatrix = (VDiscrete) computeValue(p.getStructure(), monitor0, p).setTitle("[Ref]");
             if(!monitor0.isTerminated()){
                 monitor0.terminate(getName()+" termination forced!");
             }
@@ -122,7 +122,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
 //            }
         }
         if (_b_modeledMatrix) {
-            modeledMatrix = (VDiscrete) computeValue(p.getStructure2(), monitor1, p).setName("[Model]");
+            modeledMatrix = (VDiscrete) computeValue(p.getStructure2(), monitor1, p).setTitle("[Model]");
             if(!monitor1.isTerminated()){
                 monitor1.terminate(getName()+" termination forced!");
             }
@@ -141,7 +141,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         }
         if (_b_relativeError) {
             assert referenceMatrix != null;
-            relativeError=(VDiscrete) referenceMatrix.relativeError(modeledMatrix).setName("[%]");
+            relativeError=(VDiscrete) referenceMatrix.relativeError(modeledMatrix).setTitle("[%]");
             monitor2.terminate(getName()+" relative error evaluated.");
 //            Complex[][] d = referenceMatrix.get();
 //            Complex[][] m = modeledMatrix.getMatrix();
@@ -164,7 +164,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         }
         if (_b_absoluteError) {
             assert referenceMatrix != null;
-            absoluteError=(VDiscrete) referenceMatrix.sub(modeledMatrix).setName("[<>]");
+            absoluteError=(VDiscrete) referenceMatrix.sub(modeledMatrix).setTitle("[<>]");
             if (!Double.isNaN(getMultiplier())) {
                 absoluteError.mul(getMultiplier());
             }
@@ -198,7 +198,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
                 case REFERENCE_VS_MODELED: {
                     if (modeledMatrix != null) {
-                        ret.add((VDiscrete) new VDiscrete(modeledMatrix.getComponent(Axis.X),modeledMatrix.getComponent(Axis.Y),modeledMatrix.getComponent(Axis.Z)).setName("VS"));
+                        ret.add((VDiscrete) new VDiscrete(modeledMatrix.getComponent(Axis.X),modeledMatrix.getComponent(Axis.Y),modeledMatrix.getComponent(Axis.Z)).setTitle("VS"));
                     }
                     break;
                 }

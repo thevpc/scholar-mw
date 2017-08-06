@@ -12,13 +12,17 @@ public class CustomCCFunctionXExpr extends GenericFunctionX implements Cloneable
         super(definition.getName(),arg,FunctionType.COMPLEX);
         this.definition=definition;
     }
+    @Override
+    public String getFunctionName() {
+        return definition.getName();
+    }
 
     public Complex evalComplex(Complex c){
         return definition.getEval().evalComplex(c);
     }
 
     protected double evalDouble(double c){
-        return evalComplex(new Complex(c)).toDouble();
+        return evalComplex(Complex.valueOf(c)).toDouble();
     }
 
     @Override

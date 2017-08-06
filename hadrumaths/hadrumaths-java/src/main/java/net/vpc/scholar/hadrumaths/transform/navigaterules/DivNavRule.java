@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Div;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -36,7 +36,7 @@ public class DivNavRule implements ExpressionRewriterRule {
         }
 
         Expr e2 = Maths.div(a.getValue(), b.getValue());
-        e2= AbstractExprPropertyAware.copyProperties(e, e2);
+        e2= Any.copyProperties(e, e2);
         return (a.isBestEffort()&& b.isBestEffort())?RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
     }
 

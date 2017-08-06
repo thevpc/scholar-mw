@@ -12,6 +12,11 @@ public class Conj extends GenericFunctionX implements Cloneable{
         super("conj",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "conj";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.conj();

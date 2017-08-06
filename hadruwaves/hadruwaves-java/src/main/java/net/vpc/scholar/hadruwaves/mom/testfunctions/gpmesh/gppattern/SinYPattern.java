@@ -56,7 +56,7 @@ public final class SinYPattern extends RectMeshAttachGpPattern {
                         d
                 )
         )
-        .setName("0,sinY" + q_i + "(" + q + "y)")
+        .setTitle("0,sinY" + q_i + "(" + q + "y)")
         .setProperty("Type", "SinY")
         .setProperty("q", q0).toDV();
 //        f.setProperties(properties);

@@ -266,7 +266,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
                     //si non XY_COUPLED alors separer les variables
                     if (!d1.getComponent(Axis.X).isZero() && (axisIndependent1 == null || d1.getComponent(Axis.X).isInvariant(axisIndependent1))) {
                         DoubleToVector f = Maths.vector(d1.getComponent(Axis.X), FunctionFactory.CZEROXY);
-                        f = f.setName(d1.getName())
+                        f = f.setTitle(d1.getTitle())
                                 .setProperties(d1.getProperties())
                                 .setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription())
                                 .setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
@@ -277,7 +277,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
                     }
                     if (!d1.getComponent(Axis.Y).isZero() && (axisIndependent1 == null || d1.getComponent(Axis.Y).isInvariant(axisIndependent1))) {
                         DoubleToVector f = Maths.vector(FunctionFactory.CZEROXY, d1.getComponent(Axis.Y));
-                        f = f.setName(d1.getName())
+                        f = f.setTitle(d1.getTitle())
                                 .setProperties(d1.getProperties())
                                 .setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription())
                                 .setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();

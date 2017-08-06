@@ -13,6 +13,11 @@ public class Abs extends GenericFunctionX implements Cloneable{
         super("abs",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "abs";
+    }
+
 
     public Complex evalComplex(Complex c){
         return c.abs();

@@ -5,8 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.Imag;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -33,7 +33,7 @@ public class ImagNavRule implements ExpressionRewriterRule {
         RewriteResult a = ruleset.rewrite(base);
         if(a.isRewritten()){
             Expr eee = new Imag(a.getValue().toDC());
-            eee= AbstractExprPropertyAware.copyProperties(e, eee);
+            eee= Any.copyProperties(e, eee);
             return a.isBestEffort()?RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
         }
         return RewriteResult.unmodified(e);

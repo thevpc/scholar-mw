@@ -354,8 +354,8 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = Maths.sum(updated);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -374,7 +374,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Plus(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -394,7 +394,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = Maths.sum(updated);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

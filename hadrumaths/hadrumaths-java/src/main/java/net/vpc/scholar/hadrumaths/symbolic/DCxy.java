@@ -26,19 +26,19 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
     public DCxy(DoubleToDouble real) {
         this(real.getDomain(), real, FunctionFactory.DZEROXY);
-        name = (real.getName());
+//        name = (real.getName());
     }
 
     public DCxy(DoubleToDouble real, DoubleToDouble imag) {
         this(real.getDomain(), real, imag);
-        name = (real.getName());
+//        name = (real.getName());
     }
 
     protected DCxy(Domain domain, DoubleToDouble real, DoubleToDouble imag) {
         this.domain = domain;
         this.real = real == null ? FunctionFactory.DZEROXY : real;
         this.imag = imag == null ? FunctionFactory.DZEROXY : imag;
-        name = (this.real.getName() + "+i." + this.imag.getName());
+//        name = (this.real.getName() + "+i." + this.imag.getName());
     }
     @Override
     public Complex computeComplex(double x) {
@@ -390,8 +390,8 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         DoubleToDouble imag = this.imag.setParam(name, value).toDD();
         if (!real.equals(this.real) || !(imag.equals(this.imag))) {
             Expr e = DCxy.valueOf(real, imag);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }
@@ -402,7 +402,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         DoubleToDouble imag = this.imag.composeX(xreplacement).toDD();
         if (!real.equals(this.real) || !(imag.equals(this.imag))) {
             Expr e = DCxy.valueOf(real, imag);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -414,7 +414,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         DoubleToDouble imag = this.imag.composeY(yreplacement).toDD();
         if (!real.equals(this.real) || !(imag.equals(this.imag))) {
             Expr e = DCxy.valueOf(real, imag);
-            e=copyProperties(this, e);
+            e= Any.copyProperties(this, e);
             return e;
         }
         return this;

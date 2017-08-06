@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.symbolic.AbstractComposedFunction;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.Expr;
@@ -46,7 +46,7 @@ public class GenericFunctionSimplifyRule implements ExpressionRewriterRule {
         }
         if(updated){
             Expr a = ee.newInstance(args2);
-            a= AbstractExprPropertyAware.copyProperties(e, a);
+            a= Any.copyProperties(e, a);
             return bestEffort==args.length?RewriteResult.bestEffort(a) : RewriteResult.newVal(a);
         }else{
             return RewriteResult.unmodified(e);

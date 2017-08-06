@@ -122,8 +122,8 @@ public class DDy extends AbstractDoubleToDouble implements Cloneable{
         DoubleToDouble base = (DoubleToDouble) this.base.setParam(name, value);
         if (base != this.base) {
             Expr e = new DDy(base, defaultX,defaultZ);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }

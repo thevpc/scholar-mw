@@ -11,6 +11,10 @@ public class Atan extends TrigoFunctionX implements Cloneable {
         super("atan", arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "atan";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.atan();

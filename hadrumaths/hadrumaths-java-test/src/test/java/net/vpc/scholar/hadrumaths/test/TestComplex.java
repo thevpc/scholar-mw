@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.Complex;
 public class TestComplex {
     public static void main(String[] args) {
         for(int i=0;i<100;i++){
-            Complex c = new Complex(i);
+            Complex c = Complex.valueOf(i);
             System.out.println(c.cotanh()+":"+c.cosh().div(c.sinh()));
         }
     }

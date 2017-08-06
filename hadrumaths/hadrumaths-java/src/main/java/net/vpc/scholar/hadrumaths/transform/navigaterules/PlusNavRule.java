@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -52,7 +52,7 @@ public class PlusNavRule implements ExpressionRewriterRule {
         }
         if(changed){
             Expr e2= Maths.sum(updated);
-            e2= AbstractExprPropertyAware.copyProperties(e, e2);
+            e2= Any.copyProperties(e, e2);
             return bestEfforts== size ?RewriteResult.bestEffort(e2):RewriteResult.newVal(e2);
         }
         return RewriteResult.unmodified(e);

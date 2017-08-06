@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public final class ArrayUtils {
+    public static final Expr[] EMPTY_EXPR_ARRAY=new Expr[0];
     private ArrayUtils() {
     }
 

@@ -144,7 +144,7 @@ public class ArrayTList<T> extends AbstractTList<T> {
     }
 
     public TList<T> setParam(TParam paramExpr, Object value) {
-        return setParam(paramExpr.getName(), value);
+        return setParam(paramExpr.getParamName(), value);
     }
 
     public TList<T> copy() {

@@ -85,8 +85,8 @@ public class DDz extends AbstractDoubleToDouble implements Cloneable{
         Expr updated = base.setParam(name, value);
         if (updated != base) {
             Expr e = new DDz(updated.toDD(), defaultX, defaultY);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }

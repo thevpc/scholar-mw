@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DCxy;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -39,7 +39,7 @@ public class DCxyNavRule implements ExpressionRewriterRule {
         DoubleToDouble imag = ii.getValue().toDD();
 //        if (!real.equals(ee.getReal()) || !(imag.equals(ee.getImag()))) {
         Expr e2 = Maths.complex(real, imag);
-        e2 = AbstractExprPropertyAware.copyProperties(e, e2);
+        e2 = Any.copyProperties(e, e2);
         if (rr.isBestEffort() && ii.isBestEffort()) {
             return RewriteResult.bestEffort(e2);
         }

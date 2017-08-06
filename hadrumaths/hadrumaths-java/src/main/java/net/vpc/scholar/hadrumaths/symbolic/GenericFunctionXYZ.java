@@ -15,15 +15,22 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
     @NonStateField
     private Expressions.TernaryExprHelper<GenericFunctionXYZ> expr3Helper = new GenericFunctionXYBinaryExprHelper();
 
+    private Expr xargument;
+    private Expr yargument;
+    private Expr zargument;
+
     protected GenericFunctionXYZ(String name,Expr xargument, Expr yargument, Expr zargument) {
         this(name,xargument, yargument, zargument, null);
     }
 
     protected GenericFunctionXYZ(String name,Expr xargument, Expr yargument, Expr zargument, FunctionType lowerFunctionType) {
-        super(name,xargument, yargument, zargument);
+        super();
         if (!xargument.getComponentDimension().equals(yargument.getComponentDimension()) || !yargument.getComponentDimension().equals(zargument.getComponentDimension())) {
             throw new IllegalArgumentException("Dimension Mismatch " + xargument.getComponentDimension() + " vs " + yargument.getComponentDimension() + " vs " + zargument.getComponentDimension());
         }
+        this.xargument=xargument;
+        this.yargument=yargument;
+        this.zargument=zargument;
         FunctionType functionType0 = null;
         if (xargument.isDD()) {
             functionType0 = FunctionType.DOUBLE;
@@ -64,15 +71,20 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
     }
 
     public Expr getXArgument() {
-        return getArguments()[0];
+        return xargument;
     }
 
     public Expr getYArgument() {
-        return getArguments()[1];
+        return yargument;
     }
 
     public Expr getZArgument() {
-        return getArguments()[2];
+        return zargument;
+    }
+
+    @Override
+    public Expr[] getArguments() {
+        return new Expr[]{xargument,yargument,zargument};
     }
 
     @Override
@@ -285,14 +297,18 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         GenericFunctionXYZ that = (GenericFunctionXYZ) o;
 
         if (functionType != that.functionType) return false;
-
-        return true;
+        if (xargument != null ? !xargument.equals(that.xargument) : that.xargument != null) return false;
+        if (yargument != null ? !yargument.equals(that.yargument) : that.yargument != null) return false;
+        return zargument != null ? zargument.equals(that.zargument) : that.zargument == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + functionType.hashCode();
+        result = 31 * result + (functionType != null ? functionType.hashCode() : 0);
+        result = 31 * result + (xargument != null ? xargument.hashCode() : 0);
+        result = 31 * result + (yargument != null ? yargument.hashCode() : 0);
+        result = 31 * result + (zargument != null ? zargument.hashCode() : 0);
         return result;
     }
 
@@ -374,15 +390,10 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         Expr zb = za.setParam(name, value);
         if (xa != xb || ya != yb || za != zb) {
             Expr e = newInstance(xb, yb, zb);
-            e = copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e, name, value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
-    }
-
-    @Override
-    public boolean isUpdatableName() {
-        return false;
     }
 
     @Override

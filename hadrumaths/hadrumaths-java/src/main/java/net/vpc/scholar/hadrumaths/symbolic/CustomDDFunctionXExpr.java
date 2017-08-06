@@ -12,6 +12,10 @@ public class CustomDDFunctionXExpr extends GenericFunctionX implements Cloneable
         super(definition.getName(),arg,FunctionType.DOUBLE);
         this.definition=definition;
     }
+    @Override
+    public String getFunctionName() {
+        return definition.getName();
+    }
 
     public Complex evalComplex(Complex c){
         return Complex.valueOf(evalDouble(c.toDouble()));

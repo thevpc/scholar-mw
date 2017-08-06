@@ -14,13 +14,15 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
     protected Domain _cache_domain;
     @NonStateField
     private Expressions.UnaryExprHelper<GenericFunctionX> exprHelper = new GenericFunctionXUnaryExprHelper();
-
+    private Expr argument;
     protected GenericFunctionX(String functionName,Expr argument) {
         this(functionName,argument, null);
+        this.argument=argument;
     }
 
     protected GenericFunctionX(String functionName,Expr argument, FunctionType lowerFunctionType) {
-        super(functionName,argument);
+        super();
+        this.argument=argument;
         FunctionType functionType0 = null;
         if (argument.isDD()) {
             functionType0 = FunctionType.DOUBLE;
@@ -42,13 +44,13 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         }
     }
 
-    @Override
-    public boolean isUpdatableName() {
-        return false;
+    public Expr getArgument() {
+        return argument;
     }
 
-    public Expr getArgument() {
-        return getArguments()[0];
+    @Override
+    public Expr[] getArguments() {
+        return new Expr[]{argument};
     }
 
     //    @Override
@@ -292,14 +294,14 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         GenericFunctionX that = (GenericFunctionX) o;
 
         if (functionType != that.functionType) return false;
-
-        return true;
+        return argument != null ? argument.equals(that.argument) : that.argument == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + functionType.hashCode();
+        result = 31 * result + (functionType != null ? functionType.hashCode() : 0);
+        result = 31 * result + (argument != null ? argument.hashCode() : 0);
         return result;
     }
 
@@ -411,8 +413,8 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         Expr b = a.setParam(name,value);
         if(a!=b){
             Expr e = newInstance(b);
-            e=copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e,name,value);
+            e= Any.copyProperties(this, e);
+            return Any.updateTitleVars(e,name,value);
         }
         return this;
     }

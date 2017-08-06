@@ -32,7 +32,7 @@ final public class Rooftop2DFunctionXY extends PieceXFunction implements Cloneab
 //        if(Double.isNaN(crestValue) || crestValue==0){
 //            crestValue=Math2.scalarProduct(this,this);
 //        }
-        name=("RoofTop2D(" + type + ")");
+//        name=("RoofTop2D(" + type + ")");
     }
 
     private final static class MySegmentFactory implements SegmentFactory {

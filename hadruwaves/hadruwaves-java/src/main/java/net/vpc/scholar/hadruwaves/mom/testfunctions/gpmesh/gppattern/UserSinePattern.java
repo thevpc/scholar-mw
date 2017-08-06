@@ -46,7 +46,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
                 fx,
                 fy
         )
-        .setName("Sine_" + xboundaries + "_" + yboundaries + "(" + p + "," + q + "))")
+        .setTitle("Sine_" + xboundaries + "_" + yboundaries + "(" + p + "," + q + "))")
                 .setProperty("Type", "Sine_" + xboundaries + "_" + yboundaries)
                 .setProperty("p", p)
                 .setProperty("q", q).toDV();

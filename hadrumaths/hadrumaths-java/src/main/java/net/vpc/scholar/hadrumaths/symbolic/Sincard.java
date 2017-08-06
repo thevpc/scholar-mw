@@ -12,6 +12,10 @@ public class Sincard extends TrigoFunctionX implements Cloneable {
         super("sincard",arg);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "sincard";
+    }
 
     public Complex evalComplex(Complex c) {
         return c.sincard();

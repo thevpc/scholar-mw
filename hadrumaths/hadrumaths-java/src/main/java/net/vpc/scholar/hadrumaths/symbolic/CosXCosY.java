@@ -41,7 +41,7 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
         this.b = b;
         this.c = c;
         this.d = d;
-        name=(((a != 0 || b != 0) ? "cos(ax+b)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
+//        name=(((a != 0 || b != 0) ? "cos(ax+b)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 
 

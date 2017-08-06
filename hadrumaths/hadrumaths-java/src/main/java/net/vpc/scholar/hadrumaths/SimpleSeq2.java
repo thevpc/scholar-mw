@@ -23,8 +23,8 @@ class SimpleSeq2 implements TVectorCell<Expr> {
     @Override
     public Expr get(int index) {
         double[] value = values[index];
-        String mname = m.getName();
-        String nname = n.getName();
+        String mname = m.getParamName();
+        String nname = n.getParamName();
         Expr e = pattern.setParam(mname, value[0]).setParam(nname, value[1]);
 //                Map<String, Object> props = e.getProperties();
 //                props.put(mname, value[0]);

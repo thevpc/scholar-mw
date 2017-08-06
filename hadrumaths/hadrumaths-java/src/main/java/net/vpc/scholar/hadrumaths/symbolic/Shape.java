@@ -30,7 +30,6 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
         super(cst == 0 ? Domain.EMPTYXY : geometry.getDomain());
         this.value = cst;
         this.geometry = geometry;
-        name=("Echelon");
     }
 
 

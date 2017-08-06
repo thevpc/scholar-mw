@@ -10,6 +10,10 @@ public class Tan extends TrigoFunctionX implements Cloneable {
     public Tan(Expr arg) {
         super("tan", arg);
     }
+    @Override
+    public String getFunctionName() {
+        return "tan";
+    }
 
 
     public Complex evalComplex(Complex c) {

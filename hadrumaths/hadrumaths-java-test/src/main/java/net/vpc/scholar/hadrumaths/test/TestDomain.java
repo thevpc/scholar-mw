@@ -48,7 +48,7 @@ public class TestDomain {
         Matrix c = matrix(30, 30, new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return new Complex(Math.sin(row*Math.PI/10) * Math.cos(column*Math.PI/10));
+                return Complex.valueOf(Math.sin(row*Math.PI/10) * Math.cos(column*Math.PI/10));
 //                return new Complex((row*Math.PI/10) * (column*Math.PI/10));
             }
         });

@@ -44,8 +44,8 @@ public class TestCosXPlusY {
 
 
             Domain d = Domain.forWidth(xmin, xlen, ymin, ylen);
-            Expr e1 = new Cos(add(mul(new Complex(a1), X), mul(new Complex(a2), Y),new Complex(a3)));
-            Expr e2 = mul(new Cos(add(mul(new Complex(b1), X),new Complex(b2))),new Cos(add(mul(new Complex(b3), Y),new Complex(b4))));
+            Expr e1 = new Cos(add(mul(Complex.valueOf(a1), X), mul(Complex.valueOf(a2), Y),Complex.valueOf(a3)));
+            Expr e2 = mul(new Cos(add(mul(Complex.valueOf(b1), X),Complex.valueOf(b2))),new Cos(add(mul(Complex.valueOf(b3), Y),Complex.valueOf(b4))));
             e1list.add(e1);
             e2list.add(e2);
             vdomains.add(d);
@@ -79,8 +79,8 @@ public class TestCosXPlusY {
             double b3 = randomBoolean()? 0: randomDouble(1);//Math.random() * 100;
 
             Domain d = Domain.forWidth(xmin, xlen, ymin, ylen);
-            Expr e1 = new Cos(add(mul(new Complex(a1), X), mul(new Complex(a2), Y),new Complex(a3)));
-            Expr e2 = new Cos(add(mul(new Complex(b1), X), mul(new Complex(b2), Y),new Complex(b3)));
+            Expr e1 = new Cos(add(mul(Complex.valueOf(a1), X), mul(Complex.valueOf(a2), Y),Complex.valueOf(a3)));
+            Expr e2 = new Cos(add(mul(Complex.valueOf(b1), X), mul(Complex.valueOf(b2), Y),Complex.valueOf(b3)));
             e1list.add(e1);
             e2list.add(e2);
             vdomains.add(d);
@@ -111,8 +111,8 @@ public class TestCosXPlusY {
 
 
             Domain d = Domain.forWidth(xmin, xlen, ymin, ylen);
-            Expr e1 = new Cos(add(mul(new Complex(a1), X), mul(new Complex(a2), Y)));
-            Expr e2 = (add(add(mul(new Complex(b1), X), mul(new Complex(b2), Y)), new Complex(b3)));
+            Expr e1 = new Cos(add(mul(Complex.valueOf(a1), X), mul(Complex.valueOf(a2), Y)));
+            Expr e2 = (add(add(mul(Complex.valueOf(b1), X), mul(Complex.valueOf(b2), Y)), Complex.valueOf(b3)));
             e1list.add(e1);
             e2list.add(e2);
             vdomains.add(d);

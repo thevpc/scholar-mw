@@ -11,6 +11,10 @@ public class XX extends AxisFunction implements Cloneable {
         super(domain, "X");
     }
 
+    @Override
+    public String getFunctionName() {
+        return "X";
+    }
 
     @Override
     public Axis getAxis() {
@@ -20,7 +24,7 @@ public class XX extends AxisFunction implements Cloneable {
     @Override
     public Expr newInstance(Expr... arguments) {
         Expr xx = new XX(getDomain());
-        xx=copyProperties(this, xx);
+        xx= Any.copyProperties(this, xx);
         return xx;
     }
 

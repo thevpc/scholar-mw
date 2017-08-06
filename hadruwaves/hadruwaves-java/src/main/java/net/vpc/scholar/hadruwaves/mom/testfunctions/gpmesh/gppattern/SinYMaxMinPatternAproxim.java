@@ -50,7 +50,7 @@ public final class SinYMaxMinPatternAproxim extends RectMeshAttachGpPattern {
                         d
                 ), d, 100, 100)
         )
-                .setName("0,sinY" + q_i + "(" + q + "y)")
+                .setTitle("0,sinY" + q_i + "(" + q + "y)")
                 .setProperty("Type", "SinY")
                 .setProperty("q", q0).toDV();
 //        f.setProperties(properties);

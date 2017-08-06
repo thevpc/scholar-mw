@@ -11,6 +11,11 @@ public class EqExpr extends ComparatorExpr implements Cloneable{
         super("==",xarg,yarg,FunctionType.DOUBLE);
     }
 
+    @Override
+    public String getFunctionName() {
+        return "==";
+    }
+
     public Complex evalComplex(Complex x,Complex y){
         return x.equals(y)?Complex.ONE:Complex.ZERO;
     }

@@ -33,7 +33,6 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         this.a = a;
         this.b = b;
         this.c = c;
-        name="cos(ax+by+c)";
         //name=(((a != 0 || b != 0) ? "cos(ax+by+c)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 

@@ -31,7 +31,7 @@ public class DoubleParam extends ParamExpr implements Cloneable{
     }
 
 
-//    @Override
+    //    @Override
 //    public boolean isDDx() {
 //        return true;
 //    }
@@ -50,11 +50,11 @@ public class DoubleParam extends ParamExpr implements Cloneable{
 
     @Override
     public Expr setParam(String name, Expr value) {
-        if (getName().equals(name)) {
+        if (getParamName().equals(name)) {
             if (value.isDD()) {
                 return value;
             }
-            throw new IllegalArgumentException("Cannot process param " + getName() + " as " + value);
+            throw new IllegalArgumentException("Cannot process param " + getParamName() + " as " + value);
         }
         return this;
     }

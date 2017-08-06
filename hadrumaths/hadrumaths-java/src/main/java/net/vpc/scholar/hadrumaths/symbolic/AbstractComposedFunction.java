@@ -12,18 +12,12 @@ import java.util.List;
  * Created by vpc on 4/30/14.
  */
 public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
-    private Expr[] arguments;
-    private String functionName;
 
-    public AbstractComposedFunction(String functionName, Expr... arguments) {
-        this.arguments = arguments;
-        this.functionName = name = functionName;
+    public AbstractComposedFunction() {
+
     }
 
-    public Expr[] getArguments() {
-        return arguments;
-    }
-
+    public abstract Expr[] getArguments() ;
 
     @Override
     public List<Expr> getSubExpressions() {
@@ -89,16 +83,6 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     public abstract Expr newInstance(Expr... arguments);
 
     @Override
-    public Expr clone() {
-        AbstractComposedFunction cloned = (AbstractComposedFunction) super.clone();
-        cloned.arguments = new Expr[cloned.arguments.length];
-        for (int i = 0; i < cloned.arguments.length; i++) {
-            cloned.arguments[i] = arguments[i].clone();
-        }
-        return cloned;
-    }
-
-    @Override
     public String getComponentTitle(int row, int col) {
         return Expressions.getMatrixExpressionTitleByChildren(this, row, col);
     }
@@ -120,8 +104,8 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         }
         if (updated) {
             Expr e = newInstance(b);
-            e = AbstractExprPropertyAware.copyProperties(this, e);
-            return AbstractExprPropertyAware.updateNameVars(e, name, value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -141,7 +125,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         }
         if (updated) {
             Expr e = newInstance(b);
-            e = AbstractExprPropertyAware.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return null;
@@ -162,7 +146,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         }
         if (updated) {
             Expr e = newInstance(b);
-            e = AbstractExprPropertyAware.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return null;
@@ -176,21 +160,14 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
 
         AbstractComposedFunction that = (AbstractComposedFunction) o;
 
-        if (!Arrays.equals(arguments, that.arguments)) return false;
-
         return true;
     }
 
-    public String getFunctionName() {
-        return functionName;
-    }
+    public abstract String getFunctionName();
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Arrays.hashCode(arguments);
-        return result;
-    }
+//    public String getFunctionName() {
+//        return functionName;
+//    }
 
     @Override
     public DoubleToComplex getComponent(Axis a) {

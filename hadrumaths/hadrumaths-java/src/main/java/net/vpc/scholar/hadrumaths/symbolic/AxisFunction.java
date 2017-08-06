@@ -5,6 +5,7 @@ import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 /**
  * Created by vpc on 8/19/14.
@@ -12,7 +13,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 public abstract class AxisFunction extends AbstractComposedFunction {
     protected Domain domain;
     protected AxisFunction(Domain domain,String functionName) {
-        super(functionName);
+        super();
         this.domain = domain;
     }
     protected Complex evalComplex(Complex c) {
@@ -21,6 +22,11 @@ public abstract class AxisFunction extends AbstractComposedFunction {
 
     protected double evalDouble(double c) {
         return c;
+    }
+
+    @Override
+    public Expr[] getArguments() {
+        return ArrayUtils.EMPTY_EXPR_ARRAY;
     }
 
     @Override

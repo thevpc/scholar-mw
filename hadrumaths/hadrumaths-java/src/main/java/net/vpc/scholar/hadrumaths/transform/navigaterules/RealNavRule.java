@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.Real;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -36,7 +36,7 @@ public class RealNavRule implements ExpressionRewriterRule {
         }
 //        if(!a.equals(base)){
             Expr eee = new Real(a.getValue().toDC());
-            eee= AbstractExprPropertyAware.copyProperties(e, eee);
+            eee= Any.copyProperties(e, eee);
             return a.isBestEffort()?RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
 //        }
 //        return e;

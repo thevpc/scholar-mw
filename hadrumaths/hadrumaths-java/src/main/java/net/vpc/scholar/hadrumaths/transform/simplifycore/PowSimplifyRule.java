@@ -51,7 +51,7 @@ public class PowSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.unmodified(e);
         }
         Expr e2=new Pow(a.getValue(),b.getValue());
-        e2= AbstractExprPropertyAware.copyProperties(e,e2);
+        e2= Any.copyProperties(e,e2);
         if(a.isBestEffort() && b.isBestEffort()){
             return RewriteResult.bestEffort(e2);
         }

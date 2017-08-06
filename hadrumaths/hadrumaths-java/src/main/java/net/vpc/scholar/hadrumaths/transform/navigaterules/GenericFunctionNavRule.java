@@ -5,9 +5,9 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractExprPropertyAware;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.AbstractComposedFunction;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -50,7 +50,7 @@ public class GenericFunctionNavRule implements ExpressionRewriterRule {
         }
         if(updated){
             Expr a = ee.newInstance(args2);
-            a= AbstractExprPropertyAware.copyProperties(e, a);
+            a= Any.copyProperties(e, a);
             if(bestEfforts==size){
                 return RewriteResult.bestEffort(a);
             }

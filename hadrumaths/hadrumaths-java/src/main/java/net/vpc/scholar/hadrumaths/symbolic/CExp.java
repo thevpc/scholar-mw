@@ -48,7 +48,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
                 throw new IllegalArgumentException("Missing y domain");
             }
         }
-        name=("amp*exp(iax)*exp(iby)");
+//        name=("amp*exp(iax)*exp(iby)");
     }
 
     @Override
