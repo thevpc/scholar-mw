@@ -343,7 +343,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public Complex scalarProduct(Complex a, Complex b, boolean hermitian) {
+    public Complex scalarProduct(boolean hermitian, Complex a, Complex b) {
         return hermitian? a.mul(b) : a.conj().mul(b);
     }
 

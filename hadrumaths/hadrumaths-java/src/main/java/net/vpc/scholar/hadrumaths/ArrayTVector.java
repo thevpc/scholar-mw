@@ -97,7 +97,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
         rowType = m.getColumnCount() == 0;
     }
 
-    public T scalarProduct(TVector<T> other, boolean hermitian) {
+    public T scalarProduct(boolean hermitian, TVector<T> other) {
         int max = Math.max(elements.length, other.size());
         VectorSpace<T> space = getComponentVectorSpace();
         T d = space.zero();

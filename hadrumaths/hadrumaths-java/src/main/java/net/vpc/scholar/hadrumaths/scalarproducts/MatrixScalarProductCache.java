@@ -159,7 +159,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                                 for (int q = 0; q < finalGp1.length; q++) {
                                     DoubleToComplex gpq = finalGp1[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp.eval(gpq, finalFn1[n].toDC(),hermitian));
+                                        gfps.set(q, n, finalSp.eval(hermitian, gpq, finalFn1[n].toDC()));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -221,7 +221,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!finalDoubleValue1) {
                                 for (int q = 0; q < finalGp3.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp1.eval(finalGp3[q], finalFn2[n],hermitian));
+                                        gfps.set(q, n, finalSp1.eval(hermitian, finalGp3[q], finalFn2[n]));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -257,7 +257,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!finalDoubleValue2) {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp2.eval(finalGp4[q].toDV().getComponent(Axis.X), finalFn3[n].toDV().getComponent(Axis.X),hermitian));
+                                        gfps.set(q, n, finalSp2.eval(hermitian, finalGp4[q].toDV().getComponent(Axis.X), finalFn3[n].toDV().getComponent(Axis.X)));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -286,7 +286,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!finalDoubleValue3) {
                                 for (int q = 0; q < finalGp5.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp3.eval(finalGp5[q].toDV().getComponent(Axis.Y), finalFn4[n].toDV().getComponent(Axis.Y),hermitian));
+                                        gfps.set(q, n, finalSp3.eval(hermitian, finalGp5[q].toDV().getComponent(Axis.Y), finalFn4[n].toDV().getComponent(Axis.Y)));
                                         mon.inc(monMessage);
                                     }
                                 }

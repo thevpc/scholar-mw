@@ -134,7 +134,7 @@ public interface VectorSpace<T> {
 
     T parse(String string);
 
-    T scalarProduct(T a, T b, boolean hermitian);
+    T scalarProduct(boolean hermitian, T a, T b);
 
     T setParam(T a, String paramName, Object b);
 }

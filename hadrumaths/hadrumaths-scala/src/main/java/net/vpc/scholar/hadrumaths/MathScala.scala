@@ -180,27 +180,27 @@ object MathScala {
       value.scalarProductAll(true, Array((v._1), (v._2)): _*)
     }
 
-    def **(v: TMatrix[Complex]): Complex = value.scalarProduct(v.toVector(), false);
-    def ***(v: TMatrix[Complex]): Complex = value.scalarProduct(v.toVector(), true);
+    def **(v: TMatrix[Complex]): Complex = value.scalarProduct(false, v.toVector());
+    def ***(v: TMatrix[Complex]): Complex = value.scalarProduct(true, v.toVector());
 
 
 
-    def **(v: Vector): Complex = value.scalarProduct(v, false)
-    def ***(v: Vector): Complex = value.scalarProduct(v, true)
+    def **(v: Vector): Complex = value.scalarProduct(false, v)
+    def ***(v: Vector): Complex = value.scalarProduct(true, v)
 
     def **(v: TList[Expr]): Expr = {
-      v.scalarProduct(value.asInstanceOf[TVector[Expr]], false)
+      v.scalarProduct(false, value.asInstanceOf[TVector[Expr]])
     }
     def ***(v: TList[Expr]): Expr = {
-      v.scalarProduct(value.asInstanceOf[TVector[Expr]], true)
+      v.scalarProduct(true, value.asInstanceOf[TVector[Expr]])
     }
 
-    def :**(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.scalarProductToVector(false, v.toArray(Array.ofDim[Vector](v.size())): _ *))
+    def :**(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.vscalarProduct(false, v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
-    def :***(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.scalarProductToVector(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
+    def :***(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.vscalarProduct(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
-    def :**(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.scalarProductToVector(false, v: _ *))
-    def :***(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.scalarProductToVector(true, v: _ *))
+    def :**(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.vscalarProduct(false, v: _ *))
+    def :***(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.vscalarProduct(true, v: _ *))
 
     def +(v: TVector[Complex]): Vector = Maths.tvectorToVector(value.add(v))
 
@@ -258,11 +258,11 @@ object MathScala {
   implicit class SMatrix(val value: Matrix) {
 
     def :**[T](v: TVector[TVector[T]]): TVector[T] = {
-      return Maths.scalarMatrixToVector(false,value.toVector.asInstanceOf[TVector[T]],v);
+      return Maths.vscalarProduct(value.toVector.asInstanceOf[TVector[T]],v);
     }
 
     def :***[T](v: TVector[TVector[T]]): TVector[T] = {
-      return Maths.scalarMatrixToVector(true,value.toVector.asInstanceOf[TVector[T]],v);
+      return Maths.vhscalarProduct(value.toVector.asInstanceOf[TVector[T]],v);
     }
 
     def +(v: Matrix): Matrix = value.add(v)
@@ -297,24 +297,24 @@ object MathScala {
     def :/(v: Matrix): Matrix = value.dotdiv(v)
 
     def **(v: Matrix): Complex = {
-      value.scalarProduct(v, false)
+      value.scalarProduct(false, v)
     }
     def ***(v: Matrix): Complex = {
-      value.scalarProduct(v, true)
+      value.scalarProduct(true, v)
     }
 
     def **(v: Vector): Complex = {
-      value.scalarProduct(v, false)
+      value.scalarProduct(false, v)
     }
     def ***(v: Vector): Complex = {
-      value.scalarProduct(v, true)
+      value.scalarProduct(true, v)
     }
 
     def **(v: TList[Expr]): Expr = {
-      v.scalarProduct(value.asInstanceOf[TMatrix[Expr]], false)
+      v.scalarProduct(false, value.asInstanceOf[TMatrix[Expr]])
     }
     def ***(v: TList[Expr]): Expr = {
-      v.scalarProduct(value.asInstanceOf[TMatrix[Expr]], true)
+      v.scalarProduct(true, value.asInstanceOf[TMatrix[Expr]])
     }
 
     def **(v: Tuple2[Vector, Vector]): Complex = {
@@ -391,8 +391,8 @@ object MathScala {
 
 //    def **(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(value, Any.unwrap(v));
 
-    def **(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(value, v,false);
-    def ***(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(value, v,true);
+    def **(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(false, value, v);
+    def ***(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(true, value, v);
 
     def **(v: Expr): Expr = new ParametrizedScalarProduct(value, Any.unwrap(v),false);
     def ***(v: Expr): Expr = new ParametrizedScalarProduct(value, Any.unwrap(v),true);
@@ -477,8 +477,8 @@ object MathScala {
 
     def *(v: Domain): Expr = mul(DoubleValue.valueOf(1, v))
 
-    def **(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(null, value, Any.unwrap(v),false);
-    def ***(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(null, value, Any.unwrap(v),true);
+    def **(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(false, null, value, Any.unwrap(v));
+    def ***(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(true, null, value, Any.unwrap(v));
 
     def /(v: Expr): Expr = div(Any.unwrap(v))
 
@@ -692,30 +692,30 @@ object MathScala {
       Maths.dotmul(value,v._1.asInstanceOf[TVector[Expr]], v._2.asInstanceOf[TVector[Expr]], v._3.asInstanceOf[TVector[Expr]], v._4.asInstanceOf[TVector[Expr]])
     }
 
-    def **[P1 <: Expr](v: Expr): TVector[Expr] = value.to(classOf[Expr]).scalarProduct(v, false);
-    def ***[P1 <: Expr](v: Expr): TVector[Expr] = value.to(classOf[Expr]).scalarProduct(v, true);
+    def **[P1 <: Expr](v: Expr): TVector[Expr] = value.to(classOf[Expr]).scalarProduct(false, v);
+    def ***[P1 <: Expr](v: Expr): TVector[Expr] = value.to(classOf[Expr]).scalarProduct(true, v);
 
-    def **[P <: Expr](v: TVector[P]): Expr = value.to(classOf[Expr]).scalarProduct(v.to(classOf[Expr]), false);
-    def ***[P <: Expr](v: TVector[P]): Expr = value.to(classOf[Expr]).scalarProduct(v.to(classOf[Expr]), true);
+    def **[P <: Expr](v: TVector[P]): Expr = value.to(classOf[Expr]).scalarProduct(false, v.to(classOf[Expr]));
+    def ***[P <: Expr](v: TVector[P]): Expr = value.to(classOf[Expr]).scalarProduct(true, v.to(classOf[Expr]));
 
-    def **[P <: Expr](v: TMatrix[P]): Expr = value.to(classOf[Expr]).scalarProduct((v.toVector().to(classOf[Expr])), false);
-    def ***[P <: Expr](v: TMatrix[P]): Expr = value.to(classOf[Expr]).scalarProduct(expr(v.toVector()), true);
+    def **[P <: Expr](v: TMatrix[P]): Expr = value.to(classOf[Expr]).scalarProduct(false, (v.toVector().to(classOf[Expr])));
+    def ***[P <: Expr](v: TMatrix[P]): Expr = value.to(classOf[Expr]).scalarProduct(true, expr(v.toVector()));
 
-    def :**[P1 <: Expr](v: TVector[P1]): TMatrix[Expr] = Maths.scalarProductMatrix(value, v.asInstanceOf[TVector[Expr]],false).asInstanceOf[TMatrix[Expr]];
-    def :***[P1 <: Expr](v: TVector[P1]): TMatrix[Expr] = Maths.scalarProductMatrix(value, v.asInstanceOf[TVector[Expr]],true).asInstanceOf[TMatrix[Expr]];
+    def :**[P1 <: Expr](v: TVector[P1]): TMatrix[Expr] = Maths.scalarProductMatrix(false, value, v.asInstanceOf[TVector[Expr]]).asInstanceOf[TMatrix[Expr]];
+    def :***[P1 <: Expr](v: TVector[P1]): TMatrix[Expr] = Maths.scalarProductMatrix(true, value, v.asInstanceOf[TVector[Expr]]).asInstanceOf[TMatrix[Expr]];
 
     def :**(v: Vector): Matrix = {
       val exprs: Array[Expr] = v.toArray().asInstanceOf[Array[Expr]]
-      Maths.scalarProductMatrix(value, columnVector(exprs),false)
+      Maths.scalarProductMatrix(false, value, columnVector(exprs))
     };
 
     def :***(v: Vector): Matrix = {
       val exprs: Array[Expr] = v.toArray().asInstanceOf[Array[Expr]]
-      Maths.scalarProductMatrix(value, columnVector(exprs),true)
+      Maths.scalarProductMatrix(true, value, columnVector(exprs))
     };
 
-    def :**(v: Matrix): Matrix = Maths.scalarProductMatrix(value, v.toVector.asInstanceOf[TVector[Expr]],false);
-    def :***(v: Matrix): Matrix = Maths.scalarProductMatrix(value, v.toVector.asInstanceOf[TVector[Expr]],true);
+    def :**(v: Matrix): Matrix = Maths.scalarProductMatrix(false, value, v.toVector.asInstanceOf[TVector[Expr]]);
+    def :***(v: Matrix): Matrix = Maths.scalarProductMatrix(true, value, v.toVector.asInstanceOf[TVector[Expr]]);
   }
 
   implicit class SExprList(value: TList[Expr]) extends STVectorExpr(value) {

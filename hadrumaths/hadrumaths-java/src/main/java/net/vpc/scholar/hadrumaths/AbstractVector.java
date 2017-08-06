@@ -6,46 +6,16 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by vpc on 4/11/16.
  */
-public abstract class AbstractVector implements Vector {
-    protected boolean rowType;
+public abstract class AbstractVector extends AbstractTVector<Complex> implements Vector {
 
     public AbstractVector(boolean row) {
-        this.rowType = row;
+        super(row);
     }
 
-    @Override
-    public Iterator<Complex> iterator() {
-        return new Iterator<Complex>() {
-            int i=0;
-            @Override
-            public boolean hasNext() {
-                return i<size();
-            }
-
-            @Override
-            public Complex next() {
-                Complex v = get(i);
-                i++;
-                return v;
-            }
-        };
-    }
-
-    public boolean isRow() {
-        return rowType;
-    }
-
-    public boolean isColumn() {
-        return !rowType;
-    }
 
     @Override
     public Matrix toMatrix() {
@@ -53,11 +23,6 @@ public abstract class AbstractVector implements Vector {
             return new MatrixFromRowVector(this);
         }
         return new MatrixFromColumnVector(this);
-    }
-
-    @Override
-    public Complex apply(int i) {
-        return get(i);
     }
 
     @Override
@@ -86,11 +51,11 @@ public abstract class AbstractVector implements Vector {
     }
 
     @Override
-    public Complex scalarProduct(TMatrix<Complex> v, boolean hermitian) {
-        return scalarProduct(v.toVector(), hermitian);
+    public Complex scalarProduct(boolean hermitian, TMatrix<Complex> v) {
+        return scalarProduct(hermitian, v.toVector());
     }
 
-    public Complex scalarProduct(TVector<Complex> other, boolean hermitian) {
+    public Complex scalarProduct(boolean hermitian, TVector<Complex> other) {
         int max = Math.max(size(), other.size());
         Complex d = Complex.ZERO;
         for (int i = 0; i < max; i++) {
@@ -601,30 +566,30 @@ public abstract class AbstractVector implements Vector {
         return Maths.columnVector(other.length, new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(other[index], hermitian);
+                return scalarProduct(hermitian, other[index]);
             }
         });
     }
 
 
     @Override
-    public Vector scalarProductToVector(boolean hermitian, TVector<Complex>... other) {
+    public Vector vscalarProduct(boolean hermitian, TVector<Complex>... other) {
         return Maths.columnVector(other.length, new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(other[index], hermitian);
+                return scalarProduct(hermitian, other[index]);
             }
         });
     }
 
     @Override
-    public Vector scalarProduct(Complex other, boolean hermitian) {
+    public Vector scalarProduct(boolean hermitian, Complex other) {
         if(isRow()){
             return Maths.rowVector(size(),
                     new VectorCell() {
                         @Override
                         public Complex get(int index) {
-                            return getComponentVectorSpace().scalarProduct(get(index),other, hermitian);
+                            return getComponentVectorSpace().scalarProduct(hermitian, get(index),other);
                         }
                     });
         }
@@ -632,19 +597,19 @@ public abstract class AbstractVector implements Vector {
                 new VectorCell() {
             @Override
             public Complex get(int index) {
-                return getComponentVectorSpace().scalarProduct(get(index),other, hermitian);
+                return getComponentVectorSpace().scalarProduct(hermitian, get(index),other);
             }
         });
     }
 
     @Override
-    public Vector rscalarProduct(Complex other, boolean hermitian) {
+    public Vector rscalarProduct(boolean hermitian, Complex other) {
         if(isRow()){
             return Maths.rowVector(size(),
                     new VectorCell() {
                         @Override
                         public Complex get(int index) {
-                            return getComponentVectorSpace().scalarProduct(other,get(index), hermitian);
+                            return getComponentVectorSpace().scalarProduct(hermitian, other,get(index));
                         }
                     });
         }
@@ -652,13 +617,13 @@ public abstract class AbstractVector implements Vector {
                 new VectorCell() {
                     @Override
                     public Complex get(int index) {
-                        return getComponentVectorSpace().scalarProduct(other,get(index), hermitian);
+                        return getComponentVectorSpace().scalarProduct(hermitian, other,get(index));
                     }
                 });
     }
 
     @Override
-    public <P extends Complex> Complex[] toArray(P[] a) {
+    public <P extends Complex> P[] toArray(P[] a) {
         int size = size();
         if(a.length< size) {
             a = ArrayUtils.newArray(a.getClass().getComponentType(), size);
@@ -695,22 +660,12 @@ public abstract class AbstractVector implements Vector {
     }
 
     @Override
-    public List<Complex> toJList() {
-        return new ArrayList<>(Arrays.asList(toArray()));
-    }
-
-    @Override
     public <R> TVector<R> to(Class<R> other) {
         TList<R> rs = Maths.listOf(other);
         for (Complex complex : this) {
             rs.append((R)complex);
         }
         return rs;
-    }
-
-    @Override
-    public boolean acceptsType(Class type) {
-        return getComponentType().isAssignableFrom(type);
     }
 
     public Vector setParam(String name, Object value) {
@@ -750,21 +705,5 @@ public abstract class AbstractVector implements Vector {
         );
     }
 
-    @Override
-    public void forEachIndex(TVectorItemAction<Complex> action) {
-        int i=0;
-        for (Complex t : this) {
-            action.run(i++,t);
-        }
-    }
 
-    @Override
-    public <R> R[] toArray(Class<R> type) {
-        R[] all = ArrayUtils.newArray(type, size());
-        int size = size();
-        for (int i = 0; i < size; i++) {
-            all[i] = (R) get(i);
-        }
-        return all;
-    }
 }

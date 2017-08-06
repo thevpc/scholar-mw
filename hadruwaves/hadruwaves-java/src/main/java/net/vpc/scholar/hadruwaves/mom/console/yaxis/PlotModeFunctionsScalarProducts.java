@@ -49,7 +49,7 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
 //        int progress=0;
                         for (int q = 0; q < gfps.length; q++) {
                             for (int n = 0; n < max; n++) {
-                                gfps[q][n] = scalarProduct(indexes[n].fn, indexes[q].fn,true);
+                                gfps[q][n] = scalarProduct(true, indexes[n].fn, indexes[q].fn);
 //                progress++;
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
                                 ComputationMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());

@@ -660,8 +660,8 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Expr scalarProduct(Expr a, Expr b, boolean hermitian) {
-        return Maths.Config.getDefaultScalarProductOperator().eval(a,b,hermitian);
+    public Expr scalarProduct(boolean hermitian, Expr a, Expr b) {
+        return Maths.Config.getDefaultScalarProductOperator().eval(hermitian, a,b);
     }
 
     @Override

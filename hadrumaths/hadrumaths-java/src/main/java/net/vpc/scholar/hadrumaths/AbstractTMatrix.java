@@ -4,9 +4,7 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -2003,12 +2001,32 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         throw new RuntimeException("Not a vector");
     }
 
-    public T scalarProduct(TMatrix<T> m, boolean hermitian) {
-        return toVector().scalarProduct(m.toVector(), hermitian);
+    public T scalarProduct(boolean hermitian, TMatrix<T> m) {
+        return toVector().scalarProduct(hermitian, m.toVector());
     }
 
-    public T scalarProduct(TVector<T> v, boolean hermitian) {
-        return toVector().scalarProduct(v, hermitian);
+    @Override
+    public T scalarProduct(TMatrix<T> m) {
+        return scalarProduct(false, m);
+    }
+
+    @Override
+    public T scalarProduct(TVector<T> v) {
+        return scalarProduct(false, v);
+    }
+
+    @Override
+    public T hscalarProduct(TMatrix<T> m) {
+        return scalarProduct(true, m);
+    }
+
+    @Override
+    public T hscalarProduct(TVector<T> v) {
+        return scalarProduct(true, v);
+    }
+
+    public T scalarProduct(boolean hermitian, TVector<T> v) {
+        return toVector().scalarProduct(hermitian, v);
     }
 
     public boolean isColumn() {

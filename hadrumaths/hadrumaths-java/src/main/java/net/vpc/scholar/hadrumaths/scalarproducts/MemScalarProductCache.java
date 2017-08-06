@@ -140,7 +140,7 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
                                 for (int q = 0; q < finalGp.length; q++) {
                                     DoubleToComplex gpq = finalGp[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp.eval(gpq, finalFn[n].toDC(),hermitian);
+                                        gfps[q][n] = finalSp.eval(hermitian, gpq, finalFn[n].toDC());
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -192,7 +192,7 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
                             if (!finalDoubleValue1) {
                                 for (int q = 0; q < finalGp2.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp1.eval(finalGp2[q], finalFn1[n], hermitian);
+                                        gfps[q][n] = finalSp1.eval(hermitian, finalGp2[q], finalFn1[n]);
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -228,7 +228,7 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
                             if (!finalDoubleValue2) {
                                 for (int q = 0; q < finalGp3.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp2.eval(finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X),hermitian);
+                                        gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -257,7 +257,7 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
                             if (!finalDoubleValue3) {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp3.eval(finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y),hermitian);
+                                        gfps[q][n] = finalSp3.eval(hermitian, finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y));
                                         mon.inc(monMessage);
                                     }
                                 }

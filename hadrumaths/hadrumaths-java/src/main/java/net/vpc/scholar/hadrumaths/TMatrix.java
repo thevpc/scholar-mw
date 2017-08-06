@@ -2,9 +2,7 @@ package net.vpc.scholar.hadrumaths;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
@@ -343,9 +341,17 @@ public interface TMatrix<T> extends Normalizable {
 
     TVector<T> toVector();
 
-    T scalarProduct(TMatrix<T> m, boolean hermitian);
+    T scalarProduct(TMatrix<T> m);
 
-    T scalarProduct(TVector<T> v, boolean hermitian);
+    T scalarProduct(TVector<T> v);
+
+    T hscalarProduct(TMatrix<T> m);
+
+    T hscalarProduct(TVector<T> v);
+
+    T scalarProduct(boolean hermitian, TMatrix<T> m);
+
+    T scalarProduct(boolean hermitian, TVector<T> v);
 
     TMatrix<T> cos();
 

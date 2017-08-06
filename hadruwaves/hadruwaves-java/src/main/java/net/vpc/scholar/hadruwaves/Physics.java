@@ -715,7 +715,7 @@ public final class Physics {
 //        int progress=0;
         for (int q = 0; q < gfps.length; q++) {
             for (int n = 0; n < max; n++) {
-                gfps[q][n] = Maths.scalarProduct(indexes[n].fn, indexes[q].fn,true);
+                gfps[q][n] = Maths.scalarProduct(true, indexes[n].fn, indexes[q].fn);
             }
         }
         Plot.title("<fn,fn>").asMatrix().plot(matrix(gfps));//.display();

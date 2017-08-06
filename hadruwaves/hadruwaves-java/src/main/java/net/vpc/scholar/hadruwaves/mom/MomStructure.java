@@ -1716,7 +1716,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         ComputationMonitor[] mon = ComputationMonitorFactory.split(monitor, 2);
         fnModeFunctions.getModes(mon[0], getObjectCache());
         HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
-        return getScalarProductOperator().eval(gpTestFunctions.arr(), fnModeFunctions.arr(),true, axis.toAxisXY(), mon[1]);
+        return getScalarProductOperator().eval(true, gpTestFunctions.arr(), fnModeFunctions.arr(), axis.toAxisXY(), mon[1]);
     }
 
     /**

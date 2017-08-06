@@ -31,28 +31,31 @@ public class UpdatableExprSequence<T> extends AbstractTList<T> implements Clonea
 
     @Override
     public void appendAll(TVector<T> e) {
-        if (delegate == null) {
-            delegate = Maths.listOf(getComponentType());
-        }
+        prepareDelegate(e.size());
         delegate.appendAll(e);
     }
 
     @Override
     public void append(T e) {
-        if (delegate == null) {
-            delegate = Maths.listOf(getComponentType());
-        }
+        prepareDelegate(1);
         delegate.append(e);
     }
 
     @Override
     public void appendAll(Collection<? extends T> e) {
-        if (delegate == null) {
-            delegate = Maths.listOf(getComponentType());
-        }
+        prepareDelegate(e.size());
         delegate.appendAll(e);
     }
 
+    protected void prepareDelegate(int count){
+        if (delegate == null) {
+            int initialSize = model.size();
+            delegate = Maths.listOf(getComponentType(), initialSize+count);
+            for (int i = 0; i < initialSize; i++) {
+                delegate.add(model.get(i));
+            }
+        }
+    }
     @Override
     public TList<T> copy() {
         if (delegate != null) {

@@ -112,11 +112,11 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         );
     }
 
-    public Any scalarProduct(Expr e, boolean hermitian) {
+    public Any scalarProduct(boolean hermitian, Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
         return wrap(
-                Maths.scalarProduct(first, second,hermitian)
+                Maths.scalarProduct(hermitian, first, second)
         );
     }
 

@@ -343,7 +343,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public Double scalarProduct(Double a, Double b, boolean hermitian) {
+    public Double scalarProduct(boolean hermitian, Double a, Double b) {
         return mul(conj(a), b);
     }
 

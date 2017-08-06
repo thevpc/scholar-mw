@@ -17,18 +17,18 @@ public abstract class ScalarProductOperator implements Dumpable{
 
     public abstract double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2);
 
-    public Complex eval(Domain domain, Expr f1, Expr f2,boolean hermitian) {
+    public Complex eval(boolean hermitian, Domain domain, Expr f1, Expr f2) {
         if (f1.isDD() && f2.isDD()) {
             return Complex.valueOf(evalDD(domain, f1.toDD(), f2.toDD()));
         }
         if (f1.isDC() && f2.isDC()) {
-            return evalDC(domain, f1.toDC(), f2.toDC(),hermitian);
+            return evalDC(hermitian, domain, f1.toDC(), f2.toDC());
         }
-        return evalDM(domain, f1.toDM(), f2.toDM(),hermitian);
+        return evalDM(hermitian, domain, f1.toDM(), f2.toDM());
     }
 
-    public Complex eval(Expr f1, Expr f2,boolean hermitian) {
-        return eval(null, f1, f2,hermitian);
+    public Complex eval(boolean hermitian, Expr f1, Expr f2) {
+        return eval(hermitian, null, f1, f2);
     }
 
 //    public double process(DFunctionVector2D f1, DFunctionVector2D f2) {
@@ -39,16 +39,16 @@ public abstract class ScalarProductOperator implements Dumpable{
 //        return evalDD(domain, f1.fx, f2.fx) + evalDD(domain, f1.fy, f2.fy);
 //    }
 
-    public Complex evalVDC(DoubleToVector f1, DoubleToVector f2,boolean hermitian) {
-        return eval(f1.getComponent(Axis.X), f2.getComponent(Axis.X),hermitian).add(eval(f1.getComponent(Axis.Y), f2.getComponent(Axis.Y),hermitian));
+    public Complex evalVDC(boolean hermitian, DoubleToVector f1, DoubleToVector f2) {
+        return eval(hermitian, f1.getComponent(Axis.X), f2.getComponent(Axis.X)).add(eval(hermitian, f1.getComponent(Axis.Y), f2.getComponent(Axis.Y)));
     }
 
-    public Complex evalDM(Domain domain, DoubleToMatrix f1, DoubleToMatrix f2,boolean hermitian) {
+    public Complex evalDM(boolean hermitian, Domain domain, DoubleToMatrix f1, DoubleToMatrix f2) {
         MutableComplex v = MutableComplex.Zero();
         ComponentDimension dim1 = ComponentDimension.min(f1.getComponentDimension(), f2.getComponentDimension());
         for (int c = 0; c < dim1.columns; c++) {
             for (int r = 0; r < dim1.rows; r++) {
-                v.add(eval(domain, f1.getComponent(r, c), f2.getComponent(r, c),hermitian));
+                v.add(eval(hermitian, domain, f1.getComponent(r, c), f2.getComponent(r, c)));
             }
         }
         return v.toComplex();
@@ -59,22 +59,22 @@ public abstract class ScalarProductOperator implements Dumpable{
     }
 
     public ScalarProductCache eval(Expr[] g, Expr[] f,boolean hermitian, ComputationMonitor monitor) {
-        return Maths.scalarProductCache(this, g, f, hermitian,monitor);
+        return Maths.scalarProductCache(hermitian, this, g, f, monitor);
     }
 
-    public ScalarProductCache eval(TVector<Expr> g, TVector<Expr> f, boolean hermitian, ComputationMonitor monitor) {
-        return Maths.scalarProductCache(this, g.toArray(), f.toArray(), hermitian,monitor);
+    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+        return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), monitor);
     }
 
-    public ScalarProductCache eval(TVector<Expr> g, TVector<Expr> f, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
-        return Maths.scalarProductCache(this, g.toArray(), f.toArray(), hermitian, axis,monitor);
+    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ComputationMonitor monitor) {
+        return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
     }
 
-    public ScalarProductCache eval(Expr[] g, Expr[] f, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
-        return Maths.scalarProductCache(this, g, f,hermitian, axis, monitor);
+    public ScalarProductCache eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
+        return Maths.scalarProductCache(hermitian, this, g, f, axis, monitor);
     }
 
-    public Complex evalDC(Domain domain, DoubleToComplex f1, DoubleToComplex f2, boolean hermitian) {
+    public Complex evalDC(boolean hermitian, Domain domain, DoubleToComplex f1, DoubleToComplex f2) {
 //        if (domain != null) {
 //            domain = f1.intersect(f2, domain);
 //        } else {
@@ -94,8 +94,8 @@ public abstract class ScalarProductOperator implements Dumpable{
         );
     }
 
-    public Complex eval(DoubleToComplex f1, DoubleToComplex f2, boolean hermitian) {
-        return evalDC(null, f1, f2,hermitian);
+    public Complex eval(boolean hermitian, DoubleToComplex f1, DoubleToComplex f2) {
+        return evalDC(hermitian, null, f1, f2);
     }
     public abstract ExpressionRewriter getExpressionRewriter();
 

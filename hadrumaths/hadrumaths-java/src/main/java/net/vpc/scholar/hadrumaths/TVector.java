@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 
-public interface TVector<T> extends Normalizable, Iterable<T>,TVectorModel<T> {
+public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     Class<T> getComponentType();
 
@@ -52,19 +52,37 @@ public interface TVector<T> extends Normalizable, Iterable<T>,TVectorModel<T> {
     void store(PrintStream stream, String commentsChar, String varName) throws IOException;
 
 
-    T scalarProduct(TMatrix<T> v, boolean hermitian);
+    T scalarProduct(TMatrix<T> v);
+    T hscalarProduct(TMatrix<T> v);
+    T scalarProduct(boolean hermitian, TMatrix<T> v);
 
-    TVector<T> scalarProduct(T other, boolean hermitian);
+    TVector<T> scalarProduct(boolean hermitian, T other);
 
-    TVector<T> rscalarProduct(T other, boolean hermitian);
+    TVector<T> scalarProduct(T other);
 
-    T scalarProduct(TVector<T> other, boolean hermitian);
+    TVector<T> hscalarProduct(T other);
+
+    TVector<T> rscalarProduct(boolean hermitian, T other);
+
+    T scalarProduct(boolean hermitian, TVector<T> other);
+
+    T scalarProduct(TVector<T> other);
+
+    T hscalarProduct(TVector<T> other);
+
+    T scalarProductAll(TVector<T>... other);
+
+    T hscalarProductAll(TVector<T>... other);
 
     T scalarProductAll(boolean hermitian, TVector<T>... other);
 
     <R> TVector<R> to(Class<R> other);
 
-    TVector<T> scalarProductToVector(boolean hermitian, TVector<T>... other);
+    TVector<T> vscalarProduct(TVector<T>... other);
+
+    TVector<T> vhscalarProduct(TVector<T>... other);
+
+    TVector<T> vscalarProduct(boolean hermitian, TVector<T>... other);
 
     TVector<T> dotmul(TVector<T> other);
 
@@ -169,11 +187,11 @@ public interface TVector<T> extends Normalizable, Iterable<T>,TVectorModel<T> {
 
     TVector<T> eval(ElementOp<T> op);
 
-    <R> TVector<R> transform(Class<R> toType,TTransform<T,R> op);
+    <R> TVector<R> transform(Class<R> toType, TTransform<T, R> op);
 
     boolean acceptsType(Class type);
 
-    TVector<T> setParam(TParam param, Object value) ;
+    TVector<T> setParam(TParam param, Object value);
 
     TVector<T> setParam(String name, Object value);
 

@@ -4,9 +4,7 @@ import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -2023,12 +2021,12 @@ public abstract class AbstractMatrix extends Matrix {
         throw new RuntimeException("Not a vector");
     }
 
-    public Complex scalarProduct(TMatrix<Complex> m, boolean hermitian) {
-        return toVector().scalarProduct(castToMatrix(m).toVector(), hermitian);
+    public Complex scalarProduct(boolean hermitian, TMatrix<Complex> m) {
+        return toVector().scalarProduct(hermitian, castToMatrix(m).toVector());
     }
 
-    public Complex scalarProduct(TVector<Complex> v, boolean hermitian) {
-        return toVector().scalarProduct(v, hermitian);
+    public Complex scalarProduct(boolean hermitian, TVector<Complex> v) {
+        return toVector().scalarProduct(hermitian, v);
     }
 
     public boolean isColumn() {
@@ -2379,5 +2377,24 @@ public abstract class AbstractMatrix extends Matrix {
 
     //////////////////////////////////////////////////////////////////
 
+    @Override
+    public Complex scalarProduct(TMatrix<Complex> m) {
+        return scalarProduct(false, m);
+    }
+
+    @Override
+    public Complex scalarProduct(TVector<Complex> v) {
+        return scalarProduct(false, v);
+    }
+
+    @Override
+    public Complex hscalarProduct(TMatrix<Complex> m) {
+        return scalarProduct(true, m);
+    }
+
+    @Override
+    public Complex hscalarProduct(TVector<Complex> v) {
+        return scalarProduct(true, v);
+    }
 
 }

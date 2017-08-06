@@ -684,18 +684,39 @@ public final class Maths {
         return rowTVector(Expr.class, rows, cellFactory);
     }
 
-    public static <T> TVector<T> columnTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
+    public static <T> TVector<T> updatableOf(TVector<T> vector) {
         return new UpdatableTVector<>(
-                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+                vector.getComponentType(),new CachedTVectorUpdatableModel<>(vector,vector.getComponentType()),
                 false
         );
     }
+    public static <T> TList<T> copyOf(TVector<T> vector) {
+        TList<T> ts = listOf(vector.getComponentType(), vector.size());
+        ts.setRow(vector.isRow());
+        ts.appendAll(vector);
+        return ts;
+    }
+
+    public static <T> TVector<T> columnTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
+        return new ReadOnlyTVector<>(
+                cls,cellFactory,
+                false
+        );
+//        return new UpdatableTVector<>(
+//                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+//                false
+//        );
+    }
 
     public static <T> TVector<T> rowTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
-        return new UpdatableTVector<>(
-                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+        return new ReadOnlyTVector<>(
+                cls,cellFactory,
                 true
         );
+//        return new UpdatableTVector<>(
+//                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
+//                true
+//        );
     }
 
     public static <T> TVector<T> columnTVector(Class<T> cls, int rows, final TVectorCell<T> cellFactory) {
@@ -3366,7 +3387,7 @@ public final class Maths {
             Mul m = (Mul) e;
             if (m.size() == 2) {
                 Expr expression = m.getExpression(0);
-                return scalarProduct(domain, expression, m.getExpression(1),false);
+                return scalarProduct(false, domain, expression, m.getExpression(1));
             } else if (m.size() > 2) {
                 List<Expr> first = new ArrayList<Expr>();
                 List<Expr> second = new ArrayList<Expr>();
@@ -3379,7 +3400,7 @@ public final class Maths {
                 }
                 Expr firsts = (new Mul(first.toArray(new Expr[first.size()])));
                 Mul seconds = new Mul(second.toArray(new Expr[second.size()]));
-                return scalarProduct(domain, firsts,seconds,false);
+                return scalarProduct(false, domain, firsts,seconds);
             }
         }
         throw new RuntimeException("Unsupported");
@@ -3442,25 +3463,25 @@ public final class Maths {
         return new MemScalarProductCache();
     }
 
-    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, boolean hermitian, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(null, fn, gp, hermitian,AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, boolean hermitian,ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(sp, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(sp, fn, gp, hermitian, axis, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(Expr[] gp, Expr[] fn, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(null, fn, gp, hermitian, axis, monitor);
         return c;
@@ -3475,7 +3496,7 @@ public final class Maths {
             case Z:
                 return gateZ(a, b);
         }
-        throw new IllegalArgumentException("Insupported axis " + axis);
+        throw new IllegalArgumentException("Unsupported axis " + axis);
     }
 
     public static Expr gate(Expr axis, double a, double b) {
@@ -3540,93 +3561,99 @@ public final class Maths {
         return Config.getDefaultScalarProductOperator().evalDD(null, f1, f2);
     }
 
-    public static Vector scalarProduct(Expr f1, TVector<Expr> f2,boolean hermitian) {
+    public static Vector scalarProduct(boolean hermitian, Expr f1, TVector<Expr> f2) {
         VectorCell spfact = new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(f1, f2.get(index),hermitian);
+                return scalarProduct(hermitian, f1, f2.get(index));
             }
         };
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(Expr f1, TMatrix<Expr> f2,boolean hermitian) {
+    public static Matrix scalarProduct(boolean hermitian, Expr f1, TMatrix<Expr> f2) {
         return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return scalarProduct(f1, f2.get(row, column),hermitian);
+                return scalarProduct(hermitian, f1, f2.get(row, column));
             }
         });
     }
 
-    public static Vector scalarProduct(TVector<Expr> f2, Expr f1,boolean hermitian) {
+    public static Vector scalarProduct(boolean hermitian, TVector<Expr> f2, Expr f1) {
         VectorCell spfact = new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(f2.get(index), f1,hermitian);
+                return scalarProduct(hermitian, f2.get(index), f1);
             }
         };
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(TMatrix<Expr> f2, Expr f1,boolean hermitian) {
+    public static Matrix scalarProduct(boolean hermitian, TMatrix<Expr> f2, Expr f1) {
         return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return scalarProduct(f2.get(row, column), f1,hermitian);
+                return scalarProduct(hermitian, f2.get(row, column), f1);
             }
         });
     }
 
-    public static Complex scalarProduct(Domain domain, Expr f1, Expr f2, boolean hermitian) {
-        return Config.getDefaultScalarProductOperator().eval(domain, f1, f2, hermitian);
+    public static Complex scalarProduct(boolean hermitian, Domain domain, Expr f1, Expr f2) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, domain, f1, f2);
     }
 
-    public static Complex scalarProduct(Expr f1, Expr f2,boolean hermitian) {
-        return Config.getDefaultScalarProductOperator().eval(f1, f2, hermitian);
+    public static Complex scalarProduct(boolean hermitian, Expr f1, Expr f2) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, f1, f2);
+    }
+    public static Complex scalarProduct(Expr f1, Expr f2) {
+        return Config.getDefaultScalarProductOperator().eval(false, f1, f2);
+    }
+    public static Complex hscalarProduct(Expr f1, Expr f2) {
+        return Config.getDefaultScalarProductOperator().eval(true, f1, f2);
     }
 //    public static Complex scalarProduct(DomainXY domain, IDCxy f1, IDCxy f2) {
 //        return getDefaultScalarProductOperator().process(domain, f1, f2);
 //    }//
 
-    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f,boolean hermitian) {
-        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, null).toMatrix();
+    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,null);
+    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
+    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
-    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f,boolean hermitian, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,monitor).toMatrix();
+    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f,boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,axis, monitor);
+    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f,boolean hermitian) {
+    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,null).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f,boolean hermitian) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
         return Config.getDefaultScalarProductOperator().eval(g,f, hermitian, null);
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, boolean hermitian, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, boolean hermitian, ComputationMonitor monitor) {
+    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, axis, monitor);
+    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
     //    public static String scalarProductToMatlabString(DFunctionXY f1, DFunctionXY f2, DomainXY domain0, ToMatlabStringParam... format) {
@@ -3658,6 +3685,10 @@ public final class Maths {
     public static <T> TList<T> listOf(Class<T> type) {
         return new ArrayTList<T>(type,0);
     }
+    public static <T> TList<T> listOf(Class<T> type,int initialSize) {
+        return new ArrayTList<T>(type,initialSize);
+    }
+
     public static <T> TList<T> list(TVector<T> vector) {
         TList<T> exprs = listOf(vector.getComponentType());
         for (T o : vector) {
@@ -3673,10 +3704,16 @@ public final class Maths {
         return exprs;
     }
 
-    public static <T> TVector<T> scalarMatrixToVector(boolean hermitian,TVector<T> vector,TVector<TVector<T>> vectors){
-        Class<T> a = vector.getComponentType();
-        Class<T> b = vectors.get(0).getComponentType();
-        return vector.scalarProductToVector(hermitian,vectors.toArray(new TVector[vectors.size()]));
+    public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors){
+        return vscalarProduct(false,vector,vectors);
+    }
+
+    public static <T> TVector<T> vhscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors){
+        return vscalarProduct(true,vector,vectors);
+    }
+
+    public static <T> TVector<T> vscalarProduct(boolean hermitian, TVector<T> vector, TVector<TVector<T>> vectors){
+        return vector.vscalarProduct(hermitian,vectors.toArray(new TVector[vectors.size()]));
     }
 
     public static TList<Expr> exprList() {
@@ -4090,7 +4127,7 @@ public final class Maths {
     public static double norm(Expr a) {
         //TODO conjugate a
         Expr aCong = a;
-        Complex c = Config.getDefaultScalarProductOperator().eval(a, aCong,true);
+        Complex c = Config.getDefaultScalarProductOperator().eval(true, a, aCong);
         return sqrt(c).absdbl();
     }
 
@@ -4466,6 +4503,8 @@ public final class Maths {
 
     public static <V> V chrono(String name,Callable<V> r) {
 //        System.out.println("Start "+name);
+        Runtime.getRuntime().gc();
+        MemoryInfo memoryInfoBefore = Maths.memoryInfo();
         Chronometer c = new Chronometer(name).start();
         V v= null;
         try {
@@ -4473,7 +4512,10 @@ public final class Maths {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        System.out.println(c.stop().toString());
+        c.stop();
+        MemoryInfo memoryInfoAfter = Maths.memoryInfo();
+
+        System.out.println(c.toString()+"  memory : "+Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return v;
     }
 

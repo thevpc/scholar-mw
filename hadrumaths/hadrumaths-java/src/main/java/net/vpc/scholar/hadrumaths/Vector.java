@@ -43,7 +43,7 @@ public interface Vector extends Normalizable, Iterable<Complex>,TVector<Complex>
 
     Vector scalarProductToVector(boolean hermitian, Vector... other);
 
-    Vector scalarProductToVector(boolean hermitian, TVector<Complex>... other);
+    Vector vscalarProduct(boolean hermitian, TVector<Complex>... other);
 
 //    Complex scalarProduct(Vector other);
 //

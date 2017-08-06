@@ -34,9 +34,9 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
 //        System.out.println("freq="+structure.getF());
         for (ModeInfo fi : evan) {
 //            System.out.println(fi.mode+"[m"+fi.m+",n"+fi.n+"] ; "+ "GAMMAmn = " + fi.firstBoxSpaceGamma+"  : Zmn = " + fi.zn);
-            z0 = z0.add(Maths.scalarProduct(g, fi.fn,true).sqr().mul(fi.impedance));
+            z0 = z0.add(Maths.scalarProduct(true, g, fi.fn).sqr().mul(fi.impedance));
         }
-        Complex gf02 = Maths.scalarProduct(g, f0.fn,true).sqr();
+        Complex gf02 = Maths.scalarProduct(true, g, f0.fn).sqr();
         z0 = z0.div(gf02);
 //        System.out.println("z="+z0);
 //        System.out.println("------------------------------------------------------------------------");
@@ -58,9 +58,9 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
         System.out.println("freq=" + structure.getFrequency());
         for (ModeInfo fi : evan) {
             System.out.println(fi.mode.mtype + "[m" + fi.mode.m + ",n" + fi.mode.n + "] ; " + "GAMMAmn = " + fi.firstBoxSpaceGamma + "/" + fi.secondBoxSpaceGamma + "  : Zmn = " + fi.impedance + "  : Ymn = " + fi.impedance.inv());
-            z0 = z0.add(Maths.scalarProduct(g, fi.fn,true).sqr().mul(fi.impedance.inv()));
+            z0 = z0.add(Maths.scalarProduct(true, g, fi.fn).sqr().mul(fi.impedance.inv()));
         }
-        Complex gf02 = Maths.scalarProduct(g, f0.fn,true).sqr();
+        Complex gf02 = Maths.scalarProduct(true, g, f0.fn).sqr();
         z0 = gf02.div(z0);
         System.out.println("z=" + z0);
         System.out.println("------------------------------------------------------------------------");

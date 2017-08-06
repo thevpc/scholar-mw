@@ -27,4 +27,11 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
     TList<T> setParam(TParam param, Object value) ;
 
     TList<T> setParam(String name, Object value);
+
+    void setRow(boolean row);
+
+    void setRow();
+
+    void setColumn();
+
 }

@@ -135,7 +135,7 @@ public class TestCosXPlusY {
             Expr e1 = e1list.get(i);
             Expr e2 = e2list.get(i);
             System.out.println("hardFormal " + i + " " + e1 + " *** " + e2+"    :: "+vdomains.get(i));
-            v1list.add(ScalarProductOperatorFactory.hardFormal().eval(vdomains.get(i), e1, e2,true));
+            v1list.add(ScalarProductOperatorFactory.hardFormal().eval(true, vdomains.get(i), e1, e2));
         }
         ch1.stop();
         System.out.println(ch1);
@@ -144,7 +144,7 @@ public class TestCosXPlusY {
             Expr e1 = e1list.get(i);
             Expr e2 = e2list.get(i);
             System.out.println("quad " + i + " " + e1 + " ** " + e2+"    :: "+vdomains.get(i));
-            v2list.add(ScalarProductOperatorFactory.quad().eval(vdomains.get(i), e1, e2,true));
+            v2list.add(ScalarProductOperatorFactory.quad().eval(true, vdomains.get(i), e1, e2));
         }
         ch2.stop();
         System.out.println(ch2);

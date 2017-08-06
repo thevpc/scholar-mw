@@ -27,6 +27,6 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProdu
             throw new IllegalArgumentException();
         }
         DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
-        return Maths.scalarProductCache(momStructure.getTestFunctions().arr(), _g,true, getMonitor());
+        return Maths.scalarProductCache(true, momStructure.getTestFunctions().arr(), _g, getMonitor());
     }
 }

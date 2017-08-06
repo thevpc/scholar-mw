@@ -15,6 +15,18 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
         this.componentType = componentType;
     }
 
+    public void setRow(boolean row){
+        rowType=row;
+    }
+
+    public void setRow(){
+        rowType=true;
+    }
+
+    public void setColumn(){
+        rowType=false;
+    }
+
     @Override
     public TList<T> eval(ElementOp<T> op) {
         return new UpdatableExprSequence<T>(getComponentType(),super.eval(op));

@@ -5,7 +5,6 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.*;
@@ -34,7 +33,7 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
             RewriteResult rxa=ruleset.rewrite(c.getXArgument());
             RewriteResult rya=ruleset.rewrite(c.getYArgument());
             if(!rxa.getValue().hasParams() && !rya.getValue().hasParams()){
-                return RewriteResult.bestEffort(Maths.scalarProduct(rxa.getValue(),rya.getValue(),c.isHermitian()));
+                return RewriteResult.bestEffort(Maths.scalarProduct(c.isHermitian(), rxa.getValue(),rya.getValue()));
             }
             Expr xa=rxa.getValue();
             Expr ya=rya.getValue();
