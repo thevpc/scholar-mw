@@ -563,7 +563,7 @@ public final class Maths {
     }
 
     public static void storeMatrix(Matrix m, String file) throws RuntimeIOException {
-        m.store(file == null ? (File) null : new File(file));
+        m.store(file == null ? (File) null : new File(IOUtils.expandPath(file)));
     }
 
     public static void storeMatrix(Matrix m, File file) throws RuntimeIOException {
@@ -571,11 +571,11 @@ public final class Maths {
     }
 
     public static Matrix loadOrEvalMatrix(String file,TItem<Matrix> item) throws RuntimeIOException {
-        return loadOrEvalMatrix(new File(file),item);
+        return loadOrEvalMatrix(new File(IOUtils.expandPath(file)),item);
     }
 
     public static Vector loadOrEvalVector(String file,TItem<Vector> item) throws RuntimeIOException {
-        return loadOrEvalVector(new File(file),item);
+        return loadOrEvalVector(new File(IOUtils.expandPath(file)),item);
     }
 
     public static Matrix loadOrEvalMatrix(File file,TItem<Matrix> item) throws RuntimeIOException {
@@ -607,7 +607,7 @@ public final class Maths {
     }
 
     public static Matrix loadMatrix(String file) throws IOException {
-        return Config.defaultMatrixFactory.load(new File(file));
+        return Config.defaultMatrixFactory.load(new File(IOUtils.expandPath(file)));
     }
 
     public static Matrix inv(Matrix c) {
@@ -4834,7 +4834,7 @@ public final class Maths {
         }
 
         public static String getRootCachePath(boolean expand) {
-            return expand ? replaceVars(rootCachePath) : rootCachePath;
+            return expand ? IOUtils.expandPath(replaceVars(rootCachePath)) : rootCachePath;
         }
 
         public static void setRootCachePath(String rootCachePath) {
@@ -4842,7 +4842,7 @@ public final class Maths {
         }
 
         public static String getDefaultCacheFolderName(boolean expand) {
-            return expand ? replaceVars(defaultCacheFolderName) : defaultCacheFolderName;
+            return expand ? IOUtils.expandPath(replaceVars(defaultCacheFolderName)) : defaultCacheFolderName;
         }
 
         public static void setDefaultCacheFolderName(String defaultCacheFolderName) {
@@ -4918,7 +4918,7 @@ public final class Maths {
         }
 
         public static String getLargeMatrixCachePath(boolean expand) {
-            return expand ? replaceVars(largeMatrixCachePath) : largeMatrixCachePath;
+            return expand ? replaceVars(IOUtils.expandPath(largeMatrixCachePath)) : largeMatrixCachePath;
         }
 
         public static void addConfigChangeListener(PropertyChangeListener listener) {

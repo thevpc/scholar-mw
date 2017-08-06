@@ -126,7 +126,7 @@ public class ObjectCache {
     }
 
     public static Object loadZippedObject(String physicalName) throws IOException, ClassNotFoundException {
-        File file = new File(physicalName);
+        File file = new File(IOUtils.expandPath(physicalName));
         ObjectInputStream ois = null;
         try {
             InputStream theIs = null;

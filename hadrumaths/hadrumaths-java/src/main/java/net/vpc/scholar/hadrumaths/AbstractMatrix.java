@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
 import java.util.AbstractList;
@@ -1754,7 +1755,7 @@ public abstract class AbstractMatrix extends Matrix {
 //        return B;
     //    }
     public void store(String file) throws RuntimeIOException {
-        store(new File(file));
+        store(new File(IOUtils.expandPath(file)));
     }
 
     public void store(File file) throws RuntimeIOException {

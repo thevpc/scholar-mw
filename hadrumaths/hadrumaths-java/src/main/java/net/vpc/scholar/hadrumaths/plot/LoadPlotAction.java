@@ -40,7 +40,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
         for (String arg : args) {
             if (arg.trim().length() > 0) {
-                files.add(new File(arg));
+                files.add(new File(IOUtils.expandPath(arg)));
             }
         }
         if (files.size() > 0) {

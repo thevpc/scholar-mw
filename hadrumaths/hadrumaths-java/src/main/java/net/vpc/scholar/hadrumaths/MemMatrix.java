@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -628,7 +629,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     public static void store(MemMatrix m, String file) throws IOException {
-        m.store(file == null ? (File) null : new File(file));
+        m.store(file == null ? (File) null : new File(IOUtils.expandPath(file)));
     }
 
     public static void store(MemMatrix m, File file) throws IOException {
@@ -636,7 +637,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     public static MemMatrix load(String file) throws IOException {
-        return new MemMatrix(new File(file));
+        return new MemMatrix(new File(IOUtils.expandPath(file)));
     }
 
     /*To exchange two rows in a matrix*/
@@ -1859,7 +1860,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     //    }
     @Override
     public void store(String file) {
-        store(new File(file));
+        store(new File(IOUtils.expandPath(file)));
     }
 
     @Override

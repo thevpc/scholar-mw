@@ -12,6 +12,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 import net.vpc.scholar.hadrumaths.util.TLog;
 import net.vpc.scholar.hadrumaths.util.TLogNull;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
@@ -189,7 +190,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void loadProject(String projectFile) throws ParseException, IOException {
-        loadProject(new MomProject(new File(projectFile)));
+        loadProject(new MomProject(new File(IOUtils.expandPath(projectFile))));
     }
 
     public void loadProject(File projectFile) throws ParseException, IOException {

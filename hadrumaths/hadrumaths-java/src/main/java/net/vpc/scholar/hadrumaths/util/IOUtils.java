@@ -490,5 +490,22 @@ public final class IOUtils {
         }
     }
 
+    /**
+     * path expansion replaces ~ with ${user.home} property value
+     * @param path to expand
+     * @return expanded path
+     */
+    public static String expandPath(String path){
+        if(path==null){
+            return path;
+        }
+        if(path.equals("~")){
+            return System.getProperty("user.home");
+        }
+        if(path.startsWith("~") && path.length()>1 && (path.charAt(1)=='/' || path.charAt(1)=='/')){
+            return System.getProperty("user.home")+path.substring(1);
+        }
+        return path;
+    }
 
 }

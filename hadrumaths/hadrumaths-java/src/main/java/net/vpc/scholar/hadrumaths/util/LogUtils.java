@@ -55,6 +55,7 @@ public class LogUtils {
         if (StringUtils.trimToNull(pattern) == null) {
             pattern = "net-vpc-scholar-math-%g.log";
         }
+        pattern=IOUtils.expandPath(pattern);
         if (maxSize <= 0) {
             maxSize = 5;
         }

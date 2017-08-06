@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
 import java.util.AbstractList;
@@ -1765,7 +1766,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 //        return B;
     //    }
     public void store(String file) {
-        store(new File(file));
+        store(new File(IOUtils.expandPath(file)));
     }
 
     public void store(File file) {
