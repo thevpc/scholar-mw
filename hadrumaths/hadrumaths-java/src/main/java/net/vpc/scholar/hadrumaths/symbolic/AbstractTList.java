@@ -8,33 +8,43 @@ import java.util.Collection;
  * Created by vpc on 2/14/15.
  */
 public abstract class AbstractTList<T> extends AbstractTVector<T> implements TList<T> {
-    private Class<T> componentType;
 
-    public AbstractTList(Class<T> componentType) {
-        super(false);
-        this.componentType = componentType;
-    }
-
-    public void setRow(boolean row){
-        rowType=row;
-    }
-
-    public void setRow(){
-        rowType=true;
-    }
-
-    public void setColumn(){
-        rowType=false;
+    public AbstractTList(boolean row) {
+        super(row);
     }
 
     @Override
     public TList<T> eval(ElementOp<T> op) {
-        return new UpdatableExprSequence<T>(getComponentType(),super.eval(op));
+        return new ReadOnlyTList<T>(getComponentType(), isRow(), new TVectorModel<T>() {
+            @Override
+            public T get(int index) {
+                T t = AbstractTList.this.get(index);
+                return op.eval(index, t);
+            }
+
+            @Override
+            public int size() {
+                return AbstractTList.this.size();
+            }
+        });
     }
 
     @Override
     public <R> TList<R> transform(Class<R> toType, TTransform<T, R> op) {
-        return new UpdatableExprSequence<R>(toType,super.transform(toType,op));
+        return new ReadOnlyTList<R>(
+                toType, isRow(),new TVectorModel<R>() {
+            @Override
+            public R get(int index) {
+                T t = AbstractTList.this.get(index);
+                return op.transform(index, t);
+            }
+
+            @Override
+            public int size() {
+                return AbstractTList.this.size();
+            }
+        }
+        );
     }
 
     @Override
@@ -44,17 +54,22 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     public void appendAll(TVector<T> e) {
-        throw new IllegalArgumentException("Unmodifiable");
+        throw new IllegalArgumentException("Unmodifiable List");
     }
 
     @Override
     public void append(T e) {
-        throw new IllegalArgumentException("Unmodifiable");
+        throw new IllegalArgumentException("Unmodifiable List");
+    }
+
+    @Override
+    public TList<T> transpose() {
+        return new TTransposedList<>(this);
     }
 
     @Override
     public void appendAll(Collection<? extends T> e) {
-        throw new IllegalArgumentException("Unmodifiable");
+        throw new IllegalArgumentException("Unmodifiable List");
     }
 
 //    public List<T> toExprJList() {
@@ -107,21 +122,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     public TList<T> copy() {
-        try {
-            return (TList<T>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException("Not Clonable");
-        }
-    }
-
-    @Override
-    public final int length() {
-        return size();
-    }
-
-    @Override
-    public Class<T> getComponentType() {
-        return componentType;
+        return Maths.copyOf(this);
     }
 
     @Override

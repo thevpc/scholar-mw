@@ -51,11 +51,11 @@ public abstract class AbstractExprSequenceFactory<T extends Expr> implements Exp
                 throw new IllegalArgumentException("Too many vars " + vars.length + ">2, unsupported yet");
             }
         }
-        return (TList<T>) new ParamExprList(pattern, vars, values, valuesDesc.toString());
+        return (TList<T>) new ParamExprList(false,pattern, vars, values, valuesDesc.toString());
     }
 
     public TList<Expr> newSequence(Expr pattern, DoubleParam[] vars, double[][] values) {
-        return new ParamExprList(pattern, vars, values, Maths.dump(values));
+        return new ParamExprList(false,pattern, vars, values, Maths.dump(values));
     }
 
 }

@@ -195,24 +195,24 @@ object MathScala {
       v.scalarProduct(true, value.asInstanceOf[TVector[Expr]])
     }
 
-    def :**(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.vscalarProduct(false, v.toArray(Array.ofDim[Vector](v.size())): _ *))
+    def :**(v: java.util.List[Vector]): Vector = Maths.vector(value.vscalarProduct(false, v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
-    def :***(v: java.util.List[Vector]): Vector = Maths.tvectorToVector(value.vscalarProduct(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
+    def :***(v: java.util.List[Vector]): Vector = Maths.vector(value.vscalarProduct(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
-    def :**(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.vscalarProduct(false, v: _ *))
-    def :***(v: Array[TVector[Complex]]): Vector = Maths.tvectorToVector(value.vscalarProduct(true, v: _ *))
+    def :**(v: Array[TVector[Complex]]): Vector = Maths.vector(value.vscalarProduct(false, v: _ *))
+    def :***(v: Array[TVector[Complex]]): Vector = Maths.vector(value.vscalarProduct(true, v: _ *))
 
-    def +(v: TVector[Complex]): Vector = Maths.tvectorToVector(value.add(v))
+    def +(v: TVector[Complex]): Vector = Maths.vector(value.add(v))
 
-    def -(v: TVector[Complex]): Vector = Maths.tvectorToVector(value.sub(v))
+    def -(v: TVector[Complex]): Vector = Maths.vector(value.sub(v))
 
-    def +(v: Complex): Vector = Maths.tvectorToVector(value.add(v))
+    def +(v: Complex): Vector = Maths.vector(value.add(v))
 
-    def -(v: Complex): Vector = Maths.tvectorToVector(value.sub(v))
+    def -(v: Complex): Vector = Maths.vector(value.sub(v))
 
-    def *(v: Complex): Vector = Maths.tvectorToVector(value.mul(v))
+    def *(v: Complex): Vector = Maths.vector(value.mul(v))
 
-    def /(v: Complex): Vector =Maths.tvectorToVector( value.div(v))
+    def /(v: Complex): Vector =Maths.vector( value.div(v))
 
     //    def ^ (v: Complex): Vector = value.pow(v)
 
@@ -241,15 +241,15 @@ object MathScala {
       value.toMatrix.mul(v)
     }
 
-    def :*(v: Vector): Vector = Maths.tvectorToVector(value.dotmul(v))
+    def :*(v: Vector): Vector = Maths.vector(value.dotmul(v))
 
-    def :/(v: Vector): Vector = Maths.tvectorToVector(value.dotdiv(v))
+    def :/(v: Vector): Vector = Maths.vector(value.dotdiv(v))
 
-    def :^(v: Vector): Vector = Maths.tvectorToVector(value.dotpow(v))
+    def :^(v: Vector): Vector = Maths.vector(value.dotpow(v))
 
-    def :^(v: Double): Vector = Maths.tvectorToVector(value.dotpow(v))
+    def :^(v: Double): Vector = Maths.vector(value.dotpow(v))
 
-    def :^(v: Complex): Vector = Maths.tvectorToVector(value.dotpow(v))
+    def :^(v: Complex): Vector = Maths.vector(value.dotpow(v))
   }
 
   implicit class STMatrix[T](val value: TMatrix[T]) {
@@ -728,7 +728,8 @@ object MathScala {
 
     def /(v: Expr): TList[Expr] = scholar.hadrumaths.Maths.div(value, v)
 
-    def !!(): TList[Expr] = Maths.simplify(value)
+    def !(): TList[Expr] = Maths.simplify(value)
+    def !!(): TList[Expr] = Maths.simplify(value).copy()
 
 
     def unary_- : TList[Expr] = {

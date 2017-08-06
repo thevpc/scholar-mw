@@ -3,23 +3,22 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.ArrayExprList;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.Arrays;
 
 /**
  * Created by vpc on 5/30/14.
  */
-public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Cloneable {
+public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Cloneable {
     double[][] values;
     private Expr pattern;
     private DoubleParam[] vars;
     private String valuesDesc;
 
-    ParamExprList(Expr pattern, DoubleParam[] vars, double[][] values, String valuesDesc) {
-        super(Expr.class);
+    ParamExprList(boolean row, Expr pattern, DoubleParam[] vars, double[][] values, String valuesDesc) {
+        super(row);
         this.pattern = pattern;
         this.vars = vars;
         this.values = values;
@@ -34,7 +33,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
         }
     }
 
-    public static ParamExprList create(Expr pattern, DoubleParam[] vars, int[] max) {
+    public static ParamExprList create(boolean row, Expr pattern, DoubleParam[] vars, int[] max) {
         StringBuilder valuesDesc = new StringBuilder();
         if (vars.length < 1) {
             throw new IllegalArgumentException("Missing vars");
@@ -50,9 +49,9 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
                 throw new IllegalArgumentException("Invalid max value for " + vars[i] + ". Should be >=1");
             }
             if (valuesDesc.length() == 0) {
-                valuesDesc.append("0..").append(max[i]-1);
+                valuesDesc.append("0..").append(max[i] - 1);
             } else {
-                valuesDesc.append(", ").append("0..").append(max[i]-1);
+                valuesDesc.append(", ").append("0..").append(max[i] - 1);
             }
         }
         double[][] values;
@@ -72,16 +71,21 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
                 throw new IllegalArgumentException("Too many vars " + vars.length + ">2, unsupported yet");
             }
         }
-        return new ParamExprList(pattern, vars, values, valuesDesc.toString());
+        return new ParamExprList(row, pattern, vars, values, valuesDesc.toString());
     }
 
-    public static ParamExprList create(Expr pattern, DoubleParam[] vars, double[][] values) {
-        return new ParamExprList(pattern, vars, values, Maths.dump(values));
+    public static ParamExprList create(boolean row, Expr pattern, DoubleParam[] vars, double[][] values) {
+        return new ParamExprList(row, pattern, vars, values, Maths.dump(values));
     }
 
-//    @Override
+    @Override
+    public Class<Expr> getComponentType() {
+        return Expr.class;
+    }
+
+    //    @Override
     public ArrayExprList toList() {
-        ArrayExprList list = new ArrayExprList(getComponentType(),values.length);
+        ArrayExprList list = new ArrayExprList(getComponentType(), isRow(), values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getName();
@@ -111,7 +115,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getName();
         }
-        double[] value=values[index];
+        double[] value = values[index];
         for (int i = 0; i < vname.length; i++) {
             e = e.setParam(vname[i], value[i]);
         }
@@ -124,9 +128,9 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
     public Dumper getDumpStringHelper() {
         Dumper h = new Dumper(getClass().getSimpleName());
         h.add("pattern", pattern);
-        StringBuilder varsString=new StringBuilder();
+        StringBuilder varsString = new StringBuilder();
         for (DoubleParam var : vars) {
-            if(varsString.length()>0){
+            if (varsString.length() > 0) {
                 varsString.append(", ");
             }
             varsString.append(var.getName());
@@ -156,12 +160,12 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable,Clone
                 '}';
     }
 
-    @Override
-    public TList<Expr> copy() {
-        try {
-            return (TList<Expr>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException("Unsupported clone");
-        }
-    }
+//    @Override
+//    public TList<Expr> copy() {
+//        try {
+//            return (TList<Expr>) super.clone();
+//        } catch (CloneNotSupportedException e) {
+//            throw new IllegalArgumentException("Unsupported clone");
+//        }
+//    }
 }

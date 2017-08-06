@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.AbstractTList;
+import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,15 +12,21 @@ import java.util.Collection;
 public class ArrayTList<T> extends AbstractTList<T> {
 
     private ArrayList<T> values;
+    private Class<T> componentType;
 
-//    public ArrayTList(Class<T> componentType) {
+    //    public ArrayTList(Class<T> componentType) {
 //
 //    }
-    public ArrayTList(Class<T> componentType,int initialSize) {
-        super(componentType);
+    public ArrayTList(Class<T> componentType, boolean row, int initialSize) {
+        super(row);
+        this.componentType = componentType;
         values = new ArrayList<T>(initialSize);
     }
 
+    @Override
+    public Class<T> getComponentType() {
+        return componentType;
+    }
 
     @Override
     public <P extends T> P[] toArray(P[] a) {
@@ -39,7 +46,6 @@ public class ArrayTList<T> extends AbstractTList<T> {
             values.add(e.get(i));
         }
     }
-
 
 
     public void append(int index, T e) {
@@ -132,13 +138,13 @@ public class ArrayTList<T> extends AbstractTList<T> {
         TList<T> other = Maths.listOf(getComponentType());
         VectorSpace<T> cs = getComponentVectorSpace();
         for (T e : this) {
-            other.append((T) cs.setParam(e,name, value));
+            other.append((T) cs.setParam(e, name, value));
         }
         return other;
     }
 
     public TList<T> setParam(TParam paramExpr, Object value) {
-        return setParam(paramExpr.getName(),value);
+        return setParam(paramExpr.getName(), value);
     }
 
     public TList<T> copy() {

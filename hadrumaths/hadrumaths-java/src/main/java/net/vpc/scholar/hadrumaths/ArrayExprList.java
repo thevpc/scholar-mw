@@ -15,34 +15,34 @@ import java.util.List;
 public class ArrayExprList<T extends Expr> extends ArrayTList<T> {
 
 
-    public ArrayExprList(Class<T> componentType,int initialSize) {
-        super(componentType,initialSize);
+    public ArrayExprList(Class<T> componentType,boolean row,int initialSize) {
+        super(componentType,row,initialSize);
     }
 
-    public ArrayExprList(Class<T> componentType,Expr... elements) {
-        this(componentType,elements.length);
+    public ArrayExprList(Class<T> componentType,boolean row,Expr... elements) {
+        this(componentType,row,elements.length);
         appendAll((Collection<? extends T>) Arrays.asList(elements));
     }
 
-    public ArrayExprList(Class<T> componentType,Complex... elements) {
-        this(componentType,elements.length);
+    public ArrayExprList(Class<T> componentType,boolean row,Complex... elements) {
+        this(componentType,row,elements.length);
         appendAll((Collection<? extends T>) Arrays.asList(elements));
     }
 
-    public ArrayExprList(Class<T> componentType,double... elements) {
-        this(componentType,elements.length);
+    public ArrayExprList(Class<T> componentType,boolean row,double... elements) {
+        this(componentType,row,elements.length);
         for (double element : elements) {
             append((T) Complex.valueOf(element));
         }
     }
 
-    public ArrayExprList(Class<T> componentType,Collection<? extends Expr> elements) {
-        this(componentType,elements.size());
+    public ArrayExprList(Class<T> componentType,boolean row,Collection<? extends Expr> elements) {
+        this(componentType,row,elements.size());
         appendAll((Collection<? extends T>) elements);
     }
 
-    public <P extends Expr> ArrayExprList(Class<T> componentType,TVector<P> elements) {
-        this(componentType,elements.size());
+    public <P extends Expr> ArrayExprList(Class<T> componentType,boolean row,TVector<P> elements) {
+        this(componentType,row,elements.size());
         appendAll((Collection) elements);
     }
 
@@ -102,10 +102,6 @@ public class ArrayExprList<T extends Expr> extends ArrayTList<T> {
     }
 
 
-
-    public TList<T> copy() {
-        return new ArrayExprList<T>(getComponentType(),this);
-    }
 
     public T sum() {
         return (T) (new Plus((TVector<Expr>) this));

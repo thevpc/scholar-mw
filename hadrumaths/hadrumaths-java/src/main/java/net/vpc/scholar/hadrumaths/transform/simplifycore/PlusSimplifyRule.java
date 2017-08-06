@@ -595,14 +595,16 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 d=d.expandDimension(domainDimension);
             }else if(d.dimension()>domainDimension){
                 domainDimension=d.dimension();
-                Map<Domain, List<Expr>> domainxy2 = new HashMap<Domain, List<Expr>>();
-                for (Map.Entry<Domain, List<Expr>> domainListEntry : domainxy.entrySet()) {
-                    domainxy2.put(
-                            domainListEntry.getKey().expandDimension(domainDimension),
-                            domainListEntry.getValue()
-                    );
+                if(domainxy.size()>0) {
+                    Map<Domain, List<Expr>> domainxy2 = new HashMap<Domain, List<Expr>>();
+                    for (Map.Entry<Domain, List<Expr>> domainListEntry : domainxy.entrySet()) {
+                        domainxy2.put(
+                                domainListEntry.getKey().expandDimension(domainDimension),
+                                domainListEntry.getValue()
+                        );
+                    }
+                    domainxy = domainxy2;
                 }
-                domainxy=domainxy2;
             }
             List<Expr> list = domainxy.get(d);
             if (list == null) {

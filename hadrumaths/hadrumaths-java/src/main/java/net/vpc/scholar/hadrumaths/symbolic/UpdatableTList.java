@@ -1,16 +1,26 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.TVectorModel;
 
 import java.util.Collection;
 
-public class UpdatableExprSequence<T> extends AbstractTList<T> implements Cloneable {
+public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     private TList<T> delegate;
     private TVectorModel<T> model;
+    private Class<T> componentType;
 
-    public UpdatableExprSequence(Class<T> componentType, TVectorModel<T> model) {
-        super(componentType);
-        this.model=model;
+    public UpdatableTList(Class<T> componentType, boolean row, TVectorModel<T> model) {
+        super(row);
+        this.componentType = componentType;
+        this.model = model;
+    }
+
+    @Override
+    public Class<T> getComponentType() {
+        return componentType;
     }
 
     @Override
@@ -47,24 +57,13 @@ public class UpdatableExprSequence<T> extends AbstractTList<T> implements Clonea
         delegate.appendAll(e);
     }
 
-    protected void prepareDelegate(int count){
+    protected void prepareDelegate(int count) {
         if (delegate == null) {
             int initialSize = model.size();
-            delegate = Maths.listOf(getComponentType(), initialSize+count);
+            delegate = Maths.listOf(getComponentType(), initialSize + count);
             for (int i = 0; i < initialSize; i++) {
                 delegate.add(model.get(i));
             }
-        }
-    }
-    @Override
-    public TList<T> copy() {
-        if (delegate != null) {
-            return delegate.copy();
-        }
-        try {
-            return (TList) clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException("Unsupported Clone");
         }
     }
 }

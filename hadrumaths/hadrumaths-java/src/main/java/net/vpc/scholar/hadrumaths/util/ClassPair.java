@@ -4,7 +4,7 @@ public final class ClassPair {
     private Class first;
     private Class second;
 
-    ClassPair(Class first, Class second) {
+    public ClassPair(Class first, Class second) {
         this.first = first;
         this.second = second;
     }

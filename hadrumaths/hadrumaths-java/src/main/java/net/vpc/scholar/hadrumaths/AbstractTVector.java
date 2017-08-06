@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.symbolic.ReadOnlyVector;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by vpc on 4/11/16.
  */
 public abstract class AbstractTVector<T> implements TVector<T> {
-    private boolean rowType;
+    protected boolean rowType;
 
     public AbstractTVector(boolean row) {
         this.rowType = row;
@@ -38,6 +39,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
                 return v;
             }
         };
+    }
+    public final int length(){
+        return size();
     }
 
     public boolean isRow() {
@@ -195,19 +199,19 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public void store(String file) throws IOException {
+    public void store(String file) throws RuntimeIOException {
         toMatrix().store(file);
     }
 
-    public void store(File file) throws IOException {
+    public void store(File file) throws RuntimeIOException {
         toMatrix().store(file);
     }
 
-    public void store(PrintStream stream) throws IOException {
+    public void store(PrintStream stream) throws RuntimeIOException {
         toMatrix().store(stream);
     }
 
-    public void store(PrintStream stream, String commentsChar, String varName) throws IOException {
+    public void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException {
         toMatrix().store(stream, commentsChar, varName);
     }
 
@@ -773,6 +777,26 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public <R> TVector<R> to(Class<R> other) {
+        if(other.equals(getComponentType())){
+            return (TVector<R>) this;
+        }
+        //should i check default types?
+        if(other.equals(Complex.class)){
+            return (TVector<R>) new ReadOnlyVector(
+                    new TVectorModel() {
+                @Override
+                public Complex get(int index) {
+                    T v = AbstractTVector.this.get(index);
+                    return getComponentVectorSpace().convertTo(v,Complex.class);
+                }
+
+                @Override
+                public int size() {
+                    return AbstractTVector.this.size();
+                }
+            }, isRow()
+            );
+        }
         return new ReadOnlyTVector<R>(
                 other, new TVectorModel<R>() {
             @Override

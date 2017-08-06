@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 
-
 public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     Class<T> getComponentType();
@@ -41,19 +40,20 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
     <P extends T> T[] toArray(P[] a);
 
     int size();
+    int length();
 
+    void store(String file) throws RuntimeIOException;
 
-    void store(String file) throws IOException;
+    void store(File file) throws RuntimeIOException;
 
-    void store(File file) throws IOException;
+    void store(PrintStream stream) throws RuntimeIOException;
 
-    void store(PrintStream stream) throws IOException;
-
-    void store(PrintStream stream, String commentsChar, String varName) throws IOException;
-
+    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
 
     T scalarProduct(TMatrix<T> v);
+
     T hscalarProduct(TMatrix<T> v);
+
     T scalarProduct(boolean hermitian, TMatrix<T> v);
 
     TVector<T> scalarProduct(boolean hermitian, T other);
@@ -160,7 +160,6 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 //    double[] absdbl();
 //
 //    double[] absdblsqr();
-
     TVector<T> log();
 
     TVector<T> log10();

@@ -507,6 +507,14 @@ public class StringUtils {
         StringBuilder sb=new StringBuilder();
         sb.append(number);
         while (sb.length()<size){
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+    public static String formatRight(Object number,int size){
+        StringBuilder sb=new StringBuilder();
+        sb.append(number);
+        while (sb.length()<size){
             sb.insert(0,' ');
         }
         return sb.toString();

@@ -2018,7 +2018,7 @@ public abstract class AbstractMatrix extends Matrix {
         if (isRow()) {
             return getRow(0);
         }
-        throw new RuntimeException("Not a vector");
+        throw new RuntimeException("Not a vector "+getRowCount()+"x"+getColumnCount());
     }
 
     public Complex scalarProduct(boolean hermitian, TMatrix<Complex> m) {

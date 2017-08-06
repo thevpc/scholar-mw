@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.TVectorCell;
 
 /**
@@ -9,11 +8,18 @@ import net.vpc.scholar.hadrumaths.TVectorCell;
 class UnmodifiableSequence<T> extends AbstractTList<T> implements Cloneable {
     private final int size;
     private final TVectorCell<T> it;
+    private Class<T> componentType;
 
-    public UnmodifiableSequence(Class<T> componentType,int size, TVectorCell<T> it) {
-        super(componentType);
+    public UnmodifiableSequence(Class<T> componentType, boolean row, int size, TVectorCell<T> it) {
+        super(row);
+        this.componentType = componentType;
         this.size = size;
         this.it = it;
+    }
+
+    @Override
+    public Class<T> getComponentType() {
+        return componentType;
     }
 
     @Override

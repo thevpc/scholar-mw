@@ -659,15 +659,6 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         return Maths.COMPLEX_VECTOR_SPACE;
     }
 
-    @Override
-    public <R> TVector<R> to(Class<R> other) {
-        TList<R> rs = Maths.listOf(other);
-        for (Complex complex : this) {
-            rs.append((R)complex);
-        }
-        return rs;
-    }
-
     public Vector setParam(String name, Object value) {
         return eval(new ElementOp<Complex>() {
             @Override

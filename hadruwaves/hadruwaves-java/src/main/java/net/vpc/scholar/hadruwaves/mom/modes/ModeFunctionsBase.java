@@ -684,8 +684,8 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     public synchronized List<DoubleToVector> getFunctions(final ModeType mode, ComputationMonitor monitor) {
         return CollectionsUtils.convert(getModes(mode, monitor), new Converter<ModeInfo, DoubleToVector>() {
             @Override
-            public DoubleToVector convert(ModeInfo modeInfo) {
-                return modeInfo.fn;
+            public DoubleToVector convert(ModeInfo value) {
+                return value.fn;
             }
         });
     }

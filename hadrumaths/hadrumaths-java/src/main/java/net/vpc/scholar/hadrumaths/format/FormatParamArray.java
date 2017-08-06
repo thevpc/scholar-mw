@@ -9,31 +9,41 @@ import java.util.NoSuchElementException;
  * change this template use File | Settings | File Templates.
  */
 public class FormatParamArray implements Cloneable {
+    private static final FormatParam[] EMPTY_AA = new FormatParam[0];
 
     private Map<Class, FormatParam> paramsTable;
 
     public FormatParamArray(FormatParam[] array) {
-        paramsTable = new HashMap<Class, FormatParam>(array.length);
         for (int i = 0; i < array.length; i++) {
             FormatParam pp = array[i];
-            if (paramsTable.containsKey(pp.getClass())) {
+            if (paramsTable!=null && paramsTable.containsKey(pp.getClass())) {
                 throw new IllegalArgumentException("Param " + pp.getClass().getSimpleName());
+            }
+            if(paramsTable==null){
+                paramsTable=new HashMap<>(array.length);
             }
             paramsTable.put(pp.getClass(), pp);
         }
     }
 
     public FormatParamArray remove(Class paramClass) {
-        paramsTable.remove(paramClass);
+        if(paramsTable!=null){
+            paramsTable.remove(paramClass);
+        }
         return this;
     }
 
     public FormatParamArray remove(FormatParam param) {
-        paramsTable.remove(param.getClass());
+        if(paramsTable!=null) {
+            paramsTable.remove(param.getClass());
+        }
         return this;
     }
 
     public FormatParamArray set(FormatParam param) {
+        if(paramsTable==null){
+            paramsTable=new HashMap<>();
+        }
         paramsTable.put(param.getClass(), param);
         return this;
     }
@@ -44,7 +54,7 @@ public class FormatParamArray implements Cloneable {
     }
 
     public <T extends FormatParam> T getParam(Class<T> paramClass, boolean required) {
-        FormatParam p = paramsTable.get(paramClass);
+        FormatParam p = paramsTable==null?null:paramsTable.get(paramClass);
         if (p == null && required) {
             throw new NoSuchElementException(paramClass.getSimpleName() + " is requiered");
         }
@@ -52,7 +62,7 @@ public class FormatParamArray implements Cloneable {
     }
 
     public FormatParam[] toArray() {
-        return (FormatParam[]) paramsTable.values().toArray(new FormatParam[paramsTable.size()]);
+        return  ((paramsTable==null || paramsTable.size()==0)? EMPTY_AA : paramsTable.values().toArray(new FormatParam[paramsTable.size()]));
     }
 
     public FormatParamArray copy() {

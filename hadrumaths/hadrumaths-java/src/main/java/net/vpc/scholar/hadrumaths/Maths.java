@@ -188,6 +188,118 @@ public final class Maths {
     public static final int X_AXIS = 0;
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
+    public static final TStoreManager<Matrix> MATRIX_STORE_MANAGER = new TStoreManager<Matrix>() {
+        @Override
+        public void store(Matrix item, File file) {
+            item.store(file);
+        }
+
+        @Override
+        public Matrix load(File file) {
+            return Config.defaultMatrixFactory.load(file);
+        }
+    };
+    public static final TStoreManager<TMatrix> TMATRIX_STORE_MANAGER = new TStoreManager<TMatrix>() {
+        @Override
+        public void store(TMatrix item, File file) {
+            item.store(file);
+        }
+
+        @Override
+        public TMatrix load(File file) {
+            return Config.defaultMatrixFactory.load(file);
+        }
+    };
+
+    public static final TStoreManager<TVector> TVECTOR_STORE_MANAGER = new TStoreManager<TVector>() {
+        @Override
+        public void store(TVector item, File file) {
+            item.store(file);
+        }
+
+        @Override
+        public TVector load(File file) {
+            return Config.defaultMatrixFactory.load(file).toVector();
+        }
+    };
+
+    public static final TStoreManager<Vector> VECTOR_STORE_MANAGER = new TStoreManager<Vector>() {
+        @Override
+        public void store(Vector item, File file) {
+            item.store(file);
+        }
+
+        @Override
+        public Vector load(File file) {
+            return Config.defaultMatrixFactory.load(file).toVector();
+        }
+    };
+    public static final Converter IDENTITY = new Converter() {
+        @Override
+        public Object convert(Object value) {
+            return value;
+        }
+    };
+    public static final Converter<Complex, Double> COMPLEX_TO_DOUBLE = new Converter<Complex, Double>() {
+        @Override
+        public Double convert(Complex value) {
+            return value.toDouble();
+        }
+    };
+    public static final Converter<Double, Complex> DOUBLE_TO_COMPLEX = new Converter<Double, Complex>() {
+        @Override
+        public Complex convert(Double value) {
+            return Complex.valueOf(value);
+        }
+    };
+    public static final Converter<Double, TVector> DOUBLE_TO_TVECTOR = new Converter<Double, TVector>() {
+        @Override
+        public TVector convert(Double value) {
+            return Maths.columnVector(new Complex[]{Complex.valueOf(value)});
+        }
+    };
+    public static final Converter<TVector, Double> TVECTOR_TO_DOUBLE = new Converter<TVector, Double>() {
+        @Override
+        public Double convert(TVector value) {
+            return value.toComplex().toDouble();
+        }
+    };
+    public static final Converter<Complex, TVector> COMPLEX_TO_TVECTOR = new Converter<Complex, TVector>() {
+        @Override
+        public TVector convert(Complex value) {
+            return Maths.columnVector(new Complex[]{value});
+        }
+    };
+    public static final Converter<TVector, Complex> TVECTOR_TO_COMPLEX = new Converter<TVector, Complex>() {
+        @Override
+        public Complex convert(TVector value) {
+            return value.toComplex();
+        }
+    };
+    public static final Converter<Complex, Expr> COMPLEX_TO_EXPR = new Converter<Complex, Expr>() {
+        @Override
+        public Expr convert(Complex value) {
+            return value;
+        }
+    };
+    public static final Converter<Expr, Complex> EXPR_TO_COMPLEX = new Converter<Expr, Complex>() {
+        @Override
+        public Complex convert(Expr value) {
+            return value.toComplex();
+        }
+    };
+    public static final Converter<Double, Expr> DOUBLE_TO_EXPR = new Converter<Double, Expr>() {
+        @Override
+        public Expr convert(Double value) {
+            return Complex.valueOf(value);
+        }
+    };
+    public static final Converter<Expr, Double> EXPR_TO_DOUBLE = new Converter<Expr, Double>() {
+        @Override
+        public Double convert(Expr value) {
+            return value.toComplex().toDouble();
+        }
+    };
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
             System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model") :
                     System.getProperty("os.arch").contains("64") ? "64" : "32"
@@ -212,28 +324,6 @@ public final class Maths {
         @Override
         public double distance(Vector a, Vector b) {
             return a.toMatrix().getError(b.toMatrix());
-        }
-    };
-    public static final TStoreManager<Matrix> MATRIX_STORE_MANAGER=new TStoreManager<Matrix>() {
-        @Override
-        public void store(Matrix item,File file) {
-            item.store(file);
-        }
-
-        @Override
-        public Matrix load(File file) {
-            return Config.defaultMatrixFactory.load(file);
-        }
-    };
-    public static final TStoreManager<Vector> VECTOR_STORE_MANAGER=new TStoreManager<Vector>() {
-        @Override
-        public void store(Vector item,File file) {
-            item.store(file);
-        }
-
-        @Override
-        public Vector load(File file) {
-            return Config.defaultMatrixFactory.load(file).toVector();
         }
     };
     //</editor-fold>
@@ -570,38 +660,58 @@ public final class Maths {
         m.store(file);
     }
 
-    public static Matrix loadOrEvalMatrix(String file,TItem<Matrix> item) throws RuntimeIOException {
-        return loadOrEvalMatrix(new File(IOUtils.expandPath(file)),item);
+    public static Matrix loadOrEvalMatrix(String file, TItem<Matrix> item) throws RuntimeIOException {
+        return loadOrEvalMatrix(new File(IOUtils.expandPath(file)), item);
     }
 
-    public static Vector loadOrEvalVector(String file,TItem<Vector> item) throws RuntimeIOException {
-        return loadOrEvalVector(new File(IOUtils.expandPath(file)),item);
+    public static Vector loadOrEvalVector(String file, TItem<TVector<Complex>> item) throws RuntimeIOException {
+        return loadOrEvalVector(new File(IOUtils.expandPath(file)), item);
     }
 
-    public static Matrix loadOrEvalMatrix(File file,TItem<Matrix> item) throws RuntimeIOException {
-        return loadOrEval(Matrix.class,file, item);
+    public static Matrix loadOrEvalMatrix(File file, TItem<Matrix> item) throws RuntimeIOException {
+        return loadOrEval(Matrix.class, file, item);
     }
 
-    public static Vector loadOrEvalVector(File file,TItem<Vector> item) throws RuntimeIOException {
-        return loadOrEval(Vector.class,file, item);
+    public static Vector loadOrEvalVector(File file, TItem<TVector<Complex>> item) throws RuntimeIOException {
+        return loadOrEval(Vector.class, file, (TItem) item);
     }
 
-    public static <T> T loadOrEval(Class<T> type,File file,TItem<T> item) throws RuntimeIOException {
-        TStoreManager<T> t=null;
-        if(type.equals(Matrix.class)) {
+    public static <T> TMatrix loadOrEvalTMatrix(String file, TItem<TMatrix<T>> item) throws RuntimeIOException {
+        return loadOrEvalTMatrix(new File(IOUtils.expandPath(file)), item);
+    }
+
+    public static <T> TVector<T> loadOrEvalTVector(String file, TItem<TVector<T>> item) throws RuntimeIOException {
+        return loadOrEvalTVector(new File(IOUtils.expandPath(file)), item);
+    }
+
+    public static <T> TMatrix<T> loadOrEvalTMatrix(File file, TItem<TMatrix<T>> item) throws RuntimeIOException {
+        return loadOrEval((Class) TMatrix.class, file, item);
+    }
+
+    public static <T> TVector loadOrEvalTVector(File file, TItem<TVector<T>> item) throws RuntimeIOException {
+        return loadOrEval(TVector.class, file, (TItem) item);
+    }
+
+    public static <T> T loadOrEval(Class<T> type, File file, TItem<T> item) throws RuntimeIOException {
+        TStoreManager<T> t = null;
+        if (type.equals(Matrix.class)) {
             t = (TStoreManager<T>) MATRIX_STORE_MANAGER;
-        }else if(type.equals(Matrix.class)){
-            t=(TStoreManager<T>) VECTOR_STORE_MANAGER;
-        }else{
-            throw new IllegalArgumentException("Unsupported store type "+type);
+        } else if (type.equals(Vector.class)) {
+            t = (TStoreManager<T>) VECTOR_STORE_MANAGER;
+        } else if (type.equals(TVector.class)) {
+            t = (TStoreManager<T>) TVECTOR_STORE_MANAGER;
+        } else if (type.equals(TMatrix.class)) {
+            t = (TStoreManager<T>) TMATRIX_STORE_MANAGER;
+        } else {
+            throw new IllegalArgumentException("Unsupported store type " + type);
         }
-        if(file.exists()){
-            System.out.println("loading "+file.getAbsolutePath()+" ...");
+        if (file.exists()) {
+            System.out.println("loading " + file.getAbsolutePath() + " ...");
             return t.load(file);
-        }else{
+        } else {
             T tt = item.get();
-            System.out.println("storing "+file.getAbsolutePath()+" ...");
-            t.store(tt,file);
+            System.out.println("storing " + file.getAbsolutePath() + " ...");
+            t.store(tt, file);
             return tt;
         }
     }
@@ -671,11 +781,13 @@ public final class Maths {
 
 
     public static TVector<Expr> columnVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE,expr,false);
+        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, false);
     }
+
     public static TVector<Expr> rowVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE,expr,true);
+        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, true);
     }
+
     public static TVector<Expr> columnEVector(int rows, final TVectorCell<Expr> cellFactory) {
         return columnTVector(Expr.class, rows, cellFactory);
     }
@@ -686,20 +798,20 @@ public final class Maths {
 
     public static <T> TVector<T> updatableOf(TVector<T> vector) {
         return new UpdatableTVector<>(
-                vector.getComponentType(),new CachedTVectorUpdatableModel<>(vector,vector.getComponentType()),
+                vector.getComponentType(), new CachedTVectorUpdatableModel<>(vector, vector.getComponentType()),
                 false
         );
     }
+
     public static <T> TList<T> copyOf(TVector<T> vector) {
-        TList<T> ts = listOf(vector.getComponentType(), vector.size());
-        ts.setRow(vector.isRow());
+        TList<T> ts = listOf(vector.getComponentType(), vector.isRow(),vector.size());
         ts.appendAll(vector);
         return ts;
     }
 
     public static <T> TVector<T> columnTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
         return new ReadOnlyTVector<>(
-                cls,cellFactory,
+                cls, cellFactory,
                 false
         );
 //        return new UpdatableTVector<>(
@@ -710,7 +822,7 @@ public final class Maths {
 
     public static <T> TVector<T> rowTVector(Class<T> cls, final TVectorModel<T> cellFactory) {
         return new ReadOnlyTVector<>(
-                cls,cellFactory,
+                cls, cellFactory,
                 true
         );
 //        return new UpdatableTVector<>(
@@ -720,11 +832,11 @@ public final class Maths {
     }
 
     public static <T> TVector<T> columnTVector(Class<T> cls, int rows, final TVectorCell<T> cellFactory) {
-        return columnTVector(cls,new TVectorModelFromCell<>(rows,cellFactory));
+        return columnTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
     }
 
     public static <T> TVector<T> rowTVector(Class<T> cls, int rows, final TVectorCell<T> cellFactory) {
-        return rowTVector(cls,new TVectorModelFromCell<>(rows,cellFactory));
+        return rowTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
     }
 
     public static Vector columnVector(int rows, final VectorCell cellFactory) {
@@ -1113,7 +1225,7 @@ public final class Maths {
         return x.toComplex();
     }
 
-    public static Complex sumc(int size,TVectorCell<Complex> c) {
+    public static Complex sumc(int size, TVectorCell<Complex> c) {
         MutableComplex x = new MutableComplex(0, 0);
         for (int i = 0; i < size; i++) {
             x.add(c.get(i));
@@ -1439,16 +1551,21 @@ public final class Maths {
         return null;
     }
 
-    public static Vector tvectorToVector(TVector v){
+    public static Vector vector(TVector v) {
+        v = v.to(Complex.class);
+        if (v instanceof Vector) {
+            return (Vector) v;
+        }
+        TVector finalV = v;
         return new ReadOnlyVector(new TVectorModel<Complex>() {
             @Override
             public int size() {
-                return v.size();
+                return finalV.size();
             }
 
             @Override
             public Complex get(int index) {
-                return (Complex) v.get(index);
+                return (Complex) finalV.get(index);
             }
         }, v.isRow());
     }
@@ -1644,13 +1761,13 @@ public final class Maths {
         DoubleParam nn = new DoubleParam("n");
         switch (plane) {
             case XY: {
-                return ParamExprList.create(new SinSeqXY(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false,new SinSeqXY(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
             case XZ: {
-                return ParamExprList.create(new SinSeqXZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false,new SinSeqXZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
             case YZ: {
-                return ParamExprList.create(new SinSeqYZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false,new SinSeqYZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
         }
         throw new IllegalArgumentException("Unsupported Plane " + plane);
@@ -2369,6 +2486,7 @@ public final class Maths {
             }
         });
     }
+
     public static <T> TList<T> db(TList<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
@@ -3400,7 +3518,7 @@ public final class Maths {
                 }
                 Expr firsts = (new Mul(first.toArray(new Expr[first.size()])));
                 Mul seconds = new Mul(second.toArray(new Expr[second.size()]));
-                return scalarProduct(false, domain, firsts,seconds);
+                return scalarProduct(false, domain, firsts, seconds);
             }
         }
         throw new RuntimeException("Unsupported");
@@ -3410,7 +3528,7 @@ public final class Maths {
         return Maths.sum(seq(size, f));
     }
 
-    public static Expr sum(int size1, int size2, Int2ToExpr e) {
+    public static Expr sum(int size1, int size2, TMatrixCell<Expr> e) {
         return Maths.sum(seq(size1, size2, e));
     }
 //    public static void main(String[] args) {
@@ -3435,13 +3553,13 @@ public final class Maths {
 ////        System.out.println(gf);
 //    }
 
-    public static TList<Expr> seq(int size1, TVectorCell<Expr> f) {
-        return new UpdatableExprSequence(Expr.class, new TVectorModelFromCell(size1,f));
+    public static TVector<Expr> seq(int size1, TVectorCell<Expr> f) {
+        return new ReadOnlyTVector<Expr>(Expr.class, new TVectorModelFromCell(size1, f),false);
     }
 
-    public static TList<Expr> seq(int size1, int size2, Int2ToExpr f) {
+    public static TVector<Expr> seq(int size1, int size2, TMatrixCell<Expr> f) {
         int sizeFull = size1 * size2;
-        return new UpdatableExprSequence(Expr.class, new TVectorModel() {
+        TVectorModel<Expr> tVectorModel = new TVectorModel<Expr>() {
             @Override
             public int size() {
                 return sizeFull;
@@ -3449,9 +3567,10 @@ public final class Maths {
 
             @Override
             public Expr get(int index) {
-                return f.eval(index / size2, index % size2);
+                return f.get(index / size2, index % size2);
             }
-        });
+        };
+        return new ReadOnlyTVector<Expr>(Expr.class, tVectorModel,false);
     }
 
     private static ScalarProductCache resolveBestScalarProductCache(int rows, int columns) {
@@ -3465,7 +3584,7 @@ public final class Maths {
 
     public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
-        c.evaluate(null, fn, gp, hermitian,AxisXY.XY, monitor);
+        c.evaluate(null, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
@@ -3606,9 +3725,11 @@ public final class Maths {
     public static Complex scalarProduct(boolean hermitian, Expr f1, Expr f2) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, f1, f2);
     }
+
     public static Complex scalarProduct(Expr f1, Expr f2) {
         return Config.getDefaultScalarProductOperator().eval(false, f1, f2);
     }
+
     public static Complex hscalarProduct(Expr f1, Expr f2) {
         return Config.getDefaultScalarProductOperator().eval(true, f1, f2);
     }
@@ -3637,11 +3758,11 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian,null).toMatrix();
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null).toMatrix();
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g,f, hermitian, null);
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null);
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
@@ -3649,7 +3770,7 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f,hermitian, monitor).toMatrix();
+        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor).toMatrix();
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
@@ -3664,29 +3785,35 @@ public final class Maths {
 //        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
 //    }
     public static TList<Expr> exprList(int size) {
-        return new ArrayExprList<Expr>(Expr.class,size);
+        return new ArrayExprList<Expr>(Expr.class, false,size);
     }
+
     public static TList<Expr> exprList(Expr... vector) {
-        return new ArrayExprList<Expr>(Expr.class,vector);
+        return new ArrayExprList<Expr>(Expr.class, false, vector);
     }
 
     public static TList<Complex> complexList() {
-        return new ArrayExprList<>(Complex.class,0);
+        return new ArrayExprList<>(Complex.class, false, 0);
     }
 
     public static TList<Complex> complexList(int size) {
-        return new ArrayExprList<>(Complex.class,size);
+        return new ArrayExprList<>(Complex.class, false, size);
     }
 
     public static TList<Complex> complexList(Complex... vector) {
-        return new ArrayExprList<>(Complex.class,vector);
+        return new ArrayExprList<>(Complex.class, false, vector);
     }
 
     public static <T> TList<T> listOf(Class<T> type) {
-        return new ArrayTList<T>(type,0);
+        return new ArrayTList<T>(type, false, 0);
     }
-    public static <T> TList<T> listOf(Class<T> type,int initialSize) {
-        return new ArrayTList<T>(type,initialSize);
+
+    public static <T> TList<T> listOf(Class<T> type, int initialSize) {
+        return new ArrayTList<T>(type, false, initialSize);
+    }
+
+    public static <T> TList<T> listOf(Class<T> type, boolean row,int initialSize) {
+        return new ArrayTList<T>(type, row, initialSize);
     }
 
     public static <T> TList<T> list(TVector<T> vector) {
@@ -3704,23 +3831,23 @@ public final class Maths {
         return exprs;
     }
 
-    public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors){
-        return vscalarProduct(false,vector,vectors);
+    public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors) {
+        return vscalarProduct(false, vector, vectors);
     }
 
-    public static <T> TVector<T> vhscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors){
-        return vscalarProduct(true,vector,vectors);
+    public static <T> TVector<T> vhscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors) {
+        return vscalarProduct(true, vector, vectors);
     }
 
-    public static <T> TVector<T> vscalarProduct(boolean hermitian, TVector<T> vector, TVector<TVector<T>> vectors){
-        return vector.vscalarProduct(hermitian,vectors.toArray(new TVector[vectors.size()]));
+    public static <T> TVector<T> vscalarProduct(boolean hermitian, TVector<T> vector, TVector<TVector<T>> vectors) {
+        return vector.vscalarProduct(hermitian, vectors.toArray(new TVector[vectors.size()]));
     }
 
     public static TList<Expr> exprList() {
-        return new ArrayExprList<Expr>(Expr.class,0);
+        return new ArrayExprList<Expr>(Expr.class, false, 0);
     }
 
-    public static <T> TList<T> concat(TList<T> ... a) {
+    public static <T> TList<T> concat(TList<T>... a) {
         TList<T> ts = listOf(a[0].getComponentType());
         for (TList<T> t : a) {
             ts.appendAll(t);
@@ -3729,11 +3856,11 @@ public final class Maths {
     }
 
     public static TList<Double> doubleList() {
-        return new ArrayTList<Double>(Double.class,0);
+        return new ArrayTList<Double>(Double.class, false, 0);
     }
 
     public static TList<Double> doubleList(double[] items) {
-        ArrayTList<Double> doubles = new ArrayTList<>(Double.class, items.length);
+        ArrayTList<Double> doubles = new ArrayTList<>(Double.class, false, items.length);
         for (double item : items) {
             doubles.add(item);
         }
@@ -3741,15 +3868,15 @@ public final class Maths {
     }
 
     public static TList<Double> doubleList(int size) {
-        return new ArrayTList<Double>(Double.class,size);
+        return new ArrayTList<Double>(Double.class, false, size);
     }
 
     public static TList<Integer> intList() {
-        return new ArrayTList<Integer>(Integer.class,0);
+        return new ArrayTList<Integer>(Integer.class, false, 0);
     }
 
     public static TList<Integer> intList(int[] items) {
-        ArrayTList<Integer> doubles = new ArrayTList<>(Integer.class, items.length);
+        ArrayTList<Integer> doubles = new ArrayTList<>(Integer.class, false, items.length);
         for (int item : items) {
             doubles.add(item);
         }
@@ -3757,71 +3884,71 @@ public final class Maths {
     }
 
     public static TList<Integer> intList(int size) {
-        return new ArrayTList<Integer>(Integer.class,size);
+        return new ArrayTList<Integer>(Integer.class, false, size);
     }
 
-    public static <T> T sumt(Class<T> type,T... arr) {
-        if(type.equals(Complex.class)){
+    public static <T> T sumt(Class<T> type, T... arr) {
+        if (type.equals(Complex.class)) {
             return (T) sum((Complex[]) arr);
         }
-        if(type.equals(Expr.class)){
+        if (type.equals(Expr.class)) {
             return (T) sum((Expr[]) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
         T a = s.zero();
         for (int i = 0; i < arr.length; i++) {
-            a=s.add(a,arr[i]);
+            a = s.add(a, arr[i]);
         }
         return a;
     }
 
-    public static <T> T sumt(Class<T> type,TVectorModel<T> arr) {
-        if(type.equals(Complex.class)){
+    public static <T> T sumt(Class<T> type, TVectorModel<T> arr) {
+        if (type.equals(Complex.class)) {
             return (T) sumc((TVectorModel<Complex>) arr);
         }
-        if(type.equals(Expr.class)){
+        if (type.equals(Expr.class)) {
             return (T) sum((TVectorModel<Expr>) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
         T a = s.zero();
         int size = arr.size();
         for (int i = 0; i < size; i++) {
-            a=s.add(a,arr.get(i));
+            a = s.add(a, arr.get(i));
         }
         return a;
     }
 
-    public static <T> T sumt(Class<T> type,int size,TVectorCell<T> arr) {
+    public static <T> T sumt(Class<T> type, int size, TVectorCell<T> arr) {
         return sumt(type, new TVectorModelFromCell<>(size, arr));
     }
 
-    public static <T> T mult(Class<T> type,T... arr) {
-        if(type.equals(Complex.class)){
+    public static <T> T mult(Class<T> type, T... arr) {
+        if (type.equals(Complex.class)) {
             return (T) mul((Complex[]) arr);
         }
-        if(type.equals(Expr.class)){
+        if (type.equals(Expr.class)) {
             return (T) mul((Expr[]) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
         T a = s.one();
         for (int i = 0; i < arr.length; i++) {
-            a=s.mul(a,arr[i]);
+            a = s.mul(a, arr[i]);
         }
         return a;
     }
 
-    public static <T> T mult(Class<T> type,TVectorModel<T> arr) {
-        if(type.equals(Complex.class)){
+    public static <T> T mult(Class<T> type, TVectorModel<T> arr) {
+        if (type.equals(Complex.class)) {
             return (T) mulc((TVectorModel<Complex>) arr);
         }
-        if(type.equals(Expr.class)){
+        if (type.equals(Expr.class)) {
             return (T) mul((TVectorModel<Expr>) arr);
         }
         VectorSpace<T> s = getVectorSpace(type);
         T a = s.one();
         int size = arr.size();
         for (int i = 0; i < size; i++) {
-            a=s.mul(a,arr.get(i));
+            a = s.mul(a, arr.get(i));
         }
         return a;
     }
@@ -3896,8 +4023,12 @@ public final class Maths {
         return EXPR_VECTOR_SPACE.mul(a, b);
     }
 
-    public static TVector<Expr> dotmul(TVector<Expr> ... arr) {
-        VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
+    public static TVector<Expr> dotmul(TVector<Expr>... arr) {
+        Class cls=arr[0].getComponentType();
+        for (int i = 0; i < arr.length; i++) {
+            cls=PlatformUtils.lowestCommonAncestor(cls,arr[i].getComponentType());
+        }
+        VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
         return new ReadOnlyTVector<>(arr[0].getComponentType(), new TVectorModel<Expr>() {
             @Override
             public int size() {
@@ -3906,7 +4037,7 @@ public final class Maths {
 
             @Override
             public Expr get(int index) {
-                Expr e=arr[0].get(index);
+                Expr e = arr[0].get(index);
                 for (int i = 1; i < arr.length; i++) {
                     TVector<Expr> v = arr[i];
                     e = componentVectorSpace.mul(e, v.get(index));
@@ -3915,7 +4046,8 @@ public final class Maths {
             }
         }, arr[0].isRow());
     }
-    public static TVector<Expr> dotdiv(TVector<Expr> ... arr) {
+
+    public static TVector<Expr> dotdiv(TVector<Expr>... arr) {
         VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
         return new ReadOnlyTVector<>(arr[0].getComponentType(), new TVectorModel<Expr>() {
             @Override
@@ -3925,7 +4057,7 @@ public final class Maths {
 
             @Override
             public Expr get(int index) {
-                Expr e=arr[0].get(index);
+                Expr e = arr[0].get(index);
                 for (int i = 1; i < arr.length; i++) {
                     TVector<Expr> v = arr[i];
                     e = componentVectorSpace.div(e, v.get(index));
@@ -3940,10 +4072,10 @@ public final class Maths {
         if (len == 0) {
             return CZERO;
         }
-        MutableComplex c = new MutableComplex(1,0);
+        MutableComplex c = new MutableComplex(1, 0);
         for (int i = 0; i < len; i++) {
             Complex complex = arr.get(i);
-            if(complex.isZero()){
+            if (complex.isZero()) {
                 return CZERO;
             }
             c.mul(complex);
@@ -3957,7 +4089,7 @@ public final class Maths {
             return CZERO;
         }
         List<Expr> all = new ArrayList<>();
-        MutableComplex c = new MutableComplex(1,0);
+        MutableComplex c = new MutableComplex(1, 0);
         Queue<Expr> t = new LinkedList<>();
         for (int i = 0; i < len; i++) {
             Expr e = arr.get(i);
@@ -3968,8 +4100,8 @@ public final class Maths {
                     t.addAll(e2.getSubExpressions());
                 } else {
                     if (e2.isComplex()) {
-                        Complex v=e2.toComplex();
-                        if(c.isZero()){
+                        Complex v = e2.toComplex();
+                        if (c.isZero()) {
                             return CZERO;
                         }
                         c.mul(v);
@@ -3984,7 +4116,7 @@ public final class Maths {
             return complex;
         }
         if (!complex.equals(CONE)) {
-            all.add(0,complex);
+            all.add(0, complex);
         }
         return new Mul(all.toArray(new Expr[all.size()]));
     }
@@ -4012,16 +4144,19 @@ public final class Maths {
     }
 
     public static Expr add(Expr a, double b) {
-        return add(a,Complex.valueOf(b));
+        return add(a, Complex.valueOf(b));
     }
+
     public static Expr mul(Expr a, double b) {
-        return mul(a,Complex.valueOf(b));
+        return mul(a, Complex.valueOf(b));
     }
+
     public static Expr sub(Expr a, double b) {
-        return sub(a,Complex.valueOf(b));
+        return sub(a, Complex.valueOf(b));
     }
+
     public static Expr div(Expr a, double b) {
-        return div(a,Complex.valueOf(b));
+        return div(a, Complex.valueOf(b));
     }
 
     public static Expr add(Expr a, Expr b) {
@@ -4080,11 +4215,11 @@ public final class Maths {
         });
     }
 
-    public static <T> TMatrix<T> tmatrix(Class<T> type,TMatrixModel<T> model) {
-        return new ReadOnlyTMatrix<T>(type,model);
+    public static <T> TMatrix<T> tmatrix(Class<T> type, TMatrixModel<T> model) {
+        return new ReadOnlyTMatrix<T>(type, model);
     }
 
-    public static <T> TMatrix<T> tmatrix(Class<T> type,int rows,int columns,TMatrixCell<T> model) {
+    public static <T> TMatrix<T> tmatrix(Class<T> type, int rows, int columns, TMatrixCell<T> model) {
         return tmatrix(type, new TMatrixModel<T>() {
             @Override
             public int getColumnCount() {
@@ -4098,7 +4233,7 @@ public final class Maths {
 
             @Override
             public T get(int row, int column) {
-                return model.get(row,column);
+                return model.get(row, column);
             }
         });
     }
@@ -4108,14 +4243,14 @@ public final class Maths {
     }
 
     public static <T> T simplify(T a) {
-        if(a instanceof Expr){
-            return (T) simplify((Expr)a);
+        if (a instanceof Expr) {
+            return (T) simplify((Expr) a);
         }
-        if(a instanceof TList){
-            return (T) simplify((TList)a);
+        if (a instanceof TList) {
+            return (T) simplify((TList) a);
         }
-        if(a instanceof TVector){
-            return (T) simplify((TVector)a);
+        if (a instanceof TVector) {
+            return (T) simplify((TVector) a);
         }
         return a;
     }
@@ -4135,7 +4270,7 @@ public final class Maths {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
-                Expr n = normalize((Expr)e).simplify();
+                Expr n = normalize((Expr) e).simplify();
                 return (T) n;
             }
         });
@@ -4318,11 +4453,10 @@ public final class Maths {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) simplify((Expr)e);
+                return (T) simplify((Expr) e);
             }
         });
     }
-
 
 
     public static <T> TList<T> addAll(TList<T> e, T... expressions) {
@@ -4352,7 +4486,7 @@ public final class Maths {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
-                return (T) vectorSpace.pow(e,b);
+                return (T) vectorSpace.pow(e, b);
             }
         });
     }
@@ -4362,7 +4496,7 @@ public final class Maths {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
-                return (T) vectorSpace.sub(e,b);
+                return (T) vectorSpace.sub(e, b);
             }
         });
     }
@@ -4372,7 +4506,7 @@ public final class Maths {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
-                return (T) vectorSpace.div(e,b);
+                return (T) vectorSpace.div(e, b);
             }
         });
     }
@@ -4382,7 +4516,7 @@ public final class Maths {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
-                return (T) vectorSpace.add(e,b);
+                return (T) vectorSpace.add(e, b);
             }
         });
     }
@@ -4392,7 +4526,7 @@ public final class Maths {
             @Override
             public T eval(int index, T e) {
                 VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(e.getClass());
-                return (T) vectorSpace.mul(e,b);
+                return (T) vectorSpace.mul(e, b);
             }
         });
     }
@@ -4493,20 +4627,25 @@ public final class Maths {
         return new Chronometer(name);
     }
 
-    public static Chronometer chrono(String name,Runnable r) {
-        Chronometer c = new Chronometer(name).start();
+    public static Chronometer chrono(String name, Runnable r) {
+        PlatformUtils.gc2();
+        MemoryInfo memoryInfoBefore = Maths.memoryInfo();
+        Chronometer c = new Chronometer().start();
         r.run();
-        Chronometer stop = c.stop();
-        System.out.println(stop.toString());
+        c.stop();
+        MemoryInfo memoryInfoAfter = Maths.memoryInfo();
+
+        PlatformUtils.gc2();
+        System.out.println(name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return c;
     }
 
-    public static <V> V chrono(String name,Callable<V> r) {
+    public static <V> V chrono(String name, Callable<V> r) {
 //        System.out.println("Start "+name);
-        Runtime.getRuntime().gc();
+        PlatformUtils.gc2();
         MemoryInfo memoryInfoBefore = Maths.memoryInfo();
-        Chronometer c = new Chronometer(name).start();
-        V v= null;
+        Chronometer c = new Chronometer().start();
+        V v = null;
         try {
             v = r.call();
         } catch (Exception ex) {
@@ -4514,8 +4653,8 @@ public final class Maths {
         }
         c.stop();
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
-
-        System.out.println(c.toString()+"  memory : "+Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        PlatformUtils.gc2();
+        System.out.println(name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return v;
     }
 
@@ -4720,7 +4859,7 @@ public final class Maths {
     }
 
     public static <T extends Expr> DoubleArray toDoubleArray(TList<T> c) {
-        DoubleArray a=new DoubleArray(c.size());
+        DoubleArray a = new DoubleArray(c.size());
         for (T o : c) {
             a.add(o.toDouble());
         }
@@ -4781,7 +4920,7 @@ public final class Maths {
         if (Expr.class.isAssignableFrom(cls)) {
             return (VectorSpace<T>) Maths.EXPR_VECTOR_SPACE;
         }
-        throw new IllegalArgumentException("Not yet supported "+cls);
+        throw new IllegalArgumentException("Not yet supported " + cls);
     }
 
     public static class Config {
@@ -4815,6 +4954,8 @@ public final class Maths {
         //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
         private static ScalarProductOperator defaultScalarProductOperator = null;
         private static FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
+        private static Map<ClassPair, Converter> converters = new HashMap<>();
+
         private static PropertyChangeSupport pcs = new PropertyChangeSupport(Config.class);
         private static DoubleFormatter defaultDblFormat = new DoubleFormatter() {
             @Override
@@ -4830,6 +4971,45 @@ public final class Maths {
                 return d.format(value);
             }
         };
+
+        static {
+            registerConverter(Double.class, Complex.class, DOUBLE_TO_COMPLEX);
+            registerConverter(Complex.class, Double.class, COMPLEX_TO_DOUBLE);
+            registerConverter(Double.class, TVector.class, DOUBLE_TO_TVECTOR);
+            registerConverter(TVector.class, Double.class, TVECTOR_TO_DOUBLE);
+            registerConverter(Double.class, Expr.class, DOUBLE_TO_EXPR);
+            registerConverter(Expr.class, Double.class, EXPR_TO_DOUBLE);
+
+            registerConverter(Complex.class, TVector.class, COMPLEX_TO_TVECTOR);
+            registerConverter(TVector.class, Complex.class, TVECTOR_TO_COMPLEX);
+            registerConverter(Complex.class, Expr.class, COMPLEX_TO_EXPR);
+            registerConverter(Expr.class, Complex.class, EXPR_TO_COMPLEX);
+        }
+
+        public static <A, B> void registerConverter(Class<A> a, Class<B> b, Converter<A, B> c) {
+            ClassPair k = new ClassPair(a, b);
+            if (c == null) {
+                converters.remove(k);
+            } else {
+                converters.put(k, c);
+            }
+        }
+
+        public static <A, B> Converter<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
+            ClassPair k = new ClassPair(a, b);
+            return converters.get(k);
+        }
+
+        public static <A, B> Converter<A, B> getConverter(Class<A> a, Class<B> b) {
+            if (a.equals(b)) {
+                return IDENTITY;
+            }
+            Converter converter = getRegisteredConverter(a, b);
+            if (converter == null) {
+                throw new NoSuchElementException("No such element : converter for " + a + " and " + b);
+            }
+            return converter;
+        }
 
         public static boolean isDevelopmentMode() {
             return developmentMode;

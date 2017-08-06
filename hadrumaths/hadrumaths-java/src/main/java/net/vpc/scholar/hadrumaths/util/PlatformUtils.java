@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 
 import java.lang.reflect.Field;
@@ -27,65 +28,62 @@ public class PlatformUtils {
         }
     };
 
-    public static void requireEqualsAndHashCode(Class o){
-        if(!hasValidEqualsAndHashCode(o)){
-            throw new IllegalArgumentException("Class "+o+" should implement equals() & hashCode() methods ");
+    public static void requireEqualsAndHashCode(Class o) {
+        if (!hasValidEqualsAndHashCode(o)) {
+            throw new IllegalArgumentException("Class " + o + " should implement equals() & hashCode() methods ");
         }
     }
-    private static boolean hasStateFields(Class cls){
+
+    private static boolean hasStateFields(Class cls) {
         for (Field field : cls.getDeclaredFields()) {
             int m = field.getModifiers();
-            if(!Modifier.isStatic(m) && field.getAnnotation(NonStateField.class)==null){
+            if (!Modifier.isStatic(m) && field.getAnnotation(NonStateField.class) == null) {
                 return true;
             }
         }
         return false;
     }
 
-    public static void main(String[] args) {
-        System.out.println(lowestCommonAncestor(Complex.class,Matrix.class));
-        System.out.println(commonAncestors(Complex.class,Matrix.class));
-    }
 
-    public static Class lowestCommonAncestor(Class a,Class b){
-        if(a.equals(b)){
+    public static Class lowestCommonAncestor(Class a, Class b) {
+        if (a.equals(b)) {
             return a;
         }
-        if(a.isAssignableFrom(b)){
+        if (a.isAssignableFrom(b)) {
             return a;
         }
-        if(b.isAssignableFrom(a)){
+        if (b.isAssignableFrom(a)) {
             return b;
         }
         Class[] aHierarchy = findClassHierarchy(a, null);
         Class[] bHierarchy = findClassHierarchy(b, null);
-        int i1=-1;
-        int i2=-1;
+        int i1 = -1;
+        int i2 = -1;
         for (int ii = 0; ii < aHierarchy.length; ii++) {
             for (int jj = 0; jj < bHierarchy.length; jj++) {
-                if(aHierarchy[ii].equals(bHierarchy[jj])){
-                    if(i1<0 || ii+jj<i1+i2) {
+                if (aHierarchy[ii].equals(bHierarchy[jj])) {
+                    if (i1 < 0 || ii + jj < i1 + i2) {
                         i1 = ii;
                         i2 = jj;
                     }
                 }
             }
         }
-        if(i1<0){
+        if (i1 < 0) {
             return Object.class;
         }
         return aHierarchy[i1];
     }
 
-    public static List<Class> commonAncestors(Class a, Class b){
+    public static List<Class> commonAncestors(Class a, Class b) {
         Class[] aHierarchy = findClassHierarchy(a, null);
         Class[] bHierarchy = findClassHierarchy(b, null);
-        int i1=-1;
-        int i2=-1;
-        List<Class> all=new ArrayList<>();
+        int i1 = -1;
+        int i2 = -1;
+        List<Class> all = new ArrayList<>();
         for (int ii = 0; ii < aHierarchy.length; ii++) {
             for (int jj = 0; jj < bHierarchy.length; jj++) {
-                if(aHierarchy[ii].equals(bHierarchy[jj])){
+                if (aHierarchy[ii].equals(bHierarchy[jj])) {
                     all.add(aHierarchy[ii]);
                 }
             }
@@ -93,30 +91,30 @@ public class PlatformUtils {
         return all;
     }
 
-    public static boolean hasValidEqualsAndHashCode(Class cls){
-        boolean e=false;
-        boolean h=false;
+    public static boolean hasValidEqualsAndHashCode(Class cls) {
+        boolean e = false;
+        boolean h = false;
         try {
             Method equals = cls.getDeclaredMethod("equals", Object.class);
-            e=true;
+            e = true;
         } catch (NoSuchMethodException ee) {
             //
         }
         try {
             Method hashCode = cls.getDeclaredMethod("hashCode");
-            h=true;
+            h = true;
         } catch (NoSuchMethodException ee) {
             //
         }
-        if(e!=h){
-            throw new IllegalArgumentException("Class "+cls+" should implement BOTH equals() and hashCode() methods ");
+        if (e != h) {
+            throw new IllegalArgumentException("Class " + cls + " should implement BOTH equals() and hashCode() methods ");
         }
-        if(!e){
-            if(hasStateFields(cls)){
+        if (!e) {
+            if (hasStateFields(cls)) {
                 return false;
             }
             Class s = cls.getSuperclass();
-            if(s!=null && s!=Object.class){
+            if (s != null && s != Object.class) {
                 return hasValidEqualsAndHashCode(s);
             }
             return false;
@@ -131,7 +129,7 @@ public class PlatformUtils {
         queue.add(clazz);
         while (!queue.isEmpty()) {
             Class i = queue.remove();
-            if(baseType==null || baseType.isAssignableFrom(i)) {
+            if (baseType == null || baseType.isAssignableFrom(i)) {
                 if (!seen.contains(i)) {
                     seen.add(i);
                     result.add(i);
@@ -155,7 +153,7 @@ public class PlatformUtils {
         queue.add(clazz);
         while (!queue.isEmpty()) {
             Class i = queue.remove();
-            if(baseType==null || baseType.isAssignableFrom(i)) {
+            if (baseType == null || baseType.isAssignableFrom(i)) {
                 if (!seen.contains(i)) {
                     seen.add(i);
                     result.add(i);
@@ -168,4 +166,47 @@ public class PlatformUtils {
         Collections.sort(result, CLASS_HIERARCHY_COMPARATOR);
         return result.toArray(new Class[result.size()]);
     }
+
+    public static long gc2() {
+        long before = Maths.inUseMemory();
+        Runtime rt = Runtime.getRuntime();
+        long lastFreed=0;
+        int iterations=0;
+        for (int i = 0; i < 10; i++) {
+            long before1 = Maths.inUseMemory();
+            rt.gc();
+            long after1 = Maths.inUseMemory();
+            long freed1 = before1-after1;
+            long freed = before-after1;
+            iterations++;
+            long deltaFreed = (freed1>lastFreed) ? (freed1-lastFreed):(lastFreed-freed1);
+            lastFreed=freed1;
+//            System.out.println("\tfreed : "+Maths.formatMemory(freed1) +" : "+Maths.formatMemory(freed));
+            if(deltaFreed <1024) break;
+        }
+        long after = Maths.inUseMemory();
+        long freed = before-after;
+//        System.out.println("freed in "+iterations+" iterations : "+Maths.formatMemory(freed));
+        return freed;
+    }
+
+//    public static long gc() {
+//        long before1 = Maths.inUseMemory();
+//        Runtime rt = Runtime.getRuntime();
+//        rt.gc();
+//        long after1 = Maths.inUseMemory();
+//        long freed1 = before1-after1;
+//        System.out.println("freed : "+Maths.formatMemory(freed1));
+//        return freed1;
+//    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) {
+//            boolean[] o=new boolean[100000];
+            gc2();
+//            System.out.println(Maths.formatMemory(gc2()));
+        }
+    }
+
+
 }

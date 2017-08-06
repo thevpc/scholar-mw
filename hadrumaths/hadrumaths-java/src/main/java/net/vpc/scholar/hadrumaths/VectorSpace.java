@@ -1,9 +1,15 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.util.Converter;
+
 import java.util.List;
 
 public interface VectorSpace<T> {
     Class<T> getItemType();
+
+    <R> Converter<R, T> getConverterFrom(Class<R> t);
+
+    <R> Converter<T, R> getConverterTo(Class<R> t);
 
     <R> R convertTo(T value, Class<R> t);
 

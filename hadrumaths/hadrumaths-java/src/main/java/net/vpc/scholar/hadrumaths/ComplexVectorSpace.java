@@ -1,51 +1,51 @@
 package net.vpc.scholar.hadrumaths;
 
 public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
-    @Override
-    public <R> R convertTo(Complex value,Class<R> t) {
-        if(t.equals(Complex.class)){
-            return (R) value;
-        }
-        if(t.equals(Double.class)){
-            return (R) Double.valueOf(value.toDouble());
-        }
-        if(t.equals(Matrix.class)){
-            return (R) Maths.matrix(new Complex[][]{{value}});
-        }
-        if(t.equals(TMatrix.class)){
-            return (R) Maths.matrix(new Complex[][]{{value}});
-        }
-        if(t.equals(Vector.class)){
-            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
-        }
-        if(t.equals(TVector.class)){
-            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
-        }
-        throw new ClassCastException();
-    }
-
-    @Override
-    public <R> Complex convertFrom(R value, Class<R> t) {
-        if(t.equals(Complex.class)){
-            return (Complex) value;
-        }
-        if(t.equals(Double.class)){
-            return (Complex) Complex.valueOf((Double)value);
-        }
-        if(t.equals(Matrix.class)){
-            return (Complex) ((Matrix)value).toComplex();
-        }
-        if(t.equals(TMatrix.class)){
-            return (Complex) ((TMatrix)value).toComplex();
-        }
-        if(t.equals(Vector.class)){
-            return (Complex) ((Vector)value).toComplex();
-        }
-        if(t.equals(TVector.class)){
-            return (Complex) ((TVector)value).toComplex();
-        }
-        throw new ClassCastException();
-    }
+//    @Override
+//    public <R> R convertTo(Complex value,Class<R> t) {
+//        if(t.equals(Complex.class)){
+//            return (R) value;
+//        }
+//        if(t.equals(Double.class)){
+//            return (R) Double.valueOf(value.toDouble());
+//        }
+//        if(t.equals(Matrix.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}});
+//        }
+//        if(t.equals(TMatrix.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}});
+//        }
+//        if(t.equals(Vector.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//        }
+//        if(t.equals(TVector.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//        }
+//        throw new ClassCastException();
+//    }
+//
+//    @Override
+//    public <R> Complex convertFrom(R value, Class<R> t) {
+//        if(t.equals(Complex.class)){
+//            return (Complex) value;
+//        }
+//        if(t.equals(Double.class)){
+//            return (Complex) Complex.valueOf((Double)value);
+//        }
+//        if(t.equals(Matrix.class)){
+//            return (Complex) ((Matrix)value).toComplex();
+//        }
+//        if(t.equals(TMatrix.class)){
+//            return (Complex) ((TMatrix)value).toComplex();
+//        }
+//        if(t.equals(Vector.class)){
+//            return (Complex) ((Vector)value).toComplex();
+//        }
+//        if(t.equals(TVector.class)){
+//            return (Complex) ((TVector)value).toComplex();
+//        }
+//        throw new ClassCastException();
+//    }
 
     @Override
     public Complex convert(double d) {

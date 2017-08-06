@@ -17,8 +17,6 @@ public abstract class LargeMatrixFactory extends AbstractMatrixFactory implement
     private boolean sparse;
     private Complex defaultValue;
     private String id;
-    private Map<String, PreparedStatement> cachedPreparedStatements = new HashMap<String, PreparedStatement>();
-    int hits = 0;
 
     public boolean isSparse() {
         return sparse;

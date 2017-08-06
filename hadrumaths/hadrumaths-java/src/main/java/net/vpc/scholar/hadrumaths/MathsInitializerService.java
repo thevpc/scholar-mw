@@ -26,8 +26,8 @@ public class MathsInitializerService {
         }));
         Plot.Config.registerConverter(MemScalarProductCache.class, new Converter() {
             @Override
-            public Object convert(Object o) {
-                return ((MemScalarProductCache) o).toMatrix();
+            public Object convert(Object value) {
+                return ((MemScalarProductCache) value).toMatrix();
             }
         });
 

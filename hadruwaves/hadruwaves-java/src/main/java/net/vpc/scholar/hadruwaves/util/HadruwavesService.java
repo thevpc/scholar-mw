@@ -30,14 +30,14 @@ public class HadruwavesService implements HadrumathsService {
         });
         Plot.Config.registerConverter(ModeFunctions.class, new Converter() {
             @Override
-            public Object convert(Object o) {
-                return ((ModeFunctions) o).toList();
+            public Object convert(Object value) {
+                return ((ModeFunctions) value).toList();
             }
         });
         Plot.Config.registerConverter(TestFunctions.class, new Converter() {
             @Override
-            public Object convert(Object o) {
-                return ((TestFunctions) o).toList();
+            public Object convert(Object value) {
+                return ((TestFunctions) value).toList();
             }
         });
     }

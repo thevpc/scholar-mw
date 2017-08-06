@@ -1,7 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.TVector;
 import net.vpc.scholar.hadrumaths.TVectorCell;
 
@@ -18,12 +16,19 @@ class CachedSequence<T> extends AbstractTList<T> {
     private List<T> cache = new ArrayList<>();
     private TVectorCell<T> it;
     private boolean updated = false;
+    private Class<T> componentType;
 
-    public CachedSequence(Class<T> componentType,int size, T[] cache, TVectorCell<T> it) {
-        super(componentType);
+    public CachedSequence(Class<T> componentType, boolean row, int size, T[] cache, TVectorCell<T> it) {
+        super(row);
+        this.componentType = componentType;
         this.size = size;
         this.cache.addAll(Arrays.asList(cache));
         this.it = it;
+    }
+
+    @Override
+    public Class<T> getComponentType() {
+        return componentType;
     }
 
     @Override
@@ -79,18 +84,6 @@ class CachedSequence<T> extends AbstractTList<T> {
     public void appendAll(Collection<? extends T> e) {
         setUpdated();
         cache.addAll(e);
-    }
-
-    @Override
-    public TList<T> copy() {
-        try {
-            if(true){
-                throw new IllegalArgumentException("How to copy this?");
-            }
-            return (TList<T>) clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException("Unsupported Clone");
-        }
     }
 
     @Override

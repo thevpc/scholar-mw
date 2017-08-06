@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class DBLargeMatrixFactory extends LargeMatrixFactory {
     private static Logger log = Logger.getLogger(DBLargeMatrixFactory.class.getName());
     private Connection connection;
-    private Map<String, PreparedStatement> cachedPreparedStatements = new HashMap<String, PreparedStatement>();
+    private Map<String, PreparedStatement> cachedPreparedStatements;
     int hits = 0;
 
     public static DBLargeMatrixFactory createStorage(String id, Connection connexion) {
@@ -223,7 +223,9 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
             }
             rs.close();
             ps.close();
-            cachedPreparedStatements.clear();
+            if(cachedPreparedStatements!=null) {
+                cachedPreparedStatements.clear();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -414,6 +416,9 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
     }
 
     private PreparedStatement preparedStatement(String sql) throws SQLException {
+        if(cachedPreparedStatements==null){
+            cachedPreparedStatements=new HashMap<String, PreparedStatement>();
+        }
         PreparedStatement preparedStatement = cachedPreparedStatements.get(sql);
         if (preparedStatement == null) {
             preparedStatement = getConnection().prepareStatement(sql);
