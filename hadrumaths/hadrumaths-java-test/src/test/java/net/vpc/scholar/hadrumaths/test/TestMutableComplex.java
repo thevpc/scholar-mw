@@ -58,7 +58,7 @@ public class TestMutableComplex {
                 if(c.isNaN() && c.isNaN()){
                     ignoreAssert=true;
                 }else {
-                    System.out.println("Why");
+                    System.out.println("Why in test");
                 }
             }
             if(!ignoreAssert) {

@@ -628,7 +628,12 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex log10() {
-        return Complex.valueOf(Math.log(absdbl()), Math.atan2(getImag(), getReal())).div(Math.log(10));
+        double imag = getImag();
+        double real = getReal();
+        if(imag ==0) {
+            Complex.valueOf(Math.log10(real));
+        }
+        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
     }
 
     public Complex db() {

@@ -33,9 +33,6 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public DoubleValue(double cst, Domain domain) {
         this.value = cst;
         this.domain = cst == 0 ? (domain == null ? Domain.FULL(1) : Domain.ZERO(domain.dimension())) : domain == null ? Domain.FULL(1) : domain;
-//        if(value!=0 && this.domain.isEmpty()){
-//            System.out.println("Why");
-//        }
     }
 
     public static DoubleValue valueOf(double cst, Domain domain) {

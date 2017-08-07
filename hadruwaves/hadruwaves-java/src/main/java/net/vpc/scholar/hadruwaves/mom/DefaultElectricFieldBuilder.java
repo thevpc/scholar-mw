@@ -39,9 +39,6 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                     @Override
                     public VDiscrete compute(ObjectCache momCache) {
                         double progressValue = getMonitor().getProgressValue();
-//                        if(progressValue!=0){
-//                            System.out.printf("Why");
-//                        }
                         return getStructure().createElectricFieldEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
                     }
                 }.computeCached();

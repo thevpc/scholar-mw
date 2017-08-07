@@ -39,21 +39,10 @@ public class ValuesPlotTableModel extends AbstractTableModel {
     }
 
     public String getColumnName(int columnIndex) {
-        switch (columnIndex) {
-            case 0: {
-                return "Index";
-            }
-        }
-        return String.valueOf(columnIndex);
+        return String.valueOf(columnIndex+1);
     }
 
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0: {
-                //return "Index";
-                return Integer.class;
-            }
-        }
         return String.class;
     }
 

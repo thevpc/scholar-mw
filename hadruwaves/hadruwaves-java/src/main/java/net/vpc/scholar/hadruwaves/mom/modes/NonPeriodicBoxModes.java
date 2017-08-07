@@ -75,12 +75,12 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
                     u = 2;
                 }
                 //UPDATE 2017 07 27
-                double n_b = n * PI / b;
-                double m_a = m * PI/ a;
+                double n_b = n / b;
+                double m_a = m / a;
                 if (n == 0 && m == 0) {
                     System.err.println("How come " + borders + "(" + i.getModeType() + "," + i.getM() + "," + i.getN() + ") is NaN");
                 }
-                double coeff = sqrt(2 * u / (a * b * (n_b * n_b + m_a * m_a)));
+                double coeff = sqrt(2 * u / (a * b * (n_b * n_b + m_a * m_a))) / PI ;
                 double n_bAmp = n_b * coeff;
                 double m_aAmp = m_a * coeff;
                 double nx;
@@ -97,9 +97,10 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
                 if (m != 0 && n != 0) {
                     u = 2;
                 }
-                double n_b = n * PI/ b;
-                double m_a = m * PI/ a;
-                double coeff = sqrt(2 * u / (a * b * (n_b * n_b + m_a * m_a)));
+                //UPDATE 2017 07 27
+                double n_b = n / b;
+                double m_a = m / a;
+                double coeff = sqrt(2 * u / (a * b * (n_b * n_b + m_a * m_a))) / PI ;
                 if (n == 0 && m == 0) {
                     System.err.println("How come " + borders + "(" + i.getModeType() + "," + i.getM() + "," + i.getN() + ") is NaN");
                 }

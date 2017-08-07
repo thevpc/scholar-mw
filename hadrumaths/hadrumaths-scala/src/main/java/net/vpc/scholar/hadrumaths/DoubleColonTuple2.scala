@@ -9,4 +9,7 @@ class DoubleColonTuple2(val _1: Double, val _2: Double)  extends ToDoubleArrayAw
  val right=_1
 
  override def toDoubleArray(): Array[Double] = Maths.dsteps(left,right)
+
+ override def toString = _1+"::"+_2;
+
 }

@@ -141,9 +141,6 @@ public class ConvergenceEvaluator {
         convInfo.subResult = null;
 
         double epsilon = config.getThreshold();
-        if(monitor0.getProgressValue()!=0){
-            System.out.println("Why");
-        }
         Maths.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
             @Override
             public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {

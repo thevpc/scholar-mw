@@ -111,9 +111,6 @@ public class ValuesPlotModel implements PlotModel {
     }
 
     private void check(){
-//        if(z==null || (z.length>0 && z[0][0]==null)){
-//            System.out.println("Why");
-//        }
     }
 
     private int getValidYVisibleCount(){

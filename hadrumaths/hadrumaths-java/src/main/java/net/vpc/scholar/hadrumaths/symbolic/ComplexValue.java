@@ -23,9 +23,6 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         this.imag = Maths.expr(value.getImag(), domain);
         this.value = value;
         this.domain = value.isZero()?Domain.ZERO(domain == null ? 1 : domain.getDimension()):domain == null ? Domain.FULLX : domain;
-//        if(!value.isZero() && this.domain.isEmpty()){
-//            System.out.println("Why");
-//        }
     }
 
     @Override

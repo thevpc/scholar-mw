@@ -5,6 +5,7 @@ import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
@@ -2338,4 +2339,51 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         return Maths.getVectorSpace(getComponentType());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(o==null || !(o instanceof TMatrix)){
+            return false;
+        }
+
+        TMatrix<?> that = (TMatrix<?>) o;
+        int columnCount = getColumnCount();
+        int rowCount = getRowCount();
+        if(that.getColumnCount()!= columnCount){
+            return false;
+        }
+        if(that.getRowCount()!= rowCount){
+            return false;
+        }
+        if(!that.getComponentType().equals(getComponentType())){
+            return false;
+        }
+        for (int c = 0; c < columnCount; c++) {
+            for (int r = 0; r < rowCount; r++) {
+                if(!Objects.equals(get(r,c),that.get(r,c))){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        int columnCount = getColumnCount();
+        int rowCount = getRowCount();
+        hash = 89 * hash + columnCount;
+        hash = 89 * hash + rowCount;
+        for (int c = 0; c < columnCount; c++) {
+            for (int r = 0; r < rowCount; r++) {
+                T t = get(r, c);
+                if(t!=null) {
+                    hash = 89 * hash + t.hashCode();
+                }
+            }
+        }
+        return hash;
+
+    }
 }

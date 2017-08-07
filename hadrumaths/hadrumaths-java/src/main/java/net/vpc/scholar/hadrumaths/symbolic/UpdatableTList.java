@@ -62,7 +62,7 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
             int initialSize = model.size();
             delegate = Maths.listOf(getComponentType(), initialSize + count);
             for (int i = 0; i < initialSize; i++) {
-                delegate.add(model.get(i));
+                delegate.append(model.get(i));
             }
         }
     }

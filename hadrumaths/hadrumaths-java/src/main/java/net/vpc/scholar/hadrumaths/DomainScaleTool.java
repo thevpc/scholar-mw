@@ -129,9 +129,6 @@ public abstract class DomainScaleTool {
         }
 
         public double rescaleX(double x) {
-//            if(!Double.isFinite((x - from.xmin) / from.xwidth * to.xwidth + to.xmin)){
-//                System.out.println("Why");
-//            }
             return (x - from.xmin()) / from.xwidth() * to.xwidth() + to.xmin();
         }
 
@@ -150,17 +147,8 @@ public abstract class DomainScaleTool {
             if(from.ywidth()==0){
                 return (y - from.ymin())  * to.ywidth() + to.ymin();
             }
-//            if(!Double.isFinite((y - from.ymin) / from.ywidth * to.ywidth + to.ymin)) {
-//                System.out.println("Why");
-//            }
             return (y - from.ymin()) / from.ywidth() * to.ywidth() + to.ymin();
         }
-
-//        public java.awt.geom.Area rescale(java.awt.geom.Area area) {
-//            List<Point> points = new Polygon(area).getPoints();
-//            List<Point> rescaledPoints = rescale(points);
-//            return new Polygon(rescaledPoints).toArea();
-//        }
 
         public Geometry rescale(Geometry area) {
             return new Surface(

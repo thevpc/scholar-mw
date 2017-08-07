@@ -254,11 +254,11 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.X).isZero()) {
                         cFunctionXY2D = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.DCZERO);
-                        Map<String, Object> properties = cFunctionXY2D.getProperties();
+                        Map<String, Object> properties = new HashMap<>();
                         properties.put("Axis", "X");
                         properties.put("Index", index);
                         properties.put("AxisIndex", index);
-//                        cFunctionXY2D.setProperties(properties);
+                        cFunctionXY2D=(DoubleToVector) cFunctionXY2D.setProperties(properties);
                         newFcts.add(cFunctionXY2D);
                         index++;
                     }

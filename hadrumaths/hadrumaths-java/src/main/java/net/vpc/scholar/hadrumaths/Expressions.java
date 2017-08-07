@@ -1218,10 +1218,6 @@ public class Expressions {
                 Complex[][] val = h.getBaseExpr(base,ii).toDC().computeComplex(x, y, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
-//                    if(d2.getDefined3()==null){
-//                        System.out.println("Why");
-//                        h.getBaseExpr(base,ii).toDC().computeComplex(x, y, d0, r2);
-//                    }
                     BooleanArray2 def2 = d2.getDefined2();
                     for (int j = r0.ymin; j <= r0.ymax; j++) {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {

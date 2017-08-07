@@ -13,6 +13,41 @@ import java.util.Map;
  * Created by vpc on 4/29/14.
  */
 public abstract class AbstractExprPropertyAware extends AbstractExpBase{
+    public static final int CACHE_EVALUATED_hasPrams=1 << 0;
+    public static final int CACHE_VALUE_OF__hasPrams=1 << 1;
+    public static final int CACHE_EVALUATED_isComplex=1 << 2;
+    public static final int CACHE_VALUE_OF__isComplex=1 << 3;
+    public static final int CACHE_EVALUATED_isDC=1 << 4;
+    public static final int CACHE_VALUE_OF__isDC=1 << 5;
+    public static final int CACHE_EVALUATED_isDD=1 << 6;
+    public static final int CACHE_VALUE_OF__isDD=1 << 7;
+    public static final int CACHE_EVALUATED_isDV=1 << 8;
+    public static final int CACHE_VALUE_OF__isDV=1 << 9;
+    public static final int CACHE_EVALUATED_isDouble=1 << 10;
+    public static final int CACHE_VALUE_OF__isDouble=1 << 11;
+    public static final int CACHE_EVALUATED_isDoubleExpr=1 << 12;
+    public static final int CACHE_VALUE_OF__isDoubleExpr=1 << 13;
+
+    public static final int CACHE_EVALUATED_isScalarExpr=1 << 14;
+    public static final int CACHE_VALUE_OF__isScalarExpr=1 << 15;
+    public static final int CACHE_EVALUATED_isInfinite=1 << 16;
+    public static final int CACHE_VALUE_OF__isInfinite=1 << 17;
+    public static final int CACHE_EVALUATED_isMatrix=1 << 18;
+    public static final int CACHE_VALUE_OF__isMatrix=1 << 19;
+    public static final int CACHE_EVALUATED_isNaN=1 << 20;
+    public static final int CACHE_VALUE_OF__isNaN=1 << 21;
+    public static final int CACHE_EVALUATED_isZero=1 << 22;
+    public static final int CACHE_VALUE_OF__isZero=1 << 23;
+    public static final int CACHE_EVALUATED_isInvariant_X=1 << 24;
+    public static final int CACHE_VALUE_OF__isInvariant_X=1 << 24;
+    public static final int CACHE_EVALUATED_isInvariant_Y=1 << 26;
+    public static final int CACHE_VALUE_OF__isInvariant_Y=1 << 27;
+//    public static final int CACHE_EVALUATED_isInvariant_Z=1 << 28;
+//    public static final int CACHE_VALUE_OF__isInvariant_Z=1 << 29;
+    public static final int CACHE_EVALUATED_isDM=1 << 28;
+    public static final int CACHE_VALUE_OF__isDM=1 << 29;
+
+
     protected int _cache_isProperties;//new BitSet(40);
 
     public AbstractExprPropertyAware() {
@@ -174,133 +209,120 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDDImpl();
         }
-        if( !_cache_isProperties_get(0)){
-            _cache_isProperties_set(0,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDD)){
             boolean v = isDDImpl();
-            if(!v){
-                v=isDDImpl();
-            }
-            _cache_isProperties_set(1, v);
+            _cache_set(CACHE_VALUE_OF__isDD, v);
             return v;
         }
-        return _cache_isProperties_get(1);
+        return _cache_get(CACHE_VALUE_OF__isDD);
     }
 
     public synchronized final boolean isDC() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDCImpl();
         }
-        if( !_cache_isProperties_get(2)){
-            _cache_isProperties_set(2,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDC)){
             boolean v = isDCImpl();
-            _cache_isProperties_set(3, v);
+            _cache_set(CACHE_VALUE_OF__isDC, v);
             return v;
         }
-        return _cache_isProperties_get(3);
+        return _cache_get(CACHE_VALUE_OF__isDC);
     }
 
     public synchronized final boolean isDV() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDVImpl();
         }
-        if( !_cache_isProperties_get(4)){
-            _cache_isProperties_set(4,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDV)){
             boolean v = isDVImpl();
-            _cache_isProperties_set(5, v);
+            _cache_set(CACHE_VALUE_OF__isDV, v);
             return v;
         }
-        return _cache_isProperties_get(5);
+        return _cache_get(CACHE_VALUE_OF__isDV);
     }
 
     public synchronized final boolean isDM() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDMImpl();
         }
-        if( !_cache_isProperties_get(6)){
-            _cache_isProperties_set(6,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDM)){
             boolean v = isDMImpl();
-            _cache_isProperties_set(7, v);
+            _cache_set(CACHE_VALUE_OF__isDM, v);
             return v;
         }
-        return _cache_isProperties_get(7);
+        return _cache_get(CACHE_VALUE_OF__isDM);
     }
 
     public synchronized final boolean isNaN() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isNaNImpl();
         }
-        if( !_cache_isProperties_get(8)){
-            _cache_isProperties_set(8,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isNaN)){
             boolean v = isNaNImpl();
-            _cache_isProperties_set(9, v);
+            _cache_set(CACHE_VALUE_OF__isNaN, v);
             return v;
         }
-        return _cache_isProperties_get(9);
+        return _cache_get(CACHE_VALUE_OF__isNaN);
     }
 
     public synchronized final boolean isInfinite() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isInfiniteImpl();
         }
-        if( !_cache_isProperties_get(10)){
-            _cache_isProperties_set(10,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isInfinite)){
             boolean v = isInfiniteImpl();
-            _cache_isProperties_set(11, v);
+            _cache_set(CACHE_VALUE_OF__isInfinite, v);
             return v;
         }
-        return _cache_isProperties_get(11);
+        return _cache_get(CACHE_VALUE_OF__isInfinite);
     }
 
     public synchronized final boolean isDoubleExpr() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDoubleExprImpl();
         }
-        if( !_cache_isProperties_get(12)){
-            _cache_isProperties_set(12,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDoubleExpr)){
             boolean v = isDoubleExprImpl();
-            _cache_isProperties_set(13, v);
+            _cache_set(CACHE_VALUE_OF__isDoubleExpr, v);
             return v;
         }
-        return _cache_isProperties_get(13);
+        return _cache_get(CACHE_VALUE_OF__isDoubleExpr);
     }
 
-    public synchronized final boolean isDouble() {
+    public synchronized  boolean isDouble() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isDoubleImpl();
         }
-        if( !_cache_isProperties_get(14)){
-            _cache_isProperties_set(14,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isDouble)){
             boolean v = isDoubleImpl();
-            _cache_isProperties_set(15, v);
+            _cache_set(CACHE_VALUE_OF__isDouble, v);
             return v;
         }
-        return _cache_isProperties_get(15);
+        return _cache_get(CACHE_VALUE_OF__isDouble);
     }
 
     public synchronized final boolean isComplex() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isComplexImpl();
         }
-        if( !_cache_isProperties_get(15)){
-            _cache_isProperties_set(15,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isComplex)){
             boolean v = isComplexImpl();
-            _cache_isProperties_set(15, v);
+            _cache_set(CACHE_VALUE_OF__isComplex, v);
             return v;
         }
-        return _cache_isProperties_get(15);
+        return _cache_get(CACHE_VALUE_OF__isComplex);
     }
 
     public synchronized final boolean isZero() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isZeroImpl();
         }
-        if( !_cache_isProperties_get(16)){
-            _cache_isProperties_set(16,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isZero)){
             boolean v = isZeroImpl();
-            _cache_isProperties_set(17, v);
+            _cache_set(CACHE_VALUE_OF__isZero, v);
             return v;
         }
-        return _cache_isProperties_get(17);
+        return _cache_get(CACHE_VALUE_OF__isZero);
     }
 
     public synchronized final boolean isInvariant(Axis axis) {
@@ -320,31 +342,30 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
         }
         switch (axis){
             case X:{
-                if( !_cache_isProperties_get(18)){
-                    _cache_isProperties_set(18,true);
+                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_X)){
                     boolean v = isInvariantImpl(axis);
-                    _cache_isProperties_set(19, v);
+                    _cache_set(CACHE_VALUE_OF__isInvariant_X, v);
                     return v;
                 }
-                return _cache_isProperties_get(19);
+                return _cache_get(CACHE_VALUE_OF__isInvariant_X);
             }
             case Y:{
-                if( !_cache_isProperties_get(20)){
-                    _cache_isProperties_set(20,true);
+                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_Y)){
                     boolean v = isInvariantImpl(axis);
-                    _cache_isProperties_set(21, v);
+                    _cache_set(CACHE_VALUE_OF__isInvariant_Y, v);
                     return v;
                 }
-                return _cache_isProperties_get(21);
+                return _cache_get(CACHE_VALUE_OF__isInvariant_Y);
             }
             case Z:{
-                if( !_cache_isProperties_get(22)){
-                    _cache_isProperties_set(22,true);
-                    boolean v = isInvariantImpl(axis);
-                    _cache_isProperties_set(23, v);
-                    return v;
-                }
-                return _cache_isProperties_get(23);
+                return isInvariantImpl(axis);
+                //TODO Z cache is not supported to help optimize memory usage (no more 'bits' in the int cache element)
+//                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_Z)){
+//                    boolean v = isInvariantImpl(axis);
+//                    _cache_set(CACHE_VALUE_OF__isInvariant_Z, v);
+//                    return v;
+//                }
+//                return _cache_get(CACHE_VALUE_OF__isInvariant_Z);
             }
         }
         throw new UnsupportedDomainDimensionException();
@@ -354,39 +375,36 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isMatrixImpl();
         }
-        if( !_cache_isProperties_get(24)){
-            _cache_isProperties_set(24,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isMatrix)){
             boolean v = isMatrixImpl();
-            _cache_isProperties_set(25, v);
+            _cache_set(CACHE_VALUE_OF__isMatrix, v);
             return v;
         }
-        return _cache_isProperties_get(25);
+        return _cache_get(CACHE_VALUE_OF__isMatrix);
     }
 
     public final boolean isScalarExpr() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return isScalarExprImpl();
         }
-        if( !_cache_isProperties_get(26)){
-            _cache_isProperties_set(26,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_isScalarExpr)){
             boolean v = isScalarExprImpl();
-            _cache_isProperties_set(27, v);
+            _cache_set(CACHE_VALUE_OF__isScalarExpr, v);
             return v;
         }
-        return _cache_isProperties_get(27);
+        return _cache_get(CACHE_VALUE_OF__isScalarExpr);
     }
 
     public final boolean hasParams() {
         if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
             return hasParamsImpl();
         }
-        if( !_cache_isProperties_get(28)){
-            _cache_isProperties_set(28,true);
+        if( !_cache_is_evaluated(CACHE_EVALUATED_hasPrams)){
             boolean v = hasParamsImpl();
-            _cache_isProperties_set(29, v);
+            _cache_set(CACHE_VALUE_OF__hasPrams, v);
             return v;
         }
-        return _cache_isProperties_get(29);
+        return _cache_get(CACHE_VALUE_OF__hasPrams);
     }
 
     @Override
@@ -407,25 +425,60 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 //        return _cache_domain;
     }
 
-    protected void _cache_isProperties_set(int bitIndex,boolean value){
-        if(value){
-            _cache_isProperties |= (1 << bitIndex);
-        }else{
-            _cache_isProperties &= ~(1 << bitIndex);
-        }
-//        if(_cache_isProperties==null){
-//            _cache_isProperties=new BitSet(40);
+//    protected void _cache_isProperties_set(int bitPower,boolean value){
+//        if(value){
+//            _cache_isProperties |= (bitPower);
+//        }else{
+//            _cache_isProperties &= ~(bitPower);
 //        }
-//        _cache_isProperties.set(bitIndex,value);
+////        if(value){
+////            _cache_isProperties |= (1 << bitIndex);
+////        }else{
+////            _cache_isProperties &= ~(1 << bitIndex);
+////        }
+////        if(_cache_isProperties==null){
+////            _cache_isProperties=new BitSet(40);
+////        }
+////        _cache_isProperties.set(bitIndex,value);
+//    }
+
+    protected boolean _cache_get(int bitPower) {
+        return ((_cache_isProperties & (bitPower)) != 0);
+    }
+    protected void _cache_set(int bitPower,boolean value) {
+        if (value) {
+            _cache_isProperties |= (bitPower);
+        } else {
+            _cache_isProperties &= ~(bitPower);
+        }
+    }
+    protected boolean _cache_is_evaluated(int bitPower) {
+        boolean b = (_cache_isProperties & (bitPower)) != 0;
+        if(!b){
+            _cache_set_evaluated(bitPower,true);
+        }
+        return b;
+    }
+//    protected void _cache_set_evaluated(int bitPower) {
+//        _cache_set_evaluated(bitPower,true);
+//    }
+
+    protected void _cache_set_evaluated(int bitPower,boolean value) {
+        if (value) {
+            _cache_isProperties |= (bitPower);
+        } else {
+            _cache_isProperties &= ~(bitPower);
+        }
     }
 
-    protected boolean _cache_isProperties_get(int bitIndex){
-        return ((_cache_isProperties & (1 << bitIndex)) != 0);
-//        if(_cache_isProperties==null){
-//            _cache_isProperties=new BitSet(40);
-//        }
-//        return _cache_isProperties.get(bitIndex);
-    }
+//    protected boolean _cache_isProperties_get(int bitPower){
+//        return ((_cache_isProperties & (bitPower)) != 0);
+////        return ((_cache_isProperties & (1 << bitIndex)) != 0);
+////        if(_cache_isProperties==null){
+////            _cache_isProperties=new BitSet(40);
+////        }
+////        return _cache_isProperties.get(bitIndex);
+//    }
 
 
     protected abstract Domain getDomainImpl() ;

@@ -39,7 +39,17 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
     public boolean isZeroImpl() {
         return a==0 && b==0 && c==0;
     }
-    
+
+    @Override
+    public boolean isDouble() {
+        return super.isDouble();
+    }
+
+    @Override
+    public boolean isDoubleImpl() {
+        return super.isDoubleImpl();
+    }
+
     @Override
     public boolean isNaNImpl() {
         return

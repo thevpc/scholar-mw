@@ -2017,6 +2017,18 @@ public final class Maths {
         return EXPR_VECTOR_SPACE.db2(e);
     }
 
+    public static Complex complex(int e) {
+        return Complex.valueOf(e);
+    }
+
+    public static Complex complex(double e) {
+        return Complex.valueOf(e);
+    }
+
+    public static Complex complex(double a, double b) {
+        return Complex.valueOf(a,b);
+    }
+
     public static Complex complex(Expr e) {
         return e.toComplex();
     }
@@ -3868,7 +3880,7 @@ public final class Maths {
     public static TList<Double> doubleList(double[] items) {
         ArrayTList<Double> doubles = new ArrayTList<>(Double.class, false, items.length);
         for (double item : items) {
-            doubles.add(item);
+            doubles.append(item);
         }
         return doubles;
     }
@@ -3884,7 +3896,7 @@ public final class Maths {
     public static TList<Integer> intList(int[] items) {
         ArrayTList<Integer> doubles = new ArrayTList<>(Integer.class, false, items.length);
         for (int item : items) {
-            doubles.add(item);
+            doubles.append(item);
         }
         return doubles;
     }
