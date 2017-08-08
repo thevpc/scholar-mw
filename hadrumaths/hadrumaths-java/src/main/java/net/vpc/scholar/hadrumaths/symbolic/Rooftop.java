@@ -86,7 +86,7 @@ public class Rooftop extends Ref implements Cloneable{
         this.nx=nx;
         this.ny=ny;
         this.d=d;
-        TList<Expr> list = Maths.exprList();
+        TList<Expr> list = Maths.elist();
         if (xside && yside) {
             throw new Error("Not yet supported");
         } else if (xside) {
@@ -155,7 +155,7 @@ public class Rooftop extends Ref implements Cloneable{
         } else {
             throw new RuntimeException("Rooftop Pattern should include either X or Y");
         }
-        init(Maths.sum(list));
+        init(Maths.esum(list));
     }
 
     private Expr rooftopPartX(boolean asc, Domain domain) {
@@ -181,8 +181,8 @@ public class Rooftop extends Ref implements Cloneable{
     }
 
     private Expr rooftop(boolean x, boolean y, Domain domain) {
-        Expr px = sum(rooftopPartX(true, domain), rooftopPartX(false, domain));
-        Expr py = sum(rooftopPartY(true, domain), rooftopPartY(false, domain));
+        Expr px = Maths.sum(rooftopPartX(true, domain), rooftopPartX(false, domain));
+        Expr py = Maths.sum(rooftopPartY(true, domain), rooftopPartY(false, domain));
         if (x && y) {
             return mul(px, py);
         } else if (x) {

@@ -34,6 +34,15 @@ public class MainPlotterFrame extends JFrame {
         init();
     }
 
+    public void prepare(){
+        try {
+            console.getTaskMonitor().getFrame().setClosed(true);
+            console.getLockMonitor().getFrame().setClosed(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setVisible(boolean b) {
         boolean oldV = isVisible();
         super.setVisible(b);
@@ -66,7 +75,7 @@ public class MainPlotterFrame extends JFrame {
 
         toolsWindowsMenu = new JMenu("Tools");
         menubar.add(toolsWindowsMenu);
-        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
+//        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
         windowsMenu = new JMenu("Windows");
         menubar.add(windowsMenu);
 
@@ -168,6 +177,11 @@ public class MainPlotterFrame extends JFrame {
                 JComponent component1 = ((JComponent) e.getSource());
                 JInternalFrame inf = (JInternalFrame) (component1.getClientProperty("JInternalFrame"));
                 try {
+                    if(inf.getParent()==null){
+                        //was closed!
+                        desktop.add(inf);
+                        inf.setVisible(true);
+                    }
                     inf.setIcon(false);
                 } catch (PropertyVetoException e1) {
                     e1.printStackTrace();
@@ -347,10 +361,10 @@ public class MainPlotterFrame extends JFrame {
         }
     }
 
-    public class LocksAction implements SerializableActionListener {
-        public void actionPerformed(ActionEvent e) {
-            console.getLockMonitor().setVisible(true);
-        }
-    }
+//    public class LocksAction implements SerializableActionListener {
+//        public void actionPerformed(ActionEvent e) {
+//            console.getLockMonitor().setVisible(true);
+//        }
+//    }
 
 }

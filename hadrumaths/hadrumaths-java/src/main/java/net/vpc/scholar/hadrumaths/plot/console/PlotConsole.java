@@ -412,6 +412,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     public synchronized MainPlotterFrame getMainPlotterFrame() {
         if (mainPlotterFrame == null) {
             mainPlotterFrame = new MainPlotterFrame(this, getFrameTitle());
+            mainPlotterFrame.prepare();
             mainPlotterFrame.setVisible(true);
             if (closeOption == null) {
                 closeOption = CloseOption.EXIT;
@@ -457,7 +458,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     public TaskMonitor getTaskMonitor() {
         if (taskMonitor == null) {
             taskMonitor = new TaskMonitor(this);
-            JInternalFrame f = new JInternalFrame("TaskMonitor", true, false, true, true);
+            JInternalFrame f = new JInternalFrame("Task Monitor", true, true, true, true);
             f.add(new JScrollPane(taskMonitor));
             f.setPreferredSize(new Dimension(600, 300));
             f.pack();
@@ -467,6 +468,7 @@ public class PlotConsole implements PlotComponentDisplayer {
             } catch (PropertyVetoException e) {
                 e.printStackTrace();
             }
+            taskMonitor.setFrame(f);
             getMainPlotterFrame().addSystemWindow(f);
         }
         return taskMonitor;
@@ -475,7 +477,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     public LockMonitor getLockMonitor() {
         if (lockMonitor == null) {
             lockMonitor = new LockMonitor(this);
-            JInternalFrame f = new JInternalFrame("LockMonitor", true, false, true, true);
+            JInternalFrame f = new JInternalFrame("Locks Monitor", true, true, true, true);
             f.add(new JScrollPane(lockMonitor));
             f.setPreferredSize(new Dimension(600, 300));
             f.pack();
@@ -485,6 +487,7 @@ public class PlotConsole implements PlotComponentDisplayer {
             } catch (PropertyVetoException e) {
                 e.printStackTrace();
             }
+            lockMonitor.setFrame(f);
             getMainPlotterFrame().addSystemWindow(f);
         }
         return lockMonitor;

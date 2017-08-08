@@ -6,8 +6,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
+import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 
 import java.io.Serializable;
 
@@ -63,11 +63,11 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
 
     public Complex fg(int n, int p) {
         Complex complex = cache[p][n];
-        return hermitian? complex.conj():complex;
+        return hermitian ? complex.conj() : complex;
     }
 
     public void evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ComputationMonitor monitor) {
-        this.hermitian=hermitian;
+        this.hermitian = hermitian;
         EnhancedComputationMonitor emonitor = ComputationMonitorFactory.enhance(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
@@ -226,17 +226,35 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
                         @Override
                         public void invoke(EnhancedComputationMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue2) {
-                                for (int q = 0; q < finalGp3.length; q++) {
-                                    for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
-                                        mon.inc(monMessage);
+                                    for (int q = 0; q < finalGp3.length; q++) {
+                                        for (int n = 0; n < maxF; n++) {
+                                            gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
+                                            mon.inc(monMessage);
+                                        }
                                     }
-                                }
                             } else {
-                                for (int q = 0; q < finalGp3.length; q++) {
+                                if (true) {
+                                    DoubleToDouble[] df = new DoubleToDouble[maxF];
+                                    DoubleToDouble[] dg = new DoubleToDouble[finalGp3.length];
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = Complex.valueOf(finalSp2.evalDD(finalGp3[q].toDV().getComponent(Axis.X).toDC().getReal(), finalFn2[n].toDV().getComponent(Axis.X).toDC().getReal()));
-                                        mon.inc(monMessage);
+                                        df[n] = finalFn2[n].toDV().getComponent(Axis.X).toDD();
+                                    }
+                                    for (int q = 0; q < finalGp3.length; q++) {
+                                        dg[q] = finalGp3[q].toDV().getComponent(Axis.X).toDD();
+                                    }
+                                    for (int n = 0; n < maxF; n++) {
+                                        double[] doubles = finalSp2.evalDD(null, df[n], dg);
+                                        for (int q = 0; q < finalGp3.length; q++) {
+                                            gfps[q][n] = Complex.valueOf(doubles[q]);
+                                            mon.inc(monMessage);
+                                        }
+                                    }
+                                } else {
+                                    for (int q = 0; q < finalGp3.length; q++) {
+                                        for (int n = 0; n < maxF; n++) {
+                                            gfps[q][n] = Complex.valueOf(finalSp2.evalDD(finalGp3[q].toDV().getComponent(Axis.X).toDC().getReal(), finalFn2[n].toDV().getComponent(Axis.X).toDC().getReal()));
+                                            mon.inc(monMessage);
+                                        }
                                     }
                                 }
                             }

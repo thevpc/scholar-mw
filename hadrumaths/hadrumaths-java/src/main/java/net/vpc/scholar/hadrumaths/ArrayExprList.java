@@ -94,7 +94,7 @@ public class ArrayExprList<T extends Expr> extends ArrayTList<T> {
     }
 
     public TList<T> rewrite(ExpressionRewriter r) {
-        TList<T> next = (TList<T>) Maths.exprList();
+        TList<T> next = (TList<T>) Maths.elist();
         for (Expr e : this) {
             next.append((T) r.rewriteOrSame(e));
         }

@@ -329,4 +329,19 @@ public class FileSystemLock implements AppLock{
 //        }
 //    }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FileSystemLock that = (FileSystemLock) o;
+
+        return file != null ? file.equals(that.file) : that.file == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return file != null ? file.hashCode() : 0;
+    }
 }

@@ -91,15 +91,15 @@ public class SinSeqYZ extends Ref implements Cloneable{
                 fy = cos(mul(two, m, pibyw, sub(Y, ymin))); //ok
             } else {
                 //cos((m * 2+1)/2 * pi / width * (X-min))
-                fy = cos(mul(div(sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
+                fy = cos(mul(div(Maths.sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
             }
         } else {
             if (maxEast) {
                 //fx = sin(((2 * m + 1) / 2 * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(mul(div(sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
+                fy = sin(mul(div(Maths.sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
             } else {
 //                fx = sin(((m+1) * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(mul(sum(m, one), pibyw, sub(Y, ymin))); //ok
+                fy = sin(mul(Maths.sum(m, one), pibyw, sub(Y, ymin))); //ok
             }
         }
         Expr fz = null;
@@ -109,15 +109,15 @@ public class SinSeqYZ extends Ref implements Cloneable{
                 fz = cos(mul(n, pibyh, sub(Z, zmin))); //ok
             } else {
 //                fy = cos(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(mul(div(sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
+                fz = cos(mul(div(Maths.sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
             }
         } else {
             if (maxSouth) {
                 //fy = sin(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = sin(mul(div(sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
+                fz = sin(mul(div(Maths.sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
             } else {
                 //fy = sin(((n+1) * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(mul(sum(n, one), pibyh, sub(Z, zmin))); //ok
+                fz = cos(mul(Maths.sum(n, one), pibyh, sub(Z, zmin))); //ok
             }
         }
         init(mul(fy, fz, Maths.expr(domain)));

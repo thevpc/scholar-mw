@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 public class ReadOnlyTVector<T> extends AbstractTVector<T> {
     private TVectorModel<T> model;
     private Class<T> componentType;
-    public ReadOnlyTVector(Class<T> componentType, TVectorModel<T> model, boolean row) {
+    public ReadOnlyTVector(Class<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.model = model;
         this.componentType = componentType;

@@ -137,7 +137,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 
     @Override
     public Expr mul(Expr a, Expr b) {
-        TList<Expr> all = Maths.exprList();
+        TList<Expr> all = Maths.elist();
         //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
         for (Expr expr : new Expr[]{a, b}) {
             if (expr instanceof Mul) {

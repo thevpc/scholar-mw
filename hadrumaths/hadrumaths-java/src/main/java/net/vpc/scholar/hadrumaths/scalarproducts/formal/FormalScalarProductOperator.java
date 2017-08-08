@@ -157,6 +157,34 @@ public class FormalScalarProductOperator extends ScalarProductOperator {
         }
     }
 
+    public double[] evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble[] f2) {
+        DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
+        if(f1opt instanceof Mul){
+            f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
+        }
+        double[] rets=new double[f2.length];
+        boolean f1zero = f1opt.isZero();
+        Domain f1domain = f1opt.getDomain().intersect(domain);
+        for (int i = 0; i < rets.length; i++) {
+            DoubleToDouble f2i = f2[i];
+            DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2i).toDD();
+            if(f2opt instanceof Mul){
+                f2opt= expressionRewriter.rewriteOrSame(f2i).toDD();
+            }
+            Domain inter = f1domain.intersect(f2opt.getDomain());
+            if (f1zero || f2opt.isZero()) {
+                rets[i]=0;
+            }else if (inter.isEmpty()) {
+                rets[i]=0;
+            }else if (inter.isInfinite()) {
+                throw new IllegalArgumentException("Cannot integrate over infinite interval "+inter);
+            }else {
+                rets[i] = getScalarProduct(f1opt.getClass(), f2opt.getClass(), inter.getDimension()).compute(inter, f1opt, f2opt, this);
+            }
+        }
+        return rets;
+    }
+
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
         DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2).toDD();

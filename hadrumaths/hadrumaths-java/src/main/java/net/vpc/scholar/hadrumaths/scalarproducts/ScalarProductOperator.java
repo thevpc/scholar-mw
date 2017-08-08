@@ -17,6 +17,14 @@ public abstract class ScalarProductOperator implements Dumpable{
 
     public abstract double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2);
 
+    public double[] evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble[] f2) {
+        double[] d=new double[f2.length];
+        for (int i = 0; i < d.length; i++) {
+            d[i]=evalDD(domain,f1,f2[i]);
+        }
+        return d;
+    }
+
     public Complex eval(boolean hermitian, Domain domain, Expr f1, Expr f2) {
         if (f1.isDD() && f2.isDD()) {
             return Complex.valueOf(evalDD(domain, f1.toDD(), f2.toDD()));

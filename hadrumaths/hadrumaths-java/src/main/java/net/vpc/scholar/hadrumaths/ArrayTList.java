@@ -4,6 +4,7 @@ import net.vpc.scholar.hadrumaths.symbolic.AbstractTList;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -21,6 +22,11 @@ public class ArrayTList<T> extends AbstractTList<T> {
         super(row);
         this.componentType = componentType;
         values = new ArrayList<T>(initialSize);
+    }
+
+    public ArrayTList(Class<T> componentType, boolean row, T[] values) {
+        this(componentType,row,values.length);
+        appendAll(Arrays.asList(values));
     }
 
     @Override

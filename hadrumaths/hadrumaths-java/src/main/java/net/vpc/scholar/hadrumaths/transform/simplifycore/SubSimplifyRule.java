@@ -34,7 +34,8 @@ public class SubSimplifyRule implements ExpressionRewriterRule {
         Sub ee = (Sub) e;
         Expr a = ruleset.rewriteOrSame(ee.getFirst());
         Expr b = ruleset.rewriteOrSame(ee.getSecond());
-        return ruleset.rewrite(Maths.sum(a, Maths.mul(b, Complex.MINUS_ONE)));
+        RewriteResult rewrite = ruleset.rewrite(Maths.sum(a, Maths.mul(b, Complex.MINUS_ONE)));
+        return RewriteResult.newVal(rewrite.getValue());
     }
     @Override
     public int hashCode() {

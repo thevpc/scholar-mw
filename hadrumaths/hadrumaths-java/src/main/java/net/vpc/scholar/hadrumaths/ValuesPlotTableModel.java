@@ -35,7 +35,7 @@ public class ValuesPlotTableModel extends AbstractTableModel {
     }
 
     public int getColumnCount() {
-        return cols+1;
+        return cols;
     }
 
     public String getColumnName(int columnIndex) {
@@ -86,14 +86,8 @@ public class ValuesPlotTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        switch (columnIndex) {
-            case 0: {
-                //return "Index";
-                return rowIndex+1;
-            }
-        }
         Complex[][] z = model.getZ();
-        int c=columnIndex-1;
+        int c=columnIndex;
         Complex vv=(c<z[rowIndex].length)?z[rowIndex][c]:Complex.NaN;
         switch (model.getZDoubleFunction()){
             case COMPLEX:{

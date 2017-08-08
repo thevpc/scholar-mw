@@ -681,7 +681,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     public <R> TVector<R> transform(Class<R> toType,TTransform<Complex,R> op) {
         return new ReadOnlyTVector<R>(
-                toType, new TVectorModel<R>() {
+                toType, isRow(), new TVectorModel<R>() {
             @Override
             public R get(int index) {
                 Complex t = AbstractVector.this.get(index);
@@ -692,7 +692,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
             public int size() {
                 return AbstractVector.this.size();
             }
-        },isRow()
+        }
         );
     }
 

@@ -36,9 +36,9 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
      */
     public CExp(double amp, double a, double b, Domain domain) {
         this.domain = domain;
-        this.real = sum(new CosXCosY(amp, a, 0, b, 0, domain),
+        this.real = Maths.sum(new CosXCosY(amp, a, 0, b, 0, domain),
                 new CosXCosY(-amp, a, -Math.PI / 2, b, -Math.PI / 2, domain)).toDD();
-        this.imag = sum(new CosXCosY(amp, a, 0, b, -Math.PI / 2, domain),
+        this.imag = Maths.sum(new CosXCosY(amp, a, 0, b, -Math.PI / 2, domain),
                 new CosXCosY(amp, a, -Math.PI / 2, b, 0, domain)).toDD();
         this.amp = amp;
         this.a = a;

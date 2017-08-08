@@ -5,7 +5,6 @@ import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +39,8 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             }
         };
     }
-    public final int length(){
+
+    public final int length() {
         return size();
     }
 
@@ -106,9 +106,11 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     public T scalarProduct(TVector<T> other) {
         return scalarProduct(false, other);
     }
+
     public T hscalarProduct(TVector<T> other) {
         return scalarProduct(true, other);
     }
+
     public T scalarProduct(boolean hermitian, TVector<T> other) {
         int max = Math.max(size(), other.size());
         VectorSpace<T> cs = getComponentVectorSpace();
@@ -129,7 +131,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public TVector<T> scalarProduct(boolean hermitian, T other) {
-        return Maths.columnTVector(getComponentType(), size(), new TVectorCell<T>() {
+        return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
             @Override
             public T get(int index) {
                 return getComponentVectorSpace().scalarProduct(hermitian, get(index), other);
@@ -139,7 +141,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public TVector<T> rscalarProduct(boolean hermitian, T other) {
-        return Maths.columnTVector(getComponentType(), size(), new TVectorCell<T>() {
+        return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
             @Override
             public T get(int index) {
                 return getComponentVectorSpace().scalarProduct(hermitian, other, get(index));
@@ -158,7 +160,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     public TVector<T> vscalarProduct(boolean hermitian, TVector<T>... other) {
-        return Maths.columnTVector(getComponentType(), other.length, new TVectorCell<T>() {
+        return newVectorFromModel(false, other.length, new TVectorCell<T>() {
             @Override
             public T get(int index) {
                 return scalarProduct(hermitian, other[index]);
@@ -167,11 +169,11 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     public T scalarProductAll(TVector<T>... other) {
-        return scalarProductAll(false,other);
+        return scalarProductAll(false, other);
     }
 
     public T hscalarProductAll(TVector<T>... other) {
-        return scalarProductAll(true,other);
+        return scalarProductAll(true, other);
     }
 
     public T scalarProductAll(boolean hermitian, TVector<T>... other) {
@@ -220,9 +222,6 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         set(i, complex);
     }
 
-    protected TVector<T> newArrayVector(T[] all, boolean row) {
-        return new ArrayTVector<T>(getComponentVectorSpace(), all, row);
-    }
 
     @Override
     public TVector<T> dotmul(TVector<T> other) {
@@ -231,7 +230,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.mul(get(i), other.get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> sqr() {
@@ -240,7 +239,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sqr(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -250,7 +249,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.div(get(i), other.get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -260,7 +259,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.pow(get(i), other.get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
 
@@ -271,7 +270,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.inv(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -281,7 +280,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.add(get(i), other.get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -291,7 +290,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.add(get(i), other);
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -301,7 +300,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.mul(get(i), other);
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -311,7 +310,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sub(get(i), other);
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -321,7 +320,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.div(get(i), other);
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -331,7 +330,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.pow(get(i), other);
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -406,7 +405,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sub(get(i), other.get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -441,7 +440,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.conj(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> cos() {
@@ -450,7 +449,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.cos(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> cosh() {
@@ -459,7 +458,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.cosh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> sin() {
@@ -468,7 +467,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sin(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> sinh() {
@@ -477,7 +476,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sinh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> tan() {
@@ -486,7 +485,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.tan(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> tanh() {
@@ -495,7 +494,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.tanh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> cotan() {
@@ -504,7 +503,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.cotan(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> cotanh() {
@@ -513,7 +512,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.cotanh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> getReal() {
@@ -522,7 +521,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.real(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> real() {
@@ -531,7 +530,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.real(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> getImag() {
@@ -540,7 +539,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.imag(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> imag() {
@@ -549,7 +548,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.imag(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> db() {
@@ -558,7 +557,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.db(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> db2() {
@@ -567,7 +566,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.db2(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> abs() {
@@ -576,7 +575,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.abs(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> abssqr() {
@@ -585,7 +584,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.convert(Maths.sqr(cs.absdbl(get(i))));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public double[] absdbl() {
@@ -612,7 +611,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.log(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> log10() {
@@ -621,7 +620,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.log10(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> exp() {
@@ -630,7 +629,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.exp(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> sqrt() {
@@ -639,7 +638,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sqrt(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> acosh() {
@@ -648,7 +647,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.acosh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> acos() {
@@ -657,7 +656,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.acos(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> asinh() {
@@ -666,7 +665,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.asinh(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> asin() {
@@ -675,7 +674,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.asin(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> atan() {
@@ -684,7 +683,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.atan(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     public TVector<T> acotan() {
@@ -693,7 +692,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.acotan(get(i));
         }
-        return newArrayVector(all, isRow());
+        return newInstanceFromValues(isRow(), all);
     }
 
     @Override
@@ -732,8 +731,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     public TVector<T> eval(ElementOp<T> op) {
-        return new ReadOnlyTVector<>(
-                getComponentType(), new TVectorModel<T>() {
+        return newReadOnlyInstanceFromModel(getComponentType(),isRow(), new TVectorModel<T>() {
             @Override
             public T get(int index) {
                 T t = AbstractTVector.this.get(index);
@@ -744,13 +742,13 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             public int size() {
                 return AbstractTVector.this.size();
             }
-        }, isRow()
+        }
         );
     }
 
     public <R> TVector<R> transform(Class<R> toType, TTransform<T, R> op) {
-        return new ReadOnlyTVector<R>(
-                toType, new TVectorModel<R>() {
+        return newReadOnlyInstanceFromModel(
+                toType, isRow(), new TVectorModel<R>() {
             @Override
             public R get(int index) {
                 T t = AbstractTVector.this.get(index);
@@ -761,7 +759,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             public int size() {
                 return AbstractTVector.this.size();
             }
-        }, isRow()
+        }
         );
     }
 
@@ -777,28 +775,28 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public <R> TVector<R> to(Class<R> other) {
-        if(other.equals(getComponentType())){
+        if (other.equals(getComponentType())) {
             return (TVector<R>) this;
         }
         //should i check default types?
-        if(Complex.class.isAssignableFrom(other)){
+        if (Complex.class.isAssignableFrom(other)) {
             return (TVector<R>) new ReadOnlyVector(
                     new TVectorModel() {
-                @Override
-                public Complex get(int index) {
-                    T v = AbstractTVector.this.get(index);
-                    return getComponentVectorSpace().convertTo(v,Complex.class);
-                }
+                        @Override
+                        public Complex get(int index) {
+                            T v = AbstractTVector.this.get(index);
+                            return getComponentVectorSpace().convertTo(v, Complex.class);
+                        }
 
-                @Override
-                public int size() {
-                    return AbstractTVector.this.size();
-                }
-            }, isRow()
+                        @Override
+                        public int size() {
+                            return AbstractTVector.this.size();
+                        }
+                    }, isRow()
             );
         }
-        return new ReadOnlyTVector<R>(
-                other, new TVectorModel<R>() {
+        return newReadOnlyInstanceFromModel(
+                other, isRow(), new TVectorModel<R>() {
             @Override
             public R get(int index) {
                 T t = AbstractTVector.this.get(index);
@@ -809,12 +807,14 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             public int size() {
                 return AbstractTVector.this.size();
             }
-        }, isRow()
+        }
         );
     }
+
     public T scalarProduct(TMatrix<T> v) {
         return scalarProduct(false, v);
     }
+
     public T hscalarProduct(TMatrix<T> v) {
         return scalarProduct(true, v);
     }
@@ -850,4 +850,18 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             action.run(i, get(i));
         }
     }
+
+    protected final TVector<T> newVectorFromModel(boolean row, int size, final TVectorCell<T> cellFactory) {
+        return newReadOnlyInstanceFromModel(getComponentType(),row,new TVectorModelFromCell<>(size,cellFactory));
+    }
+
+    protected <R> TVector<R> newReadOnlyInstanceFromModel(Class<R> type, boolean row, final TVectorModel<R> model) {
+        return new ReadOnlyTVector<R>(type, row, model);
+    }
+
+    protected TVector<T> newInstanceFromValues(boolean row, T[] all) {
+        return new ArrayTVector<T>(getComponentVectorSpace(), all, row);
+    }
+
+
 }

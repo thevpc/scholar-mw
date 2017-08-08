@@ -21,6 +21,7 @@ public class LockMonitor extends JPanel implements ActionListener {
     private Thread thread = null;
     private JTable table;
     private LocksTableModel lockModel;
+    private JInternalFrame frame;
 
     public LockMonitor(PlotConsole plotConsole) {
         this.plotConsole = plotConsole;
@@ -46,6 +47,14 @@ public class LockMonitor extends JPanel implements ActionListener {
         south.add(Box.createHorizontalGlue());
         south.add(unlockButton);
         unlockButton.addActionListener(this);
+    }
+
+    public JInternalFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JInternalFrame frame) {
+        this.frame = frame;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -130,7 +139,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             synchronized (files) {
-                if(rowIndex<=0 || rowIndex>=files.size()){
+                if(rowIndex<0 || rowIndex>=files.size()){
                     return null;
                 }
                 AppLock appLock = files.get(rowIndex);

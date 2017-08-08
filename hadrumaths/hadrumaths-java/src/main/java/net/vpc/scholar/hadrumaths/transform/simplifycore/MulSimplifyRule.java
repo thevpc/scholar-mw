@@ -31,6 +31,10 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+        RewriteResult rewriteResult = rewrite00(e, ruleset);
+        return rewriteResult;
+    }
+    public RewriteResult rewrite00(Expr e, ExpressionRewriter ruleset) {
 
         Mul ee = (Mul) e;
         Complex complexeVal = Complex.ONE;

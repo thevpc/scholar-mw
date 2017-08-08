@@ -52,7 +52,7 @@ public class DDxyLinearSymbolRule implements ExpressionRewriterRule {
         if(p.isEmpty()){
             return RewriteResult.bestEffort(FunctionFactory.CZEROXY);
         }
-        return RewriteResult.newVal(sum(p.toArray(new Expr[p.size()])));
+        return RewriteResult.newVal(Maths.sum(p.toArray(new Expr[p.size()])));
     }
 
     @Override

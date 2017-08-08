@@ -22,6 +22,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
     private PlotConsole plotConsole;
     private int parallelTasksCount = 1;
     private SerializerThread serializerThread = null;
+    private JInternalFrame frame = null;
 
     public TaskMonitor(PlotConsole plotConsole) {
         this.plotConsole = plotConsole;
@@ -49,6 +50,14 @@ public class TaskMonitor extends JPanel implements ActionListener {
         south.add(countField);
         incrementButton.addActionListener(this);
         decrementButton.addActionListener(this);
+    }
+
+    public JInternalFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JInternalFrame frame) {
+        this.frame = frame;
     }
 
     public void actionPerformed(ActionEvent e) {
