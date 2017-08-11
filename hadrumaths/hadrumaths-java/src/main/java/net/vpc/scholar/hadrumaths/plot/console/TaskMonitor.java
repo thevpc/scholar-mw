@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -84,20 +84,20 @@ public class TaskMonitor extends JPanel implements ActionListener {
         plotConsole.start();
         String windowTitle=(task.getWindowTitle());
         String descLabel=(task.getSerieTitle().toString());
-        list.add(new TaskComponent(this, ComputationMonitorFactory.enhance(task),windowTitle,descLabel));
+        list.add(new TaskComponent(this, ProgressMonitorFactory.enhance(task),windowTitle,descLabel));
         task.start();
     }
 
-    public ComputationMonitor addTask(ComputationMonitor task,String windowTitle,String descLabel) {
+    public ProgressMonitor addTask(ProgressMonitor task, String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedComputationMonitor m=ComputationMonitorFactory.enhance(task);
+        EnhancedProgressMonitor m= ProgressMonitorFactory.enhance(task);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }
 
-    public ComputationMonitor addTask(String windowTitle,String descLabel) {
+    public ProgressMonitor addTask(String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedComputationMonitor m=ComputationMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
+        EnhancedProgressMonitor m= ProgressMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }

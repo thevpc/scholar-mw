@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.plot.console.ComputeTitle;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.WindowPath;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
 import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-public abstract class PlotAxis implements Serializable, Cloneable, ComputationMonitor {
+public abstract class PlotAxis implements Serializable, Cloneable, ProgressMonitor {
 
     private WindowPath preferredPath;
     private YType[] types;

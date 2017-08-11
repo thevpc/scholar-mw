@@ -1,12 +1,10 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import java.util.logging.Level;
-
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 01:36:26
  */
-public class DefaultComputationMonitor implements ComputationMonitor{
+public class DefaultProgressMonitor implements ProgressMonitor {
     double progress;
     ProgressMessage progressMessage;
     public double getProgressValue() {

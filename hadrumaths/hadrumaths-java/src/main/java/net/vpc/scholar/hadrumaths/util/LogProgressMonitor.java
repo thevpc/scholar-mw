@@ -6,9 +6,9 @@ import net.vpc.scholar.hadrumaths.MemorySizeFormatter;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class LogComputationMonitor extends AbstractEnhancedComputationMonitor {
+public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
     private static MemorySizeFormatter MF = new MemorySizeFormatter("0K0TF");
-    private static Logger defaultLog = Logger.getLogger(LogComputationMonitor.class.getName());
+    private static Logger defaultLog = Logger.getLogger(LogProgressMonitor.class.getName());
 
     static {
         defaultLog.setUseParentHandlers(false);
@@ -25,7 +25,7 @@ public class LogComputationMonitor extends AbstractEnhancedComputationMonitor {
      *
      * @param messageFormat
      */
-    public LogComputationMonitor(String messageFormat, Logger logger) {
+    public LogProgressMonitor(String messageFormat, Logger logger) {
         if (messageFormat == null) {
             messageFormat = "%inuse-mem% | %free-mem% : %value%";
         }

@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.*;
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
@@ -66,19 +66,19 @@ public abstract class ScalarProductOperator implements Dumpable{
         return evalDD(f1.getDomain(), f1, f2);
     }
 
-    public ScalarProductCache eval(Expr[] g, Expr[] f,boolean hermitian, ComputationMonitor monitor) {
+    public ScalarProductCache eval(Expr[] g, Expr[] f,boolean hermitian, ProgressMonitor monitor) {
         return Maths.scalarProductCache(hermitian, this, g, f, monitor);
     }
 
-    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), monitor);
     }
 
-    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ComputationMonitor monitor) {
+    public ScalarProductCache eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
     }
 
-    public ScalarProductCache eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
+    public ScalarProductCache eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return Maths.scalarProductCache(hermitian, this, g, f, axis, monitor);
     }
 

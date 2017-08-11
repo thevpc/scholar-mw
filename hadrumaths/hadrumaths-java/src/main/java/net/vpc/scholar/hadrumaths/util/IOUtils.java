@@ -398,7 +398,7 @@ public final class IOUtils {
         saveZippedObject(physicalName,object,null,null);
     }
 
-    public static void saveZippedObject(String physicalName, Object object,ComputationMonitor monitor,String messagePrefix) throws IOException {
+    public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws IOException {
         if(monitor==null){
             ObjectOutputStream oos = null;
             try {

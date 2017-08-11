@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.MemorySizeFormatter;
 import java.util.Date;
 import java.io.PrintStream;
 
-public class PrintStreamComputationMonitor extends AbstractEnhancedComputationMonitor {
+public class PrintStreamProgressMonitor extends AbstractEnhancedProgressMonitor {
     private double progress;
     private ProgressMessage message;
     private String messageFormat;
@@ -18,7 +18,7 @@ public class PrintStreamComputationMonitor extends AbstractEnhancedComputationMo
      * %date%
      * @param messageFormat
      */
-    public PrintStreamComputationMonitor(String messageFormat,PrintStream printStream) {
+    public PrintStreamProgressMonitor(String messageFormat, PrintStream printStream) {
         if(messageFormat==null){
             messageFormat="%date% | %inuse-mem% | %free-mem% : %value%";
         }

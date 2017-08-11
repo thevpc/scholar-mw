@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
 
 /**
@@ -26,13 +26,13 @@ public class TaskComponent extends JPanel implements ActionListener {
     private JLabel timeRemLabel;
     private JLabel timeRemValue;
     private JProgressBar yProgress;
-    private EnhancedComputationMonitor thread;
+    private EnhancedProgressMonitor thread;
     private JToggleButton pause;
     private JButton detach;
     private JButton kill;
     private TaskMonitor taskMonitor;
 
-    public TaskComponent(TaskMonitor taskMonitor, EnhancedComputationMonitor thread,String windowTitleString,String descString) {
+    public TaskComponent(TaskMonitor taskMonitor, EnhancedProgressMonitor thread, String windowTitleString, String descString) {
         setOpaque(true);
         setBackground(Color.WHITE);
         thread.start("Task Starting...");

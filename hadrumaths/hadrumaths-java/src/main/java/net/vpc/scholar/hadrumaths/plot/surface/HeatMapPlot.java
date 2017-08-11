@@ -168,7 +168,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         }
         double[][] zd = model.getZd();
         DoubleList y = (DoubleList) Maths.dlist(y20.length);
-        DoubleArray2 z = new DoubleArray2();
+        DoubleArray2 z = new DoubleArray2(y20.length);
         for (int i = 0; i < y20.length; i++) {
             double v = y20[i];
             if(model.getYVisible(i)){

@@ -9,9 +9,9 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.Matrix;
 
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -96,11 +96,11 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
             }
         }
-        EnhancedComputationMonitor[] monitors= ComputationMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
-        EnhancedComputationMonitor monitor0 = monitors[0];
-        EnhancedComputationMonitor monitor1 = monitors[1];
-        EnhancedComputationMonitor monitor2 = monitors[2];
-        EnhancedComputationMonitor monitor3 = monitors[3];
+        EnhancedProgressMonitor[] monitors= ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        EnhancedProgressMonitor monitor0 = monitors[0];
+        EnhancedProgressMonitor monitor1 = monitors[1];
+        EnhancedProgressMonitor monitor2 = monitors[2];
+        EnhancedProgressMonitor monitor3 = monitors[3];
         ParamSet theX = p.getAxis().getX();
         double xmultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
@@ -207,7 +207,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         return ret.toArray(new VDiscrete[ret.size()]);
     }
 
-    protected abstract VDiscrete computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p);
+    protected abstract VDiscrete computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p);
 
 
     public String getPlotTitle() {

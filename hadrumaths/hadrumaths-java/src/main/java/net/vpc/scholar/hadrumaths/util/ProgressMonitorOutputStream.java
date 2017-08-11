@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 
 import java.io.IOException;
@@ -12,12 +12,12 @@ import java.io.OutputStream;
 public class ProgressMonitorOutputStream extends OutputStream {
     private OutputStream target;
     private long written;
-    private EnhancedComputationMonitor monitor;
+    private EnhancedProgressMonitor monitor;
     private String message;
 
-    public ProgressMonitorOutputStream(OutputStream target, ComputationMonitor monitor,String messagePrefix) {
+    public ProgressMonitorOutputStream(OutputStream target, ProgressMonitor monitor, String messagePrefix) {
         this.target = target;
-        this.monitor = ComputationMonitorFactory.enhance(monitor);
+        this.monitor = ProgressMonitorFactory.enhance(monitor);
         message=StringUtils.trim(messagePrefix);
         if(message.length()>0){
             message+=" ";

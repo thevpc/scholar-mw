@@ -349,6 +349,7 @@ public final class Maths {
 //        }
 //        throw new IllegalArgumentException("Unknown Axis "+axis);
 //    }
+    public static final TypeReference<String> $STRING=new TypeReference<String>() {};
     public static final TypeReference<Matrix> $MATRIX=new TypeReference<Matrix>() {};
     public static final TypeReference<Vector> $VECTOR=new TypeReference<Vector>() {};
     public static final TypeReference<TMatrix<Complex>> $CMATRIX=new TypeReference<TMatrix<Complex>>() {};
@@ -3629,7 +3630,7 @@ public final class Maths {
 //        long end = inUseMemory();
 //        System.out.println(formatMemory(end));
 //        System.out.println("Memoire utilisee "+formatMemory(end-start));
-////        ScalarProductCache d = scalarProductCache(gp, fn, ComputationMonitorFactory.out().temporize(1000));
+////        ScalarProductCache d = scalarProductCache(gp, fn, ProgressMonitorFactory.out().temporize(1000));
 ////        Complex gf = d.gf(2, 2);
 ////        System.out.println(gf);
 //    }
@@ -3663,25 +3664,25 @@ public final class Maths {
         return new MemScalarProductCache();
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(null, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(sp, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(sp, fn, gp, hermitian, axis, monitor);
         return c;
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
         ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
         c.evaluate(null, fn, gp, hermitian, axis, monitor);
         return c;
@@ -3826,15 +3827,15 @@ public final class Maths {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
-    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ComputationMonitor monitor) {
+    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
@@ -3846,15 +3847,15 @@ public final class Maths {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
     }
 
-    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ComputationMonitor monitor) {
+    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ComputationMonitor monitor) {
+    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
@@ -4012,6 +4013,10 @@ public final class Maths {
         return new DoubleArrayList();
     }
 
+    public static TList<Double> dlist(ToDoubleArrayAware items) {
+        return dlist(items.toDoubleArray());
+    }
+
     public static TList<Double> dlist(double[] items) {
         DoubleList doubles = new DoubleArrayList(items.length);
         for (double item : items) {
@@ -4026,6 +4031,26 @@ public final class Maths {
 
     public static TList<Double> dlist(int size) {
         return new DoubleArrayList(size);
+    }
+
+    public static TList<String> slist() {
+        return new ArrayTList<String>($STRING,false,0);
+    }
+
+    public static TList<String> slist(String[] items) {
+        TList<String> doubles = new ArrayTList<String>($STRING,false,items.length);
+        for (String item : items) {
+            doubles.append(item);
+        }
+        return doubles;
+    }
+
+    public static TList<String> slist(boolean row,int size) {
+        return new ArrayTList<String>($STRING,row,size);
+    }
+
+    public static TList<String> slist(int size) {
+        return new ArrayTList<String>($STRING,false,size);
     }
 
     public static TList<Boolean> blist() {
@@ -4820,8 +4845,8 @@ public final class Maths {
 //    }
 
 
-    public static <T> T invokeMonitoredAction(ComputationMonitor mon, String messagePrefix, MonitoredAction<T> run) {
-        return ComputationMonitorFactory.invokeMonitoredAction(mon, messagePrefix, run);
+    public static <T> T invokeMonitoredAction(ProgressMonitor mon, String messagePrefix, MonitoredAction<T> run) {
+        return ProgressMonitorFactory.invokeMonitoredAction(mon, messagePrefix, run);
     }
 
     public static Chronometer chrono() {
@@ -5066,10 +5091,10 @@ public final class Maths {
         return b.getError(a);
     }
 
-    public static <T extends Expr> DoubleArray toDoubleArray(TList<T> c) {
-        DoubleArray a = new DoubleArray(c.size());
+    public static <T extends Expr> DoubleList toDoubleArray(TList<T> c) {
+        DoubleList a = new DoubleArrayList(c.size());
         for (T o : c) {
-            a.add(o.toDouble());
+            a.append(o.toDouble());
         }
         return a;
     }
@@ -5129,6 +5154,35 @@ public final class Maths {
             return (VectorSpace<T>) Maths.EXPR_VECTOR_SPACE;
         }
         throw new IllegalArgumentException("Not yet supported " + cls);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(dlist(refineSamples(dtimes(0,5,6),1)));
+        System.out.println(dlist(refineSamples(dtimes(0,5,6),2)));
+    }
+
+    public static DoubleList refineSamples(TList<Double> values,int n){
+        DoubleList values2=(DoubleList) values.to($DOUBLE);
+        return (DoubleList) dlist(refineSamples(values2.toDoubleArray(),n));
+    }
+
+    /**
+     * adds n points between each 2 points
+     * @param values initial sample
+     * @return
+     */
+    public static double[] refineSamples(double[] values,int n){
+        if(n==0){
+            return Arrays.copyOf(values,values.length);
+        }
+        double[] d2=new double[values.length+n*(values.length-1)];
+        for (int i = 0; i < values.length-1; i++) {
+            int s = i * (1 + n);
+            double[] d3=dtimes(values[i],values[i+1],n+2);
+            System.arraycopy(d3,0,d2,s,d3.length-1);
+        }
+        d2[d2.length-1]=values[values.length-1];
+        return d2;
     }
 
     public static class Config {
@@ -5449,7 +5503,7 @@ public final class Maths {
         }
 
         public static void setLogMonitorLevel(Level level) {
-            Logger logger = LogComputationMonitor.getDefaultLogger();
+            Logger logger = LogProgressMonitor.getDefaultLogger();
             logger.setLevel(level);
             Handler handler = null;
             for (Handler h : logger.getHandlers()) {

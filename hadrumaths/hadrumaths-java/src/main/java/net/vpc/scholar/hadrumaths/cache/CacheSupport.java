@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 
 /**
@@ -13,12 +13,12 @@ import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 public abstract class CacheSupport<T> {
     private String cacheItemName;
     private PersistenceCache persistenceCache;
-    private EnhancedComputationMonitor monitor;
+    private EnhancedProgressMonitor monitor;
 
-    protected CacheSupport(PersistenceCache persistenceCache, String cacheItemName, ComputationMonitor monitor) {
+    protected CacheSupport(PersistenceCache persistenceCache, String cacheItemName, ProgressMonitor monitor) {
         this.cacheItemName = cacheItemName;
         this.persistenceCache = persistenceCache;
-        this.monitor = ComputationMonitorFactory.enhance(monitor);
+        this.monitor = ProgressMonitorFactory.enhance(monitor);
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class CacheSupport<T> {
                 monitor, cacheItemName,
                 new MonitoredAction<T>() {
                     @Override
-                    public T process(EnhancedComputationMonitor monitor, String messagePrefix) {
+                    public T process(EnhancedProgressMonitor monitor, String messagePrefix) {
                         if (oldValue != null) {
                             return oldValue;
                         }
@@ -80,7 +80,7 @@ public abstract class CacheSupport<T> {
         return getPersistenceCache().isCached(dump, getCacheItemName());
     }
 
-    public EnhancedComputationMonitor getMonitor() {
+    public EnhancedProgressMonitor getMonitor() {
         return monitor;
     }
 

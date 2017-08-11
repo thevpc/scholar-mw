@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
 
@@ -50,12 +50,12 @@ public class ObjectCache {
         return getObjectCacheFile(name).exists();
     }
 
-    public void store(String name, Object o,ComputationMonitor computationMonitor) throws IOException{
-        EnhancedComputationMonitor m = ComputationMonitorFactory.enhance(computationMonitor);
+    public void store(String name, Object o,ProgressMonitor computationMonitor) throws IOException{
+        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
         String message = "store " + name;
         Maths.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws IOException {
+            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws IOException {
                 DumpCacheFile file = getObjectCacheFile(name);
                 File path = file.getFile().getAbsoluteFile();
                 storeObject(path,o,m,message);
@@ -64,8 +64,8 @@ public class ObjectCache {
         });
     }
 
-    public static void storeObject(File path, Object o,ComputationMonitor computationMonitor,String message) throws IOException{
-        EnhancedComputationMonitor m = ComputationMonitorFactory.enhance(computationMonitor);
+    public static void storeObject(File path, Object o, ProgressMonitor computationMonitor, String message) throws IOException{
+        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
         if (o != null && o instanceof CacheObjectSerializerProvider) {
             File serFile = new File(path.getPath() + ".ser");
             o = ((CacheObjectSerializerProvider) o).createCacheObjectSerializedForm(serFile);

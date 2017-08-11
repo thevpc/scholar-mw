@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 import net.vpc.scholar.hadrumaths.util.Init;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
@@ -481,7 +481,7 @@ public class PersistenceCache implements PersistentCacheConfig {
 //        return evaluate(cacheItemName, oldValue, evaluator, toObjArr(args));
 //    }
 
-    public <T> T evaluate(final String cacheItemName, ComputationMonitor monitor, final Evaluator evaluator, final Object... args) {
+    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator evaluator, final Object... args) {
         return evaluate(cacheItemName, monitor,new Evaluator2() {
             @Override
             public void init() {
@@ -522,7 +522,7 @@ public class PersistenceCache implements PersistentCacheConfig {
      * @param <T>           cache get type/class
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
-    public <T> T evaluate(final String cacheItemName, ComputationMonitor monitor, final Evaluator2 evaluator, final Object... args) {
+    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
         Dumper dump = new Dumper();
         for (Object arg : args) {
             dump.add(arg);
@@ -543,7 +543,7 @@ public class PersistenceCache implements PersistentCacheConfig {
      * @param <T>           cache get type/class
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
-    public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ComputationMonitor monitor,final Evaluator2 evaluator, final Object... args) {
+    public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
         return objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
                 PersistenceCache.LOCK_TIMEOUT,
                 new Callable<T>() {

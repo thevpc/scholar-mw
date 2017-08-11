@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 
 import java.util.logging.Level;
@@ -8,43 +8,43 @@ import java.util.logging.Level;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-public abstract class AbstractEnhancedComputationMonitor implements EnhancedComputationMonitor {
+public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgressMonitor {
     private ComputationMonitorInc incrementor = new DeltaComputationMonitorInc(1E-2);
     private long startTime;
     private boolean paused = false;
     private boolean cancelled = false;
 
-    public AbstractEnhancedComputationMonitor() {
+    public AbstractEnhancedProgressMonitor() {
     }
 
-    public EnhancedComputationMonitor[] split(boolean... enabledElements) {
-        return ComputationMonitorFactory.split(this, enabledElements);
+    public EnhancedProgressMonitor[] split(boolean... enabledElements) {
+        return ProgressMonitorFactory.split(this, enabledElements);
     }
 
     /**
      * creates Monitors for each enabled Element or null if false
      *
-     * @return ComputationMonitor[] array that contains nulls or  translated baseMonitor
+     * @return ProgressMonitor[] array that contains nulls or  translated baseMonitor
      */
-    public EnhancedComputationMonitor[] split(int nbrElements) {
-        return ComputationMonitorFactory.split(this, nbrElements);
+    public EnhancedProgressMonitor[] split(int nbrElements) {
+        return ProgressMonitorFactory.split(this, nbrElements);
     }
 
-    public EnhancedComputationMonitor[] split(double[] weight) {
-        return ComputationMonitorFactory.split(this, weight);
+    public EnhancedProgressMonitor[] split(double[] weight) {
+        return ProgressMonitorFactory.split(this, weight);
     }
 
 
-    public EnhancedComputationMonitor[] split(double[] weight, boolean[] enabledElements) {
-        return ComputationMonitorFactory.split(this, weight, enabledElements);
+    public EnhancedProgressMonitor[] split(double[] weight, boolean[] enabledElements) {
+        return ProgressMonitorFactory.split(this, weight, enabledElements);
     }
 
-    public EnhancedComputationMonitor translate(double factor, double start) {
-        return ComputationMonitorFactory.translate(this, factor, start);
+    public EnhancedProgressMonitor translate(double factor, double start) {
+        return ProgressMonitorFactory.translate(this, factor, start);
     }
 
-    public EnhancedComputationMonitor translate(int index, int max) {
-        return new ComputationMonitorTranslator(this, 1.0 / max, index * (1.0 / max));
+    public EnhancedProgressMonitor translate(int index, int max) {
+        return new ProgressMonitorTranslator(this, 1.0 / max, index * (1.0 / max));
     }
 
     public void setProgress(int i, int max, String message) {
@@ -64,95 +64,95 @@ public abstract class AbstractEnhancedComputationMonitor implements EnhancedComp
     }
 
 
-    public EnhancedComputationMonitor createIncrementalMonitor(int iterations) {
-        return ComputationMonitorFactory.createIncrementalMonitor(this, iterations);
+    public EnhancedProgressMonitor createIncrementalMonitor(int iterations) {
+        return ProgressMonitorFactory.createIncrementalMonitor(this, iterations);
     }
 
-    public EnhancedComputationMonitor createIncrementalMonitor(ComputationMonitor baseMonitor, double delta) {
-        return ComputationMonitorFactory.createIncrementalMonitor(this, delta);
+    public EnhancedProgressMonitor createIncrementalMonitor(ProgressMonitor baseMonitor, double delta) {
+        return ProgressMonitorFactory.createIncrementalMonitor(this, delta);
     }
 
-    public EnhancedComputationMonitor temporize(long freq) {
-        return ComputationMonitorFactory.temporize(this, freq);
+    public EnhancedProgressMonitor temporize(long freq) {
+        return ProgressMonitorFactory.temporize(this, freq);
     }
 
 
-    public EnhancedComputationMonitor inc() {
+    public EnhancedProgressMonitor inc() {
         inc("");
         return this;
     }
 
-    public EnhancedComputationMonitor inc(String message) {
+    public EnhancedProgressMonitor inc(String message) {
         setProgress(incrementor.inc(getProgressValue()), new StringProgressMessage(Level.FINE, message));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor setMessage(ProgressMessage message) {
+    public EnhancedProgressMonitor setMessage(ProgressMessage message) {
         setProgress(getProgressValue(), message);
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor setMessage(String message) {
+    public EnhancedProgressMonitor setMessage(String message) {
         setProgress(getProgressValue(), new StringProgressMessage(Level.FINE, message));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor setIndeterminate(String message) {
-        setProgress(ComputationMonitor.INDETERMINATE_PROGRESS, new StringProgressMessage(Level.FINE, message));
+    public EnhancedProgressMonitor setIndeterminate(String message) {
+        setProgress(ProgressMonitor.INDETERMINATE_PROGRESS, new StringProgressMessage(Level.FINE, message));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor setMessage(String message, Object... args) {
+    public EnhancedProgressMonitor setMessage(String message, Object... args) {
         setProgress(getProgressValue(), new FormattedProgressMessage(Level.FINE, message, args));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor setIndeterminate(String message, Object... args) {
-        setProgress(ComputationMonitor.INDETERMINATE_PROGRESS, new FormattedProgressMessage(Level.FINE, message, args));
+    public EnhancedProgressMonitor setIndeterminate(String message, Object... args) {
+        setProgress(ProgressMonitor.INDETERMINATE_PROGRESS, new FormattedProgressMessage(Level.FINE, message, args));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor inc(String message, Object... args) {
+    public EnhancedProgressMonitor inc(String message, Object... args) {
         setProgress(incrementor.inc(getProgressValue()), new FormattedProgressMessage(Level.FINE, message, args));
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor start(String message) {
+    public EnhancedProgressMonitor start(String message) {
         setProgress(0, new StringProgressMessage(Level.FINE, message));
         return this;
     }
 
 //    @Override
-//    public EnhancedComputationMonitor startm(String message) {
+//    public EnhancedProgressMonitor startm(String message) {
 //        return start(message + ", starting...");
 //    }
 //
 //    @Override
-//    public EnhancedComputationMonitor terminatem(String message, Object... args) {
+//    public EnhancedProgressMonitor terminatem(String message, Object... args) {
 //        return terminate(message + ", terminated...",args);
 //    }
 //
 //    @Override
-//    public EnhancedComputationMonitor terminatem(String message) {
+//    public EnhancedProgressMonitor terminatem(String message) {
 //        return terminate(message + ", terminated...");
 //    }
 
     @Override
-    public EnhancedComputationMonitor start(String message, Object... args) {
+    public EnhancedProgressMonitor start(String message, Object... args) {
         setProgress(0, new FormattedProgressMessage(Level.INFO, message, args));
         return this;
     }
 
 
     @Override
-    public EnhancedComputationMonitor terminate(String message) {
+    public EnhancedProgressMonitor terminate(String message) {
         if (!isCancelled()) {
             setProgress(1, new StringProgressMessage(Level.INFO, message));
         }
@@ -160,32 +160,32 @@ public abstract class AbstractEnhancedComputationMonitor implements EnhancedComp
     }
 
     @Override
-    public EnhancedComputationMonitor terminate(String message, Object... args) {
+    public EnhancedProgressMonitor terminate(String message, Object... args) {
         if (!isCancelled()) {
             setProgress(1, new FormattedProgressMessage(Level.INFO, message,args));
         }
         return this;
     }
 
-    public EnhancedComputationMonitor setIncrementor(ComputationMonitorInc incrementor) {
+    public EnhancedProgressMonitor setIncrementor(ComputationMonitorInc incrementor) {
         this.incrementor = incrementor;
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor cancel() {
+    public EnhancedProgressMonitor cancel() {
         cancelled = true;
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor resume() {
+    public EnhancedProgressMonitor resume() {
         paused = false;
         return this;
     }
 
     @Override
-    public EnhancedComputationMonitor suspend() {
+    public EnhancedProgressMonitor suspend() {
         paused = true;
         return this;
     }

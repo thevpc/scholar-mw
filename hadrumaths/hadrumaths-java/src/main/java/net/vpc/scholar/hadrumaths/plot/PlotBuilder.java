@@ -197,17 +197,17 @@ public class PlotBuilder {
         return xsamples(xsamples).ysamples(ysamples);
     }
 
-    public PlotBuilder xsamples(ToDoubleArrayAware xvalue) {
-        return xsamples(xvalue.toDoubleArray());
-    }
-
-    public PlotBuilder ysamples(ToDoubleArrayAware yvalue) {
-        return ysamples(yvalue.toDoubleArray());
-    }
-
-    public PlotBuilder zsamples(ToDoubleArrayAware yvalue) {
-        return zsamples(yvalue.toDoubleArray());
-    }
+//    public PlotBuilder xsamples(ToDoubleArrayAware xvalue) {
+//        return xsamples(xvalue.toDoubleArray());
+//    }
+//
+//    public PlotBuilder ysamples(ToDoubleArrayAware yvalue) {
+//        return ysamples(yvalue.toDoubleArray());
+//    }
+//
+//    public PlotBuilder zsamples(ToDoubleArrayAware yvalue) {
+//        return zsamples(yvalue.toDoubleArray());
+//    }
 
     public PlotBuilder xsamples(TList xvalue) {
         DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
@@ -329,6 +329,11 @@ public class PlotBuilder {
         return this;
     }
 
+    public PlotBuilder titles(TList<String> titles) {
+        this.titles = titles.toArray(new String[titles.size()]);
+        return this;
+    }
+
     public PlotBuilder titles(List<String> titles) {
         this.titles = titles.toArray(new String[titles.size()]);
         return this;
@@ -377,11 +382,6 @@ public class PlotBuilder {
         this.update = component;
         this.updateName = null;
         return this;
-    }
-
-    @Deprecated
-    public PlotBuilder asSurface() {
-        return plotType(PlotType.HEATMAP);
     }
 
     public PlotBuilder asHeatMap() {

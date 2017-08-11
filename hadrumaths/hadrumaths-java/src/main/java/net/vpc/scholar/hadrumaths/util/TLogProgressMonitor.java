@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.util;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-public class TLogComputationMonitor extends AbstractEnhancedComputationMonitor {
+public class TLogProgressMonitor extends AbstractEnhancedProgressMonitor {
     private double progress;
     private ProgressMessage message;
     private String messageFormat;
@@ -16,7 +16,7 @@ public class TLogComputationMonitor extends AbstractEnhancedComputationMonitor {
      *
      * @param messageFormat
      */
-    public TLogComputationMonitor(String messageFormat, TLog writer) {
+    public TLogProgressMonitor(String messageFormat, TLog writer) {
         if (messageFormat == null) {
             messageFormat = "%value%";
         }

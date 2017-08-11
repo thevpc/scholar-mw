@@ -25,7 +25,7 @@ public class ParamSetTest {
 //        };
 //        ObjectEvaluator<Object, Double> evaluator = new ObjectEvaluator<Object, Double>() {
 //            @Override
-//            public Double evaluate(Object o, ComputationMonitor monitor) {
+//            public Double evaluate(Object o, ProgressMonitor monitor) {
 //                return (Double) o;
 //            }
 //        };
@@ -33,7 +33,7 @@ public class ParamSetTest {
 //        ConvergenceEvaluator<Object> c = ConvergenceEvaluator.create(d2, Maths.dsteps(1, 1000, 1))
 //                .setMaxIterations(3)
 //                .combine(d1, Maths.dsteps(1, 1000, 1));
-//        ConvergenceResult v = c.evaluate(new Object(), evaluator, ComputationMonitorFactory.out());
+//        ConvergenceResult v = c.evaluate(new Object(), evaluator, ProgressMonitorFactory.out());
 //        System.out.println(v);
 //    }
 

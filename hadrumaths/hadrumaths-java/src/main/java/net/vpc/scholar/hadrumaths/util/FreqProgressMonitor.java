@@ -2,15 +2,15 @@ package net.vpc.scholar.hadrumaths.util;
 
 import java.util.logging.Level;
 
-public class FreqComputationMonitor extends AbstractEnhancedComputationMonitor {
+public class FreqProgressMonitor extends AbstractEnhancedProgressMonitor {
     private long freq;
     private long lastDate;
     private double progress;
     private ProgressMessage message;
-    private ComputationMonitor base;
+    private ProgressMonitor base;
     private Level level=Level.INFO;
 
-    public FreqComputationMonitor(ComputationMonitor base, long freq) {
+    public FreqProgressMonitor(ProgressMonitor base, long freq) {
         this.base=base;
         if(freq<0){
             freq=0;

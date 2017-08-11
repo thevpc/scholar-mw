@@ -4,14 +4,14 @@ package net.vpc.scholar.hadrumaths.util;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 19 juil. 2007 00:27:15
  */
-public class ComputationMonitorTranslator extends AbstractEnhancedComputationMonitor {
+public class ProgressMonitorTranslator extends AbstractEnhancedProgressMonitor {
 
     private double start;
     private ProgressMessage message;
     private double factor;
-    private ComputationMonitor baseMonitor;
+    private ProgressMonitor baseMonitor;
 
-    public ComputationMonitorTranslator(ComputationMonitor baseMonitor, double factor, double start) {
+    public ProgressMonitorTranslator(ProgressMonitor baseMonitor, double factor, double start) {
         if (baseMonitor == null) {
             throw new NullPointerException("baseMonitor could not be null");
         }
@@ -35,7 +35,7 @@ public class ComputationMonitorTranslator extends AbstractEnhancedComputationMon
             if (translatedProgress > 1 && translatedProgress < 1.1) {
                 translatedProgress = 1;
             } else {
-                System.err.println("ComputationMonitorTranslator : %= " + translatedProgress + "????????????");
+                System.err.println("ProgressMonitorTranslator : %= " + translatedProgress + "????????????");
             }
         }
         if (message != null && message instanceof StringPrefixProgressMessage) {

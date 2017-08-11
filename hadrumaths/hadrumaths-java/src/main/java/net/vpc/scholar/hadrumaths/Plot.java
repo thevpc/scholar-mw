@@ -150,11 +150,6 @@ public class Plot {
         return builder().converter(converter);
     }
 
-    @Deprecated
-    public static PlotBuilder asSurface() {
-        return builder().asSurface();
-    }
-
     public static PlotBuilder asHeatMap() {
         return builder().asHeatMap();
     }
@@ -297,7 +292,7 @@ public class Plot {
             }
             if (o != null) {
                 if (o instanceof Matrix) {
-                    plot = Plot.title(file.getName()).asSurface().plot((Matrix) o);
+                    plot = Plot.title(file.getName()).asHeatMap().plot((Matrix) o);
                 } else if (o instanceof VDiscrete[]) {
                     plot = Plot.create(
                             new VDiscretePlotModel().setVdiscretes((VDiscrete[]) o)

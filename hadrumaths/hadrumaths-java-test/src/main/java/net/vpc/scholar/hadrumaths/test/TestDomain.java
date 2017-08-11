@@ -63,7 +63,7 @@ public class TestDomain {
         Plot.plot(b);
 //        Plot.plot(c);
         Plot.asMatrix().plot(c);
-        Plot.asSurface().plot(c);
+        Plot.asHeatMap().plot(c);
         Plot.asMesh().plot(c);
     }
 }

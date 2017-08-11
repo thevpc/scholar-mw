@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
 import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
 
@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 6 janv. 2007 12:22:57
  */
-class PlotThread extends Thread implements ComputationMonitor{
+class PlotThread extends Thread implements ProgressMonitor {
     private PlotAxis currentY = null;
     private ComputeTitle serieTitle;
     private ConsoleAwareObject direct;

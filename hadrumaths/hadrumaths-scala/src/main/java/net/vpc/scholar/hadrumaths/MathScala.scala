@@ -8,7 +8,7 @@ package net.vpc.scholar.hadrumaths
 
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.symbolic._
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor
 //import java.util
 
 import net.vpc.scholar
@@ -505,7 +505,7 @@ object MathScala {
 
   implicit class SObjectCacheManager(val value: PersistenceCache) {
 
-    def eval[T](key: String, monitor: ComputationMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
+    def eval[T](key: String, monitor: ProgressMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
       value.evaluate(key, monitor, new Evaluator {
         override def evaluate(args: Array[Object]): Object = a(args)
       }, anyParam: _*)
@@ -936,13 +936,13 @@ object MathScala {
       list;
     }
 
-    def foreachIndex(f: (Int, Expr) => Unit): Unit = {
-      var i = 0;
-      while (i < value.size()) {
-        f(i, expr(value(i)));
-        i = i + 1;
-      }
-    }
+//    def foreachIndex(f: (Int, Expr) => Unit): Unit = {
+//      var i = 0;
+//      while (i < value.size()) {
+//        f(i, expr(value(i)));
+//        i = i + 1;
+//      }
+//    }
 
     def ::+(v: TList[java.lang.Double]): TList[java.lang.Double] = {
       Maths.concat(value, v)

@@ -3,10 +3,10 @@ package net.vpc.scholar.hadrumaths.util;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-public class EnhancedComputationMonitorAdapter extends AbstractEnhancedComputationMonitor {
-    private ComputationMonitor base;
+public class EnhancedProgressMonitorAdapter extends AbstractEnhancedProgressMonitor {
+    private ProgressMonitor base;
 
-    public EnhancedComputationMonitorAdapter(ComputationMonitor base) {
+    public EnhancedProgressMonitorAdapter(ProgressMonitor base) {
         this.base = base;
     }
 
@@ -25,7 +25,7 @@ public class EnhancedComputationMonitorAdapter extends AbstractEnhancedComputati
         base.setProgress(progress,message);
     }
 
-    public ComputationMonitor getBase() {
+    public ProgressMonitor getBase() {
         return base;
     }
 
