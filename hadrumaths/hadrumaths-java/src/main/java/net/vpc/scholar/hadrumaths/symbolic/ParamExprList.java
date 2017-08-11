@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.ArrayExprList;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -79,13 +77,13 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
     }
 
     @Override
-    public Class<Expr> getComponentType() {
-        return Expr.class;
+    public TypeReference<Expr> getComponentType() {
+        return Maths.$EXPR;
     }
 
     //    @Override
-    public ArrayExprList toList() {
-        ArrayExprList list = new ArrayExprList(getComponentType(), isRow(), values.length);
+    public ExprArrayList toList() {
+        ExprArrayList list = new ExprArrayList(getComponentType(), isRow(), values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getParamName();

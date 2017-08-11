@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
@@ -1383,12 +1382,12 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
             case GAUSS: {
                 return invGauss();
             }
-            case BLOCK_OJALGO: {
-                return invBlock(InverseStrategy.OJALGO, 64);
-            }
-            case OJALGO: {
-                return OjalgoHelper.INSTANCE.inv(this);
-            }
+//            case BLOCK_OJALGO: {
+//                return invBlock(InverseStrategy.OJALGO, 64);
+//            }
+//            case OJALGO: {
+//                return OjalgoHelper.INSTANCE.inv(this);
+//            }
         }
         throw new UnsupportedOperationException("strategy " + st.toString());
     }
@@ -1786,9 +1785,9 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
                 }
                 throw new IllegalArgumentException("Not a square matrix");
             }
-            case OJALGO: {
-                return OjalgoHelper.INSTANCE.solve(this, castToMatrix(B));
-            }
+//            case OJALGO: {
+//                return OjalgoHelper.INSTANCE.solve(this, castToMatrix(B));
+//            }
         }
         throw new IllegalArgumentException("Invalid SolveStrategy");
     }
@@ -2347,7 +2346,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     @Override
-    protected MatrixFactory createDefaultFactory() {
+    protected MatrixFactory getDefaultFactory() {
         return MemMatrixFactory.INSTANCE;
     }
 }

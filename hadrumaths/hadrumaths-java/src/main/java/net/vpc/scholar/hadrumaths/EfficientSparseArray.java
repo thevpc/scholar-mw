@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 
-    public EfficientSparseArray(Class<T> componentType, int length) {
+    public EfficientSparseArray(TypeReference<T> componentType, int length) {
         int initialSize = Math.max(length, 10);
         if (initialSize > 10) {
             initialSize = 10;
@@ -17,7 +17,7 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return base.getComponentType();
     }
 

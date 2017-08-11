@@ -77,7 +77,7 @@ public class Rooftop extends Ref implements Cloneable{
 
 
     private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, boolean xside, boolean yside, int nx, int ny, Domain d) {
-        //  def rooftopSequence(pattern: String, d: DomainXY, nx: Int, ny: Int): ArrayExprList = {
+        //  def rooftopSequence(pattern: String, d: DomainXY, nx: Int, ny: Int): ExprArrayList = {
         this.maxNorth=maxNorth;
         this.maxSouth=maxSouth;
         this.maxWest=maxWest;

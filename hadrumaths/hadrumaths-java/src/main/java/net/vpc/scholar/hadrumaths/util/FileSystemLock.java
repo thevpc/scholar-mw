@@ -218,6 +218,7 @@ public class FileSystemLock implements AppLock{
                         System.err.println(e.getMessage());
                     }
                 }
+                AppLockManager.getInstance().fireLockReleased(this);
             }
         }
         return false;

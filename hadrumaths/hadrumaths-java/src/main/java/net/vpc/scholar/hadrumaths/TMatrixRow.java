@@ -30,7 +30,7 @@ public class TMatrixRow<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return matrix.getComponentType();
     }
 

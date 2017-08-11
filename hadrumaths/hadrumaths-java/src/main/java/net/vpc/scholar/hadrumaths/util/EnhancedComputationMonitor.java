@@ -85,4 +85,5 @@ public interface EnhancedComputationMonitor extends ComputationMonitor {
     void setProgress(double progress, String message);
 
     void setProgress(double progress, String message, Object... args);
+
 }

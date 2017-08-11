@@ -139,9 +139,5 @@ class PlotThread extends Thread implements ComputationMonitor{
     public void setProgress(double progress, ProgressMessage message) {
         //
     }
-    @Override
-    public void setProgress(double progress, String message) {
-        this.setProgress(progress,message==null?null:new StringProgressMessage(Level.INFO, message));
-    }
 
 }

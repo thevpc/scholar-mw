@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.ReadOnlyVector;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -116,7 +115,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         VectorSpace<T> cs = getComponentVectorSpace();
         RepeatableOp<T> d = cs.addRepeatableOp();
         for (int i = 0; i < max; i++) {
-            d.append(cs.mul(get(i), other.get(i)));
+            d.append(cs.scalarProduct(hermitian,get(i), other.get(i)));
         }
         return d.eval();
     }
@@ -746,7 +745,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         );
     }
 
-    public <R> TVector<R> transform(Class<R> toType, TTransform<T, R> op) {
+    public <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
                 toType, isRow(), new TVectorModel<R>() {
             @Override
@@ -764,8 +763,8 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public boolean acceptsType(Class type) {
-        return getComponentType().isAssignableFrom(type);
+    public <R> boolean acceptsType(TypeReference<R> type) {
+        return getComponentType().getTypeClass().isAssignableFrom(type.getTypeClass());
     }
 
     @Override
@@ -774,12 +773,12 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public <R> TVector<R> to(Class<R> other) {
+    public <R> TVector<R> to(TypeReference<R> other) {
         if (other.equals(getComponentType())) {
             return (TVector<R>) this;
         }
         //should i check default types?
-        if (Complex.class.isAssignableFrom(other)) {
+        if (Maths.$COMPLEX.isAssignableFrom(other)) {
             return (TVector<R>) new ReadOnlyVector(
                     new TVectorModel() {
                         @Override
@@ -855,7 +854,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return newReadOnlyInstanceFromModel(getComponentType(),row,new TVectorModelFromCell<>(size,cellFactory));
     }
 
-    protected <R> TVector<R> newReadOnlyInstanceFromModel(Class<R> type, boolean row, final TVectorModel<R> model) {
+    protected <R> TVector<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, final TVectorModel<R> model) {
         return new ReadOnlyTVector<R>(type, row, model);
     }
 

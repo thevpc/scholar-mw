@@ -1,25 +1,20 @@
-package net.vpc.scholar.hadrumaths.symbolic;
-
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
-import net.vpc.scholar.hadrumaths.TVector;
-import net.vpc.scholar.hadrumaths.TVectorModel;
+package net.vpc.scholar.hadrumaths;
 
 import java.util.Collection;
 
 public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     private TList<T> delegate;
     private TVectorModel<T> model;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public UpdatableTList(Class<T> componentType, boolean row, TVectorModel<T> model) {
+    public UpdatableTList(TypeReference<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.componentType = componentType;
         this.model = model;
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -60,7 +55,7 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     protected void prepareDelegate(int count) {
         if (delegate == null) {
             int initialSize = model.size();
-            delegate = Maths.listOf(getComponentType(), initialSize + count);
+            delegate = Maths.list(getComponentType(), initialSize + count);
             for (int i = 0; i < initialSize; i++) {
                 delegate.append(model.get(i));
             }

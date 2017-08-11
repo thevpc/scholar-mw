@@ -64,9 +64,11 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
             if (m != 0 || n != 0) {
                 double n_b = n / b;
                 double m_a = m / a;
+                //UPDATE 2017 07 27 (missing PI)
+                //UPDATE 2017 08 11 THERE IS NO MISSING PI !!!
                 double coeff = Math.sqrt(
                         2 * u /
-                                (a * b * (n_b * n_b + m_a * m_a)))/PI;
+                                (a * b * (n_b * n_b + m_a * m_a)));
                 n_bAmp = n_b * coeff;
                 m_aAmp = m_a * coeff;
             }

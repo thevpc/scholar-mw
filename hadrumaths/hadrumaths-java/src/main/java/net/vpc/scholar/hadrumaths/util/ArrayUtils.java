@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Range;
 
 import java.lang.reflect.Array;
@@ -1528,6 +1525,12 @@ public final class ArrayUtils {
         return result;
     }
 
+    public static <T> T[] newArray(TypeReference<T> type, int size){
+        return (T[])Array.newInstance(type.getTypeClass(),size);
+    }
+    public static <T> T[][] newArray(TypeReference<T> type,int size,int size2){
+        return (T[][]) Array.newInstance(type.getTypeClass(),size,size2);
+    }
     public static <T> T[] newArray(Class type,int size){
         return (T[]) Array.newInstance(type,size);
     }

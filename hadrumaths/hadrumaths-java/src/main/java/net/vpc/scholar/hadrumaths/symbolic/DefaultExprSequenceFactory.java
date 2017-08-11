@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.TList;
-import net.vpc.scholar.hadrumaths.TVectorCell;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * Created by vpc on 2/14/15.
@@ -17,18 +15,18 @@ public class DefaultExprSequenceFactory<T extends Expr> extends AbstractExprSequ
     @Override
     public TList<T> newPreloadedSequence(final int size, final TVectorCell<T> it) {
 
-        return new PreloadedSequence(getComponentType(), false,size, it);
+        return new PreloadedList(getComponentType(), false,size, it);
     }
 
     @Override
     public TList<T> newUnmodifiableSequence(final int size, final TVectorCell<T> it) {
-        return new UnmodifiableSequence(getComponentType(),false,size, it);
+        return new UnmodifiableList(getComponentType(),false,size, it);
     }
 
     @Override
     public TList<T> newCachedSequence(final int size, final TVectorCell<T> it) {
         final Expr[] cache=new Expr[size];
-        return new CachedSequence(getComponentType(),false,size, cache, it);
+        return new CachedList(getComponentType(),false,size, cache, it);
     }
 
 }

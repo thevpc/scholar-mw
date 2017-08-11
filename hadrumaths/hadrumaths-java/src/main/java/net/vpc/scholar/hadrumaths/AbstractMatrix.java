@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
+//import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
@@ -15,7 +15,6 @@ public abstract class AbstractMatrix extends Matrix {
 
     private static final long serialVersionUID = -1010101010101001044L;
     private transient MatrixFactory factory;
-    private transient MatrixFactory defaultFactory;
 
     /*To exchange two rows in a matrix*/
     public static void exchange_row(TMatrix<Complex> M, int k, int l, int m, int n) {
@@ -1227,12 +1226,12 @@ public abstract class AbstractMatrix extends Matrix {
             case GAUSS: {
                 return invGauss();
             }
-            case BLOCK_OJALGO: {
-                return invBlock(InverseStrategy.OJALGO, 64);
-            }
-            case OJALGO: {
-                return OjalgoHelper.INSTANCE.inv(this);
-            }
+//            case BLOCK_OJALGO: {
+//                return invBlock(InverseStrategy.OJALGO, 64);
+//            }
+//            case OJALGO: {
+//                return OjalgoHelper.INSTANCE.inv(this);
+//            }
         }
         throw new UnsupportedOperationException("strategy " + st.toString());
     }
@@ -1681,9 +1680,9 @@ public abstract class AbstractMatrix extends Matrix {
                 }
                 throw new IllegalArgumentException("Not a square matrix");
             }
-            case OJALGO: {
-                return OjalgoHelper.INSTANCE.solve(this, castToMatrix(B));
-            }
+//            case OJALGO: {
+//                return OjalgoHelper.INSTANCE.solve(this, castToMatrix(B));
+//            }
         }
         throw new IllegalArgumentException("Invalid SolveStrategy");
     }
@@ -1959,7 +1958,7 @@ public abstract class AbstractMatrix extends Matrix {
 
     @Override
     public TVector<TVector<Complex>> getRows() {
-        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector((Class)TVector.class, new TVectorModel<TVector<Complex>>() {
+        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector(Maths.$CVECTOR, new TVectorModel<TVector<Complex>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -1974,7 +1973,7 @@ public abstract class AbstractMatrix extends Matrix {
 
     @Override
     public TVector<TVector<Complex>> getColumns() {
-        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector((Class)TVector.class, new TVectorModel<TVector<Complex>>() {
+        return (TVector<TVector<Complex>>) Maths.<TVector<Complex>>columnTVector(Maths.$CVECTOR, new TVectorModel<TVector<Complex>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -2307,20 +2306,20 @@ public abstract class AbstractMatrix extends Matrix {
 
     }
 
-    protected abstract MatrixFactory createDefaultFactory();
+    protected MatrixFactory getDefaultFactory(){
+        return MemMatrixFactory.INSTANCE;
+    }
 
     @Override
     public MatrixFactory getFactory() {
         if (factory != null) {
             return factory;
         }
-        if (defaultFactory == null) {
-            defaultFactory = createDefaultFactory();
-        }
-        if (defaultFactory == null) {
+        MatrixFactory df= getDefaultFactory();
+        if (df == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }
-        return defaultFactory;
+        return df;
     }
 
     @Override
@@ -2367,8 +2366,8 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     @Override
-    public Class<Complex> getComponentType() {
-        return Complex.class;
+    public TypeReference<Complex> getComponentType() {
+        return Maths.$COMPLEX;
     }
 
     @Override
@@ -2446,4 +2445,10 @@ public abstract class AbstractMatrix extends Matrix {
         return hash;
 
     }
+    @Override
+    public void resize(int rows, int columns) {
+        throw new IllegalArgumentException("Unsupported resize Matrix");
+    }
+
+
 }

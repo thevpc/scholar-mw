@@ -79,7 +79,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
     }
 
     public TList<Expr> toList(){
-        TList<Expr> found=Maths.exprList();
+        TList<Expr> found=Maths.elist();
         for (Object expr : list) {
             found.appendAll(linearizeFunctions(expr));
         }
@@ -111,7 +111,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
             }else{
                 throw new IllegalArgumentException("Unsupported Expr "+i);
             }
-        }else if(i instanceof TVector && Expr.class.isAssignableFrom(((TVector) i).getComponentType())){
+        }else if(i instanceof TVector && Maths.$EXPR.isAssignableFrom(((TVector) i).getComponentType())){
             List<DoubleToVector> found=new ArrayList<DoubleToVector>();
             for (Expr expr : ((TVector<Expr>) i)) {
                 found.addAll(linearizeFunctions(expr));

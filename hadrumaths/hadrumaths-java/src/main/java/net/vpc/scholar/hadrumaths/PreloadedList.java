@@ -1,30 +1,25 @@
-package net.vpc.scholar.hadrumaths.symbolic;
-
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
-import net.vpc.scholar.hadrumaths.TVector;
-import net.vpc.scholar.hadrumaths.TVectorCell;
+package net.vpc.scholar.hadrumaths;
 
 import java.util.Collection;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class PreloadedSequence<T> extends AbstractTList<T> {
+public class PreloadedList<T> extends AbstractTList<T> {
     final TList<T> cache;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public PreloadedSequence(Class<T> componentType, boolean row, int size, TVectorCell<T> it) {
+    public PreloadedList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
-        cache = Maths.listOf(componentType);
+        cache = Maths.list(componentType);
         for (int i = 0; i < size; i++) {
             cache.append(it.get(i));
         }
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -60,7 +55,7 @@ class PreloadedSequence<T> extends AbstractTList<T> {
 
     @Override
     public String toString() {
-        return "PreloadedSequence{" +
+        return "PreloadedList{" +
                 "cache=" + cache +
                 '}';
     }

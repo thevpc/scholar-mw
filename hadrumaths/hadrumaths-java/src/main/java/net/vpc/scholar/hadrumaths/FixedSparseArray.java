@@ -9,9 +9,9 @@ public class FixedSparseArray<T> implements SparseArray<T> {
     private T[] values;
     private int maxIndex = -1;
     private int length = -1;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public FixedSparseArray(Class<T> componentType,int length) {
+    public FixedSparseArray(TypeReference<T> componentType,int length) {
         this.componentType=componentType;
         values = ArrayUtils.newArray(componentType,length);
         this.length = length;
@@ -50,7 +50,7 @@ public class FixedSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 }

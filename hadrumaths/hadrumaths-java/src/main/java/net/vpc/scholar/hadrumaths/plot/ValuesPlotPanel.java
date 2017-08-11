@@ -72,10 +72,12 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
 
     public void setModel(ValuesPlotModel model) {
         if (this.model != model) {
+            ValuesPlotModel oldmodel=this.model;
             Map<String, Object> oldPops=null;
-            if (this.model != null) {
-                this.model.removePropertyChangeListener(plotListener);
+            if (oldmodel != null) {
+                oldmodel.removePropertyChangeListener(plotListener);
                 oldPops = new HashMap<>(this.model.getProperties());
+                model.setZDoubleFunction(oldmodel.getZDoubleFunction());
             }
             this.model = model;
             this.model.setProperties(oldPops);

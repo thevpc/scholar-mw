@@ -168,9 +168,9 @@ public class FormalScalarProductOperator extends ScalarProductOperator {
         for (int i = 0; i < rets.length; i++) {
             DoubleToDouble f2i = f2[i];
             DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2i).toDD();
-            if(f2opt instanceof Mul){
-                f2opt= expressionRewriter.rewriteOrSame(f2i).toDD();
-            }
+//            if(f2opt instanceof Mul){
+//                f2opt= expressionRewriter.rewriteOrSame(f2i).toDD();
+//            }
             Domain inter = f1domain.intersect(f2opt.getDomain());
             if (f1zero || f2opt.isZero()) {
                 rets[i]=0;

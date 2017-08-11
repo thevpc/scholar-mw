@@ -37,11 +37,6 @@ public abstract class RunAction implements ComputationMonitor{
         this.progress = progress;
     }
 
-    @Override
-    public void setProgress(double progress, String message) {
-        this.setProgress(progress,message==null?null:new StringProgressMessage(Level.INFO, message));
-    }
-
     public long getStartRunningTime() {
         return startRunningTime;
     }

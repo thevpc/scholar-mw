@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.AbstractTList;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.ArrayList;
@@ -13,24 +12,24 @@ import java.util.Collection;
 public class ArrayTList<T> extends AbstractTList<T> {
 
     private ArrayList<T> values;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
     //    public ArrayTList(Class<T> componentType) {
 //
 //    }
-    public ArrayTList(Class<T> componentType, boolean row, int initialSize) {
+    public ArrayTList(TypeReference<T> componentType, boolean row, int initialSize) {
         super(row);
         this.componentType = componentType;
         values = new ArrayList<T>(initialSize);
     }
 
-    public ArrayTList(Class<T> componentType, boolean row, T[] values) {
+    public ArrayTList(TypeReference<T> componentType, boolean row, T[] values) {
         this(componentType,row,values.length);
         appendAll(Arrays.asList(values));
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -141,7 +140,7 @@ public class ArrayTList<T> extends AbstractTList<T> {
     }
 
     public TList<T> setParam(String name, Object value) {
-        TList<T> other = Maths.listOf(getComponentType());
+        TList<T> other = Maths.list(getComponentType());
         VectorSpace<T> cs = getComponentVectorSpace();
         for (T e : this) {
             other.append((T) cs.setParam(e, name, value));
@@ -154,7 +153,7 @@ public class ArrayTList<T> extends AbstractTList<T> {
     }
 
     public TList<T> copy() {
-        TList<T> other = Maths.listOf(getComponentType());
+        TList<T> other = Maths.list(getComponentType());
         other.appendAll(this);
         return other;
     }

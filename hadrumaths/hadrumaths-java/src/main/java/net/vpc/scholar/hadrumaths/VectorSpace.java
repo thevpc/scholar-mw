@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.util.Converter;
 import java.util.List;
 
 public interface VectorSpace<T> {
-    Class<T> getItemType();
+    TypeReference<T> getItemType();
 
     <R> Converter<R, T> getConverterFrom(Class<R> t);
 

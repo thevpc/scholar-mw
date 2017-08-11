@@ -1,16 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
-import net.vpc.scholar.hadrumaths.util.CloseOption;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
-import net.vpc.scholar.hadrumaths.util.TLog;
+import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.swingext.ExtensionFileChooserFilter;
 import net.vpc.scholar.hadrumaths.util.swingext.JListCardPanel;
 
@@ -172,6 +168,11 @@ public class PlotConsole implements PlotComponentDisplayer {
 //        run(new PlotData(windowTitle, direct, modele, axisList, parameters));
 //    }
 
+    public ComputationMonitor logger(String title) {
+        EnhancedComputationMonitor logger = ComputationMonitorFactory.logger(5 * Maths.SECOND);
+        getTaskMonitor().addTask(logger,title,null);
+        return logger;
+    }
     public PlotDataBuilder createPlot() {
         return new PlotDataBuilder(this);
     }

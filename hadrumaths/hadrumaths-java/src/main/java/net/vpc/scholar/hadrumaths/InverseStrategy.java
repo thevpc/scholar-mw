@@ -8,10 +8,10 @@ public enum InverseStrategy {
     ADJOINT,
     SOLVE,
     GAUSS,
-    BLOCK_OJALGO,
+//    BLOCK_OJALGO,
     BLOCK_ADJOINT,
     BLOCK_SOLVE,
     BLOCK_GAUSS,
-    OJALGO,
+//    OJALGO,
     DEFAULT, //equivalent to BLOCK_OJALGO
 }

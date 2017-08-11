@@ -43,7 +43,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
     private int[] piv;
     private VectorSpace<T> space;
     private TMatrixFactory<T> matrixFactory;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
     /*
      * ------------------------ Constructor ------------------------
      */

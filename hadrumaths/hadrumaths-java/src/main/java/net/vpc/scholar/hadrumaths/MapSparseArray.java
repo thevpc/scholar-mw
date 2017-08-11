@@ -8,14 +8,14 @@ public class MapSparseArray<T> implements SparseArray<T> {
     private int maxIndex = -1;
     private int length = -1;
     private int initialSize = 0;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public MapSparseArray(Class<T> componentType,int length) {
+    public MapSparseArray(TypeReference<T> componentType,int length) {
         this.length = length;
         this.componentType = componentType;
     }
 
-    public MapSparseArray(Class<T> componentType,int length, int initialSize) {
+    public MapSparseArray(TypeReference<T> componentType,int length, int initialSize) {
         this.initialSize=initialSize;
         this.length = length;
         this.componentType = componentType;
@@ -54,7 +54,7 @@ public class MapSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 }

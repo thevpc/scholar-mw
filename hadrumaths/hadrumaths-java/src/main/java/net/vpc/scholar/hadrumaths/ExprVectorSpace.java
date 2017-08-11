@@ -655,8 +655,8 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Class<Expr> getItemType() {
-        return Expr.class;
+    public TypeReference<Expr> getItemType() {
+        return Maths.$EXPR;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
 public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T>{
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
     private TMatrixModel<T> f;
 
-    public ReadOnlyTMatrix(Class<T> componentType, TMatrixModel<T> f) {
+    public ReadOnlyTMatrix(TypeReference<T> componentType, TMatrixModel<T> f) {
         this.componentType = componentType;
         this.f = f;
     }
@@ -42,7 +42,7 @@ public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T>{
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 }

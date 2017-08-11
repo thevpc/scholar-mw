@@ -30,7 +30,7 @@ public class MatrixColumn extends AbstractVector {
     }
 
     @Override
-    public Class<Complex> getComponentType() {
+    public TypeReference<Complex> getComponentType() {
         return matrix.getComponentType();
     }
 

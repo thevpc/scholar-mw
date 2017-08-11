@@ -7,14 +7,14 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/30/14.
  */
-public interface TList<T> extends Iterable<T>, TVector<T> {
+public interface TList<T> extends Iterable<T>, TVector<T>{
 
 
     int length();
 
     TList<T> eval(ElementOp<T> op);
 
-    <R> TList<R> transform(Class<R> toType, TTransform<T, R> op);
+    <R> TList<R> transform(TypeReference<R> toType, TTransform<T, R> op);
 
     void appendAll(TVector<T> e);
 
@@ -43,7 +43,7 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
     TVector<T> rscalarProduct(boolean hermitian, T other);
 
     @Override
-    <R> TList<R> to(Class<R> other);
+    <R> TList<R> to(TypeReference<R> other);
 
     @Override
     TList<T> vscalarProduct(TVector<T>... other);
@@ -167,4 +167,7 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
 
     @Override
     TList<T> acotan();
+
+    TList<T> sublist(int fromIndex, int toIndex);
+
 }

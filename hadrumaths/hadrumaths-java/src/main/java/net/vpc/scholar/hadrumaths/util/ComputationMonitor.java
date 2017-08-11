@@ -19,6 +19,6 @@ public interface ComputationMonitor {
      */
     void setProgress(double progress, ProgressMessage message);
 
-    void setProgress(double progress, String message);
+//    void setProgress(double progress, String message);
 
 }

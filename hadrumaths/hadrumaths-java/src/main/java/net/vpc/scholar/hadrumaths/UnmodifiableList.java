@@ -1,16 +1,14 @@
-package net.vpc.scholar.hadrumaths.symbolic;
-
-import net.vpc.scholar.hadrumaths.TVectorCell;
+package net.vpc.scholar.hadrumaths;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class UnmodifiableSequence<T> extends AbstractTList<T> implements Cloneable {
+public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
     private final int size;
     private final TVectorCell<T> it;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public UnmodifiableSequence(Class<T> componentType, boolean row, int size, TVectorCell<T> it) {
+    public UnmodifiableList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
         this.size = size;
@@ -18,7 +16,7 @@ class UnmodifiableSequence<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -39,7 +37,7 @@ class UnmodifiableSequence<T> extends AbstractTList<T> implements Cloneable {
 
     @Override
     public String toString() {
-        return "UnmodifiableSequence{" +
+        return "UnmodifiableList{" +
                 "size=" + size +
                 ", items=" + it +
                 '}';

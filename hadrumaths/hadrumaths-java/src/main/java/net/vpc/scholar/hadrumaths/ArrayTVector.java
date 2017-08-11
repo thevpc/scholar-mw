@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable {
     private T[] elements;
     private VectorSpace<T> componentVectorSpace;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
     public ArrayTVector(TVector<T> other) throws IOException {
         super(other.isRow());
@@ -44,7 +44,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 

@@ -2,15 +2,15 @@ package net.vpc.scholar.hadrumaths;
 
 public class UpdatableTVector<T> extends AbstractTVector<T> {
     private TVectorUpdatableModel<T> model;
-    private Class<T> componentType;
-    public UpdatableTVector(Class<T> componentType, TVectorUpdatableModel<T> model, boolean row) {
+    private TypeReference<T> componentType;
+    public UpdatableTVector(TypeReference<T> componentType, TVectorUpdatableModel<T> model, boolean row) {
         super(row);
         this.model = model;
         this.componentType = componentType;
     }
 
     @Override
-    public Class<T> getComponentType(){
+    public TypeReference<T> getComponentType(){
         return componentType;
     }
 

@@ -288,8 +288,8 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public Class<Complex> getItemType() {
-        return Complex.class;
+    public TypeReference<Complex> getItemType() {
+        return Maths.$COMPLEX;
     }
 
     @Override

@@ -1,7 +1,4 @@
-package net.vpc.scholar.hadrumaths.symbolic;
-
-import net.vpc.scholar.hadrumaths.TVector;
-import net.vpc.scholar.hadrumaths.TVectorCell;
+package net.vpc.scholar.hadrumaths;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,14 +8,14 @@ import java.util.List;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class CachedSequence<T> extends AbstractTList<T> {
+public class CachedList<T> extends AbstractTList<T> {
     private int size;
     private List<T> cache = new ArrayList<>();
     private TVectorCell<T> it;
     private boolean updated = false;
-    private Class<T> componentType;
+    private TypeReference<T> componentType;
 
-    public CachedSequence(Class<T> componentType, boolean row, int size, T[] cache, TVectorCell<T> it) {
+    public CachedList(TypeReference<T> componentType, boolean row, int size, T[] cache, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
         this.size = size;
@@ -27,7 +24,7 @@ class CachedSequence<T> extends AbstractTList<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -88,7 +85,7 @@ class CachedSequence<T> extends AbstractTList<T> {
 
     @Override
     public String toString() {
-        return "CachedSequence{" +
+        return "CachedList{" +
                 "items=" + it +
                 ", size=" + size +
                 '}';

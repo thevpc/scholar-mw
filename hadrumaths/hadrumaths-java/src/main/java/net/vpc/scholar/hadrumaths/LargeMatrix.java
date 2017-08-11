@@ -91,7 +91,7 @@ public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectS
         getFactory().disposeMatrix(largeMatrixId);
     }
 
-    protected MatrixFactory createDefaultFactory() {
+    protected MatrixFactory getDefaultFactory() {
         return Maths.Config.getLargeMatrixFactory();
     }
 

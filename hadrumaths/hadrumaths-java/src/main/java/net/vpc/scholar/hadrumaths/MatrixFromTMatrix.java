@@ -31,7 +31,7 @@ public class MatrixFromTMatrix<T extends Expr> extends AbstractMatrix {
     }
 
     @Override
-    protected MatrixFactory createDefaultFactory() {
+    protected MatrixFactory getDefaultFactory() {
         return MemMatrixFactory.INSTANCE;
     }
 

@@ -33,7 +33,7 @@ public class TTransposedVector<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public Class<T> getComponentType() {
+    public TypeReference<T> getComponentType() {
         return other.getComponentType();
     }
 

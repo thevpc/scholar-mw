@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,10 +62,10 @@ public class LockMonitor extends JPanel implements ActionListener {
         Object source = e.getSource();
         if (source == unlockButton) {
             //
-            AppLock a = lockModel.getAppLock(table.getSelectionModel().getLeadSelectionIndex());
+            AppLockInfo a = lockModel.getAppLock(table.getSelectionModel().getLeadSelectionIndex());
             if(a!=null){
                 try {
-                    a.forceRelease();
+                    a.lock.forceRelease();
                 }catch (Exception ex){
 
                 }
@@ -73,11 +74,16 @@ public class LockMonitor extends JPanel implements ActionListener {
     }
 
 
+    private static class AppLockInfo {
+        AppLock lock;
+        long hits;
+        Date time;
+    }
     private static class LocksTableModel extends AbstractTableModel implements AppLockListener {
-        final List<AppLock> files = new ArrayList<>();
+        final List<AppLockInfo> files = new ArrayList<>();
 
 
-        public AppLock getAppLock(int index) {
+        public AppLockInfo getAppLock(int index) {
             synchronized (files) {
                 if (index >= 0 && index < files.size()) {
                     return files.get(index);
@@ -87,24 +93,36 @@ public class LockMonitor extends JPanel implements ActionListener {
         }
         public void add(AppLock lock) {
             synchronized (files) {
-                for (int i = files.size() - 1; i == 0; i--) {
-                    AppLock file = files.get(i);
+                for (int i = files.size() - 1; i >= 0; i--) {
+                    AppLockInfo appLockInfo = files.get(i);
+                    AppLock file = appLockInfo.lock;
                     if (file.equals(lock)) {
+                        appLockInfo.hits++;
+                        appLockInfo.time=new Date();
+                        fireTableRowsUpdated(i, i);
                         return;
                     }
                 }
                 int a = files.size();
-                files.add(lock);
+                AppLockInfo info=new AppLockInfo();
+                info.lock=lock;
+                info.hits=1;
+                info.time=new Date();
+                files.add(info);
                 fireTableRowsInserted(a, a);
             }
         }
 
         public void remove(AppLock lock) {
             synchronized (files) {
-                int p = files.indexOf(lock);
-                if (p >= 0) {
-                    files.remove(p);
-                    fireTableRowsDeleted(p, p);
+                for (int i = files.size() - 1; i >= 0; i--) {
+                    AppLockInfo appLockInfo = files.get(i);
+                    AppLock file = appLockInfo.lock;
+                    if (file.equals(lock)) {
+                        files.remove(i);
+                        fireTableRowsDeleted(i, i);
+                        return;
+                    }
                 }
             }
         }
@@ -133,7 +151,7 @@ public class LockMonitor extends JPanel implements ActionListener {
 
         @Override
         public int getColumnCount() {
-            return 2;
+            return 4;
         }
 
         @Override
@@ -142,12 +160,18 @@ public class LockMonitor extends JPanel implements ActionListener {
                 if(rowIndex<0 || rowIndex>=files.size()){
                     return null;
                 }
-                AppLock appLock = files.get(rowIndex);
+                AppLockInfo appLock = files.get(rowIndex);
                 if (columnIndex == 0) {
-                    return appLock.getName();
+                    return appLock.lock.getName();
                 }
                 if (columnIndex == 1) {
-                    return appLock.toString();
+                    return appLock.lock.toString();
+                }
+                if (columnIndex == 2) {
+                    return appLock.hits;
+                }
+                if (columnIndex == 3) {
+                    return appLock.time;
                 }
                 return appLock.toString();
             }
@@ -161,7 +185,30 @@ public class LockMonitor extends JPanel implements ActionListener {
             if(column==1){
                 return "Lock Desc";
             }
+            if(column==2){
+                return "Hits";
+            }
+            if(column==3){
+                return "Last Hit";
+            }
             return super.getColumnName(column);
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 0) {
+                return String.class;
+            }
+            if (columnIndex == 1) {
+                return String.class;
+            }
+            if (columnIndex == 2) {
+                return Integer.class;
+            }
+            if (columnIndex == 3) {
+                return Date.class;
+            }
+            return super.getColumnClass(columnIndex);
         }
     }
 }

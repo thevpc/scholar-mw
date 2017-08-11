@@ -35,7 +35,7 @@ public class MatrixFromColumnVector extends AbstractMatrix {
     }
 
     @Override
-    protected MatrixFactory createDefaultFactory() {
+    protected MatrixFactory getDefaultFactory() {
         return MemMatrixFactory.INSTANCE;
     }
 

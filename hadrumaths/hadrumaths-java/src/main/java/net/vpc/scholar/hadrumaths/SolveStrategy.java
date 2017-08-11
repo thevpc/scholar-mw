@@ -5,6 +5,6 @@ package net.vpc.scholar.hadrumaths;
 */
 public enum SolveStrategy {
 
-    OJALGO,
+//    OJALGO,
     DEFAULT
 }

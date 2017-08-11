@@ -433,7 +433,7 @@ public interface TMatrix<T> extends Normalizable {
 
     TMatrix<T> dotpow(T n);
 
-    Class<T> getComponentType();
+    TypeReference<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 }

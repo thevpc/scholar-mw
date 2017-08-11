@@ -179,8 +179,8 @@ public class PlotTypesHelper {
             }
             return new TypeAndValue("number[]", obj);
         }
-        if (obj instanceof DoubleArray) {
-            return (new TypeAndValue("number[]",((DoubleArray) obj).toDoubleArray()));
+        if (obj instanceof ToDoubleArrayAware) {
+            return (new TypeAndValue("number[]",((ToDoubleArrayAware) obj).toDoubleArray()));
         }
         if (obj instanceof ComplexArray) {
             return (resolveType(((ComplexArray) obj).toComplexArray()));

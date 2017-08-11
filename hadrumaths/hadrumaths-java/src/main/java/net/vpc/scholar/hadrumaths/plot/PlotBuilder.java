@@ -197,27 +197,15 @@ public class PlotBuilder {
         return xsamples(xsamples).ysamples(ysamples);
     }
 
-    public PlotBuilder xsamples(TList xvalue) {
-        return xsamples(Maths.toDoubleArray(xvalue));
-    }
-
-    public PlotBuilder xsamples(DoubleArray xvalue) {
+    public PlotBuilder xsamples(ToDoubleArrayAware xvalue) {
         return xsamples(xvalue.toDoubleArray());
     }
 
-    public PlotBuilder ysamples(TList yvalue) {
-        return ysamples(Maths.toDoubleArray(yvalue));
-    }
-
-    public PlotBuilder ysamples(DoubleArray yvalue) {
+    public PlotBuilder ysamples(ToDoubleArrayAware yvalue) {
         return ysamples(yvalue.toDoubleArray());
     }
 
-    public PlotBuilder zsamples(TList yvalue) {
-        return zsamples(Maths.toDoubleArray(yvalue));
-    }
-
-    public PlotBuilder zsamples(DoubleArray yvalue) {
+    public PlotBuilder zsamples(ToDoubleArrayAware yvalue) {
         return zsamples(yvalue.toDoubleArray());
     }
 

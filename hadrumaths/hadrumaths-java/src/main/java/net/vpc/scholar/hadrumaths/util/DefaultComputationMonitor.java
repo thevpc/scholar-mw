@@ -22,11 +22,6 @@ public class DefaultComputationMonitor implements ComputationMonitor{
     }
 
     @Override
-    public void setProgress(double progress, String message) {
-        this.setProgress(progress,message==null?null:new StringProgressMessage(Level.INFO, message));
-    }
-
-    @Override
     public ProgressMessage getProgressMessage() {
         return progressMessage;
     }

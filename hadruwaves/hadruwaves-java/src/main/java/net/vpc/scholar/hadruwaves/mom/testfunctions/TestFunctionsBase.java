@@ -78,7 +78,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
     @Override
     public TList<Expr> list() {
-        return Maths.exprList(arr());
+        return Maths.elist(arr());
     }
 
     @Override

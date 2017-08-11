@@ -3,14 +3,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.TypeReference;
 
 /**
  * Created by vpc on 2/14/15.
  */
 public abstract class AbstractExprSequenceFactory<T extends Expr> implements ExprSequenceFactory<T> {
     @Override
-    public Class<T> getComponentType() {
-        return (Class<T>) Expr.class;
+    public TypeReference<T> getComponentType() {
+        return (TypeReference<T>) Maths.$EXPR;
     }
 
     public TList<T> newSequence(T pattern, DoubleParam[] vars, int[] max) {

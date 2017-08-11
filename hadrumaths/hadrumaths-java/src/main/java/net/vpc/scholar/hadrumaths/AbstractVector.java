@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.ReadOnlyVector;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -650,8 +649,8 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     }
 
     @Override
-    public Class<Complex> getComponentType() {
-        return Complex.class;
+    public TypeReference<Complex> getComponentType() {
+        return Maths.$COMPLEX;
     }
 
     @Override
@@ -679,7 +678,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         });
     }
 
-    public <R> TVector<R> transform(Class<R> toType,TTransform<Complex,R> op) {
+    public <R> TVector<R> transform(TypeReference<R> toType, TTransform<Complex,R> op) {
         return new ReadOnlyTVector<R>(
                 toType, isRow(), new TVectorModel<R>() {
             @Override

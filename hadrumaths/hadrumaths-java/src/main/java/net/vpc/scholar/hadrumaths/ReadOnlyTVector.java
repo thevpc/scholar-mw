@@ -2,15 +2,15 @@ package net.vpc.scholar.hadrumaths;
 
 public class ReadOnlyTVector<T> extends AbstractTVector<T> {
     private TVectorModel<T> model;
-    private Class<T> componentType;
-    public ReadOnlyTVector(Class<T> componentType, boolean row, TVectorModel<T> model) {
+    private TypeReference<T> componentType;
+    public ReadOnlyTVector(TypeReference<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.model = model;
         this.componentType = componentType;
     }
 
     @Override
-    public Class<T> getComponentType(){
+    public TypeReference<T> getComponentType(){
         return componentType;
     }
 

@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.symbolic;
+package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.AbstractTVector;
 import net.vpc.scholar.hadrumaths.AbstractVector;
@@ -13,8 +13,8 @@ public class ReadOnlyVector extends AbstractVector {
     }
 
     @Override
-    public Class<Complex> getComponentType(){
-        return Complex.class;
+    public TypeReference<Complex> getComponentType(){
+        return Maths.$COMPLEX;
     }
 
     @Override

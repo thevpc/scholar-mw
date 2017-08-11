@@ -44,7 +44,7 @@ public class EMatrixFromTMatrix<T extends Expr> extends AbstractTMatrix<Expr> {
     }
 
     @Override
-    public Class<Expr> getComponentType() {
-        return Expr.class;
+    public TypeReference<Expr> getComponentType() {
+        return Maths.$EXPR;
     }
 }

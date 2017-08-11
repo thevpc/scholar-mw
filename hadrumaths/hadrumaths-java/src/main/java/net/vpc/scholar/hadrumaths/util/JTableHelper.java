@@ -11,12 +11,14 @@ public class JTableHelper {
 
     public static JTableHelper prepareIndexedTable(TableModel model){
         JTableHelper t=new JTableHelper();
-        t.table=new JTable(model){
+        t.table=new JTable(){
 //            public boolean getScrollableTracksViewportWidth()
 //            {
 //                return getPreferredSize().width < getParent().getWidth();
 //            }
         };
+        t.table.setAutoCreateRowSorter(true);
+        t.table.setModel(model);
         t.pane=new JScrollPane(t.table);
         t.table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         SimpleRowHeaderRenderer r = new SimpleRowHeaderRenderer(t.table);

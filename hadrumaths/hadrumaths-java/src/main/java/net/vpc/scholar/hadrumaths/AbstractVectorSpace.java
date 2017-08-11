@@ -7,12 +7,12 @@ import java.util.List;
 public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
     @Override
     public <R> Converter<R, T> getConverterFrom(Class<R> t) {
-        return Maths.Config.getConverter(t,getItemType());
+        return Maths.Config.getConverter(t,getItemType().getTypeClass());
     }
 
     @Override
     public <R> Converter<T, R> getConverterTo(Class<R> t) {
-        return Maths.Config.getConverter(getItemType(),t);
+        return Maths.Config.getConverter(getItemType().getTypeClass(),t);
     }
 
     @Override

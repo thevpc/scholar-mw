@@ -288,8 +288,8 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public Class<Double> getItemType() {
-        return Double.class;
+    public TypeReference<Double> getItemType() {
+        return Maths.$DOUBLE;
     }
 
     @Override

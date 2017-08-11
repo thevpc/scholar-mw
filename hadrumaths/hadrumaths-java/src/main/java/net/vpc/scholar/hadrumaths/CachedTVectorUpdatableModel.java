@@ -4,9 +4,9 @@ public class CachedTVectorUpdatableModel<T> implements TVectorUpdatableModel<T> 
     private TVectorCell<T> f;
     private EfficientSparseArray<T> arr;
 
-    public CachedTVectorUpdatableModel(TVectorModel<T> f, Class<T> type) {
+    public CachedTVectorUpdatableModel(TVectorModel<T> f, TypeReference<T> type) {
         this.f = f;
-        arr = new EfficientSparseArray<>(type, f.size());
+        arr = new EfficientSparseArray<T>(type, f.size());
     }
 
     @Override

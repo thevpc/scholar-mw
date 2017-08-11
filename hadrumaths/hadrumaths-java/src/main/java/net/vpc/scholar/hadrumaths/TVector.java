@@ -3,13 +3,12 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 
 public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
-    Class<T> getComponentType();
+    TypeReference<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 
@@ -76,7 +75,7 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     T scalarProductAll(boolean hermitian, TVector<T>... other);
 
-    <R> TVector<R> to(Class<R> other);
+    <R> TVector<R> to(TypeReference<R> other);
 
     TVector<T> vscalarProduct(TVector<T>... other);
 
@@ -186,9 +185,9 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     TVector<T> eval(ElementOp<T> op);
 
-    <R> TVector<R> transform(Class<R> toType, TTransform<T, R> op);
+    <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op);
 
-    boolean acceptsType(Class type);
+    <R> boolean acceptsType(TypeReference<R> type) ;
 
     TVector<T> setParam(TParam param, Object value);
 

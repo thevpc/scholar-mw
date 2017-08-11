@@ -1084,7 +1084,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getRows() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector((Class)TVector.class, new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class,getComponentType().getType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -1099,7 +1099,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getColumns() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector((Class)TVector.class, new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class,getComponentType().getType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -1210,13 +1210,13 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             case GAUSS: {
                 return invGauss();
             }
-            case BLOCK_OJALGO: {
-                return invBlock(InverseStrategy.OJALGO, 64);
-            }
-            case OJALGO: {
-                throw new IllegalArgumentException("Unsupported");
-//                return OjalgoHelper.INSTANCE.inv(this);
-            }
+//            case BLOCK_OJALGO: {
+//                return invBlock(InverseStrategy.OJALGO, 64);
+//            }
+//            case OJALGO: {
+//                throw new IllegalArgumentException("Unsupported");
+////                return OjalgoHelper.INSTANCE.inv(this);
+//            }
         }
         throw new UnsupportedOperationException("strategy " + st.toString());
     }
@@ -1692,9 +1692,9 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
                 throw new IllegalArgumentException("Not a square matrix");
             }
-            case OJALGO: {
-                throw new IllegalArgumentException("Unsupported");
-            }
+//            case OJALGO: {
+//                throw new IllegalArgumentException("Unsupported");
+//            }
         }
         throw new IllegalArgumentException("Invalid SolveStrategy");
     }
