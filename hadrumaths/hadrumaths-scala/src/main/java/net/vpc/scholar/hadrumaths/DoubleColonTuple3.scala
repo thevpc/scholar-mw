@@ -14,4 +14,14 @@ class DoubleColonTuple3(val _1: Double, val _2: Double, val _3: Double) extends 
 
   def apply(i: Int): Double = Maths.dstepsElement(_1, _3, _2, i)
 
+  def foreachIndex[U](f: (Int, Double) => U) {
+    val doubles = toDoubleArray()
+    var i = 0;
+    val max = doubles.length
+    while (i<max) {
+      f(i, doubles(i));
+      i = i + 1
+    }
+  }
+
 }

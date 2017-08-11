@@ -12,38 +12,38 @@ import java.util.List;
 /**
  * Created by vpc on 5/7/14.
  */
-public class ExprArrayList<T extends Expr> extends ArrayTList<T> {
+public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
 
 
-    public ExprArrayList(TypeReference<T> componentType, boolean row, int initialSize) {
-        super(componentType,row,initialSize);
+    public ExprArrayList(boolean row, int initialSize) {
+        super(Maths.$EXPR,row,initialSize);
     }
 
-    public ExprArrayList(TypeReference<T> componentType, boolean row, Expr... elements) {
-        this(componentType,row,elements.length);
-        appendAll((Collection<? extends T>) Arrays.asList(elements));
+    public ExprArrayList(boolean row, Expr... elements) {
+        this(row,elements.length);
+        appendAll(Arrays.asList(elements));
     }
 
-    public ExprArrayList(TypeReference<T> componentType, boolean row, Complex... elements) {
-        this(componentType,row,elements.length);
-        appendAll((Collection<? extends T>) Arrays.asList(elements));
+    public ExprArrayList(boolean row, Complex... elements) {
+        this(row,elements.length);
+        appendAll(Arrays.asList(elements));
     }
 
-    public ExprArrayList(TypeReference<T> componentType, boolean row, double... elements) {
-        this(componentType,row,elements.length);
+    public ExprArrayList(boolean row, double... elements) {
+        this(row,elements.length);
         for (double element : elements) {
-            append((T) Complex.valueOf(element));
+            append(Complex.valueOf(element));
         }
     }
 
-    public ExprArrayList(TypeReference<T> componentType, boolean row, Collection<? extends Expr> elements) {
-        this(componentType,row,elements.size());
-        appendAll((Collection<? extends T>) elements);
+    public ExprArrayList(boolean row, Collection<? extends Expr> elements) {
+        this(row,elements.size());
+        appendAll(elements);
     }
 
-    public <P extends Expr> ExprArrayList(TypeReference<T> componentType, boolean row, TVector<P> elements) {
-        this(componentType,row,elements.size());
-        appendAll((Collection) elements);
+    public <P extends Expr> ExprArrayList(boolean row, TVector<P> elements) {
+        this(row,elements.size());
+        appendAll(elements.toJList());
     }
 
     public Expr[] toExprArray() {
@@ -80,7 +80,7 @@ public class ExprArrayList<T extends Expr> extends ArrayTList<T> {
 
     private List<Expr> toExprJList() {
         List<Expr> e=new ArrayList<>();
-        for (T t : this) {
+        for (Expr t : this) {
             e.add(t);
         }
         return e;
@@ -93,22 +93,22 @@ public class ExprArrayList<T extends Expr> extends ArrayTList<T> {
         return ArrayUtils.exprListToDoubleArray((List<Expr>) toExprJList());
     }
 
-    public TList<T> rewrite(ExpressionRewriter r) {
-        TList<T> next = (TList<T>) Maths.elist();
+    public TList<Expr> rewrite(ExpressionRewriter r) {
+        TList<Expr> next = (TList<Expr>) Maths.elist();
         for (Expr e : this) {
-            next.append((T) r.rewriteOrSame(e));
+            next.append((Expr) r.rewriteOrSame(e));
         }
         return next;
     }
 
 
 
-    public T sum() {
-        return (T) (new Plus((TVector<Expr>) this));
+    public Expr sum() {
+        return (new Plus(this));
     }
 
-    public T prod() {
-        return (T) new Mul((TVector<Expr>) this);
+    public Expr prod() {
+        return new Mul(this);
     }
 
 }

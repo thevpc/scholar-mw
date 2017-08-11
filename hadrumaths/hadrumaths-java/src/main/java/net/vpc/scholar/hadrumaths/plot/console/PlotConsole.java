@@ -168,7 +168,7 @@ public class PlotConsole implements PlotComponentDisplayer {
 //        run(new PlotData(windowTitle, direct, modele, axisList, parameters));
 //    }
 
-    public ComputationMonitor logger(String title) {
+    public EnhancedComputationMonitor logger(String title) {
         EnhancedComputationMonitor logger = ComputationMonitorFactory.logger(5 * Maths.SECOND);
         getTaskMonitor().addTask(logger,title,null);
         return logger;

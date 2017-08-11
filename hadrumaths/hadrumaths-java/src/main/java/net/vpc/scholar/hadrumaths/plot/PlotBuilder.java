@@ -209,6 +209,19 @@ public class PlotBuilder {
         return zsamples(yvalue.toDoubleArray());
     }
 
+    public PlotBuilder xsamples(TList xvalue) {
+        DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
+        return xsamples(to.toDoubleArray());
+    }
+    public PlotBuilder ysamples(TList xvalue) {
+        DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
+        return ysamples(to.toDoubleArray());
+    }
+    public PlotBuilder zsamples(TList xvalue) {
+        DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
+        return zsamples(to.toDoubleArray());
+    }
+
     public PlotBuilder xsamples(double[] xvalue) {
         if (samples instanceof AbsoluteSamples) {
             AbsoluteSamples a=(AbsoluteSamples) samples;

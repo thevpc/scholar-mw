@@ -82,8 +82,8 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
     }
 
     //    @Override
-    public ExprArrayList toList() {
-        ExprArrayList list = new ExprArrayList(getComponentType(), isRow(), values.length);
+    public ExprList toList() {
+        ExprArrayList list = new ExprArrayList(isRow(), values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getParamName();

@@ -423,7 +423,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     protected <R> TList<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, TVectorModel<R> model) {
-        return new ReadOnlyTList<R>(type, row, model);
+        return Maths.listro(type,row,model);
     }
 
     @Override

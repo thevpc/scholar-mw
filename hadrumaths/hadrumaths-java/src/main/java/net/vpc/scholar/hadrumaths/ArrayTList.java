@@ -162,4 +162,8 @@ public class ArrayTList<T> extends AbstractTList<T> {
     public String toString() {
         return values.toString();
     }
+
+    public void trimToSize() {
+        values.trimToSize();
+    }
 }

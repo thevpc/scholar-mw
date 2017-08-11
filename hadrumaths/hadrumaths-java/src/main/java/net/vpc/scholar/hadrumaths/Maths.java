@@ -357,6 +357,7 @@ public final class Maths {
     public static final TypeReference<Double> $DOUBLE=new TypeReference<Double>() {};
     public static final TypeReference<Boolean> $BOOLEAN=new TypeReference<Boolean>() {};
     public static final TypeReference<Integer> $INTEGER=new TypeReference<Integer>() {};
+    public static final TypeReference<Long> $LONG=new TypeReference<Long>() {};
     public static final TypeReference<Expr> $EXPR=new TypeReference<Expr>() {};
     public static final TypeReference<TList<Complex>> $CLIST=new TypeReference<TList<Complex>>() {};
     public static final TypeReference<TList<Expr>> $ELIST=new TypeReference<TList<Expr>>() {};
@@ -1928,7 +1929,7 @@ public final class Maths {
 ////        System.out.println(DumpManager.dumpSimple(seq2(v, m, dsteps(1, 4), n, dsteps(1, 4))));
 //        System.out.println(DumpManager.dumpSimple(seq3(v, m, dsteps(1, 2), n, dsteps(1, 3), p, dsteps(1, 4))));
 //    }
-//    public static ExprArrayList[] seq(ExprArrayList pattern, DoubleParam m, double[] values) {
+//    public static TList<Expr>[] seq(ExprArrayList pattern, DoubleParam m, double[] values) {
 //        ExprArrayList[] list = new ExprArrayList[values.length];
 //        for (int i = 0; i < values.length; i++) {
 //            list[i] = pattern.setParam(m, values[i]);
@@ -1936,7 +1937,7 @@ public final class Maths {
 //        return list;
 //    }
 //
-//    public static ExprArrayList[][] seq(ExprArrayList[] pattern, DoubleParam m, double[] values) {
+//    public static TList<Expr>[][] seq(ExprArrayList[] pattern, DoubleParam m, double[] values) {
 //        ExprArrayList[][] list = new ExprArrayList[values.length][];
 //        for (int i = 0; i < values.length; i++) {
 //            ExprArrayList[] sub = new ExprArrayList[pattern.length];
@@ -1948,7 +1949,7 @@ public final class Maths {
 //        return list;
 //    }
 //
-//    public static ExprArrayList[][][] seq(ExprArrayList[][] pattern, DoubleParam m, double[] values) {
+//    public static TList<Expr>[][][] seq(ExprArrayList[][] pattern, DoubleParam m, double[] values) {
 //        ExprArrayList[][][] list = new ExprArrayList[values.length][][];
 //        for (int i = 0; i < values.length; i++) {
 //            ExprArrayList[][] sub = new ExprArrayList[pattern.length][];
@@ -3864,16 +3865,16 @@ public final class Maths {
 //    public static String scalarProductToMatlabString(DomainXY domain0,CFunctionXY f1, CFunctionXY f2, ToMatlabStringParam... format) {
 //        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
 //    }
-    public static TList<Expr> elist(int size) {
-        return new ExprArrayList<Expr>($EXPR, false,size);
+    public static ExprList elist(int size) {
+        return new ExprArrayList(false,size);
     }
 
-    public static TList<Expr> elist(boolean row,int size) {
-        return new ExprArrayList<Expr>($EXPR, row,size);
+    public static ExprList elist(boolean row,int size) {
+        return new ExprArrayList(row,size);
     }
 
-    public static TList<Expr> elist(Expr... vector) {
-        return new ExprArrayList<Expr>($EXPR, false, vector);
+    public static ExprList elist(Expr... vector) {
+        return new ExprArrayList(false, vector);
     }
 
     public static TList<Complex> clist() {
@@ -3934,12 +3935,36 @@ public final class Maths {
         return list(type, false, initialSize);
     }
 
+    public static <T> TList<T> listro(TypeReference<T> type, boolean row, TVectorModel<T> model) {
+        if(type.equals(Maths.$DOUBLE)){
+            return (TList<T>) new DoubleArrayList.DoubleReadOnlyList(row, (TVectorModel<Double>) model);
+        }
+        if(type.equals(Maths.$INTEGER)){
+            return (TList<T>) new IntArrayList.IntReadOnlyList(row, (TVectorModel<Integer>) model);
+        }
+        if(type.equals(Maths.$LONG)){
+            return (TList<T>) new LongArrayList.LongReadOnlyList(row, (TVectorModel<Long>) model);
+        }
+        if(type.equals(Maths.$BOOLEAN)){
+            return (TList<T>) new BooleanArrayList.BooleanReadOnlyList(row, (TVectorModel<Boolean>) model);
+        }
+        return new ReadOnlyTList<T>(type, row, model);
+    }
     public static <T> TList<T> list(TypeReference<T> type, boolean row, int initialSize) {
         if(type.equals($EXPR)){
             return (TList<T>) elist(row,initialSize);
         }
         if(type.equals($DOUBLE)){
             return (TList<T>) dlist(row,initialSize);
+        }
+        if(type.equals($INTEGER)){
+            return (TList<T>) ilist(row,initialSize);
+        }
+        if(type.equals($LONG)){
+            return (TList<T>) llist(row,initialSize);
+        }
+        if(type.equals($BOOLEAN)){
+            return (TList<T>) blist(row,initialSize);
         }
         return new ArrayTList<T>(type, row, initialSize);
     }
@@ -3952,9 +3977,9 @@ public final class Maths {
         return exprs;
     }
 
-    public static TList<Expr> elist(Matrix vector) {
-        TList<Expr> exprs = elist();
+    public static ExprList elist(Matrix vector) {
         Vector complexes = vector.toVector();
+        ExprList exprs = elist(complexes.size());
         exprs.appendAll((TVector) complexes);
         return exprs;
     }
@@ -3972,7 +3997,7 @@ public final class Maths {
     }
 
     public static TList<Expr> elist() {
-        return new ExprArrayList<Expr>($EXPR, false, 0);
+        return new ExprArrayList(false, 0);
     }
 
     public static <T> TList<T> concat(TList<T>... a) {
@@ -3983,11 +4008,11 @@ public final class Maths {
         return ts;
     }
 
-    public static DoubleArrayList dlist() {
+    public static TList<Double> dlist() {
         return new DoubleArrayList();
     }
 
-    public static DoubleList dlist(double[] items) {
+    public static TList<Double> dlist(double[] items) {
         DoubleList doubles = new DoubleArrayList(items.length);
         for (double item : items) {
             doubles.append(item);
@@ -3995,36 +4020,40 @@ public final class Maths {
         return doubles;
     }
 
-    public static DoubleArrayList dlist(boolean row,int size) {
+    public static TList<Double> dlist(boolean row,int size) {
         return new DoubleArrayList(row,size);
     }
 
-    public static DoubleArrayList dlist(int size) {
+    public static TList<Double> dlist(int size) {
         return new DoubleArrayList(size);
     }
 
     public static TList<Boolean> blist() {
-        return list($BOOLEAN, false, 0);
+        return new BooleanArrayList(false, 0);
     }
 
     public static TList<Boolean> dlist(boolean[] items) {
-        TList<Boolean> doubles = list($BOOLEAN, false, items.length);
+        TList<Boolean> doubles = new BooleanArrayList(false, items.length);
         for (boolean item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<Boolean> blist(int size) {
-        return list($BOOLEAN, false, size);
+    public static TList<Boolean> blist(boolean row,int size) {
+        return new BooleanArrayList(row, size);
     }
 
-    public static TList<Integer> ilist() {
-        return Maths.list($INTEGER, false, 0);
+    public static TList<Boolean> blist(int size) {
+        return new BooleanArrayList(false, size);
+    }
+
+    public static IntList ilist() {
+        return new IntArrayList(false, 0);
     }
 
     public static TList<Integer> ilist(int[] items) {
-        TList<Integer> doubles = Maths.list($INTEGER, false, items.length);
+        TList<Integer> doubles = new IntArrayList(false, items.length);
         for (int item : items) {
             doubles.append(item);
         }
@@ -4032,7 +4061,31 @@ public final class Maths {
     }
 
     public static TList<Integer> ilist(int size) {
-        return Maths.list($INTEGER, false, size);
+        return new IntArrayList(false, size);
+    }
+
+    public static TList<Integer> ilist(boolean row,int size) {
+        return new IntArrayList(row, size);
+    }
+
+    public static LongList llist() {
+        return new LongArrayList(false, 0);
+    }
+
+    public static TList<Long> llist(long[] items) {
+        TList<Long> doubles = new LongArrayList(false, items.length);
+        for (long item : items) {
+            doubles.append(item);
+        }
+        return doubles;
+    }
+
+    public static TList<Long> llist(int size) {
+        return new LongArrayList(false, size);
+    }
+
+    public static TList<Long> llist(boolean row,int size) {
+        return new LongArrayList(row, size);
     }
 
     public static <T> T sum(TypeReference<T> type, T... arr) {
