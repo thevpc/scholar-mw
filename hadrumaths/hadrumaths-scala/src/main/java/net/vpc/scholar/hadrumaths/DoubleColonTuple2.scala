@@ -18,4 +18,14 @@ class DoubleColonTuple2(val _1: Double, val _2: Double) extends ToDoubleArrayAwa
   def length: Double = Maths.dstepsLength(left, right, 1)
 
   def apply(i: Int): Double = Maths.dstepsElement(left, right, 1, i)
+
+  def foreachIndex[U](f: (Int, Double) => U) {
+    val doubles = toDoubleArray()
+    var i = 0;
+    val max = doubles.length
+    while (i<max) {
+      f(i, doubles(i));
+      i = i + 1
+    }
+  }
 }
