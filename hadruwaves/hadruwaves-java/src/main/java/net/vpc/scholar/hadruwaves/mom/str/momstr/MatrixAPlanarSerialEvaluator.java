@@ -36,27 +36,37 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
             Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                 @Override
                 public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                    for (int p = 0; p < _g.length; p++) {
-                        Vector psp = sp.getRow(p);
-                        for (int q = p; q < _g.length; q++) {
-                            Vector qsp = sp.getRow(q);
-                            MutableComplex c = MutableComplex.Zero();
-                            for (ModeInfo n : n_eva) {
+                    MutableComplex c = MutableComplex.Zero();
+
+                    //copied to local to enhance performance!
+                    int glength = _g.length;
+                    Complex[][] cb = b;
+                    ScalarProductCache csp = sp;
+                    EnhancedProgressMonitor cm = m;
+                    String cmonMessage = monMessage;
+                    ModeInfo[] cn_eva = n_eva;
+
+                    for (int p = 0; p < glength; p++) {
+                        Vector psp = csp.getRow(p);
+                        for (int q = p; q < glength; q++) {
+                            Vector qsp = csp.getRow(q);
+                            c.setZero();
+                            for (ModeInfo n : cn_eva) {
                                 Complex zn = n.impedance;
 //                            Complex sp1 = sp.gf(p, n.index);
 //                            Complex sp2 = sp.fg(n.index, q);
                                 Complex sp1 = psp.get(n.index); //sp.gf(p, n.index);
-                                Complex sp2 = qsp.get(n.index).conj();//sp.fg(n.index, q);
+                                Complex sp2 = qsp.get(n.index);//both are real, no complex//.conj();//sp.fg(n.index, q);
                                 c.addProduct(zn, sp1, sp2);
                             }
-                            b[p][q] = c.toComplex();
-                            m.inc(monMessage);
+                            cb[p][q] = c.toComplex();
+                            cm.inc(cmonMessage);
                         }
                     }
-                    for (int p = 0; p < _g.length; p++) {
+                    for (int p = 0; p < glength; p++) {
                         for (int q = 0; q < p; q++) {
-                            b[p][q] = b[q][p];
-                            m.inc(monMessage);
+                            cb[p][q] = cb[q][p];
+                            cm.inc(cmonMessage);
                         }
                     }
                 }
@@ -68,7 +78,7 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                 public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                     for (int p = 0; p < _g.length; p++) {
                         Vector psp = sp.getRow(p);
-                        for (int q = 0; q < _g.length; q++) {
+                        for (int q = p; q < _g.length; q++) {
                             Vector qsp = sp.getRow(q);
                             MutableComplex c = MutableComplex.Zero();
                             for (ModeInfo n : n_eva) {
@@ -80,6 +90,12 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                                 c.addProduct(zn, sp1, sp2);
                             }
                             b[p][q] = c.toComplex();
+                            m.inc(monMessage);
+                        }
+                    }
+                    for (int p = 0; p < _g.length; p++) {
+                        for (int q = 0; q < p; q++) {
+                            b[p][q] = b[q][p].conj();
                             m.inc(monMessage);
                         }
                     }

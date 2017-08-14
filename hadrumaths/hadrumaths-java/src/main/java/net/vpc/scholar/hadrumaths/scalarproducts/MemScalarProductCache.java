@@ -47,9 +47,10 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
     }
 
     public Vector getRow(int row) {
-        Complex[] vmatrix = new Complex[cache[0].length];
-        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
-        return Maths.columnVector(vmatrix);
+//        Complex[] vmatrix = new Complex[cache[0].length];
+//        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
+//        return Maths.columnVector(vmatrix);
+        return Maths.columnVector(cache[row]);
     }
 
     public Complex[][] toArray() {

@@ -31,7 +31,7 @@ public final class ComplexR extends Complex {
     }
 
     public Complex real() {
-        return Complex.valueOf(real);
+        return this;
     }
 
     public double realdbl() {
@@ -81,7 +81,7 @@ public final class ComplexR extends Complex {
     }
 
     public Complex conj() {
-        return Complex.valueOf(real);
+        return this;
     }
 
     public Complex mul(double c) {
