@@ -1401,6 +1401,10 @@ public final class Maths {
                     z = ArrayUtils.getDb2(c);
                     break;
                 }
+                case ARG: {
+                    z = ArrayUtils.getArg(c);
+                    break;
+                }
                 case COMPLEX: {
                     z = ArrayUtils.absdbl(c);
                     break;
@@ -1432,6 +1436,10 @@ public final class Maths {
                 }
                 case DB2: {
                     z = ArrayUtils.getDb2(c);
+                    break;
+                }
+                case ARG: {
+                    z = ArrayUtils.getArg(c);
                     break;
                 }
                 case COMPLEX: {
@@ -5268,6 +5276,8 @@ public final class Maths {
                 return db(c.absdbl());
             case DB2:
                 return db2(c.absdbl());
+            case ARG:
+                return c.arg().getReal();
             case COMPLEX:
                 return c.absdbl();
         }

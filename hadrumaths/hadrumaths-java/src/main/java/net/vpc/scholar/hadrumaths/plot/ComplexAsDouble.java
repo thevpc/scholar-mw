@@ -8,5 +8,5 @@ package net.vpc.scholar.hadrumaths.plot;
  * To change this template use File | Settings | File Templates.
  */
 public enum ComplexAsDouble {
-    ABS,REAL,IMG,DB,DB2,COMPLEX
+    ABS,REAL,IMG,DB,DB2,ARG,COMPLEX
 }

@@ -190,6 +190,14 @@ public class Plot {
         return builder().asDB();
     }
 
+    public static PlotBuilder asDB2() {
+        return builder().asDB2();
+    }
+
+    public static PlotBuilder asArg() {
+        return builder().asArg();
+    }
+
     public static PlotBuilder plotType(PlotType plotType) {
         return builder().plotType(plotType);
     }
@@ -860,6 +868,7 @@ public class Plot {
         DoubleIMAGAction imagAction = new DoubleIMAGAction(modelProvider);
         DoubleDBAction dbAction = new DoubleDBAction(modelProvider);
         DoubleDB2Action db2Action = new DoubleDB2Action(modelProvider);
+        DoubleArgAction argAction = new DoubleArgAction(modelProvider);
         ComplexAction complexAction = new ComplexAction(modelProvider);
 
         JMenuItem selectY = new JMenuItem("Configure Series");
@@ -910,6 +919,11 @@ public class Plot {
 
         f = new JCheckBoxMenuItem(db2Action);
         f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.DB2);
+        g.add(f);
+        functionsMenu.add(f);
+
+        f = new JCheckBoxMenuItem(argAction);
+        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.ARG);
         g.add(f);
         functionsMenu.add(f);
 
@@ -1276,6 +1290,18 @@ public class Plot {
 
         public void actionPerformed(ActionEvent e) {
             getModel().setZDoubleFunction(ComplexAsDouble.DB2);
+        }
+    }
+
+    private static class DoubleArgAction extends ValuesModelAction implements Serializable {
+
+        public DoubleArgAction(PlotModelProvider modelProvider) {
+            super("Arg", modelProvider);
+        }
+
+
+        public void actionPerformed(ActionEvent e) {
+            getModel().setZDoubleFunction(ComplexAsDouble.ARG);
         }
     }
 

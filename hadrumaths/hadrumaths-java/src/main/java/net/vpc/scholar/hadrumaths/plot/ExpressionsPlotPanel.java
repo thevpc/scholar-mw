@@ -77,6 +77,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JRadioButton cadImagRadioButton = new JRadioButton("Imag");
     private JRadioButton cadDbRadioButton = new JRadioButton("DB");
     private JRadioButton cadDb2RadioButton = new JRadioButton("DB2");
+    private JRadioButton cadArgRadioButton = new JRadioButton("Arg");
     private JRadioButton cadComplexRadioButton = new JRadioButton("Complex");
     private JRadioButton cadAbsRadioButton = new JRadioButton("Abs");
     private JRadioButton fx1DRadioButton = new JRadioButton("Curve F(x,y=cst)");
@@ -654,17 +655,20 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                         + "[A4+<]\n"
                         + "[A5+<]\n"
                         + "[A6+<]\n"
+                        + "[A7+<]\n"
         ));
         cad.add(cadAbsRadioButton, "A1");
         cad.add(cadRealRadioButton, "A2");
         cad.add(cadImagRadioButton, "A3");
         cad.add(cadDbRadioButton, "A4");
         cad.add(cadDb2RadioButton, "A5");
-        cad.add(cadComplexRadioButton, "A6");
+        cad.add(cadArgRadioButton, "A6");
+        cad.add(cadComplexRadioButton, "A7");
         ButtonGroup cadGroup = new ButtonGroup();
         cadGroup.add(cadAbsRadioButton);
         cadGroup.add(cadDbRadioButton);
         cadGroup.add(cadDb2RadioButton);
+        cadGroup.add(cadArgRadioButton);
         cadGroup.add(cadImagRadioButton);
         cadGroup.add(cadRealRadioButton);
         cadGroup.add(cadComplexRadioButton);
@@ -1343,6 +1347,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         if (cadDb2RadioButton.isSelected()) {
             return ComplexAsDouble.DB2;
         }
+        if (cadArgRadioButton.isSelected()) {
+            return ComplexAsDouble.ARG;
+        }
         if (cadComplexRadioButton.isSelected()) {
             return ComplexAsDouble.COMPLEX;
         }
@@ -1361,6 +1368,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             }
             case DB2: {
                 cadDb2RadioButton.setSelected(true);
+                break;
+            }
+            case ARG: {
+                cadArgRadioButton.setSelected(true);
                 break;
             }
             case REAL: {

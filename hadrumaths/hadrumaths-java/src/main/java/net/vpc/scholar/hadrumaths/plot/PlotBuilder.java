@@ -441,6 +441,10 @@ public class PlotBuilder {
         return converter(ComplexAsDouble.DB2);
     }
 
+    public PlotBuilder asArg() {
+        return converter(ComplexAsDouble.ARG);
+    }
+
     public PlotBuilder asComplex() {
         return converter(ComplexAsDouble.COMPLEX);
     }
@@ -479,6 +483,12 @@ public class PlotBuilder {
     }
 
     private PlotComponent _plotAny(Object any) {
+        if(any instanceof PlotLines){
+            PlotLines y = (PlotLines) any;
+            titles(y.titles());
+            xsamples(y.xsamples());
+            any=y.getValues();
+        }
         PlotTypesHelper.TypeAndValue typeAndValue = PlotTypesHelper.resolveType(any);
         String s = typeAndValue.type;
         Object o = typeAndValue.value;

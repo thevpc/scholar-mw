@@ -592,7 +592,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex arg() {
-        return Complex.valueOf(Math.atan(getImag() / getReal()));
+        return Complex.valueOf(Math.atan2(getImag() , getReal()));
     }
 
     public Complex asin() {

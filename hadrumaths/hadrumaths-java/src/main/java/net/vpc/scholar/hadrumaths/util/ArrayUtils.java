@@ -436,6 +436,17 @@ public final class ArrayUtils {
         return ret;
     }
 
+    public static double[][] getArg(Complex[][] c) {
+        double[][] ret = new double[c.length][];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = new double[c[i].length];
+            for (int j = 0; j < ret[i].length; j++) {
+                ret[i][j] = (c[i][j]).arg().getReal();
+            }
+        }
+        return ret;
+    }
+
     public static double[] getDb(Complex[] c) {
         double[] ret = new double[c.length];
         for (int i = 0; i < ret.length; i++) {
@@ -448,6 +459,14 @@ public final class ArrayUtils {
         double[] ret = new double[c.length];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = Maths.db2(c[i].absdbl());
+        }
+        return ret;
+    }
+
+    public static double[] getArg(Complex[] c) {
+        double[] ret = new double[c.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = c[i].arg().getReal();
         }
         return ret;
     }
