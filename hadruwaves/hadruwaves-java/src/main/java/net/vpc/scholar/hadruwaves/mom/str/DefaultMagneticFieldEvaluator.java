@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.str.MagneticFieldEvaluator;
@@ -15,7 +15,7 @@ import static net.vpc.scholar.hadruwaves.Physics.omega;
 public class DefaultMagneticFieldEvaluator implements MagneticFieldEvaluator {
     public static final DefaultMagneticFieldEvaluator INSTANCE=new DefaultMagneticFieldEvaluator();
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ComputationMonitor monitor) {
+    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
         MomStructure str=(MomStructure)structure;
         VDiscrete E = str.electricField().monitor(monitor).computeVDiscrete(x, y, z);
         return E.rot().mul(I.div(omega(str.getFrequency())));

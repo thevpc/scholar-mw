@@ -48,6 +48,13 @@ public class MutableComplex {
         return t.toComplex();
     }
 
+    public static Complex toImmutable(MutableComplex t){
+        return t.toComplex();
+    }
+
+    public static Complex[] toImmutable(MutableComplex[] t){
+        return toComplex(t);
+    }
     public static Complex[] toComplex(MutableComplex[] t){
         Complex[] all=new Complex[t.length];
         int size1 = all.length;
@@ -56,6 +63,10 @@ public class MutableComplex {
             all[i]= c.toComplex();
         }
         return all;
+    }
+
+    public static Complex[][] toImmutable(MutableComplex[][] t){
+        return toComplex(t);
     }
 
     public static Complex[][] toComplex(MutableComplex[][] t){
@@ -67,6 +78,9 @@ public class MutableComplex {
         return all;
     }
 
+    public static Complex[][][] toImmutable(MutableComplex[][][] t){
+        return toComplex(t);
+    }
     public static Complex[][][] toComplex(MutableComplex[][][] t){
         Complex[][][] all=new Complex[t.length][][];
         int size1 = all.length;
@@ -340,6 +354,10 @@ public class MutableComplex {
         return Complex.valueOf(real, imag);
     }
 
+    public Complex toImmutable() {
+        return Complex.valueOf(real, imag);
+    }
+
     public void exp() {
         double e = Math.exp(real);
         double r = e * Maths.cos2(imag);
@@ -382,6 +400,17 @@ public class MutableComplex {
         this.imag=complex.imagdbl();
 //        return this;
     }
+
+    public void setZero() {
+        this.real = 0;
+        this.imag = 0;
+    }
+
+    public void setOne() {
+        this.real = 1;
+        this.imag = 0;
+    }
+
     public void set(double real,double imag){
         this.real=real;
         this.imag=imag;
@@ -507,4 +536,11 @@ public class MutableComplex {
         return Math.atan2(imag, real);
     }
 
+    public double getReal() {
+        return real;
+    }
+
+    public double getImag() {
+        return imag;
+    }
 }

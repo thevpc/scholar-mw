@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
@@ -83,7 +83,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //                + "; fy=" + m.fn.getComponent(Axis.Y) + " ";
 //    }
 
-//    public ModeInfo[] getIndexesImpl_old(ComputationMonitor par0) {
+//    public ModeInfo[] getIndexesImpl_old(ProgressMonitor par0) {
 //        int max = getFnMax();
 //        System.out.println("lookup for " + max + " fn modes for " + this);
 //        WallBorders bord = getBorders();
@@ -149,7 +149,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //            }
 //            default: {
 //                String message = toString() + ", enumerate modes";
-//                EnhancedComputationMonitor mon = ComputationMonitorFactory.createIncrementalMonitor(par0, max);
+//                EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(par0, max);
 //                List<ModeType> theSystemAllowed = new ArrayList<ModeType>(Arrays.asList(modesDesc.getAllowedModes()));
 //                ModeType[] hintFnModes = getHintFnModes();
 //                if ((hintFnModes != null && hintFnModes.length > 0)) {
@@ -158,7 +158,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //                ModeType[] goodModes = theSystemAllowed.toArray(new ModeType[theSystemAllowed.size()]);
 //                Maths.invokeMonitoredAction(mon, message, new VoidMonitoredAction() {
 //                    @Override
-//                    public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+//                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
 //                        int count = 0;
 //                        out:
 //                        for (int i = 0; ; i++) {
@@ -184,19 +184,19 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //    }
 
     @Override
-    public ModeInfo[] getIndexesImpl(ComputationMonitor par0) {
+    public ModeInfo[] getIndexesImpl(ProgressMonitor par0) {
         int max = getSize();
         //System.out.println("lookup for "+max+" fn modes for "+this);
         Chronometer chrono = new Chronometer();
         chrono.start();
         ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
         ModeIterator iterator = getModeIteratorFactory().iterator(this);
-        EnhancedComputationMonitor monitor = ComputationMonitorFactory.createIncrementalMonitor(par0, max);
+        EnhancedProgressMonitor monitor = ProgressMonitorFactory.createIncrementalMonitor(par0, max);
         String str = toString() + ", enumerate modes";
         String message = str + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(monitor, str, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 int index = 0;
                 int bruteMax = max * 100 + 1;
                 int bruteIndex = 0;

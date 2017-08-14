@@ -8,5 +8,5 @@ public enum CellIteratorType {
     FULL,
     DIAGONAL,
     SYMETRIC,
-    HERMITIAN,
+    HERMITIAN
 }

@@ -81,9 +81,9 @@ public class CLUDecomposition implements java.io.Serializable {
                 // Most of the time is spent in the following dot product.
 
                 int kmax = (i <= j) ? i : j;
-                Complex s = Complex.ZERO;
+                MutableComplex s = new MutableComplex();
                 for (int k = 0; k < kmax; k++) {
-                    s = s.add(LUrowi[k].mul(LUcolj[k]));
+                    s.add(LUrowi[k].mul(LUcolj[k]));
 //                    System.out.println("\t k=" + k + " s=" + s);
                 }
                 LUcolj[i] = LUcolj[i].sub(s);
@@ -194,8 +194,7 @@ public class CLUDecomposition implements java.io.Serializable {
      * @return U
      */
     public Matrix getU() {
-        Matrix X = Maths.matrix(n, n);
-        Complex[][] U = X.getArray();
+        Complex[][] U = new Complex[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i <= j) {
@@ -205,7 +204,7 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return X;
+        return Maths.matrix(U);
     }
 
     /**
@@ -269,8 +268,7 @@ public class CLUDecomposition implements java.io.Serializable {
 
         // Copy right hand side with pivoting
         int nx = B.getColumnCount();
-        Matrix Xmat = B.getMatrix(piv, 0, nx - 1);
-        Complex[][] X = Xmat.getArray();
+        Complex[][] X = B.getMatrix(piv, 0, nx - 1).getArrayCopy();
 
         // Solve L*Y = B(piv,:)
         for (int k = 0; k < n; k++) {
@@ -298,6 +296,6 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return Xmat;
+        return Maths.matrix(X);
     }
 }

@@ -5,17 +5,17 @@ import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 
 public class PlotElectricField3D extends PlotAxisCubes implements Cloneable {
     public PlotElectricField3D(YType... type) {
         super("ElectricField",type);
     }
 
-    protected VDiscrete computeValue(ConsoleAwareObject o, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected VDiscrete computeValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
         MomStructure structure=(MomStructure) o;
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         if(xAxis==null){

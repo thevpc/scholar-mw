@@ -26,7 +26,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private T[][] LU;
+    private TMatrix<T> LU;
     /**
      * Row and column dimensions, and pivot sign.
      *
@@ -55,10 +55,10 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      */
     public TCLUDecomposition(TMatrix<T> A) {
         space = A.getComponentVectorSpace();
-        matrixFactory=A.getFactory();
+        matrixFactory = A.getFactory();
         // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
 
-        LU = A.getArrayCopy();
+        LU = A.copy();
         m = A.getRowCount();
         n = A.getColumnCount();
         piv = new int[m];
@@ -66,9 +66,9 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
             piv[i] = i;
         }
         pivsign = 1;
-        T[] LUrowi;
+//        T[] LUrowi;
         componentType = A.getComponentType();
-        T[] LUcolj = ArrayUtils.newArray(componentType,m);
+        T[] LUcolj = ArrayUtils.newArray(componentType, m);
 
         // Outer loop.
 
@@ -77,25 +77,23 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
             // Make a copy of the j-th column to localize references.
 
             for (int i = 0; i < m; i++) {
-                LUcolj[i] = LU[i][j];
+                LUcolj[i] = LU.get(i,j);
             }
 
             // Apply previous transformations.
 
             for (int i = 0; i < m; i++) {
-                LUrowi = LU[i];
-
                 // Most of the time is spent in the following dot product.
 
                 int kmax = (i <= j) ? i : j;
                 T s = space.zero();
                 for (int k = 0; k < kmax; k++) {
-                    s = space.add(s,space.mul(LUrowi[k],LUcolj[k]));
+                    s = space.add(s, space.mul(LU.get(i,k), LUcolj[k]));
 //                    System.out.println("\t k=" + k + " s=" + s);
                 }
-                LUcolj[i] = space.sub(LUcolj[i],s);
+                LUcolj[i] = space.sub(LUcolj[i], s);
 //                System.out.println("LUcolj(" + i + ")=" + LUcolj[i] + " for s=" + s);
-                LUrowi[j] = LUcolj[i];
+                LU.set(i,j,LUcolj[i]);
             }
 
             // Find pivot and exchange if necessary.
@@ -108,9 +106,9 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
             }
             if (p != j) {
                 for (int k = 0; k < n; k++) {
-                    T t = LU[p][k];
-                    LU[p][k] = LU[j][k];
-                    LU[j][k] = t;
+                    T t = LU.get(p,k);
+                    LU.set(p,k, LU.get(j,k));
+                    LU.set(j,k, t);
                 }
                 int k = piv[p];
                 piv[p] = piv[j];
@@ -120,9 +118,9 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
 
             // Compute multipliers.
 
-            if (j < m && (!(space.isZero(LU[j][j])))) {
+            if (j < m && (!(space.isZero(LU.get(j,j))))) {
                 for (int i = j + 1; i < m; i++) {
-                    LU[i][j] = space.div(LU[i][j],LU[j][j]);
+                    LU.div(i,j, LU.get(j,j));
                 }
             }
         }
@@ -168,7 +166,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      */
     public boolean isNonsingular() {
         for (int j = 0; j < n; j++) {
-            if (LU[j][j].equals(space.zero())) {
+            if (LU.get(j,j).equals(space.zero())) {
                 return false;
             }
         }
@@ -185,7 +183,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (i > j) {
-                    X.set(i, j, LU[i][j]);
+                    X.set(i, j, LU.get(i,j));
                 } else if (i == j) {
                     X.set(i, j, space.one());
                 } else {
@@ -203,13 +201,12 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      */
     public TMatrix<T> getU() {
         TMatrix<T> X = matrixFactory.newMatrix(n, n);
-        T[][] U = X.getArray();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i <= j) {
-                    U[i][j] = LU[i][j];
+                    X.set(i, j, LU.get(i,j));
                 } else {
-                    U[i][j] = space.zero();
+                    X.set(i, j, space.zero());
                 }
             }
         }
@@ -254,7 +251,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
         }
         T d = space.convert(pivsign);
         for (int j = 0; j < n; j++) {
-            d = space.mul(d,LU[j][j]);
+            d = space.mul(d, LU.get(j,j));
         }
         return d;
     }
@@ -278,31 +275,22 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
         // Copy right hand side with pivoting
         int nx = B.getColumnCount();
         TMatrix<T> Xmat = B.getMatrix(piv, 0, nx - 1);
-        T[][] X = Xmat.getArray();
 
-        // Solve L*Y = B(piv,:)
         for (int k = 0; k < n; k++) {
-            T[] xk = X[k];
             for (int i = k + 1; i < n; i++) {
-                T[] xi = X[i];
-                T[] lui = LU[i];
                 for (int j = 0; j < nx; j++) {
-                    xi[j] = space.sub(xi[j],space.mul(xk[j],lui[k]));
+                    Xmat.set(i, j, space.sub(Xmat.get(i, j), space.mul(Xmat.get(k, j), LU.get(i,k))));
                 }
             }
         }
         // Solve U*X = Y;
         for (int k = n - 1; k >= 0; k--) {
-            T[] xk = X[k];
-            T[] luk = LU[k];
             for (int j = 0; j < nx; j++) {
-                xk[j] = space.div(xk[j],luk[k]);
+                Xmat.set(k, j, space.div(Xmat.get(k, j), LU.get(k,k)));
             }
             for (int i = 0; i < k; i++) {
-                T[] xi = X[i];
-                T[] lui = LU[i];
                 for (int j = 0; j < nx; j++) {
-                    xi[j] = space.sub(xi[j],space.mul(xk[j],lui[k]));
+                    Xmat.set(i, j, space.sub(Xmat.get(i, j), space.mul(Xmat.get(k, j), LU.get(i,k))));
                 }
             }
         }

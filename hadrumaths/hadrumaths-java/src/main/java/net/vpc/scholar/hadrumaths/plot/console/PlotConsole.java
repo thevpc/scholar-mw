@@ -23,7 +23,7 @@ import java.util.Map;
 public class PlotConsole implements PlotComponentDisplayer {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
-    private long startTime = 0;
+    private long startTime=0;
     //    private JFrame currentFrame;
     public static int debugFramesCount = 0;
     public static String PLOT_CONSOLE_FILE_EXTENSION = "plotconsole";
@@ -68,7 +68,7 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     private ProgressMonitorThread progressMonitorThread;
     private boolean cacheByIteration = false;
-    private String cachePrefix = null;
+    private HFile cachePrefix = null;
     private PlotConsoleWindowManager windowManager = null;
 
     public PlotConsole() {
@@ -116,7 +116,6 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     public void dispose() {
 
-        startTime = 0;
         disposing = true;
         if (taskMonitor != null) {
             taskMonitor.killAll();
@@ -352,11 +351,11 @@ public class PlotConsole implements PlotComponentDisplayer {
                                         if (cachePrefix != null) {
                                             if (cacheByIteration) {
                                                 if (directClone instanceof CacheAware) {
-                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new File(cachePrefix + "/Direct/" + serieTitle.toString()));
+                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct/" + serieTitle.toString()));
                                                 }
                                             } else {
                                                 if (directClone instanceof CacheAware) {
-                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new File(cachePrefix + "/Direct"));
+                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix ,"/Direct"));
                                                 }
                                             }
                                         }
@@ -366,11 +365,11 @@ public class PlotConsole implements PlotComponentDisplayer {
                                         if (cachePrefix != null) {
                                             if (cacheByIteration) {
                                                 if (modelClone instanceof CacheAware) {
-                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new File(cachePrefix + "/Direct/" + serieTitle.toString()));
+                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct/" + serieTitle.toString()));
                                                 }
                                             } else {
                                                 if (modelClone instanceof CacheAware) {
-                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new File(cachePrefix + "/Direct"));
+                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct"));
                                                 }
                                             }
                                         }
@@ -740,15 +739,15 @@ public class PlotConsole implements PlotComponentDisplayer {
         return this;
     }
 
-    public String getCachePrefix() {
+    public HFile getCachePrefix() {
         return cachePrefix;
     }
 
-    public void setCachePrefix(String cachePrefix) {
+    public void setCachePrefix(HFile cachePrefix) {
         this.cachePrefix = cachePrefix;
     }
 
-    public PlotConsole updateCachePrefix(String cachePrefix) {
+    public PlotConsole updateCachePrefix(HFile cachePrefix) {
         setCachePrefix(cachePrefix);
         return this;
     }

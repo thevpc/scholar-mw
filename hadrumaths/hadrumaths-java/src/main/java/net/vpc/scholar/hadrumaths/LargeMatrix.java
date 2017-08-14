@@ -6,6 +6,8 @@ import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializerProvider;
  * Created by vpc on 2/5/15.
  */
 public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectSerializerProvider {
+    private String largeFactoryId;
+    private transient LargeMatrixFactory largeFactory;
     private long largeMatrixId;
     private int rows;
     private int columns;
@@ -28,10 +30,24 @@ public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectS
 //    }
 
     public LargeMatrix(long id, int rows, int columns, LargeMatrixFactory factory) {
-        setFactory(factory);
+        setLargeFactory(factory);
         this.largeMatrixId = id;
         this.rows = rows;
         this.columns = columns;
+    }
+
+    public LargeMatrixFactory getLargeFactory() {
+        if(largeFactory==null){
+            return largeFactory=(LargeMatrixFactory) Maths.Config.getTMatrixFactory(largeFactoryId);
+        }
+        return largeFactory;
+    }
+
+
+    public void setLargeFactory(LargeMatrixFactory largeFactory) {
+        this.largeFactory = largeFactory;
+        this.largeFactoryId = largeFactory.getId();
+        setFactory(largeFactory);
     }
 
 
@@ -51,50 +67,35 @@ public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectS
 
     @Override
     public Complex get(int row, int col) {
-        return getFactory().get(largeMatrixId, row, col);
+        return getLargeFactory().get(largeMatrixId, row, col);
     }
 
     @Override
     public Vector getColumn(int column) {
-        return new ArrayVector(getFactory().getColumn(largeMatrixId, column, 0, getRowCount()), false);
+        return new ArrayVector(getLargeFactory().getColumn(largeMatrixId, column, 0, getRowCount()), false);
     }
 
     @Override
     public Vector getRow(int row) {
-        return new ArrayVector(getFactory().getRow(largeMatrixId, row, 0, getColumnCount()), true);
+        return new ArrayVector(getLargeFactory().getRow(largeMatrixId, row, 0, getColumnCount()), true);
     }
 
     @Override
     public void set(int row, int col, Complex val) {
-        getFactory().set(largeMatrixId, val, row, col);
+        getLargeFactory().set(largeMatrixId, val, row, col);
     }
 
     @Override
     public void resize(int rows, int columns) {
-        getFactory().resizeMatrix(largeMatrixId, rows, columns);
+        getLargeFactory().resizeMatrix(largeMatrixId, rows, columns);
         this.rows=rows;
         this.columns=columns;
     }
 
     @Override
-    public LargeMatrixFactory getFactory() {
-        return (LargeMatrixFactory) super.getFactory();
-    }
-
-    @Override
-    public void setFactory(TMatrixFactory<Complex> factory) {
-        super.setFactory((LargeMatrixFactory) factory);
-    }
-
-    @Override
     public void dispose() {
-        getFactory().disposeMatrix(largeMatrixId);
+        getLargeFactory().disposeMatrix(largeMatrixId);
     }
-
-    protected MatrixFactory getDefaultFactory() {
-        return Maths.Config.getLargeMatrixFactory();
-    }
-
 
     public String toString() {
         return "LargeMatrix[#" + largeMatrixId + "]{" + getRowCount() + "x" + getColumnCount() + "}@" + getFactory();

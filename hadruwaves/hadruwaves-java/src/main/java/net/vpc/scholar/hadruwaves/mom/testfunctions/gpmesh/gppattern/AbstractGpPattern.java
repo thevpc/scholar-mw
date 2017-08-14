@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public abstract class AbstractGpPattern implements GpPattern {
         return getDumper().toString();
     }
 
-    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ComputationMonitor monitor, MomStructure str) {
+    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str) {
         DoubleToVector[] all=new DoubleToVector[getCount()];
         for (int i = 0; i < all.length; i++) {
             all[i]=createFunction(i, globalDomain, zone, str);

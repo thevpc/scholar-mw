@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.util;
 
+import net.vpc.scholar.hadrumaths.RuntimeIOException;
+
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
@@ -18,6 +20,7 @@ public final class IOUtils {
      * taille par defaut du buffer de transfert
      */
     public static final int DEFAULT_BUFFER_SIZE = 1024;
+    public static final String WRITE_TEMP_EXT = ".temp";
 
     /**
      * copy le flux d'entree dans le lux de sortie
@@ -338,6 +341,31 @@ public final class IOUtils {
         }
     }
 
+    public static boolean existsOrWaitIfStillWritingInto(File file) {
+        return existsOrWaitIfStillWritingInto(file, 180);
+    }
+
+    public static boolean existsOrWaitIfStillWritingInto(File file, int secondsToWait) {
+        if (file.exists()) {
+            return true;
+        }
+        File file1 = new File(file.getPath() + WRITE_TEMP_EXT);
+        if (file1.exists()) {
+            for (int i = 0; i < secondsToWait * 2; i++) {
+                if (!file1.exists()) {
+                    return file.exists();
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            throw new RuntimeIOException("File does not exist but an associated temp file failed to finish writing to " + file);
+        }
+        return false;
+    }
+
     public static boolean deleteFolderTree(File folder, FileFilter fileFilter) {
         if (!folder.exists()) {
             return true;
@@ -395,25 +423,54 @@ public final class IOUtils {
 
 
     public static void saveZippedObject(String physicalName, Object object) throws IOException {
-        saveZippedObject(physicalName,object,null,null);
+        saveZippedObject(physicalName, object, null, null);
     }
 
-    public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws IOException {
-        if(monitor==null){
+    public static void saveZippedObject(HFile physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws IOException {
+        if (monitor == null) {
             ObjectOutputStream oos = null;
             try {
-                oos = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(physicalName)));
+                oos = new ObjectOutputStream(new GZIPOutputStream(physicalName.getOutputStream()));
                 oos.writeObject(object);
                 oos.close();
             } finally {
                 if (oos != null) oos.close();
             }
-        }else {
+        } else {
             ObjectOutputStream oos = null;
             try {
-                oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(new FileOutputStream(physicalName),monitor,messagePrefix)));
+                oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(physicalName.getOutputStream(), monitor, messagePrefix)));
                 oos.writeObject(object);
                 oos.close();
+            } finally {
+                if (oos != null) oos.close();
+            }
+        }
+    }
+
+    public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws IOException {
+        String physicalNameTemp = physicalName + WRITE_TEMP_EXT;
+        if (monitor == null) {
+            ObjectOutputStream oos = null;
+            try {
+                oos = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(physicalNameTemp)));
+                oos.writeObject(object);
+                oos.close();
+                if (!new File(physicalNameTemp).renameTo(new File(physicalName))) {
+                    throw new IOException("Unable to rename " + physicalNameTemp);
+                }
+            } finally {
+                if (oos != null) oos.close();
+            }
+        } else {
+            ObjectOutputStream oos = null;
+            try {
+                oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(new FileOutputStream(physicalNameTemp), monitor, messagePrefix)));
+                oos.writeObject(object);
+                oos.close();
+                if (!new File(physicalNameTemp).renameTo(new File(physicalName))) {
+                    throw new IOException("Unable to rename " + physicalNameTemp);
+                }
             } finally {
                 if (oos != null) oos.close();
             }
@@ -492,20 +549,28 @@ public final class IOUtils {
 
     /**
      * path expansion replaces ~ with ${user.home} property value
+     *
      * @param path to expand
      * @return expanded path
      */
-    public static String expandPath(String path){
-        if(path==null){
+    public static String expandPath(String path) {
+        if (path == null) {
             return path;
         }
-        if(path.equals("~")){
+        if (path.equals("~")) {
             return System.getProperty("user.home");
         }
-        if(path.startsWith("~") && path.length()>1 && (path.charAt(1)=='/' || path.charAt(1)=='/')){
-            return System.getProperty("user.home")+path.substring(1);
+        if (path.startsWith("~") && path.length() > 1 && (path.charAt(1) == '/' || path.charAt(1) == '/')) {
+            return System.getProperty("user.home") + path.substring(1);
         }
         return path;
     }
 
+    public static HFile createHFile(String absolutePath) {
+        return new FolderFileSystem(new File(absolutePath)).get("/");
+    }
+
+    public static HFile createHFile(File absolutePath) {
+        return new FolderFileSystem(absolutePath).get("/");
+    }
 }

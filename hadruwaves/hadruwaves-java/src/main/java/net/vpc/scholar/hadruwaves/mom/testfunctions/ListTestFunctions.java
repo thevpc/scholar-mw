@@ -13,8 +13,8 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
@@ -86,10 +86,10 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         return found;
     }
 
-    public DoubleToVector[] toArray(ComputationMonitor monitor){
+    public DoubleToVector[] toArray(ProgressMonitor monitor){
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
-            public DoubleToVector[] process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public DoubleToVector[] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 List<DoubleToVector> found=new ArrayList<DoubleToVector>();
                 for (int i = 0; i < list.size(); i++) {
                     Object expr = list.get(i);
@@ -137,7 +137,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
     }
 
     @Override
-    protected DoubleToVector[] gpImpl(ComputationMonitor monitor) {
+    protected DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         List<DoubleToVector> all = (List) toList().toJList();
         return all.toArray(new DoubleToVector[all.size()]);
     }
@@ -192,7 +192,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         }
     }
 
-    protected DoubleToVector[] rebuildCachedFunctions(ComputationMonitor monitor) {
+    protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
         for (TestFunctions testFunctions : getSubTestFunctions()) {
             testFunctions.setStructure(getStructure());
             testFunctions.setAxisType(getAxisType());

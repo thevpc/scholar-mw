@@ -5,8 +5,8 @@ import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -22,12 +22,12 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
     public static final CurrentParallelEvaluator INSTANCE = new CurrentParallelEvaluator();
 
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ComputationMonitor monitor) {
-//        EnhancedComputationMonitor emonitor=ComputationMonitorFactory.enhance(monitor);
+    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
+//        EnhancedProgressMonitor emonitor=ProgressMonitorFactory.enhance(monitor);
         MomStructure str=(MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
@@ -46,10 +46,10 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 if (str.getHintsManager().isHintRegularZnOperator()) {
                     evan = indexes;
                 }
-                MutableComplex[][][] fx = MutableComplex.createArray(Complex.ZERO, 1,y.length,x.length);
-                MutableComplex[][][] fy = MutableComplex.createArray(Complex.ZERO, 1,y.length,x.length);
-                MutableComplex[][][] fz = MutableComplex.createArray(Complex.ZERO, 1,y.length,x.length);
-                ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
+                MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
+                MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
+                MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
+                ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
                 MutableComplex tempx;
                 MutableComplex tempy;
                 Complex zmnGammaZ;
@@ -68,7 +68,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                     int indexIndex = mode.index;
                     xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
                     yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
-                    ComputationMonitorFactory.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
+                    ProgressMonitorFactory.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
 //            monitor.setProgress((1.0 * i / (indexes.length)));
 //            System.out.println("progress = " + monitor.getProgressValue());
                     zmnGammaZ = /*Complex.ONE.*/mode.impedance;

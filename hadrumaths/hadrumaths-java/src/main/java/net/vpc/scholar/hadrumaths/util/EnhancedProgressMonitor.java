@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.util;
 
+import net.vpc.scholar.hadrumaths.Chronometer;
+
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
@@ -80,7 +82,8 @@ public interface EnhancedProgressMonitor extends ProgressMonitor {
 
     boolean isCancelled();
 
-    long getStartTime();
+
+    Chronometer getChronometer();
 
     void setProgress(double progress, String message);
 

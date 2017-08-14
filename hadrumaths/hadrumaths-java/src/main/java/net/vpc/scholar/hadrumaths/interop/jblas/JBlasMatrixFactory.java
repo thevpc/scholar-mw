@@ -11,7 +11,14 @@ public class JBlasMatrixFactory extends AbstractMatrixFactory {
     }
 
     @Override
+    public String getId() {
+        return "jblas";
+    }
+
+    @Override
     public Matrix newMatrix(int rows, int columns) {
-        return new JBlasMatrix(rows,columns);
+        JBlasMatrix jBlasMatrix = new JBlasMatrix(rows, columns);
+        jBlasMatrix.setFactory(this);
+        return jBlasMatrix;
     }
 }

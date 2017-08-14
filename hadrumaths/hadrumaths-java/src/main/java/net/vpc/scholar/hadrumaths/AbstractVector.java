@@ -56,11 +56,11 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     public Complex scalarProduct(boolean hermitian, TVector<Complex> other) {
         int max = Math.max(size(), other.size());
-        Complex d = Complex.ZERO;
+        MutableComplex d = new MutableComplex();
         for (int i = 0; i < max; i++) {
-            d = d.add(get(i).mul(other.get(i)));
+            d.add(get(i).mul(other.get(i)));
         }
-        return d;
+        return d.toComplex();
     }
 
     public Complex scalarProductAll(boolean hermitian, TVector<Complex>... other) {
@@ -77,15 +77,15 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
                 throw new IllegalArgumentException("Unexpected Type "+getComponentType()+"<>"+v.getComponentType());
             }
         }
-        Complex d = Complex.ZERO;
+        MutableComplex d = new MutableComplex();
         for (int i = 0; i < currSize; i++) {
-            Complex el = get(i);
+            MutableComplex el = new MutableComplex(get(i));
             for (TVector<Complex> v : other) {
-                el = el.mul(v.get(i));
+                el.mul(v.get(i));
             }
-            d = d.add(el);
+            d.add(el);
         }
-        return d;
+        return d.toComplex();
     }
 
     @Override
@@ -215,11 +215,11 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         if (size == 0) {
             return Complex.ZERO;
         }
-        Complex c = get(0);
+        MutableComplex c = new MutableComplex(get(0));
         for (int i = 1; i < size; i++) {
-            c = c.add(get(i));
+            c.add(get(i));
         }
-        return c;
+        return c.toComplex();
     }
 
     @Override
@@ -228,11 +228,11 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         if (size == 0) {
             return Complex.ONE;
         }
-        Complex c = get(0);
+        MutableComplex c = new MutableComplex(get(0));
         for (int i = 1; i < size; i++) {
-            c = c.mul(get(i));
+            c.mul(get(i));
         }
-        return c;
+        return c.toComplex();
     }
 
     @Override

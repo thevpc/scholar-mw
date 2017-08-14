@@ -5,14 +5,14 @@ import java.io.File;
 /**
  * Created by vpc on 11/13/16.
  */
-public class FileSystemLockException extends RuntimeException {
-    private File file;
-    public FileSystemLockException(String message,File file) {
+public class AppLockException extends RuntimeException {
+    private AppLock file;
+    public AppLockException(String message, AppLock file) {
         super(message);
         this.file=file;
     }
 
-    public File getFile() {
+    public AppLock getAppLock() {
         return file;
     }
 }

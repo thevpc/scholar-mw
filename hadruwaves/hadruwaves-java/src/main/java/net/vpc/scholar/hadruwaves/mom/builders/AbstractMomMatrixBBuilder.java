@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.builders.AbstractValueBuilder;
 
 /**
@@ -10,7 +10,7 @@ import net.vpc.scholar.hadruwaves.builders.AbstractValueBuilder;
 public abstract class AbstractMomMatrixBBuilder extends AbstractValueBuilder implements MomMatrixBBuilder{
 
     @Override
-    public MomMatrixBBuilder monitor(ComputationMonitor monitor) {
+    public MomMatrixBBuilder monitor(ProgressMonitor monitor) {
         return (MomMatrixBBuilder) super.monitor(monitor);
     }
 

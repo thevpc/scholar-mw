@@ -2,13 +2,13 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -16,9 +16,9 @@ import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
  */
 public class ZinSerialEvaluator implements ZinEvaluator {
     public static final ZinSerialEvaluator INSTANCE=new ZinSerialEvaluator();
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         //Z= inv(Bt.inv(A).B)
-        ComputationMonitor[] mons = ComputationMonitorFactory.split(monitor, new double[]{1, 4});
+        ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, new double[]{1, 4});
         Matrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
         Matrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
         Matrix ZinPaire=null;

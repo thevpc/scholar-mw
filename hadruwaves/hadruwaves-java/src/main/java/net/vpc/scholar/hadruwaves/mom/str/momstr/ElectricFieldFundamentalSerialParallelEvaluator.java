@@ -5,8 +5,9 @@ import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
 import static net.vpc.scholar.hadrumaths.Maths.exp;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -20,8 +21,8 @@ import net.vpc.scholar.hadruwaves.str.ElectricFieldFundamentalEvaluator;
 public class ElectricFieldFundamentalSerialParallelEvaluator implements ElectricFieldFundamentalEvaluator {
     public static final ElectricFieldFundamentalSerialParallelEvaluator INSTANCE=new ElectricFieldFundamentalSerialParallelEvaluator();
     @Override
-    public VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ComputationMonitor cmonitor) {
-        EnhancedComputationMonitor monitor = ComputationMonitorFactory.enhance(cmonitor);
+    public VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
+        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
 
         ModeInfo[] indexes = str.getModes(monitor);
         ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
@@ -37,10 +38,10 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
         ModeInfo[] finalEvan = evan;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
-                MutableComplex[][][] fx = MutableComplex.createArray(Complex.ZERO,z.length,y.length,x.length);
-                MutableComplex[][][] fy = MutableComplex.createArray(Complex.ZERO,z.length,y.length,x.length);
-                MutableComplex[][][] fz = MutableComplex.createArray(Complex.ZERO,z.length,y.length,x.length);
+            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);
+                MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);
+                MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);
                 double Z;
                 Complex[][] xvals;
                 Complex[][] yvals;

@@ -4,7 +4,7 @@
 //
 //import net.vpc.scholar.math.DMatrix;
 //import net.vpc.scholar.math.Matrix;
-//import net.vpc.scholar.math.util.ComputationMonitor;
+//import net.vpc.scholar.math.util.ProgressMonitor;
 //import net.vpc.scholar.tmwlib.console.yaxis.PlotAxisSeriesComplex;
 //import net.vpc.scholar.tmwlib.mom.MomStructure;
 //import net.vpc.scholar.math.plot.console.yaxis.YType;
@@ -37,7 +37,7 @@
 //     * getGpTestFunctions().gpCache().length if returnActualGpCount is true, if
 //     * not it returns GpTestMax
 //     */
-//    public int computeTestConvergenceForZs(MomStructure str,int start, double relativeError, boolean returnActualGpCount, ComputationMonitor monitor) {
+//    public int computeTestConvergenceForZs(MomStructure str,int start, double relativeError, boolean returnActualGpCount, ProgressMonitor monitor) {
 //        int i = start;
 //        int x = str.getTestFunctionsCount();
 //        str.setTestFunctionsCount(i);

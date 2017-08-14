@@ -10,7 +10,7 @@ import java.awt.event.WindowListener;
 import java.util.Set;
 import javax.swing.*;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
@@ -38,12 +38,12 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         Set<ExternalLibrary> preferredLibraries=null;
         MomStructure str=(MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
-        ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
-        PlotComponent aplot = Plot.nodisplay().asSurface().title("Matrix A")
+        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        PlotComponent aplot = Plot.nodisplay().asHeatMap().title("Matrix A")
                 .plot(str.matrixA().computeMatrix());
-        PlotComponent bplot = Plot.nodisplay().asSurface().title("Matrix B")
+        PlotComponent bplot = Plot.nodisplay().asHeatMap().title("Matrix B")
                 .plot(str.matrixB().computeMatrix());
-        PlotComponent gfplot = Plot.nodisplay().asSurface().title("<f,g>").plot(sp.toMatrix());
+        PlotComponent gfplot = Plot.nodisplay().asHeatMap().title("<f,g>").plot(sp.toMatrix());
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
@@ -97,7 +97,7 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
             p.addTab("str", new PolygonPlot(gam.getPolygons(str.getCircuitType()), gam.getMeshAlgo(),gam.getPattern(),str.getDomain()));
         }
         if (m != null) {
-            p.addTab("Matrice", Plot.nodisplay().title("Matrix").plot(m.getArray()).toComponent());
+            p.addTab("Matrix", Plot.nodisplay().title("Matrix").plot(m.getArray()).toComponent());
         }
         f.getContentPane().add(p);
         f.pack();

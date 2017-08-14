@@ -45,4 +45,10 @@ public class ProgressMonitorOutputStream extends OutputStream {
         written+=len;
         monitor.setProgress(-1,message, Maths.formatMemory(written));
     }
+
+    @Override
+    public void close() throws IOException {
+        super.close();
+        target.close();
+    }
 }

@@ -76,7 +76,7 @@ import java.io.InterruptedIOException;
  */
 public class ProgressMonitorInputStream2 extends FilterInputStream
 {
-    private ProgressMonitor monitor;
+    private javax.swing.ProgressMonitor monitor;
     private long             nread = 0;
     private long             size = 0;
 
@@ -95,7 +95,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
                                        InputStream in, long size) {
         super(in);
         this.size=size;
-        monitor = new ProgressMonitor(parentComponent, message, null, 0, 100);
+        monitor = new javax.swing.ProgressMonitor(parentComponent, message, null, 0, 100);
     }
 
 
@@ -105,7 +105,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      * descriptive text partway through reading the file.
      * @return the ProgressMonitor object used by this object
      */
-    public ProgressMonitor getProgressMonitor() {
+    public javax.swing.ProgressMonitor getProgressMonitor() {
         return monitor;
     }
 

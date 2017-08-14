@@ -6,13 +6,13 @@ import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface ElectricFieldBuilder extends ValueBuilder {
-    public ElectricFieldBuilder monitor(ComputationMonitor monitor);
+    public ElectricFieldBuilder monitor(ProgressMonitor monitor);
 
     public ElectricFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator);
 

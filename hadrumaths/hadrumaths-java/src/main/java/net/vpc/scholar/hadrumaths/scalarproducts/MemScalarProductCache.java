@@ -9,10 +9,13 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class MemScalarProductCache extends AbstractScalarProductCache implements Serializable {
-    private Complex[/** p index **/][/** n index **/] cache;
+    private Complex[/** p index **/][/** n index **/] cache=new Complex[0][0];
     private boolean doSimplifyAll;
     private boolean hermitian;
 
@@ -304,5 +307,39 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
 //        }
 //        return c;
 //    }
+
+//    private void writeObject(ObjectOutputStream oos)
+//            throws IOException {
+//        // default serialization
+//        oos.defaultWriteObject();
+//        int rowCount = cache.length;
+//        oos.writeBoolean(hermitian);
+//        oos.writeBoolean(doSimplifyAll);
+//        oos.writeInt(rowCount);
+//        int columnCount = cache.length ==0?0:cache[0].length;
+//        oos.writeInt(columnCount);
+//        for (int i = 0; i < rowCount; i++) {
+//            for (int j = 0; j < columnCount; j++) {
+//                Complex.writeObjectHelper(cache[i][j],oos);
+//            }
+//        }
+//    }
+//
+//    private void readObject(ObjectInputStream ois)
+//            throws ClassNotFoundException, IOException {
+//        // default deserialization
+//        ois.defaultReadObject();
+//        hermitian=ois.readBoolean();
+//        doSimplifyAll=ois.readBoolean();
+//        int rowCount = ois.readInt(); // Replace with real deserialization
+//        int columnCount = ois.readInt(); // Replace with real deserialization
+//        cache=new Complex[rowCount][columnCount];
+//        for (int i = 0; i < rowCount; i++) {
+//            for (int j = 0; j < columnCount; j++) {
+//                cache[i][j]=Complex.readObjectResolveHelper(ois);
+//            }
+//        }
+//    }
+
 
 }

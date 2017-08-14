@@ -3,7 +3,8 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 import java.io.File;
 
@@ -15,13 +16,13 @@ abstract class StrSubCacheSupport<T> extends CacheSupport<T> {
     private MomStructure momStructure;
     private HashValue subdump;
 
-    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, String subdump,ComputationMonitor monitor) {
+    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, String subdump,ProgressMonitor monitor) {
         this(momStructure,cacheItemName, new HashValue(subdump), monitor);
     }
 
-    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, HashValue subdump,ComputationMonitor monitor) {
+    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, HashValue subdump,ProgressMonitor monitor) {
         super(new PersistenceCache(
-                new File(momStructure.persistentCache.getDumpFolder(momStructure.dump(), true), cacheItemName),
+                IOUtils.createHFile(momStructure.persistentCache.getDumpFolder(momStructure.dump(), true)+"/"+cacheItemName),
                 cacheItemName + ".dump",
                 momStructure.persistentCache
         ), cacheItemName, monitor);

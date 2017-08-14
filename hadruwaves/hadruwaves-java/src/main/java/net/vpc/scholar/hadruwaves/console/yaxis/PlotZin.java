@@ -3,6 +3,7 @@ package net.vpc.scholar.hadruwaves.console.yaxis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MutableComplex;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -25,7 +26,7 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
     protected Complex computeComplexSingleGpSingleModeSerial(MomStructure structure, ParamSet x) {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
-        Complex z0 = Complex.ZERO;
+        Complex z0 = Maths.CZERO;
         ModeFunctions fn = structure.getModeFunctions();
         DoubleToVector g = structure.getTestFunctions().arr()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes(null,structure.getCurrentCache(true)) : fn.getVanishingModes();
@@ -49,7 +50,7 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
     protected Complex computeComplexSingleGpSingleModeParallel(MomStructure structure, ParamSet x) {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
-        Complex z0 = Complex.ZERO;
+        MutableComplex z0 = new MutableComplex();
         ModeFunctions fn = structure.getModeFunctions();
         DoubleToVector g = structure.getTestFunctions().arr()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes(null,structure.getCurrentCache(true)) : fn.getVanishingModes();
@@ -58,13 +59,13 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
         System.out.println("freq=" + structure.getFrequency());
         for (ModeInfo fi : evan) {
             System.out.println(fi.mode.mtype + "[m" + fi.mode.m + ",n" + fi.mode.n + "] ; " + "GAMMAmn = " + fi.firstBoxSpaceGamma + "/" + fi.secondBoxSpaceGamma + "  : Zmn = " + fi.impedance + "  : Ymn = " + fi.impedance.inv());
-            z0 = z0.add(Maths.scalarProduct(true, g, fi.fn).sqr().mul(fi.impedance.inv()));
+            z0.add(Maths.scalarProduct(true, g, fi.fn).sqr().mul(fi.impedance.inv()));
         }
         Complex gf02 = Maths.scalarProduct(true, g, f0.fn).sqr();
-        z0 = gf02.div(z0);
+        Complex z1 = gf02.div(z0.toComplex());
         System.out.println("z=" + z0);
         System.out.println("------------------------------------------------------------------------");
-        return z0;
+        return z1;
 //        System.out.println("PlotZin["+x.getValue()+"] : ");
 //        System.out.println("\t\t: z = " + z);
         //return z;

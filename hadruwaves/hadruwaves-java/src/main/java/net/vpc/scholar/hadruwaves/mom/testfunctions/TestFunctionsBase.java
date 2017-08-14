@@ -3,8 +3,8 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
@@ -92,7 +92,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
     }
 
     @Override
-    public DoubleToVector[] arr(ComputationMonitor monitor, ObjectCache objectCache) {
+    public DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache) {
         if (cachedFunctions == null) {
             if (objectCache != null) {
                 try {
@@ -137,13 +137,13 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
         return cachedDomain;
     }
 
-    protected abstract DoubleToVector[] gpImpl(ComputationMonitor monitor);
+    protected abstract DoubleToVector[] gpImpl(ProgressMonitor monitor);
 
-    protected DoubleToVector[] rebuildCachedFunctions(ComputationMonitor monitor) {
+    protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
 //        if(structure==null){
 //            throw new IllegalArgumentException("Unable to evaluate Test Functions since 'structure' is null");
 //        }
-        EnhancedComputationMonitor emon = ComputationMonitorFactory.enhance(monitor);
+        EnhancedProgressMonitor emon = ProgressMonitorFactory.enhance(monitor);
         DoubleToVector[] gpImpl = gpImpl(emon);
         DoubleToVector[] validGpImpl = null;
         HintAxisType fnAxis = getAxisType();

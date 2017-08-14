@@ -19,6 +19,10 @@ public interface TMatrix<T> extends Normalizable {
      */
     double norm1();
 
+    /**
+     * Frobenius norm
+     * @return
+     */
     double norm2();
 
     /**
@@ -334,6 +338,8 @@ public interface TMatrix<T> extends Normalizable {
 
     void resize(int rows, int columns);
 
+    String getFactoryId();
+
     TMatrixFactory<T> getFactory();
 
     void setFactory(TMatrixFactory<T> factory);
@@ -436,4 +442,5 @@ public interface TMatrix<T> extends Normalizable {
     TypeReference<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
+    TMatrix<T> copy();
 }

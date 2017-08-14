@@ -2,6 +2,9 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -205,7 +208,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public Expr setProperties(Map<String, Object> map) {
-        if(map!=null && !map.isEmpty()){
+        if (map != null && !map.isEmpty()) {
             Any any = new Any(this);
             return any.setProperties(map);
         }
@@ -222,13 +225,14 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public Object getProperty(String name) {
         return null;
     }
+
     @Override
     public Expr setTitle(String name) {
-        if(name!=null) {
+        if (name != null) {
             Any a = new Any(this);
             a.setTitle(name);
             return a;
-        }else{
+        } else {
             return this;
         }
     }
@@ -238,9 +242,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return false;
     }
 
-    public abstract double getImag() ;
+    public abstract double getImag();
 
-    public abstract double getReal() ;
+    public abstract double getReal();
 
     public Complex imag() {
         return Complex.valueOf(getImag());
@@ -258,7 +262,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return getImag();
     }
 
-    public Complex add(double  c) {
+    public Complex add(double c) {
         return Complex.valueOf(getReal() + c, getImag());
     }
 
@@ -338,7 +342,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex mulAll(Complex... c) {
-        MutableComplex mc=new MutableComplex(this);
+        MutableComplex mc = new MutableComplex(this);
         for (Complex a : c) {
             mc.mul(a);
         }
@@ -346,13 +350,16 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex divAll(Complex... c) {
-        MutableComplex mc=new MutableComplex(this);
+        MutableComplex mc = new MutableComplex(this);
         for (Complex a : c) {
             mc.div(a);
         }
         return mc.toComplex();
     }
 
+    public Complex mul(MutableComplex c) {
+        return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
+    }
     public Complex mul(Complex c) {
         return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
     }
@@ -369,6 +376,14 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return new CArray(c).mul(this);
     }
 
+    public Complex sub(MutableComplex c) {
+        return Complex.valueOf(getReal() - c.getReal(), getImag() - c.getImag());
+    }
+
+    public Complex add(MutableComplex c) {
+        return Complex.valueOf(getReal() + c.getReal(), getImag() + c.getImag());
+    }
+
     public Complex sub(Complex c) {
         return Complex.valueOf(getReal() - c.getReal(), getImag() - c.getImag());
     }
@@ -382,6 +397,20 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex div(Complex other) {
+        double a = getReal();
+        double b = getImag();
+        double c = other.getReal();
+        double d = other.getImag();
+        double c2d2 = c * c + d * d;
+
+        return Complex.valueOf(
+                (a * c + b * d) / c2d2,
+                (b * c - a * d) / c2d2
+        );
+        //return mul(c.inv());
+    }
+
+    public Complex div(MutableComplex other) {
         double a = getReal();
         double b = getImag();
         double c = other.getReal();
@@ -444,16 +473,16 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         }
     }
 
-    public  int compareTo(Object c) {
+    public int compareTo(Object c) {
         return compareTo((Complex) c);
     }
 
-    public  boolean equals(Complex c) {
+    public boolean equals(Complex c) {
         return getReal() == c.getReal() && getImag() == c.getImag();
     }
 
     @Override
-    public  boolean equals(Object c) {
+    public boolean equals(Object c) {
         if (c != null && c instanceof Complex) {
             return equals((Complex) c);
         }
@@ -461,7 +490,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public  int hashCode() {
+    public int hashCode() {
         int hash = 7;
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.getImag()) ^ (Double.doubleToLongBits(this.getImag()) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.getReal()) ^ (Double.doubleToLongBits(this.getReal()) >>> 32));
@@ -630,7 +659,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public Complex log10() {
         double imag = getImag();
         double real = getReal();
-        if(imag ==0) {
+        if (imag == 0) {
             Complex.valueOf(Math.log10(real));
         }
         return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
@@ -825,7 +854,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public boolean isImag() {
-        return getImag()!=0 && getReal() == 0;
+        return getImag() != 0 && getReal() == 0;
     }
 
     public double toReal() {
@@ -881,7 +910,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public Matrix toMatrix() {
-        return new MemMatrix(new Complex[][]{{this}});
+        return Maths.Config.getMatrixFactory().newMatrix(new Complex[][]{{this}});
     }
 
     @Override
@@ -1032,5 +1061,35 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     @Override
     public VectorSpace<Complex> getVectorSpace() {
         return Maths.COMPLEX_VECTOR_SPACE;
+    }
+
+    public static void writeObjectHelper(Complex c, ObjectOutputStream oos) throws IOException {
+        if (c instanceof ComplexR) {
+            oos.writeByte(1);
+            oos.writeDouble(c.getReal());
+        } else if (c instanceof ComplexI) {
+            oos.writeByte(2);
+            oos.writeDouble(c.getImag());
+        } else {
+            oos.writeByte(0);
+            oos.writeDouble(c.getReal());
+            oos.writeDouble(c.getImag());
+        }
+    }
+
+    public static Complex readObjectResolveHelper(ObjectInputStream ois) throws IOException {
+        byte b = ois.readByte();
+        switch (b) {
+            case 0: {
+                return Complex.valueOf(ois.readDouble(), ois.readDouble());
+            }
+            case 1: {
+                return Complex.valueOf(ois.readDouble());
+            }
+            case 2: {
+                return Complex.I(ois.readDouble());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported complex type " + b);
     }
 }

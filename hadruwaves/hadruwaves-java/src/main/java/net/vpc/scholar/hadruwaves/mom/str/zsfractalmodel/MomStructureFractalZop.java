@@ -131,12 +131,12 @@ public class MomStructureFractalZop extends MomStructure {
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         ModeInfo[] n_propa = fn.getPropagatingModes();
-        ScalarProductCache sp = getTestModeScalarProducts(ComputationMonitorFactory.none());
+        ScalarProductCache sp = getTestModeScalarProducts(ProgressMonitorFactory.none());
         for (int p = 0; p < g.length; p++) {
             Vector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
                 Vector spq = sp.getRow(q);
-                Complex c = Complex.ZERO;
+                Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
                     Complex zn = n.impedance;
                     Complex sp1 = spp.get(n.index);
@@ -152,7 +152,7 @@ public class MomStructureFractalZop extends MomStructure {
             Vector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
                 Vector spq = sp.getRow(q);
-                Complex c = Complex.ZERO;
+                Complex c = Maths.CZERO;
                 if (zop != null) {//zop==null si k==1
                     for (int m = 0; m < zop.length; m++) {
                         for (int n = 0; n < zop[m].length; n++) {
@@ -177,12 +177,12 @@ public class MomStructureFractalZop extends MomStructure {
         ModeFunctions fn = getModeFunctions();
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        ScalarProductCache sp = getTestModeScalarProducts(ComputationMonitorFactory.none());
+        ScalarProductCache sp = getTestModeScalarProducts(ProgressMonitorFactory.none());
         for (int p = 0; p < g.length; p++) {
             Vector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
                 Vector spq = sp.getRow(q);
-                Complex c = Complex.ZERO;
+                Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
                     Complex zn = n.impedance;
                     Complex sp1 = spp.get(n.index);

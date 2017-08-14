@@ -103,57 +103,57 @@ public interface MWStructure {
     //    }
 //    Matrix computeZin();
 //
-//    Matrix computeZin(ComputationMonitor monitor);
+//    Matrix computeZin(ProgressMonitor monitor);
 //
 //    Matrix computeS();
 //
-//    Matrix computeS(ComputationMonitor monitor);
+//    Matrix computeS(ProgressMonitor monitor);
 //
 //    Matrix computeCapacity();
 //
-//    Matrix computeCapacity(ComputationMonitor monitor);
+//    Matrix computeCapacity(ProgressMonitor monitor);
 //
 //    Matrix computeInductance();
 //
-//    Matrix computeInductance(ComputationMonitor monitor);
+//    Matrix computeInductance(ProgressMonitor monitor);
 //
 //    Complex[][] computeElectricField(double[] x, double[] y, double z, Axis axis);
 //
-//    Complex[][] computeElectricField(double[] x, double[] y, double z, Axis axis, ComputationMonitor monitor);
+//    Complex[][] computeElectricField(double[] x, double[] y, double z, Axis axis, ProgressMonitor monitor);
 //
 //    VDiscrete computeElectricField(Samples samples);
 //
-//    VDiscrete computeElectricField(Samples samples, ComputationMonitor monitor);
+//    VDiscrete computeElectricField(Samples samples, ProgressMonitor monitor);
 //
 //    VDiscrete computeElectricField(double[] x, double[] y, double[] z);
 //
-//    VDiscrete computeElectricField(double[] x, double[] y, double[] z, ComputationMonitor monitor);
+//    VDiscrete computeElectricField(double[] x, double[] y, double[] z, ProgressMonitor monitor);
 //
 //    Complex[][] computeMagneticField(double[] x, double[] y, double z, Axis axis);
 //
-//    Complex[][] computeMagneticField(double[] x, double[] y, double z, Axis axis, ComputationMonitor monitor);
+//    Complex[][] computeMagneticField(double[] x, double[] y, double z, Axis axis, ProgressMonitor monitor);
 //
 //    VDiscrete computeMagneticField(double[] x, double[] y, double[] z);
 //
-//    VDiscrete computeMagneticField(double[] x, double[] y, double[] z, ComputationMonitor monitor);
+//    VDiscrete computeMagneticField(double[] x, double[] y, double[] z, ProgressMonitor monitor);
 //
 //    VDiscrete computeMagneticField(Samples sampler);
 //
-//    VDiscrete computeMagneticField(Samples sampler, ComputationMonitor monitor);
+//    VDiscrete computeMagneticField(Samples sampler, ProgressMonitor monitor);
 //
-//    VDiscrete computePoyntingVector(double[] x, double[] y, double[] z, ComputationMonitor monitor);
+//    VDiscrete computePoyntingVector(double[] x, double[] y, double[] z, ProgressMonitor monitor);
 //
-//    VDiscrete computePoyntingVector(Samples sampler, ComputationMonitor monitor);
+//    VDiscrete computePoyntingVector(Samples sampler, ProgressMonitor monitor);
 
 //    Complex[][] computeCurrent(double[] x, double[] y, Axis axis);
 
-//    Complex[][] computeCurrent(double[] x, double[] y, Axis axis, ComputationMonitor monitor);
+//    Complex[][] computeCurrent(double[] x, double[] y, Axis axis, ProgressMonitor monitor);
 
-//    VDiscrete computeCurrent(double[] x, double[] y, ComputationMonitor monitor);
+//    VDiscrete computeCurrent(double[] x, double[] y, ProgressMonitor monitor);
 
 //    VDiscrete computeCurrent(Samples sampler);
 
-//    VDiscrete computeCurrent(Samples sampler, ComputationMonitor monitor);
+//    VDiscrete computeCurrent(Samples sampler, ProgressMonitor monitor);
 
     CurrentBuilder current();
     public SourceBuilder source();

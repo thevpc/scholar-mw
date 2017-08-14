@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 
@@ -15,7 +15,7 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProdu
 
     private MomStructure momStructure;
 
-    public SrcGpScalarProductCacheStrCacheSupport(MomStructure momStructure, ComputationMonitor monitor0) {
+    public SrcGpScalarProductCacheStrCacheSupport(MomStructure momStructure, ProgressMonitor monitor0) {
         super(momStructure, MomStructure.CACHE_SRCGP,monitor0);
         this.momStructure = momStructure;
     }

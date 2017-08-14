@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.console.PlotEvaluator;
 import net.vpc.scholar.hadruwaves.console.params.FreqParam;
@@ -111,7 +111,7 @@ public class MomParamFactory extends AbstractFactory {
         public static PlotAxis discrete(String name, final PlotEvaluator<Discrete> value) {
             return new PlotValueVDiscrete(name, new PlotEvaluator<VDiscrete>() {
                 @Override
-                public VDiscrete computeValue(ConsoleAwareObject source, ComputationMonitor monitor, ConsoleActionParams p) {
+                public VDiscrete computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
                     return new VDiscrete(value.computeValue(source, monitor, p));
                 }
             });
@@ -132,7 +132,7 @@ public class MomParamFactory extends AbstractFactory {
         public static PlotAxis matrix(String name, final PlotEvaluator<Matrix> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<NamedMatrix>() {
                 @Override
-                public NamedMatrix computeValue(ConsoleAwareObject source, ComputationMonitor monitor, ConsoleActionParams p) {
+                public NamedMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
                     return new NamedMatrix(value.computeValue(source, monitor, p));
                 }
             }, plotType);
@@ -152,7 +152,7 @@ public class MomParamFactory extends AbstractFactory {
         public static PlotAxis vector(String name, final PlotEvaluator<Vector> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<NamedMatrix>() {
                 @Override
-                public NamedMatrix computeValue(ConsoleAwareObject source, ComputationMonitor monitor, ConsoleActionParams p) {
+                public NamedMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
                     Vector vector = value.computeValue(source, monitor, p);
                     if (vector.isColumn()) {
                         vector = vector.transpose();

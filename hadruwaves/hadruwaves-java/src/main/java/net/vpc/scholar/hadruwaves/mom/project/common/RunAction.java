@@ -1,10 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.project.common;
 
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
-import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
-
-import java.util.logging.Level;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +11,8 @@ import java.util.logging.Level;
  * Time: 15:15:13
  * To change this template use File | Settings | File Templates.
  */
-public abstract class RunAction implements ComputationMonitor{
-    private long startRunningTime = -1;
-    private long endRunningTime = -1;
+public abstract class RunAction implements ProgressMonitor {
+    private Chronometer chronometer=new Chronometer(false);
     private double progress;
 
     protected abstract Object run();
@@ -37,20 +34,12 @@ public abstract class RunAction implements ComputationMonitor{
         this.progress = progress;
     }
 
-    public long getStartRunningTime() {
-        return startRunningTime;
-    }
-
-    public long getEndRunningTime() {
-        return endRunningTime;
-    }
-
     public void startChrono() {
-        startRunningTime = System.currentTimeMillis();
+        chronometer.start();
     }
 
     public void stopChrono() {
-        endRunningTime = System.currentTimeMillis();
+        chronometer.stop();
     }
 
     public long getRemainingTimeEstimation() {
@@ -62,8 +51,7 @@ public abstract class RunAction implements ComputationMonitor{
     }
 
     public long getEvolvedTime() {
-        return endRunningTime < 0 ? System.currentTimeMillis() - startRunningTime
-                : endRunningTime - startRunningTime;
+        return chronometer.getTime();
 
     }
 

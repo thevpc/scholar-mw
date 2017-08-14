@@ -173,17 +173,16 @@ public class TaskComponent extends JPanel implements ActionListener {
                 }else{
                     d100=d*100;
                 }
-                long start = thread.getStartTime();
-                long end = System.currentTimeMillis();
-                long spent = start>0?(end - start):0;
+                Chronometer chrono = thread.getChronometer();
+                long spent = chrono.isStarted() ? chrono.getTime():0;
                 long remaining = spent == 0 ? -1 : (long) ((spent / d) * (1 - d));
                 long approx = spent == 0 ? -1 : (long) ((spent / d));
                 timeDurLabel.setText("Duration :");
-                timeDurValue.setText(Chronometer.formatPeriod(approx, Chronometer.DatePart.s));
+                timeDurValue.setText(Chronometer.formatPeriodNano(approx, Chronometer.DatePart.s));
                 timeElapLabel.setText("Elapsed :");
-                timeElapValue.setText(Chronometer.formatPeriod(spent, Chronometer.DatePart.s));
+                timeElapValue.setText(Chronometer.formatPeriodNano(spent, Chronometer.DatePart.s));
                 timeRemLabel.setText("Remaining :");
-                timeRemValue.setText(Chronometer.formatPeriod(remaining, Chronometer.DatePart.s));
+                timeRemValue.setText(Chronometer.formatPeriodNano(remaining, Chronometer.DatePart.s));
                 updateProgress(d100, thread.getProgressMessage().toString());
             } else if(thread.isTerminated()){
                 windowTitle.setForeground(Color.RED);

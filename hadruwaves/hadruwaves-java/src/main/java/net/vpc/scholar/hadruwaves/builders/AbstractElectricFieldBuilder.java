@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -14,7 +14,7 @@ public abstract class AbstractElectricFieldBuilder extends AbstractVDiscreteBuil
     }
 
     @Override
-    public ElectricFieldBuilder monitor(ComputationMonitor monitor) {
+    public ElectricFieldBuilder monitor(ProgressMonitor monitor) {
         return (ElectricFieldBuilder) super.monitor(monitor);
     }
 

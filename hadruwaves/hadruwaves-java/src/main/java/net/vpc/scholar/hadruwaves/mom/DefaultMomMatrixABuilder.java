@@ -4,8 +4,8 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixABuilder;
 
@@ -15,7 +15,7 @@ import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixABuilder;
 class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
 
     private MomStructure momStructure;
-    private ComputationMonitor[] mon;
+    private ProgressMonitor[] mon;
 
     public DefaultMomMatrixABuilder(MomStructure momStructure) {
         this.momStructure = momStructure;
@@ -24,7 +24,7 @@ class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
     public Matrix computeMatrixImpl() {
         return Maths.invokeMonitoredAction(getMonitor(), "A Builder", new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 momStructure.build();
                 return new MatrixAMatrixStrCacheSupport(momStructure, getMonitor()).get();
             }
@@ -44,7 +44,7 @@ class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
         } else {
             return storeConvergenceResult(conv.evaluate(momStructure, new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ComputationMonitor monitor) {
+                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImplLog();
                 }
             }, getMonitor()));

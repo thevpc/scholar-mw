@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -13,7 +13,7 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
@@ -30,7 +30,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
 
     @Override
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        EnhancedComputationMonitor mon = ComputationMonitorFactory.enhance(this);
+        EnhancedProgressMonitor mon = ProgressMonitorFactory.enhance(this);
 //        mon.startm(getName());
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         MomStructure str1 = (MomStructure) p.getStructure();

@@ -5,14 +5,14 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.str.ElectricFieldEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 
@@ -23,22 +23,22 @@ import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
     public static final ElectricFieldParallelEvaluator INSTANCE=new ElectricFieldParallelEvaluator();
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ComputationMonitor cmonitor) {
-        EnhancedComputationMonitor monitor = ComputationMonitorFactory.enhance(cmonitor);
+    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
+        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
         MomStructure str=(MomStructure) structure;
-        monitor = ComputationMonitorFactory.enhance(monitor);
+        monitor = ProgressMonitorFactory.enhance(monitor);
         String clsName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, clsName, new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
-                ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
+            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
                 Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();
                 ModeInfo[] indexes = str.getModes();
-                MutableComplex[][] xCube = MutableComplex.createArray(Complex.ZERO, y.length,x.length);
-                MutableComplex[][] yCube = MutableComplex.createArray(Complex.ZERO, y.length,x.length);
+                MutableComplex[][] xCube = MutableComplex.createArray(Maths.CZERO, y.length,x.length);
+                MutableComplex[][] yCube = MutableComplex.createArray(Maths.CZERO, y.length,x.length);
                 MutableComplex xtemp;
                 MutableComplex ytemp;
                 for (int i = 0; i < indexes.length; i++) {
@@ -47,7 +47,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
 
                     Complex[][] fx = index.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
                     Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
-                    ComputationMonitorFactory.setProgress(monitor, i, indexes.length, clsName);
+                    ProgressMonitorFactory.setProgress(monitor, i, indexes.length, clsName);
 //            monitor.setProgress(1.0 * i / indexes.length);
                     for (int xi = 0; xi < x.length; xi++) {
                         for (int yi = 0; yi < y.length; yi++) {
@@ -66,7 +66,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
                 return new VDiscrete(
                         Discrete.create(new Complex[][][]{MutableComplex.toComplex(xCube)}, x, y, z),
                         Discrete.create(new Complex[][][]{MutableComplex.toComplex(yCube)}, x, y, z),
-                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Complex.ZERO), x, y, z)
+                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO), x, y, z)
                 );
             }
         });

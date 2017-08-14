@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
@@ -47,7 +47,7 @@ public abstract class BoxModes {
     public Complex getAdmittance(ModeIndex i, double freq, BoxSpace space) {
         double cachedOmega = Physics.omega(freq);
         Complex gamma = getGamma(i, freq, space);
-        Complex y = Complex.ZERO;
+        Complex y = Maths.CZERO;
         switch (i.getModeType()) {
             case TM: {
                 switch (space.getLimit()) {
@@ -119,19 +119,19 @@ public abstract class BoxModes {
         return getModeFcts(max, null);
     }
 
-    public ModeFct[] getModeFcts(int max, ComputationMonitor monitor) {
+    public ModeFct[] getModeFcts(int max, ProgressMonitor monitor) {
         Chronometer chrono = new Chronometer();
         chrono.start();
         ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
         ModeIterator iterator = iterator();
-        EnhancedComputationMonitor mon = ComputationMonitorFactory.createIncrementalMonitor(monitor, max);
+        EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         String message = tostr + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         int index = 0;
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;
@@ -173,23 +173,23 @@ public abstract class BoxModes {
         return getIndexes(max, null);
     }
 
-    public ModeIndex[] indexes(int max, ComputationMonitor monitor) {
+    public ModeIndex[] indexes(int max, ProgressMonitor monitor) {
         return getIndexes(max, monitor);
     }
 
-    public ModeIndex[] getIndexes(int max, ComputationMonitor monitor) {
+    public ModeIndex[] getIndexes(int max, ProgressMonitor monitor) {
         Chronometer chrono = new Chronometer();
         chrono.start();
         ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
         ModeIterator iterator = iterator();
-        EnhancedComputationMonitor mon = ComputationMonitorFactory.createIncrementalMonitor(monitor, max);
+        EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         String message = tostr + ", {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         int index = 0;
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;

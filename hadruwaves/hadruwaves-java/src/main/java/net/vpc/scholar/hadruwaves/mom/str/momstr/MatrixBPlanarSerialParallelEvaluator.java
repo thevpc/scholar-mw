@@ -3,8 +3,8 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
@@ -17,7 +17,7 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
  */
 public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         PlanarSources planarSources1 = (PlanarSources) str.getSources();
@@ -29,13 +29,13 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         if (_src.length != 1) {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
         }
-        EnhancedComputationMonitor[] mon = ComputationMonitorFactory.split(monitor, new double[]{2, 8});
+        EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
         ScalarProductCache sp = str.getTestSourceScalarProducts(mon[0]);
 
-        EnhancedComputationMonitor m = ComputationMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
+        EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
         return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] b = new Complex[_g.length][_src.length];
                 for (int n = 0; n < _src.length; n++) {
                     Vector cc = sp.getColumn(n);

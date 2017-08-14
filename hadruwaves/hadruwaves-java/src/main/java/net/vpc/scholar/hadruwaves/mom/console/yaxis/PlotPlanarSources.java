@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -19,7 +19,7 @@ public class PlotPlanarSources extends PlotAxisSeries implements Cloneable {
         this.axis = axis;
     }
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure,monitor,p);
     }
 
@@ -29,7 +29,7 @@ public class PlotPlanarSources extends PlotAxisSeries implements Cloneable {
         setPlotType(PlotType.HEATMAP);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());

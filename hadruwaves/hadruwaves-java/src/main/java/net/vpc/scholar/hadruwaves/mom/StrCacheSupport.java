@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -10,7 +10,7 @@ abstract class StrCacheSupport<T> extends CacheSupport<T> {
 
     private MomStructure momStructure;
 
-    protected StrCacheSupport(MomStructure momStructure, String cacheItemName,ComputationMonitor monitor) {
+    protected StrCacheSupport(MomStructure momStructure, String cacheItemName,ProgressMonitor monitor) {
         super(momStructure.persistentCache, cacheItemName,monitor);
         this.momStructure = momStructure;
     }

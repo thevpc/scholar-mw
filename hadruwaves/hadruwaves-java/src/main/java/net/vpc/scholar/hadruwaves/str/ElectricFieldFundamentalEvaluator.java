@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -9,5 +9,5 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
  * @creationtime 24 mai 2007 21:49:35
  */
 public interface ElectricFieldFundamentalEvaluator extends MWStructureEvaluator {
-    VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ComputationMonitor monitor);
+    VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ProgressMonitor monitor);
 }

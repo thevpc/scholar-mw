@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -10,9 +10,9 @@ import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
 class MatrixAMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
 
     private MomStructure momStructure;
-    private EnhancedComputationMonitor[] mon;
+    private EnhancedProgressMonitor[] mon;
 
-    public MatrixAMatrixStrCacheSupport(MomStructure momStructure, EnhancedComputationMonitor monitor) {
+    public MatrixAMatrixStrCacheSupport(MomStructure momStructure, EnhancedProgressMonitor monitor) {
         super(momStructure, MomStructure.CACHE_MATRIX_A,monitor);
         this.momStructure = momStructure;
         this.mon = getMonitor().split(new double[]{2,8});

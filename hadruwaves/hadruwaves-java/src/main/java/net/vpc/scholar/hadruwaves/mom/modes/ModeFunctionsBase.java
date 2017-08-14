@@ -161,7 +161,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 //            }
 //        }
         //getStructure().getProjectType().equals(ProjectType.PLANAR_STRUCTURE)
-        Complex ys = Complex.ZERO;
+        MutableComplex ys = new MutableComplex();
         BoxSpace[] spaces = new BoxSpace[]{getFirstBoxSpace(), getSecondBoxSpace()};
         Complex gamma;
         ModeType mode = i.mode.mtype;
@@ -183,7 +183,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                 for (int j = 0; j < spaces.length; j++) {
                     BoxSpace space = spaces[j];
                     gamma = j == 0 ? i.firstBoxSpaceGamma : i.secondBoxSpaceGamma;
-                    Complex y = Complex.ZERO;
+                    Complex y = Maths.CZERO;
                     // TODO are you sure?????????????
                     switch (space.getLimit()) {
                         case OPEN: {
@@ -205,7 +205,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                             break;
                         }
                     }
-                    ys = ys.add(y);
+                    ys.add(y);
                 }
                 break;
             }
@@ -213,7 +213,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                 for (int j = 0; j < spaces.length; j++) {
                     BoxSpace space = spaces[j];
                     gamma = j == 0 ? i.firstBoxSpaceGamma : i.secondBoxSpaceGamma;
-                    Complex y = Complex.ZERO;
+                    Complex y = Maths.CZERO;
                     switch (space.getLimit()) {
                         case OPEN: {
                             y = gamma.div(cotanh(gamma.mul(space.getWidth())).mul(I.mul(cachedOmega).mul(U0)));
@@ -232,7 +232,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                             break;
                         }
                     }
-                    ys = ys.add(y);
+                    ys.add(y);
                 }
                 break;
             }
@@ -244,10 +244,10 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
         }
         for (StrLayer couche : layers) {
-            ys = ys.add(couche.impedance);
+            ys.add(couche.impedance);
         }
-
-        Complex z = ys.inv();
+        ys.inv();
+        Complex z = ys.toComplex();
         if (z.isNaN()) {
             System.out.println("Zmod(" + i + ") is NaN.");
         }
@@ -555,7 +555,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         return cachedPropagatingModesCount;
     }
 
-    protected abstract ModeInfo[] getIndexesImpl(ComputationMonitor par0);
+    protected abstract ModeInfo[] getIndexesImpl(ProgressMonitor par0);
 
     protected boolean doAcceptModeIndex(ModeIndex o) {
         if (modeIndexFilters != null) {
@@ -633,7 +633,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public synchronized ModeInfo[] getModes() {
-        return getModes(ComputationMonitorFactory.none(),null);
+        return getModes(ProgressMonitorFactory.none(),null);
     }
 
     protected void a() {
@@ -666,7 +666,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized List<ModeInfo> getModes(final ModeType mode, ComputationMonitor monitor) {
+    public synchronized List<ModeInfo> getModes(final ModeType mode, ProgressMonitor monitor) {
         int modeOrdinal = mode.ordinal();
         List<ModeInfo> modeInfos = cachedIndexesByModeType[modeOrdinal];
         if(modeInfos ==null){
@@ -681,7 +681,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized List<DoubleToVector> getFunctions(final ModeType mode, ComputationMonitor monitor) {
+    public synchronized List<DoubleToVector> getFunctions(final ModeType mode, ProgressMonitor monitor) {
         return CollectionsUtils.convert(getModes(mode, monitor), new Converter<ModeInfo, DoubleToVector>() {
             @Override
             public DoubleToVector convert(ModeInfo value) {
@@ -691,8 +691,8 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized ModeInfo[] getModes(ComputationMonitor monitor,ObjectCache objectCache) {
-        monitor=ComputationMonitorFactory.enhance(monitor);
+    public synchronized ModeInfo[] getModes(ProgressMonitor monitor, ObjectCache objectCache) {
+        monitor= ProgressMonitorFactory.enhance(monitor);
         if (cachedIndexes == null) {
             if(objectCache!=null){
                 try {
@@ -717,7 +717,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
              }
              */
 
-            EnhancedComputationMonitor[] mons = ComputationMonitorFactory.split(monitor, 2);
+            EnhancedProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 2);
             ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
             Comparator<ModeInfo> comparator = getModeInfoComparator();
             if(comparator!=null) {
@@ -729,12 +729,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
             ModeIndex[] propagativeModes = sources.getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount());
             HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
-            EnhancedComputationMonitor mon2=mons[1];//ComputationMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
+            EnhancedProgressMonitor mon2=mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
             String message = toString() + ", evaluate mode properties";
             String str = toString();
             Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
                 @Override
-                public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                     int propagativeCount = 0;
                     int nonPropagativeCount = 0;
                     boolean _enableDefaultFunctionProperties = isHintEnableFunctionProperties();
@@ -795,12 +795,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         index.initialIndex = initialIndex;
         index.cutOffFrequency = getCutoffFrequency(index.mode);
         index.firstBoxSpaceGamma = getGammaImpl(index.mode, space1);
-        if (index.firstBoxSpaceGamma.isNaN() || index.firstBoxSpaceGamma.isInfinite() || index.firstBoxSpaceGamma.equals(Complex.ZERO)) {
+        if (index.firstBoxSpaceGamma.isNaN() || index.firstBoxSpaceGamma.isInfinite() || index.firstBoxSpaceGamma.equals(Maths.CZERO)) {
             System.err.println("[Warning] firstBoxSpaceGamma=" + index.firstBoxSpaceGamma + " for " + index.mode.mtype + index.mode.m + "," + index.mode.n + (" (f=" + frequency + ")"));
             getGammaImpl(index.mode, space1);
         }
         index.secondBoxSpaceGamma = getGammaImpl(index.mode, space2);
-        if (index.secondBoxSpaceGamma.isNaN() || index.secondBoxSpaceGamma.isInfinite() || index.secondBoxSpaceGamma.equals(Complex.ZERO)) {
+        if (index.secondBoxSpaceGamma.isNaN() || index.secondBoxSpaceGamma.isInfinite() || index.secondBoxSpaceGamma.equals(Maths.CZERO)) {
             System.err.println("[Warning] secondBoxSpaceGamma=" + index.secondBoxSpaceGamma + " for " + index.mode.mtype + index.mode.m + "," + index.mode.n + (" (f=" + frequency + ")"));
             getGammaImpl(index.mode, space2);
         }

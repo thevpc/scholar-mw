@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -14,8 +14,8 @@ import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
 public class ZinParallelEvaluator implements ZinEvaluator {
     public static final ZinParallelEvaluator INSTANCE=new ZinParallelEvaluator();
     @Override
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
-        ComputationMonitor[] mons=ComputationMonitorFactory.split(monitor, new double[]{1, 4});
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+        ProgressMonitor[] mons= ProgressMonitorFactory.split(monitor, new double[]{1, 4});
         Matrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
         Matrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
         Matrix ZinCond;

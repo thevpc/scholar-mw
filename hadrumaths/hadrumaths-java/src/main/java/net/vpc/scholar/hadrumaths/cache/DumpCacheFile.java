@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadrumaths.cache;
 
+import net.vpc.scholar.hadrumaths.util.AppLock;
 import net.vpc.scholar.hadrumaths.util.FileSystemLock;
+import net.vpc.scholar.hadrumaths.util.HFile;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.File;
 
@@ -11,25 +14,25 @@ public class DumpCacheFile {
     private DumpPath dumpPath;
     private String relativePath;
     private String absolutePath;
-    private File file;
-    private FileSystemLock lock;
+    private HFile file;
+    private AppLock lock;
     private PersistenceCache persistenceCache;
 
 
-    public DumpCacheFile(DumpPath dumpPath, String relativePath, File file, PersistenceCache persistenceCache) {
+    public DumpCacheFile(DumpPath dumpPath, String relativePath, HFile file, PersistenceCache persistenceCache) {
         this.dumpPath = dumpPath;
         this.relativePath = relativePath;
         this.absolutePath = dumpPath.getPath() + "/" + relativePath;
         this.file = file;
         this.persistenceCache = persistenceCache;
-        lock = FileSystemLock.createFileLockCompanion(file);
+        lock = file.lock();
     }
 
     public void touch() {
 
         if (persistenceCache.getFS().contains(relativePath)) {
 //            System.err.println("Overridden Runtime PersistenceCache " + absolutePath);
-        } else if (getFile().exists()) {
+//        } else if (getFile().exists()) {
 //            System.err.println("Overridden Long term PersistenceCache " + absolutePath);
 //            throw new IllegalArgumentException("Jamais");
         }
@@ -43,7 +46,7 @@ public class DumpCacheFile {
         if (persistenceCache.isIgnorePrevious() && !persistenceCache.getFS().contains(relativePath)) {
             return false;
         }
-        return file.exists();
+        return file.existsOrWait();
     }
 
     public DumpPath getDumpPath() {
@@ -54,11 +57,11 @@ public class DumpCacheFile {
         return relativePath;
     }
 
-    public File getFile() {
+    public HFile getFile() {
         return file;
     }
 
-    public FileSystemLock getLock() {
+    public AppLock getLock() {
         return lock;
     }
 }

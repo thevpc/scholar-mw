@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractElectricFieldBuilder;
@@ -27,7 +27,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
     }
 
 
-    public VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z,ComputationMonitor monitor) {
+    public VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z,ProgressMonitor monitor) {
         final double[] x0 = x == null ? new double[]{0} : x;
         final double[] y0 = y == null ? new double[]{0} : y;
         final double[] z0 = z == null ? new double[]{0} : z;
@@ -53,7 +53,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                 }.computeCached();
             }
             case EVANESCENT: {
-                EnhancedComputationMonitor[] mon = ComputationMonitorFactory.enhance(monitor).split(2);
+                EnhancedProgressMonitor[] mon = ProgressMonitorFactory.enhance(monitor).split(2);
                 VDiscrete Eall = getStructure().electricField(ElectricFieldPart.FULL).monitor(mon[0]).computeVDiscrete(x, y, z);
                 VDiscrete E0 = getStructure().electricField(ElectricFieldPart.FUNDAMENTAL).monitor(mon[1]).computeVDiscrete(x, y, z);
                 return Eall.sub(E0);
@@ -72,7 +72,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
 //        } else {
 //            return storeConvergenceResult(conv.evaluate(momStructure, new ObjectEvaluator<MomStructure, Matrix>() {
 //                @Override
-//                public Matrix evaluate(MomStructure momStructure, ComputationMonitor monitor) {
+//                public Matrix evaluate(MomStructure momStructure, ProgressMonitor monitor) {
 //                    return computeXYMatrixImpl(samples, axis);
 //                }
 //            }, getMonitor()));

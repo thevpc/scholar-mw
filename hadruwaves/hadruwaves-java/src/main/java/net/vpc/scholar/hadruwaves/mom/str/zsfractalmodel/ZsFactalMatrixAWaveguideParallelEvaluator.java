@@ -3,6 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -13,14 +14,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 24 mai 2007 21:55:23
  */
 public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop str2 = (MomStructureFractalZop) str;
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
@@ -28,7 +28,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
         ModeFunctions fn = str.getModeFunctions();
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
+        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         if (symMatrix) {
@@ -36,7 +36,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 Vector spp = sp.getRow(p);
                 for (int q = p; q < g.length; q++) {
                     Vector spq = sp.getRow(q);
-                    Complex c = Complex.ZERO;
+                    Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         Complex yn = n.impedance.inv();
                         c = c.add(yn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
@@ -52,12 +52,12 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 if (op != null) {//op==null si k==1
                     //System.out.println("op = " + opValue.getMatrix());
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
                             Vector spc2q = spc2.getRow(q);
-                            Complex c = Complex.ZERO;
+                            Complex c = Maths.CZERO;
                             for (int m = 0; m < op.length; m++) {
                                 for (int n = 0; n < op[m].length; n++) {
                                     //#@ ID=1@20070423
@@ -90,7 +90,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 Vector spp = sp.getRow(p);
                 for (int q = 0; q < g.length; q++) {
                     Vector spq = sp.getRow(q);
-                    Complex c = Complex.ZERO;
+                    Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         c = c.add(n.impedance.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
@@ -104,12 +104,12 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                 if (op != null) {//op==null si k==1
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = 0; q < g.length; q++) {
                             Vector spc2q = spc2.getRow(q);
-                            Complex c = Complex.ZERO;
+                            Complex c = Maths.CZERO;
                             for (int m = 0; m < op.length; m++) {
                                 for (int n = 0; n < op[m].length; n++) {
                                     //#@ ID=1@20070423

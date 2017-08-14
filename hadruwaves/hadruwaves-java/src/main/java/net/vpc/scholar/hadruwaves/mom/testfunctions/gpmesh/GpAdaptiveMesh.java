@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
@@ -69,7 +69,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    public DoubleToVector[] gpImpl(ComputationMonitor monitor) {
+    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         ArrayList<DoubleToVector> f = new ArrayList<DoubleToVector>();
         MomStructure currentStructure = getStructure();
         Domain globalDomain = domain!=null? domain: currentStructure ==null?null: currentStructure.getDomain();
@@ -323,7 +323,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    protected DoubleToVector[] rebuildCachedFunctions(ComputationMonitor monitor) {
+    protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
         for (GeometryList geometryList : polygons) {
             if (geometryList instanceof FractalAreaGeometryList) {
                 ((FractalAreaGeometryList) geometryList).setLevel(getStructure().getK());

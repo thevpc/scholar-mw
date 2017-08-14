@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -18,9 +18,9 @@ import net.vpc.scholar.hadruwaves.str.SourceEvaluator;
 public class DefaultSourceEvaluator implements SourceEvaluator {
     public static final DefaultSourceEvaluator INSTANCE = new DefaultSourceEvaluator();
 
-    public Matrix computePlanarSources(MWStructure structure, double[] x, double[] y, Axis axis, ComputationMonitor monitor) {
+    public Matrix computePlanarSources(MWStructure structure, double[] x, double[] y, Axis axis, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-        EnhancedComputationMonitor mon = ComputationMonitorFactory.enhance(monitor);
+        EnhancedProgressMonitor mon = ProgressMonitorFactory.enhance(monitor);
         Sources ss = str.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();
@@ -28,7 +28,7 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
         String monName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(mon, monName, new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] ret = null;
                 DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
                 for (int i = 0; i < _g.length; i++) {

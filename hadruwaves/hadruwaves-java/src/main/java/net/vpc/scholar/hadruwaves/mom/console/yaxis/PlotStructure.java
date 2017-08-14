@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
@@ -25,7 +25,7 @@ public class PlotStructure extends PlotAxisCustom implements Cloneable {
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p){
         return Maths.invokeMonitoredAction(this, getName(), new MonitoredAction<Iterator<ConsoleAction>>() {
             @Override
-            public Iterator<ConsoleAction> process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public Iterator<ConsoleAction> process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 ArrayList<ConsoleAction> all=new ArrayList<ConsoleAction>();
                 MomStructure str = (MomStructure) p.getStructure();
                 if(containsType(YType.REFERENCE) && str !=null){

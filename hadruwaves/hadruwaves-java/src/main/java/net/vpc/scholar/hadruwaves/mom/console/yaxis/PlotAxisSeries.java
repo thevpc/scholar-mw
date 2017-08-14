@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.*;
@@ -11,8 +11,8 @@ import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 
 import javax.swing.*;
@@ -112,7 +112,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
                 }
             }
         }
-        EnhancedComputationMonitor[] monitors = ComputationMonitorFactory.split(this, new double[]{9, 9, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        EnhancedProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{9, 9, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
         ParamSet theX = p.getAxis().getX();
         double xParamMultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
@@ -152,7 +152,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
                 NamedMatrix finalReferenceMatrix = referenceMatrix;
                 relativeError = Maths.invokeMonitoredAction(monitors[2], getPlotTitle() + ":relativeError", new MonitoredAction<NamedMatrix>() {
                     @Override
-                    public NamedMatrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public NamedMatrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         Complex[][] c = new Complex[d.length][];
                         for (int i = 0; i < c.length; i++) {
                             c[i] = new Complex[d[i].length];
@@ -180,7 +180,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
                 NamedMatrix finalReferenceMatrix1 = referenceMatrix;
                 absoluteError = Maths.invokeMonitoredAction(monitors[3], getPlotTitle() + ":absoluteError", new MonitoredAction<NamedMatrix>() {
                     @Override
-                    public NamedMatrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public NamedMatrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         Complex[][] c0 = new Complex[d.length][];
                         for (int i = 0; i < c0.length; i++) {
                             c0[i] = new Complex[d[i].length];
@@ -235,7 +235,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
         return ret.toArray(new NamedMatrix[ret.size()]);
     }
 
-    protected abstract NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p);
+    protected abstract NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p);
 
 
     public String getPlotTitle() {

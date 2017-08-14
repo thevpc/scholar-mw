@@ -315,11 +315,11 @@ public class Plus extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex toComplex() {
-        Complex c = Complex.ZERO;
+        MutableComplex c = new MutableComplex();
         for (Expr e : expressions) {
-            c = c.add(e.toComplex());
+            c.add(e.toComplex());
         }
-        return c;
+        return c.toComplex();
     }
 
     @Override
@@ -474,12 +474,12 @@ public class Plus extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z) {
-        Complex c = Complex.ZERO;
+        MutableComplex c = new MutableComplex();
         for (Expr expression : expressions) {
-            c = c.add(expression.toDC().computeComplex(x, y, z));
+            c.add(expression.toDC().computeComplex(x, y, z));
         }
         //super.computeComplex(x, y, z)
-        return c;
+        return c.toComplex();
     }
 
     @Override

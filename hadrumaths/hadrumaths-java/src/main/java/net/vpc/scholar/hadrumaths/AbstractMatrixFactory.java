@@ -46,12 +46,13 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         int rows = other.getRowCount();
         int cols = other.getColumnCount();
         Matrix e = newMatrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            TVector<Complex> row = other.getRow(i);
-            for (int j = 0; j < cols; j++) {
-                e.set(i, j, row.get(j));
-            }
-        }
+        e.set(other);
+//        for (int i = 0; i < rows; i++) {
+//            TVector<Complex> row = other.getRow(i);
+//            for (int j = 0; j < cols; j++) {
+//                e.set(i, j, row.get(j));
+//            }
+//        }
         return e;
     }
 
@@ -111,11 +112,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         int rows = complex.length;
         int cols = complex[0].length;
         Matrix e = newMatrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                e.set(i, j, complex[i][j]);
-            }
-        }
+        e.set(complex);
         return e;
     }
 
@@ -124,11 +121,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         int rows = complex.length;
         int cols = complex[0].length;
         Matrix e = newMatrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                e.set(i, j, complex[i][j].toComplex());
-            }
-        }
+        e.set(complex);
         return e;
     }
 
@@ -137,11 +130,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         int rows = complex.length;
         int cols = complex[0].length;
         Matrix e = newMatrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                e.set(i, j, Complex.valueOf(complex[i][j]));
-            }
-        }
+        e.set(complex);
         return e;
     }
 
@@ -155,11 +144,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix e = newMatrix(rows, columns);
         switch (it) {
             case FULL: {
-                for (int i = 0; i < rows; i++) {
-                    for (int j = 0; j < columns; j++) {
-                        e.set(i, j, item.get(i, j));
-                    }
-                }
+                e.set(e);
                 break;
             }
             case DIAGONAL: {
@@ -297,7 +282,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(Math.random()));
+                A.set(i, j, Math.random(),0.0);
             }
         }
         return A;
@@ -308,7 +293,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(((int) (Math.random() * (max - min))) + min));
+                A.set(i, j, (((int) (Math.random() * (max - min))) + min),0);
             }
         }
         return A;
@@ -319,7 +304,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(Math.random() * (max - min) + min));
+                A.set(i, j, (Math.random() * (max - min) + min),0);
             }
         }
         return A;
@@ -330,7 +315,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.I(Math.random() * (max - min) + min));
+                A.set(i, j, 0,(Math.random() * (max - min) + min));
             }
         }
         return A;
@@ -341,7 +326,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.I(((int) (Math.random() * (max - min))) + min));
+                A.set(i, j, 0,(((int) (Math.random() * (max - min))) + min));
             }
         }
         return A;
@@ -352,8 +337,8 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(((int) (Math.random() * (maxReal - minReal))) + minReal,
-                        ((int) (Math.random() * (maxImag - minImag))) + minImag));
+                A.set(i, j, ((int) (Math.random() * (maxReal - minReal))) + minReal,
+                        ((int) (Math.random() * (maxImag - minImag))) + minImag);
             }
         }
         return A;
@@ -364,7 +349,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(Math.random() * (maxReal - minReal) + minReal, Math.random() * (maxImag - minImag) + minImag));
+                A.set(i, j, Math.random() * (maxReal - minReal) + minReal, Math.random() * (maxImag - minImag) + minImag);
             }
         }
         return A;
@@ -375,7 +360,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(Math.random() * (max - min) + min, Math.random() * (max - min) + min));
+                A.set(i, j, Math.random() * (max - min) + min, Math.random() * (max - min) + min);
             }
         }
         return A;
@@ -386,8 +371,8 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.valueOf(((int) (Math.random() * (max - min))) + min,
-                        ((int) (Math.random() * (max - min))) + min));
+                A.set(i, j, ((int) (Math.random() * (max - min))) + min,
+                        ((int) (Math.random() * (max - min))) + min);
             }
         }
         return A;
@@ -425,4 +410,51 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
 //        memMatrix.setFactory(this);
 //        return memMatrix;
 //    }
+
+
+    @Override
+    public Matrix newMatrix(Matrix[][] blocs) {
+        int rows = 0;
+        int cols = 0;
+        for (Matrix[] subMatrixe : blocs) {
+            int r = 0;
+            int c = 0;
+            for (Matrix aSubMatrixe : subMatrixe) {
+                c += aSubMatrixe.getColumnCount();
+                if (r == 0) {
+                    r = aSubMatrixe.getRowCount();
+                } else if (r != aSubMatrixe.getRowCount()) {
+                    throw new IllegalArgumentException("Column count does not match");
+                }
+            }
+            if (cols == 0) {
+                cols = c;
+            } else if (cols != c) {
+                throw new IllegalArgumentException("Column count does not match");
+            }
+            rows += r;
+        }
+        if (rows == 0 || cols == 0) {
+            throw new EmptyMatrixException();
+        }
+
+        Matrix m=newMatrix(rows, cols);
+
+        int row = 0;
+        int col;
+        for (Matrix[] subMatrixe1 : blocs) {
+            col = 0;
+            for (Matrix aSubMatrixe1 : subMatrixe1) {
+                m.set(row, col, aSubMatrixe1);
+                col += aSubMatrixe1.getColumnCount();
+            }
+            row += subMatrixe1[0].getRowCount();
+        }
+        return m;
+    }
+
+    @Override
+    public String toString() {
+        return getId()+":"+getClass().getSimpleName();
+    }
 }

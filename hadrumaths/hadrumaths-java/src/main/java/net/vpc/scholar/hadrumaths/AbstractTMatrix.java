@@ -15,9 +15,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     private static final long serialVersionUID = -1010101010101001044L;
     private transient TMatrixFactory<T> factory;
-    private transient TMatrixFactory<T> defaultFactory;
-//    private transient VectorSpace<T> componentVectorSpace;
-//    private transient Class<T> componentType;
+    private transient String factoryId;
 
     public AbstractTMatrix() {
     }
@@ -330,7 +328,6 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
      */
     public TMatrix<T> getMatrix(int[] r, int[] c) {
         TMatrix<T> X = createMatrix(r.length, c.length);
-        T[][] B = X.getArray();
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = 0; j < c.length; j++) {
@@ -478,6 +475,9 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     public TMatrix<T> mul(TMatrix<T> other) {
+        if(getColumnCount()!=other.getRowCount()){
+            throw new IllegalArgumentException("The column dimension "+getColumnCount()+" of the left matrix does not match the row dimension "+other.getRowCount()+" of the right matrix!");
+        }
         int a_rows = getRowCount();
         int b_cols = other.getColumnCount();
         int b_rows = other.getRowCount();
@@ -1084,7 +1084,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getRows() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class,getComponentType().getType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class, getComponentType().getType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -1099,7 +1099,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getColumns() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class,getComponentType().getType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class, getComponentType().getType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -1556,6 +1556,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     public TMatrix<T> upperTriangle() {
 //        System.out.println(new java.util.Date() + " upperTriangle IN (" + elements.length + ")");
+        VectorSpace<T> cs = getComponentVectorSpace();
         TMatrix<T> o = createMatrix(getRowCount(), getColumnCount());
         o.set(this);
 
@@ -1590,9 +1591,9 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
                 if (!o.get(col, col).equals(Complex.ZERO)) {
 
-                    f1 = getComponentVectorSpace().mul(getComponentVectorSpace().div(o.get(row, col), o.get(col, col)), minusOne());
+                    f1 = cs.mul(cs.div(o.get(row, col), o.get(col, col)), minusOne());
                     for (int i = col; i < tms; i++) {
-                        o.set(row, i, getComponentVectorSpace().add(getComponentVectorSpace().mul(f1, o.get(col, i)), o.get(row, i)));
+                        o.set(row, i, cs.add(cs.mul(f1, o.get(col, i)), o.get(row, i)));
                     }
 
                 }
@@ -2301,18 +2302,26 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         if (factory != null) {
             return factory;
         }
-        if (defaultFactory == null) {
-            defaultFactory = createDefaultFactory();
+        if (factoryId != null) {
+            return factory=Maths.Config.getTMatrixFactory(factoryId);
         }
-        if (defaultFactory == null) {
+
+        TMatrixFactory<T> t = createDefaultFactory();
+        if (t == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }
-        return defaultFactory;
+        return t;
     }
 
     @Override
     public void setFactory(TMatrixFactory<T> factory) {
         this.factory = factory;
+        this.factoryId = factory == null ? null : factory.getId();
+    }
+
+    @Override
+    public String getFactoryId() {
+        return factoryId;
     }
 
     @Override
@@ -2342,25 +2351,25 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(o==null || !(o instanceof TMatrix)){
+        if (o == null || !(o instanceof TMatrix)) {
             return false;
         }
 
         TMatrix<?> that = (TMatrix<?>) o;
         int columnCount = getColumnCount();
         int rowCount = getRowCount();
-        if(that.getColumnCount()!= columnCount){
+        if (that.getColumnCount() != columnCount) {
             return false;
         }
-        if(that.getRowCount()!= rowCount){
+        if (that.getRowCount() != rowCount) {
             return false;
         }
-        if(!that.getComponentType().equals(getComponentType())){
+        if (!that.getComponentType().equals(getComponentType())) {
             return false;
         }
         for (int c = 0; c < columnCount; c++) {
             for (int r = 0; r < rowCount; r++) {
-                if(!Objects.equals(get(r,c),that.get(r,c))){
+                if (!Objects.equals(get(r, c), that.get(r, c))) {
                     return false;
                 }
             }
@@ -2378,12 +2387,17 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int c = 0; c < columnCount; c++) {
             for (int r = 0; r < rowCount; r++) {
                 T t = get(r, c);
-                if(t!=null) {
+                if (t != null) {
                     hash = 89 * hash + t.hashCode();
                 }
             }
         }
         return hash;
 
+    }
+
+    @Override
+    public TMatrix<T> copy() {
+        return getFactory().newMatrix(this);
     }
 }

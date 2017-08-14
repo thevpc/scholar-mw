@@ -4,6 +4,8 @@ import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
+import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
+import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
@@ -300,6 +302,49 @@ public final class Maths {
             return value.toComplex().toDouble();
         }
     };
+    //    public static String getAxisLabel(int axis){
+//        switch(axis){
+//            case X_AXIS:return "X";
+//            case Y_AXIS:return "Y";
+//            case Z_AXIS:return "Z";
+//        }
+//        throw new IllegalArgumentException("Unknown Axis "+axis);
+//    }
+    public static final TypeReference<String> $STRING = new TypeReference<String>() {
+    };
+    public static final TypeReference<Matrix> $MATRIX = new TypeReference<Matrix>() {
+    };
+    public static final TypeReference<Vector> $VECTOR = new TypeReference<Vector>() {
+    };
+    public static final TypeReference<TMatrix<Complex>> $CMATRIX = new TypeReference<TMatrix<Complex>>() {
+    };
+    public static final TypeReference<TVector<Complex>> $CVECTOR = new TypeReference<TVector<Complex>>() {
+    };
+    public static final TypeReference<Complex> $COMPLEX = new TypeReference<Complex>() {
+    };
+    public static final TypeReference<Double> $DOUBLE = new TypeReference<Double>() {
+    };
+    public static final TypeReference<Boolean> $BOOLEAN = new TypeReference<Boolean>() {
+    };
+    //</editor-fold>
+    public static final TypeReference<Integer> $INTEGER = new TypeReference<Integer>() {
+    };
+    public static final TypeReference<Long> $LONG = new TypeReference<Long>() {
+    };
+    public static final TypeReference<Expr> $EXPR = new TypeReference<Expr>() {
+    };
+    public static final TypeReference<TList<Complex>> $CLIST = new TypeReference<TList<Complex>>() {
+    };
+    public static final TypeReference<TList<Expr>> $ELIST = new TypeReference<TList<Expr>>() {
+    };
+    public static final TypeReference<TList<Double>> $DLIST = new TypeReference<TList<Double>>() {
+    };
+    public static final TypeReference<TList<Integer>> $ILIST = new TypeReference<TList<Integer>>() {
+    };
+    public static final TypeReference<TList<Boolean>> $BLIST = new TypeReference<TList<Boolean>>() {
+    };
+    public static final TypeReference<TList<Matrix>> $MLIST = new TypeReference<TList<Matrix>>() {
+    };
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
             System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model") :
                     System.getProperty("os.arch").contains("64") ? "64" : "32"
@@ -307,6 +352,7 @@ public final class Maths {
     private static final int BYTE_BITS = 8;
     private static final int WORD = ARCH_MODEL_BITS / BYTE_BITS;
     private static final int JOBJECT_MIN_SIZE = 16;
+    private static final Logger $log = Logger.getLogger(Maths.class.getName());
     public static DistanceStrategy<Double> DISTANCE_DOUBLE = new DistanceStrategy<Double>() {
         @Override
         public double distance(Double a, Double b) {
@@ -326,7 +372,6 @@ public final class Maths {
             return a.toMatrix().getError(b.toMatrix());
         }
     };
-    //</editor-fold>
 
     static {
         MathsInitializerService.initialize();
@@ -339,33 +384,6 @@ public final class Maths {
             }
         }
     }
-    private static final Logger $log=Logger.getLogger(Maths.class.getName());
-
-    //    public static String getAxisLabel(int axis){
-//        switch(axis){
-//            case X_AXIS:return "X";
-//            case Y_AXIS:return "Y";
-//            case Z_AXIS:return "Z";
-//        }
-//        throw new IllegalArgumentException("Unknown Axis "+axis);
-//    }
-    public static final TypeReference<String> $STRING=new TypeReference<String>() {};
-    public static final TypeReference<Matrix> $MATRIX=new TypeReference<Matrix>() {};
-    public static final TypeReference<Vector> $VECTOR=new TypeReference<Vector>() {};
-    public static final TypeReference<TMatrix<Complex>> $CMATRIX=new TypeReference<TMatrix<Complex>>() {};
-    public static final TypeReference<TVector<Complex>> $CVECTOR=new TypeReference<TVector<Complex>>() {};
-    public static final TypeReference<Complex> $COMPLEX=new TypeReference<Complex>() {};
-    public static final TypeReference<Double> $DOUBLE=new TypeReference<Double>() {};
-    public static final TypeReference<Boolean> $BOOLEAN=new TypeReference<Boolean>() {};
-    public static final TypeReference<Integer> $INTEGER=new TypeReference<Integer>() {};
-    public static final TypeReference<Long> $LONG=new TypeReference<Long>() {};
-    public static final TypeReference<Expr> $EXPR=new TypeReference<Expr>() {};
-    public static final TypeReference<TList<Complex>> $CLIST=new TypeReference<TList<Complex>>() {};
-    public static final TypeReference<TList<Expr>> $ELIST=new TypeReference<TList<Expr>>() {};
-    public static final TypeReference<TList<Double>> $DLIST=new TypeReference<TList<Double>>() {};
-    public static final TypeReference<TList<Integer>> $ILIST=new TypeReference<TList<Integer>>() {};
-    public static final TypeReference<TList<Boolean>> $BLIST=new TypeReference<TList<Boolean>>() {};
-    public static final TypeReference<TList<Matrix>> $MLIST=new TypeReference<TList<Matrix>>() {};
 
     private Maths() {
     }
@@ -727,13 +745,13 @@ public final class Maths {
             T load = t.load(file);
             return load;
         } else {
-            Chronometer cr=chrono();
+            Chronometer cr = chrono();
             T tt = item.get();
             cr.stop();
-            Chronometer cr2=chrono();
+            Chronometer cr2 = chrono();
             t.store(tt, file);
             cr2.stop();
-            $log.log(Level.INFO, "exec time " +cr+ ". stored in "+cr2+" to file " + file.getAbsolutePath() + " ...");
+            $log.log(Level.INFO, "exec time " + cr + ". stored in " + cr2 + " to file " + file.getAbsolutePath() + " ...");
             return tt;
         }
     }
@@ -826,7 +844,7 @@ public final class Maths {
     }
 
     public static <T> TList<T> copyOf(TVector<T> vector) {
-        TList<T> ts = list(vector.getComponentType(), vector.isRow(),vector.size());
+        TList<T> ts = list(vector.getComponentType(), vector.isRow(), vector.size());
         ts.appendAll(vector);
         return ts;
     }
@@ -1040,7 +1058,7 @@ public final class Maths {
         }
     }
 
-    public static double dstepsElement(double min, double max, double step,int index) {
+    public static double dstepsElement(double min, double max, double step, int index) {
         if (step >= 0) {
             if (max < min) {
                 throw new ArrayIndexOutOfBoundsException(index);
@@ -1815,13 +1833,13 @@ public final class Maths {
         DoubleParam nn = new DoubleParam("n");
         switch (plane) {
             case XY: {
-                return ParamExprList.create(false,new SinSeqXY(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false, new SinSeqXY(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
             case XZ: {
-                return ParamExprList.create(false,new SinSeqXZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false, new SinSeqXZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
             case YZ: {
-                return ParamExprList.create(false,new SinSeqYZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
+                return ParamExprList.create(false, new SinSeqYZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
             }
         }
         throw new IllegalArgumentException("Unsupported Plane " + plane);
@@ -2074,7 +2092,7 @@ public final class Maths {
     }
 
     public static Complex complex(double a, double b) {
-        return Complex.valueOf(a,b);
+        return Complex.valueOf(a, b);
     }
 
     public static Complex complex(Expr e) {
@@ -3598,17 +3616,17 @@ public final class Maths {
         RepeatableOp<Expr> c = EXPR_VECTOR_SPACE.addRepeatableOp();
         for (int i = 0; i < size1; i++) {
             for (int j = 0; j < size2; j++) {
-                c.append(e.get(i,j));
+                c.append(e.get(i, j));
             }
         }
         return c.eval();
     }
 
     public static Complex csum(int size1, int size2, TMatrixCell<Complex> e) {
-        MutableComplex c=new MutableComplex();
+        MutableComplex c = new MutableComplex();
         for (int i = 0; i < size1; i++) {
             for (int j = 0; j < size2; j++) {
-                c.add(e.get(i,j));
+                c.add(e.get(i, j));
             }
         }
         return c.toComplex();
@@ -3656,9 +3674,7 @@ public final class Maths {
     }
 
     private static ScalarProductCache resolveBestScalarProductCache(int rows, int columns) {
-        long bytesNeeded = 24L * rows * columns;
-        long free = maxFreeMemory();
-        if (bytesNeeded > free * ((double) Config.getLargeMatrixThreshold())) {
+        if (!Config.memoryCanStores(24L * rows * columns)) {
             return new MatrixScalarProductCache(Config.getLargeMatrixFactory());
         }
         return new MemScalarProductCache();
@@ -3819,40 +3835,120 @@ public final class Maths {
 //        return getDefaultScalarProductOperator().process(domain, f1, f2);
 //    }//
 
+    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
+        return scalarProductMatrix(false, g, f);
+    }
+
+    public static Matrix hscalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
+        return scalarProductMatrix(false, g, f);
+    }
+
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).toMatrix();
+    }
+
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f) {
+        return scalarProduct(false, g, f);
+    }
+
+    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f) {
+        return scalarProduct(true, g, f);
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
     }
 
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+        return scalarProduct(false, g, f, monitor);
+    }
+
+    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+        return scalarProduct(true, g, f, monitor);
+    }
+
     public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
+    }
+
+    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+        return scalarProductMatrix(false, g, f, monitor);
+    }
+
+    public static Matrix hscalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+        return scalarProductMatrix(true, g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor).toMatrix();
     }
 
+    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+        return scalarProduct(false, g, f, axis, monitor);
+    }
+
+    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+        return scalarProduct(true, g, f, axis, monitor);
+    }
+
     public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
+    }
+
+    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
+        return scalarProductMatrix(false, g, f);
+    }
+
+    public static Matrix hscalarProductMatrix(Expr[] g, Expr[] f) {
+        return scalarProductMatrix(true, g, f);
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null).toMatrix();
     }
 
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f) {
+        return scalarProduct(false, g, f);
+    }
+
+    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f) {
+        return scalarProduct(true, g, f);
+    }
+
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null);
+    }
+
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return scalarProduct(false, g, f, monitor);
+    }
+
+    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return scalarProduct(true, g, f, monitor);
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
     }
 
+    public static ScalarProductCache scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return scalarProduct(false, g, f, monitor);
+    }
+
+    public static ScalarProductCache hscalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return scalarProduct(true, g, f, monitor);
+    }
+
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor).toMatrix();
+    }
+
+    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
+        return scalarProduct(false, g, f, axis, monitor);
+    }
+
+    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
+        return scalarProduct(true, g, f, axis, monitor);
     }
 
     public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
@@ -3867,11 +3963,11 @@ public final class Maths {
 //        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
 //    }
     public static ExprList elist(int size) {
-        return new ExprArrayList(false,size);
+        return new ExprArrayList(false, size);
     }
 
-    public static ExprList elist(boolean row,int size) {
-        return new ExprArrayList(row,size);
+    public static ExprList elist(boolean row, int size) {
+        return new ExprArrayList(row, size);
     }
 
     public static ExprList elist(Expr... vector) {
@@ -3937,35 +4033,36 @@ public final class Maths {
     }
 
     public static <T> TList<T> listro(TypeReference<T> type, boolean row, TVectorModel<T> model) {
-        if(type.equals(Maths.$DOUBLE)){
+        if (type.equals(Maths.$DOUBLE)) {
             return (TList<T>) new DoubleArrayList.DoubleReadOnlyList(row, (TVectorModel<Double>) model);
         }
-        if(type.equals(Maths.$INTEGER)){
+        if (type.equals(Maths.$INTEGER)) {
             return (TList<T>) new IntArrayList.IntReadOnlyList(row, (TVectorModel<Integer>) model);
         }
-        if(type.equals(Maths.$LONG)){
+        if (type.equals(Maths.$LONG)) {
             return (TList<T>) new LongArrayList.LongReadOnlyList(row, (TVectorModel<Long>) model);
         }
-        if(type.equals(Maths.$BOOLEAN)){
+        if (type.equals(Maths.$BOOLEAN)) {
             return (TList<T>) new BooleanArrayList.BooleanReadOnlyList(row, (TVectorModel<Boolean>) model);
         }
         return new ReadOnlyTList<T>(type, row, model);
     }
+
     public static <T> TList<T> list(TypeReference<T> type, boolean row, int initialSize) {
-        if(type.equals($EXPR)){
-            return (TList<T>) elist(row,initialSize);
+        if (type.equals($EXPR)) {
+            return (TList<T>) elist(row, initialSize);
         }
-        if(type.equals($DOUBLE)){
-            return (TList<T>) dlist(row,initialSize);
+        if (type.equals($DOUBLE)) {
+            return (TList<T>) dlist(row, initialSize);
         }
-        if(type.equals($INTEGER)){
-            return (TList<T>) ilist(row,initialSize);
+        if (type.equals($INTEGER)) {
+            return (TList<T>) ilist(row, initialSize);
         }
-        if(type.equals($LONG)){
-            return (TList<T>) llist(row,initialSize);
+        if (type.equals($LONG)) {
+            return (TList<T>) llist(row, initialSize);
         }
-        if(type.equals($BOOLEAN)){
-            return (TList<T>) blist(row,initialSize);
+        if (type.equals($BOOLEAN)) {
+            return (TList<T>) blist(row, initialSize);
         }
         return new ArrayTList<T>(type, row, initialSize);
     }
@@ -4025,8 +4122,8 @@ public final class Maths {
         return doubles;
     }
 
-    public static TList<Double> dlist(boolean row,int size) {
-        return new DoubleArrayList(row,size);
+    public static TList<Double> dlist(boolean row, int size) {
+        return new DoubleArrayList(row, size);
     }
 
     public static TList<Double> dlist(int size) {
@@ -4034,23 +4131,23 @@ public final class Maths {
     }
 
     public static TList<String> slist() {
-        return new ArrayTList<String>($STRING,false,0);
+        return new ArrayTList<String>($STRING, false, 0);
     }
 
     public static TList<String> slist(String[] items) {
-        TList<String> doubles = new ArrayTList<String>($STRING,false,items.length);
+        TList<String> doubles = new ArrayTList<String>($STRING, false, items.length);
         for (String item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<String> slist(boolean row,int size) {
-        return new ArrayTList<String>($STRING,row,size);
+    public static TList<String> slist(boolean row, int size) {
+        return new ArrayTList<String>($STRING, row, size);
     }
 
     public static TList<String> slist(int size) {
-        return new ArrayTList<String>($STRING,false,size);
+        return new ArrayTList<String>($STRING, false, size);
     }
 
     public static TList<Boolean> blist() {
@@ -4065,7 +4162,7 @@ public final class Maths {
         return doubles;
     }
 
-    public static TList<Boolean> blist(boolean row,int size) {
+    public static TList<Boolean> blist(boolean row, int size) {
         return new BooleanArrayList(row, size);
     }
 
@@ -4089,7 +4186,7 @@ public final class Maths {
         return new IntArrayList(false, size);
     }
 
-    public static TList<Integer> ilist(boolean row,int size) {
+    public static TList<Integer> ilist(boolean row, int size) {
         return new IntArrayList(row, size);
     }
 
@@ -4109,7 +4206,7 @@ public final class Maths {
         return new LongArrayList(false, size);
     }
 
-    public static TList<Long> llist(boolean row,int size) {
+    public static TList<Long> llist(boolean row, int size) {
         return new LongArrayList(row, size);
     }
 
@@ -4250,9 +4347,9 @@ public final class Maths {
     }
 
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
-        TypeReference cls=arr[0].getComponentType();
+        TypeReference cls = arr[0].getComponentType();
         for (int i = 0; i < arr.length; i++) {
-            cls=PlatformUtils.lowestCommonAncestor(cls,arr[i].getComponentType());
+            cls = PlatformUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
         }
         VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
         return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
@@ -5017,6 +5114,7 @@ public final class Maths {
     public static <T> T[] toArray(Class<T> t, Collection<T> coll) {
         return (T[]) coll.toArray((T[]) Array.newInstance(t, coll.size()));
     }
+
     public static <T> T[] toArray(TypeReference<T> t, Collection<T> coll) {
         return (T[]) coll.toArray((T[]) Array.newInstance(t.getTypeClass(), coll.size()));
     }
@@ -5157,42 +5255,45 @@ public final class Maths {
     }
 
     public static void main(String[] args) {
-        System.out.println(dlist(refineSamples(dtimes(0,5,6),1)));
-        System.out.println(dlist(refineSamples(dtimes(0,5,6),2)));
+        System.out.println(dlist(refineSamples(dtimes(0, 5, 6), 1)));
+        System.out.println(dlist(refineSamples(dtimes(0, 5, 6), 2)));
     }
 
-    public static DoubleList refineSamples(TList<Double> values,int n){
-        DoubleList values2=(DoubleList) values.to($DOUBLE);
-        return (DoubleList) dlist(refineSamples(values2.toDoubleArray(),n));
+    public static DoubleList refineSamples(TList<Double> values, int n) {
+        DoubleList values2 = (DoubleList) values.to($DOUBLE);
+        return (DoubleList) dlist(refineSamples(values2.toDoubleArray(), n));
     }
 
     /**
      * adds n points between each 2 points
+     *
      * @param values initial sample
      * @return
      */
-    public static double[] refineSamples(double[] values,int n){
-        if(n==0){
-            return Arrays.copyOf(values,values.length);
+    public static double[] refineSamples(double[] values, int n) {
+        if (n == 0) {
+            return Arrays.copyOf(values, values.length);
         }
-        double[] d2=new double[values.length+n*(values.length-1)];
-        for (int i = 0; i < values.length-1; i++) {
+        double[] d2 = new double[values.length + n * (values.length - 1)];
+        for (int i = 0; i < values.length - 1; i++) {
             int s = i * (1 + n);
-            double[] d3=dtimes(values[i],values[i+1],n+2);
-            System.arraycopy(d3,0,d2,s,d3.length-1);
+            double[] d3 = dtimes(values[i], values[i + 1], n + 2);
+            System.arraycopy(d3, 0, d2, s, d3.length - 1);
         }
-        d2[d2.length-1]=values[values.length-1];
+        d2[d2.length - 1] = values[values.length - 1];
         return d2;
     }
 
     public static class Config {
 
         private static final DumpManager dumpManager = new DumpManager();
+        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
         private static int simplifierCacheSize = 2000;
-        private static float largeMatrixThreshold = 0.7f;
+        //        private static float largeMatrixThreshold = 0.7f;
         private static boolean debugExpressionRewrite = false;
         private static boolean strictComputationMonitor = false;
+        private static float maxMemoryThreshold = 0.7f;
         private static FrequencyFormatter frequencyFormatter = new FrequencyFormatter();
         private static MemorySizeFormatter memorySizeFormatter = new MemorySizeFormatter();
         private static MetricFormatter metricFormatter = new MetricFormatter();
@@ -5203,7 +5304,7 @@ public final class Maths {
         private static int matrixBlockPrecision = 256;
         private static InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
         private static SolveStrategy defaultMatrixSolveStrategy = SolveStrategy.DEFAULT;
-        private static MatrixFactory defaultMatrixFactory = MemMatrixFactory.INSTANCE;
+        private static MatrixFactory defaultMatrixFactory = SmartMatrixFactory.INSTANCE;
         private static CacheMode persistenceCacheMode = CacheMode.ENABLED;
         private static boolean cacheEnabled = true;
         private static boolean expressionWriterCacheEnabled = true;
@@ -5212,11 +5313,12 @@ public final class Maths {
         private static boolean developmentMode = false;
         private static String rootCachePath = "${user.home}/.cache/mathcache";
         private static String defaultCacheFolderName = "default";
-        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
+        //        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
         private static ScalarProductOperator defaultScalarProductOperator = null;
         private static FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
         private static Map<ClassPair, Converter> converters = new HashMap<>();
+        private static Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
 
         private static PropertyChangeSupport pcs = new PropertyChangeSupport(Config.class);
         private static DoubleFormatter defaultDblFormat = new DoubleFormatter() {
@@ -5248,6 +5350,58 @@ public final class Maths {
             registerConverter(Expr.class, Complex.class, EXPR_TO_COMPLEX);
         }
 
+        public static boolean memoryCanStores(long bytesToStore) {
+            return (bytesToStore <= (maxFreeMemory() * ((double) getMaxMemoryThreshold())));
+        }
+
+        public static float getMaxMemoryThreshold() {
+            return maxMemoryThreshold;
+        }
+
+        public static void setMaxMemoryThreshold(float maxMemoryThreshold) {
+            Config.maxMemoryThreshold = maxMemoryThreshold;
+        }
+
+        public static TMatrixFactory getTMatrixFactory(String id) {
+            TMatrixFactory fac = matrixFactories.get(id);
+            if (fac == null) {
+                if (SmartMatrixFactory.INSTANCE.getId().equals(id)) {
+                    registerTMatrixFactory(SmartMatrixFactory.INSTANCE);
+                    return SmartMatrixFactory.INSTANCE;
+                }
+                if (MemMatrixFactory.INSTANCE.getId().equals(id)) {
+                    registerTMatrixFactory(MemMatrixFactory.INSTANCE);
+                    return MemMatrixFactory.INSTANCE;
+                }
+                if (OjalgoMatrixFactory.INSTANCE.getId().equals(id)) {
+                    registerTMatrixFactory(OjalgoMatrixFactory.INSTANCE);
+                    return OjalgoMatrixFactory.INSTANCE;
+                }
+                if (JBlasMatrixFactory.INSTANCE.getId().equals(id)) {
+                    registerTMatrixFactory(JBlasMatrixFactory.INSTANCE);
+                    return JBlasMatrixFactory.INSTANCE;
+                }
+                String id1 = DBLargeMatrixFactory.createId(id);
+                if (id1 != null) {
+                    DBLargeMatrixFactory dbLargeMatrixFactory = new DBLargeMatrixFactory(id);
+                    registerTMatrixFactory(dbLargeMatrixFactory);
+                    return dbLargeMatrixFactory;
+                }
+                throw new IllegalArgumentException("Factory not Found : "+id);
+            } else {
+                return fac;
+            }
+        }
+
+        public static void registerTMatrixFactory(TMatrixFactory factory) {
+            TMatrixFactory fac = matrixFactories.get(factory.getId());
+            if (fac == null) {
+                matrixFactories.put(factory.getId(), factory);
+            } else {
+                throw new IllegalArgumentException("Already registered");
+            }
+        }
+
         public static <A, B> void registerConverter(Class<A> a, Class<B> b, Converter<A, B> c) {
             ClassPair k = new ClassPair(a, b);
             if (c == null) {
@@ -5272,8 +5426,9 @@ public final class Maths {
             }
             return converter;
         }
+
         public static <A, B> Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
-            return getConverter(a.getTypeClass(),a.getTypeClass());
+            return getConverter(a.getTypeClass(), a.getTypeClass());
         }
 
         public static boolean isDevelopmentMode() {
@@ -5337,6 +5492,10 @@ public final class Maths {
         }
 
 
+        public static HadrumathsFileSystem getCacheFileSystem() {
+            return new FolderFileSystem(new File(getCacheFolder()));
+        }
+
         public static String getCacheFolder() {
             return getCacheFolder(null);
         }
@@ -5392,21 +5551,6 @@ public final class Maths {
             return ExpressionRewriterFactory.getComputationOptimizer();
         }
 
-        public static float getLargeMatrixThreshold() {
-            return largeMatrixThreshold;
-        }
-
-        public static void setLargeMatrixThreshold(float largeMatrixThreshold) {
-            Config.largeMatrixThreshold = largeMatrixThreshold;
-        }
-
-        public static void seLargeMatrixCachePath(String largeMatrixPath) {
-            Config.largeMatrixCachePath = largeMatrixPath;
-        }
-
-        public static String getLargeMatrixCachePath(boolean expand) {
-            return expand ? replaceVars(IOUtils.expandPath(largeMatrixCachePath)) : largeMatrixCachePath;
-        }
 
         public static void addConfigChangeListener(PropertyChangeListener listener) {
             pcs.addPropertyChangeListener(listener);
@@ -5474,6 +5618,14 @@ public final class Maths {
             defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
         }
 
+        public static String getLargeMatrixCachePath(boolean expand) {
+            return expand ? Maths.Config.replaceVars(IOUtils.expandPath(largeMatrixCachePath)) : largeMatrixCachePath;
+        }
+
+        public static void seLargeMatrixCachePath(String largeMatrixPath) {
+            largeMatrixCachePath = largeMatrixPath;
+        }
+
         public static MatrixFactory getMatrixFactory() {
             return defaultMatrixFactory;
         }
@@ -5482,9 +5634,9 @@ public final class Maths {
             if (DEFAULT_LARGE_MATRIX_FACTORY == null) {
                 synchronized (Maths.class) {
                     if (DEFAULT_LARGE_MATRIX_FACTORY == null) {
-                        LargeMatrixFactory s = DBLargeMatrixFactory.createLocalSparseStorage(null, new File(
-                                Config.getLargeMatrixCachePath(true)
-                        ));
+                        LargeMatrixFactory s = (LargeMatrixFactory) getTMatrixFactory(
+                                DBLargeMatrixFactory.createLocalId(Config.getLargeMatrixCachePath(false), true, null)
+                        );
                         s.setResetOnClose(true);
                         DEFAULT_LARGE_MATRIX_FACTORY = s;
                     }
@@ -5518,7 +5670,7 @@ public final class Maths {
             }
         }
 
-        private static String replaceVars(String format) {
+        public static String replaceVars(String format) {
             return StringUtils.replaceVars(format, new StringMapper() {
                 @Override
                 public String get(String key) {

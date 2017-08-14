@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -22,7 +22,7 @@ import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
  */
 public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
     @Override
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop str2 = (MomStructureFractalZop) str;
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
@@ -30,7 +30,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
         ModeFunctions fn = str.getModeFunctions();
         str.getModes();//just to load it
         ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? str.getModes() : fn.getVanishingModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
+        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         boolean hintUseOldZsStyle = str2.isHintUseOldZsStyle();
@@ -42,7 +42,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                 Vector spp = sp.getRow(p);
                 for (int q = p; q < g.length; q++) {
                     Vector spq = sp.getRow(q);
-                    Complex c = Complex.ZERO;
+                    Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         Complex zn = n.impedance;
                         c = c.add(zn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
@@ -62,7 +62,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
@@ -74,12 +74,12 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     if (op != null) {//op==null si k==1
                         //System.out.println("op = " + opValue.getMatrix());
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                        ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                         for (int p = 0; p < g.length; p++) {
                             Vector spc2p = spc2.getRow(p);
                             for (int q = p; q < g.length; q++) {
                                 Vector spc2q = spc2.getRow(q);
-                                Complex c = Complex.ZERO;
+                                Complex c = Maths.CZERO;
                                 for (int m = 0; m < op.length; m++) {
                                     for (int n = 0; n < op[m].length; n++) {
                                         //#@ ID=1@20070423
@@ -114,7 +114,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                 Vector spp = sp.getRow(p);
                 for (int q = 0; q < g.length; q++) {
                     Vector spq = sp.getRow(q);
-                    Complex c = Complex.ZERO;
+                    Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         c = c.add(n.impedance.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
@@ -133,7 +133,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                    ScalarProductCache spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         Vector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
@@ -144,12 +144,12 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                     if (op != null) {//op==null si k==1
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ComputationMonitorFactory.none());
+                        ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                         for (int p = 0; p < g.length; p++) {
                             Vector spc2p = spc2.getRow(p);
                             for (int q = 0; q < g.length; q++) {
                                 Vector spc2q = spc2.getRow(q);
-                                Complex c = Complex.ZERO;
+                                Complex c = Maths.CZERO;
                                 for (int m = 0; m < op.length; m++) {
                                     for (int n = 0; n < op[m].length; n++) {
                                         //#@ ID=1@20070423

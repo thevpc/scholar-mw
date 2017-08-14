@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
+import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 
@@ -10,9 +11,10 @@ import java.util.logging.Level;
  */
 public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgressMonitor {
     private ComputationMonitorInc incrementor = new DeltaComputationMonitorInc(1E-2);
-    private long startTime;
+    private Chronometer chronometer;
     private boolean paused = false;
     private boolean cancelled = false;
+    private boolean started = false;
 
     public AbstractEnhancedProgressMonitor() {
     }
@@ -191,8 +193,10 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
     }
 
     public final void setProgress(double progress, ProgressMessage message) {
-        if (startTime == 0) {
-            startTime = System.currentTimeMillis();
+        Chronometer c = getChronometer();//
+        if(!started){
+            started=true;
+            c.start();
         }
         if (cancelled) {
             throw new ComputationCancelledException();
@@ -238,7 +242,15 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
     }
 
     public long getStartTime() {
-        return startTime;
+        return getChronometer().getStartTime();
+    }
+
+    @Override
+    public Chronometer getChronometer() {
+        if(chronometer==null){
+            chronometer=new Chronometer(false);
+        }
+        return chronometer;
     }
 
     @Override

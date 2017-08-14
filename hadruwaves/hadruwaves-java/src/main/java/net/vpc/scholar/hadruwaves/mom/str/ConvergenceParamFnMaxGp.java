@@ -8,7 +8,7 @@
 //import java.util.Map;
 //
 //import net.vpc.scholar.math.convergence.*;
-//import net.vpc.scholar.math.util.ComputationMonitor;
+//import net.vpc.scholar.math.util.ProgressMonitor;
 //import net.vpc.scholar.tmwlib.mom.MomStructure;
 //import net.vpc.scholar.tmwlib.mom.TestFunctions;
 //
@@ -51,13 +51,13 @@
 //        return object;
 //    }
 //
-//    public ConvergenceFunctionResult<_ResultType> evaluate(MomStructure object,ComputationMonitor monitor){
+//    public ConvergenceFunctionResult<_ResultType> evaluate(MomStructure object,ProgressMonitor monitor){
 //        ConvergenceEvaluator<MomStructure,Integer,_ResultType> process=new ConvergenceEvaluator<MomStructure, Integer, _ResultType>(object, fnConvergenceEvaluator);
 //        ConvergenceResult<_ResultType> r = process.evaluate(fnMax, fnIndex, fnMax.length, convPars, monitor);
 //        return new ConvergenceFunctionResult<_ResultType>(r.getValue(),r);
 //    }
 //
-////    public abstract _ResultType computeLevel2(MomStructure object2,ComputationMonitor monitor);
+////    public abstract _ResultType computeLevel2(MomStructure object2,ProgressMonitor monitor);
 //
 //    public Map<String, Object> getFixedParams() {
 //        return fixedParams;

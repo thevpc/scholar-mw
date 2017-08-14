@@ -42,7 +42,7 @@ public class ObjectCache {
         return persistenceCache.getFile(dump, name);
     }
 
-    public File getFolder() {
+    public HFile getFolder() {
         return persistenceCache.getDumpFolder(dump, true);
     }
 
@@ -57,23 +57,23 @@ public class ObjectCache {
             @Override
             public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws IOException {
                 DumpCacheFile file = getObjectCacheFile(name);
-                File path = file.getFile().getAbsoluteFile();
+                HFile path = file.getFile();
                 storeObject(path,o,m,message);
                 file.touch();
             }
         });
     }
 
-    public static void storeObject(File path, Object o, ProgressMonitor computationMonitor, String message) throws IOException{
+    public static void storeObject(HFile path, Object o, ProgressMonitor computationMonitor, String message) throws IOException{
         EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
         if (o != null && o instanceof CacheObjectSerializerProvider) {
-            File serFile = new File(path.getPath() + ".ser");
+            HFile serFile = path.getFs().get(path.getPath() + ".ser");
             o = ((CacheObjectSerializerProvider) o).createCacheObjectSerializedForm(serFile);
             if(o==null){
                 throw new IOException("CacheObjectSerializedForm could not be null");
             }
         }
-        IOUtils.saveZippedObject(path.getPath(), o,m,message);
+        IOUtils.saveZippedObject(path, o,m,message);
     }
 
     public Object load(String name) throws IOException {
@@ -89,7 +89,7 @@ public class ObjectCache {
         return loadObject(file.getFile(),o);
     }
 
-    public static CacheObjectSerializedForm toSerializedForm(Object value,File file) throws IOException {
+    public static CacheObjectSerializedForm toSerializedForm(Object value,HFile file) throws IOException {
         if(value==null){
             return null;
         }
@@ -105,13 +105,12 @@ public class ObjectCache {
         throw new IllegalArgumentException("Unsupported");
     }
 
-    public static Object loadObject(File file,Object defaultValue) throws IOException {
-        if (file.exists()) {
+    public static Object loadObject(HFile file,Object defaultValue) throws IOException {
+        if (file.existsOrWait()) {
             try {
-                Object o1 = loadZippedObject(file.getAbsolutePath());
+                Object o1 = loadZippedObject(file);
                 if(o1 != null && o1 instanceof CacheObjectSerializedForm) {
-                    File path = file.getAbsoluteFile();
-                    File serFile = new File(path.getPath() + ".ser");
+                    HFile serFile = file.getFs().get(file.getPath() + ".ser");
                     CacheObjectSerializedForm s = ((CacheObjectSerializedForm) o1);
                     o1=s.deserialize(serFile);
                 }
@@ -125,6 +124,27 @@ public class ObjectCache {
         return defaultValue;
     }
 
+    public static Object loadZippedObject(HFile physicalName) throws IOException, ClassNotFoundException {
+        if(physicalName.existsOrWait()){
+            ObjectInputStream ois = null;
+            try {
+                InputStream theIs = null;
+                InputStream fis = physicalName.getInputStream();
+                long length = physicalName.length();
+                if (length > 10000) {
+                    theIs = new ProgressMonitorInputStream2(null, "Reading " + physicalName, fis, length);
+                } else {
+                    theIs = fis;
+                }
+                ois = new ObjectInputStream(new GZIPInputStream(theIs));
+                return ois.readObject();
+            } finally {
+                if (ois != null) ois.close();
+            }
+        }else{
+            throw new IOException("File Not Found "+physicalName);
+        }
+    }
     public static Object loadZippedObject(String physicalName) throws IOException, ClassNotFoundException {
         File file = new File(IOUtils.expandPath(physicalName));
         ObjectInputStream ois = null;
@@ -143,21 +163,21 @@ public class ObjectCache {
         }
     }
 
-    public void addStat(String statName, long statValue) {
+    public void addStat(String statName, long statValueNano) {
 
         PrintStream ps = null;
         try {
             try {
                 DumpCacheFile sf = getFile("statistics" + CACHE_LOG_SUFFIX);
-                ps = new PrintStream(new FileOutputStream(sf.getFile(), true));
-                ps.println(statName + " = " + statValue + " (" + Chronometer.formatPeriod(statValue) + ")");
+                ps = new PrintStream(sf.getFile().getOutputStream( true));
+                ps.println(statName + " = " + statValueNano + " (" + Chronometer.formatPeriodNano(statValueNano) + ")");
                 sf.touch();
             } finally {
                 if (ps != null) {
                     ps.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             //
         }
     }
@@ -167,9 +187,9 @@ public class ObjectCache {
         BufferedReader in = null;
         try {
             DumpCacheFile cfile = getFile(setName + CACHE_LOG_SUFFIX);
-            File file = cfile.getFile();
-            if (file.exists()) {
-                in = new BufferedReader(new FileReader(file));
+            HFile file = cfile.getFile();
+            if (file.existsOrWait()) {
+                in = new BufferedReader(file.getReader());
                 String line;
                 while ((line = in.readLine()) != null) {
                     String trimmed = line.trim();
@@ -199,9 +219,9 @@ public class ObjectCache {
             try {
                 try {
                     DumpCacheFile cfile = getFile(setName + CACHE_LOG_SUFFIX);
-                    File file = cfile.getFile();
-                    file.getParentFile().mkdirs();
-                    ps = new PrintStream(new FileOutputStream(file, true));
+                    HFile file = cfile.getFile();
+                    file.mkdirParents();
+                    ps = new PrintStream(file.getOutputStream(true));
                     ps.println(item);
                     cfile.touch();
                 } finally {
@@ -209,7 +229,7 @@ public class ObjectCache {
                         ps.close();
                     }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 //
             }
         }
@@ -221,7 +241,7 @@ public class ObjectCache {
         try {
             try {
                 DumpCacheFile cfile = getFile("log" + CACHE_LOG_SUFFIX);
-                ps = new PrintStream(new FileOutputStream(cfile.getFile(), true));
+                ps = new PrintStream(cfile.getFile().getOutputStream(true));
                 ps.println(statName);
                 cfile.touch();
             } finally {
@@ -229,7 +249,7 @@ public class ObjectCache {
                     ps.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             //
         }
     }
@@ -240,7 +260,7 @@ public class ObjectCache {
         BufferedReader in = null;
         try {
             DumpCacheFile cfile = getFile("statistics" + CACHE_LOG_SUFFIX);
-            in = new BufferedReader(new FileReader(cfile.getFile()));
+            in = new BufferedReader(cfile.getFile().getReader());
             String line;
             while ((line = in.readLine()) != null) {
                 if (line.startsWith(statName + " = ")) {

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixXBuilder;
 
 /**
@@ -30,7 +30,7 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
         } else {
             return storeConvergenceResult(conv.evaluate(momStructure, new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ComputationMonitor monitor) {
+                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImpl();
                 }
             }, getMonitor()));

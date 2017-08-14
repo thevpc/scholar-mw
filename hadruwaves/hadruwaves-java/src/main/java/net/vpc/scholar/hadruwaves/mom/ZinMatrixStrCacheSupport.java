@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -11,9 +11,9 @@ import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
 class ZinMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
 
     private MomStructure momStructure;
-    private ComputationMonitor[] mon;
+    private ProgressMonitor[] mon;
 
-    public ZinMatrixStrCacheSupport(MomStructure momStructure, EnhancedComputationMonitor monitor0) {
+    public ZinMatrixStrCacheSupport(MomStructure momStructure, EnhancedProgressMonitor monitor0) {
         super(momStructure, MomStructure.CACHE_ZIN,monitor0);
         this.momStructure = momStructure;
     }

@@ -35,6 +35,8 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
 
     Matrix newIdentity(int rows, int cols);
 
+    Matrix newMatrix(Matrix[][] blocs);
+
     Matrix newMatrix(String string);
 
     Matrix newMatrix(MutableComplex[][] complex);

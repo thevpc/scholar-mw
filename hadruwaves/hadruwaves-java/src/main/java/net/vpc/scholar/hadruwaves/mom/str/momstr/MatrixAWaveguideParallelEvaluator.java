@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -17,14 +17,14 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
  */
 public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
     public static final MatrixAWaveguideParallelEvaluator INSTANCE=new MatrixAWaveguideParallelEvaluator();
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
         Complex[][] b = new Complex[_g.length][_g.length];
         ModeFunctions fn = str.getModeFunctions();
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_eva = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ComputationMonitorFactory.none());
+        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex=fn.isComplex()||gpTestFunctions.isComplex();
         boolean symMatrix=!complex;
         if (symMatrix) {

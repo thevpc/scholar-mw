@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.console.PlotEvaluator;
 import net.vpc.scholar.hadruwaves.mom.console.yaxis.PlotAxisSeries;
 
@@ -17,7 +17,7 @@ public class PlotValueMatrix extends PlotAxisSeries implements Cloneable {
     }
 
    @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return value.computeValue(structure,monitor,p);
     }
 

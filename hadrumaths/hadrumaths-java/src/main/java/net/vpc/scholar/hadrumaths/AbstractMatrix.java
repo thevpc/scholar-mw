@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
+
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public abstract class AbstractMatrix extends Matrix {
 
     private static final long serialVersionUID = -1010101010101001044L;
     private transient MatrixFactory factory;
+    private String factoryId;
 
     /*To exchange two rows in a matrix*/
     public static void exchange_row(TMatrix<Complex> M, int k, int l, int m, int n) {
@@ -324,7 +326,6 @@ public abstract class AbstractMatrix extends Matrix {
      */
     public Matrix getMatrix(int[] r, int[] c) {
         Matrix X = createMatrix(r.length, c.length);
-        Complex[][] B = X.getArray();
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = 0; j < c.length; j++) {
@@ -472,6 +473,9 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     public Matrix mul(TMatrix<Complex> other) {
+        if (getColumnCount() != other.getRowCount()) {
+            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
+        }
         int a_rows = getRowCount();
         int b_cols = other.getColumnCount();
         int b_rows = other.getRowCount();
@@ -482,13 +486,16 @@ public abstract class AbstractMatrix extends Matrix {
                 for (int k = 0; k < b_rows; k++) {
                     sum.addProduct(get(i, k), (other.get(k, j)));
                 }
-                newElements.set(i, j, sum.toComplex());
+                newElements.set(i, j, sum);
             }
         }
         return newElements;
     }
 
     public Matrix mul(Complex[][] other) {
+        if (getColumnCount() != other.length) {
+            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.length + " of the right matrix!");
+        }
         int a_rows = getRowCount();
         int b_cols = other[0].length;
         int b_rows = other.length;
@@ -499,7 +506,7 @@ public abstract class AbstractMatrix extends Matrix {
                 for (int k = 0; k < b_rows; k++) {
                     sum.addProduct(get(i, k), (other[k][j]));
                 }
-                newElements.set(i, j, sum.toComplex());
+                newElements.set(i, j, sum);
             }
         }
         return newElements;
@@ -1128,21 +1135,21 @@ public abstract class AbstractMatrix extends Matrix {
         return m;
     }
 
-    public Matrix transpose() {
+    public final Matrix transpose() {
         return arrayTranspose();
     }
 
     /**
      * @return equivalent to transposeHermitian
      */
-    public Matrix transjugate() {
+    public final Matrix transjugate() {
         return transposeHermitian();
     }
 
     /**
      * @return equivalent to transposeHermitian
      */
-    public Matrix transposeConjugate() {
+    public final Matrix transposeConjugate() {
         return transposeHermitian();
     }
 
@@ -1253,7 +1260,7 @@ public abstract class AbstractMatrix extends Matrix {
         }
         switch (n) {
             case 1: {
-                return new MemMatrix(new Complex[][]{{get(0, 0).inv()}});
+                return getFactory().newMatrix(new Complex[][]{{get(0, 0).inv()}});
             }
             case 2: {
                 Complex A = get(0, 0);
@@ -1274,7 +1281,7 @@ public abstract class AbstractMatrix extends Matrix {
             default: {
                 int n2 = n / 2;
                 Matrix A = getMatrix(0, n2 - 1, 0, n2 - 1);
-                Matrix B = getMatrix(n2, n - 1, 0, n2);
+                Matrix B = getMatrix(n2, n - 1, 0, n2 - 1);
                 Matrix C = getMatrix(0, n2 - 1, n2, n - 1);
                 Matrix D = getMatrix(n2, n - 1, n2, n - 1);
                 Matrix Ai = A.invBlock(delegate, precision);
@@ -1414,7 +1421,7 @@ public abstract class AbstractMatrix extends Matrix {
 //            System.out.println("determinant is " + det);
         Complex dd = det.inv();
         if (tms == 1) {
-            return new MemMatrix(new Complex[][]{{dd}});
+            return getFactory().newMatrix(new Complex[][]{{dd}});
         }
         Matrix mm = adjoint();
         for (int i = 0; i < tms; i++) {
@@ -1429,23 +1436,10 @@ public abstract class AbstractMatrix extends Matrix {
     public Matrix coMatrix(int row, int col) {
         int tms = getRowCount();
         Matrix ap = createMatrix(tms - 1, tms - 1);
-//                for (ii = 0; ii < tms; ii++) {
-//                    for (jj = 0; jj < tms; jj++) {
-//                        if ((ii != i) && (jj != j)) {
-//                            ap[ia][ja] = elements[ii][jj];
-//                            ja++;
-//                        }
-//                    }
-//                    if ((ii != i) && (jj != j)) {
-//                        ia++;
-//                    }
-//                    ja = 0;
-//                }
         int ia = 0;
         int ja;
         for (int ii = 0; ii < row; ii++) {
             ja = 0;
-//            Complex[] apia = ap[ia];
             for (int jj = 0; jj < col; jj++) {
                 ap.set(ia, ja, get(ii, jj));
                 ja++;
@@ -2018,7 +2012,7 @@ public abstract class AbstractMatrix extends Matrix {
         if (isRow()) {
             return getRow(0);
         }
-        throw new RuntimeException("Not a vector "+getRowCount()+"x"+getColumnCount());
+        throw new RuntimeException("Not a vector " + getRowCount() + "x" + getColumnCount());
     }
 
     public Complex scalarProduct(boolean hermitian, TMatrix<Complex> m) {
@@ -2067,7 +2061,7 @@ public abstract class AbstractMatrix extends Matrix {
         Matrix X = createMatrix(rows, columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, Complex.valueOf(get(i, j).absdbl()));
+                X.set(i, j, get(i, j).absdbl(), 0);
             }
         }
         return X;
@@ -2190,6 +2184,7 @@ public abstract class AbstractMatrix extends Matrix {
 
     }
 
+    @Override
     public Matrix pow(Complex power) {
         if (isScalar()) {
             return Maths.constantMatrix(1, get(0, 0).pow(power));
@@ -2306,8 +2301,9 @@ public abstract class AbstractMatrix extends Matrix {
 
     }
 
-    protected MatrixFactory getDefaultFactory(){
-        return MemMatrixFactory.INSTANCE;
+    @Override
+    public String getFactoryId() {
+        return factoryId;
     }
 
     @Override
@@ -2315,7 +2311,10 @@ public abstract class AbstractMatrix extends Matrix {
         if (factory != null) {
             return factory;
         }
-        MatrixFactory df= getDefaultFactory();
+        if (factoryId != null) {
+            return factory = (MatrixFactory) Maths.Config.getTMatrixFactory(factoryId);
+        }
+        MatrixFactory df = Maths.Config.getDefaultMatrixFactory();
         if (df == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }
@@ -2325,6 +2324,7 @@ public abstract class AbstractMatrix extends Matrix {
     @Override
     public void setFactory(TMatrixFactory<Complex> factory) {
         this.factory = (MatrixFactory) factory;
+        this.factoryId = factory == null ? null : factory.getId();
     }
 
     @Override
@@ -2337,9 +2337,20 @@ public abstract class AbstractMatrix extends Matrix {
         return get(vectorIndex);
     }
 
-    private boolean isSquare() {
+    public boolean isSquare() {
         return getColumnCount() == getRowCount();
     }
+
+    @Override
+    public boolean isHermitian() {
+        return isSquare() && equals(transposeConjugate());
+    }
+
+    @Override
+    public boolean isSymmetric() {
+        return isSquare() && equals(transpose());
+    }
+
 
     private void checkSquare() {
         if (!isSquare()) {
@@ -2401,25 +2412,25 @@ public abstract class AbstractMatrix extends Matrix {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(o==null || !(o instanceof TMatrix)){
+        if (o == null || !(o instanceof TMatrix)) {
             return false;
         }
 
         TMatrix<?> that = (TMatrix<?>) o;
         int columnCount = getColumnCount();
         int rowCount = getRowCount();
-        if(that.getColumnCount()!= columnCount){
+        if (that.getColumnCount() != columnCount) {
             return false;
         }
-        if(that.getRowCount()!= rowCount){
+        if (that.getRowCount() != rowCount) {
             return false;
         }
-        if(!that.getComponentType().equals(getComponentType())){
+        if (!that.getComponentType().equals(getComponentType())) {
             return false;
         }
         for (int c = 0; c < columnCount; c++) {
             for (int r = 0; r < rowCount; r++) {
-                if(!Objects.equals(get(r,c),that.get(r,c))){
+                if (!Objects.equals(get(r, c), that.get(r, c))) {
                     return false;
                 }
             }
@@ -2437,7 +2448,7 @@ public abstract class AbstractMatrix extends Matrix {
         for (int c = 0; c < columnCount; c++) {
             for (int r = 0; r < rowCount; r++) {
                 Complex t = get(r, c);
-                if(t!=null) {
+                if (t != null) {
                     hash = 89 * hash + t.hashCode();
                 }
             }
@@ -2445,10 +2456,58 @@ public abstract class AbstractMatrix extends Matrix {
         return hash;
 
     }
+
     @Override
     public void resize(int rows, int columns) {
         throw new IllegalArgumentException("Unsupported resize Matrix");
     }
 
 
+    @Override
+    public Matrix copy() {
+        return getFactory().newMatrix(this);
+    }
+
+    public void set(int row, int col, double real, double imag) {
+        set(row, col, Complex.valueOf(real, imag));
+    }
+
+    @Override
+    public void set(int row, int col, MutableComplex value) {
+        set(row, col, value.getReal(), value.getImag());
+    }
+
+    @Override
+    public void set(Complex[][] values) {
+        int rows = values.length;
+        int cols = values[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.set(i, j, values[i][j]);
+            }
+        }
+    }
+
+    @Override
+    public void set(MutableComplex[][] values) {
+        int rows = values.length;
+        int cols = values[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                MutableComplex r = values[i][j];
+                this.set(i, j, r.getReal(), r.getImag());
+            }
+        }
+    }
+
+    @Override
+    public void set(double[][] values) {
+        int rows = values.length;
+        int cols = values[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.set(i, j, values[i][j], 0);
+            }
+        }
+    }
 }

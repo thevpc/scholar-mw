@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.mom.console.yaxis.PlotAxisSeries;
@@ -35,12 +35,12 @@ public abstract class PlotElectricFieldAbstract extends PlotAxisSeries implement
         this.threshold = threshold;
     }
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure,monitor,p);
     }
 
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         if (p.getAxis().getX() instanceof XParamSet) {
             XParamSet xAxis = (XParamSet) p.getAxis().getX();
             double[] xval = structure.toXForDomainCoeff(xAxis.getValues());
@@ -62,7 +62,7 @@ public abstract class PlotElectricFieldAbstract extends PlotAxisSeries implement
         }
     }
 
-    protected abstract Complex[][][] resolveE(MomStructure structure, double[] x, double[] y, double[] z, ComputationMonitor monitor);
+    protected abstract Complex[][][] resolveE(MomStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor);
 
     public Axis getAxis() {
         return axis;

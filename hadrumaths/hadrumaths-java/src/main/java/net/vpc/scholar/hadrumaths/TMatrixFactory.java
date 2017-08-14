@@ -7,6 +7,8 @@ import java.io.IOException;
  * Created by vpc on 2/5/15.
  */
 public interface TMatrixFactory<T> {
+    String getId();
+
     TMatrix newMatrix(TMatrix<T> other);
 
     TMatrix<T> newMatrix(int rows, int columns);

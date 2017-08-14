@@ -1,15 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -30,18 +30,18 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
     }
 
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure, monitor, p);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ComputationMonitor monitor, ConsoleActionParams p) {
-        EnhancedComputationMonitor emonitor = ComputationMonitorFactory.enhance(monitor);
+    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         return Maths.invokeMonitoredAction(
                 emonitor,
                 getClass().getSimpleName(),
                 new MonitoredAction<NamedMatrix>() {
                     @Override
-                    public NamedMatrix process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public NamedMatrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         ModeFunctions fnModeFunctions = structure.getModeFunctions();
                         Complex[][] gfps = new Complex[fnModeFunctions.count()][fnModeFunctions.count()];
                         ModeInfo[] indexes = structure.getModes();
@@ -52,7 +52,7 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
                                 gfps[q][n] = scalarProduct(true, indexes[n].fn, indexes[q].fn);
 //                progress++;
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
-                                ComputationMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
+                                ProgressMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
                             }
                         }
                         NamedMatrix namedMatrix = new NamedMatrix(gfps);

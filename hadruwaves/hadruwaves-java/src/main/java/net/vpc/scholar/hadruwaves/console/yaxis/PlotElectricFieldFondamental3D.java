@@ -9,14 +9,14 @@ import net.vpc.scholar.hadruwaves.mom.ElectricFieldPart;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 public class PlotElectricFieldFondamental3D extends PlotAxisCubes implements Cloneable {
     public PlotElectricFieldFondamental3D(YType... type) {
         super("ElectricFieldFondamental3D",type);
     }
 
-    protected VDiscrete computeValue(ConsoleAwareObject o, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected VDiscrete computeValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
         MomStructure structure=(MomStructure) o;
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());

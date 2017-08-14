@@ -35,11 +35,6 @@ public class MatrixFromRowVector extends AbstractMatrix {
     }
 
     @Override
-    protected MatrixFactory getDefaultFactory() {
-        return MemMatrixFactory.INSTANCE;
-    }
-
-    @Override
     public void resize(int rows, int columns) {
         throw new IllegalArgumentException("Unsupported Resize");
     }

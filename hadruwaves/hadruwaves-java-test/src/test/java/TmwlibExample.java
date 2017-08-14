@@ -1,6 +1,6 @@
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
@@ -34,7 +34,7 @@ public class TmwlibExample {
                 .addGeometry(attachBox).setComplexity(1).applyBoxModes() //attach test function
                 .build()
         );
-        str.current().monitor(ComputationMonitorFactory.temporize(ComputationMonitorFactory.logger(),1000)).computeMatrix(Axis.X, Samples.relative(100));
+        str.current().monitor(ProgressMonitorFactory.temporize(ProgressMonitorFactory.logger(),1000)).computeMatrix(Axis.X, Samples.relative(100));
 //        Plot.console().createPlot().setStructure(str)
 //                .setX(xyParamSet(100, 50)) // precision (100 samples on X axis, ...)
 //                .addY(testFunctions()) //plot test functions

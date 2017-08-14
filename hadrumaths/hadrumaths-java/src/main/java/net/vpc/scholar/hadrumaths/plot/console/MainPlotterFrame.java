@@ -197,11 +197,11 @@ public class MainPlotterFrame extends JFrame {
         globalProgress.setMaximum(value);
     }
 
-    public void setGlobalProgress(int value, long spentTime) {
+    public void setGlobalProgress(int value, long spentTimeNano) {
         globalProgress.setValue(value);
         globalProgress.setString(
                 String.valueOf(value) + "/" + String.valueOf(globalProgress.getMaximum())
-                        + (spentTime < 0 ? "" : (" | + " + Chronometer.formatPeriod(spentTime)))
+                        + (spentTimeNano < 0 ? "" : (" | + " + Chronometer.formatPeriodNano(spentTimeNano)))
         );
     }
 

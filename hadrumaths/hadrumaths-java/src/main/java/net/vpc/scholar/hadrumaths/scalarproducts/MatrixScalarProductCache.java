@@ -19,18 +19,24 @@ import java.io.IOException;
  */
 public class MatrixScalarProductCache extends AbstractScalarProductCache implements CacheObjectSerializerProvider {
     private Matrix cache;
-    private MatrixFactory matrixFactory;
+    private transient MatrixFactory matrixFactory;
     private String name;
     private boolean doSimplifyAll;
     private boolean hermitian;
 
     private MatrixScalarProductCache(Matrix cache, MatrixFactory matrixFactory) {
+        if(matrixFactory==null){
+            throw new IllegalArgumentException("Factory should not be null");
+        }
         this.cache = cache;
         this.matrixFactory = matrixFactory;
         name = getClass().getSimpleName() + "(" + matrixFactory.getClass().getSimpleName() + ")";
     }
 
     public MatrixScalarProductCache(MatrixFactory matrixFactory) {
+        if(matrixFactory==null){
+            throw new IllegalArgumentException("Factory should not be null");
+        }
         this.matrixFactory = matrixFactory;
         name = getClass().getSimpleName() + "(" + matrixFactory.getClass().getSimpleName() + ")";
     }
@@ -51,7 +57,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
     }
 
     @Override
-    public CacheObjectSerializedForm createCacheObjectSerializedForm(File serFile) throws IOException {
+    public CacheObjectSerializedForm createCacheObjectSerializedForm(HFile serFile) throws IOException {
         return new SerMatrixScalarProductCache(cache, serFile);
     }
 
@@ -139,6 +145,9 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                     break;
                 }
             }
+        }
+        if(matrixFactory==null){
+            throw new IllegalArgumentException("Factory could not be null");
         }
         Matrix gfps = matrixFactory.newMatrix(gp.length, maxF);
         if (scalarValue) {
@@ -310,13 +319,13 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
     private static class SerMatrixScalarProductCache implements CacheObjectSerializedForm {
         private CacheObjectSerializedForm matrix;
 
-        public SerMatrixScalarProductCache(Matrix cache, File file) throws IOException {
-            this.matrix = ObjectCache.toSerializedForm(cache, new File(file, "matrix"));
+        public SerMatrixScalarProductCache(Matrix cache, HFile file) throws IOException {
+            this.matrix = ObjectCache.toSerializedForm(cache, new HFile(file, "matrix"));
         }
 
         @Override
-        public Object deserialize(File file) throws IOException {
-            Matrix matrix0 = (Matrix) matrix.deserialize(new File(file, "matrix"));
+        public Object deserialize(HFile file) throws IOException {
+            Matrix matrix0 = (Matrix) matrix.deserialize(new HFile(file, "matrix"));
             return new MatrixScalarProductCache(matrix0, null);
         }
     }

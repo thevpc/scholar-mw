@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -13,7 +13,7 @@ public abstract class AbstractSParametersBuilder extends AbstractComplexBuilder 
     }
 
     @Override
-    public SParametersBuilder monitor(ComputationMonitor monitor) {
+    public SParametersBuilder monitor(ProgressMonitor monitor) {
         return (SParametersBuilder) super.monitor(monitor);
     }
 

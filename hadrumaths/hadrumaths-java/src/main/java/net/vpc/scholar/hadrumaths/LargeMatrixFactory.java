@@ -34,7 +34,18 @@ public abstract class LargeMatrixFactory extends AbstractMatrixFactory implement
         this.resetOnClose = resetOnClose;
     }
 
+    protected LargeMatrixFactory() {
+
+    }
+
     public LargeMatrixFactory(String id,boolean sparse, Complex defaultValue) {
+        init(id,sparse,defaultValue);
+    }
+
+    protected void init(String id,boolean sparse, Complex defaultValue) {
+        if(id==null){
+            throw new IllegalArgumentException("Id should not be null");
+        }
         this.id = StringUtils.isEmpty(id)?"large-matrix":id;
         this.sparse = sparse;
         if (defaultValue == null) {
@@ -80,7 +91,27 @@ public abstract class LargeMatrixFactory extends AbstractMatrixFactory implement
         close();
     }
 
-    public String getFactoryId(){
+    public String getId(){
         return id;
+    }
+
+    @Override
+    public  Matrix newIdentity(int rows, int cols) {
+        return new AbstractUnmodifiableMatrix(rows,cols,this) {
+            @Override
+            public Complex get(int row, int col) {
+                return (row == col) ? Complex.ONE : Complex.ZERO;
+            }
+        };
+    }
+
+    @Override
+    public  Matrix newConstant(int rows, int cols, Complex value) {
+        return new AbstractUnmodifiableMatrix(rows,cols,this) {
+            @Override
+            public Complex get(int row, int col) {
+                return value;
+            }
+        };
     }
 }

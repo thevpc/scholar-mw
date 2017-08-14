@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory;
 
@@ -20,7 +20,7 @@ public class PlotElectricField extends PlotElectricFieldAbstract implements Clon
         super(epsilon, threshold, fnstep, "EBase" + axis, axis, type);
     }
 
-    protected Complex[][][] resolveE(MomStructure structure, double[] x, double[] y, double[] z, ComputationMonitor monitor) {
+    protected Complex[][][] resolveE(MomStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
         VDiscrete E = null;
         if (isConvergenceFn()) {
             int fnMax_start = structure.getModeFunctionsCount();

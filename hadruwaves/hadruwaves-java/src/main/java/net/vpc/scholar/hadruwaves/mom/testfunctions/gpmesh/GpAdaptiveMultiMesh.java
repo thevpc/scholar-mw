@@ -7,8 +7,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -35,10 +35,10 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
-    public DoubleToVector[] gpImpl(ComputationMonitor monitor) {
+    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
-            public DoubleToVector[] process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public DoubleToVector[] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
                 for (int i = 0; i < cells.length; i++) {
                     TestFunctionCell gpCell = cells[i];
@@ -50,7 +50,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
         });
     }
 
-    private Collection<DoubleToVector> gpImpl(TestFunctionCell cell,ComputationMonitor monitor) {
+    private Collection<DoubleToVector> gpImpl(TestFunctionCell cell,ProgressMonitor monitor) {
         ArrayList<DoubleToVector> f = new ArrayList<DoubleToVector>();
         Domain globalDomain = getStructure().getDomain();
 
@@ -229,7 +229,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
-    protected DoubleToVector[] rebuildCachedFunctions(ComputationMonitor monitor) {
+    protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
         return super.rebuildCachedFunctions(monitor);
     }
 

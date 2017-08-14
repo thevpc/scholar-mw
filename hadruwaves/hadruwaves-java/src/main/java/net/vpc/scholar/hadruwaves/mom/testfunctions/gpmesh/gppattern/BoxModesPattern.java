@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeType;
@@ -130,7 +130,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
         return getClass().getSimpleName() + complexity + ((includedFunctions == null) ? "" : "+" + includedFunctions) + ((excludedFunctions == null) ? "" : "-" + excludedFunctions);
     }
 
-    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ComputationMonitor monitor, MomStructure str) {
+    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str) {
         int max = getCount();
         ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
         Domain d = zone.getDomain();

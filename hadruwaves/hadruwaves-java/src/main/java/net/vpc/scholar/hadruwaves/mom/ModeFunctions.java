@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
@@ -86,11 +86,11 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     List<ModeInfo> getModes(ModeType mode);
 
-    List<ModeInfo> getModes(ModeType mode, ComputationMonitor monitor);
+    List<ModeInfo> getModes(ModeType mode, ProgressMonitor monitor);
 
-    List<DoubleToVector> getFunctions(ModeType mode, ComputationMonitor monitor);
+    List<DoubleToVector> getFunctions(ModeType mode, ProgressMonitor monitor);
 
-    ModeInfo[] getModes(ComputationMonitor monitor, ObjectCache cache);
+    ModeInfo[] getModes(ProgressMonitor monitor, ObjectCache cache);
 
     double getCutoffFrequency(ModeIndex i);
 

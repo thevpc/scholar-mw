@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 import net.vpc.scholar.hadrumaths.util.TLog;
 import net.vpc.scholar.hadrumaths.util.TLogNull;
@@ -198,7 +198,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void loadProject(MomProject structureConfig) {
-        persistentCache.setRootFolder(new File(structureConfig.getConfigFile().getParentFile(), structureConfig.getConfigFile().getName() + ".cache"));
+        persistentCache.setRootFolder(IOUtils.createHFile(structureConfig.getConfigFile().getParent()+"/"+structureConfig.getConfigFile().getName() + ".cache"));
         structureConfig.recompile();
         getHintsManager().setHintFnMode(structureConfig.getHintFnModes());
         //setHintDiscardFnByScalarProduct();
@@ -508,7 +508,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         double fnGpMax = Double.NaN;
         if (hintDiscardFnByScalarProduct != null) {
             //TODO fix me
-            ScalarProductCache spc = createScalarProductCache(modeFunctions, testFunctions, ComputationMonitorFactory.none());
+            ScalarProductCache spc = createScalarProductCache(modeFunctions, testFunctions, ProgressMonitorFactory.none());
             Matrix spcm = spc.toMatrix();
             fnGpMax = spcm.get(0, 0).absdbl();
             double cell;
@@ -555,7 +555,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return null;
     }
 
-    public void initComputation(ComputationMonitor computationMonitor) {
+    public void initComputation(ProgressMonitor computationMonitor) {
         ObjectCache objectCache = getObjectCache();
         if (objectCache != null) {
             testFunctions.arr(computationMonitor, objectCache);
@@ -692,12 +692,12 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        throw new NoSuchElementException();
 //    }
 //
-    //    public final computeJTest(double[] x, double y, Axis axis, ComputationMonitor monitor) {
+    //    public final computeJTest(double[] x, double y, Axis axis, ProgressMonitor monitor) {
 //        final double[] x0=x;
 //        final double[] y0=y;
 //        final double[] z0=z;
 //        final Axis axis0=axis;
-//        final ComputationMonitor monitor0=monitor==null?ComputationMonitor.none:monitor;
+//        final ProgressMonitor monitor0=monitor==null?ProgressMonitor.none:monitor;
 //        DumpHelper p=new DumpHelper("computeEBase").add("x",x).add("y",y).add("z",z).add("axis",axis);
 //        return new StrSubCacheSupport<Complex[][][]>("EBase",p.toString()) {
 //            public Complex[][][] compute() {
@@ -811,12 +811,12 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        return computePlanarSources(x, y, axis, null);
 //    }
 //
-//    public Complex[][] computePlanarSources(double[] x, double[] y, Axis axis, ComputationMonitor monitor) {
-//        monitor = ComputationMonitorFactory.makeNotNull(monitor);
+//    public Complex[][] computePlanarSources(double[] x, double[] y, Axis axis, ProgressMonitor monitor) {
+//        monitor = ProgressMonitorFactory.makeNotNull(monitor);
 //        final double[] x0 = x == null ? new double[]{0} : x;
 //        final double[] y0 = y == null ? new double[]{0} : y;
 //        final Axis axis0 = axis;
-//        final ComputationMonitor monitor0 = monitor == null ? ComputationMonitor.none : monitor;
+//        final ProgressMonitor monitor0 = monitor == null ? ProgressMonitor.none : monitor;
 //        Dumper p = new Dumper("computePlanarSources").add("x", x).add("y", y).add("axis", axis);
 //        return new StrSubCacheSupport<Complex[][]>("sources-planar", p.toString()) {
 //
@@ -831,8 +831,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        return computePlanarSources(sampler, axis, null);
 //    }
 
-//    public final Complex[][] computePlanarSources(Samples sampler, Axis axis, ComputationMonitor monitor) {
-//        monitor = ComputationMonitorFactory.makeNotNull(monitor);
+//    public final Complex[][] computePlanarSources(Samples sampler, Axis axis, ProgressMonitor monitor) {
+//        monitor = ProgressMonitorFactory.makeNotNull(monitor);
 //        return computePlanarSources(sampler.getX(), sampler.getY(), axis, monitor);
 //    }
 
@@ -1272,8 +1272,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return getTestModeScalarProducts(null);
     }
 
-    public final ScalarProductCache getTestModeScalarProducts(ComputationMonitor monitor) {
-        final ComputationMonitor monitor0 = ComputationMonitorFactory.enhance(monitor);
+    public final ScalarProductCache getTestModeScalarProducts(ProgressMonitor monitor) {
+        final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         build();
         return new FnGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }
@@ -1282,8 +1282,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return getTestSourceScalarProducts(null);
     }
 
-    public final ScalarProductCache getTestSourceScalarProducts(ComputationMonitor monitor) {
-        final ComputationMonitor monitor0 = ComputationMonitorFactory.enhance(monitor);
+    public final ScalarProductCache getTestSourceScalarProducts(ProgressMonitor monitor) {
+        final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         build();
         return new SrcGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }
@@ -1507,9 +1507,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         Chronometer chrono = new Chronometer();
         chrono.start();
         if (CACHE_SRCGP.equals(type)) {
-            getTestSourceScalarProducts(ComputationMonitorFactory.none());//insure it is calculated
+            getTestSourceScalarProducts(ProgressMonitorFactory.none());//insure it is calculated
         } else if (CACHE_FNGP.equals(type)) {
-            getTestModeScalarProducts(ComputationMonitorFactory.none());//insure it is calculated
+            getTestModeScalarProducts(ProgressMonitorFactory.none());//insure it is calculated
         } else if (CACHE_MATRIX_A.equals(type)) {
             matrixA().computeMatrix();//insure it is calculated
         } else if (CACHE_MATRIX_B.equals(type)) {
@@ -1672,7 +1672,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
 //    public Matrix computeZin2() {
-//        Complex[] Testcoeff = computeMatrixUnknown(ComputationMonitor.none).getColumn(0).toArray();
+//        Complex[] Testcoeff = computeMatrixUnknown(ProgressMonitor.none).getColumn(0).toArray();
 ////        GpTestFunctions gpTestFunctions = getGpTestFunctions();
 //        ModeInfo[] indexes = getModes();
 //        Complex u = getScalarProductOperator().evalVDC(
@@ -1680,7 +1680,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //                indexes[0].fn
 //        );
 //        Complex l = Complex.ZERO;
-//        ScalarProductCache sp = getTestModeScalarProducts(ComputationMonitor.none);
+//        ScalarProductCache sp = getTestModeScalarProducts(ProgressMonitor.none);
 //        for (int i = 0; i < Testcoeff.length; i++) {
 //            Complex complex = Testcoeff[i];
 //            l = l.add(sp.gf(i, 0).mul(complex));
@@ -1711,9 +1711,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return DefaultMatrixUnknownEvaluator.INSTANCE;
     }
 
-    public ScalarProductCache createScalarProductCache(ModeFunctions fnModeFunctions, TestFunctions gpTestFunctions, ComputationMonitor monitor) {
+    public ScalarProductCache createScalarProductCache(ModeFunctions fnModeFunctions, TestFunctions gpTestFunctions, ProgressMonitor monitor) {
         build();
-        ComputationMonitor[] mon = ComputationMonitorFactory.split(monitor, 2);
+        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, 2);
         fnModeFunctions.getModes(mon[0], getObjectCache());
         HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
         return getScalarProductOperator().eval(true, gpTestFunctions.arr(), fnModeFunctions.arr(), axis.toAxisXY(), mon[1]);
@@ -1764,7 +1764,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return getModes(null);
     }
 
-    public synchronized ModeInfo[] getModes(ComputationMonitor monitor) {
+    public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
         return getModeFunctions().getModes(monitor, getCurrentCache(true));
     }
 

@@ -444,20 +444,20 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
 
     public Complex integrate(Domain domain, PlaneAxis axis, double fixedValue) {
         ComponentDimension dims = getComponentDimension();
-        Complex c=Complex.ZERO;
+        MutableComplex c=new MutableComplex();
         for (int i = 0; i < componentDimension.rows; i++) {
-            c=c.add(getComponent(Axis.values()[i]).integrate(domain,axis,fixedValue));
+            c.add(getComponent(Axis.values()[i]).integrate(domain,axis,fixedValue));
         }
-        return c;
+        return c.toComplex();
     }
 
     public Complex integrate(Domain domain) {
         ComponentDimension dims = getComponentDimension();
-        Complex c=Complex.ZERO;
+        MutableComplex c=new MutableComplex();
         for (int i = 0; i < componentDimension.rows; i++) {
-            c=c.add(getComponent(Axis.values()[i]).integrate(domain));
+            c.add(getComponent(Axis.values()[i]).integrate(domain));
         }
-        return c;
+        return c.toComplex();
     }
 
     @Override

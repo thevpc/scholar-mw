@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 public class PlotConstantVDiscrete extends PlotAxisCubes implements Cloneable {
     private VDiscrete value;
@@ -14,7 +14,7 @@ public class PlotConstantVDiscrete extends PlotAxisCubes implements Cloneable {
         this.value=value;
     }
 
-    protected VDiscrete computeValue(ConsoleAwareObject o, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected VDiscrete computeValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
         return value;
     }
 }

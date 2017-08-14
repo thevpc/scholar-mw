@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
 
@@ -12,7 +12,7 @@ import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
  */
 public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
 
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop strzop = (MomStructureFractalZop) str;
         Matrix ZinCond;
         try {

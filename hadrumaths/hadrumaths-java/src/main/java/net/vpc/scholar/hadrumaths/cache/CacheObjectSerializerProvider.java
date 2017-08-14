@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
+import net.vpc.scholar.hadrumaths.util.HFile;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -7,5 +9,5 @@ import java.io.IOException;
  * Created by vpc on 3/20/17.
  */
 public interface CacheObjectSerializerProvider {
-    CacheObjectSerializedForm createCacheObjectSerializedForm(File serFile) throws IOException;
+    CacheObjectSerializedForm createCacheObjectSerializedForm(HFile serFile) throws IOException;
 }

@@ -49,7 +49,7 @@ public class TmwlibExampleTest {
                 .addGeometry(attachBox).setComplexity(1).applyBoxModes() //attach test function
                 .build()
         );
-        str.current().monitor(ComputationMonitorFactory.temporize(ComputationMonitorFactory.logger(), 1000)).computeMatrix(Axis.X, Samples.relative(100));
+        str.current().monitor(ProgressMonitorFactory.temporize(ProgressMonitorFactory.logger(), 1000)).computeMatrix(Axis.X, Samples.relative(100));
 //        Plot.console().createPlot().setStructure(str)
 //                .setX(xyParamSet(100, 50)) // precision (100 samples on X axis, ...)
 //                .addY(testFunctions()) //plot test functions

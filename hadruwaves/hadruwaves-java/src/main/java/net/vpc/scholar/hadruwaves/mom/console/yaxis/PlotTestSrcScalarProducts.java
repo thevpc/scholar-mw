@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.ComputationMonitorFactory;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneable {
@@ -22,12 +22,12 @@ public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneab
         }
     }
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ComputationMonitor monitor, ConsoleActionParams p) {
+    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ComputationMonitor cmonitor, ConsoleActionParams p) {
-        EnhancedComputationMonitor monitor = ComputationMonitorFactory.enhance(cmonitor);
+    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
+        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
 //        monitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(structure.getTestSourceScalarProducts(monitor).toMatrix());
 //        monitor.terminatem(getClass().getSimpleName());

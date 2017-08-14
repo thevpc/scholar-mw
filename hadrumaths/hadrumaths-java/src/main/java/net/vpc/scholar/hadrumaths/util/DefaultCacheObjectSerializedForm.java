@@ -17,7 +17,7 @@ public class DefaultCacheObjectSerializedForm implements CacheObjectSerializedFo
     }
 
     @Override
-    public Object deserialize(File file) throws IOException {
+    public Object deserialize(HFile file) throws IOException {
         return object;
     }
 }

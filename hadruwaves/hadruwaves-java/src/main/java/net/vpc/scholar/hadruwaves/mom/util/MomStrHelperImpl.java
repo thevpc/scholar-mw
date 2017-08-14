@@ -8,7 +8,8 @@ package net.vpc.scholar.hadruwaves.mom.util;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
@@ -36,52 +37,52 @@ public class MomStrHelperImpl implements MomStrHelper {
     public void init(MomProject str) {
         this.str = str;
         momStructure = new MomStructure();
-        momStructure.getPersistentCache().setRootFolder(new File(str.getWorkDir(), "cache"));
+        momStructure.getPersistentCache().setRootFolder(IOUtils.createHFile(str.getWorkDir().getPath()+"/cache"));
         momStructure.loadProject(str);
     }
 
 
-    public Matrix computeTestcoeff(ComputationMonitor monitor) {
+    public Matrix computeTestcoeff(ProgressMonitor monitor) {
         return momStructure.matrixX().monitor(monitor).computeMatrix();
     }
 
 
-    public VDiscrete computeElectricField(double[] x, double[] y, double[] z, ComputationMonitor monitor) {
+    public VDiscrete computeElectricField(double[] x, double[] y, double[] z, ProgressMonitor monitor) {
         return momStructure.electricField().monitor(monitor).computeVDiscrete(x, y, new double[]{0});
     }
 
 
-    public VDiscrete computeCurrent(double[] x, double[] y, ComputationMonitor monitor) {
+    public VDiscrete computeCurrent(double[] x, double[] y, ProgressMonitor monitor) {
         return momStructure.current().monitor(monitor).computeVDiscrete(x, y);
     }
 
 
-    public VDiscrete computeTestField(double[] x, double[] y, ComputationMonitor monitor) {
+    public VDiscrete computeTestField(double[] x, double[] y, ProgressMonitor monitor) {
         return momStructure.testField().monitor(monitor).computeVDiscrete(x, y);
     }
 
 
-    public VDiscrete buildSrc(double[] x, double[] y, ComputationMonitor monitor) {
+    public VDiscrete buildSrc(double[] x, double[] y, ProgressMonitor monitor) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 
-    public Matrix computeZin(ComputationMonitor monitor) {
+    public Matrix computeZin(ProgressMonitor monitor) {
         return momStructure.inputImpedance().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeS(ComputationMonitor monitor) {
+    public Matrix computeS(ProgressMonitor monitor) {
         return momStructure.sparameters().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeAMatrix(ComputationMonitor monitor) {
+    public Matrix computeAMatrix(ProgressMonitor monitor) {
         return momStructure.matrixA().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeBMatrix(ComputationMonitor monitor) {
+    public Matrix computeBMatrix(ProgressMonitor monitor) {
         return momStructure.matrixB()
                 .monitor(monitor).computeMatrix();
     }
@@ -92,7 +93,7 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public int estimateMn(int max_mn, double delta, int thresholdLength, int trialCount, ComputationMonitor monitor) {
+    public int estimateMn(int max_mn, double delta, int thresholdLength, int trialCount, ProgressMonitor monitor) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -121,7 +122,7 @@ public class MomStrHelperImpl implements MomStrHelper {
         return momStructure.getAllCaches();
     }
 
-    public Matrix computeCapacity(ComputationMonitor monitor) {
+    public Matrix computeCapacity(ProgressMonitor monitor) {
         return momStructure
                 .capacity().monitor(monitor).computeMatrix();
     }

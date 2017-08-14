@@ -3,14 +3,14 @@ package net.vpc.scholar.hadruwaves.builders;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface CurrentBuilder extends ValueBuilder{
 
-    CurrentBuilder monitor(ComputationMonitor monitor);
+    CurrentBuilder monitor(ProgressMonitor monitor);
     CurrentBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
 
     Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);

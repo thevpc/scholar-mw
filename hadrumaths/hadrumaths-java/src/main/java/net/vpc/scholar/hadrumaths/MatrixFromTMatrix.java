@@ -31,11 +31,6 @@ public class MatrixFromTMatrix<T extends Expr> extends AbstractMatrix {
     }
 
     @Override
-    protected MatrixFactory getDefaultFactory() {
-        return MemMatrixFactory.INSTANCE;
-    }
-
-    @Override
     public void resize(int rows, int columns) {
         matrix.resize(rows,columns);
     }

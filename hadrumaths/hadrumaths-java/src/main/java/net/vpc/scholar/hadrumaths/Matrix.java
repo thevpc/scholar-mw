@@ -1,16 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.util.List;
-
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public abstract class Matrix extends Number implements Normalizable,TMatrix<Complex> {
+public abstract class Matrix extends Number implements Normalizable, TMatrix<Complex> {
 
     private static final long serialVersionUID = -1010101010101001044L;
 
 
-//    public abstract double norm(NormStrategy ns);
+    //    public abstract double norm(NormStrategy ns);
 //
 //    /**
 //     * One norm
@@ -66,6 +64,7 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //
 //    public abstract Complex[][] getArray();
 //
+
     /**
      * Get a submatrix.
      *
@@ -109,35 +108,50 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     public abstract Matrix getMatrix(int[] r, int c1, int c2);
-//
+
+    //
     public abstract Matrix div(double c);
-//
+
+    //
     public abstract Matrix div(Complex c);
-//
+
+    //
     public abstract Matrix mul(Complex c);
-//
+
+    //
     public abstract Matrix mul(double c);
-//
+
+    //
     public abstract Matrix neg();
-//
+
+    //
     public abstract Matrix add(Complex c);
-//
+
+    //
     public abstract Matrix sub(Complex c);
-//
+
+    //
     public abstract Matrix div(TMatrix<Complex> other);
-//
+
+    //
     public abstract Matrix mul(TMatrix<Complex> other);
-//
+
+    //
     public abstract Matrix dotmul(TMatrix<Complex> other);
-//
+
+    //
     public abstract Matrix dotdiv(TMatrix<Complex> other);
-//
+
+    //
     public abstract Matrix conj();
-//
+
+    //
     public abstract Matrix dotinv();
-//
+
+    //
     public abstract Matrix add(TMatrix<Complex> other);
-//
+
+    //
     public abstract Matrix add(Complex[][] other);
 
     public abstract Matrix sub(Complex[][] other);
@@ -156,7 +170,7 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 
     public abstract Complex apply(int vectorIndex);
 
-//    public abstract void add(int row, int col, Complex val);
+    //    public abstract void add(int row, int col, Complex val);
 //
 //    public abstract void mul(int row, int col, Complex val);
 //
@@ -176,7 +190,7 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 
     public abstract Matrix subMatrix(int row, int col, int rows, int cols);
 
-//    public abstract TVector<Vector> getRows();
+    //    public abstract TVector<Vector> getRows();
 //
 //    public abstract TVector<Vector> getColumns();
 //
@@ -192,28 +206,34 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //    public abstract int getColumnCount();
 //
     public abstract Matrix transpose();
-//
+
+    //
 //    /**
 //     * @return equivalent to transposeHermitian
 //     */
     public abstract Matrix transjugate();
-//
+
+    //
 //    /**
 //     * @return equivalent to transposeHermitian
 //     */
     public abstract Matrix transposeConjugate();
-//
+
+    //
 //    /**
 //     * Hermitian conjugate
 //     *
 //     * @return
 //     */
     public abstract Matrix transposeHermitian();
-//
+
+    //
     public abstract Matrix arrayTranspose();
-//
+
+    //
     public abstract Matrix invCond();
-//
+
+    //
     public abstract Matrix inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr);
 
     public abstract Matrix inv();
@@ -247,7 +267,8 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
     public abstract Complex det();
 
     public abstract Matrix upperTriangle();
-//
+
+    //
 //    @Override
 //    public abstract String toString();
 //
@@ -255,12 +276,13 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //
 //    public abstract String format(String commentsChar, String varName);
 //
-//    public abstract Complex[][] getArrayCopy();
-//
+    public abstract Matrix copy();
+
     public abstract Matrix solve(TMatrix<Complex> B);
 
     public abstract Matrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy);
-//
+
+    //
 //
 //    public abstract void store(String file) throws IOException;
 //
@@ -288,15 +310,18 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
     public abstract Vector getColumn(int column);
 
     public abstract Vector column(int column);
-//
+
+    //
 //    public abstract boolean isColumn();
 //
 //    public abstract boolean isRow();
 //
     public abstract double[][] absdbls();
-//
+
+    //
     public abstract Matrix abs();
-//
+
+    //
 //    public abstract double cond();
 //
 //    public abstract double cond2();
@@ -304,7 +329,8 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //    public abstract double condHadamard();
 //
     public abstract Matrix sparsify(double ceil);
-//
+
+    //
 //    public abstract Complex complexValue();
 //
 //    @Override
@@ -324,9 +350,11 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //    public abstract double minAbs();
 //
     public abstract Matrix pow(TMatrix<Complex> power);
-//
+
+    //
     public abstract Matrix pow(Complex power);
-//
+
+    //
 //    public abstract boolean isScalar();
 //
 //    public abstract boolean isComplex();
@@ -351,7 +379,8 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 //
 //
     public abstract Vector toVector();
-//
+
+    //
 //    public abstract Complex scalarProduct(Matrix m);
 //
 //    public abstract Complex scalarProduct(Vector v);
@@ -397,11 +426,13 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
     public abstract DMatrix getAbsDMatrix();
 
     public abstract DMatrix getAbsSquareDMatrix();
-//
+
+    //
     public abstract Matrix imag();
 
     public abstract Matrix real();
-//
+
+    //
 //    public abstract double[][] getDoubleArray();
 //
 //    public abstract double[][] getRealArray();
@@ -436,4 +467,21 @@ public abstract class Matrix extends Number implements Normalizable,TMatrix<Comp
 
     public abstract Matrix dotpow(Complex n);
 
+    public abstract void set(int row, int col, double real, double imag);
+
+    public abstract void set(Complex[][] values);
+
+    public abstract void set(int row,int col, MutableComplex value);
+
+    public abstract void set(MutableComplex[][] values);
+
+    public abstract void set(double[][] values);
+
+    public abstract void set(TMatrix<Complex> values);
+
+    public abstract boolean isHermitian();
+
+    public abstract boolean isSymmetric();
+
+    public abstract boolean isSquare();
 }

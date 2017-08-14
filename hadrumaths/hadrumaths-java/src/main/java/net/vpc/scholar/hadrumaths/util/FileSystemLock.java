@@ -1,13 +1,12 @@
 package net.vpc.scholar.hadrumaths.util;
 
 import java.io.*;
-import java.util.concurrent.Callable;
 
 /**
  * Simple File Lock implementation
  * Created by vpc on 11/13/16.
  */
-public class FileSystemLock implements AppLock{
+public class FileSystemLock extends AbstractAppLock{
     private File file;
     //new RandomAccessFile(file,"rw")
     private RandomAccessFile os;
@@ -37,153 +36,8 @@ public class FileSystemLock implements AppLock{
         return new FileSystemLock(companion);
     }
 
-    /**
-     * runs the given process if and only if lock could be acquired.
-     * Lock is guaranteed to be released at the end of the process execution.
-     *
-     * @param runnable process to run
-     */
-    public boolean invokeIfAcquired(long waitTime, Runnable runnable) {
-        if (tryAcquire(waitTime)) {
-            try {
-                runnable.run();
-            } finally {
-                tryRelease();
-            }
-            return true;
-        }
-        return false;
-    }
 
-    /**
-     * runs the given process if and only if lock could be acquired within the timeout.
-     * if not an exception is thrown.
-     * Lock is guaranteed to be released at the end of the process execution.
-     *
-     * @param runnable process to run
-     * @throws FileSystemLockException if unable to acquire the lock
-     */
-    public void invokeOrWait(long waitTime, Runnable runnable) throws FileSystemLockException {
-        acquireOrWait(waitTime);
-        try {
-            runnable.run();
-        } finally {
-            tryRelease();
-        }
-    }
 
-    /**
-     * runs the given process if and only if lock could be acquired within the timeout.
-     * if not an false is returned.
-     * Lock is guaranteed to be released at the end of the process execution.
-     *
-     * @param runnable process to run
-     * @return true if was able to acquire the lock
-     */
-    public boolean tryInvokeOrWait(long waitTime, Runnable runnable) {
-        if (tryAcquireOrWait(waitTime)) {
-            try {
-                runnable.run();
-            } finally {
-                tryRelease();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * runs the given process if lock if acquired. Lock is guaranteed to be released at the end of the process execution.
-     *
-     * @param runnable process to run
-     */
-    public void invoke(long lockTimeout, Runnable runnable) {
-        acquire(lockTimeout);
-        try {
-            runnable.run();
-        } finally {
-            tryRelease();
-        }
-    }
-
-    /**
-     * runs the given process if lock if acquired. Lock is guaranteed to be released at the end of the process execution.
-     *
-     * @param runnable process to run
-     */
-    public <V> V invoke(long lockTimeout, Callable<V> runnable) {
-        acquire(lockTimeout);
-        try {
-            try {
-                return runnable.call();
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } finally {
-            tryRelease();
-        }
-    }
-
-    /**
-     * try a acquire the file lock. If the file is locked will try to wait for maximum  <code>waitTime</code>.
-     * If the lock stills locked a FileSystemLockException is thrown.
-     *
-     * @param waitTime max time (milliseconds) to wait for if the file is already locked
-     * @throws FileSystemLockException if unable to acquire the lock
-     */
-    public void acquireOrWait(long waitTime) throws FileSystemLockException {
-        if (!tryAcquireOrWait(waitTime)) {
-            throw new FileSystemLockException("Unable to lock " + file, file);
-        }
-    }
-
-    /**
-     * try a acquire the file lock. If the file is locked will try to wait for maximum  <code>waitTime</code>.
-     * If the lock stills locked false is returned.
-     *
-     * @param waitTime max time (milliseconds) to wait for if the file is already locked
-     * @return true if file locking succeeded withing the time span defined
-     */
-    public boolean tryAcquireOrWait(long waitTime) {
-        long maxTime = (waitTime == Long.MAX_VALUE ? waitTime : (System.currentTimeMillis() + waitTime));
-        long sleepTime = 0;
-        if (waitTime < 100) {
-            sleepTime = waitTime;
-        } else if (waitTime < 1000) {
-            sleepTime = 500;
-        } else if (waitTime < 60000) {
-            sleepTime = 2000;
-        } else {
-            sleepTime = 5000;
-        }
-        while (true) {
-            if (tryAcquire(waitTime)) {
-                return true;
-            }
-            if (System.currentTimeMillis() > maxTime) {
-                break;
-            }
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * try a acquire the file lock. If the lock is locked a FileSystemLockException is thrown.
-     *
-     * @param lockTimeout if able to acquire the lock, the file is locked for maximum <code>lockTimeout</code> millisecond
-     */
-    public void acquire(long lockTimeout) {
-        if (!tryAcquireOrWait(lockTimeout)) {
-            throw new FileSystemLockException("Unable to lock " + file, file);
-        }
-    }
 
     public boolean isLocked() {
         synchronized (FileSystemLock.class) {
@@ -278,27 +132,27 @@ public class FileSystemLock implements AppLock{
     /**
      * try to release an already locked file
      *
-     * @throws FileSystemLockException if the file could not be released or is not yet locked
+     * @throws AppLockException if the file could not be released or is not yet locked
      */
-    public void release() throws FileSystemLockException {
+    public void release() throws AppLockException {
         if (os == null) {
-            throw new FileSystemLockException("Unable to release non open Lock on " + file, file);
+            throw new AppLockException("Unable to release non open Lock on " + file, this);
         }
         synchronized (FileSystemLock.class) {
             try {
                 os.close();
                 os = null;
             } catch (IOException e) {
-                throw new FileSystemLockException("Unable to release Lock on " + file, file);
+                throw new AppLockException("Unable to release Lock on " + file, this);
             }
             if (!file.delete()) {
-                throw new FileSystemLockException("Unable to release Lock on " + file, file);
+                throw new AppLockException("Unable to release Lock on " + file, this);
             }
         }
         AppLockManager.getInstance().fireLockReleased(this);
     }
 
-    public void forceRelease() throws FileSystemLockException {
+    public void forceRelease() throws AppLockException {
         if (os == null) {
             file.delete();
         }else {
@@ -307,10 +161,10 @@ public class FileSystemLock implements AppLock{
                     os.close();
                     os = null;
                 } catch (IOException e) {
-                    throw new FileSystemLockException("Unable to release Lock on " + file, file);
+                    throw new AppLockException("Unable to release Lock on " + file, this);
                 }
                 if (!file.delete()) {
-                    throw new FileSystemLockException("Unable to release Lock on " + file, file);
+                    throw new AppLockException("Unable to release Lock on " + file, this);
                 }
             }
         }

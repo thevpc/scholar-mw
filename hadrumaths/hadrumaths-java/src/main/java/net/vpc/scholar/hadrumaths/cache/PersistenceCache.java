@@ -2,9 +2,7 @@ package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
-import net.vpc.scholar.hadrumaths.util.Init;
+import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.*;
@@ -50,13 +48,13 @@ public class PersistenceCache implements PersistentCacheConfig {
 
     private PersistenceCache parent;
     private PathFS pathFS = new PathFS();
-    private File rootFolder;
-    private File rootFolderCached;
-    private File repositoryFolder;
+    private HFile rootFolder;
+    private HFile rootFolderCached;
+    private HFile repositoryFolder;
     private String repositoryName;
     private String dumpFileName;
     private CacheMode mode = CacheMode.INHERITED;
-    private FileFilter cacheFileFilter;
+    private HFileFilter cacheFileFilter;
     private boolean logLoadStatsEnabled = false;
     /**
      * tasks that take more than taskTimeThreshold (in ms)
@@ -90,14 +88,14 @@ public class PersistenceCache implements PersistentCacheConfig {
         this(null, repositoryName, null);
     }
 
-    public PersistenceCache(File rootFolder, String repositoryName, PersistenceCache parent) {
+    public PersistenceCache(HFile rootFolder, String repositoryName, PersistenceCache parent) {
         this.parent = parent;
         this.rootFolder = rootFolder;
         this.repositoryName = repositoryName;
         this.dumpFileName = "dump" + ObjectCache.CACHE_DEF_SUFFIX;
-        cacheFileFilter = new FileFilter() {
+        cacheFileFilter = new HFileFilter() {
 
-            public boolean accept(File pathname) {
+            public boolean accept(HFile pathname) {
                 return pathname.isDirectory()
                         ||
                         (pathname.isFile() &&
@@ -109,23 +107,23 @@ public class PersistenceCache implements PersistentCacheConfig {
     }
 
 
-    public File getRepositoryFolder() {
+    public HFile getRepositoryFolder() {
         if (repositoryFolder == null) {
             String n = getRepositoryName();
             if (n == null || n.length() == 0) {
                 n = "default";
             }
-            repositoryFolder = new File(getRootFolder(), n);
+            repositoryFolder = new HFile(getRootFolder(), n);
         }
         return repositoryFolder;
     }
 
-    public File getRootFolder() {
+    public HFile getRootFolder() {
         if (rootFolderCached == null) {
             if (rootFolder == null) {
-                rootFolderCached = new File(Maths.Config.getCacheFolder());
+                rootFolderCached = Maths.Config.getCacheFileSystem().get("/");
             } else {
-                rootFolderCached = new File(Maths.Config.getCacheFolder(rootFolder.getPath()));
+                rootFolderCached = rootFolder;
             }
         }
         return rootFolderCached;
@@ -135,15 +133,15 @@ public class PersistenceCache implements PersistentCacheConfig {
     //    private MomCache loadDump() throws IOException {
 //        return loadDump(getCacheFolder());
 //    }
-    private ObjectCache loadCache(File folder) throws IOException {
-        File dumpFile = new File(folder, dumpFileName);
-        if (!dumpFile.exists() || !dumpFile.isFile()) {
+    private ObjectCache loadCache(HFile folder) throws IOException {
+        HFile dumpFile = new HFile(folder, dumpFileName);
+        if (!dumpFile.existsOrWait() || !dumpFile.isFile()) {
             return null;
         }
-        FileInputStream fileInputStream = null;
+        InputStream fileInputStream = null;
         StringBuilder sb = new StringBuilder();
         try {
-            fileInputStream = new FileInputStream(dumpFile);
+            fileInputStream = dumpFile.getInputStream();
             int x;
             byte[] b = new byte[1024 * 4];
             while (true) {
@@ -162,7 +160,7 @@ public class PersistenceCache implements PersistentCacheConfig {
         return new ObjectCache(new DumpPath(sb.toString()), this);
     }
 
-    public File getFolder(String dump) {
+    public HFile getFolder(String dump) {
         return getDumpFolder(dump, false);
     }
 
@@ -203,17 +201,17 @@ public class PersistenceCache implements PersistentCacheConfig {
 
     public DumpCacheFile getFile(DumpPath dump, String path) {
         return new DumpCacheFile(
-                dump, path, new File(getDumpFolder(dump, true), path), this
+                dump, path, new HFile(getDumpFolder(dump, true), path), this
         );
     }
 
-    public File getDumpFolder(String dump, boolean createIfNotFound) {
+    public HFile getDumpFolder(String dump, boolean createIfNotFound) {
         return getDumpFolder(new DumpPath(dump), createIfNotFound);
     }
 
-    public File getDumpFolder(DumpPath dumpObj, boolean createIfNotFound) {
+    public HFile getDumpFolder(DumpPath dumpObj, boolean createIfNotFound) {
         String dump = dumpObj.getDump();
-        File r = new File(getRepositoryFolder(), dumpObj.getPath());
+        HFile r = new HFile(getRepositoryFolder(), dumpObj.getPath());
         ObjectCache d = null;
         try {
             d = loadCache(r);
@@ -226,11 +224,11 @@ public class PersistenceCache implements PersistentCacheConfig {
                 r.mkdirs();
                 PrintStream fos = null;
                 try {
-                    File file = new File(r, dumpFileName).getAbsoluteFile();
-                    fos = new PrintStream(new FileOutputStream(file));
+                    HFile file = new HFile(r, dumpFileName);
+                    fos = new PrintStream(file.getOutputStream());
                     fos.print(dump);
 //                    System.out.println(file + " : stored dump");
-                } catch (FileNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 } finally {
@@ -242,10 +240,10 @@ public class PersistenceCache implements PersistentCacheConfig {
             return r;
         }
 
-        File[] f = r.listFiles();
+        HFile[] f = r.listFiles();
         int min = 0;
         if (f != null) {
-            for (File subFolder : f) {
+            for (HFile subFolder : f) {
                 if (subFolder.isDirectory()) {
                     d = null;
                     try {
@@ -271,15 +269,15 @@ public class PersistenceCache implements PersistentCacheConfig {
             }
         }
         if (createIfNotFound && enabled) {
-            File n = new File(r, String.valueOf(min + 1)).getAbsoluteFile();
+            HFile n = new HFile(r, String.valueOf(min + 1));
             n.mkdirs();
             PrintStream fos = null;
             try {
-                File file = new File(n, dumpFileName);
-                fos = new PrintStream(new FileOutputStream(file));
+                HFile file = new HFile(n, dumpFileName);
+                fos = new PrintStream(file.getOutputStream());
                 fos.print(dump);
 //                System.out.println(file + " : stored dump");
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             } finally {
@@ -360,20 +358,20 @@ public class PersistenceCache implements PersistentCacheConfig {
 
 
     public boolean clear() {
-        System.err.println("Warning, clearing " + IOUtils.getFilePath(getRepositoryFolder()) + " started.");
-        boolean b = IOUtils.deleteFolderTree(getRepositoryFolder(), cacheFileFilter);
+        System.err.println("Warning, clearing " + getRepositoryFolder().getPath() + " started.");
+        boolean b = getRepositoryFolder().deleteFolderTree(cacheFileFilter, FailStrategy.FAIL_SAFE);
         if (!b) {
-            System.err.println("Warning, clearing " + IOUtils.getFilePath(getRepositoryFolder()) + " failed.");
+            System.err.println("Warning, clearing " + getRepositoryFolder().getPath() + " failed.");
         }
         return b;
     }
 
     @Override
-    public void setCacheBaseFolder(File rootFolder) {
+    public void setCacheBaseFolder(HFile rootFolder) {
         setRootFolder(rootFolder);
     }
 
-    public PersistenceCache setRootFolder(File rootFolder) {
+    public PersistenceCache setRootFolder(HFile rootFolder) {
         this.rootFolder = rootFolder;
         this.rootFolderCached = null;
         return this;
@@ -381,7 +379,7 @@ public class PersistenceCache implements PersistentCacheConfig {
 
 
     public PersistenceCache setRootFolder(String rootFolder) {
-        return setRootFolder(rootFolder == null ? null : new File(rootFolder));
+        return setRootFolder(rootFolder == null ? null : IOUtils.createHFile((rootFolder)));
     }
 
     public boolean isLogLoadStatsEnabled() {
@@ -405,19 +403,20 @@ public class PersistenceCache implements PersistentCacheConfig {
     private class ObjectCacheIterator implements Iterator<ObjectCache> {
 
         ObjectCache current;
-        Stack<File> currentFiles = new Stack<File>();
+        Stack<HFile> currentFiles = new Stack<HFile>();
 
         public ObjectCacheIterator() {
-            Stack<File> stack = new Stack<File>();
+            Stack<HFile> stack = new Stack<HFile>();
             stack.push(rootFolder);
             while (!stack.isEmpty()) {
-                File ff = stack.pop();
-                if (new File(ff, dumpFileName).exists()) {
+                HFile ff = stack.pop();
+                HFile file1 = new HFile(ff, dumpFileName);
+                if (file1.existsOrWait()) {
                     currentFiles.push(ff);
                 }
-                File[] files = ff.listFiles();
+                HFile[] files = ff.listFiles();
                 if (files != null) {
-                    for (File file : files) {
+                    for (HFile file : files) {
                         if (file.isDirectory()) {
                             stack.push(file);
                         }
@@ -431,7 +430,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                 return false;
             }
             while (!currentFiles.isEmpty()) {
-                File folder = currentFiles.pop();
+                HFile folder = currentFiles.pop();
                 current = null;
                 try {
                     current = loadCache(folder);
@@ -552,7 +551,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                         T oldValue = null;
                         CacheMode cacheMode = getEffectiveMode();
                         boolean cacheEnabled = isEnabled();
-                        long timeThreshold = getTaskTimeThreshold();
+                        long timeThresholdMilli = getTaskTimeThreshold();
                         if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
                             Chronometer c = new Chronometer();
                             c.start();
@@ -564,8 +563,8 @@ public class PersistenceCache implements PersistentCacheConfig {
                                 //
                             }
                             c.stop();
-                            if (timeThreshold > 0 && c.getTime() > timeThreshold) {
-                                log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriod(timeThreshold) + ")");
+                            if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
+                                log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
                             }
                         }
                         if (oldValue == null) {
@@ -580,7 +579,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                                     c.start();
                                     objCache.store(cacheItemName, oldValue,monitor);
                                     c.stop();
-                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in "+Chronometer.formatPeriod(computeTime)+" ; stored to disk in "+c);
+                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in "+c+" ; stored to disk in "+c);
                                     objCache.addStat(cacheItemName, computeTime);
                                     objCache.addStat(cacheItemName + "#storecache", c.getTime());
                                     if (isLogLoadStatsEnabled()) {
@@ -592,8 +591,8 @@ public class PersistenceCache implements PersistentCacheConfig {
                                         }
                                         c.stop();
                                         objCache.addStat(cacheItemName + "#loadcache", c.getTime());
-                                        if (timeThreshold > 0 && c.getTime() > timeThreshold) {
-                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + c + " > " + Chronometer.formatPeriod(timeThreshold) + ")");
+                                        if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
+                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
                                         }
                                     }
                                 }
@@ -627,7 +626,7 @@ public class PersistenceCache implements PersistentCacheConfig {
         return this;
     }
 
-    public PersistenceCache setRepositoryFolder(File repositoryFolder) {
+    public PersistenceCache setRepositoryFolder(HFile repositoryFolder) {
         this.repositoryFolder = repositoryFolder;
         return this;
     }
@@ -644,7 +643,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                         public T call() throws Exception {
                             T value = null;
                             ObjectCache momCache = null;
-                            long timeThreshold = getTaskTimeThreshold();
+                            long timeThresholdMilli = getTaskTimeThreshold();
                             boolean cacheEnabled = isEnabled();
                             CacheMode cacheMode = getEffectiveMode();
                             if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
@@ -658,8 +657,8 @@ public class PersistenceCache implements PersistentCacheConfig {
                                     //
                                 }
                                 c.stop();
-                                if (timeThreshold > 0 && c.getTime() > timeThreshold) {
-                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriod(timeThreshold) + ")");
+                                if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
+                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
                                 }
                             }
                             return value;

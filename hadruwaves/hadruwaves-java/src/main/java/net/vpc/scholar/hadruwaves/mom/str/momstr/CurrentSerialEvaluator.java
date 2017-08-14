@@ -19,14 +19,14 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
     public static final CurrentSerialEvaluator INSTANCE = new CurrentSerialEvaluator();
 
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ComputationMonitor monitor) {
+    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-//        EnhancedComputationMonitor emonitor = ComputationMonitorFactory.enhance(monitor);
+//        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monMessage = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, monMessage, new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
-                EnhancedComputationMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
+            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                EnhancedProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
                 ScalarProductCache sp = str.getTestModeScalarProducts(mon[0]);
                 Matrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
@@ -34,12 +34,12 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                 Complex[] J = Testcoeff.getColumn(0).toArray();
                 ModeInfo[] indexes = str.getModes();
 
-                MutableComplex[][] xCube = MutableComplex.createArray(Complex.ZERO, y.length, x.length);
-                MutableComplex[][] yCube = MutableComplex.createArray(Complex.ZERO, y.length, x.length);
-                EnhancedComputationMonitor mon2 = mon[2];
+                MutableComplex[][] xCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
+                MutableComplex[][] yCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
+                EnhancedProgressMonitor mon2 = mon[2];
                 Maths.invokeMonitoredAction(mon[2], monMessage, new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex xtemp;
                         MutableComplex ytemp;
                         int g_length = _g.length;
@@ -77,7 +77,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                 return new VDiscrete(
                         Discrete.create(new Complex[][][]{MutableComplex.toComplex(xCube)}, x, y, z),
                         Discrete.create(new Complex[][][]{MutableComplex.toComplex(yCube)}, x, y, z),
-                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Complex.ZERO), x, y, z)
+                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO), x, y, z)
                 );
             }
         });

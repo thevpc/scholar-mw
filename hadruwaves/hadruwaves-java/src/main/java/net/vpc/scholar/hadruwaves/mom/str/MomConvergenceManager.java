@@ -27,8 +27,8 @@ public class MomConvergenceManager {
         this.momStructure = momStructure;
     }
 
-//    public int computeTestFunctionsForReelFreqConvergence(double precision, double freq[], ComputationMonitor monitor) {
-//        monitor = ComputationMonitorFactory.enhance(monitor);
+//    public int computeTestFunctionsForReelFreqConvergence(double precision, double freq[], ProgressMonitor monitor) {
+//        monitor = ProgressMonitorFactory.enhance(monitor);
 //        momStructure.build();
 //        double[] old = new double[freq.length];
 //        for (int fi = 0; fi < freq.length; fi++) {
@@ -73,7 +73,7 @@ public class MomConvergenceManager {
         fn.setSize(maxFn);
         TestFunctions gp = momStructure.getGpTestFunctionsTemplate();
         gp.setStructure(momStructure);
-        ScalarProductCache sp = momStructure.createScalarProductCache(fn, gp, ComputationMonitorFactory.none());
+        ScalarProductCache sp = momStructure.createScalarProductCache(fn, gp, ProgressMonitorFactory.none());
         ModeInfo[] n_pro = fn.getPropagatingModes();
         ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : fn.getVanishingModes();
 
@@ -93,7 +93,7 @@ public class MomConvergenceManager {
         Complex[][] a = new Complex[_g.length][_g.length];
         for (int p = 0; p < _g.length; p++) {
             for (int q = 0; q < _g.length; q++) {
-                a[p][q] = Complex.ZERO;
+                a[p][q] = Maths.CZERO;
             }
         }
         int n = 0;
@@ -107,8 +107,7 @@ public class MomConvergenceManager {
                         Complex c = a[p][q];
                         Complex sp1 = spc.get(p);
                         Complex sp2 = spc.get(q).conj();
-                        c = c.add(zn.mul(sp1).mul(sp2));
-                        a[p][q] = c;
+                        a[p][q] = c.add(zn.mul(sp1).mul(sp2));
                     }
                 }
                 n++;

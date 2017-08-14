@@ -3,8 +3,8 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ComputationMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedComputationMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
@@ -18,8 +18,8 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
 public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator {
 
     @Override
-    public Matrix evaluate(MomStructure str, ComputationMonitor monitor) {
-        EnhancedComputationMonitor emonitor = ComputationMonitorFactory.enhance(monitor);
+    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
@@ -28,12 +28,12 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
             throw new IllegalArgumentException("WAVE_GUIDE Structure with no Propagative modes");
         }
         Complex[][] b = new Complex[_g.length][n_propa.length];
-        EnhancedComputationMonitor[] mon = ComputationMonitorFactory.split(emonitor, new double[]{2, 8});
+        EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
         ScalarProductCache sp = str.getTestModeScalarProducts(mon[0]);
-        EnhancedComputationMonitor m = ComputationMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
+        EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
         Maths.invokeMonitoredAction(m, monitorMessage, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedComputationMonitor monitor, String messagePrefix) throws Exception {
+            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 for (int p = 0; p < _g.length; p++) {
                     Vector spp = sp.getRow(p);
                     for (int n = 0; n < n_propa.length; n++) {

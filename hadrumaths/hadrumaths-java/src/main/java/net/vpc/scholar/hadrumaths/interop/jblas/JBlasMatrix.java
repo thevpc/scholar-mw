@@ -1,25 +1,36 @@
 package net.vpc.scholar.hadrumaths.interop.jblas;
 
-import net.vpc.scholar.hadrumaths.*;
-import org.jblas.ComplexDouble;
+import net.vpc.scholar.hadrumaths.AbstractMatrix;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.TMatrix;
 import org.jblas.ComplexDoubleMatrix;
+
+import static net.vpc.scholar.hadrumaths.interop.jblas.JBlasConverter.*;
 
 public class JBlasMatrix extends AbstractMatrix {
     private ComplexDoubleMatrix base;
 
+    public JBlasMatrix(ComplexDoubleMatrix base) {
+        this.base = base;
+    }
+
     public JBlasMatrix(int rows, int cols) {
-        base=new ComplexDoubleMatrix(rows,cols);
+        base = new ComplexDoubleMatrix(rows, cols);
+    }
+
+    public ComplexDoubleMatrix getBase() {
+        return base;
     }
 
     @Override
     public Complex get(int row, int col) {
-        ComplexDouble complexDouble = base.get(row, col);
-        return Complex.valueOf(complexDouble.real(), complexDouble.imag());
+        return toVpcComplex(base.get(row, col));
     }
 
     @Override
     public void set(int row, int col, Complex val) {
-        base.put(row, col, new ComplexDouble(val.getReal(), val.getImag()));
+        base.put(row, col, fromVpcComplex(val));
     }
 
     @Override
@@ -33,8 +44,44 @@ public class JBlasMatrix extends AbstractMatrix {
     }
 
     @Override
-    protected MatrixFactory getDefaultFactory() {
-        return JBlasMatrixFactory.INSTANCE;
+    public Matrix mul(TMatrix<Complex> c) {
+        ComplexDoubleMatrix a = fromVpcCMatrix(c);
+        ComplexDoubleMatrix b = base.mmul(a);
+        return toVpcCMatrix(b);
     }
 
+    @Override
+    public Matrix conj() {
+        return toVpcCMatrix(base.hermitian());
+    }
+
+    @Override
+    public Matrix sub(Complex c) {
+        return toVpcCMatrix(base.add(fromVpcComplex(c.neg())));
+    }
+
+    @Override
+    public Matrix transposeHermitian() {
+        return toVpcCMatrix(base.hermitian());
+    }
+
+    @Override
+    public Matrix arrayTranspose() {
+        return toVpcCMatrix(base.transpose());
+    }
+
+    @Override
+    public Matrix mul(Complex c) {
+        return toVpcCMatrix(base.mul(fromVpcComplex(c)));
+    }
+
+    @Override
+    public Matrix div(Complex c) {
+        return toVpcCMatrix(base.div(fromVpcComplex(c)));
+    }
+
+    @Override
+    public Matrix add(Complex c) {
+        return toVpcCMatrix(base.add(fromVpcComplex(c)));
+    }
 }
