@@ -1766,7 +1766,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 //        return B;
     //    }
     public void store(String file) {
-        store(new File(IOUtils.expandPath(file)));
+        store(new File(Maths.Config.expandPath(file)));
     }
 
     public void store(File file) {

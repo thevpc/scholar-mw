@@ -309,10 +309,10 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
         if (cachedFunctions == null) {
             throw new IllegalArgumentException("Unable to reeval Complex Field");
         }
-        complex = true;
+        complex = false;
         for (DoubleToVector cFunctionVector2D : cachedFunctions) {
             if (!cFunctionVector2D.getComponent(Axis.X).toDC().getImag().isZero() || !cFunctionVector2D.getComponent(Axis.Y).toDC().getImag().isZero()) {
-                complex = false;
+                complex = true;
                 break;
             }
         }

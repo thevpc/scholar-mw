@@ -567,10 +567,19 @@ public final class IOUtils {
     }
 
     public static HFile createHFile(String absolutePath) {
-        return new FolderFileSystem(new File(absolutePath)).get("/");
+        return new FolderHFileSystem(new File(absolutePath)).get("/");
     }
 
     public static HFile createHFile(File absolutePath) {
-        return new FolderFileSystem(absolutePath).get("/");
+        return new FolderHFileSystem(absolutePath).get("/");
+    }
+
+    public static void writeToFile(String str, File file) throws IOException {
+        if (str == null) {
+            str = "";
+        }
+        try (PrintStream printStream = new PrintStream(file)) {
+            printStream.print(str);
+        }
     }
 }

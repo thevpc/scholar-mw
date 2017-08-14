@@ -9,31 +9,11 @@ import java.util.List;
 
 public class HFile {
     private String path;
-    private HadrumathsFileSystem fs;
+    private HFileSystem fs;
 
-    public HFile(HadrumathsFileSystem fs, String path) {
+    public HFile(HFileSystem fs, String path) {
         if (!path.startsWith("/")) {
             throw new IllegalArgumentException("Invalid path " + path);
-        }
-        if (path.equals("/")) {
-            //ok
-        } else if (path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-            if (path.isEmpty()) {
-                throw new IllegalArgumentException("Invalid path " + path);
-            }
-        }
-        List<String> s = new ArrayList<String>(Arrays.asList(path.split("/")));
-        for (int i = s.size() - 1; i >= 0; i++) {
-            if (s.get(i).equals(".")) {
-                s.remove(i);
-            } else if (s.get(i).equals("..")) {
-                s.remove(i);
-                if (i > 0) {
-                    s.remove(i - 1);
-                    i--;
-                }
-            }
         }
         this.fs=fs;
         this.path=validatePath(path);
@@ -96,7 +76,7 @@ public class HFile {
         return path;
     }
 
-    public HadrumathsFileSystem getFs() {
+    public HFileSystem getFs() {
         return fs;
     }
 

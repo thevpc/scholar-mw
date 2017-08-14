@@ -14,10 +14,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class MemScalarProductCache extends AbstractScalarProductCache implements Serializable {
+public class MemComplexScalarProductCache extends AbstractScalarProductCache implements Serializable {
     private Complex[/** p index **/][/** n index **/] cache=new Complex[0][0];
-    private boolean doSimplifyAll;
     private boolean hermitian;
+    private boolean doubleValue;
+    private boolean scalarValue;
+
+    public MemComplexScalarProductCache(boolean hermitian, boolean doubleValue, boolean scalarValue) {
+        this.hermitian = hermitian;
+        this.doubleValue = doubleValue;
+        this.scalarValue = scalarValue;
+    }
 
     private static Expr[] simplifyAll(Expr[] e, EnhancedProgressMonitor mon) {
         Expr[] all = new Expr[e.length];
@@ -70,62 +77,31 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
         return hermitian ? complex.conj() : complex;
     }
 
-    public void evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor) {
-        this.hermitian = hermitian;
+    public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor) {
         EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
             sp = Maths.Config.getDefaultScalarProductOperator();
         }
-        EnhancedProgressMonitor[] hmon = emonitor.split(new double[]{2, 1, 3});
-        if (doSimplifyAll) {
-            Expr[] finalFn = fn;
-            Expr[] finalGp = gp;
-            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
-                @Override
-                public Expr[][] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                    Expr[][] fg = new Expr[2][];
-                    fg[0] = simplifyAll(finalFn, hmon[0]);
-
-                    fg[1] = simplifyAll(finalGp, hmon[1]);
-                    return fg;
-                }
-            });
-            fn = fg[0];
-            gp = fg[1];
-        }
-        boolean doubleValue = true;
-        boolean scalarValue = true;
+//        EnhancedProgressMonitor[] hmon = emonitor.split(new double[]{2, 1, 3});
+//        if (doSimplifyAll) {
+//            Expr[] finalFn = fn;
+//            Expr[] finalGp = gp;
+//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
+//                @Override
+//                public Expr[][] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+//                    Expr[][] fg = new Expr[2][];
+//                    fg[0] = simplifyAll(finalFn, hmon[0]);
+//
+//                    fg[1] = simplifyAll(finalGp, hmon[1]);
+//                    return fg;
+//                }
+//            });
+//            fn = fg[0];
+//            gp = fg[1];
+//        }
         int maxF = fn.length;
 //        int maxG = gp.length;
-        for (Expr expr : fn) {
-            if (!expr.isScalarExpr()) {
-                scalarValue = false;
-                break;
-            }
-        }
-        if (scalarValue) {
-            for (Expr expr : gp) {
-                if (!expr.isScalarExpr()) {
-                    scalarValue = false;
-                    break;
-                }
-            }
-        }
-        for (Expr expr : fn) {
-            if (!expr.isDoubleExpr()) {
-                doubleValue = false;
-                break;
-            }
-        }
-        if (doubleValue) {
-            for (Expr expr : gp) {
-                if (!expr.isDoubleExpr()) {
-                    doubleValue = false;
-                    break;
-                }
-            }
-        }
         Complex[][] gfps = new Complex[gp.length][maxF];
         if (scalarValue) {
             switch (axis) {
@@ -299,6 +275,7 @@ public class MemScalarProductCache extends AbstractScalarProductCache implements
             }
         }
         cache = gfps;
+        return this;
     }
 
 //    public Complex zop(int p,int q,FnIndexes[] n_evan){

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
@@ -40,7 +41,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
         for (String arg : args) {
             if (arg.trim().length() > 0) {
-                files.add(new File(IOUtils.expandPath(arg)));
+                files.add(new File(Maths.Config.expandPath(arg)));
             }
         }
         if (files.size() > 0) {

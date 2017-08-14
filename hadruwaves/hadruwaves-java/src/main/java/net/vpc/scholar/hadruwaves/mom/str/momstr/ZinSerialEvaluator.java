@@ -49,7 +49,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         boolean useZParity =str.getProjectType()== ProjectType.WAVE_GUIDE;
         //TODO pourquoi paire ?
         Matrix cMatrix1 = useZParity ?ZinPaire.div(2):ZinPaire;
-        System.out.println("["+str.getName()+ "] Zin = " + cMatrix1);
+//        System.out.println("["+str.getName()+ "] Zin = " + cMatrix1);
 //        System.out.println(str.getClass().getSimpleName()+":w="+str.getWidth()+":f="+str.getFrequency()+":l="+str.getLambda()+":w/l="+(str.getWidth()/str.getLambda()) +":zin"+ cMatrix1);
         return cMatrix1;
     }

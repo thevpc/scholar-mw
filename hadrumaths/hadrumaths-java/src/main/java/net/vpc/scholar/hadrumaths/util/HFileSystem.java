@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 
-public interface HadrumathsFileSystem {
+public interface HFileSystem {
     HFile get(String path);
 
     boolean exists(HFile file);

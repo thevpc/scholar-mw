@@ -108,7 +108,22 @@ public class ObjectCache {
     public static Object loadObject(HFile file,Object defaultValue) throws IOException {
         if (file.existsOrWait()) {
             try {
-                Object o1 = loadZippedObject(file);
+                Object o1=null;
+                ObjectInputStream ois = null;
+                try {
+                    InputStream theIs = null;
+                    InputStream fis = new BufferedInputStream(file.getInputStream());
+                    long length = file.length();
+                    if (length > 10000) {
+                        theIs = new ProgressMonitorInputStream2(null, "Reading " + file, fis, length);
+                    } else {
+                        theIs = fis;
+                    }
+                    ois = new ObjectInputStream(new GZIPInputStream(theIs));
+                    o1=ois.readObject();
+                } finally {
+                    if (ois != null) ois.close();
+                }
                 if(o1 != null && o1 instanceof CacheObjectSerializedForm) {
                     HFile serFile = file.getFs().get(file.getPath() + ".ser");
                     CacheObjectSerializedForm s = ((CacheObjectSerializedForm) o1);
@@ -122,45 +137,6 @@ public class ObjectCache {
             }
         }
         return defaultValue;
-    }
-
-    public static Object loadZippedObject(HFile physicalName) throws IOException, ClassNotFoundException {
-        if(physicalName.existsOrWait()){
-            ObjectInputStream ois = null;
-            try {
-                InputStream theIs = null;
-                InputStream fis = physicalName.getInputStream();
-                long length = physicalName.length();
-                if (length > 10000) {
-                    theIs = new ProgressMonitorInputStream2(null, "Reading " + physicalName, fis, length);
-                } else {
-                    theIs = fis;
-                }
-                ois = new ObjectInputStream(new GZIPInputStream(theIs));
-                return ois.readObject();
-            } finally {
-                if (ois != null) ois.close();
-            }
-        }else{
-            throw new IOException("File Not Found "+physicalName);
-        }
-    }
-    public static Object loadZippedObject(String physicalName) throws IOException, ClassNotFoundException {
-        File file = new File(IOUtils.expandPath(physicalName));
-        ObjectInputStream ois = null;
-        try {
-            InputStream theIs = null;
-            FileInputStream fis = new FileInputStream(physicalName);
-            if (file.length() > 10000) {
-                theIs = new ProgressMonitorInputStream2(null, "Reading " + physicalName, fis, file.length());
-            } else {
-                theIs = fis;
-            }
-            ois = new ObjectInputStream(new GZIPInputStream(theIs));
-            return ois.readObject();
-        } finally {
-            if (ois != null) ois.close();
-        }
     }
 
     public void addStat(String statName, long statValueNano) {
@@ -284,4 +260,8 @@ public class ObjectCache {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return "cache://"+getFolder().toString();
+    }
 }

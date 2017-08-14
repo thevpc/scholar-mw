@@ -190,7 +190,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void loadProject(String projectFile) throws ParseException, IOException {
-        loadProject(new MomProject(new File(IOUtils.expandPath(projectFile))));
+        loadProject(new MomProject(new File(Maths.Config.expandPath(projectFile))));
     }
 
     public void loadProject(File projectFile) throws ParseException, IOException {

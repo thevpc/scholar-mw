@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
@@ -35,5 +36,10 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
                 }
             }, getMonitor()));
         }
+    }
+
+    @Override
+    public Vector computeVector() {
+        return computeMatrix().toVector();
     }
 }

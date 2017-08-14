@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.HadrumathsFileSystem;
+import net.vpc.scholar.hadrumaths.util.HFileSystem;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -20,7 +20,7 @@ public class HSocketServer extends HadrumathsAbstractServer {
     public HSocketServer() {
         register(new FSServlet("CacheFS") {
             @Override
-            protected HadrumathsFileSystem getFileSystem() {
+            protected HFileSystem getFileSystem() {
                 return Maths.Config.getCacheFileSystem();
             }
         });

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.scalarproducts.DoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
@@ -32,53 +33,94 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
         //boolean hermMatrix=complex;
         String monMessage = getClass().getSimpleName();
         if (symMatrix) {
-            EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
-            Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
-                @Override
-                public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                    MutableComplex c = MutableComplex.Zero();
+            if(sp instanceof DoubleScalarProductCache){
+                DoubleScalarProductCache dsp=(DoubleScalarProductCache) sp;
+                EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+                Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
+                    @Override
+                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        MutableComplex c = MutableComplex.Zero();
 
-                    //copied to local to enhance performance!
-                    int glength = _g.length;
-                    Complex[][] cb = b;
-                    ScalarProductCache csp = sp;
-                    EnhancedProgressMonitor cm = m;
-                    String cmonMessage = monMessage;
-                    ModeInfo[] cn_eva = n_eva;
+                        //copied to local to enhance performance!
+                        int glength = _g.length;
+                        Complex[][] cb = b;
+                        DoubleScalarProductCache csp = dsp;
+                        EnhancedProgressMonitor cm = m;
+                        String cmonMessage = monMessage;
+                        ModeInfo[] cn_eva = n_eva;
 
-                    for (int p = 0; p < glength; p++) {
-                        Vector psp = csp.getRow(p);
-                        for (int q = p; q < glength; q++) {
-                            Vector qsp = csp.getRow(q);
-                            c.setZero();
-                            for (ModeInfo n : cn_eva) {
-                                Complex zn = n.impedance;
+                        for (int p = 0; p < glength; p++) {
+                            double[] psp = csp.getRowDouble(p);
+                            for (int q = p; q < glength; q++) {
+                                double[] qsp = csp.getRowDouble(q);
+                                c.setZero();
+                                for (ModeInfo n : cn_eva) {
+                                    Complex zn = n.impedance;
+                                    double sp1 = psp[n.index];
+                                    double sp2 = qsp[n.index];
+                                    c.add(zn.mul(sp1*sp2));
+                                }
+                                cb[p][q] = c.toComplex();
+                                cm.inc(cmonMessage);
+                            }
+                        }
+                        for (int p = 0; p < glength; p++) {
+                            for (int q = 0; q < p; q++) {
+                                cb[p][q] = cb[q][p];
+                                cm.inc(cmonMessage);
+                            }
+                        }
+                    }
+                });
+            }else {
+                EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+                Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
+                    @Override
+                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        MutableComplex c = MutableComplex.Zero();
+
+                        //copied to local to enhance performance!
+                        int glength = _g.length;
+                        Complex[][] cb = b;
+                        ScalarProductCache csp = sp;
+                        EnhancedProgressMonitor cm = m;
+                        String cmonMessage = monMessage;
+                        ModeInfo[] cn_eva = n_eva;
+
+                        for (int p = 0; p < glength; p++) {
+                            Vector psp = csp.getRow(p);
+                            for (int q = p; q < glength; q++) {
+                                Vector qsp = csp.getRow(q);
+                                c.setZero();
+                                for (ModeInfo n : cn_eva) {
+                                    Complex zn = n.impedance;
 //                            Complex sp1 = sp.gf(p, n.index);
 //                            Complex sp2 = sp.fg(n.index, q);
-                                Complex sp1 = psp.get(n.index); //sp.gf(p, n.index);
-                                Complex sp2 = qsp.get(n.index);//both are real, no complex//.conj();//sp.fg(n.index, q);
-                                c.addProduct(zn, sp1, sp2);
+                                    Complex sp1 = psp.get(n.index); //sp.gf(p, n.index);
+                                    Complex sp2 = qsp.get(n.index);//both are real, no complex//.conj();//sp.fg(n.index, q);
+                                    c.addProduct(zn, sp1, sp2);
+                                }
+                                cb[p][q] = c.toComplex();
+                                cm.inc(cmonMessage);
                             }
-                            cb[p][q] = c.toComplex();
-                            cm.inc(cmonMessage);
+                        }
+                        for (int p = 0; p < glength; p++) {
+                            for (int q = 0; q < p; q++) {
+                                cb[p][q] = cb[q][p];
+                                cm.inc(cmonMessage);
+                            }
                         }
                     }
-                    for (int p = 0; p < glength; p++) {
-                        for (int q = 0; q < p; q++) {
-                            cb[p][q] = cb[q][p];
-                            cm.inc(cmonMessage);
-                        }
-                    }
-                }
-            });
-        } else {//hermitienne si complex
+                });
+            }
+        } else {// non symmetric
             EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
             Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                 @Override
                 public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                     for (int p = 0; p < _g.length; p++) {
                         Vector psp = sp.getRow(p);
-                        for (int q = p; q < _g.length; q++) {
+                        for (int q = 0; q < _g.length; q++) {
                             Vector qsp = sp.getRow(q);
                             MutableComplex c = MutableComplex.Zero();
                             for (ModeInfo n : n_eva) {
@@ -90,12 +132,6 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                                 c.addProduct(zn, sp1, sp2);
                             }
                             b[p][q] = c.toComplex();
-                            m.inc(monMessage);
-                        }
-                    }
-                    for (int p = 0; p < _g.length; p++) {
-                        for (int q = 0; q < p; q++) {
-                            b[p][q] = b[q][p].conj();
                             m.inc(monMessage);
                         }
                     }

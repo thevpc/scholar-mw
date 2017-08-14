@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.RuntimeIOException;
 import net.vpc.scholar.hadrumaths.util.HFile;
-import net.vpc.scholar.hadrumaths.util.HadrumathsFileSystem;
+import net.vpc.scholar.hadrumaths.util.HFileSystem;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
 import java.io.*;
@@ -19,7 +19,7 @@ public abstract class FSServlet extends AbstractHadrumathsServlet {
         super(id);
     }
 
-    protected abstract HadrumathsFileSystem getFileSystem();
+    protected abstract HFileSystem getFileSystem();
 
     @Override
     public void service(DataInputStream in, DataOutputStream out) throws IOException {

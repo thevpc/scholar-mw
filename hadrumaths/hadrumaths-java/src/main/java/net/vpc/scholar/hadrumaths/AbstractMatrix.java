@@ -1747,7 +1747,7 @@ public abstract class AbstractMatrix extends Matrix {
 //        return B;
     //    }
     public void store(String file) throws RuntimeIOException {
-        store(new File(IOUtils.expandPath(file)));
+        store(new File(Maths.Config.expandPath(file)));
     }
 
     public void store(File file) throws RuntimeIOException {
@@ -2287,7 +2287,7 @@ public abstract class AbstractMatrix extends Matrix {
     public void set(TMatrix<Complex> other) {
         int cols = other.getColumnCount();
         int rows = other.getRowCount();
-        if (rows != getColumnCount() || rows != getRowCount()) {
+        if (cols != getColumnCount() || rows != getRowCount()) {
             throw new IllegalArgumentException("Columns or Rows count does not match");
         }
         for (int r = 0; r < rows; r++) {

@@ -1035,7 +1035,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     public void set(TMatrix<Complex> other) {
         int cols = other.getColumnCount();
         int rows = other.getRowCount();
-        if (rows != getColumnCount() || rows != getRowCount()) {
+        if (cols != getColumnCount() || rows != getRowCount()) {
             throw new IllegalArgumentException("Columns or Rows count does not match");
         }
         for (int r = 0; r < rows; r++) {

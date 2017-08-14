@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.scalarproducts.MemScalarProductCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.util.Converter;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
 
@@ -24,10 +23,10 @@ public class MathsInitializerService {
                 }
             }
         }));
-        Plot.Config.registerConverter(MemScalarProductCache.class, new Converter() {
+        Plot.Config.registerConverter(ScalarProductCache.class, new Converter() {
             @Override
             public Object convert(Object value) {
-                return ((MemScalarProductCache) value).toMatrix();
+                return ((ScalarProductCache) value).toMatrix();
             }
         });
 

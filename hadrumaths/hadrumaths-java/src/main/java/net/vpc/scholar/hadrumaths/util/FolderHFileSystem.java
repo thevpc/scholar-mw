@@ -4,10 +4,10 @@ import net.vpc.scholar.hadrumaths.RuntimeIOException;
 
 import java.io.*;
 
-public class FolderFileSystem extends AbstractHadrumathsFileSystem {
+public class FolderHFileSystem extends AbstractHFileSystem {
     private File root;
 
-    public FolderFileSystem(File root) {
+    public FolderHFileSystem(File root) {
         this.root = root;
     }
 

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public abstract class AbstractHadrumathsFileSystem implements HadrumathsFileSystem {
+public abstract class AbstractHFileSystem implements HFileSystem {
     public static final String WRITE_TEMP_EXT = ".writing";
 
     public boolean deleteFolderTree(HFile folder, HFileFilter fileFilter, FailStrategy strategy) {

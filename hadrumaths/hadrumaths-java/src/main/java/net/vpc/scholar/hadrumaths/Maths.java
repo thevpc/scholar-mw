@@ -8,10 +8,7 @@ import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
-import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
-import net.vpc.scholar.hadrumaths.scalarproducts.MemScalarProductCache;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
+import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
@@ -688,7 +685,7 @@ public final class Maths {
     }
 
     public static void storeMatrix(Matrix m, String file) throws RuntimeIOException {
-        m.store(file == null ? (File) null : new File(IOUtils.expandPath(file)));
+        m.store(file == null ? (File) null : new File(Config.expandPath(file)));
     }
 
     public static void storeMatrix(Matrix m, File file) throws RuntimeIOException {
@@ -696,11 +693,11 @@ public final class Maths {
     }
 
     public static Matrix loadOrEvalMatrix(String file, TItem<Matrix> item) throws RuntimeIOException {
-        return loadOrEvalMatrix(new File(IOUtils.expandPath(file)), item);
+        return loadOrEvalMatrix(new File(Config.expandPath(file)), item);
     }
 
     public static Vector loadOrEvalVector(String file, TItem<TVector<Complex>> item) throws RuntimeIOException {
-        return loadOrEvalVector(new File(IOUtils.expandPath(file)), item);
+        return loadOrEvalVector(new File(Config.expandPath(file)), item);
     }
 
     public static Matrix loadOrEvalMatrix(File file, TItem<Matrix> item) throws RuntimeIOException {
@@ -712,11 +709,11 @@ public final class Maths {
     }
 
     public static <T> TMatrix loadOrEvalTMatrix(String file, TItem<TMatrix<T>> item) throws RuntimeIOException {
-        return loadOrEvalTMatrix(new File(IOUtils.expandPath(file)), item);
+        return loadOrEvalTMatrix(new File(Config.expandPath(file)), item);
     }
 
     public static <T> TVector<T> loadOrEvalTVector(String file, TItem<TVector<T>> item) throws RuntimeIOException {
-        return loadOrEvalTVector(new File(IOUtils.expandPath(file)), item);
+        return loadOrEvalTVector(new File(Config.expandPath(file)), item);
     }
 
     public static <T> TMatrix<T> loadOrEvalTMatrix(File file, TItem<TMatrix<T>> item) throws RuntimeIOException {
@@ -757,7 +754,7 @@ public final class Maths {
     }
 
     public static Matrix loadMatrix(String file) throws IOException {
-        return Config.getDefaultMatrixFactory().load(new File(IOUtils.expandPath(file)));
+        return Config.getDefaultMatrixFactory().load(new File(Config.expandPath(file)));
     }
 
     public static Matrix inv(Matrix c) {
@@ -914,6 +911,10 @@ public final class Maths {
 
     public static Vector columnVector(Complex[] elems) {
         return ArrayVector.Column(elems);
+    }
+
+    public static Vector columnVector(double[] elems) {
+        return ArrayVector.Column(ArrayUtils.toComplex(elems));
     }
 
     public static Vector column(Complex[] elems) {
@@ -3673,33 +3674,88 @@ public final class Maths {
         return new ReadOnlyTVector<Expr>($EXPR, false, tVectorModel);
     }
 
-    private static ScalarProductCache resolveBestScalarProductCache(int rows, int columns) {
+    private static ScalarProductCache resolveBestScalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn) {
+        int rows = gp.length;
+        int columns = fn.length;
+
+//        if (doSimplifyAll) {
+//            Expr[] finalFn = fn;
+//            Expr[] finalGp = gp;
+//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
+//                @Override
+//                public Expr[][] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+//                    Expr[][] fg = new Expr[2][];
+//                    fg[0] = simplifyAll(finalFn, hmon[0]);
+//
+//                    fg[1] = simplifyAll(finalGp, hmon[1]);
+//                    return fg;
+//                }
+//            });
+//            fn = fg[0];
+//            gp = fg[1];
+//        }
+        boolean doubleValue = true;
+        boolean scalarValue = true;
+//        int maxF = fn.length;
+//        int maxG = gp.length;
+        for (Expr expr : fn) {
+            if (!expr.isScalarExpr()) {
+                scalarValue = false;
+                break;
+            }
+        }
+        if (scalarValue) {
+            for (Expr expr : gp) {
+                if (!expr.isScalarExpr()) {
+                    scalarValue = false;
+                    break;
+                }
+            }
+        }
+        for (Expr expr : fn) {
+            if (!expr.isDoubleExpr()) {
+                doubleValue = false;
+                break;
+            }
+        }
+        if (doubleValue) {
+            for (Expr expr : gp) {
+                if (!expr.isDoubleExpr()) {
+                    doubleValue = false;
+                    break;
+                }
+            }
+        }
+
         if (!Config.memoryCanStores(24L * rows * columns)) {
             return new MatrixScalarProductCache(Config.getLargeMatrixFactory());
         }
-        return new MemScalarProductCache();
+        if (doubleValue) {
+            return new MemDoubleScalarProductCache(scalarValue);
+        }
+        return new MemComplexScalarProductCache(hermitian, doubleValue, scalarValue);
     }
 
     public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
+        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
         c.evaluate(null, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
     public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
+        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
         c.evaluate(sp, fn, gp, hermitian, AxisXY.XY, monitor);
         return c;
     }
 
     public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
+        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
         c.evaluate(sp, fn, gp, hermitian, axis, monitor);
         return c;
     }
 
     public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(gp.length, fn.length);
+        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
         c.evaluate(null, fn, gp, hermitian, axis, monitor);
         return c;
     }
@@ -5287,8 +5343,8 @@ public final class Maths {
     public static class Config {
 
         private static final DumpManager dumpManager = new DumpManager();
-        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
+        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         private static int simplifierCacheSize = 2000;
         //        private static float largeMatrixThreshold = 0.7f;
         private static boolean debugExpressionRewrite = false;
@@ -5311,8 +5367,9 @@ public final class Maths {
         private static boolean cacheExpressionPropertiesEnabled = true;
         private static boolean cacheExpressionPropertiesEnabledEff = true;
         private static boolean developmentMode = false;
-        private static String rootCachePath = "${user.home}/.cache/mathcache";
-        private static String defaultCacheFolderName = "default";
+        private static final String defaultRootCachePath = "${user.home}/.cache/mathcache";
+        private static String rootCachePath = defaultRootCachePath;
+        private static String appCacheName = "default";
         //        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
         private static ScalarProductOperator defaultScalarProductOperator = null;
@@ -5387,7 +5444,7 @@ public final class Maths {
                     registerTMatrixFactory(dbLargeMatrixFactory);
                     return dbLargeMatrixFactory;
                 }
-                throw new IllegalArgumentException("Factory not Found : "+id);
+                throw new IllegalArgumentException("Factory not Found : " + id);
             } else {
                 return fac;
             }
@@ -5476,7 +5533,7 @@ public final class Maths {
         }
 
         public static String getRootCachePath(boolean expand) {
-            return expand ? IOUtils.expandPath(replaceVars(rootCachePath)) : rootCachePath;
+            return expand ? Config.expandPath(rootCachePath) : rootCachePath;
         }
 
         public static void setRootCachePath(String rootCachePath) {
@@ -5484,16 +5541,16 @@ public final class Maths {
         }
 
         public static String getDefaultCacheFolderName(boolean expand) {
-            return expand ? IOUtils.expandPath(replaceVars(defaultCacheFolderName)) : defaultCacheFolderName;
+            return expand ? Config.expandPath(appCacheName) : appCacheName;
         }
 
-        public static void setDefaultCacheFolderName(String defaultCacheFolderName) {
-            Config.defaultCacheFolderName = defaultCacheFolderName;
+        public static void setAppCacheName(String appCacheName) {
+            Config.appCacheName = appCacheName;
         }
 
 
-        public static HadrumathsFileSystem getCacheFileSystem() {
-            return new FolderFileSystem(new File(getCacheFolder()));
+        public static HFileSystem getCacheFileSystem() {
+            return new FolderHFileSystem(new File(getCacheFolder()));
         }
 
         public static String getCacheFolder() {
@@ -5619,7 +5676,10 @@ public final class Maths {
         }
 
         public static String getLargeMatrixCachePath(boolean expand) {
-            return expand ? Maths.Config.replaceVars(IOUtils.expandPath(largeMatrixCachePath)) : largeMatrixCachePath;
+            if(expand){
+                return Config.expandPath(largeMatrixCachePath);
+            }
+            return largeMatrixCachePath;
         }
 
         public static void seLargeMatrixCachePath(String largeMatrixPath) {
@@ -5670,6 +5730,26 @@ public final class Maths {
             }
         }
 
+        public static String expandPath(String format) {
+            if (format == null) {
+                return format;
+            }
+            String s = replaceVars(format);
+            if (format.equals("~")) {
+                return System.getProperty("user.home");
+            }
+            if (format.startsWith("~") && format.length() > 1 && (format.charAt(1) == '/' || format.charAt(1) == '\\')) {
+                return System.getProperty("user.home") + format.substring(1);
+            }
+            if (format.equals("~~")) {
+                return replaceVars(defaultRootCachePath);
+            }
+            if (format.startsWith("~~") && format.length() > 2 && (format.charAt(2) == '/' || format.charAt(2) == '\\')) {
+                return replaceVars(defaultRootCachePath) + format.substring(2);
+            }
+            s = replaceVars(s);
+            return s;
+        }
         public static String replaceVars(String format) {
             return StringUtils.replaceVars(format, new StringMapper() {
                 @Override

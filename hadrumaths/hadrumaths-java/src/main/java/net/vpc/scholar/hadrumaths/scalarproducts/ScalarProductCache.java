@@ -22,6 +22,6 @@ public interface ScalarProductCache {
     Complex fg(int n, int p);
 
 
-    void evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor);
+    ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor);
 
 }
