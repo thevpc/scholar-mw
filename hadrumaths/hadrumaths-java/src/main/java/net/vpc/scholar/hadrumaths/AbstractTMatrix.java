@@ -1218,7 +1218,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 ////                return OjalgoHelper.INSTANCE.inv(this);
 //            }
         }
-        throw new UnsupportedOperationException("strategy " + st.toString());
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"strategy " + st.toString());
     }
 
     public TMatrix<T> invSolve() {

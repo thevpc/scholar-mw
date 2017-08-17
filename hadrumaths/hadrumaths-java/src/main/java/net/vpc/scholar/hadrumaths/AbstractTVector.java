@@ -133,7 +133,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
             @Override
             public T get(int index) {
-                return getComponentVectorSpace().scalarProduct(hermitian, get(index), other);
+                return getComponentVectorSpace().scalarProduct(hermitian, AbstractTVector.this.get(index), other);
             }
         });
     }
@@ -143,7 +143,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
             @Override
             public T get(int index) {
-                return getComponentVectorSpace().scalarProduct(hermitian, other, get(index));
+                return getComponentVectorSpace().scalarProduct(hermitian, other, AbstractTVector.this.get(index));
             }
         });
     }

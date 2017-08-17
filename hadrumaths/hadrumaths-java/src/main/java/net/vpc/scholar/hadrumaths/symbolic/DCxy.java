@@ -209,7 +209,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         if (imag.isZero()) {
             return real;
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
     }
 
 //    public boolean isDDx() {

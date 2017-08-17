@@ -107,7 +107,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         if (imag.isZero()) {
             return real;
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
     }
 
 //    public boolean isDDx() {

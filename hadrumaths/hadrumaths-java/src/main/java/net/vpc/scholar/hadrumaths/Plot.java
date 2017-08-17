@@ -383,7 +383,7 @@ public class Plot {
 //                ff.delete();
 //            }
         }
-        throw new UnsupportedOperationException("Unknonw file format");
+        throw new UnsupportedOperationException("Unknown file format");
     }
 
     public static ValuesPlotModel loadDataJfig(File file) throws IOException {

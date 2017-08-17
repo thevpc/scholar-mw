@@ -69,7 +69,7 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
                 return true;
             }
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
     }
 
 

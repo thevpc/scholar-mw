@@ -144,7 +144,11 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix e = newMatrix(rows, columns);
         switch (it) {
             case FULL: {
-                e.set(e);
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < columns; j++) {
+                        e.set(i, j, item.get(i, j));
+                    }
+                }
                 break;
             }
             case DIAGONAL: {

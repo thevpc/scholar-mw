@@ -86,7 +86,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
                 return c.toDD();
             }
         }
-        throw new UnsupportedOperationException("Not supported toDD");
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported toDD");
     }
 
 

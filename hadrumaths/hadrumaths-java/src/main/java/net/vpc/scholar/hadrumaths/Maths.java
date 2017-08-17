@@ -726,13 +726,13 @@ public final class Maths {
 
     public static <T> T loadOrEval(TypeReference<T> type, File file, TItem<T> item) throws RuntimeIOException {
         TStoreManager<T> t = null;
-        if (type.equals(Matrix.class)) {
+        if (type.equals($MATRIX)) {
             t = (TStoreManager<T>) MATRIX_STORE_MANAGER;
-        } else if (type.equals(Vector.class)) {
+        } else if (type.equals($VECTOR)) {
             t = (TStoreManager<T>) VECTOR_STORE_MANAGER;
-        } else if (type.equals(TVector.class)) {
+        } else if (type.getTypeClass().equals(TVector.class)) {
             t = (TStoreManager<T>) TVECTOR_STORE_MANAGER;
-        } else if (type.equals(TMatrix.class)) {
+        } else if (type.getTypeClass().equals(TMatrix.class)) {
             t = (TStoreManager<T>) TMATRIX_STORE_MANAGER;
         } else {
             throw new IllegalArgumentException("Unsupported store type " + type);
