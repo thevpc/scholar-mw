@@ -291,8 +291,6 @@ public class Plot {
                 //let it
             } else if (o instanceof Number) {
                 o = Maths.matrix(new Complex[][]{{Complex.valueOf(((Number) o).doubleValue())}});
-            } else if (o instanceof ScalarProductCache) {
-                o = ((ScalarProductCache) o).toMatrix();
             } else if (o instanceof VDiscrete) {
                 o = new VDiscrete[]{(VDiscrete) o};
             } else if (o instanceof Discrete) {

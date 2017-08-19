@@ -382,4 +382,21 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
             }
         };
     }
+
+    @Override
+    public <R> boolean is(Complex value,TypeReference<R> type) {
+        if(Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)){
+            return true;
+        }
+        if(Maths.$DOUBLE.equals(type)){
+            return value.isDouble();
+        }
+        if(Maths.$INTEGER.equals(type)){
+            return value.isDouble() && value.toDouble()==(int)value.toDouble();
+        }
+        if(Maths.$LONG.equals(type)){
+            return value.isDouble() && value.toDouble()==(long)value.toDouble();
+        }
+        return false;
+    }
 }

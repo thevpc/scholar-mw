@@ -695,5 +695,23 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         );
     }
 
-
+    @Override
+    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+        if(
+                Maths.$COMPLEX.equals(other)
+                ||Maths.$EXPR.equals(other)
+                ){
+            return true;
+        }
+        if (other.isAssignableFrom(getComponentType())) {
+            return true;
+        }
+        VectorSpace<Complex> vs = Maths.getVectorSpace(getComponentType());
+        for (Complex t : this) {
+            if (!vs.is(t,other)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

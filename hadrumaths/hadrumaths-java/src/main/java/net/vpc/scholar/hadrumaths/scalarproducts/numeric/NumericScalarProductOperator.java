@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.scalarproducts.numeric;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
@@ -10,7 +11,7 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
-public class NumericScalarProductOperator extends ScalarProductOperator {
+public class NumericScalarProductOperator extends AbstractScalarProductOperator {
 
     private DIntegralXY integrator;
     private ExpressionRewriterRuleSet NO_SIMPLIFIER;

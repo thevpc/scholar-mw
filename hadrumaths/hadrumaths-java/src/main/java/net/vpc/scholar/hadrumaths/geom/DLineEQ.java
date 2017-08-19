@@ -55,6 +55,6 @@ public class DLineEQ {
         } catch (Exception e) {
             return null;
         }
-        return Point.create(r.get(0, 0), r.get(1, 0));
+        return Point.create(r.getDouble(0, 0), r.getDouble(1, 0));
     }
 }

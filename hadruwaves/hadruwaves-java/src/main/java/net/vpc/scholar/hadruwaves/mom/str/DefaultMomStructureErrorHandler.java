@@ -10,11 +10,8 @@ import java.awt.event.WindowListener;
 import java.util.Set;
 import javax.swing.*;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.ExternalLibrary;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
-import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotModel;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
@@ -38,12 +35,12 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         Set<ExternalLibrary> preferredLibraries=null;
         MomStructure str=(MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
-        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         PlotComponent aplot = Plot.nodisplay().asHeatMap().title("Matrix A")
                 .plot(str.matrixA().computeMatrix());
         PlotComponent bplot = Plot.nodisplay().asHeatMap().title("Matrix B")
                 .plot(str.matrixB().computeMatrix());
-        PlotComponent gfplot = Plot.nodisplay().asHeatMap().title("<f,g>").plot(sp.toMatrix());
+        PlotComponent gfplot = Plot.nodisplay().asHeatMap().title("<f,g>").plot(sp);
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()

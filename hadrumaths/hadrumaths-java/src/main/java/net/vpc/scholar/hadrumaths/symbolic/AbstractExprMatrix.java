@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 2/14/15.
  */
-public abstract class AbstractExprMatrix implements ExprMatrix{
+public abstract class AbstractExprMatrix implements ExprMatrix2 {
     protected ExprMatrixStore store;
 
     public AbstractExprMatrix(ExprMatrixStore store) {
@@ -38,7 +38,7 @@ public abstract class AbstractExprMatrix implements ExprMatrix{
     }
 
     @Override
-    public ExprMatrix preload() {
+    public ExprMatrix2 preload() {
         return DefaultExprMatrixFactory.INSTANCE.newPreloadedMatrix(
                 getRowsDimension(),
                 getColumnsDimension(),
@@ -47,7 +47,7 @@ public abstract class AbstractExprMatrix implements ExprMatrix{
     }
 
     @Override
-    public ExprMatrix withCache() {
+    public ExprMatrix2 withCache() {
         return DefaultExprMatrixFactory.INSTANCE.newCachedMatrix(
                 getRowsDimension(),
                 getColumnsDimension(),
@@ -56,7 +56,7 @@ public abstract class AbstractExprMatrix implements ExprMatrix{
     }
 
     @Override
-    public ExprMatrix simplify() {
+    public ExprMatrix2 simplify() {
         return DefaultExprMatrixFactory.INSTANCE.newUnmodifiableMatrix(
                 getRowsDimension(),
                 getColumnsDimension(),

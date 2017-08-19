@@ -28,14 +28,14 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
         ModeFunctions fn = str.getModeFunctions();
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         if (symMatrix) {
             for (int p = 0; p < g.length; p++) {
-                Vector spp = sp.getRow(p);
+                TVector<Complex> spp = sp.getRow(p);
                 for (int q = p; q < g.length; q++) {
-                    Vector spq = sp.getRow(q);
+                    TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         Complex yn = n.impedance.inv();
@@ -52,11 +52,11 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 if (op != null) {//op==null si k==1
                     //System.out.println("op = " + opValue.getMatrix());
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
-                        Vector spc2p = spc2.getRow(p);
+                        TVector<Complex> spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
-                            Vector spc2q = spc2.getRow(q);
+                            TVector<Complex> spc2q = spc2.getRow(q);
                             Complex c = Maths.CZERO;
                             for (int m = 0; m < op.length; m++) {
                                 for (int n = 0; n < op[m].length; n++) {
@@ -87,9 +87,9 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
 
         } else {
             for (int p = 0; p < g.length; p++) {
-                Vector spp = sp.getRow(p);
+                TVector<Complex> spp = sp.getRow(p);
                 for (int q = 0; q < g.length; q++) {
-                    Vector spq = sp.getRow(q);
+                    TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         c = c.add(n.impedance.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
@@ -104,11 +104,11 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                 if (op != null) {//op==null si k==1
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                    ScalarProductCache spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
-                        Vector spc2p = spc2.getRow(p);
+                        TVector<Complex> spc2p = spc2.getRow(p);
                         for (int q = 0; q < g.length; q++) {
-                            Vector spc2q = spc2.getRow(q);
+                            TVector<Complex> spc2q = spc2.getRow(q);
                             Complex c = Maths.CZERO;
                             for (int m = 0; m < op.length; m++) {
                                 for (int n = 0; n < op[m].length; n++) {

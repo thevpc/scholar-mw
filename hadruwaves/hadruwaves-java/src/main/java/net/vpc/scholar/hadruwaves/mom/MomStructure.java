@@ -504,16 +504,15 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
 
         Float hintDiscardFnByScalarProduct = getHintsManager().getHintDiscardFnByScalarProduct();
-        ScalarProductCache fnGpScalarProducts = null;
+        TMatrix<Complex> fnGpScalarProducts = null;
         double fnGpMax = Double.NaN;
         if (hintDiscardFnByScalarProduct != null) {
             //TODO fix me
-            ScalarProductCache spc = createScalarProductCache(modeFunctions, testFunctions, ProgressMonitorFactory.none());
-            Matrix spcm = spc.toMatrix();
+            TMatrix<Complex> spcm = createScalarProductCache(ProgressMonitorFactory.none());
             fnGpMax = spcm.get(0, 0).absdbl();
             double cell;
             for (int i = 0; i < spcm.getRowCount(); i++) {
-                Vector r = spcm.getRow(i);
+                TVector<Complex> r = spcm.getRow(i);
                 for (int j = 0; j < r.size(); j++) {
                     cell = r.get(j).absdbl();
                     if (cell > fnGpMax) {
@@ -525,7 +524,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             ArrayList<Integer> excludedFns = new ArrayList<Integer>();
             for (int n = 0; n < spcm.getRowCount(); n++) {// toutes les fn
                 boolean doExclude = true;
-                Vector r = spcm.getColumn(n);
+                TVector<Complex> r = spcm.getColumn(n);
                 for (int j = 0; j < r.size(); j++) {
                     Complex cc = r.get(j);
                     if ((cc.absdbl() / fnGpMax) > epsl) {
@@ -1268,21 +1267,21 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        return -1;
 //    }
 
-    public final ScalarProductCache getTestModeScalarProducts() {
+    public final TMatrix<Complex> getTestModeScalarProducts() {
         return getTestModeScalarProducts(null);
     }
 
-    public final ScalarProductCache getTestModeScalarProducts(ProgressMonitor monitor) {
+    public final TMatrix<Complex> getTestModeScalarProducts(ProgressMonitor monitor) {
         final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         build();
         return new FnGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }
 
-    public final ScalarProductCache getTestSourceScalarProducts() {
+    public final TMatrix<Complex> getTestSourceScalarProducts() {
         return getTestSourceScalarProducts(null);
     }
 
-    public final ScalarProductCache getTestSourceScalarProducts(ProgressMonitor monitor) {
+    public final TMatrix<Complex> getTestSourceScalarProducts(ProgressMonitor monitor) {
         final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         build();
         return new SrcGpScalarProductCacheStrCacheSupport(this, monitor0).get();
@@ -1711,12 +1710,13 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return DefaultMatrixUnknownEvaluator.INSTANCE;
     }
 
-    public ScalarProductCache createScalarProductCache(ModeFunctions fnModeFunctions, TestFunctions gpTestFunctions, ProgressMonitor monitor) {
+    public TMatrix<Complex> createScalarProductCache(ProgressMonitor monitor) {
         build();
-        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, 2);
-        fnModeFunctions.getModes(mon[0], getObjectCache());
-        HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
-        return getScalarProductOperator().eval(true, gpTestFunctions.arr(), fnModeFunctions.arr(), axis.toAxisXY(), mon[1]);
+        return modeFunctions.scalarProductCache(Maths.elist(testFunctions.arr()),monitor);
+//        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, 2);
+//        fnModeFunctions.getModes(mon[0], getObjectCache());
+//        HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
+//        return getScalarProductOperator().eval(true, gpTestFunctions.arr(), fnModeFunctions.arr(), axis.toAxisXY(), mon[1]);
     }
 
     /**

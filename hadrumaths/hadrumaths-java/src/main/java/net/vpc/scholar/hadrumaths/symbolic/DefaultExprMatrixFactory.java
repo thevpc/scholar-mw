@@ -12,7 +12,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
 
 
     @Override
-    public ExprMatrix newCachedMatrix(final int rows, final int columns, final CellIteratorType it, final ExprCellIterator item) {
+    public ExprMatrix2 newCachedMatrix(final int rows, final int columns, final CellIteratorType it, final ExprCellIterator item) {
         ExprMatrixStore store = new ExprMatrixStore() {
             Expr[][] elements = new Expr[rows][columns];
 
@@ -81,7 +81,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
 
 
     @Override
-    public ExprMatrix newPreloadedMatrix(final int rows, final int columns, CellIteratorType it,ExprCellIterator item) {
+    public ExprMatrix2 newPreloadedMatrix(final int rows, final int columns, CellIteratorType it, ExprCellIterator item) {
 
 
         Expr[][] elements = new Expr[rows][columns];
@@ -160,7 +160,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
     }
 
     @Override
-    public ExprMatrix newUnmodifiableMatrix(final int rows, final int columns, final ExprCellIterator item) {
+    public ExprMatrix2 newUnmodifiableMatrix(final int rows, final int columns, final ExprCellIterator item) {
         ExprMatrixStore store = new ExprMatrixStore() {
             @Override
             public int getColumnsDimension() {

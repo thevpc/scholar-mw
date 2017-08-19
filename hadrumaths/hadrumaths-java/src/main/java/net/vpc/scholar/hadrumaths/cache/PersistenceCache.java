@@ -5,7 +5,9 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -19,8 +21,8 @@ import java.util.logging.Logger;
  * @creationtime 2 juin 2007 13:28:08
  */
 public class PersistenceCache implements PersistentCacheConfig {
-    private static Logger log = Logger.getLogger(PersistenceCache.class.getName());
     public static final int LOCK_TIMEOUT = 1000 * 3600 * 24 * 7;
+    private static Logger log = Logger.getLogger(PersistenceCache.class.getName());
 
 //    public static void main(String[] args) {
 //        final PersistenceCache c = new PersistenceCache();
@@ -45,7 +47,6 @@ public class PersistenceCache implements PersistentCacheConfig {
 //            }.start();
 //        }
 //    }
-
     private PersistenceCache parent;
     private PathFS pathFS = new PathFS();
     private HFile rootFolder;
@@ -118,6 +119,11 @@ public class PersistenceCache implements PersistentCacheConfig {
         return repositoryFolder;
     }
 
+    public PersistenceCache setRepositoryFolder(HFile repositoryFolder) {
+        this.repositoryFolder = repositoryFolder;
+        return this;
+    }
+
     public HFile getRootFolder() {
         if (rootFolderCached == null) {
             if (rootFolder == null) {
@@ -129,6 +135,9 @@ public class PersistenceCache implements PersistentCacheConfig {
         return rootFolderCached;
     }
 
+    public PersistenceCache setRootFolder(String rootFolder) {
+        return setRootFolder(rootFolder == null ? null : IOUtils.createHFile((rootFolder)));
+    }
 
     //    private MomCache loadDump() throws IOException {
 //        return loadDump(getCacheFolder());
@@ -164,6 +173,13 @@ public class PersistenceCache implements PersistentCacheConfig {
         return getDumpFolder(dump, false);
     }
 
+//    public ObjectCache getObjectCache(Dumpable d, boolean createIfNotFound) {
+//        if (!isEnabled()) {
+//            return null;
+//        }
+//        return getObjectCache(d.dump(), createIfNotFound);
+//    }
+
     public String getDumpHashCode(String dump) {
         String hh = Integer.toString(dump.hashCode(), 36).toLowerCase();
         if (hh.startsWith("-")) {
@@ -191,13 +207,6 @@ public class PersistenceCache implements PersistentCacheConfig {
 //        return f == null ? null : new MomCache(new DumpPath(dump), this);
         return new ObjectCache(new DumpPath(dump.getValue()), this);
     }
-
-//    public ObjectCache getObjectCache(Dumpable d, boolean createIfNotFound) {
-//        if (!isEnabled()) {
-//            return null;
-//        }
-//        return getObjectCache(d.dump(), createIfNotFound);
-//    }
 
     public DumpCacheFile getFile(DumpPath dump, String path) {
         return new DumpCacheFile(
@@ -292,7 +301,6 @@ public class PersistenceCache implements PersistentCacheConfig {
         return new ObjectCacheIterator();
     }
 
-
     public CacheMode getEffectiveMode() {
         CacheMode m = mode == null ? CacheMode.INHERITED : mode;
         CacheMode p = parent == null ? (Maths.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
@@ -342,20 +350,19 @@ public class PersistenceCache implements PersistentCacheConfig {
         return getEffectiveMode() != CacheMode.DISABLED;
     }
 
-    public CacheMode getMode() {
-        return mode;
-    }
-
     public PersistenceCache setEnabled(boolean enabled) {
         this.mode = enabled ? CacheMode.ENABLED : CacheMode.DISABLED;
         return this;
+    }
+
+    public CacheMode getMode() {
+        return mode;
     }
 
     public PersistenceCache setMode(CacheMode mode) {
         this.mode = mode == null ? CacheMode.INHERITED : mode;
         return this;
     }
-
 
     public boolean clear() {
         System.err.println("Warning, clearing " + getRepositoryFolder().getPath() + " started.");
@@ -377,11 +384,6 @@ public class PersistenceCache implements PersistentCacheConfig {
         return this;
     }
 
-
-    public PersistenceCache setRootFolder(String rootFolder) {
-        return setRootFolder(rootFolder == null ? null : IOUtils.createHFile((rootFolder)));
-    }
-
     public boolean isLogLoadStatsEnabled() {
         return logLoadStatsEnabled;
     }
@@ -398,6 +400,246 @@ public class PersistenceCache implements PersistentCacheConfig {
     public PersistenceCache setTaskTimeThreshold(long taskTimeThreshold) {
         this.taskTimeThreshold = taskTimeThreshold;
         return this;
+    }
+
+    public boolean isIgnorePrevious() {
+        return ignorePrevious;
+    }
+
+    public PersistenceCache setIgnorePrevious(boolean ignorePrevious) {
+        this.ignorePrevious = ignorePrevious;
+        return this;
+    }
+
+    public PathFS getFS() {
+        return pathFS;
+    }
+
+    public PersistenceCache setAll(PersistenceCache other) {
+        if (other != null) {
+            mode = other.mode;
+            rootFolder = other.rootFolder;
+            logLoadStatsEnabled = other.logLoadStatsEnabled;
+            ignorePrevious = other.ignorePrevious;
+        }
+        return this;
+    }
+
+//    public <T> T evaluate(String cacheItemName, T oldValue, final Evaluator evaluator, final Object args) {
+//        return evaluate(cacheItemName, oldValue, evaluator, toObjArr(args));
+//    }
+
+    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator evaluator, final Object... args) {
+        return evaluate(cacheItemName, monitor, new Evaluator2() {
+            @Override
+            public void init() {
+                for (Method m : evaluator.getClass().getDeclaredMethods()) {
+                    Init initMethod = m.getAnnotation(Init.class);
+                    if (initMethod != null) {
+                        if (m.getParameterTypes().length != 0) {
+                            System.err.println("Ignored method " + m + ". Too many arguments");
+                        } else {
+                            m.setAccessible(true);
+                            try {
+                                m.invoke(evaluator);
+                            } catch (IllegalAccessException e) {
+                                throw new IllegalArgumentException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new IllegalArgumentException(e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public Object evaluate(Object[] args) {
+                return evaluator.evaluate(args);
+            }
+        }, args);
+    }
+
+    /**
+     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
+     *
+     * @param cacheItemName cache get name to evaluated
+     * @param evaluator     evaluator invoked when value could not be retrieved
+     * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
+     *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
+     *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
+     * @param <T>           cache get type/class
+     * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
+     */
+    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
+        Dumper dump = new Dumper();
+        for (Object arg : args) {
+            dump.add(arg);
+        }
+
+        final ObjectCache objCache = getObjectCache(new HashValue(dump.toString()), true);
+        return evaluate(objCache, cacheItemName, monitor, evaluator, args);
+    }
+
+    /**
+     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
+     *
+     * @param cacheItemName cache get name to evaluated
+     * @param evaluator     evaluator invoked when value could not be retrieved
+     * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
+     *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
+     *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
+     * @param <T>           cache get type/class
+     * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
+     */
+    public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
+        return objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
+                PersistenceCache.LOCK_TIMEOUT,
+                new Callable<T>() {
+                    @Override
+                    public T call() throws Exception {
+                        T oldValue = null;
+                        CacheMode cacheMode = getEffectiveMode();
+                        boolean cacheEnabled = isEnabled();
+                        long timeThresholdMilli = getTaskTimeThreshold();
+                        if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
+                            Chronometer c = new Chronometer();
+                            c.start();
+                            try {
+                                oldValue = (T) objCache.load(cacheItemName, null);
+                                if(oldValue!=null) {
+                                    c.stop();
+                                    log.log(Level.FINE, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c);
+                                }
+                            } catch (Exception e) {
+                                log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")");
+                                //
+                            }
+                            if(!c.isStopped()) {
+                                c.stop();
+                            }
+                            if(oldValue!=null) {
+                                if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
+                                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                }
+                            }
+                        }
+                        if (oldValue == null) {
+                            evaluator.init();
+                            Chronometer computeChrono = new Chronometer();
+                            computeChrono.start();
+                            oldValue = (T) evaluator.evaluate(args);
+                            computeChrono.stop();
+                            if (objCache != null && cacheEnabled && cacheMode != CacheMode.READ_ONLY) {
+                                long computeTime = computeChrono.getTime();
+                                if (computeTime >= minimumTimeForCache) {
+                                    Chronometer storeChrono = new Chronometer();
+                                    storeChrono.start();
+                                    objCache.store(cacheItemName, oldValue, monitor);
+                                    storeChrono.stop();
+                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono);
+                                    objCache.addStat(cacheItemName, computeTime);
+                                    objCache.addStat(cacheItemName + "#storecache", storeChrono.getTime());
+                                    if (isLogLoadStatsEnabled()) {
+                                        Chronometer loadChrono = new Chronometer();
+                                        loadChrono.start();
+                                        try {
+                                            oldValue = (T) objCache.load(cacheItemName, null);
+                                        } catch (Exception e) {
+                                            //
+                                        }
+                                        loadChrono.stop();
+                                        objCache.addStat(cacheItemName + "#loadcache", loadChrono.getTime());
+                                        if (timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000) {
+                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return oldValue;
+                    }
+                }
+        );
+
+    }
+
+//    private Object[] toObjArr(Object args) {
+//        return (args instanceof Object[]) ? ((Object[]) args) : new Object[]{args};
+//    }
+
+//    public <T> T evaluate(String key, final Evaluator evaluator, final Object args) {
+//        return evaluate(key, evaluator, toObjArr(args));
+//    }
+
+//    public <T> T evaluate(String key, final Evaluator evaluator, final Object... args) {
+//        return evaluate(key, null, evaluator, args);
+//    }
+
+    public String getRepositoryName() {
+        return repositoryName;
+    }
+
+    public PersistenceCache setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
+        return this;
+    }
+
+    public <T> T getOrNull(final HashValue dump, final String cacheItemName) {
+        T value = null;
+        if (isEnabled()) {
+            ObjectCache objCache = getObjectCache(dump, true);
+            value = objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
+                    PersistenceCache.LOCK_TIMEOUT,
+                    new Callable<T>() {
+                        @Override
+                        public T call() throws Exception {
+                            T value = null;
+                            ObjectCache momCache = null;
+                            long timeThresholdMilli = getTaskTimeThreshold();
+                            boolean cacheEnabled = isEnabled();
+                            CacheMode cacheMode = getEffectiveMode();
+                            if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
+                                momCache = getObjectCache(dump, true);
+                                Chronometer c = new Chronometer();
+                                c.start();
+                                try {
+                                    value = (T) momCache.load(cacheItemName, null);
+                                } catch (Exception e) {
+                                    System.err.println(e);
+                                    //
+                                }
+                                c.stop();
+                                if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
+                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                }
+                            }
+                            return value;
+                        }
+                    });
+        }
+        return value;
+    }
+
+    public boolean isCached(HashValue dump, String cacheItemName) {
+        if (isEnabled()) {
+
+            ObjectCache objCache = null;
+            boolean cacheEnabled = isEnabled();
+            CacheMode cacheMode = getEffectiveMode();
+            if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
+                objCache = getObjectCache(dump, true);
+                try {
+                    if (objCache.exists(cacheItemName)) {
+                        return true;
+                    }
+                    return objCache.getObjectCacheFile(cacheItemName).getLock().isLocked();
+                } catch (Exception e) {
+                    System.err.println(e);
+                    //
+                }
+            }
+        }
+        return false;
     }
 
     private class ObjectCacheIterator implements Iterator<ObjectCache> {
@@ -451,243 +693,6 @@ public class PersistenceCache implements PersistentCacheConfig {
         public void remove() {
             //
         }
-    }
-
-    public boolean isIgnorePrevious() {
-        return ignorePrevious;
-    }
-
-    public PersistenceCache setIgnorePrevious(boolean ignorePrevious) {
-        this.ignorePrevious = ignorePrevious;
-        return this;
-    }
-
-    public PathFS getFS() {
-        return pathFS;
-    }
-
-    public PersistenceCache setAll(PersistenceCache other) {
-        if (other != null) {
-            mode = other.mode;
-            rootFolder = other.rootFolder;
-            logLoadStatsEnabled = other.logLoadStatsEnabled;
-            ignorePrevious = other.ignorePrevious;
-        }
-        return this;
-    }
-
-//    public <T> T evaluate(String cacheItemName, T oldValue, final Evaluator evaluator, final Object args) {
-//        return evaluate(cacheItemName, oldValue, evaluator, toObjArr(args));
-//    }
-
-    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator evaluator, final Object... args) {
-        return evaluate(cacheItemName, monitor,new Evaluator2() {
-            @Override
-            public void init() {
-                for (Method m : evaluator.getClass().getDeclaredMethods()) {
-                    Init initMethod = m.getAnnotation(Init.class);
-                    if (initMethod != null) {
-                        if (m.getParameterTypes().length != 0) {
-                            System.err.println("Ignored method " + m + ". Too many arguments");
-                        } else {
-                            m.setAccessible(true);
-                            try {
-                                m.invoke(evaluator);
-                            } catch (IllegalAccessException e) {
-                                throw new IllegalArgumentException(e);
-                            } catch (InvocationTargetException e) {
-                                throw new IllegalArgumentException(e);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public Object evaluate(Object[] args) {
-                return evaluator.evaluate(args);
-            }
-        }, args);
-    }
-
-    /**
-     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
-     *
-     * @param cacheItemName cache get name to evaluated
-     * @param evaluator     evaluator invoked when value could not be retrieved
-     * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
-     *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
-     *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
-     * @param <T>           cache get type/class
-     * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
-     */
-    public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
-        Dumper dump = new Dumper();
-        for (Object arg : args) {
-            dump.add(arg);
-        }
-
-        final ObjectCache objCache = getObjectCache(new HashValue(dump.toString()), true);
-        return evaluate(objCache, cacheItemName, monitor,evaluator, args);
-    }
-
-    /**
-     * retrieve cache get named <code>cacheItemName</code> from cache if already evaluated, or reevaluate it and store to cache
-     *
-     * @param cacheItemName cache get name to evaluated
-     * @param evaluator     evaluator invoked when value could not be retrieved
-     * @param args          ALL arguments needed for evaluation. This argument should include all global and inherited values on which depends evaluation.
-     *                      If this arguments are wrong, cache may return a value evaluated for other parameters.
-     *                      All arguments should be Dumpable (@see {@link Maths#dump(Object)})
-     * @param <T>           cache get type/class
-     * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
-     */
-    public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
-        return objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
-                PersistenceCache.LOCK_TIMEOUT,
-                new Callable<T>() {
-                    @Override
-                    public T call() throws Exception {
-                        T oldValue = null;
-                        CacheMode cacheMode = getEffectiveMode();
-                        boolean cacheEnabled = isEnabled();
-                        long timeThresholdMilli = getTaskTimeThreshold();
-                        if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
-                            Chronometer c = new Chronometer();
-                            c.start();
-                            try {
-                                oldValue = (T) objCache.load(cacheItemName, null);
-                                log.log(Level.FINE, "[PersistenceCache] " + cacheItemName + " loaded from disk in "+c);
-                            } catch (Exception e) {
-                                log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")");
-                                //
-                            }
-                            c.stop();
-                            if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
-                                log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
-                            }
-                        }
-                        if (oldValue == null) {
-                            evaluator.init();
-                            Chronometer c = new Chronometer();
-                            c.start();
-                            oldValue = (T) evaluator.evaluate(args);
-                            c.stop();
-                            if (objCache != null && cacheEnabled && cacheMode != CacheMode.READ_ONLY) {
-                                long computeTime = c.getTime();
-                                if (computeTime >= minimumTimeForCache) {
-                                    c.start();
-                                    objCache.store(cacheItemName, oldValue,monitor);
-                                    c.stop();
-                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in "+c+" ; stored to disk in "+c);
-                                    objCache.addStat(cacheItemName, computeTime);
-                                    objCache.addStat(cacheItemName + "#storecache", c.getTime());
-                                    if (isLogLoadStatsEnabled()) {
-                                        c.start();
-                                        try {
-                                            oldValue = (T) objCache.load(cacheItemName, null);
-                                        } catch (Exception e) {
-                                            //
-                                        }
-                                        c.stop();
-                                        objCache.addStat(cacheItemName + "#loadcache", c.getTime());
-                                        if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
-                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return oldValue;
-                    }
-                }
-        );
-
-    }
-
-//    private Object[] toObjArr(Object args) {
-//        return (args instanceof Object[]) ? ((Object[]) args) : new Object[]{args};
-//    }
-
-//    public <T> T evaluate(String key, final Evaluator evaluator, final Object args) {
-//        return evaluate(key, evaluator, toObjArr(args));
-//    }
-
-//    public <T> T evaluate(String key, final Evaluator evaluator, final Object... args) {
-//        return evaluate(key, null, evaluator, args);
-//    }
-
-    public String getRepositoryName() {
-        return repositoryName;
-    }
-
-    public PersistenceCache setRepositoryName(String repositoryName) {
-        this.repositoryName = repositoryName;
-        return this;
-    }
-
-    public PersistenceCache setRepositoryFolder(HFile repositoryFolder) {
-        this.repositoryFolder = repositoryFolder;
-        return this;
-    }
-
-
-    public <T> T getOrNull(final HashValue dump, final String cacheItemName) {
-        T value = null;
-        if (isEnabled()) {
-            ObjectCache objCache = getObjectCache(dump, true);
-            value = objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
-                    PersistenceCache.LOCK_TIMEOUT,
-                    new Callable<T>() {
-                        @Override
-                        public T call() throws Exception {
-                            T value = null;
-                            ObjectCache momCache = null;
-                            long timeThresholdMilli = getTaskTimeThreshold();
-                            boolean cacheEnabled = isEnabled();
-                            CacheMode cacheMode = getEffectiveMode();
-                            if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
-                                momCache = getObjectCache(dump, true);
-                                Chronometer c = new Chronometer();
-                                c.start();
-                                try {
-                                    value = (T) momCache.load(cacheItemName, null);
-                                } catch (Exception e) {
-                                    System.err.println(e);
-                                    //
-                                }
-                                c.stop();
-                                if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli*1000000) {
-                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
-                                }
-                            }
-                            return value;
-                        }
-                    });
-        }
-        return value;
-    }
-
-    public boolean isCached(HashValue dump, String cacheItemName) {
-        if (isEnabled()) {
-
-            ObjectCache objCache = null;
-            boolean cacheEnabled = isEnabled();
-            CacheMode cacheMode = getEffectiveMode();
-            if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
-                objCache = getObjectCache(dump, true);
-                try {
-                    if (objCache.exists(cacheItemName)) {
-                        return true;
-                    }
-                    return objCache.getObjectCacheFile(cacheItemName).getLock().isLocked();
-                } catch (Exception e) {
-                    System.err.println(e);
-                    //
-                }
-            }
-        }
-        return false;
     }
 
 

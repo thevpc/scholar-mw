@@ -52,9 +52,9 @@ public class LUDecomposition implements java.io.Serializable {
 
    // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
 
-      LU = A.getArrayCopy();
-      m = A.getRows();
-      n = A.getColumns();
+      LU = A.getDoubleArrayCopy();
+      m = A.getRowCount();
+      n = A.getColumnCount();
       piv = new int[m];
       for (int i = 0; i < m; i++) {
          piv[i] = i;
@@ -197,7 +197,7 @@ public class LUDecomposition implements java.io.Serializable {
 
    public DMatrix getL () {
       DMatrix X = new DMatrix(m,n);
-      double[][] L = X.getArray();
+      double[][] L = X.getDoubleArray();
       for (int i = 0; i < m; i++) {
          for (int j = 0; j < n; j++) {
             if (i > j) {
@@ -218,7 +218,7 @@ public class LUDecomposition implements java.io.Serializable {
 
    public DMatrix getU () {
       DMatrix X = new DMatrix(n,n);
-      double[][] U = X.getArray();
+      double[][] U = X.getDoubleArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
             if (i <= j) {
@@ -279,7 +279,7 @@ public class LUDecomposition implements java.io.Serializable {
    */
 
    public DMatrix solve (DMatrix B) {
-      if (B.getRows() != m) {
+      if (B.getRowCount() != m) {
          throw new IllegalArgumentException("Matrix row dimensions must agree.");
       }
       if (!this.isNonsingular()) {
@@ -287,9 +287,9 @@ public class LUDecomposition implements java.io.Serializable {
       }
 
       // Copy right hand side with pivoting
-      int nx = B.getColumns();
+      int nx = B.getColumnCount();
       DMatrix Xmat = B.getMatrix(piv,0,nx-1);
-      double[][] X = Xmat.getArray();
+      double[][] X = Xmat.getDoubleArray();
 
       // Solve L*Y = B(piv,:)
       for (int k = 0; k < n; k++) {

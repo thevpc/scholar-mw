@@ -48,10 +48,6 @@ public class TMatrixFromRowVector<T> extends AbstractTMatrix<T> {
         return vector.toComplex();
     }
 
-    @Override
-    public void resize(int rows, int columns) {
-        throw new IllegalArgumentException("Unsupported Resize");
-    }
 
     @Override
     public TypeReference<T> getComponentType() {

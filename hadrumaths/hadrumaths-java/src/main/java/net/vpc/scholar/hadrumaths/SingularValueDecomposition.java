@@ -51,9 +51,9 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
       // Derived from LINPACK code.
       // Initialize.
-      double[][] A = Arg.getArrayCopy();
-      m = Arg.getRows();
-      n = Arg.getColumns();
+      double[][] A = Arg.getDoubleArrayCopy();
+      m = Arg.getRowCount();
+      n = Arg.getColumnCount();
       int nu = Math.min(m,n);
       s = new double [Math.min(m+1,n)];
       U = new double [m][nu];
@@ -495,7 +495,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
    public DMatrix getS () {
       DMatrix X = new DMatrix(n,n);
-      double[][] S = X.getArray();
+      double[][] S = X.getDoubleArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
             S[i][j] = 0.0;

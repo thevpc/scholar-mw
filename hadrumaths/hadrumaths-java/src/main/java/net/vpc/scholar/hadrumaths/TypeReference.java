@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -13,11 +14,10 @@ import java.util.*;
  *
  * @author crazybob@google.com (Bob Lee)
  */
-public abstract class TypeReference<T> {
+public abstract class TypeReference<T> implements Serializable{
 
     private final Type type;
     private volatile Constructor<?> constructor;
-    private static Map<Class,TypeReference> refs=new HashMap<>();
 
     private TypeReference(Type type) {
         this.type = type;
@@ -128,6 +128,10 @@ public abstract class TypeReference<T> {
             return null;
         }
         return of(superclass);
+    }
+
+    public <T> boolean isInstance(T t) {
+        return getTypeClass().isInstance(t);
     }
 
     private static class MyParameterizedType implements ParameterizedType {

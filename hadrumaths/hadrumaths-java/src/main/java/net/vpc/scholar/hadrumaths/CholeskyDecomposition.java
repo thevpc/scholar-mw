@@ -43,10 +43,10 @@ public class CholeskyDecomposition implements java.io.Serializable {
 
    public CholeskyDecomposition (DMatrix Arg) {
       // Initialize.
-      double[][] A = Arg.getArray();
-      n = Arg.getRows();
+      double[][] A = Arg.getDoubleArray();
+      n = Arg.getRowCount();
       L = new double[n][n];
-      isspd = (Arg.getColumns() == n);
+      isspd = (Arg.getColumnCount() == n);
       // Main loop.
       for (int j = 0; j < n; j++) {
          double[] Lrowj = L[j];
@@ -160,7 +160,7 @@ public class CholeskyDecomposition implements java.io.Serializable {
    */
 
    public DMatrix solve (DMatrix B) {
-      if (B.getRows() != n) {
+      if (B.getRowCount() != n) {
          throw new IllegalArgumentException("Matrix row dimensions must agree.");
       }
       if (!isspd) {
@@ -168,8 +168,8 @@ public class CholeskyDecomposition implements java.io.Serializable {
       }
 
       // Copy right hand side.
-      double[][] X = B.getArrayCopy();
-      int nx = B.getColumns();
+      double[][] X = B.getDoubleArrayCopy();
+      int nx = B.getColumnCount();
 
       // Solve L*Y = B;
       for (int k = 0; k < n; k++) {

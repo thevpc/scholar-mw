@@ -30,7 +30,7 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
         }
         EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
-        ScalarProductCache sp = str.getTestSourceScalarProducts(mon[0]);
+        TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
 
         EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
         return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<Matrix>() {
@@ -38,7 +38,7 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
             public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] b = new Complex[_g.length][_src.length];
                 for (int n = 0; n < _src.length; n++) {
-                    Vector cc = sp.getColumn(n);
+                    TVector<Complex> cc = sp.getColumn(n);
                     for (int p = 0; p < _g.length; p++) {
                         //[vpc/20140801] removed neg, don't know why i used to use it
 //                b[p][n] = sp.gf(p, n).neg();

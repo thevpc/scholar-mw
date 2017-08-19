@@ -7,6 +7,10 @@ import java.util.List;
 public interface VectorSpace<T> {
     TypeReference<T> getItemType();
 
+    <R> Converter<R, T> getConverterFrom(TypeReference<R> t);
+
+    <R> Converter<T, R> getConverterTo(TypeReference<R> t);
+
     <R> Converter<R, T> getConverterFrom(Class<R> t);
 
     <R> Converter<T, R> getConverterTo(Class<R> t);
@@ -89,6 +93,8 @@ public interface VectorSpace<T> {
     T arg(T t);
 
     boolean isZero(T a);
+
+    <R> boolean is(T value, TypeReference<R> type);
 
     boolean isComplex(T a);
 

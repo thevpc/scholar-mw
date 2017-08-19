@@ -382,4 +382,19 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
             }
         };
     }
+
+    @Override
+    public <R> boolean is(Double value,TypeReference<R> type) {
+        if(Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)){
+            return true;
+        }
+        if(Maths.$INTEGER.equals(type)){
+            return value==(int)value.doubleValue();
+        }
+        if(Maths.$LONG.equals(type)){
+            return value==(long)value.doubleValue();
+        }
+        return false;
+    }
+
 }

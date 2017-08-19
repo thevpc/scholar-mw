@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.util.*;
 
 import java.io.*;
@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -34,6 +35,112 @@ public class ObjectCache {
         this.persistenceCache = persistenceCache;
     }
 
+
+
+    public static CacheObjectSerializedForm toSerializedForm(Object value, HFile file) throws IOException {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof CacheObjectSerializedForm) {
+            return (CacheObjectSerializedForm) value;
+        }
+        if (value instanceof CacheObjectSerializerProvider) {
+            return ((CacheObjectSerializerProvider) value).createCacheObjectSerializedForm(file);
+        }
+        if (value instanceof Serializable) {
+            return new DefaultCacheObjectSerializedForm((Serializable) value);
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    public static Object loadObject(HFile file, Object defaultValue) throws IOException {
+        if (file.existsOrWait()) {
+            try {
+                //how to now it it is compressed?
+                boolean compressed= (Maths.Config.isCompressCache()) ;
+
+                    Object o1 = null;
+                ObjectInputStream ois = null;
+                try {
+                    InputStream theIs = null;
+                    InputStream fis = new BufferedInputStream(file.getInputStream());
+                    long length = file.length();
+                    if (length > 10000) {
+                        theIs = new ProgressMonitorInputStream2(null, "Reading " + file, fis, length);
+                    } else {
+                        theIs = fis;
+                    }
+                    ois = new ObjectInputStream(compressed?new GZIPInputStream(theIs):theIs);
+                    o1 = ois.readObject();
+                } finally {
+                    if (ois != null) ois.close();
+                }
+                if (o1 != null && o1 instanceof CacheObjectSerializedForm) {
+                    HFile serFile = file.getFs().get(file.getPath() + ".ser");
+                    CacheObjectSerializedForm s = ((CacheObjectSerializedForm) o1);
+                    o1 = s.deserialize(serFile);
+                }
+                return o1;
+            } catch (IOException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return defaultValue;
+    }
+
+    public static void storeObject(HFile path, Object object, ProgressMonitor computationMonitor, String message) throws IOException {
+        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(computationMonitor);
+        if (object != null && object instanceof CacheObjectSerializerProvider) {
+            HFile serFile = path.getFs().get(path.getPath() + ".ser");
+            object = ((CacheObjectSerializerProvider) object).createCacheObjectSerializedForm(serFile);
+            if (object == null) {
+                throw new IOException("CacheObjectSerializedForm could not be null");
+            }
+        }
+        if(Maths.Config.isCompressCache()) {
+            if (monitor == null) {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream(new GZIPOutputStream(path.getOutputStream()));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) oos.close();
+                }
+            } else {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(path.getOutputStream(), monitor, message)));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) oos.close();
+                }
+            }
+        }else{
+            if (monitor == null) {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream((path.getOutputStream()));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) oos.close();
+                }
+            } else {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream((new ProgressMonitorOutputStream(path.getOutputStream(), monitor, message)));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) oos.close();
+                }
+            }
+        }
+    }
     public String getDump() {
         return dump.getDump();
     }
@@ -50,7 +157,7 @@ public class ObjectCache {
         return getObjectCacheFile(name).exists();
     }
 
-    public void store(String name, Object o,ProgressMonitor computationMonitor) throws IOException{
+    public void store(String name, Object o, ProgressMonitor computationMonitor) throws IOException {
         EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
         String message = "store " + name;
         Maths.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
@@ -58,22 +165,10 @@ public class ObjectCache {
             public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws IOException {
                 DumpCacheFile file = getObjectCacheFile(name);
                 HFile path = file.getFile();
-                storeObject(path,o,m,message);
+                storeObject(path, o, m, message);
                 file.touch();
             }
         });
-    }
-
-    public static void storeObject(HFile path, Object o, ProgressMonitor computationMonitor, String message) throws IOException{
-        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
-        if (o != null && o instanceof CacheObjectSerializerProvider) {
-            HFile serFile = path.getFs().get(path.getPath() + ".ser");
-            o = ((CacheObjectSerializerProvider) o).createCacheObjectSerializedForm(serFile);
-            if(o==null){
-                throw new IOException("CacheObjectSerializedForm could not be null");
-            }
-        }
-        IOUtils.saveZippedObject(path, o,m,message);
     }
 
     public Object load(String name) throws IOException {
@@ -86,57 +181,7 @@ public class ObjectCache {
 
     public Object load(String name, Object o) throws IOException {
         DumpCacheFile file = getObjectCacheFile(name);
-        return loadObject(file.getFile(),o);
-    }
-
-    public static CacheObjectSerializedForm toSerializedForm(Object value,HFile file) throws IOException {
-        if(value==null){
-            return null;
-        }
-        if(value instanceof CacheObjectSerializedForm){
-            return (CacheObjectSerializedForm) value;
-        }
-        if(value instanceof CacheObjectSerializerProvider){
-            return ((CacheObjectSerializerProvider) value).createCacheObjectSerializedForm(file);
-        }
-        if(value instanceof Serializable){
-            return new DefaultCacheObjectSerializedForm((Serializable) value);
-        }
-        throw new IllegalArgumentException("Unsupported");
-    }
-
-    public static Object loadObject(HFile file,Object defaultValue) throws IOException {
-        if (file.existsOrWait()) {
-            try {
-                Object o1=null;
-                ObjectInputStream ois = null;
-                try {
-                    InputStream theIs = null;
-                    InputStream fis = new BufferedInputStream(file.getInputStream());
-                    long length = file.length();
-                    if (length > 10000) {
-                        theIs = new ProgressMonitorInputStream2(null, "Reading " + file, fis, length);
-                    } else {
-                        theIs = fis;
-                    }
-                    ois = new ObjectInputStream(new GZIPInputStream(theIs));
-                    o1=ois.readObject();
-                } finally {
-                    if (ois != null) ois.close();
-                }
-                if(o1 != null && o1 instanceof CacheObjectSerializedForm) {
-                    HFile serFile = file.getFs().get(file.getPath() + ".ser");
-                    CacheObjectSerializedForm s = ((CacheObjectSerializedForm) o1);
-                    o1=s.deserialize(serFile);
-                }
-                return o1;
-            } catch (IOException e) {
-                throw e;
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return defaultValue;
+        return loadObject(file.getFile(), o);
     }
 
     public void addStat(String statName, long statValueNano) {
@@ -145,7 +190,7 @@ public class ObjectCache {
         try {
             try {
                 DumpCacheFile sf = getFile("statistics" + CACHE_LOG_SUFFIX);
-                ps = new PrintStream(sf.getFile().getOutputStream( true));
+                ps = new PrintStream(sf.getFile().getOutputStream(true));
                 ps.println(statName + " = " + statValueNano + " (" + Chronometer.formatPeriodNano(statValueNano) + ")");
                 sf.touch();
             } finally {
@@ -262,6 +307,10 @@ public class ObjectCache {
 
     @Override
     public String toString() {
-        return "cache://"+getFolder().toString();
+        return "cache://" + getFolder().toString();
+    }
+
+    public <T> T evaluate(String cacheItemName, ProgressMonitor monitor, Evaluator2 evaluator, Object... args) {
+        return persistenceCache.evaluate(this,cacheItemName,monitor,evaluator,args);
     }
 }

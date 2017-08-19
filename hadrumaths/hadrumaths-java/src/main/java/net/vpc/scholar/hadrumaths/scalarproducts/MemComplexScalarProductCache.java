@@ -6,12 +6,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class MemComplexScalarProductCache extends AbstractScalarProductCache implements Serializable {
@@ -45,7 +41,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         return Maths.matrix(cache);
     }
 
-    public Vector getColumn(int column) {
+    public TVector<Complex> getColumn(int column) {
         Complex[] vmatrix = new Complex[cache.length];
         for (int i = 0; i < vmatrix.length; i++) {
             vmatrix[i] = cache[i][column];
@@ -53,7 +49,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         return Maths.columnVector(vmatrix);
     }
 
-    public Vector getRow(int row) {
+    public TVector<Complex> getRow(int row) {
 //        Complex[] vmatrix = new Complex[cache[0].length];
 //        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
 //        return Maths.columnVector(vmatrix);
@@ -120,7 +116,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                                 for (int q = 0; q < finalGp.length; q++) {
                                     DoubleToComplex gpq = finalGp[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp.eval(hermitian, gpq, finalFn[n].toDC());
+                                        gfps[q][n] = finalSp.evalDC(hermitian, gpq, finalFn[n].toDC());
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }

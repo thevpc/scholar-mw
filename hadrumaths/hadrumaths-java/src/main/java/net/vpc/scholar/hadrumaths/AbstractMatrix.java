@@ -12,24 +12,24 @@ import java.util.StringTokenizer;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public abstract class AbstractMatrix extends Matrix {
+public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements Matrix {
 
     private static final long serialVersionUID = -1010101010101001044L;
     private transient MatrixFactory factory;
     private String factoryId;
 
-    /*To exchange two rows in a matrix*/
-    public static void exchange_row(TMatrix<Complex> M, int k, int l, int m, int n) {
-        if (k <= 0 || l <= 0 || k > n || l > n || k == l) {
-            return;
-        }
-        Complex tmp;
-        for (int j = 0; j < n; j++) {
-            tmp = M.get(k - 1, j);
-            M.set(k - 1, j, M.get(l - 1, j));
-            M.set(l - 1, j, tmp);
-        }
-    }
+//    /*To exchange two rows in a matrix*/
+//    public static void exchange_row(TMatrix<Complex> M, int k, int l, int m, int n) {
+//        if (k <= 0 || l <= 0 || k > n || l > n || k == l) {
+//            return;
+//        }
+//        Complex tmp;
+//        for (int j = 0; j < n; j++) {
+//            tmp = M.get(k - 1, j);
+//            M.set(k - 1, j, M.get(l - 1, j));
+//            M.set(l - 1, j, tmp);
+//        }
+//    }
 
     public double norm() {
         return norm(NormStrategy.DEFAULT);
@@ -1981,17 +1981,6 @@ public abstract class AbstractMatrix extends Matrix {
     }
 
     @Override
-    public final TVector<TVector<Complex>> rows() {
-        return getRows();
-    }
-
-    @Override
-    public final TVector<TVector<Complex>> columns() {
-        return getColumns();
-    }
-
-
-    @Override
     public Vector row(int row) {
         return getRow(row);
     }
@@ -2337,19 +2326,6 @@ public abstract class AbstractMatrix extends Matrix {
         return get(vectorIndex);
     }
 
-    public boolean isSquare() {
-        return getColumnCount() == getRowCount();
-    }
-
-    @Override
-    public boolean isHermitian() {
-        return isSquare() && equals(transposeConjugate());
-    }
-
-    @Override
-    public boolean isSymmetric() {
-        return isSquare() && equals(transpose());
-    }
 
 
     private void checkSquare() {
@@ -2509,5 +2485,25 @@ public abstract class AbstractMatrix extends Matrix {
                 this.set(i, j, values[i][j], 0);
             }
         }
+    }
+
+
+    @Override
+    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+        if (
+                Maths.$COMPLEX.equals(other)
+                        || Maths.$EXPR.equals(other)
+                ) {
+            return true;
+        }
+        if (other.isAssignableFrom(getComponentType())) {
+            return true;
+        }
+        for (TVector<Complex> ts : getRows()) {
+            if(!ts.isConvertibleTo(other)){
+                return false;
+            }
+        }
+        return true;
     }
 }

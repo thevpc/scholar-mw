@@ -410,7 +410,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
 
     }
     //    public Matrix load(String file) throws IOException {
-//        MemMatrix memMatrix = new MemMatrix(new File(file));
+//        MemComplexMatrix memMatrix = new MemComplexMatrix(new File(file));
 //        memMatrix.setFactory(this);
 //        return memMatrix;
 //    }
@@ -460,5 +460,163 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     @Override
     public String toString() {
         return getId()+":"+getClass().getSimpleName();
+    }
+
+    @Override
+    public TMatrix<Complex> newMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return null;
+    }
+
+    @Override
+    public TMatrix<Complex> newMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Complex> item) {
+        Matrix e = newMatrix(rows, columns);
+        switch (it) {
+            case FULL: {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < columns; j++) {
+                        e.set(i, j, item.get(i, j));
+                    }
+                }
+                break;
+            }
+            case DIAGONAL: {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < i; j++) {
+                        e.set(i, j, Complex.ZERO);
+                    }
+                    e.set(i, i, item.get(i, i));
+                    for (int j = i + 1; j < columns; j++) {
+                        e.set(i, j, Complex.ZERO);
+                    }
+                }
+                break;
+            }
+            case SYMETRIC: {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < i; j++) {
+                        e.set(i, j, e.get(j,i));
+                    }
+                    for (int j = i; j < columns; j++) {
+                        e.set(i, j, item.get(i, j));
+                    }
+                }
+                break;
+            }
+            case HERMITIAN: {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < i; j++) {
+                        e.set(i, j, e.get(j,i).conj());
+                    }
+                    for (int j = i; j < columns; j++) {
+                        e.set(i, j, item.get(i, j));
+                    }
+                }
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported " + it);
+            }
+        }
+        return e;
+    }
+
+    @Override
+    public TMatrix<Complex> newColumnMatrix(int rows, TVectorCell<Complex> cellFactory) {
+        return newMatrix(rows, 1, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newRowMatrix(int columns, TVectorCell<Complex> cellFactory) {
+        return newMatrix(1,columns, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newSymmetric(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(rows, cols, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newHermitian(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(rows, cols, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newDiagonal(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newDiagonal(int rows, TVectorCell<Complex> cellFactory) {
+        return newMatrix(rows, rows,CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newMatrix(int dim, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(dim, dim, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newSymmetric(int dim, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(dim, dim, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newHermitian(int dim, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(dim, dim, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> newDiagonal(int dim, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
     }
 }

@@ -56,6 +56,42 @@ public class HFile {
         }
     }
 
+    public String getLongName() {
+        String n = getName();
+        int i = n.lastIndexOf('.');
+        if(i>=0){
+            return n.substring(0,i);
+        }
+        return n;
+    }
+
+    public String getSimpleName() {
+        String n = getName();
+        int i = n.indexOf('.');
+        if(i>=0){
+            return n.substring(0,i);
+        }
+        return n;
+    }
+
+    public String getExt() {
+        String n = getName();
+        int i = n.lastIndexOf('.');
+        if(i>=0){
+            return n.substring(i+1);
+        }
+        return n;
+    }
+
+    public String getLongExt() {
+        String n = getName();
+        int i = n.indexOf('.');
+        if(i>=0){
+            return n.substring(i+1);
+        }
+        return n;
+    }
+
     public String getName() {
         if (path.equals("/")) {
             return "/";

@@ -7,12 +7,12 @@ import net.vpc.scholar.hadrumaths.*;
  */
 public abstract class AbstractScalarProductCache implements ScalarProductCache {
     @Override
-    public Vector column(int column) {
+    public TVector<Complex> column(int column) {
         return getColumn(column);
     }
 
     @Override
-    public Vector row(int row) {
+    public TVector<Complex> row(int row) {
         return getRow(row);
     }
 }

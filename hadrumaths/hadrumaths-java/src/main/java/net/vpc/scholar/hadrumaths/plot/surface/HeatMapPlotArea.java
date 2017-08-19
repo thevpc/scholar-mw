@@ -58,7 +58,7 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
         } else {
             x = Maths.dsteps(max, 0.0, -1.0);
             y = Maths.dsteps(0.0, 0, 1.0);
-            _matrix = new DMatrix(new double[][]{x}).transpose().getArray();
+            _matrix = new DMatrix(new double[][]{x}).transpose().getDoubleArray();
         }
         init(x, y, _matrix, false, colorPalette, preferredDimension);
     }
@@ -579,24 +579,24 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
     }
 
     public void rotateRight() {
-        sourceMatrix = new DMatrix(sourceMatrix).rotateValuesLeft().getArray();
-        matrix = new DMatrix(matrix).rotateValuesLeft().getArray();
+        sourceMatrix = new DMatrix(sourceMatrix).rotateValuesLeft().getDoubleArray();
+        matrix = new DMatrix(matrix).rotateValuesLeft().getDoubleArray();
         if (isShowing()) {
             repaint();
         }
     }
 
     public void rotateLeft() {
-        sourceMatrix = new DMatrix(sourceMatrix).rotateValuesRight().getArray();
-        matrix = new DMatrix(matrix).rotateValuesRight().getArray();
+        sourceMatrix = new DMatrix(sourceMatrix).rotateValuesRight().getDoubleArray();
+        matrix = new DMatrix(matrix).rotateValuesRight().getDoubleArray();
         if (isShowing()) {
             repaint();
         }
     }
 
     public void flipHorizontally() {
-        sourceMatrix = new DMatrix(sourceMatrix).flipHorizontally().getArray();
-        matrix = new DMatrix(matrix).flipHorizontally().getArray();
+        sourceMatrix = new DMatrix(sourceMatrix).flipHorizontally().getDoubleArray();
+        matrix = new DMatrix(matrix).flipHorizontally().getDoubleArray();
         for (int i = 0; i < xAxis.length/2; i++) {
             xAxis[i]=xAxis[xAxis.length-1-i];
         }
@@ -606,8 +606,8 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
     }
 
     public void flipVertically() {
-        sourceMatrix = new DMatrix(sourceMatrix).flipVertically().getArray();
-        matrix = new DMatrix(matrix).flipVertically().getArray();
+        sourceMatrix = new DMatrix(sourceMatrix).flipVertically().getDoubleArray();
+        matrix = new DMatrix(matrix).flipVertically().getDoubleArray();
         for (int i = 0; i < yAxis.length/2; i++) {
             yAxis[i]=yAxis[yAxis.length-1-i];
         }

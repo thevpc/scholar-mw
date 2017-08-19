@@ -3,11 +3,12 @@ package net.vpc.scholar.hadrumaths;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintStream;
+import java.io.Serializable;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public interface TMatrix<T> extends Normalizable {
+public interface TMatrix<T> extends Normalizable,Serializable {
 
 
     double norm(NormStrategy ns);
@@ -21,6 +22,7 @@ public interface TMatrix<T> extends Normalizable {
 
     /**
      * Frobenius norm
+     *
      * @return
      */
     double norm2();
@@ -442,5 +444,17 @@ public interface TMatrix<T> extends Normalizable {
     TypeReference<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
+
     TMatrix<T> copy();
+
+    <R> boolean isConvertibleTo(TypeReference<R> type);
+
+    <R> TMatrix<R> to(TypeReference<R> other);
+
+    boolean isHermitian();
+
+    boolean isSymmetric();
+
+    boolean isSquare();
+
 }

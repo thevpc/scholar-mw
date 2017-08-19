@@ -5,14 +5,14 @@ package net.vpc.scholar.hadrumaths;
  */
 public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
     private final int size;
-    private final TVectorCell<T> it;
+    private final TVectorCell<T> vectorCell;
     private TypeReference<T> componentType;
 
-    public UnmodifiableList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> it) {
+    public UnmodifiableList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> vectorCell) {
         super(row);
         this.componentType = componentType;
         this.size = size;
-        this.it = it;
+        this.vectorCell = vectorCell;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
 
     @Override
     public T get(int index) {
-        return it.get(index);
+        return vectorCell.get(index);
     }
 
     @Override
@@ -35,12 +35,12 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
         throw new IllegalArgumentException("Unmodifiable");
     }
 
-    @Override
-    public String toString() {
-        return "UnmodifiableList{" +
-                "size=" + size +
-                ", items=" + it +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "UnmodifiableList{" +
+//                "size=" + size +
+//                ", items=" + it +
+//                '}';
+//    }
 
 }

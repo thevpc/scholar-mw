@@ -17,7 +17,7 @@ public class Dumper {
     private StringBuilder sb = new StringBuilder();
     private String name;
     private Type type =Type.OBJECT;
-    public static enum Type{
+    public enum Type{
         SIMPLE,
         OBJECT,
         ARRAY
@@ -47,6 +47,15 @@ public class Dumper {
     public Dumper(String name, Type type) {
         this.name = name == null ? "" : name;
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Dumper setName(String name) {
+        this.name = name;
+        return this;
     }
 
     public Dumper addFields(Object c, boolean ignoreNulls) {

@@ -87,6 +87,13 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         elementData[size++] = e;
     }
 
+    public void appendAll(double[] e) {
+        int increment = e.length;
+        ensureCapacityInternal(size + increment);  // Increments modCount!!
+        System.arraycopy(e,0,elementData, this.size, increment);
+        this.size += increment;
+    }
+
     @Override
     public void appendAll(TVector<Double> e) {
         int esize = e.size();
@@ -183,6 +190,48 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
                 d[i]=get(i);
             }
             return d;
+        }
+
+        @Override
+        public void append(double value) {
+            append((Double)value);
+        }
+
+        @Override
+        public void appendAll(double[] values) {
+            for (double value : values) {
+                append(value);
+            }
+        }
+    }
+
+    @Override
+    public <R> TList<R> to(TypeReference<R> other) {
+        if(other.equals(Maths.$COMPLEX)){
+            return (TList<R>) new DoubleToComplexList(this);
+        }
+        return super.to(other);
+    }
+
+    private static class DoubleToComplexList extends UnmodifiableList<Complex> {
+        private DoubleList list;
+
+        public DoubleToComplexList(DoubleList list) {
+            super(Maths.$COMPLEX,list.isRow(), list.size(), null);
+            this.list=list;
+        }
+
+        @Override
+        public Complex get(int index) {
+            return Complex.valueOf(list.get(index));
+        }
+
+        @Override
+        public <R> TList<R> to(TypeReference<R> other) {
+            if(other.equals(Maths.$DOUBLE)){
+                return (TList<R>) list;
+            }
+            return super.to(other);
         }
     }
 }

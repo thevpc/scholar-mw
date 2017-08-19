@@ -31,7 +31,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
         return Maths.invokeMonitoredAction(monitor, clsName, new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
                 Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
@@ -43,7 +43,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
                 MutableComplex ytemp;
                 for (int i = 0; i < indexes.length; i++) {
                     ModeInfo index = indexes[i];
-                    Vector spc = sp.getColumn(index.index);
+                    TVector<Complex> spc = sp.getColumn(index.index);
 
                     Complex[][] fx = index.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
                     Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);

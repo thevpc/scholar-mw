@@ -27,14 +27,14 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
         ModeFunctions fn = str.getModeFunctions();
 //        ModeInfo[] n_eva = str.isParameter(AbstractStructure2D.HINT_REGULAR_ZN_OPERATOR) ? fn.getModes() : fn.getVanishingModes();
         ModeInfo[] n_eva = str.getModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         //boolean hermMatrix=complex;
         String monMessage = getClass().getSimpleName();
         if (symMatrix) {
-            if(sp instanceof DoubleScalarProductCache){
-                DoubleScalarProductCache dsp=(DoubleScalarProductCache) sp;
+            if(sp.isConvertibleTo(Maths.$DOUBLE)){
+                DoubleMatrix dsp=(DoubleMatrix) sp.to(Maths.$DOUBLE);
                 EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
                 Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                     @Override
@@ -44,7 +44,7 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         //copied to local to enhance performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
-                        DoubleScalarProductCache csp = dsp;
+                        DoubleMatrix csp = dsp;
                         EnhancedProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
@@ -82,15 +82,15 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         //copied to local to enhance performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
-                        ScalarProductCache csp = sp;
+                        TMatrix<Complex> csp = sp;
                         EnhancedProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
 
                         for (int p = 0; p < glength; p++) {
-                            Vector psp = csp.getRow(p);
+                            TVector<Complex> psp = csp.getRow(p);
                             for (int q = p; q < glength; q++) {
-                                Vector qsp = csp.getRow(q);
+                                TVector<Complex> qsp = csp.getRow(q);
                                 c.setZero();
                                 for (ModeInfo n : cn_eva) {
                                     Complex zn = n.impedance;
@@ -119,9 +119,9 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                 @Override
                 public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                     for (int p = 0; p < _g.length; p++) {
-                        Vector psp = sp.getRow(p);
+                        TVector<Complex> psp = sp.getRow(p);
                         for (int q = 0; q < _g.length; q++) {
-                            Vector qsp = sp.getRow(q);
+                            TVector<Complex> qsp = sp.getRow(q);
                             MutableComplex c = MutableComplex.Zero();
                             for (ModeInfo n : n_eva) {
                                 Complex zn = n.impedance;

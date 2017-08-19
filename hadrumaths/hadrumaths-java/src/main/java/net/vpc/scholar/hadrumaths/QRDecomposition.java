@@ -47,9 +47,9 @@ public class QRDecomposition implements java.io.Serializable {
 
    public QRDecomposition (DMatrix A) {
       // Initialize.
-      QR = A.getArrayCopy();
-      m = A.getRows();
-      n = A.getColumns();
+      QR = A.getDoubleArrayCopy();
+      m = A.getRowCount();
+      n = A.getColumnCount();
       Rdiag = new double[n];
 
       // Main loop.
@@ -108,7 +108,7 @@ public class QRDecomposition implements java.io.Serializable {
 
    public DMatrix getH () {
       DMatrix X = new DMatrix(m,n);
-      double[][] H = X.getArray();
+      double[][] H = X.getDoubleArray();
       for (int i = 0; i < m; i++) {
          for (int j = 0; j < n; j++) {
             if (i >= j) {
@@ -127,7 +127,7 @@ public class QRDecomposition implements java.io.Serializable {
 
    public DMatrix getR () {
       DMatrix X = new DMatrix(n,n);
-      double[][] R = X.getArray();
+      double[][] R = X.getDoubleArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
             if (i < j) {
@@ -148,7 +148,7 @@ public class QRDecomposition implements java.io.Serializable {
 
    public DMatrix getQ () {
       DMatrix X = new DMatrix(m,n);
-      double[][] Q = X.getArray();
+      double[][] Q = X.getDoubleArray();
       for (int k = n-1; k >= 0; k--) {
          for (int i = 0; i < m; i++) {
             Q[i][k] = 0.0;
@@ -178,7 +178,7 @@ public class QRDecomposition implements java.io.Serializable {
    */
 
    public DMatrix solve (DMatrix B) {
-      if (B.getRows() != m) {
+      if (B.getRowCount() != m) {
          throw new IllegalArgumentException("Matrix row dimensions must agree.");
       }
       if (!this.isFullRank()) {
@@ -186,8 +186,8 @@ public class QRDecomposition implements java.io.Serializable {
       }
       
       // Copy right hand side
-      int nx = B.getColumns();
-      double[][] X = B.getArrayCopy();
+      int nx = B.getColumnCount();
+      double[][] X = B.getDoubleArrayCopy();
 
       // Compute Y = transpose(Q)*B
       for (int k = 0; k < n; k++) {

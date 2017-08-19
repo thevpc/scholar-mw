@@ -4,9 +4,10 @@ import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.List;
 
-public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
+public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>,Serializable {
 
     TypeReference<T> getComponentType();
 
@@ -39,6 +40,7 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
     <P extends T> T[] toArray(P[] a);
 
     int size();
+
     int length();
 
     void store(String file) throws RuntimeIOException;
@@ -76,6 +78,8 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
     T scalarProductAll(boolean hermitian, TVector<T>... other);
 
     <R> TVector<R> to(TypeReference<R> other);
+
+    <R> boolean isConvertibleTo(TypeReference<R> other);
 
     TVector<T> vscalarProduct(TVector<T>... other);
 
@@ -151,7 +155,7 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     TVector<T> abssqr();
 
-//    /**
+    //    /**
 //     * double absdbl square
 //     *
 //     * @return
@@ -187,11 +191,13 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T> {
 
     <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op);
 
-    <R> boolean acceptsType(TypeReference<R> type) ;
+    <R> boolean acceptsType(TypeReference<R> type);
 
     TVector<T> setParam(TParam param, Object value);
 
     TVector<T> setParam(String name, Object value);
+
+    TVector<T> copy();
 
     void forEachIndex(TVectorItemAction<T> action);
 }

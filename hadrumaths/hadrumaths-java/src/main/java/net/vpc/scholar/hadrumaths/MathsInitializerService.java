@@ -23,12 +23,6 @@ public class MathsInitializerService {
                 }
             }
         }));
-        Plot.Config.registerConverter(ScalarProductCache.class, new Converter() {
-            @Override
-            public Object convert(Object value) {
-                return ((ScalarProductCache) value).toMatrix();
-            }
-        });
 
     }
 }

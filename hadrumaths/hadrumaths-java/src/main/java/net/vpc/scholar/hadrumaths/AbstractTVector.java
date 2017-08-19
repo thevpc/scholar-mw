@@ -115,7 +115,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         VectorSpace<T> cs = getComponentVectorSpace();
         RepeatableOp<T> d = cs.addRepeatableOp();
         for (int i = 0; i < max; i++) {
-            d.append(cs.scalarProduct(hermitian,get(i), other.get(i)));
+            d.append(cs.scalarProduct(hermitian, get(i), other.get(i)));
         }
         return d.eval();
     }
@@ -130,7 +130,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public TVector<T> scalarProduct(boolean hermitian, T other) {
-        return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
+        return newVectorFromModel(isRow(), size(), new TVectorCell<T>() {
             @Override
             public T get(int index) {
                 return getComponentVectorSpace().scalarProduct(hermitian, AbstractTVector.this.get(index), other);
@@ -140,7 +140,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public TVector<T> rscalarProduct(boolean hermitian, T other) {
-        return newVectorFromModel(isRow(),size(),new TVectorCell<T>() {
+        return newVectorFromModel(isRow(), size(), new TVectorCell<T>() {
             @Override
             public T get(int index) {
                 return getComponentVectorSpace().scalarProduct(hermitian, other, AbstractTVector.this.get(index));
@@ -730,35 +730,35 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     public TVector<T> eval(ElementOp<T> op) {
-        return newReadOnlyInstanceFromModel(getComponentType(),isRow(), new TVectorModel<T>() {
-            @Override
-            public T get(int index) {
-                T t = AbstractTVector.this.get(index);
-                return op.eval(index, t);
-            }
+        return newReadOnlyInstanceFromModel(getComponentType(), isRow(), new TVectorModel<T>() {
+                    @Override
+                    public T get(int index) {
+                        T t = AbstractTVector.this.get(index);
+                        return op.eval(index, t);
+                    }
 
-            @Override
-            public int size() {
-                return AbstractTVector.this.size();
-            }
-        }
+                    @Override
+                    public int size() {
+                        return AbstractTVector.this.size();
+                    }
+                }
         );
     }
 
     public <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
                 toType, isRow(), new TVectorModel<R>() {
-            @Override
-            public R get(int index) {
-                T t = AbstractTVector.this.get(index);
-                return op.transform(index, t);
-            }
+                    @Override
+                    public R get(int index) {
+                        T t = AbstractTVector.this.get(index);
+                        return op.transform(index, t);
+                    }
 
-            @Override
-            public int size() {
-                return AbstractTVector.this.size();
-            }
-        }
+                    @Override
+                    public int size() {
+                        return AbstractTVector.this.size();
+                    }
+                }
         );
     }
 
@@ -796,17 +796,17 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         }
         return newReadOnlyInstanceFromModel(
                 other, isRow(), new TVectorModel<R>() {
-            @Override
-            public R get(int index) {
-                T t = AbstractTVector.this.get(index);
-                return (R) t;
-            }
+                    @Override
+                    public R get(int index) {
+                        T t = AbstractTVector.this.get(index);
+                        return (R) t;
+                    }
 
-            @Override
-            public int size() {
-                return AbstractTVector.this.size();
-            }
-        }
+                    @Override
+                    public int size() {
+                        return AbstractTVector.this.size();
+                    }
+                }
         );
     }
 
@@ -851,7 +851,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     protected final TVector<T> newVectorFromModel(boolean row, int size, final TVectorCell<T> cellFactory) {
-        return newReadOnlyInstanceFromModel(getComponentType(),row,new TVectorModelFromCell<>(size,cellFactory));
+        return newReadOnlyInstanceFromModel(getComponentType(), row, new TVectorModelFromCell<>(size, cellFactory));
     }
 
     protected <R> TVector<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, final TVectorModel<R> model) {
@@ -862,5 +862,28 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return new ArrayTVector<T>(getComponentVectorSpace(), all, row);
     }
 
+    @Override
+    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+        if (
+                Maths.$COMPLEX.equals(other)
+                        || Maths.$EXPR.equals(other)
+                ) {
+            return true;
+        }
+        if (other.isAssignableFrom(getComponentType())) {
+            return true;
+        }
+        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
+        for (T t : this) {
+            if (!vs.is(t, other)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    @Override
+    public TVector<T> copy() {
+        return Maths.list(this);
+    }
 }

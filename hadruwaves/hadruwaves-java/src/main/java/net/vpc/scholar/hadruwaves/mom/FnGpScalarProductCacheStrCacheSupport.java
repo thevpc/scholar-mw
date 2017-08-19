@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
@@ -8,7 +10,7 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProductCache> {
+class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Complex>> {
 
     private MomStructure momStructure;
 
@@ -18,10 +20,10 @@ class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProduc
     }
 
     @Override
-    public ScalarProductCache compute(ObjectCache momCache) {
+    public TMatrix<Complex> compute(ObjectCache momCache) {
         EnhancedProgressMonitor monitor = getMonitor();
         EnhancedProgressMonitor[] mon = monitor.split(new double[]{.1, .9});
         momStructure.initComputation(mon[0]);
-        return momStructure.createScalarProductCache(momStructure.getModeFunctions(), momStructure.getTestFunctions(), mon[1]);
+        return momStructure.createScalarProductCache(mon[1]);
     }
 }

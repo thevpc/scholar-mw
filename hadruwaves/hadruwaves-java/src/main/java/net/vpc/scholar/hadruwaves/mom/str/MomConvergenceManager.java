@@ -68,20 +68,19 @@ public class MomConvergenceManager {
      * @return fn at convergence
      */
     public int getConvergenceFn(int maxFn, int step, double error) {
-        ModeFunctions fn = momStructure.getModeFunctionsTemplate();
+        int oldMaxFn=momStructure.getModeFunctionsCount();
 //        momStructure.applyModeFunctionsChanges(fn);
-        fn.setSize(maxFn);
-        TestFunctions gp = momStructure.getGpTestFunctionsTemplate();
-        gp.setStructure(momStructure);
-        ScalarProductCache sp = momStructure.createScalarProductCache(fn, gp, ProgressMonitorFactory.none());
-        ModeInfo[] n_pro = fn.getPropagatingModes();
-        ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : fn.getVanishingModes();
+
+        TestFunctions gp = momStructure.getTestFunctions();
+        TMatrix<Complex> sp = momStructure.createScalarProductCache(ProgressMonitorFactory.none());
+        ModeInfo[] n_pro = momStructure.getModeFunctions().getPropagatingModes();
+        ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : momStructure.getModeFunctions().getVanishingModes();
 
         DoubleToVector[] _g = gp.arr();
 
         Complex[][] b = new Complex[_g.length][n_pro.length];
         for (int n = 0; n < n_pro.length; n++) {
-            Vector spc = sp.getColumn(n_pro[n].index);
+            TVector<Complex> spc = sp.getColumn(n_pro[n].index);
             for (int p = 0; p < _g.length; p++) {
                 b[p][n] = spc.get(p).neg();
             }
@@ -99,7 +98,7 @@ public class MomConvergenceManager {
         int n = 0;
         boolean converged = false;
         while (n < n_eva.length) {
-            Vector spc = sp.getColumn(n_eva[n].index);
+            TVector<Complex> spc = sp.getColumn(n_eva[n].index);
             Complex zn = n_eva[n].impedance;
             for (int s = 0; s < step && n < n_eva.length; s++) {
                 for (int p = 0; p < _g.length; p++) {
@@ -135,6 +134,7 @@ public class MomConvergenceManager {
         } else {
             momStructure.getLog().debug("Convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "] = " + (n - 1 + n_pro.length));
         }
+        momStructure.setModeFunctionsCount(oldMaxFn);
         return n - 1 + n_pro.length;
     }
 }

@@ -3,67 +3,13 @@ package net.vpc.scholar.hadrumaths;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public abstract class Matrix extends Number implements Normalizable, TMatrix<Complex> {
+public interface Matrix extends Normalizable, TMatrix<Complex> {
 
-    private static final long serialVersionUID = -1010101010101001044L;
+    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy);
 
+    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix);
 
-    //    public abstract double norm(NormStrategy ns);
-//
-//    /**
-//     * One norm
-//     *
-//     * @return maximum column sum.
-//     */
-//    public abstract double norm1();
-//
-//    public abstract double norm2();
-//
-//    /**
-//     * One norm
-//     *
-//     * @return maximum elemet absdbl.
-//     */
-//    public abstract double norm3();
-//
-//    public abstract double getError(Matrix baseMatrix);
-//
-    public abstract DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy);
-
-    public abstract DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix);
-
-    public abstract DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero);
-
-    /**
-     * term by term
-     *
-     * @param baseMatrix
-     * @param minErrorForZero
-     * @return
-     */
-    public abstract DMatrix getErrorMatrix2(TMatrix<Complex> baseMatrix, double minErrorForZero);
-
-    public abstract DMatrix getErrorMatrix3(TMatrix<Complex> baseMatrix, double minErrorForZero);
-//
-//    /**
-//     * Infinity norm
-//     *
-//     * @return maximum row sum.
-//     */
-//    public abstract double normInf();
-//
-//    public abstract Complex avg();
-//
-//    public abstract Complex sum();
-//
-//    public abstract Complex prod();
-//
-//    public abstract void set(Matrix[][] subMatrixes);
-//
-//    public abstract void setAll(Complex value);
-//
-//    public abstract Complex[][] getArray();
-//
+    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero);
 
     /**
      * Get a submatrix.
@@ -75,7 +21,7 @@ public abstract class Matrix extends Number implements Normalizable, TMatrix<Com
      * @return A(i0:i1, j0:j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public abstract Matrix getMatrix(int i0, int i1, int j0, int j1);
+    Matrix getMatrix(int i0, int i1, int j0, int j1);
 
     /**
      * Get a submatrix.
@@ -85,7 +31,7 @@ public abstract class Matrix extends Number implements Normalizable, TMatrix<Com
      * @return A(r(:), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public abstract Matrix getMatrix(int[] r, int[] c);
+    Matrix getMatrix(int[] r, int[] c);
 
     /**
      * Get a submatrix.
@@ -96,7 +42,7 @@ public abstract class Matrix extends Number implements Normalizable, TMatrix<Com
      * @return A(i0:r2, c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public abstract Matrix getMatrix(int r1, int r2, int[] c);
+    Matrix getMatrix(int r1, int r2, int[] c);
 
     /**
      * Get a submatrix.
@@ -107,117 +53,117 @@ public abstract class Matrix extends Number implements Normalizable, TMatrix<Com
      * @return A(r(:), c1:c2)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public abstract Matrix getMatrix(int[] r, int c1, int c2);
+    Matrix getMatrix(int[] r, int c1, int c2);
 
     //
-    public abstract Matrix div(double c);
+    Matrix div(double c);
 
     //
-    public abstract Matrix div(Complex c);
+    Matrix div(Complex c);
 
     //
-    public abstract Matrix mul(Complex c);
+    Matrix mul(Complex c);
 
     //
-    public abstract Matrix mul(double c);
+    Matrix mul(double c);
 
     //
-    public abstract Matrix neg();
+    Matrix neg();
 
     //
-    public abstract Matrix add(Complex c);
+    Matrix add(Complex c);
 
     //
-    public abstract Matrix sub(Complex c);
+    Matrix sub(Complex c);
 
     //
-    public abstract Matrix div(TMatrix<Complex> other);
+    Matrix div(TMatrix<Complex> other);
 
     //
-    public abstract Matrix mul(TMatrix<Complex> other);
+    Matrix mul(TMatrix<Complex> other);
 
     //
-    public abstract Matrix dotmul(TMatrix<Complex> other);
+    Matrix dotmul(TMatrix<Complex> other);
 
     //
-    public abstract Matrix dotdiv(TMatrix<Complex> other);
+    Matrix dotdiv(TMatrix<Complex> other);
 
     //
-    public abstract Matrix conj();
+    Matrix conj();
 
     //
-    public abstract Matrix dotinv();
+    Matrix dotinv();
 
     //
-    public abstract Matrix add(TMatrix<Complex> other);
+    Matrix add(TMatrix<Complex> other);
 
     //
-    public abstract Matrix add(Complex[][] other);
+    Matrix add(Complex[][] other);
 
-    public abstract Matrix sub(Complex[][] other);
+    Matrix sub(Complex[][] other);
 
-    public abstract Matrix mul(Complex[][] other);
+    Matrix mul(Complex[][] other);
 
-    public abstract Matrix sub(TMatrix<Complex> other);
+    Matrix sub(TMatrix<Complex> other);
 
-    public abstract Complex getScalar();
+    Complex getScalar();
 
-    public abstract Complex get(int row, int col);
+    Complex get(int row, int col);
 
-    public abstract Complex apply(int row, int col);
+    Complex apply(int row, int col);
 
-    public abstract Complex get(int vectorIndex);
+    Complex get(int vectorIndex);
 
-    public abstract Complex apply(int vectorIndex);
+    Complex apply(int vectorIndex);
 
-    //    public abstract void add(int row, int col, Complex val);
+    //    void add(int row, int col, Complex val);
 //
-//    public abstract void mul(int row, int col, Complex val);
+//    void mul(int row, int col, Complex val);
 //
-//    public abstract void div(int row, int col, Complex val);
+//    void div(int row, int col, Complex val);
 //
-//    public abstract void sub(int row, int col, Complex val);
+//    void sub(int row, int col, Complex val);
 //
-//    public abstract void set(int row, int col, Complex val);
+//    void set(int row, int col, Complex val);
 //
-//    public abstract void update(int row, int col, Complex val);
+//    void update(int row, int col, Complex val);
 //
-    public abstract void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols);
+    void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols);
 
-    public abstract void set(int row, int col, TMatrix<Complex> subMatrix);
+    void set(int row, int col, TMatrix<Complex> subMatrix);
 
-    public abstract void update(int row, int col, TMatrix<Complex> subMatrix);
+    void update(int row, int col, TMatrix<Complex> subMatrix);
 
-    public abstract Matrix subMatrix(int row, int col, int rows, int cols);
+    Matrix subMatrix(int row, int col, int rows, int cols);
 
-    //    public abstract TVector<Vector> getRows();
+    //    TVector<Vector> getRows();
 //
-//    public abstract TVector<Vector> getColumns();
+//    TVector<Vector> getColumns();
 //
-//    public abstract List<TVector<Complex>> rows();
+//    List<TVector<Complex>> rows();
 //    //
-//    public abstract List<TVector<Complex>> columns();
+//    List<TVector<Complex>> columns();
 //    //
 //
-//    public abstract int getRowCount();
+//    int getRowCount();
 //
-//    public abstract ComponentDimension getComponentDimension();
+//    ComponentDimension getComponentDimension();
 //
-//    public abstract int getColumnCount();
+//    int getColumnCount();
 //
-    public abstract Matrix transpose();
+    Matrix transpose();
 
     //
 //    /**
 //     * @return equivalent to transposeHermitian
 //     */
-    public abstract Matrix transjugate();
+    Matrix transjugate();
 
     //
 //    /**
 //     * @return equivalent to transposeHermitian
 //     */
-    public abstract Matrix transposeConjugate();
+    Matrix transposeConjugate();
 
     //
 //    /**
@@ -225,263 +171,246 @@ public abstract class Matrix extends Number implements Normalizable, TMatrix<Com
 //     *
 //     * @return
 //     */
-    public abstract Matrix transposeHermitian();
+    Matrix transposeHermitian();
 
     //
-    public abstract Matrix arrayTranspose();
+    Matrix arrayTranspose();
 
     //
-    public abstract Matrix invCond();
+    Matrix invCond();
 
     //
-    public abstract Matrix inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr);
+    Matrix inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr);
 
-    public abstract Matrix inv();
+    Matrix inv();
 
-    public abstract Matrix inv(InverseStrategy st);
+    Matrix inv(InverseStrategy st);
 
-    public abstract Matrix invSolve();
+    Matrix invSolve();
 
     /**
      * inversion using Bloc Matrix expansion
      *
      * @return inverse
      */
-    public abstract Matrix invBlock(InverseStrategy delegate, int precision);
+    Matrix invBlock(InverseStrategy delegate, int precision);
 
-    public abstract Matrix invGauss();
+    Matrix invGauss();
 
     /**
      * Formula used to Calculate Inverse: inv(A) = 1/det(A) * adj(A)
      *
      * @return inverse
      */
-    public abstract Matrix invAdjoint();
+    Matrix invAdjoint();
 
-    public abstract Matrix coMatrix(int row, int col);
+    Matrix coMatrix(int row, int col);
 
-    public abstract Matrix pow(int exp);
+    Matrix pow(int exp);
 
-    public abstract Matrix adjoint();
+    Matrix adjoint();
 
-    public abstract Complex det();
+    Complex det();
 
-    public abstract Matrix upperTriangle();
+    Matrix upperTriangle();
 
     //
 //    @Override
-//    public abstract String toString();
+//    String toString();
 //
-//    public abstract String format();
+//    String format();
 //
-//    public abstract String format(String commentsChar, String varName);
+//    String format(String commentsChar, String varName);
 //
-    public abstract Matrix copy();
+    Matrix copy();
 
-    public abstract Matrix solve(TMatrix<Complex> B);
+    Matrix solve(TMatrix<Complex> B);
 
-    public abstract Matrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy);
-
-    //
-//
-//    public abstract void store(String file) throws IOException;
-//
-//    public abstract void store(File file) throws IOException;
-//
-//    public abstract void store(PrintStream stream) throws IOException;
-//
-//    public abstract void store(String file, String commentsChar, String varName) throws IOException;
-//
-//    public abstract void store(File file, String commentsChar, String varName) throws IOException;
-//
-//
-//    public abstract void store(PrintStream stream, String commentsChar, String varName) throws IOException;
-//
-//    public abstract void read(BufferedReader reader) throws IOException;
-//
-//    public abstract void read(File file) throws IOException;
-//
-//    public abstract void read(String reader);
-//
-    public abstract Vector getRow(int row);
-
-    public abstract Vector row(int row);
-
-    public abstract Vector getColumn(int column);
-
-    public abstract Vector column(int column);
+    Matrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy);
 
     //
-//    public abstract boolean isColumn();
 //
-//    public abstract boolean isRow();
+//    void store(String file) throws IOException;
 //
-    public abstract double[][] absdbls();
+//    void store(File file) throws IOException;
+//
+//    void store(PrintStream stream) throws IOException;
+//
+//    void store(String file, String commentsChar, String varName) throws IOException;
+//
+//    void store(File file, String commentsChar, String varName) throws IOException;
+//
+//
+//    void store(PrintStream stream, String commentsChar, String varName) throws IOException;
+//
+//    void read(BufferedReader reader) throws IOException;
+//
+//    void read(File file) throws IOException;
+//
+//    void read(String reader);
+//
+    Vector getRow(int row);
+
+    Vector row(int row);
+
+    Vector getColumn(int column);
+
+    Vector column(int column);
 
     //
-    public abstract Matrix abs();
+//    boolean isColumn();
+//
+//    boolean isRow();
+//
+    double[][] absdbls();
 
     //
-//    public abstract double cond();
-//
-//    public abstract double cond2();
-//
-//    public abstract double condHadamard();
-//
-    public abstract Matrix sparsify(double ceil);
+    Matrix abs();
 
     //
-//    public abstract Complex complexValue();
+//    double cond();
+//
+//    double cond2();
+//
+//    double condHadamard();
+//
+    Matrix sparsify(double ceil);
+
+    //
+//    Complex complexValue();
 //
 //    @Override
-//    public abstract double doubleValue();
+//    double doubleValue();
 //
 //    @Override
-//    public abstract float floatValue();
+//    float floatValue();
 //
 //    @Override
-//    public abstract int intValue();
+//    int intValue();
 //
 //    @Override
-//    public abstract long longValue();
+//    long longValue();
 //
-//    public abstract double maxAbs();
+//    double maxAbs();
 //
-//    public abstract double minAbs();
+//    double minAbs();
 //
-    public abstract Matrix pow(TMatrix<Complex> power);
+    Matrix pow(TMatrix<Complex> power);
 
     //
-    public abstract Matrix pow(Complex power);
+    Matrix pow(Complex power);
 
     //
-//    public abstract boolean isScalar();
+//    boolean isScalar();
 //
-//    public abstract boolean isComplex();
+//    boolean isComplex();
 //
-//    public abstract boolean isDouble();
+//    boolean isDouble();
 //
-//    public abstract Complex toComplex();
+//    Complex toComplex();
 //
-//    public abstract double toDouble();
+//    double toDouble();
 //
-//    public abstract void set(Matrix other);
+//    void set(Matrix other);
 //
-//    public abstract boolean isZero();
+//    boolean isZero();
 //
-//    public abstract void dispose();
+//    void dispose();
 //
-//    public abstract void resize(int rows, int columns);
+//    void resize(int rows, int columns);
 //
-//    public abstract MatrixFactory getFactory();
+//    MatrixFactory getFactory();
 //
-//    public abstract void setFactory(MatrixFactory factory);
+//    void setFactory(MatrixFactory factory);
 //
 //
-    public abstract Vector toVector();
+    Vector toVector();
 
     //
-//    public abstract Complex scalarProduct(Matrix m);
+//    Complex scalarProduct(Matrix m);
 //
-//    public abstract Complex scalarProduct(Vector v);
+//    Complex scalarProduct(Vector v);
 //
-    public abstract Matrix cos();
+    Matrix cos();
 
-    public abstract Matrix acos();
+    Matrix acos();
 
-    public abstract Matrix asin();
+    Matrix asin();
 
-    public abstract Matrix sin();
+    Matrix sin();
 
-    public abstract Matrix acosh();
+    Matrix acosh();
 
-    public abstract Matrix cosh();
+    Matrix cosh();
 
-    public abstract Matrix asinh();
+    Matrix asinh();
 
-    public abstract Matrix sinh();
+    Matrix sinh();
 
-    public abstract Matrix arg();
+    Matrix arg();
 
-    public abstract Matrix atan();
+    Matrix atan();
 
-    public abstract Matrix cotan();
+    Matrix cotan();
 
-    public abstract Matrix tan();
+    Matrix tan();
 
-    public abstract Matrix tanh();
+    Matrix tanh();
 
-    public abstract Matrix cotanh();
+    Matrix cotanh();
 
-//    public abstract Matrix dotabs();
+//    Matrix dotabs();
 
-    public abstract Matrix getImag();
+    Matrix getImag();
 
-    public abstract Matrix getReal();
+    Matrix getReal();
 
-    public abstract DMatrix getRealDMatrix();
+    DMatrix getRealDMatrix();
 
-    public abstract DMatrix getImagDMatrix();
+    DMatrix getImagDMatrix();
 
-    public abstract DMatrix getAbsDMatrix();
+    DMatrix getAbsDMatrix();
 
-    public abstract DMatrix getAbsSquareDMatrix();
+    DMatrix getAbsSquareDMatrix();
 
-    //
-    public abstract Matrix imag();
+    Matrix imag();
 
-    public abstract Matrix real();
+    Matrix real();
 
-    //
-//    public abstract double[][] getDoubleArray();
-//
-//    public abstract double[][] getRealArray();
-//
-//    public abstract double[][] getImagArray();
-//
-//    public abstract double[][] getAbsArray();
-//
-//    public abstract double[][] getAbsSquareArray();
-//
-    public abstract Matrix acotan();
+    Matrix acotan();
 
-    public abstract Matrix exp();
+    Matrix exp();
 
-    public abstract Matrix log();
+    Matrix log();
 
-    public abstract Matrix log10();
+    Matrix log10();
 
-    public abstract Matrix db();
+    Matrix db();
 
-    public abstract Matrix db2();
+    Matrix db2();
 
-    public abstract Matrix dotsqr();
+    Matrix dotsqr();
 
-    public abstract Matrix dotsqrt();
+    Matrix dotsqrt();
 
-    public abstract Matrix dotsqrt(int n);
+    Matrix dotsqrt(int n);
 
-    public abstract Matrix dotnpow(int n);
+    Matrix dotnpow(int n);
 
-    public abstract Matrix dotpow(double n);
+    Matrix dotpow(double n);
 
-    public abstract Matrix dotpow(Complex n);
+    Matrix dotpow(Complex n);
 
-    public abstract void set(int row, int col, double real, double imag);
+    void set(int row, int col, double real, double imag);
 
-    public abstract void set(Complex[][] values);
+    void set(Complex[][] values);
 
-    public abstract void set(int row,int col, MutableComplex value);
+    void set(int row,int col, MutableComplex value);
 
-    public abstract void set(MutableComplex[][] values);
+    void set(MutableComplex[][] values);
 
-    public abstract void set(double[][] values);
+    void set(double[][] values);
 
-    public abstract void set(TMatrix<Complex> values);
+    void set(TMatrix<Complex> values);
 
-    public abstract boolean isHermitian();
-
-    public abstract boolean isSymmetric();
-
-    public abstract boolean isSquare();
 }

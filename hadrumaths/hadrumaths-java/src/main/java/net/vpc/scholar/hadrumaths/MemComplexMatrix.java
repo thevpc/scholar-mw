@@ -6,17 +6,17 @@ import java.util.ArrayList;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public final class MemMatrix extends AbstractMatrix implements Serializable {
+public final class MemComplexMatrix extends AbstractMatrix implements Serializable {
 
     private static final long serialVersionUID = -1010101010101001044L;
 
     private Complex[][] elements;
 
-    MemMatrix(Complex[][] elements) {
+    MemComplexMatrix(Complex[][] elements) {
         this.elements = elements;
     }
 
-    MemMatrix(int rows, int cols) {
+    MemComplexMatrix(int rows, int cols) {
         if (rows == 0 || cols == 0) {
             throw new EmptyMatrixException();
         }
@@ -25,8 +25,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
 
 
-    private static MemMatrix newMemMatrix(Complex[][] e) {
-        return new MemMatrix(e);
+    private static MemComplexMatrix newMemMatrix(Complex[][] e) {
+        return new MemComplexMatrix(e);
     }
 
     /*To exchange two rows in a matrix*/
@@ -129,7 +129,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
      */
     @Override
     public Matrix getMatrix(int i0, int i1, int j0, int j1) {
-        MemMatrix X = new MemMatrix(i1 - i0 + 1, j1 - j0 + 1);
+        MemComplexMatrix X = new MemComplexMatrix(i1 - i0 + 1, j1 - j0 + 1);
         Complex[][] B = X.elements;// X.getArray();
         try {
             for (int i = i0; i <= i1; i++) {
@@ -153,7 +153,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
      */
     @Override
     public Matrix getMatrix(int[] r, int[] c) {
-        MemMatrix X = new MemMatrix(r.length, c.length);
+        MemComplexMatrix X = new MemComplexMatrix(r.length, c.length);
         Complex[][] B = X.elements;
         try {
             for (int i = 0; i < r.length; i++) {
@@ -178,7 +178,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
      */
     @Override
     public Matrix getMatrix(int r1, int r2, int[] c) {
-        MemMatrix X = new MemMatrix(r2 - r1 + 1, c.length);
+        MemComplexMatrix X = new MemComplexMatrix(r2 - r1 + 1, c.length);
         Complex[][] B = X.elements;
         try {
             for (int i = r1; i <= r2; i++) {
@@ -203,7 +203,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
      */
     @Override
     public Matrix getMatrix(int[] r, int c1, int c2) {
-        MemMatrix X = new MemMatrix(r.length, c2 - c1 + 1);
+        MemComplexMatrix X = new MemComplexMatrix(r.length, c2 - c1 + 1);
         Complex[][] B = X.elements;
         try {
             for (int i = 0; i < r.length; i++) {
@@ -306,8 +306,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
         if(getColumnCount()!=other.getRowCount()){
             throw new IllegalArgumentException("The column dimension "+getColumnCount()+" of the left matrix does not match the row dimension "+other.getRowCount()+" of the right matrix!");
         }
-        if (other instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) other;
+        if (other instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) other;
             MutableComplex sum=MutableComplex.Zero();
             int a_rows = elements.length;
             int b_cols = mm.elements[0].length;
@@ -344,8 +344,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
     @Override
     public Matrix dotmul(TMatrix<Complex> other) {
-        if (other instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) other;
+        if (other instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) other;
             Complex[][] newElements = new Complex[elements.length][mm.elements[0].length];
             for (int i = 0; i < newElements.length; i++) {
                 for (int j = 0; j < newElements[i].length; j++) {
@@ -366,8 +366,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
     @Override
     public Matrix dotdiv(TMatrix<Complex> other) {
-        if (other instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) other;
+        if (other instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) other;
             Complex[][] newElements = new Complex[elements.length][mm.elements[0].length];
             for (int i = 0; i < newElements.length; i++) {
                 for (int j = 0; j < newElements[i].length; j++) {
@@ -388,8 +388,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
     @Override
     public Matrix add(TMatrix<Complex> other) {
-        if (other instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) other;
+        if (other instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) other;
             Complex[][] e = new Complex[elements.length][];
             for (int i = 0; i < elements.length; i++) {
                 e[i] = new Complex[elements[i].length];
@@ -412,8 +412,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
     @Override
     public Matrix sub(TMatrix<Complex> other) {
-        if (other instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) other;
+        if (other instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) other;
             Complex[][] e = new Complex[elements.length][];
             for (int i = 0; i < elements.length; i++) {
                 e[i] = new Complex[elements[i].length];
@@ -482,8 +482,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
     @Override
     public void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols) {
-        if (src instanceof MemMatrix) {
-            MemMatrix mm = (MemMatrix) src;
+        if (src instanceof MemComplexMatrix) {
+            MemComplexMatrix mm = (MemComplexMatrix) src;
             for (int i = 0; i < rows; i++) {
                 System.arraycopy(mm.elements[i + srcRow], srcCol, elements[i + row], col, cols);
             }
@@ -620,7 +620,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     @Override
-    public MemMatrix invGauss() {
+    public MemComplexMatrix invGauss() {
         int m = getRowCount();
         int n = getColumnCount();
         if (m != n) {
@@ -724,7 +724,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
      * @return inverse
      */
     @Override
-    public MemMatrix invAdjoint() {
+    public MemComplexMatrix invAdjoint() {
         // Formula used to Calculate Inverse:
         // inv(A) = 1/det(A) * adj(A)
         int tms = elements.length;
@@ -753,7 +753,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     @Override
-    public MemMatrix coMatrix(int row, int col) {
+    public MemComplexMatrix coMatrix(int row, int col) {
         int tms = elements.length;
         Complex ap[][] = new Complex[tms - 1][tms - 1];
         int ia = 0;
@@ -791,7 +791,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
 
     @Override
-    public MemMatrix adjoint() {
+    public MemComplexMatrix adjoint() {
         int tms = elements.length;
 
         Complex[][] m = new Complex[tms][tms];
@@ -816,8 +816,8 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
 
         Complex det = Complex.ONE;
         Matrix mt = upperTriangle();
-        if (mt instanceof MemMatrix) {
-            Complex[][] matrix = ((MemMatrix) mt).elements;
+        if (mt instanceof MemComplexMatrix) {
+            Complex[][] matrix = ((MemComplexMatrix) mt).elements;
 
             for (int i = 0; i < tms; i++) {
                 det = det.mul(matrix[i][i]);
@@ -837,7 +837,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     @Override
     public Matrix upperTriangle() {
 //        System.out.println(new java.util.Date() + " upperTriangle IN (" + elements.length + ")");
-        MemMatrix o = newMemMatrix(this.getArrayCopy());
+        MemComplexMatrix o = newMemMatrix(this.getArrayCopy());
 
         Complex f1;
         Complex temp;
@@ -932,7 +932,7 @@ public final class MemMatrix extends AbstractMatrix implements Serializable {
     }
 
     @Override
-    public MemMatrix sparsify(double ceil) {
+    public MemComplexMatrix sparsify(double ceil) {
         Complex[][] array = getArrayCopy();
         double max = Double.NaN;
         for (Complex[] complexes : array) {

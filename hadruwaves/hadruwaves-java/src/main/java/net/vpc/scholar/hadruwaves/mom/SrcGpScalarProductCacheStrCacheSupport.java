@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -11,7 +13,7 @@ import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProductCache> {
+class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Complex>> {
 
     private MomStructure momStructure;
 
@@ -21,7 +23,7 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ScalarProdu
     }
 
     @Override
-    public ScalarProductCache compute(ObjectCache momCache) {
+    public TMatrix<Complex> compute(ObjectCache momCache) {
         Sources ss = momStructure.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();

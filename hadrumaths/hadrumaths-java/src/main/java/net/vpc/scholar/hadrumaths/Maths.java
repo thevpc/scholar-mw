@@ -8,7 +8,10 @@ import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
-import net.vpc.scholar.hadrumaths.scalarproducts.*;
+import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
@@ -19,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -233,72 +237,17 @@ public final class Maths {
             return Config.defaultMatrixFactory.load(file).toVector();
         }
     };
-    public static final Converter IDENTITY = new Converter() {
-        @Override
-        public Object convert(Object value) {
-            return value;
-        }
-    };
-    public static final Converter<Complex, Double> COMPLEX_TO_DOUBLE = new Converter<Complex, Double>() {
-        @Override
-        public Double convert(Complex value) {
-            return value.toDouble();
-        }
-    };
-    public static final Converter<Double, Complex> DOUBLE_TO_COMPLEX = new Converter<Double, Complex>() {
-        @Override
-        public Complex convert(Double value) {
-            return Complex.valueOf(value);
-        }
-    };
-    public static final Converter<Double, TVector> DOUBLE_TO_TVECTOR = new Converter<Double, TVector>() {
-        @Override
-        public TVector convert(Double value) {
-            return Maths.columnVector(new Complex[]{Complex.valueOf(value)});
-        }
-    };
-    public static final Converter<TVector, Double> TVECTOR_TO_DOUBLE = new Converter<TVector, Double>() {
-        @Override
-        public Double convert(TVector value) {
-            return value.toComplex().toDouble();
-        }
-    };
-    public static final Converter<Complex, TVector> COMPLEX_TO_TVECTOR = new Converter<Complex, TVector>() {
-        @Override
-        public TVector convert(Complex value) {
-            return Maths.columnVector(new Complex[]{value});
-        }
-    };
-    public static final Converter<TVector, Complex> TVECTOR_TO_COMPLEX = new Converter<TVector, Complex>() {
-        @Override
-        public Complex convert(TVector value) {
-            return value.toComplex();
-        }
-    };
-    public static final Converter<Complex, Expr> COMPLEX_TO_EXPR = new Converter<Complex, Expr>() {
-        @Override
-        public Expr convert(Complex value) {
-            return value;
-        }
-    };
-    public static final Converter<Expr, Complex> EXPR_TO_COMPLEX = new Converter<Expr, Complex>() {
-        @Override
-        public Complex convert(Expr value) {
-            return value.toComplex();
-        }
-    };
-    public static final Converter<Double, Expr> DOUBLE_TO_EXPR = new Converter<Double, Expr>() {
-        @Override
-        public Expr convert(Double value) {
-            return Complex.valueOf(value);
-        }
-    };
-    public static final Converter<Expr, Double> EXPR_TO_DOUBLE = new Converter<Expr, Double>() {
-        @Override
-        public Double convert(Expr value) {
-            return value.toComplex().toDouble();
-        }
-    };
+    public static final Converter IDENTITY = new IdentityConverter();
+    public static final Converter<Complex, Double> COMPLEX_TO_DOUBLE = new ComplexDoubleConverter();
+    public static final Converter<Double, Complex> DOUBLE_TO_COMPLEX = new DoubleComplexConverter();
+    public static final Converter<Double, TVector> DOUBLE_TO_TVECTOR = new DoubleTVectorConverter();
+    public static final Converter<TVector, Double> TVECTOR_TO_DOUBLE = new TVectorDoubleConverter();
+    public static final Converter<Complex, TVector> COMPLEX_TO_TVECTOR = new ComplexTVectorConverter();
+    public static final Converter<TVector, Complex> TVECTOR_TO_COMPLEX = new TVectorComplexConverter();
+    public static final Converter<Complex, Expr> COMPLEX_TO_EXPR = new ComplexExprConverter();
+    public static final Converter<Expr, Complex> EXPR_TO_COMPLEX = new ExprComplexConverter();
+    public static final Converter<Double, Expr> DOUBLE_TO_EXPR = new DoubleExprConverter();
+    public static final Converter<Expr, Double> EXPR_TO_DOUBLE = new ExprDoubleConverter();
     //    public static String getAxisLabel(int axis){
 //        switch(axis){
 //            case X_AXIS:return "X";
@@ -307,41 +256,24 @@ public final class Maths {
 //        }
 //        throw new IllegalArgumentException("Unknown Axis "+axis);
 //    }
-    public static final TypeReference<String> $STRING = new TypeReference<String>() {
-    };
-    public static final TypeReference<Matrix> $MATRIX = new TypeReference<Matrix>() {
-    };
-    public static final TypeReference<Vector> $VECTOR = new TypeReference<Vector>() {
-    };
-    public static final TypeReference<TMatrix<Complex>> $CMATRIX = new TypeReference<TMatrix<Complex>>() {
-    };
-    public static final TypeReference<TVector<Complex>> $CVECTOR = new TypeReference<TVector<Complex>>() {
-    };
-    public static final TypeReference<Complex> $COMPLEX = new TypeReference<Complex>() {
-    };
-    public static final TypeReference<Double> $DOUBLE = new TypeReference<Double>() {
-    };
-    public static final TypeReference<Boolean> $BOOLEAN = new TypeReference<Boolean>() {
-    };
+    public static final TypeReference<String> $STRING = new StringTypeReference();
+    public static final TypeReference<Matrix> $MATRIX = new MatrixTypeReference();
+    public static final TypeReference<Vector> $VECTOR = new VectorTypeReference();
+    public static final TypeReference<TMatrix<Complex>> $CMATRIX = new TMatrixTypeReference();
+    public static final TypeReference<TVector<Complex>> $CVECTOR = new TVectorTypeReference();
+    public static final TypeReference<Complex> $COMPLEX = new ComplexTypeReference();
+    public static final TypeReference<Double> $DOUBLE = new DoubleTypeReference();
+    public static final TypeReference<Boolean> $BOOLEAN = new BooleanTypeReference();
     //</editor-fold>
-    public static final TypeReference<Integer> $INTEGER = new TypeReference<Integer>() {
-    };
-    public static final TypeReference<Long> $LONG = new TypeReference<Long>() {
-    };
-    public static final TypeReference<Expr> $EXPR = new TypeReference<Expr>() {
-    };
-    public static final TypeReference<TList<Complex>> $CLIST = new TypeReference<TList<Complex>>() {
-    };
-    public static final TypeReference<TList<Expr>> $ELIST = new TypeReference<TList<Expr>>() {
-    };
-    public static final TypeReference<TList<Double>> $DLIST = new TypeReference<TList<Double>>() {
-    };
-    public static final TypeReference<TList<Integer>> $ILIST = new TypeReference<TList<Integer>>() {
-    };
-    public static final TypeReference<TList<Boolean>> $BLIST = new TypeReference<TList<Boolean>>() {
-    };
-    public static final TypeReference<TList<Matrix>> $MLIST = new TypeReference<TList<Matrix>>() {
-    };
+    public static final TypeReference<Integer> $INTEGER = new IntegerTypeReference();
+    public static final TypeReference<Long> $LONG = new LongTypeReference();
+    public static final TypeReference<Expr> $EXPR = new ExprTypeReference();
+    public static final TypeReference<TList<Complex>> $CLIST = new TListTypeReference();
+    public static final TypeReference<TList<Expr>> $ELIST = new TListExprTypeReference();
+    public static final TypeReference<TList<Double>> $DLIST = new TListDoubleTypeReference();
+    public static final TypeReference<TList<Integer>> $ILIST = new TListIntegerTypeReference();
+    public static final TypeReference<TList<Boolean>> $BLIST = new TListBooleanTypeReference();
+    public static final TypeReference<TList<Matrix>> $MLIST = new TListMatrixTypeReference();
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
             System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model") :
                     System.getProperty("os.arch").contains("64") ? "64" : "32"
@@ -1941,7 +1873,7 @@ public final class Maths {
         return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
     }
 
-    public static ExprMatrix matrix(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues) {
+    public static ExprMatrix2 matrix(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues) {
         return Config.DEFAULT_EXPR_MATRIX_FACTORY.newUnmodifiableMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
     }
 
@@ -3682,7 +3614,7 @@ public final class Maths {
         return new ReadOnlyTVector<Expr>($EXPR, false, tVectorModel);
     }
 
-    private static ScalarProductCache resolveBestScalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn) {
+    private static TMatrix<Complex> resolveBestScalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ScalarProductOperator sp, ProgressMonitor monitor) {
         int rows = gp.length;
         int columns = fn.length;
 
@@ -3736,36 +3668,28 @@ public final class Maths {
         }
 
         if (!Config.memoryCanStores(24L * rows * columns)) {
-            return new MatrixScalarProductCache(Config.getLargeMatrixFactory());
+            return new MatrixScalarProductCache(Config.getLargeMatrixFactory()).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
         }
         if (doubleValue) {
-            return new MemDoubleScalarProductCache(scalarValue);
+            return new MemDoubleScalarProductCache(scalarValue).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
         }
-        return new MemComplexScalarProductCache(hermitian, doubleValue, scalarValue);
+        return new MemComplexScalarProductCache(hermitian, doubleValue, scalarValue).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
-        c.evaluate(null, fn, gp, hermitian, AxisXY.XY, monitor);
-        return c;
+    public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getDefaultScalarProductOperator(), monitor);
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
-        c.evaluate(sp, fn, gp, hermitian, AxisXY.XY, monitor);
-        return c;
+    public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getDefaultScalarProductOperator(), monitor);
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
-        c.evaluate(sp, fn, gp, hermitian, axis, monitor);
-        return c;
+    public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getDefaultScalarProductOperator(), monitor);
     }
 
-    public static ScalarProductCache scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        ScalarProductCache c = resolveBestScalarProductCache(hermitian, gp, fn);
-        c.evaluate(null, fn, gp, hermitian, axis, monitor);
-        return c;
+    public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getDefaultScalarProductOperator(), monitor);
     }
 
     public static Expr gate(Axis axis, double a, double b) {
@@ -3908,30 +3832,30 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).toMatrix();
+        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null));
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f) {
+    public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f) {
         return scalarProduct(false, g, f);
     }
 
-    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f) {
+    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f) {
         return scalarProduct(true, g, f);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return scalarProduct(false, g, f, monitor);
     }
 
-    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return scalarProduct(true, g, f, monitor);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
@@ -3944,18 +3868,18 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor).toMatrix();
+        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor));
     }
 
-    public static ScalarProductCache scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return scalarProduct(false, g, f, axis, monitor);
     }
 
-    public static ScalarProductCache hscalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return scalarProduct(true, g, f, axis, monitor);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
@@ -3968,54 +3892,54 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null).toMatrix();
+        return (Matrix) Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).to($COMPLEX);
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f) {
+    public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f) {
         return scalarProduct(false, g, f);
     }
 
-    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f) {
+    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f) {
         return scalarProduct(true, g, f);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, null);
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return scalarProduct(false, g, f, monitor);
     }
 
-    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return scalarProduct(true, g, f, monitor);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor);
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
-    public static ScalarProductCache scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return scalarProduct(false, g, f, monitor);
     }
 
-    public static ScalarProductCache hscalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+    public static TMatrix<Complex> hscalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return scalarProduct(true, g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(g, f, hermitian, monitor).toMatrix();
+        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor));
     }
 
-    public static ScalarProductCache scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return scalarProduct(false, g, f, axis, monitor);
     }
 
-    public static ScalarProductCache hscalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return scalarProduct(true, g, f, axis, monitor);
     }
 
-    public static ScalarProductCache scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
+    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
@@ -4180,9 +4104,7 @@ public final class Maths {
 
     public static TList<Double> dlist(double[] items) {
         DoubleList doubles = new DoubleArrayList(items.length);
-        for (double item : items) {
-            doubles.append(item);
-        }
+        doubles.appendAll(items);
         return doubles;
     }
 
@@ -5299,7 +5221,7 @@ public final class Maths {
     }
 
     public static Matrix matrix(TMatrix t) {
-        return new MatrixFromTMatrix(t);
+        return (Matrix) t.to($COMPLEX);
     }
 
     public static TMatrix<Expr> ematrix(TMatrix t) {
@@ -5353,6 +5275,7 @@ public final class Maths {
     public static class Config {
 
         private static final DumpManager dumpManager = new DumpManager();
+        private static final String defaultRootCachePath = "${user.home}/.cache/mathcache";
         static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
         private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         private static int simplifierCacheSize = 2000;
@@ -5377,7 +5300,7 @@ public final class Maths {
         private static boolean cacheExpressionPropertiesEnabled = true;
         private static boolean cacheExpressionPropertiesEnabledEff = true;
         private static boolean developmentMode = false;
-        private static final String defaultRootCachePath = "${user.home}/.cache/mathcache";
+        private static boolean compressCache = true;
         private static String rootCachePath = defaultRootCachePath;
         private static String appCacheName = "default";
         //        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
@@ -5402,6 +5325,14 @@ public final class Maths {
                 return d.format(value);
             }
         };
+
+        public static boolean isCompressCache() {
+            return compressCache;
+        }
+
+        public static void setCompressCache(boolean compressCache) {
+            Config.compressCache = compressCache;
+        }
 
         static {
             registerConverter(Double.class, Complex.class, DOUBLE_TO_COMPLEX);
@@ -5495,7 +5426,7 @@ public final class Maths {
         }
 
         public static <A, B> Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
-            return getConverter(a.getTypeClass(), a.getTypeClass());
+            return getConverter(a.getTypeClass(), b.getTypeClass());
         }
 
         public static boolean isDevelopmentMode() {
@@ -5686,7 +5617,7 @@ public final class Maths {
         }
 
         public static String getLargeMatrixCachePath(boolean expand) {
-            if(expand){
+            if (expand) {
                 return Config.expandPath(largeMatrixCachePath);
             }
             return largeMatrixCachePath;
@@ -5760,6 +5691,7 @@ public final class Maths {
             s = replaceVars(s);
             return s;
         }
+
         public static String replaceVars(String format) {
             return StringUtils.replaceVars(format, new StringMapper() {
                 @Override
@@ -5846,4 +5778,131 @@ public final class Maths {
         }
     }
 
+    private static class IdentityConverter implements Converter,Serializable {
+        @Override
+        public Object convert(Object value) {
+            return value;
+        }
+    }
+
+    private static class ComplexDoubleConverter implements Converter<Complex, Double>,Serializable {
+        @Override
+        public Double convert(Complex value) {
+            return value.toDouble();
+        }
+    }
+
+    private static class DoubleComplexConverter implements Converter<Double, Complex>,Serializable {
+        @Override
+        public Complex convert(Double value) {
+            return Complex.valueOf(value);
+        }
+    }
+
+    private static class DoubleTVectorConverter implements Converter<Double, TVector>,Serializable {
+        @Override
+        public TVector convert(Double value) {
+            return Maths.columnVector(new Complex[]{Complex.valueOf(value)});
+        }
+    }
+
+    private static class TVectorDoubleConverter implements Converter<TVector, Double>,Serializable {
+        @Override
+        public Double convert(TVector value) {
+            return value.toComplex().toDouble();
+        }
+    }
+
+    private static class ComplexTVectorConverter implements Converter<Complex, TVector>,Serializable {
+        @Override
+        public TVector convert(Complex value) {
+            return Maths.columnVector(new Complex[]{value});
+        }
+    }
+
+    private static class TVectorComplexConverter implements Converter<TVector, Complex>,Serializable {
+        @Override
+        public Complex convert(TVector value) {
+            return value.toComplex();
+        }
+    }
+
+    private static class ComplexExprConverter implements Converter<Complex, Expr>,Serializable {
+        @Override
+        public Expr convert(Complex value) {
+            return value;
+        }
+    }
+
+    private static class ExprComplexConverter implements Converter<Expr, Complex>,Serializable {
+        @Override
+        public Complex convert(Expr value) {
+            return value.toComplex();
+        }
+    }
+
+    private static class DoubleExprConverter implements Converter<Double, Expr>,Serializable {
+        @Override
+        public Expr convert(Double value) {
+            return Complex.valueOf(value);
+        }
+    }
+
+    private static class ExprDoubleConverter implements Converter<Expr, Double>,Serializable {
+        @Override
+        public Double convert(Expr value) {
+            return value.toComplex().toDouble();
+        }
+    }
+
+    private static class StringTypeReference extends TypeReference<String> {
+    }
+
+    private static class MatrixTypeReference extends TypeReference<Matrix> {
+    }
+
+    private static class VectorTypeReference extends TypeReference<Vector> {
+    }
+
+    private static class TMatrixTypeReference extends TypeReference<TMatrix<Complex>> {
+    }
+
+    private static class TVectorTypeReference extends TypeReference<TVector<Complex>> {
+    }
+
+    private static class ComplexTypeReference extends TypeReference<Complex> {
+    }
+
+    private static class DoubleTypeReference extends TypeReference<Double> {
+    }
+
+    private static class BooleanTypeReference extends TypeReference<Boolean> {
+    }
+
+    private static class IntegerTypeReference extends TypeReference<Integer> {
+    }
+
+    private static class LongTypeReference extends TypeReference<Long> {
+    }
+
+    private static class ExprTypeReference extends TypeReference<Expr> {
+    }
+
+    private static class TListTypeReference extends TypeReference<TList<Complex>> {
+    }
+
+    private static class TListExprTypeReference extends TypeReference<TList<Expr>> {
+    }
+
+    private static class TListDoubleTypeReference extends TypeReference<TList<Double>> {
+    }
+
+    private static class TListIntegerTypeReference extends TypeReference<TList<Integer>> {
+    }
+
+    private static class TListBooleanTypeReference extends TypeReference<TList<Boolean>> {
+    }
+
+    private static class TListMatrixTypeReference extends TypeReference<TList<Matrix>> {
+    }
 }

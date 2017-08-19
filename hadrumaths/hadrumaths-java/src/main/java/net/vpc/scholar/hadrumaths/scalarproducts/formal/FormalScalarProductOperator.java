@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.ExpressionRewriterFactory;
+import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToCosXCosYRule;
@@ -17,7 +18,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FormalScalarProductOperator extends ScalarProductOperator {
+public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
     private final static Logger log = Logger.getLogger(FormalScalarProductOperator.class.getName());
     private Map<ClassClassKey, FormalScalarProductHelper> map = new HashMap<ClassClassKey, FormalScalarProductHelper>();

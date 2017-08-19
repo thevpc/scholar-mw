@@ -1,15 +1,22 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.cache.Evaluator2;
+import net.vpc.scholar.hadrumaths.cache.HashValue;
+import net.vpc.scholar.hadrumaths.cache.ObjectCache;
+import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
+import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromTMatrix;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * North Eletrique, East Magnetique, South Eletrique,W Magnetique
@@ -265,5 +272,156 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
     public double getBetay() {
         return betay;
+    }
+
+    public Dumper getScalarProductsDumpStringHelper(Expr testFunction) {
+        Dumper h = new Dumper(this);
+        h.setName(getClass().getSimpleName()+":TestFunctionScalarProduct");
+//        h.add("fnMax", size);
+        h.add("freq", getFrequency());
+        h.add("domain", getDomain());
+        h.addNonNull("hintGpFnAxisType", getHintAxisType());
+        h.addNonNull("hintInvariantAxis", getHintInvariantAxis());
+        h.addNonNull("hintSymmetryAxis", getHintSymmetry());
+//        h.add("projectType", projectType);
+        h.add("firstBoxSpace", getFirstBoxSpace());
+        h.add("secondBoxSpace", getSecondBoxSpace());
+        h.addNonNull("sources", getSources());
+        h.addNonNull("modeInfoFilters", getModeInfoFilters());
+        h.addNonNull("modeIndexFilters", getModeIndexFilters());
+        h.addNonNull("modeInfoComparator", getModeInfoComparator());
+        h.addNonNull("modeIteratorFactory", getModeIteratorFactory());
+        if (isHintInvertTETMForZmode()) {
+            h.add("hintInvertTETMForZin", true);
+        }
+        h.add("borders", getBorders());
+                h.add("testFunction", testFunction).toString();
+        return h;
+    }
+
+    private ObjectCache getTestFunctionObjectCache(Expr testFunction){
+        String d = getScalarProductsDumpStringHelper(testFunction).toString();
+        PersistenceCache persistenceCache = new PersistenceCache(null, "mode-scalar-products", null);
+        return persistenceCache.getObjectCache(new HashValue(d), true);
+    }
+
+    @Override
+    public TVector<Complex> scalarProduct(Expr testFunction) {
+        boolean dd = testFunction.isDD() && modesDesc.getBorders()!=WallBorders.PPPP;
+        if(!Maths.Config.isCacheEnabled()){
+            return scalarProduct0(dd,testFunction,arr());
+        }
+        ObjectCache objectCache = getTestFunctionObjectCache(testFunction);
+        int currentCount = count();
+        return objectCache.evaluate("test-mode-scala-products-" + currentCount, null, new Evaluator2() {
+            @Override
+            public void init() {
+
+            }
+
+            @Override
+            public Object evaluate(Object[] args) {
+                TVector<Complex> found = loadCacheScalarProduct(dd,testFunction, objectCache, currentCount);
+                if(found==null){
+                    found=scalarProduct0(dd,testFunction,arr());
+                }
+                return found;
+            }
+        });
+    }
+
+    @Override
+    public TMatrix<Complex> scalarProductCache(TList<Expr> testFunctions, ProgressMonitor monitor) {
+        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor).createIncrementalMonitor(testFunctions.length());
+        boolean dd = modesDesc.getBorders()!=WallBorders.PPPP;
+        if(dd){
+            for (Expr testFunction : testFunctions) {
+                if(!testFunction.isDD()){
+                    dd=false;
+                    break;
+                }
+            }
+        }
+        if(dd){
+            double[][] rows=new double[testFunctions.size()][];
+            for (int i = 0; i < rows.length; i++) {
+                m.inc();
+                rows[i]=((DoubleList)scalarProduct(testFunctions.get(i)).to(Maths.$DOUBLE)).toDoubleArray();
+            }
+            return new DMatrix(rows).to(Maths.$COMPLEX);
+        }else{
+            Complex[][] rows=new Complex[testFunctions.size()][];
+            for (int i = 0; i < rows.length; i++) {
+                m.inc();
+                rows[i]=scalarProduct(testFunctions.get(i)).toArray();
+            }
+            return Maths.Config.getDefaultMatrixFactory().newMatrix(rows);
+        }
+    }
+
+    private TVector<Complex> loadCacheScalarProduct(boolean dd, Expr testFunction, ObjectCache objectCache, int currentCount) {
+        if(!getModeIteratorFactory().isAbsoluteIterator(this)){
+            //could guess indexes from existing cached files...
+            return null;
+        }
+        HFile dumpFolder = objectCache.getFolder();
+        HFile[] hFiles = dumpFolder.listFiles(new HFileFilter() {
+            @Override
+            public boolean accept(HFile pathname) {
+                String name = pathname.getName();
+                return name.startsWith("test-mode-scala-products-") && name.endsWith(ObjectCache.CACHE_OBJECT_SUFFIX);
+            }
+        });
+        HFile best = null;
+        int bestCount = 0;
+        for (HFile hFile : hFiles) {
+            int sn = Integer.parseInt(hFile.getSimpleName().substring("test-mode-scala-products-".length()));
+            if (best == null) {
+                best = hFile;
+                bestCount = sn;
+            }else{
+                if(sn>=currentCount){
+                    if(sn<bestCount){
+                        best = hFile;
+                        bestCount=sn;
+                    }
+                }else{
+                    if(sn>bestCount){
+                        best = hFile;
+                        bestCount=sn;
+                    }
+                }
+            }
+        }
+        if(best!=null){
+            TVector<Complex> o = null;
+            try {
+                o = (TVector<Complex>) ObjectCache.loadObject(best, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(o!=null){
+                if(o.size()>currentCount){
+                    return Maths.list(o).sublist(0,currentCount).copy();
+                }else{
+                    TList<Complex> copy = Maths.list(o).copy();
+                    TList<Expr> list = list();
+                    list=list.sublist(copy.size(),list.length());
+
+                    TVector<Complex> extra = scalarProduct0(dd,testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[list.length()]));
+                    copy.appendAll(extra);
+                    return copy;
+                }
+            }
+        }
+        return null;
+    }
+
+    private TVector<Complex> scalarProduct0(boolean dd,Expr testFunction, DoubleToVector[] arr) {
+        ScalarProductOperator sp = Maths.Config.getDefaultScalarProductOperator();
+        if (dd) {
+            return Maths.dlist(sp.evalVDD(null, testFunction.toDV(), arr)).to(Maths.$COMPLEX);
+        }
+        return Maths.columnVector(sp.evalVDC(true, null, testFunction.toDV(), arr));
     }
 }

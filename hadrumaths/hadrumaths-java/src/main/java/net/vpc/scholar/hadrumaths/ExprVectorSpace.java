@@ -770,4 +770,24 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             return new Mul(all.toArray(new Expr[all.size()]));
         }
     }
+
+    @Override
+    public <R> boolean is(Expr value,TypeReference<R> type) {
+        if(Maths.$EXPR.equals(type)){
+            return true;
+        }
+        if(Maths.$COMPLEX.equals(type)){
+            return value.isComplex();
+        }
+        if(Maths.$DOUBLE.equals(type)){
+            return value.isDouble();
+        }
+        if(Maths.$INTEGER.equals(type)){
+            return value.isDouble() && value.toDouble()==(int)value.toDouble();
+        }
+        if(Maths.$LONG.equals(type)){
+            return value.isDouble() && value.toDouble()==(long)value.toDouble();
+        }
+        return false;
+    }
 }

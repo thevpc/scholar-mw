@@ -56,22 +56,27 @@ public class FolderHFileSystem extends AbstractHFileSystem {
     @Override
     public OutputStream getOutputStream(HFile file, boolean append) {
         try {
-            File file1 = resolveFile(file);
-            File temp = new File(file1.getPath() + WRITE_TEMP_EXT);
-            return new FileOutputStream(temp, append) {
-                boolean closed = false;
+            if (append) {
+                File file1 = resolveFile(file);
+                return new FileOutputStream(file1, true);
+            } else {
+                File file1 = resolveFile(file);
+                File temp = new File(file1.getPath() + WRITE_TEMP_EXT);
+                return new FileOutputStream(temp, false) {
+                    boolean closed = false;
 
-                @Override
-                public void close() throws IOException {
-                    if (!closed) {
-                        super.close();
-                        closed = true;
-                        if (!temp.renameTo(file1)) {
-                            throw new IOException("Unable to rename " + temp.getPath() + " to " + file1.getName());
+                    @Override
+                    public void close() throws IOException {
+                        if (!closed) {
+                            super.close();
+                            closed = true;
+                            if (!temp.renameTo(file1)) {
+                                throw new IOException("Unable to rename " + temp.getPath() + " to " + file1.getName());
+                            }
                         }
                     }
-                }
-            };
+                };
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeIOException(e);
         }

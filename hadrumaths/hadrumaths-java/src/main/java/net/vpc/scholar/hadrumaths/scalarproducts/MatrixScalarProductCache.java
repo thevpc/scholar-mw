@@ -69,11 +69,11 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
         return cache;
     }
 
-    public Vector getColumn(int column) {
+    public TVector<Complex> getColumn(int column) {
         return cache.getColumn(column);
     }
 
-    public Vector getRow(int row) {
+    public TVector<Complex> getRow(int row) {
         return cache.getRow(row);
     }
 
@@ -138,7 +138,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                                 for (int q = 0; q < finalGp1.length; q++) {
                                     DoubleToComplex gpq = finalGp1[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp.eval(hermitian, gpq, finalFn1[n].toDC()));
+                                        gfps.set(q, n, finalSp.evalDC(hermitian, gpq, finalFn1[n].toDC()));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }

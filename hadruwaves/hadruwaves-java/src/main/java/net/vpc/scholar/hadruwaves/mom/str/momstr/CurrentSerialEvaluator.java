@@ -27,7 +27,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
             @Override
             public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 EnhancedProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
-                ScalarProductCache sp = str.getTestModeScalarProducts(mon[0]);
+                TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
                 Matrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
@@ -49,7 +49,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                         for (int i = 0; i < indexes_length; i++) {
                             ModeInfo index = indexes[i];
                             int indexIndex = index.index;
-                            Vector spn = sp.getColumn(indexIndex);
+                            TVector<Complex> spn = sp.getColumn(indexIndex);
                             Complex[][] fx = index.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
                             Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
                             mon2.setProgress(i, indexes_length, monMessage);

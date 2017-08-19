@@ -51,7 +51,7 @@ import java.util.Locale;
  * @version 5 August 1998
  */
 
-public class DMatrix implements Cloneable, java.io.Serializable {
+public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = -1010101010101001011L;
 
 /* ------------------------
@@ -128,6 +128,23 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         this.A = A;
     }
 
+    public DMatrix(double[][] A,boolean safe) {
+        if(safe){
+            m = A.length;
+            n = A[0].length;
+            this.A = A;
+        }else {
+            m = A.length;
+            n = A[0].length;
+            for (int i = 0; i < m; i++) {
+                if (A[i].length != n) {
+                    throw new IllegalArgumentException("All rows must have the same length.");
+                }
+            }
+            this.A = A;
+        }
+    }
+
     /**
      * Construct a matrix quickly without checking arguments.
      *
@@ -164,7 +181,11 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         }
     }
 
-/* ------------------------
+    @Override
+    public TypeReference<Double> getComponentType() {
+        return Maths.$DOUBLE;
+    }
+    /* ------------------------
    Public Methods
  * ------------------------ */
 
@@ -179,7 +200,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         int m = A.length;
         int n = A[0].length;
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             if (A[i].length != n) {
                 throw new IllegalArgumentException
@@ -198,7 +219,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix copy() {
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j];
@@ -221,7 +242,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @return Pointer to the two-dimensional array of matrix elements.
      */
 
-    public double[][] getArray() {
+    public double[][] getDoubleArray() {
         return A;
     }
 
@@ -231,7 +252,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @return Two-dimensional array copy of matrix elements.
      */
 
-    public double[][] getArrayCopy() {
+    public double[][] getDoubleArrayCopy() {
         double[][] C = new double[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -279,7 +300,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @return m, the number of rows.
      */
 
-    public int getRows() {
+    public int getRowCount() {
         return m;
     }
 
@@ -289,7 +310,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @return n, the number of columns.
      */
 
-    public int getColumns() {
+    public int getColumnCount() {
         return n;
     }
 
@@ -302,7 +323,11 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @throws ArrayIndexOutOfBoundsException
      */
 
-    public double get(int i, int j) {
+    public Double get(int i, int j) {
+        return A[i][j];
+    }
+
+    public double getDouble(int i, int j) {
         return A[i][j];
     }
 
@@ -319,7 +344,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix getMatrix(int i0, int i1, int j0, int j1) {
         DMatrix X = new DMatrix(i1 - i0 + 1, j1 - j0 + 1);
-        double[][] B = X.getArray();
+        double[][] B = X.getDoubleArray();
         try {
             for (int i = i0; i <= i1; i++) {
                 for (int j = j0; j <= j1; j++) {
@@ -343,7 +368,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix getMatrix(int[] r, int[] c) {
         DMatrix X = new DMatrix(r.length, c.length);
-        double[][] B = X.getArray();
+        double[][] B = X.getDoubleArray();
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = 0; j < c.length; j++) {
@@ -368,7 +393,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix getMatrix(int i0, int i1, int[] c) {
         DMatrix X = new DMatrix(i1 - i0 + 1, c.length);
-        double[][] B = X.getArray();
+        double[][] B = X.getDoubleArray();
         try {
             for (int i = i0; i <= i1; i++) {
                 for (int j = 0; j < c.length; j++) {
@@ -393,7 +418,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix getMatrix(int[] r, int j0, int j1) {
         DMatrix X = new DMatrix(r.length, j1 - j0 + 1);
-        double[][] B = X.getArray();
+        double[][] B = X.getDoubleArray();
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = j0; j <= j1; j++) {
@@ -415,7 +440,11 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @throws ArrayIndexOutOfBoundsException
      */
 
-    public void set(double s, int i, int j) {
+    public void set(int i, int j,double s) {
+        A[i][j] = s;
+    }
+
+    public void set(int i, int j,Double s) {
         A[i][j] = s;
     }
 
@@ -434,7 +463,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         try {
             for (int i = i0; i <= i1; i++) {
                 for (int j = j0; j <= j1; j++) {
-                    A[i][j] = X.get(i - i0, j - j0);
+                    A[i][j] = X.getDouble(i - i0, j - j0);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -455,7 +484,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = 0; j < c.length; j++) {
-                    A[r[i]][c[j]] = X.get(i, j);
+                    A[r[i]][c[j]] = X.getDouble(i, j);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -477,7 +506,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         try {
             for (int i = 0; i < r.length; i++) {
                 for (int j = j0; j <= j1; j++) {
-                    A[r[i]][j] = X.get(i, j - j0);
+                    A[r[i]][j] = X.getDouble(i, j - j0);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -499,7 +528,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         try {
             for (int i = i0; i <= i1; i++) {
                 for (int j = 0; j < c.length; j++) {
-                    A[i][c[j]] = X.get(i - i0, j);
+                    A[i][c[j]] = X.getDouble(i - i0, j);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -515,7 +544,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix transpose() {
         DMatrix X = new DMatrix(n, m);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[j][i] = A[i][j];
@@ -612,7 +641,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix neg() {
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = -A[i][j];
@@ -631,7 +660,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     public DMatrix add(DMatrix B) {
         checkMatrixDimensions(B);
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] + B.A[i][j];
@@ -667,7 +696,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     public DMatrix sub(DMatrix B) {
         checkMatrixDimensions(B);
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] - B.A[i][j];
@@ -703,7 +732,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     public DMatrix arrayTimes(DMatrix B) {
         checkMatrixDimensions(B);
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] * B.A[i][j];
@@ -739,7 +768,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     public DMatrix arrayRightDivide(DMatrix B) {
         checkMatrixDimensions(B);
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] / B.A[i][j];
@@ -775,7 +804,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     public DMatrix arrayLeftDivide(DMatrix B) {
         checkMatrixDimensions(B);
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = B.A[i][j] / A[i][j];
@@ -810,7 +839,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public DMatrix mul(double s) {
         DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = s * A[i][j];
@@ -848,7 +877,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
             throw new IllegalArgumentException("Matrix inner dimensions must agree.");
         }
         DMatrix X = new DMatrix(m, B.n);
-        double[][] C = X.getArray();
+        double[][] C = X.getDoubleArray();
         double[] Bcolj = new double[n];
         for (int j = 0; j < B.n; j++) {
             for (int k = 0; k < n; k++) {
@@ -960,7 +989,11 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @return determinant
      */
 
-    public double det() {
+    public Double det() {
+        return detDouble();
+    }
+
+    public double detDouble() {
         return new LUDecomposition(this).det();
     }
 
@@ -1008,7 +1041,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public static DMatrix random(int m, int n) {
         DMatrix A = new DMatrix(m, n);
-        double[][] X = A.getArray();
+        double[][] X = A.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 X[i][j] = Math.random();
@@ -1027,7 +1060,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
 
     public static DMatrix identity(int m, int n) {
         DMatrix A = new DMatrix(m, n);
-        double[][] X = A.getArray();
+        double[][] X = A.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 X[i][j] = (i == j ? 1.0 : 0.0);
@@ -1127,7 +1160,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
      * @param input the input stream.
      */
 
-    public static DMatrix read(BufferedReader input) throws java.io.IOException {
+    public static DMatrix readDMatrix(BufferedReader input) throws java.io.IOException {
         StreamTokenizer tokenizer = new StreamTokenizer(input);
 
         // Although StreamTokenizer will parse numbers, it doesn't recognize
@@ -1198,8 +1231,8 @@ public class DMatrix implements Cloneable, java.io.Serializable {
     }
 
     public String toString(String commentsChar, String varName) {
-        String[][] disp = new String[getRows()][getColumns()];
-        int[] colsWidth = new int[getColumns()];
+        String[][] disp = new String[getRowCount()][getColumnCount()];
+        int[] colsWidth = new int[getColumnCount()];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
                 disp[i][j] = String.valueOf(A[i][j]);
@@ -1213,7 +1246,7 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         StringBuilder sb = new StringBuilder();
         String lineSep = System.getProperty("line.separator");
         if (commentsChar != null) {
-            sb.append(commentsChar).append(" dimension [" + getRows() + "," + getColumns() + "]").append(lineSep);
+            sb.append(commentsChar).append(" dimension [" + getRowCount() + "," + getColumnCount() + "]").append(lineSep);
         }
         if (varName != null) {
             sb.append(varName).append(" = ");
@@ -1289,4 +1322,18 @@ public class DMatrix implements Cloneable, java.io.Serializable {
         }
         return new DMatrix(newVals);
     }
+
+    @Override
+    public double[] getRowDouble(int row) {
+        return A[row];
+    }
+    @Override
+    public double[] getColumnDouble(int column) {
+        double[] all=new double[A.length];
+        for (int i = 0; i < all.length; i++) {
+            all[i]=A[i][column];
+        }
+        return all;
+    }
+
 }

@@ -1,7 +1,9 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix;
+import net.vpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromTMatrix;
+import net.vpc.scholar.hadrumaths.util.adapters.ExprMatrixFromTMatrix;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -1470,10 +1472,6 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         return ap;
     }
 
-    private boolean isSquare() {
-        return getColumnCount() == getRowCount();
-    }
-
     private void checkSquare() {
         if (!isSquare()) {
             throw new IllegalArgumentException("Expected Square Matrix");
@@ -2400,4 +2398,101 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     public TMatrix<T> copy() {
         return getFactory().newMatrix(this);
     }
+
+    @Override
+    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+        if (
+                Maths.$COMPLEX.equals(other)
+                        || Maths.$EXPR.equals(other)
+                ) {
+            return true;
+        }
+        if (other.isAssignableFrom(getComponentType())) {
+            return true;
+        }
+        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
+        for (TVector<T> ts : getRows()) {
+            if(!ts.isConvertibleTo(other)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void resize(int rows, int columns) {
+        throw new IllegalArgumentException("Unsupported Resize");
+    }
+
+    @Override
+    public <R> TMatrix<R> to(TypeReference<R> other) {
+        if (other.equals(getComponentType())) {
+            return (TMatrix<R>) this;
+        }
+        if (other.equals(Maths.$EXPR)) {
+            return (TMatrix<R>) new ExprMatrixFromTMatrix<T>(this);
+        }
+        if (other.equals(Maths.$COMPLEX)) {
+            return (TMatrix<R>) new ComplexMatrixFromTMatrix<T>(this);
+        }
+        if (other.equals(Maths.$DOUBLE)) {
+            return (TMatrix<R>) new DoubleMatrixFromTMatrix<T>(this);
+        }
+        throw new IllegalArgumentException("Unsupported");
+//        //should i check default types?
+//        if (Maths.$COMPLEX.isAssignableFrom(other)) {
+//            return (TVector<R>) new ReadOnlyVector(
+//                    new TVectorModel() {
+//                        @Override
+//                        public Complex get(int index) {
+//                            T v = AbstractTVector.this.get(index);
+//                            return getComponentVectorSpace().convertTo(v, Complex.class);
+//                        }
+//
+//                        @Override
+//                        public int size() {
+//                            return AbstractTVector.this.size();
+//                        }
+//                    }, isRow()
+//            );
+//        }
+//        return newReadOnlyInstanceFromModel(
+//                other, isRow(), new TVectorModel<R>() {
+//                    @Override
+//                    public R get(int index) {
+//                        T t = AbstractTVector.this.get(index);
+//                        return (R) t;
+//                    }
+//
+//                    @Override
+//                    public int size() {
+//                        return AbstractTVector.this.size();
+//                    }
+//                }
+//        );
+    }
+
+    @Override
+    public Complex toComplex() {
+        if (isComplex()) {
+            return getComponentVectorSpace().convertTo(get(0, 0),Complex.class);
+        }
+        throw new ClassCastException();
+    }
+
+    public boolean isSquare() {
+        return getColumnCount() == getRowCount();
+    }
+
+    @Override
+    public boolean isHermitian() {
+        return isSquare() && equals(transposeConjugate());
+    }
+
+    @Override
+    public boolean isSymmetric() {
+        return isSquare() && equals(transpose());
+    }
+
+
 }

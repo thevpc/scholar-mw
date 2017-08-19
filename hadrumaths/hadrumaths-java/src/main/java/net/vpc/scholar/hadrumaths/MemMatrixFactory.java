@@ -7,7 +7,7 @@ public class MemMatrixFactory extends AbstractMatrixFactory{
     public static final MemMatrixFactory INSTANCE=new MemMatrixFactory();
     @Override
     public Matrix newMatrix(int rows, int columns) {
-        Matrix m = new MemMatrix(rows, columns);
+        Matrix m = new MemComplexMatrix(rows, columns);
 //        Matrix m = new MemRawD1Matrix(rows, columns);
         m.setFactory(this);
         return m;

@@ -49,7 +49,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
                 MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
                 MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
-                ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
                 MutableComplex tempx;
                 MutableComplex tempy;
                 Complex zmnGammaZ;
@@ -72,7 +72,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 //            monitor.setProgress((1.0 * i / (indexes.length)));
 //            System.out.println("progress = " + monitor.getProgressValue());
                     zmnGammaZ = /*Complex.ONE.*/mode.impedance;
-                    Vector spc = sp.getColumn(indexIndex);
+                    TVector<Complex> spc = sp.getColumn(indexIndex);
                     for (int yi = 0; yi < y_length; yi++) {
                         for (int xi = 0; xi < x_length; xi++) {
                             tempx = fx[0][yi][xi];

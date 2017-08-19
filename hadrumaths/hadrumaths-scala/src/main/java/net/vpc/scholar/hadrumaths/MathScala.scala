@@ -9,6 +9,7 @@ package net.vpc.scholar.hadrumaths
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.symbolic._
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor
+import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix
 //import java.util
 
 import net.vpc.scholar
@@ -47,7 +48,7 @@ object MathScala {
 
   def samples(x: ToDoubleArrayAware, y: ToDoubleArrayAware, z: ToDoubleArrayAware): Samples = Samples.absolute(arr(x), arr(y), arr(z))
 
-  implicit def convertToMatrixOfComplex(x: TMatrix[Complex]): Matrix = new MatrixFromTMatrix(x)
+  implicit def convertToMatrixOfComplex(x: TMatrix[Complex]): Matrix = new ComplexMatrixFromTMatrix(x)
 
   implicit def convertToDoubleArrayAware(x: ToDoubleArrayAware): Array[Double] = x.toDoubleArray
 
@@ -1050,7 +1051,7 @@ object MathScala {
 
 
   implicit class SExprMatrix(val value: ExprMatrix) {
-    def !!(): ExprMatrix = {
+    def !!(): TMatrix[Expr] = {
       value.simplify()
     }
 

@@ -29,13 +29,13 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
         }
         Complex[][] b = new Complex[_g.length][n_propa.length];
         EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
-        ScalarProductCache sp = str.getTestModeScalarProducts(mon[0]);
+        TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
         EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
         Maths.invokeMonitoredAction(m, monitorMessage, new VoidMonitoredAction() {
             @Override
             public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
                 for (int p = 0; p < _g.length; p++) {
-                    Vector spp = sp.getRow(p);
+                    TVector<Complex> spp = sp.getRow(p);
                     for (int n = 0; n < n_propa.length; n++) {
                         //[vpc/20140801] removed neg, don't know why i used to use it
 //                b[p][n] = sp.gf(p, n_propa[n].index).neg();

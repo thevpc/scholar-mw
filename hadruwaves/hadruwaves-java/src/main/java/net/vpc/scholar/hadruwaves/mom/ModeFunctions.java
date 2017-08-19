@@ -2,6 +2,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
+import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
@@ -28,9 +29,11 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
     int count();
 
     ModeInfo mode(ModeInfo index);
+
     ModeInfo getMode(ModeInfo index);
 
     ModeInfo mode(int n);
+
     ModeInfo getMode(int n);
 
     boolean isHintEnableFunctionProperties();
@@ -44,6 +47,7 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
     TList<Expr> list();
 
     DoubleToVector get(int index);
+
     DoubleToVector apply(int index);
 
     TList<Expr> toList();
@@ -171,7 +175,11 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     void removePropertyChangeListener(PropertyChangeListener listener);
 
-    void addPropertyChangeListener(String property,PropertyChangeListener listener);
+    void addPropertyChangeListener(String property, PropertyChangeListener listener);
 
-    void removePropertyChangeListener(String property,PropertyChangeListener listener);
+    void removePropertyChangeListener(String property, PropertyChangeListener listener);
+
+    TVector<Complex> scalarProduct(Expr testFunction);
+
+    TMatrix<Complex> scalarProductCache(TList<Expr> testFunctions,ProgressMonitor monitor);
 }

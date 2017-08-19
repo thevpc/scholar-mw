@@ -19,6 +19,11 @@ public class DefaultModeIteratorFactory implements ModeIteratorFactory {
         return new PositiveModeIterator(fn.getAvailableModes(),fn.getHintInvariantAxis(),fn.getBorders());
     }
 
+    @Override
+    public boolean isAbsoluteIterator(ModeFunctions fn) {
+        return true;
+    }
+
     public String dump() {
         Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
         return h.toString();

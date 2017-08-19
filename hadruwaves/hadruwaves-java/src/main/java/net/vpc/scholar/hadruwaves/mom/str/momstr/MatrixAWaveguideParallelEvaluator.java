@@ -24,14 +24,14 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
         ModeFunctions fn = str.getModeFunctions();
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_eva = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex=fn.isComplex()||gpTestFunctions.isComplex();
         boolean symMatrix=!complex;
         if (symMatrix) {
             for (int p = 0; p < _g.length; p++) {
-                Vector spp = sp.getRow(p);
+                TVector<Complex> spp = sp.getRow(p);
                 for (int q = p; q < _g.length; q++) {
-                    Vector spq = sp.getRow(q);
+                    TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
                         Complex yn = n.impedance.inv();
@@ -50,9 +50,9 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
             }
         } else {
             for (int p = 0; p < _g.length; p++) {
-                Vector spp = sp.getRow(p);
+                TVector<Complex> spp = sp.getRow(p);
                 for (int q = 0; q < _g.length; q++) {
-                    Vector spq = sp.getRow(q);
+                    TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
                         Complex yn = n.impedance.inv();

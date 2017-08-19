@@ -13,6 +13,10 @@ import java.util.Iterator;
 public abstract class AbstractTList<T> extends AbstractTVector<T> implements TList<T> {
     protected int modCount;
 
+    public AbstractTList(boolean row) {
+        super(row);
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -31,16 +35,13 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
                 i++;
                 return v;
             }
+
             final void checkForCoModification() {
                 if (modCount != expectedModCount)
                     throw new ConcurrentModificationException();
             }
 
         };
-    }
-
-    public AbstractTList(boolean row) {
-        super(row);
     }
 
     @Override
@@ -62,34 +63,34 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     @Override
     public <R> TList<R> transform(TypeReference<R> toType, TTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
-                toType, isRow(),new TVectorModel<R>() {
-            @Override
-            public R get(int index) {
-                T t = AbstractTList.this.get(index);
-                return op.transform(index, t);
-            }
+                toType, isRow(), new TVectorModel<R>() {
+                    @Override
+                    public R get(int index) {
+                        T t = AbstractTList.this.get(index);
+                        return op.transform(index, t);
+                    }
 
-            @Override
-            public int size() {
-                return AbstractTList.this.size();
-            }
-        }
+                    @Override
+                    public int size() {
+                        return AbstractTList.this.size();
+                    }
+                }
         );
     }
 
     @Override
     public void set(int index, T e) {
-        throw new IllegalArgumentException("Unmodifiable List : "+getClass().getName());
+        throw new IllegalArgumentException("Unmodifiable List : " + getClass().getName());
     }
 
     @Override
     public void appendAll(TVector<T> e) {
-        throw new IllegalArgumentException("Unmodifiable List : "+getClass().getName());
+        throw new IllegalArgumentException("Unmodifiable List : " + getClass().getName());
     }
 
     @Override
     public void append(T e) {
-        throw new IllegalArgumentException("Unmodifiable List : "+getClass().getName());
+        throw new IllegalArgumentException("Unmodifiable List : " + getClass().getName());
     }
 
     @Override
@@ -99,7 +100,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     public void appendAll(Collection<? extends T> e) {
-        throw new IllegalArgumentException("Unmodifiable List : "+getClass().getName());
+        throw new IllegalArgumentException("Unmodifiable List : " + getClass().getName());
     }
 
 //    public List<T> toExprJList() {
@@ -168,35 +169,37 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     public TList<T> db2() {
-        return (TList<T>)super.db2();
+        return (TList<T>) super.db2();
     }
+
     @Override
     public TList<T> db() {
-        return (TList<T>)super.db();
+        return (TList<T>) super.db();
     }
+
     @Override
     public TList<T> sin() {
-        return (TList<T>)super.sin();
+        return (TList<T>) super.sin();
     }
 
     @Override
     public <R> TList<R> to(TypeReference<R> other) {
-        if(other.equals(getComponentType())){
+        if (other.equals(getComponentType())) {
             return (TList<R>) this;
         }
         return newReadOnlyInstanceFromModel(
-                other, isRow(),new TVectorModel<R>() {
-            @Override
-            public R get(int index) {
-                T t = AbstractTList.this.get(index);
-                return (R) t;
-            }
+                other, isRow(), new TVectorModel<R>() {
+                    @Override
+                    public R get(int index) {
+                        T t = AbstractTList.this.get(index);
+                        return (R) t;
+                    }
 
-            @Override
-            public int size() {
-                return AbstractTList.this.size();
-            }
-        }
+                    @Override
+                    public int size() {
+                        return AbstractTList.this.size();
+                    }
+                }
         );
     }
 
@@ -423,20 +426,20 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
     @Override
     protected <R> TList<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, TVectorModel<R> model) {
-        return Maths.listro(type,row,model);
+        return Maths.listro(type, row, model);
     }
 
     @Override
     public TList<T> sublist(int fromIndex, int toIndex) {
-        if(fromIndex<0){
-            fromIndex=0;
+        if (fromIndex < 0) {
+            fromIndex = 0;
         }
         int size = size();
-        if(toIndex>= size){
-            toIndex= size -1;
+        if (toIndex >= size) {
+            toIndex = size - 1;
         }
-        if(toIndex<fromIndex){
-            toIndex=fromIndex;
+        if (toIndex < fromIndex) {
+            toIndex = fromIndex;
         }
         int finalToIndex = toIndex;
         int finalFromIndex = fromIndex;
@@ -448,7 +451,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
 
             @Override
             public T get(int index) {
-                return AbstractTList.this.get(finalFromIndex +index);
+                return AbstractTList.this.get(finalFromIndex + index);
             }
         });
     }

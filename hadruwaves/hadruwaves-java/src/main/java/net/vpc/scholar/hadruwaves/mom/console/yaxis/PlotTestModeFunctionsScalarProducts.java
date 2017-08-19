@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
@@ -29,7 +30,7 @@ public class PlotTestModeFunctionsScalarProducts extends PlotAxisSeries implemen
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
 //        emonitor.startm(getClass().getSimpleName());
-        NamedMatrix namedMatrix = new NamedMatrix(structure.getTestModeScalarProducts(monitor).toMatrix());
+        NamedMatrix namedMatrix = new NamedMatrix(Maths.matrix(structure.getTestModeScalarProducts(monitor)));
 //        emonitor.terminatem(getClass().getSimpleName());
         return namedMatrix;
     }
