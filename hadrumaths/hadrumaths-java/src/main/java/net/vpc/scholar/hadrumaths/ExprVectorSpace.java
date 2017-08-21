@@ -307,10 +307,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr neg(Expr e) {
         if (e.isComplex()) {
-            return (e.toComplex().atan());
+            return (e.toComplex().neg());
         }
         if (e instanceof DoubleValue) {
-            return DoubleValue.valueOf(Maths.atan(((DoubleValue) e).getValue()), e.getDomain());
+            return DoubleValue.valueOf(-(((DoubleValue) e).getValue()), e.getDomain());
         }
         return new Neg(e);
     }
@@ -422,7 +422,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         if (e instanceof DoubleValue) {
             return DoubleValue.valueOf(Maths.tanh(((DoubleValue) e).getValue()), e.getDomain());
         }
-        return new Conj(e);
+        return new Tanh(e);
     }
 
     @Override

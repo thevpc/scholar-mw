@@ -22,13 +22,23 @@ public class ComplexFormatter implements Formatter<Complex> {
         double real = o.getReal();
         double imag = o.getImag();
         if (Double.isNaN(real) && Double.isNaN(imag)) {
-            return FormatFactory.format(imag,format);
+            return "NaN";//FormatFactory.format(imag,format);
         }
         if (Double.isNaN(real)) {
-            return FormatFactory.format(imag,format) + "i";
+            String s="NaN";
+            if(imag==0){
+                return s;
+            }
+            if(imag<0){
+                return s+FormatFactory.format(imag,format) + "i";
+            }
+            return s+"+"+FormatFactory.format(imag,format) + "i";
         }
         if (Double.isNaN(imag)) {
-            return FormatFactory.format(real);
+            if(real==0){
+                return "NaN*i";
+            }
+            return FormatFactory.format(real)+"NaN*i";
         }
         String imag_string = FormatFactory.format(imag,format);
         String real_string = FormatFactory.format(real,format);

@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class LteExpr extends ComparatorExpr implements Cloneable{
     public LteExpr(Expr xarg, Expr yarg) {
-        super("<=",xarg,yarg,FunctionType.DOUBLE);
+        super(xarg,yarg,FunctionType.DOUBLE);
     }
 
     @Override

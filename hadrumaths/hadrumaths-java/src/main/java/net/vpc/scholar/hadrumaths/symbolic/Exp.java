@@ -48,4 +48,13 @@ public class Exp extends GenericFunctionX implements Cloneable{
         return new Exp(argument);
     }
 
+    @Override
+    public DoubleToDouble toDD() {
+        return super.toDD();
+    }
+
+    @Override
+    public boolean isDDImpl() {
+        return super.isDDImpl();
+    }
 }

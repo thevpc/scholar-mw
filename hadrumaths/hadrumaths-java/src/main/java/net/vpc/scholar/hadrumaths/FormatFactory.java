@@ -2,12 +2,14 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
+import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.util.ClassMap;
 import net.vpc.scholar.hadrumaths.util.LRUMap;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,7 +19,11 @@ import java.util.Date;
  */
 public class FormatFactory extends AbstractFactory {
 
-    private static final ClassMap<Formatter> map = new ClassMap<Formatter>(Object.class, Formatter.class,30);
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final ClassMap<Formatter> map = new ClassMap<Formatter>(Object.class, Formatter.class, 30);
+    private static final LRUMap<String, SimpleDateFormat> dateFormats = new LRUMap<String, SimpleDateFormat>(10);
     public static XFormat X = new XFormat("X");
     public static YFormat Y = new YFormat("Y");
     public static ZFormat Z = new ZFormat("Z");
@@ -27,16 +33,23 @@ public class FormatFactory extends AbstractFactory {
     public static ProductFormat PRODUCT_NONE = new ProductFormat(null);
     public static ProductFormat PRODUCT_DOTSTAR = new ProductFormat(".*");
     public static FormatParam[] toStringFormat = new FormatParam[0];
-    public static final SimpleDateFormat DATE_FORMAT=new SimpleDateFormat("yyyy-MM-dd");
-    public static final SimpleDateFormat DATE_TIME_FORMAT=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat TIMESTAMP_FORMAT=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final LRUMap<String,SimpleDateFormat> dateFormats=new LRUMap<String, SimpleDateFormat>(10);
+    private static PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            boolean b = (boolean) evt.getNewValue();
+            if (!b) {
+                dateFormats.clear();
+            }
+        }
+    };
 
-    static{
-        dateFormats.put("date",DATE_FORMAT);
-        dateFormats.put("datetime",DATE_TIME_FORMAT);
-        dateFormats.put("timestamp",TIMESTAMP_FORMAT);
+    static {
+        dateFormats.put("date", DATE_FORMAT);
+        dateFormats.put("datetime", DATE_TIME_FORMAT);
+        dateFormats.put("timestamp", TIMESTAMP_FORMAT);
+        Maths.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
     }
+
     static {
         register(Matrix.class, new MatrixFormatter());
         register(DCxy.class, new CFunctionXYFormatter());
@@ -73,6 +86,7 @@ public class FormatFactory extends AbstractFactory {
         register(Discrete.class, new DiscreteFormatter());
         register(VDiscrete.class, new VDiscreteFormatter());
         register(Real.class, new RealFormatter());
+        register(Imag.class, new ImagFormatter());
         register(ComparatorExpr.class, new Formatter() {
             @Override
             public String format(Object o, FormatParam... format) {
@@ -359,17 +373,24 @@ public class FormatFactory extends AbstractFactory {
     }
 
 
-
-    public static SimpleDateFormat getDateFormat(String format){
+    public static SimpleDateFormat getDateFormat(String format) {
         SimpleDateFormat found = dateFormats.get(format);
-        if(found==null){
-            found=new SimpleDateFormat(format);
-            dateFormats.put(format,found);
+        if (found == null) {
+            if ("date".equals(format)) {
+                found = DATE_FORMAT;
+            } else if ("datetime".equals(format)) {
+                found = DATE_TIME_FORMAT;
+            } else if ("datetime".equals(format)) {
+                found = TIMESTAMP_FORMAT;
+            } else {
+                found = new SimpleDateFormat(format);
+            }
+            dateFormats.put(format, found);
         }
         return found;
     }
 
-    public static String format(Date d,String format){
+    public static String format(Date d, String format) {
         return getDateFormat(format).format(d);
     }
 }

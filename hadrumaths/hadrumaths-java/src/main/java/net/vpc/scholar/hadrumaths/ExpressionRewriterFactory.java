@@ -95,6 +95,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , AxisTransformNavRule.INSTANCE
                     , ConditionSimplifyRule.INSTANCE
                     , ParametrizedScalarProductSimplifyRule.INSTANCE
+                    , ExpSimplifyRule.INSTANCE
             )
     );
     public final static List<ExpressionRewriterRule> CANONICAL_RULES = new ArrayList<ExpressionRewriterRule>(

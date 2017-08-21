@@ -17,7 +17,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
 
     }
 
-    public abstract Expr[] getArguments() ;
+    public abstract Expr[] getArguments();
 
     @Override
     public List<Expr> getSubExpressions() {

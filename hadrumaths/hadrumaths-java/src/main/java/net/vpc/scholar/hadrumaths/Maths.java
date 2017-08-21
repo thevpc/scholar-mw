@@ -5244,11 +5244,6 @@ public final class Maths {
         throw new IllegalArgumentException("Not yet supported " + cls);
     }
 
-    public static void main(String[] args) {
-        System.out.println(dlist(refineSamples(dtimes(0, 5, 6), 1)));
-        System.out.println(dlist(refineSamples(dtimes(0, 5, 6), 2)));
-    }
-
     public static DoubleList refineSamples(TList<Double> values, int n) {
         DoubleList values2 = (DoubleList) values.to($DOUBLE);
         return (DoubleList) dlist(refineSamples(values2.toDoubleArray(), n));
@@ -5328,14 +5323,6 @@ public final class Maths {
             }
         };
 
-        public static boolean isCompressCache() {
-            return compressCache;
-        }
-
-        public static void setCompressCache(boolean compressCache) {
-            Config.compressCache = compressCache;
-        }
-
         static {
             registerConverter(Double.class, Complex.class, DOUBLE_TO_COMPLEX);
             registerConverter(Complex.class, Double.class, COMPLEX_TO_DOUBLE);
@@ -5350,9 +5337,17 @@ public final class Maths {
             registerConverter(Expr.class, Complex.class, EXPR_TO_COMPLEX);
         }
 
+        public static boolean isCompressCache() {
+            return compressCache;
+        }
+
+        public static void setCompressCache(boolean compressCache) {
+            Config.compressCache = compressCache;
+        }
+
         public static boolean memoryCanStores(long bytesToStore) {
             float maxMemoryThreshold = getMaxMemoryThreshold();
-            if(maxMemoryThreshold<=0){
+            if (maxMemoryThreshold <= 0) {
                 return true;
             }
             return (bytesToStore <= (maxFreeMemory() * ((double) maxMemoryThreshold)));
@@ -5784,77 +5779,77 @@ public final class Maths {
         }
     }
 
-    private static class IdentityConverter implements Converter,Serializable {
+    private static class IdentityConverter implements Converter, Serializable {
         @Override
         public Object convert(Object value) {
             return value;
         }
     }
 
-    private static class ComplexDoubleConverter implements Converter<Complex, Double>,Serializable {
+    private static class ComplexDoubleConverter implements Converter<Complex, Double>, Serializable {
         @Override
         public Double convert(Complex value) {
             return value.toDouble();
         }
     }
 
-    private static class DoubleComplexConverter implements Converter<Double, Complex>,Serializable {
+    private static class DoubleComplexConverter implements Converter<Double, Complex>, Serializable {
         @Override
         public Complex convert(Double value) {
             return Complex.valueOf(value);
         }
     }
 
-    private static class DoubleTVectorConverter implements Converter<Double, TVector>,Serializable {
+    private static class DoubleTVectorConverter implements Converter<Double, TVector>, Serializable {
         @Override
         public TVector convert(Double value) {
             return Maths.columnVector(new Complex[]{Complex.valueOf(value)});
         }
     }
 
-    private static class TVectorDoubleConverter implements Converter<TVector, Double>,Serializable {
+    private static class TVectorDoubleConverter implements Converter<TVector, Double>, Serializable {
         @Override
         public Double convert(TVector value) {
             return value.toComplex().toDouble();
         }
     }
 
-    private static class ComplexTVectorConverter implements Converter<Complex, TVector>,Serializable {
+    private static class ComplexTVectorConverter implements Converter<Complex, TVector>, Serializable {
         @Override
         public TVector convert(Complex value) {
             return Maths.columnVector(new Complex[]{value});
         }
     }
 
-    private static class TVectorComplexConverter implements Converter<TVector, Complex>,Serializable {
+    private static class TVectorComplexConverter implements Converter<TVector, Complex>, Serializable {
         @Override
         public Complex convert(TVector value) {
             return value.toComplex();
         }
     }
 
-    private static class ComplexExprConverter implements Converter<Complex, Expr>,Serializable {
+    private static class ComplexExprConverter implements Converter<Complex, Expr>, Serializable {
         @Override
         public Expr convert(Complex value) {
             return value;
         }
     }
 
-    private static class ExprComplexConverter implements Converter<Expr, Complex>,Serializable {
+    private static class ExprComplexConverter implements Converter<Expr, Complex>, Serializable {
         @Override
         public Complex convert(Expr value) {
             return value.toComplex();
         }
     }
 
-    private static class DoubleExprConverter implements Converter<Double, Expr>,Serializable {
+    private static class DoubleExprConverter implements Converter<Double, Expr>, Serializable {
         @Override
         public Expr convert(Double value) {
             return Complex.valueOf(value);
         }
     }
 
-    private static class ExprDoubleConverter implements Converter<Expr, Double>,Serializable {
+    private static class ExprDoubleConverter implements Converter<Expr, Double>, Serializable {
         @Override
         public Double convert(Expr value) {
             return value.toComplex().toDouble();

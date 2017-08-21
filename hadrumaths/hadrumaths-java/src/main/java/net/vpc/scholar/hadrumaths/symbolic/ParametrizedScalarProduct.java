@@ -1,12 +1,14 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
 
 public class ParametrizedScalarProduct extends GenericFunctionXY {
     private boolean hermitian;
     public ParametrizedScalarProduct(Expr xargument, Expr yargument,boolean hermitian) {
-        super(hermitian?"**":"***",xargument, yargument);
+        super();
+        init(xargument, yargument, null,false);
         this.hermitian=hermitian;
     }
     @Override
@@ -16,7 +18,8 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
 
     public ParametrizedScalarProduct(String functionName, Expr xargument, Expr yargument, FunctionType lowerFunctionType,boolean hermitian) {
-        super(functionName,xargument, yargument, lowerFunctionType);
+        super();
+        init(xargument, yargument, lowerFunctionType,false);
         this.hermitian=hermitian;
     }
 

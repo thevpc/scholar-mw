@@ -6,6 +6,9 @@ import net.vpc.scholar.hadrumaths.util.CacheEnabled;
 import net.vpc.scholar.hadrumaths.util.LRUMap;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 /**
  * Created by vpc on 1/24/15.
  */
@@ -13,7 +16,25 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
 
     private LRUMap<Expr, RewriteResult> cache = new LRUMap<Expr, RewriteResult>(Maths.Config.getSimplifierCacheSize());
     private boolean cacheEnabled = true;
+    PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            boolean b = (boolean) evt.getNewValue();
+            if(!b) {
+                cache.clear();
+            }
+        }
+    };
 
+    public AbstractExpressionRewriter() {
+        Maths.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        Maths.Config.removeConfigChangeListener("cacheEnabled", cacheEnabledListener);
+        super.finalize();
+    }
 
     @Override
     public boolean isCacheEnabled() {

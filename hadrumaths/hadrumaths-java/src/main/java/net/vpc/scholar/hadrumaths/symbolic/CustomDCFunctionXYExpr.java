@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneable{
     private CustomDCFunctionXYDefinition definition;
     public CustomDCFunctionXYExpr(Expr xarg,Expr yarg, CustomDCFunctionXYDefinition definition) {
-        super(definition.getName(),xarg,yarg,FunctionType.COMPLEX);
+        super(xarg,yarg,FunctionType.COMPLEX);
         this.definition=definition;
     }
 

@@ -9,23 +9,33 @@ import java.io.Serializable;
  * Created by vpc on 4/30/14.
  */
 public abstract class GenericFunctionXY extends AbstractComposedFunction {
-    private final FunctionType functionType;
+    private FunctionType functionType;
     @NonStateField
     protected Domain _cache_domain;
     @NonStateField
     private Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper = new GenericFunctionXYBinaryExprHelper();
     private Expr xargument;
     private Expr yargument;
-    protected GenericFunctionXY(String functionName,Expr xargument, Expr yargument) {
-        this(functionName,xargument, yargument, null);
+
+    protected GenericFunctionXY() {
+
     }
 
-    protected GenericFunctionXY(String functionName,Expr xargument, Expr yargument, FunctionType lowerFunctionType) {
-        super();
+    protected GenericFunctionXY(Expr xargument, Expr yargument) {
+        this(xargument, yargument, null);
+    }
+
+    protected GenericFunctionXY(Expr xargument, Expr yargument, FunctionType lowerFunctionType) {
+        init(xargument,yargument,lowerFunctionType,true);
+    }
+
+    protected void init(Expr xargument, Expr yargument, FunctionType lowerFunctionType,boolean checkDim) {
         this.xargument=xargument;
         this.yargument=yargument;
-        if (!xargument.getComponentDimension().equals(yargument.getComponentDimension())) {
-            throw new IllegalArgumentException("Dimension Mismatch " + xargument.getComponentDimension() + " vs " + yargument.getComponentDimension());
+        if(checkDim) {
+            if (!xargument.getComponentDimension().equals(yargument.getComponentDimension())) {
+                throw new IllegalArgumentException("Dimension Mismatch " + xargument.getComponentDimension() + " vs " + yargument.getComponentDimension());
+            }
         }
         FunctionType functionType0 = null;
         if (xargument.isDD()) {
@@ -341,6 +351,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             if (cc) {
                 return ss.toComplex();
             }
+            ss.isComplex();
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
         }
         Expr e = simplify();

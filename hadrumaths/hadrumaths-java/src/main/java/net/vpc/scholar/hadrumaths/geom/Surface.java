@@ -3,6 +3,8 @@ package net.vpc.scholar.hadrumaths.geom;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
 import net.vpc.scholar.hadrumaths.MinMax;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -15,9 +17,9 @@ import java.util.List;
 /**
  * Created by vpc on 2/27/17.
  */
-public class Surface extends AbstractGeometry implements Cloneable {
+public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
     private Domain domain;
-    double precision = 1.0 / 100000;
+    private double precision = 1.0 / 100000;
     private Domain uniformDomain = Domain.forBounds(0, 100000, 0, 100000);
     private List<Point> points;
     private Path2D.Double path;
@@ -370,4 +372,16 @@ public class Surface extends AbstractGeometry implements Cloneable {
         return getUniformArea().isEmpty();
     }
 
+    @Override
+    public String dump() {
+        return new Dumper(this)
+                .add("domain", domain)
+                .add("points", points)
+        .toString();
+    }
+
+    @Override
+    public String toString() {
+        return dump();
+    }
 }

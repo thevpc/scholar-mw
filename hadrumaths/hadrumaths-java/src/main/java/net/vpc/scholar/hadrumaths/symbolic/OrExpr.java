@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class OrExpr extends ComparatorExpr implements Cloneable{
     public OrExpr(Expr xarg, Expr yarg) {
-        super("||",xarg,yarg,FunctionType.DOUBLE);
+        super(xarg,yarg,FunctionType.DOUBLE);
     }
 
     @Override

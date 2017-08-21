@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class EqExpr extends ComparatorExpr implements Cloneable{
     public EqExpr(Expr xarg, Expr yarg) {
-        super("==",xarg,yarg,FunctionType.DOUBLE);
+        super(xarg,yarg,FunctionType.DOUBLE);
     }
 
     @Override
