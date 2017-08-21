@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 public final class ComplexOld extends Complex {
+    private static final long serialVersionUID=1;
     private double real;
     private double imag;
 

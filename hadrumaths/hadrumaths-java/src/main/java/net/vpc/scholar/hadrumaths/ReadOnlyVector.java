@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.TVectorModel;
 
 public class ReadOnlyVector extends AbstractVector {
+    private static final long serialVersionUID = 1L;
     private TVectorModel<Complex> model;
     public ReadOnlyVector(TVectorModel<Complex> model, boolean row) {
         super(row);

@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.util.Converter;
  * Created by vpc on 3/23/17.
  */
 public class ComplexMatrixFromTMatrix<R> extends AbstractMatrix implements Matrix {
+    private static final long serialVersionUID = 1L;
 
     protected TMatrix<R> base;
     private Converter<R, Complex> converterTo;

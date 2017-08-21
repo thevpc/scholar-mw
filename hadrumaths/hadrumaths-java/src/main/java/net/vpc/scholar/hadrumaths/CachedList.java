@@ -9,6 +9,7 @@ import java.util.List;
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 public class CachedList<T> extends AbstractTList<T> {
+    private static final long serialVersionUID = 1L;
     private int size;
     private List<T> cache = new ArrayList<>();
     private TVectorCell<T> it;

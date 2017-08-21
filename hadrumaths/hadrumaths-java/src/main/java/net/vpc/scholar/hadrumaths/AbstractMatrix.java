@@ -79,7 +79,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         int rows = getRowCount();
         for (int c = 0; c < columnDimension; c++) {
             for (int r = 0; r < rows; r++) {
-                f += get(r, c).absSquare();
+                f += get(r, c).absdblsqr();
             }
         }
         return Math.sqrt(f);
@@ -799,7 +799,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         double[][] X = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X[i][j] = (get(i, j).absSquare());
+                X[i][j] = (get(i, j).absdblsqr());
             }
         }
         return new DMatrix(X);
@@ -881,7 +881,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         double[][] X = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).absSquare();
+                X[i][j] = get(i, j).absdblsqr();
             }
         }
         return X;
@@ -2073,7 +2073,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         for (int r = 0; r < rows; r++) {
             alpha = 0;
             for (int c = 0; c < cols; c++) {
-                alpha = alpha + get(r, c).absSquare();
+                alpha = alpha + get(r, c).absdblsqr();
             }
             x *= Math.sqrt(alpha);
         }

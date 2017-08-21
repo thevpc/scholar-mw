@@ -7,6 +7,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanList{
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final boolean[] ZERO_ELEMENTS = new boolean[0];
     private boolean[] elementData;

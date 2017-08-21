@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths;
 import java.util.Collection;
 
 public class ReadOnlyTList<T> extends AbstractTList<T> implements Cloneable {
+    private static final long serialVersionUID = 1L;
     private TVectorModel<T> model;
     private TypeReference<T> componentType;
 

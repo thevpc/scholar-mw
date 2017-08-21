@@ -11,6 +11,7 @@ import java.util.Iterator;
  * Created by vpc on 2/14/15.
  */
 public abstract class AbstractTList<T> extends AbstractTVector<T> implements TList<T> {
+    private static final long serialVersionUID = 1L;
     protected int modCount;
 
     public AbstractTList(boolean row) {

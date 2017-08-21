@@ -62,4 +62,5 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
         return true;
     }
 
+
 }

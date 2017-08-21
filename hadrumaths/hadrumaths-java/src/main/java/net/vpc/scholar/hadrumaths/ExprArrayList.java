@@ -13,6 +13,7 @@ import java.util.List;
  * Created by vpc on 5/7/14.
  */
 public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
+    private static final long serialVersionUID = 1L;
 
 
     public ExprArrayList(boolean row, int initialSize) {

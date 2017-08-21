@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 public class UpdatableTVector<T> extends AbstractTVector<T> {
+    private static final long serialVersionUID = 1L;
     private TVectorUpdatableModel<T> model;
     private TypeReference<T> componentType;
     public UpdatableTVector(TypeReference<T> componentType, TVectorUpdatableModel<T> model, boolean row) {

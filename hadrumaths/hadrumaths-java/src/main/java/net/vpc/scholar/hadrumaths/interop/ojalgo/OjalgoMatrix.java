@@ -6,6 +6,7 @@ import org.ojalgo.matrix.MutableComplexMatrix;
 import static net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoConverter.*;
 
 public class OjalgoMatrix extends AbstractMatrix {
+    private static final long serialVersionUID = 1L;
     private MutableComplexMatrix base;
 
     public OjalgoMatrix(int rows, int cols) {

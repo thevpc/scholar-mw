@@ -6,7 +6,8 @@ import java.util.Collection;
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 public class PreloadedList<T> extends AbstractTList<T> {
-    final TList<T> cache;
+    private static final long serialVersionUID = 1L;
+    private final TList<T> cache;
     private TypeReference<T> componentType;
 
     public PreloadedList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> it) {

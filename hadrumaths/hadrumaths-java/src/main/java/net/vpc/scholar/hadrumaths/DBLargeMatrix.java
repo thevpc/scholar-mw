@@ -9,6 +9,7 @@ import java.io.IOException;
  * Created by vpc on 4/4/17.
  */
 public class DBLargeMatrix extends LargeMatrix {
+    private static final long serialVersionUID = 1L;
 
     public DBLargeMatrix(long id, int rows, int columns, DBLargeMatrixFactory factory) {
         super(id, rows, columns, factory);

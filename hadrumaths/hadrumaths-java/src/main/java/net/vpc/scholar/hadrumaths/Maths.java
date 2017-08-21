@@ -27,6 +27,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.ConsoleHandler;
@@ -274,6 +275,7 @@ public final class Maths {
     public static final TypeReference<TList<Integer>> $ILIST = new TListIntegerTypeReference();
     public static final TypeReference<TList<Boolean>> $BLIST = new TListBooleanTypeReference();
     public static final TypeReference<TList<Matrix>> $MLIST = new TListMatrixTypeReference();
+    public static final SimpleDateFormat UNIVERSAL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
             System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model") :
                     System.getProperty("os.arch").contains("64") ? "64" : "32"
@@ -5349,7 +5351,11 @@ public final class Maths {
         }
 
         public static boolean memoryCanStores(long bytesToStore) {
-            return (bytesToStore <= (maxFreeMemory() * ((double) getMaxMemoryThreshold())));
+            float maxMemoryThreshold = getMaxMemoryThreshold();
+            if(maxMemoryThreshold<=0){
+                return true;
+            }
+            return (bytesToStore <= (maxFreeMemory() * ((double) maxMemoryThreshold)));
         }
 
         public static float getMaxMemoryThreshold() {

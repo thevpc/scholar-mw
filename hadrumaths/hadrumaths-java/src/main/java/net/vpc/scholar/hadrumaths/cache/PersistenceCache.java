@@ -508,7 +508,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                                 oldValue = (T) objCache.load(cacheItemName, null);
                                 if(oldValue!=null) {
                                     c.stop();
-                                    log.log(Level.FINE, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c);
+                                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c);
                                 }
                             } catch (Exception e) {
                                 log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")");
@@ -519,7 +519,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                             }
                             if(oldValue!=null) {
                                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
                                 }
                             }
                         }

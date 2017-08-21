@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T>{
+    private static final long serialVersionUID = 1L;
     private TypeReference<T> componentType;
     private TMatrixModel<T> f;
 

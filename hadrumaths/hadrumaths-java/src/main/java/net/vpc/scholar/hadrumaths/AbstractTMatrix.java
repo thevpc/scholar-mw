@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  */
 public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
-    private static final long serialVersionUID = -1010101010101001044L;
+    private static final long serialVersionUID = 1L;
     private transient TMatrixFactory<T> factory;
     private transient String factoryId;
 

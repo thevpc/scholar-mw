@@ -7,6 +7,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class DoubleArrayList extends AbstractTList<Double> implements DoubleList{
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final double[] ZERO_ELEMENTS = new double[0];
     private double[] elementData;

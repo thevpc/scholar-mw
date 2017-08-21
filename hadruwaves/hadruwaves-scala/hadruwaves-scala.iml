@@ -9,8 +9,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths-scala:3.1.6" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths:3.1.6" level="project" />
+    <orderEntry type="module" module-name="hadrumaths-scala" />
+    <orderEntry type="module" module-name="hadrumaths" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />
@@ -77,7 +77,7 @@
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-linux-armhf:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-x86_64:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-i686:natives:1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.6" level="project" />
+    <orderEntry type="module" module-name="hadruwaves" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.12.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>

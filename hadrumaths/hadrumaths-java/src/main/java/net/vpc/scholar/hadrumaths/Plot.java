@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
@@ -22,7 +21,6 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -50,7 +48,6 @@ public class Plot {
     public static final String JFB_FILE_EXTENSION = "jfb";
 
     private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.create();
-    private static SimpleDateFormat UNIVERSAL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
 
@@ -647,7 +644,7 @@ public class Plot {
             printStream = new PrintStream(new FileOutputStream(file), true);
             String lineSep = System.getProperty("line.separator");
             printStream.println(commentChar + " Plot data");
-            printStream.println(commentChar + " Last modified " + UNIVERSAL_DATE_TIME_FORMAT.format(new Date()));
+            printStream.println(commentChar + " Last modified " + Maths.UNIVERSAL_DATE_TIME_FORMAT.format(new Date()));
             printStream.println(commentChar + " " + model.getTitle());
             printStream.println();
             printStream.println();
@@ -688,7 +685,7 @@ public class Plot {
             printStream = new PrintStream(new FileOutputStream(file), true);
             String lineSep = System.getProperty("line.separator");
             printStream.println(commentChar + " Plot data");
-            printStream.println(commentChar + " Last modified " + UNIVERSAL_DATE_TIME_FORMAT.format(new Date()));
+            printStream.println(commentChar + " Last modified " + Maths.UNIVERSAL_DATE_TIME_FORMAT.format(new Date()));
             printStream.println(commentChar + " " + model.getTitle());
             printStream.println();
             printStream.println();

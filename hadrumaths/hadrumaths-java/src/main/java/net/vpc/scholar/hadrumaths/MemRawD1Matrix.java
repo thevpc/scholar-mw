@@ -10,8 +10,7 @@ import java.util.ArrayList;
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
 public final class MemRawD1Matrix extends AbstractMatrix implements Serializable {
-
-    private static final long serialVersionUID = -1010101010101001044L;
+    private static final long serialVersionUID=1;
 
     private double[] reals;
     private double[] imags;

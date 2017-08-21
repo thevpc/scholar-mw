@@ -1060,9 +1060,9 @@ public final class ArrayUtils {
                 double f = 0;
                 double fallmax = 0;
                 for (int k = 0; k < complexes.length; k++) {
-                    f1 = gfps0[i][k].absSquare();
-                    f2 = gfps0[j][k].absSquare();
-                    f12 = (gfps0[i][k].sub(gfps0[j][k]).absSquare());
+                    f1 = gfps0[i][k].absdblsqr();
+                    f2 = gfps0[j][k].absdblsqr();
+                    f12 = (gfps0[i][k].sub(gfps0[j][k]).absdblsqr());
                     fallmax = Math.max(fallmax, Math.max(f1, f2));
                     f += f12;
                 }

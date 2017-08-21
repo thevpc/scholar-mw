@@ -52,7 +52,7 @@ import java.util.Locale;
  */
 
 public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cloneable, java.io.Serializable {
-    private static final long serialVersionUID = -1010101010101001011L;
+    private static final long serialVersionUID = 1L;
 
 /* ------------------------
    Class variables

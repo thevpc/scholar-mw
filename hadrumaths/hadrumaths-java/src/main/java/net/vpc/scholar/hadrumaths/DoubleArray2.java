@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths;
 import java.util.List;
 
 public class DoubleArray2 extends ArrayTList<DoubleArray> {
+    private static final long serialVersionUID = 1L;
     public DoubleArray2() {
         this(0);
     }

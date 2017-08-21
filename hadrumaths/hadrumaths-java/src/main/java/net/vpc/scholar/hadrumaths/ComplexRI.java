@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by vpc on 4/7/17.
  */
 public final class ComplexRI extends Complex {
+    private static final long serialVersionUID=1;
     private double real;
     private double imag;
 
@@ -181,10 +182,6 @@ public final class ComplexRI extends Complex {
         return (real * real + imag * imag);
     }
 
-    public double absSquare() {
-        return real * real + imag * imag;
-    }
-
     public Complex neg() {
         return Complex.valueOf(-real, -imag);
     }
@@ -282,14 +279,14 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex sin() {
-        return Complex.valueOf(Maths.sin2(real) * Maths.cos2(imag), Maths.cos2(real) * Maths.sin2(imag));
+        return Complex.valueOf(Maths.sin2(real) * Maths.cosh(imag), Maths.cos2(real) * Maths.sinh(imag));
     }
 
     public Complex cos() {
         if (imag == 0) {
             return Complex.valueOf(Maths.cos2(real));
         }
-        return Complex.valueOf(Maths.cos2(real) * Math.cosh(imag), -Maths.sin2(real) * Maths.sin2(imag));
+        return Complex.valueOf(Maths.cos2(real) * Math.cosh(imag), -Maths.sin2(real) * Maths.sinh(imag));
     }
 
     public Complex tan() {
@@ -300,7 +297,7 @@ public final class ComplexRI extends Complex {
         if (isReal()) {
             return Complex.valueOf(Math.atan(real));
         }
-        return Complex.I.mul(-0.5).mul(
+        return Complex.MINUS_HALF_I.mul(
 
                 ((I.sub(this)).div(I.add(this))).log()
         );
@@ -310,14 +307,19 @@ public final class ComplexRI extends Complex {
         if (isReal()) {
             return Complex.valueOf(Math.acos(real));
         }
-        return Complex.I.mul(-1).mul(
+        //wolfram : http://mathworld.wolfram.com/InverseCosine.html
+        // PI/2 + i ln (i *z + sqrt( 1-z2)
+        Complex z=this;
+        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
 
-                (
-                        this.add(
-                                (this.sqr().sub(ONE)).sqrt()
-                        ).log()
-                )
-        );
+//        return Complex.MINUS_I.mul(
+//
+//                (
+//                        this.add(
+//                                (this.sqr().sub(ONE)).sqrt()
+//                        ).log()
+//                )
+//        );
     }
 
     public Complex acosh() {
@@ -332,25 +334,27 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(Math.atan(getImag() / getReal()));
+        return Complex.valueOf(Math.atan2(getImag() , getReal()));
     }
 
     public Complex asin() {
         if (isReal()) {
             return Complex.valueOf(Math.asin(real));
         }
-        return Complex.I.mul(-1).mul(
-
-                (
-                        (this.mul(I)
-                                .add(
-                                        (ONE.sub(this.sqr()))
-                                                .sqrt()
-                                )
-                        ).log()
-                )
-
-        );
+        Complex z=this;
+        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
+//        return Complex.MINUS_I.mul(
+//
+//                (
+//                        (this.mul(I)
+//                                .add(
+//                                        (ONE.sub(this.sqr()))
+//                                                .sqrt()
+//                                )
+//                        ).log()
+//                )
+//
+//        );
     }
 
     public Complex acotan() {
@@ -433,15 +437,15 @@ public final class ComplexRI extends Complex {
         }
     }
 
-    public Complex angle() {
-        //workaround
-//        if(real==0){
-//            return imag>=0?Math.PI/2:-Math.PI/2;
-//        }else if(imag==0){
-//            return real>=0?0:Math.PI;
-//        }
-        return Complex.valueOf(Math.atan2(imag, real));
-    }
+//    public Complex angle() {
+//        //workaround
+////        if(real==0){
+////            return imag>=0?Math.PI/2:-Math.PI/2;
+////        }else if(imag==0){
+////            return real>=0?0:Math.PI;
+////        }
+//        return Complex.valueOf(Math.atan2(imag, real));
+//    }
 
     public Complex sqr() {
         return this.mul(this);
@@ -464,7 +468,7 @@ public final class ComplexRI extends Complex {
             return real >= 0 ? Complex.valueOf(Math.sqrt(real), 0) : Complex.valueOf(0, Math.sqrt(-real));
         } else {
             double r = Math.sqrt(absdbl());
-            double theta = angle().toDouble() / 2;
+            double theta = arg().toDouble() / 2;
             return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
         }
     }
@@ -494,13 +498,13 @@ public final class ComplexRI extends Complex {
 //            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
-            double angle = angle().toDouble();
+            double angle = arg().toDouble();
             double theta = angle * power;
             return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
-            double theta = angle().toDouble() * power;
+            double theta = arg().toDouble() * power;
             Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
             return c.inv();
         }

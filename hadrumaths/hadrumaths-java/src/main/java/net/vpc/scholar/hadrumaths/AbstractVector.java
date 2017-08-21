@@ -10,6 +10,7 @@ import java.io.PrintStream;
  * Created by vpc on 4/11/16.
  */
 public abstract class AbstractVector extends AbstractTVector<Complex> implements Vector {
+    private static final long serialVersionUID = 1L;
 
     public AbstractVector(boolean row) {
         super(row);
@@ -291,7 +292,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         MutableComplex d = MutableComplex.Zero();
         for (int i = 0; i < size(); i++) {
             Complex c = get(i);
-            d.add(c.absSquare());
+            d.add(c.absdblsqr());
         }
         return d.sqrtDouble();
     }
@@ -442,7 +443,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     public Vector abssqr() {
         Complex[] all = new Complex[size()];
         for (int i = 0; i < all.length; i++) {
-            all[i] = Complex.valueOf(get(i).absSquare());
+            all[i] = Complex.valueOf(get(i).absdblsqr());
         }
         return new ArrayVector(all, isRow());
     }
@@ -458,7 +459,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     public double[] dabsSqr() {
         double[] all = new double[size()];
         for (int i = 0; i < all.length; i++) {
-            all[i] = (get(i).absSquare());
+            all[i] = (get(i).absdblsqr());
         }
         return (all);
     }

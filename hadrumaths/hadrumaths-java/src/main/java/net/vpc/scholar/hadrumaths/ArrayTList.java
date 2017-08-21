@@ -10,6 +10,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class ArrayTList<T> extends AbstractTList<T> {
+    private static final long serialVersionUID = 1L;
 
     private ArrayList<T> values;
     private TypeReference<T> componentType;

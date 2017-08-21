@@ -4,6 +4,7 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 3/23/17.
  */
 public class EMatrixFromTMatrix<T extends Expr> extends AbstractTMatrix<Expr> {
+    private static final long serialVersionUID = 1L;
     private TMatrix<T> matrix;
 
     public EMatrixFromTMatrix(TMatrix<T> matrix) {

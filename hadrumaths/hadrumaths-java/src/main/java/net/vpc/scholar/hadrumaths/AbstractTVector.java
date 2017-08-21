@@ -14,6 +14,7 @@ import java.util.List;
  * Created by vpc on 4/11/16.
  */
 public abstract class AbstractTVector<T> implements TVector<T> {
+    private static final long serialVersionUID = 1L;
     protected boolean rowType;
 
     public AbstractTVector(boolean row) {

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 public abstract class AbstractUnmodifiableMatrix extends AbstractMatrix{
+    private static final long serialVersionUID = 1L;
     private int rowsCount;
     private int columnsCount;
 

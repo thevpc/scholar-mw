@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Created by vpc on 4/11/16.
  */
 public class ArrayVector extends AbstractVector implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Complex[] elements;
 
     public ArrayVector(TVector<Complex> other) {

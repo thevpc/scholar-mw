@@ -7,8 +7,7 @@ import java.util.ArrayList;
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
 public final class MemComplexMatrix extends AbstractMatrix implements Serializable {
-
-    private static final long serialVersionUID = -1010101010101001044L;
+    private static final long serialVersionUID=1;
 
     private Complex[][] elements;
 
@@ -64,7 +63,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (Complex[] element : elements) {
-                f += element[j].absSquare();
+                f += element[j].absdblsqr();
             }
         }
         return Math.sqrt(f);
@@ -924,7 +923,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         for (Complex[] element : elements) {
             alpha = 0;
             for (Complex complex : element) {
-                alpha = alpha + complex.absSquare();
+                alpha = alpha + complex.absdblsqr();
             }
             x *= Math.sqrt(alpha);
         }

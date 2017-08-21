@@ -4,8 +4,8 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 3/23/17.
  */
 public class MatrixFromColumnVector extends AbstractMatrix {
+    private static final long serialVersionUID = 1L;
     private Vector vector;
-    private boolean row;
 
     public MatrixFromColumnVector(Vector vector) {
         this.vector = vector;

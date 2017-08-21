@@ -4,6 +4,7 @@ package net.vpc.scholar.hadrumaths;
  * @author taha.bensalah@gmail.com on 7/21/16.
  */
 public class TransposedVector extends AbstractVector {
+    private static final long serialVersionUID = 1L;
     private Vector other;
 
     public TransposedVector(Vector other) {

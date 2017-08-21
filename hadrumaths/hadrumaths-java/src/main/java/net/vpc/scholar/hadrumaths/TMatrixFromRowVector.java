@@ -4,6 +4,7 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 3/23/17.
  */
 public class TMatrixFromRowVector<T> extends AbstractTMatrix<T> {
+    private static final long serialVersionUID = 1L;
     private TVector<T> vector;
 
     public TMatrixFromRowVector(TVector<T> vector) {

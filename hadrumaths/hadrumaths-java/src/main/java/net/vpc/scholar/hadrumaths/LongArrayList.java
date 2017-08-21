@@ -7,6 +7,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class LongArrayList extends AbstractTList<Long> implements LongList{
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final long[] ZERO_ELEMENTS = new long[0];
     private long[] elementData;

@@ -10,7 +10,8 @@ import java.util.Arrays;
  * Created by vpc on 5/30/14.
  */
 public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Cloneable {
-    double[][] values;
+    private static final long serialVersionUID = 1L;
+    private double[][] values;
     private Expr pattern;
     private DoubleParam[] vars;
     private String valuesDesc;

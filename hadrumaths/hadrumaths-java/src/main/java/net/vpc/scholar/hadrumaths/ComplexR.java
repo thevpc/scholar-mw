@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by vpc on 4/7/17.
  */
 public final class ComplexR extends Complex {
+    private static final long serialVersionUID=1;
     private double real;
 //    private double imag;
 
@@ -170,10 +171,6 @@ public final class ComplexR extends Complex {
         return (real * real);
     }
 
-    public double absSquare() {
-        return real * real;
-    }
-
     public Complex neg() {
         return Complex.valueOf(-real);
     }
@@ -259,14 +256,14 @@ public final class ComplexR extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(Math.atan(getImag() / getReal()));
+        return ZERO;//Complex.valueOf(Math.atan2(0 , getReal()));
     }
 
     public Complex asin() {
         if (isReal()) {
             return Complex.valueOf(Math.asin(real));
         }
-        return Complex.I.mul(-1).mul(
+        return Complex.MINUS_I.mul(
 
                 (
                         (this.mul(I)
@@ -333,9 +330,9 @@ public final class ComplexR extends Complex {
         return String.valueOf(real);
     }
 
-    public Complex angle() {
-        return Complex.ZERO;
-    }
+//    public Complex angle() {
+//        return Complex.ZERO;
+//    }
 
     public Complex sqr() {
         return Complex.valueOf(real*real);
@@ -378,13 +375,13 @@ public final class ComplexR extends Complex {
 //            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
-            double angle = angle().toDouble();
+            double angle = arg().toDouble();
             double theta = angle * power;
             return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
-            double theta = angle().toDouble() * power;
+            double theta = arg().toDouble() * power;
             Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
             return c.inv();
         }

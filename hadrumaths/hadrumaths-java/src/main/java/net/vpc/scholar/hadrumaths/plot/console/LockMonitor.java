@@ -1,12 +1,17 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
+import sun.swing.DefaultLookup;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +41,161 @@ public class LockMonitor extends JPanel implements ActionListener {
         jTableHelper.getPane().setPreferredSize(new Dimension(200, 50));
 
         table = jTableHelper.getTable();
+
+        TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
+
+
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value, boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                if (value instanceof Date) {
+                    value = Maths.UNIVERSAL_DATE_TIME_FORMAT.format(value);
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected,
+                        hasFocus, row, column);
+            }
+        };
+
+        table.getColumnModel().getColumn(3).setCellRenderer(tableCellRenderer);
+
+        TableCellRenderer tableCellRenderer2 = new DefaultTableCellRenderer() {
+
+            private Color getDefaultBG(JTable table,
+                                       Object value, boolean isSelected, boolean hasFocus,
+                                       int row, int column) {
+                Color bg = null;
+
+                JTable.DropLocation dropLocation = table.getDropLocation();
+                if (dropLocation != null
+                        && !dropLocation.isInsertRow()
+                        && !dropLocation.isInsertColumn()
+                        && dropLocation.getRow() == row
+                        && dropLocation.getColumn() == column) {
+
+                    bg = DefaultLookup.getColor(this, ui, "Table.dropCellBackground");
+
+                    isSelected = true;
+                }
+
+                if (isSelected) {
+                    bg=(bg == null ? table.getSelectionBackground(): bg);
+                } else {
+                    Color unselectedBackground=getUnselectedBackground();
+                    Color background = unselectedBackground != null
+                            ? unselectedBackground
+                            : table.getBackground();
+                    if (background == null || background instanceof javax.swing.plaf.UIResource) {
+                        Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                        if (alternateColor != null && row % 2 != 0) {
+                            background = alternateColor;
+                        }
+                    }
+                    if(background!=null) {
+                        bg = (background);
+                    }
+                }
+
+
+                if (hasFocus) {
+                    if (!isSelected && table.isCellEditable(row, column)) {
+                        Color col;
+                        col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
+                        if (col != null) {
+                            bg=(col);
+                        }
+                    }
+                }
+                return bg;
+            }
+
+            private Color getUnselectedBackground() {
+                try {
+                    Field unselectedBackgroundField = getClass().getSuperclass().getDeclaredField("unselectedBackground");
+                    unselectedBackgroundField.setAccessible(true);
+                    return (Color) unselectedBackgroundField.get(this);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Unexpected");
+                }
+            }
+
+            private Color getUnselectedForeground() {
+                try {
+                    Field unselectedForegroundField = getClass().getSuperclass().getDeclaredField("unselectedForeground");
+                    unselectedForegroundField.setAccessible(true);
+                    return (Color) unselectedForegroundField.get(this);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Unexpected");
+                }
+            }
+
+            private Color getDefaultFG(JTable table,
+                                       Object value, boolean isSelected, boolean hasFocus,
+                                       int row, int column) {
+                Color fg = null;
+
+                JTable.DropLocation dropLocation = table.getDropLocation();
+                if (dropLocation != null
+                        && !dropLocation.isInsertRow()
+                        && !dropLocation.isInsertColumn()
+                        && dropLocation.getRow() == row
+                        && dropLocation.getColumn() == column) {
+
+                    fg = DefaultLookup.getColor(this, ui, "Table.dropCellForeground");
+
+                    isSelected = true;
+                }
+
+                if (isSelected) {
+                    fg=(fg == null ? table.getSelectionForeground()
+                            : fg);
+                } else {
+                    Color unselectedForeground = getUnselectedForeground();
+                    fg=(unselectedForeground != null
+                            ? unselectedForeground
+                            : table.getForeground());
+                }
+
+
+                if (hasFocus) {
+                    if (!isSelected && table.isCellEditable(row, column)) {
+                        Color col;
+                        col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
+                        if (col != null) {
+                            fg=(col);
+                        }
+                    }
+                } else {
+                }
+                return fg;
+            }
+
+            public Component getTableCellRendererComponent(JTable table,
+                                                           Object value, boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                Color bg = getDefaultBG(table, value, isSelected,hasFocus,row,column);
+                Color fg = getDefaultFG(table, value, isSelected,hasFocus,row,column);
+                if (value instanceof Number && ((Number) value).intValue() > 1) {
+                    if (isSelected) {
+                        bg = (new Color(230,135,230));
+//                        fg = (Color.YELLOW);
+                    } else {
+                        bg = (new Color(230,135,121));
+//                        fg = (Color.BLACK);
+                    }
+                }
+                super.getTableCellRendererComponent(table, value, isSelected,
+                        hasFocus, row, column);
+                setHorizontalTextPosition(SwingConstants.CENTER);
+                setHorizontalAlignment(SwingConstants.CENTER);
+                setBackground(bg);
+                setForeground(fg);
+                return this;
+            }
+        };
+
+        table.getColumnModel().getColumn(2).setCellRenderer(tableCellRenderer2);
+
+
         this.add(jTableHelper.getPane(), BorderLayout.CENTER);
 
         JToolBar south = new JToolBar(JToolBar.HORIZONTAL);
@@ -63,10 +223,10 @@ public class LockMonitor extends JPanel implements ActionListener {
         if (source == unlockButton) {
             //
             AppLockInfo a = lockModel.getAppLock(table.getSelectionModel().getLeadSelectionIndex());
-            if(a!=null){
+            if (a != null) {
                 try {
                     a.lock.forceRelease();
-                }catch (Exception ex){
+                } catch (Exception ex) {
 
                 }
             }
@@ -79,6 +239,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         long hits;
         Date time;
     }
+
     private static class LocksTableModel extends AbstractTableModel implements AppLockListener {
         final List<AppLockInfo> files = new ArrayList<>();
 
@@ -91,6 +252,7 @@ public class LockMonitor extends JPanel implements ActionListener {
             }
             return null;
         }
+
         public void add(AppLock lock) {
             synchronized (files) {
                 for (int i = files.size() - 1; i >= 0; i--) {
@@ -98,16 +260,19 @@ public class LockMonitor extends JPanel implements ActionListener {
                     AppLock file = appLockInfo.lock;
                     if (file.equals(lock)) {
                         appLockInfo.hits++;
-                        appLockInfo.time=new Date();
+                        if(appLockInfo.hits>1){
+                            UIManager.getLookAndFeel().provideErrorFeedback(null);
+                        }
+                        appLockInfo.time = new Date();
                         fireTableRowsUpdated(i, i);
                         return;
                     }
                 }
                 int a = files.size();
-                AppLockInfo info=new AppLockInfo();
-                info.lock=lock;
-                info.hits=1;
-                info.time=new Date();
+                AppLockInfo info = new AppLockInfo();
+                info.lock = lock;
+                info.hits = 1;
+                info.time = new Date();
                 files.add(info);
                 fireTableRowsInserted(a, a);
             }
@@ -157,7 +322,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             synchronized (files) {
-                if(rowIndex<0 || rowIndex>=files.size()){
+                if (rowIndex < 0 || rowIndex >= files.size()) {
                     return null;
                 }
                 AppLockInfo appLock = files.get(rowIndex);
@@ -179,16 +344,16 @@ public class LockMonitor extends JPanel implements ActionListener {
 
         @Override
         public String getColumnName(int column) {
-            if(column==0){
+            if (column == 0) {
                 return "Lock Name";
             }
-            if(column==1){
+            if (column == 1) {
                 return "Lock Desc";
             }
-            if(column==2){
+            if (column == 2) {
                 return "Hits";
             }
-            if(column==3){
+            if (column == 3) {
                 return "Last Hit";
             }
             return super.getColumnName(column);

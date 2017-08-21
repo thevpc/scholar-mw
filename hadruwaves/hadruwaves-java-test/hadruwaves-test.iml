@@ -11,8 +11,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.6" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths:3.1.6" level="project" />
+    <orderEntry type="module" module-name="hadruwaves" />
+    <orderEntry type="module" module-name="hadrumaths" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />

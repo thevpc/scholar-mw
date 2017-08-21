@@ -4,6 +4,7 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 3/23/17.
  */
 public class MatrixRow extends AbstractVector {
+    private static final long serialVersionUID = 1L;
     private Matrix matrix;
     private int row;
 

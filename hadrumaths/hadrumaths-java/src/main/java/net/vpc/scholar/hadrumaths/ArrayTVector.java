@@ -11,8 +11,9 @@ import java.io.Serializable;
  * Created by vpc on 4/11/16.
  */
 public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
     private T[] elements;
-    private VectorSpace<T> componentVectorSpace;
+    private transient VectorSpace<T> componentVectorSpace;
     private TypeReference<T> componentType;
 
     public ArrayTVector(TVector<T> other) throws IOException {
@@ -129,6 +130,9 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
 
     @Override
     public VectorSpace<T> getComponentVectorSpace() {
+        if(componentVectorSpace==null){
+            componentVectorSpace=Maths.getVectorSpace(componentType);
+        }
         return componentVectorSpace;
     }
 

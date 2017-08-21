@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializerProvider;
  * Created by vpc on 2/5/15.
  */
 public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectSerializerProvider {
+    private static final long serialVersionUID = 1L;
     private String largeFactoryId;
     private transient LargeMatrixFactory largeFactory;
     private long largeMatrixId;
