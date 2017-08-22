@@ -43,4 +43,9 @@ public final class ModeFilter implements ModeIndexFilter {
     public int hashCode() {
         return cachedHintFnModeTypes != null ? cachedHintFnModeTypes.hashCode() : 0;
     }
+
+    @Override
+    public boolean isFrequencyDependent() {
+        return false;
+    }
 }

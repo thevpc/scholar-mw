@@ -31,13 +31,6 @@ public abstract class TypeReference<T> implements Serializable{
         this.type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
     }
 
-    public static void main(String[] args) throws Exception {
-        List<String> l1 = new TypeReference<ArrayList<String>>() {
-        }.newInstance();
-        List l2 = new TypeReference<ArrayList>() {
-        }.newInstance();
-    }
-
     @Override
     public String toString() {
         return "TypeReference<"+type+">";

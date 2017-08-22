@@ -159,24 +159,28 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     }
 
     private void updateAreaByModel(){
+        double[][] zd = model.getZd();
+        double[] xVector = model.getXVector();
         double[][] y2 = model.getY();
         double[] y20 = null;
-        if(y2 == null || y2.length == 0){
-            y20=(Maths.dsteps(1, model.getX().length, 1.0));
+        if(y2 == null || y2.length == 0 || (y2.length == 1 && y2[0]==null)){
+            y20=(Maths.dsteps(1, zd.length, 1.0));
         }else{
             y20=(y2[0]);
         }
-        double[][] zd = model.getZd();
-        DoubleList y = (DoubleList) Maths.dlist(y20==null?0:y20.length);
-        DoubleArray2 z = new DoubleArray2(y.size());
-        for (int i = 0; i < y.size(); i++) {
+        if(y20==null){
+            y20=new double[0];
+        }
+        DoubleList y = (DoubleList) Maths.dlist(y20.length);
+        DoubleArray2 z = new DoubleArray2(y20.length);
+        for (int i = 0; i < y20.length; i++) {
             double v = y20[i];
             if(model.getYVisible(i)){
-                y.add(v);
-                z.addRow(zd[i]);
+                y.append(v);
+                z.appendRow(zd[i]);
             }
         }
-        area.setModel(model.getXVector(),
+        area.setModel(xVector,
                 y.toDoubleArray()
                 , z.toDoubleArray(),
                 model.getPlotType()== PlotType.HEATMAP);

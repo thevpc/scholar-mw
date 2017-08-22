@@ -17,14 +17,14 @@ public class DoubleArray2 extends ArrayTList<DoubleArray> {
     public DoubleArray2(boolean row, List<List<Double>> values) {
         this(row, values.size());
         for (List<Double> value : values) {
-            addRow(value);
+            appendRow(value);
         }
     }
 
     public DoubleArray2(boolean row, Double[][] values) {
         this(row, values.length);
         for (Double[] aDouble : values) {
-            addRow(aDouble);
+            appendRow(aDouble);
         }
     }
 
@@ -34,35 +34,35 @@ public class DoubleArray2 extends ArrayTList<DoubleArray> {
         }
     }
 
-    public void addRow(double[] d) {
+    public void appendRow(double[] d) {
         append(new DoubleArray(d));
     }
 
-    public void addRow(Double[] d) {
+    public void appendRow(Double[] d) {
         append(new DoubleArray(d));
     }
 
-    public void addRow(List<Double> d) {
+    public void appendRow(List<Double> d) {
         append(new DoubleArray(d));
     }
 
-    public void addRow(int pos, double[] d) {
+    public void appendRow(int pos, double[] d) {
         append(pos, new DoubleArray(d));
     }
 
-    public void addRow(int pos, Double[] d) {
+    public void appendRow(int pos, Double[] d) {
         append(pos, new DoubleArray(d));
     }
 
-    public void addRow(int pos, List<Double> d) {
+    public void appendRow(int pos, List<Double> d) {
         append(pos, new DoubleArray(d));
     }
 
-    public void addRow(DoubleArray d) {
+    public void appendRow(DoubleArray d) {
         append(d);
     }
 
-    public void addRow(int pos, DoubleArray row) {
+    public void appendRow(int pos, DoubleArray row) {
         append(pos, row);
     }
 

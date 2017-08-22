@@ -25,9 +25,6 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public static final Complex POSITIVE_INFINITY = new ComplexR(Double.POSITIVE_INFINITY);
     public static final Complex NEGATIVE_INFINITY = new ComplexR(Double.NEGATIVE_INFINITY);
 
-    public static void main(String[] args) {
-        System.out.println(Math.atan2(-2.2,1));
-    }
     public static DistanceStrategy<Complex> DISTANCE = new DistanceStrategy<Complex>() {
         @Override
         public double distance(Complex a, Complex b) {

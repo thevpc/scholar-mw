@@ -18,4 +18,5 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
  */
 public interface ModeInfoFilter extends Serializable, Dumpable{
     boolean acceptModeInfo(ModeInfo info);
+    boolean isFrequencyDependent();
 }

@@ -1,14 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
@@ -1272,9 +1270,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public final TMatrix<Complex> getTestModeScalarProducts(ProgressMonitor monitor) {
-        final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         build();
-        return new FnGpScalarProductCacheStrCacheSupport(this, monitor0).get();
+        return getModeFunctions().scalarProduct(Maths.elist(testFunctions.arr()),monitor);
     }
 
     public final TMatrix<Complex> getTestSourceScalarProducts() {
@@ -1712,7 +1709,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     public TMatrix<Complex> createScalarProductCache(ProgressMonitor monitor) {
         build();
-        return modeFunctions.scalarProductCache(Maths.elist(testFunctions.arr()),monitor);
+        return modeFunctions.scalarProduct(Maths.elist(testFunctions.arr()),monitor);
 //        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, 2);
 //        fnModeFunctions.getModes(mon[0], getObjectCache());
 //        HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();

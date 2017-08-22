@@ -27,7 +27,7 @@ public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
      */
     public LogProgressMonitor(String messageFormat, Logger logger) {
         if (messageFormat == null) {
-            messageFormat = "%inuse-mem% | %free-mem% : %value%";
+            messageFormat = "use=%inuse-mem% | free=%free-mem% : %value%";
         }
         if (messageFormat.indexOf("%value%") < 0) {
             messageFormat = messageFormat + " %value%";

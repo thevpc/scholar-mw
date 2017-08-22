@@ -11,8 +11,6 @@ import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1113,14 +1111,14 @@ public class Plot {
             ModelSeriesItem[] lines = new ModelSeriesItem[ytitles.length];
             for (int i = 0; i < ytitles.length; i++) {
                 lines[i] = new ModelSeriesItem();
-                lines[i].index = i;
-                lines[i].title = ytitles[i];
-                lines[i].color = null;
-                lines[i].visible = model.getYVisible(i);
-                lines[i].lineType = (Integer) model.getProperty(i, "lineType", 0);
-                lines[i].nodeType = (Integer) model.getProperty(i, "nodeType", 0);
-                lines[i].xmultiplier = ((Number) model.getProperty(i, "xmultiplier", 1.0)).doubleValue();
-                lines[i].ymultiplier = ((Number) model.getProperty(i, "ymultiplier", 1.0)).doubleValue();
+                lines[i].setIndex(i);
+                lines[i].setTitle(ytitles[i]);
+                lines[i].setColor(null);
+                lines[i].setVisible(model.getYVisible(i));
+                lines[i].setLineType((Integer) model.getProperty(i, "lineType", 0));
+                lines[i].setNodeType((Integer) model.getProperty(i, "nodeType", 0));
+                lines[i].setXmultiplier(((Number) model.getProperty(i, "xmultiplier", 1.0)).doubleValue());
+                lines[i].setYmultiplier(((Number) model.getProperty(i, "ymultiplier", 1.0)).doubleValue());
             }
             jTabbedPane.addTab("General", general);
             ;
@@ -1135,12 +1133,12 @@ public class Plot {
                 model.setProperty("alternateNode", alternateNodeCheckBox.isSelected());
                 model.setProperty("alternateLine", alternateLineCheckBox.isSelected());
                 for (int i = 0; i < ytitles.length; i++) {
-                    model.setYVisible(i, lines[i].visible);
-                    model.setYVisible(i, lines[i].visible);
-                    model.setProperty(i, "lineType", lines[i].lineType);
-                    model.setProperty(i, "nodeType", lines[i].nodeType);
-                    model.setProperty(i, "xmultiplier", lines[i].xmultiplier);
-                    model.setProperty(i, "ymultiplier", lines[i].ymultiplier);
+                    model.setYVisible(i, lines[i].isVisible());
+                    model.setYVisible(i, lines[i].isVisible());
+                    model.setProperty(i, "lineType", lines[i].getLineType());
+                    model.setProperty(i, "nodeType", lines[i].getNodeType());
+                    model.setProperty(i, "xmultiplier", lines[i].getXmultiplier());
+                    model.setProperty(i, "ymultiplier", lines[i].getYmultiplier());
                 }
                 model.modelUpdated();
             }
@@ -1215,17 +1213,6 @@ public class Plot {
         public static void unregisterConverter(Class cls) {
             objectConverters.remove(cls);
         }
-    }
-
-    private static class ModelSeriesItem {
-        private int index;
-        private String title;
-        private boolean visible;
-        private int nodeType;
-        private int lineType;
-        private double xmultiplier;
-        private double ymultiplier;
-        private Color color;
     }
 
     private static class DoubleABSAction extends ValuesModelAction implements Serializable {
@@ -1405,223 +1392,6 @@ public class Plot {
 
         public void actionPerformed(ActionEvent e) {
             getModel().setPlotType(PlotType.POLAR);
-        }
-    }
-
-    private static class ModelSeriesModel implements TableModel {
-        private ModelSeriesItem[] lines;
-
-        private ModelSeriesModel(ModelSeriesItem[] lines) {
-            this.lines = lines;
-        }
-
-        public int getRowCount() {
-            return lines.length;
-        }
-
-        public ModelSeriesItem[] getLines() {
-            return lines;
-        }
-
-        public int getColumnCount() {
-            return 8;
-        }
-
-        public String getColumnName(int columnIndex) {
-            switch (columnIndex) {
-                case 0: {
-                    return "Index";
-                }
-                case 1: {
-                    return "Title";
-                }
-                case 2: {
-                    return "NodeType";
-                }
-                case 3: {
-                    return "LineType";
-                }
-                case 4: {
-                    return "Color";
-                }
-                case 5: {
-                    return "xfactor";
-                }
-                case 6: {
-                    return "yfactor";
-                }
-                case 7: {
-                    return "Visible";
-                }
-            }
-            return null;
-        }
-
-        public Class<?> getColumnClass(int columnIndex) {
-            switch (columnIndex) {
-                case 0: {
-                    //return "Index";
-                    return Integer.class;
-                }
-                case 1: {
-                    //return "Title";
-                    return String.class;
-                }
-                case 2: {
-                    //return "NodeType";
-                    return Integer.class;
-                }
-                case 3: {
-                    //return "LineType";
-                    return Integer.class;
-                }
-                case 4: {
-                    //return "Color";
-                    return Color.class;
-                }
-                case 5: {
-                    //return "xmultiplier";
-                    return Double.class;
-                }
-                case 6: {
-                    //return "ymultiplier";
-                    return Double.class;
-                }
-                case 7: {
-                    //return "Visible";
-                    return Boolean.class;
-                }
-            }
-            return null;
-        }
-
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            switch (columnIndex) {
-                case 0: {
-                    //return "Index";
-                    return false;
-                }
-                case 1: {
-                    //return "Title";
-                    return true;
-                }
-                case 2: {
-                    //return "NodeType";
-                    return true;
-                }
-                case 3: {
-                    //return "LineType";
-                    return true;
-                }
-                case 4: {
-                    //return "Color";
-                    return true;
-                }
-                case 5: {
-                    //return "xmultiplier";
-                    return true;
-                }
-                case 6: {
-                    //return "ymultiplier";
-                    return true;
-                }
-                case 7: {
-                    //return "Visible";
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            switch (columnIndex) {
-                case 0: {
-                    //return "Index";
-                    return lines[rowIndex].index;
-                }
-                case 1: {
-                    //return "Title";
-                    return lines[rowIndex].title;
-                }
-                case 2: {
-                    //return "NodeType";
-                    return lines[rowIndex].nodeType;
-                }
-                case 3: {
-                    //return "LineType";
-                    return lines[rowIndex].lineType;
-                }
-                case 4: {
-                    //return "Color";
-                    return lines[rowIndex].color;
-                }
-                case 5: {
-                    //return "xmultiplier";
-                    return lines[rowIndex].xmultiplier;
-                }
-                case 6: {
-                    //return "ymultiplier";
-                    return lines[rowIndex].ymultiplier;
-                }
-                case 7: {
-                    //return "Visible";
-                    return lines[rowIndex].visible;
-                }
-            }
-            return null;
-        }
-
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            switch (columnIndex) {
-                case 0: {
-                    //return "Index";
-                    lines[rowIndex].index = (Integer) aValue;
-                    break;
-                }
-                case 1: {
-                    //return "Title";
-                    lines[rowIndex].title = (String) aValue;
-                    break;
-                }
-                case 2: {
-                    //return "NodeType";
-                    lines[rowIndex].nodeType = (Integer) aValue;
-                    break;
-                }
-                case 3: {
-                    //return "LineType";
-                    lines[rowIndex].lineType = (Integer) aValue;
-                    break;
-                }
-                case 4: {
-                    //return "Color";
-                    lines[rowIndex].color = (Color) aValue;
-                    break;
-                }
-                case 5: {
-                    //return "xmultiplier";
-                    lines[rowIndex].ymultiplier = ((Number) aValue).doubleValue();
-                    break;
-                }
-                case 6: {
-                    //return "ymultiplier";
-                    lines[rowIndex].ymultiplier = ((Number) aValue).doubleValue();
-                    break;
-                }
-                case 7: {
-                    //return "Visible";
-                    lines[rowIndex].visible = (Boolean) aValue;
-                    break;
-                }
-            }
-        }
-
-        public void addTableModelListener(TableModelListener l) {
-            //
-        }
-
-        public void removeTableModelListener(TableModelListener l) {
-            //
         }
     }
 

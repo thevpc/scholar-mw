@@ -12,7 +12,7 @@ import java.util.TreeSet;
  */ //chercher adresse Pentee
 class DiscardFnByScalarProductModeInfoFilter implements ModeInfoFilter {
 
-    TreeSet<Integer> excluded;
+    private TreeSet<Integer> excluded;
 
     public DiscardFnByScalarProductModeInfoFilter(Collection<Integer> excluded) {
         this.excluded = new TreeSet<Integer>(excluded);
@@ -26,5 +26,10 @@ class DiscardFnByScalarProductModeInfoFilter implements ModeInfoFilter {
         Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
         h.add("exclude", excluded);
         return h.toString();
+    }
+
+    @Override
+    public boolean isFrequencyDependent() {
+        return false;
     }
 }

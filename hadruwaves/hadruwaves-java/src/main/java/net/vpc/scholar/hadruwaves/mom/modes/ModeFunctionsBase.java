@@ -1104,23 +1104,52 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         return null;
     }
 
+    protected boolean isDefinitionFrequencyDependent(){
+        if (modeInfoFilters != null) {
+            for (ModeInfoFilter modeInfoFilter : modeInfoFilters) {
+                if (modeInfoFilter.isFrequencyDependent()) {
+                    return true;
+                }
+            }
+        }
+
+        if (modeInfoFilters != null) {
+            for (ModeIndexFilter modeInfoFilter : modeIndexFilters) {
+                if (modeInfoFilter.isFrequencyDependent()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public Dumper getDumpStringHelper() {
+        return getDumpStringHelper(true,true);
+    }
+
+    public Dumper getDumpStringHelper(boolean includeFreq,boolean includeSize) {
         Dumper h = new Dumper(this);
-        h.add("fnMax", size);
-        h.add("freq", frequency);
         h.add("domain", domain);
-        h.addNonNull("hintGpFnAxisType", hintAxisType);
-        h.addNonNull("hintInvariantAxis", hintInvariantAxis);
-        h.addNonNull("hintSymmetryAxis", hintSymmetryAxis);
-//        h.add("projectType", projectType);
-        h.add("firstBoxSpace", firstBoxSpace);
-        h.add("secondBoxSpace", secondBoxSpace);
-        h.addNonNull("sources", sources);
+        if(!includeFreq && isDefinitionFrequencyDependent()) {
+            includeFreq=true;
+        }
         h.addNonNull("modeInfoFilters", modeInfoFilters);
         h.addNonNull("modeIndexFilters", modeIndexFilters);
         h.addNonNull("modeInfoComparator", modeInfoComparator);
         h.addNonNull("modeIteratorFactory", modeIteratorFactory);
+        if(includeSize) {
+            h.add("fnMax", size);
+        }
+        if(includeFreq) {
+            h.add("freq", frequency);
+            h.addNonNull("sources", sources);
+            h.add("firstBoxSpace", firstBoxSpace);
+            h.add("secondBoxSpace", secondBoxSpace);
+        }
+        h.addNonNull("hintGpFnAxisType", hintAxisType);
+        h.addNonNull("hintInvariantAxis", hintInvariantAxis);
+        h.addNonNull("hintSymmetryAxis", hintSymmetryAxis);
         if (isHintInvertTETMForZmode()) {
             h.add("hintInvertTETMForZin", true);
         }

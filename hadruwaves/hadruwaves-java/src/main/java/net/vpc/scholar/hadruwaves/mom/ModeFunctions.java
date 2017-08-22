@@ -181,5 +181,5 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     TVector<Complex> scalarProduct(Expr testFunction);
 
-    TMatrix<Complex> scalarProductCache(TList<Expr> testFunctions,ProgressMonitor monitor);
+    TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor);
 }

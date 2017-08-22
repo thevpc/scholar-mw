@@ -5,10 +5,7 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by vpc on 4/11/16.
@@ -886,5 +883,40 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     @Override
     public TVector<T> copy() {
         return Maths.list(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof TVector)) return false;
+
+        TVector<?> that = (TVector<?>) o;
+        if (!that.getComponentType().equals(getComponentType())) {
+            return false;
+        }
+        int size = size();
+        if (that.size() != size) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!Objects.equals(get(i), that.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7+(isRow()?1:0);
+        int columnCount = size();
+        hash = 89 * hash + columnCount;
+        for (int c = 0; c < columnCount; c++) {
+            T t = get(c);
+            if (t != null) {
+                hash = 89 * hash + t.hashCode();
+            }
+        }
+        return hash;
     }
 }

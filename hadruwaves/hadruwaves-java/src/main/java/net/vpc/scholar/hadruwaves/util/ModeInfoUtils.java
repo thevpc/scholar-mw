@@ -66,6 +66,16 @@ public final class ModeInfoUtils {
             s.append(")");
             return s.toString();
         }
+
+        @Override
+        public boolean isFrequencyDependent() {
+            for (ModeInfoFilter modeInfoFilter : all) {
+                if(modeInfoFilter.isFrequencyDependent()){
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private static class Invariance implements ModeInfoFilter {
@@ -80,6 +90,11 @@ public final class ModeInfoUtils {
 
         public String dump() {
             return "Invariance("+axis+")";
+        }
+
+        @Override
+        public boolean isFrequencyDependent() {
+            return false;
         }
     }
 
@@ -114,6 +129,16 @@ public final class ModeInfoUtils {
             }
             s.append(")");
             return s.toString();
+        }
+
+        @Override
+        public boolean isFrequencyDependent() {
+            for (ModeInfoFilter modeInfoFilter : all) {
+                if(modeInfoFilter.isFrequencyDependent()){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

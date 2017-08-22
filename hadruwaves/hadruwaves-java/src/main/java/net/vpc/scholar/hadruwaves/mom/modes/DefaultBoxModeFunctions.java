@@ -8,15 +8,15 @@ import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromTMatrix;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * North Eletrique, East Magnetique, South Eletrique,W Magnetique
@@ -32,6 +32,8 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //    private double nb = 0;
 //    private ModeType[] allowedModes;
     private BoxModes modesDesc;
+    protected TMatrix<Complex> lastScalarProductProductMatrix;
+    protected TList<Expr> lastScalarProductProductMatrixInput;
 
     public DefaultBoxModeFunctions(String pattern) {
         this(WallBorders.valueOf(pattern));
@@ -69,6 +71,21 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
                 axis = Axis.X;
             }
         }
+        addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                if(propertyName.equals("frequency")){
+                    if(isDefinitionFrequencyDependent()){
+                        lastScalarProductProductMatrix=null;
+                        lastScalarProductProductMatrixInput=null;
+                    }
+                }else {
+                    lastScalarProductProductMatrix=null;
+                    lastScalarProductProductMatrixInput=null;
+                }
+            }
+        });
     }
 
     @Override
@@ -77,7 +94,6 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         modesDesc = Physics.boxModes(getBorders(), getDomain(), this.alphax, this.betay, axis);
         return d;
     }
-
 
 //    private static String descMode(ModeInfo m) {
 //        return m.mode.type + "(" + m.mode.m + "," + m.mode.n + ") "
@@ -274,34 +290,23 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         return betay;
     }
 
-    public Dumper getScalarProductsDumpStringHelper(Expr testFunction) {
-        Dumper h = new Dumper(this);
-        h.setName(getClass().getSimpleName()+":TestFunctionScalarProduct");
-//        h.add("fnMax", size);
-        h.add("freq", getFrequency());
-        h.add("domain", getDomain());
-        h.addNonNull("hintGpFnAxisType", getHintAxisType());
-        h.addNonNull("hintInvariantAxis", getHintInvariantAxis());
-        h.addNonNull("hintSymmetryAxis", getHintSymmetry());
-//        h.add("projectType", projectType);
-        h.add("firstBoxSpace", getFirstBoxSpace());
-        h.add("secondBoxSpace", getSecondBoxSpace());
-        h.addNonNull("sources", getSources());
-        h.addNonNull("modeInfoFilters", getModeInfoFilters());
-        h.addNonNull("modeIndexFilters", getModeIndexFilters());
-        h.addNonNull("modeInfoComparator", getModeInfoComparator());
-        h.addNonNull("modeIteratorFactory", getModeIteratorFactory());
-        if (isHintInvertTETMForZmode()) {
-            h.add("hintInvertTETMForZin", true);
-        }
-        h.add("borders", getBorders());
-                h.add("testFunction", testFunction).toString();
-        return h;
+    private ObjectCache getSingleTestFunctionObjectCache(Expr testFunction){
+        Dumper dumpStringHelper = getDumpStringHelper(false, false);
+        dumpStringHelper.add("testFunction", testFunction.simplify());
+        String d = dumpStringHelper.toString();
+        PersistenceCache persistenceCache = new PersistenceCache(null, "test-mode-scalar-products", null);
+        return persistenceCache.getObjectCache(new HashValue(d), true);
     }
 
-    private ObjectCache getTestFunctionObjectCache(Expr testFunction){
-        String d = getScalarProductsDumpStringHelper(testFunction).toString();
-        PersistenceCache persistenceCache = new PersistenceCache(null, "mode-scalar-products", null);
+    private ObjectCache getMultipleTestFunctionObjectCache(Expr[] testFunction){
+        Expr[] testFunction2=new Expr[testFunction.length];
+        for (int i = 0; i < testFunction2.length; i++) {
+            testFunction2[i]=testFunction[i].simplify();
+        }
+        Dumper dumpStringHelper = getDumpStringHelper(false, false);
+        dumpStringHelper.add("testFunctions", testFunction2);
+        String d = dumpStringHelper.toString();
+        PersistenceCache persistenceCache = new PersistenceCache(null, "all-test-mode-scalar-products", null);
         return persistenceCache.getObjectCache(new HashValue(d), true);
     }
 
@@ -311,9 +316,9 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         if(!Maths.Config.isCacheEnabled()){
             return scalarProduct0(dd,testFunction,arr());
         }
-        ObjectCache objectCache = getTestFunctionObjectCache(testFunction);
+        ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
         int currentCount = count();
-        return objectCache.evaluate("test-mode-scala-products-" + currentCount, null, new Evaluator2() {
+        return objectCache.evaluate("test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
             @Override
             public void init() {
 
@@ -331,7 +336,33 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
     }
 
     @Override
-    public TMatrix<Complex> scalarProductCache(TList<Expr> testFunctions, ProgressMonitor monitor) {
+    public TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor) {
+        if(!Maths.Config.isCacheEnabled()){
+            return scalarProductCache0(testFunctions,monitor);
+        }
+        if(lastScalarProductProductMatrix!=null && lastScalarProductProductMatrixInput!=null && lastScalarProductProductMatrixInput.equals(testFunctions)){
+            return lastScalarProductProductMatrix;
+        }
+        lastScalarProductProductMatrixInput=testFunctions.copy();
+        ObjectCache objectCache = getMultipleTestFunctionObjectCache(testFunctions.toArray());
+        int currentCount = count();
+        return lastScalarProductProductMatrix=objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
+            @Override
+            public void init() {
+
+            }
+
+            @Override
+            public Object evaluate(Object[] args) {
+                return scalarProductCache0(testFunctions,monitor);
+            }
+        });
+    }
+
+    public TMatrix<Complex> scalarProductCache0(TList<Expr> testFunctions, ProgressMonitor monitor) {
+
+
+
         EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor).createIncrementalMonitor(testFunctions.length());
         boolean dd = modesDesc.getBorders()!=WallBorders.PPPP;
         if(dd){

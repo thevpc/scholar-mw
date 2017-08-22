@@ -53,10 +53,6 @@ public final class ComplexI extends Complex {
         return Complex.valueOf(c.getReal(), imag + c.getImag());
     }
 
-    public static void main(String[] args) {
-        System.out.println(new ComplexI(0.34397383742184495).npow(4));
-        System.out.println(new ComplexOld(0,0.34397383742184495).npow(4));
-    }
     public Complex npow(int n) {
         if (equals(ONE)) {
             return ONE;

@@ -467,7 +467,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+//        if (!super.equals(o)) return false;
 
         Any any = (Any) o;
 

@@ -18,11 +18,6 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
 
 public final class Physics {
 
-    public static void main(String[] args) {
-
-        Physics.plotWallBorders(WallBorders.EEEE);
-
-    }
     private Physics() {
     }
 
