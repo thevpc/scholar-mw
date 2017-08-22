@@ -4,6 +4,8 @@ import net.vpc.scholar.hadrumaths.util.swingext.SimpleRowHeaderRenderer;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class JTableHelper {
     JTable table;

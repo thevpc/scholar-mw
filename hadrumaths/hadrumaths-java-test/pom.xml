@@ -12,7 +12,7 @@
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.1.10</scholar-version>
+        <scholar-version>3.1.11</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

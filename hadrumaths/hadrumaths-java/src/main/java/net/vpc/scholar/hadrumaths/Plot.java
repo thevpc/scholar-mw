@@ -6,11 +6,16 @@ import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.util.swingext.ColorChooserEditor;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1065,11 +1070,16 @@ public class Plot {
                             .addLine("[<alternateColor :: ]")
                             .addLine("[<alternateNode  :: ]")
                             .addLine("[<alternateLine  :: ]")
+                            .addLine("[<defaultMaxLegendLabel][defaultMaxLegendText -]")
                             .addLine("[<defaultLineTypeLabel][defaultLineType][zeroForDefaultsLabel1]")
                             .addLine("[<defaultNodeTypeLabel][defaultNodeType][zeroForDefaultsLabel2]")
                             .setInsets(".*", new Insets(3, 3, 3, 3))
             );
-            Boolean showLegendValue = (Boolean) model.getProperty("showLegend");
+            Boolean showLegendValue = (Boolean) model.getProperty("showLegend",true);
+            Integer maxLegendValue = (Integer) model.getProperty("maxLegend",Plot.Config.getMaxLegendCount());
+            if(maxLegendValue==null){
+                maxLegendValue=0;
+            }
             final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend");
             final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", (Boolean) model.getProperty("alternateColor", true));
             final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", (Boolean) model.getProperty("alternateLine", false));
@@ -1079,6 +1089,8 @@ public class Plot {
             final JSpinner defaultNodeType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JLabel defaultLineTypeLabel = new JLabel("Default Line Type");
             final JLabel defaultNodeTypeLabel = new JLabel("Default Node Type");
+            final JLabel defaultMaxLegendLabel = new JLabel("Max Legend");
+            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(maxLegendValue));
 
             defaultLineType.setEnabled(!alternateLineCheckBox.isSelected());
             defaultNodeType.setEnabled(!alternateNodeCheckBox.isSelected());
@@ -1104,16 +1116,23 @@ public class Plot {
             general.add(alternateColorCheckBox, "alternateColor");
             general.add(alternateNodeCheckBox, "alternateNode");
             general.add(alternateLineCheckBox, "alternateLine");
+            general.add(defaultMaxLegendLabel, "defaultMaxLegendLabel");
+            general.add(defaultMaxLegendText, "defaultMaxLegendText");
             JLabel zeroForDefaultsLabel1 = new JLabel("<html><font size=-3 color=gray>(let zero for defaults)</font>");
             JLabel zeroForDefaultsLabel2 = new JLabel("<html><font size=-3 color=gray>(let zero for defaults)</font>");
             general.add(zeroForDefaultsLabel1, "zeroForDefaultsLabel1");
             general.add(zeroForDefaultsLabel2, "zeroForDefaultsLabel2");
             ModelSeriesItem[] lines = new ModelSeriesItem[ytitles.length];
+            JColorPalette defaultPaintArray = Maths.DEFAULT_PALETTE;
             for (int i = 0; i < ytitles.length; i++) {
                 lines[i] = new ModelSeriesItem();
                 lines[i].setIndex(i);
                 lines[i].setTitle(ytitles[i]);
-                lines[i].setColor(null);
+                Color col=(Color) model.getProperty(i, "color", null);
+                if(col==null){
+                    col=defaultPaintArray.getColor(((float)i)/ytitles.length);
+                }
+                lines[i].setColor(col);
                 lines[i].setVisible(model.getYVisible(i));
                 lines[i].setLineType((Integer) model.getProperty(i, "lineType", 0));
                 lines[i].setNodeType((Integer) model.getProperty(i, "nodeType", 0));
@@ -1123,8 +1142,41 @@ public class Plot {
             jTabbedPane.addTab("General", general);
             ;
 
-            jTabbedPane.addTab("Series", JTableHelper.prepareIndexedTable(new ModelSeriesModel(lines)).getPane());
-            jTabbedPane.addTab("Data", JTableHelper.prepareIndexedTable(new ValuesPlotTableModel(modelProvider)).getPane());
+            ModelSeriesModel seriesModel = new ModelSeriesModel(lines);
+            JTableHelper series = JTableHelper.prepareIndexedTable(seriesModel);
+                    JButton cornerButton = new JButton("#");
+                    JMenuBar b=new JMenuBar();
+            JMenu m = new JMenu("#");
+            b.add(m);
+            ValuesPlotTableModel tmodel = new ValuesPlotTableModel(modelProvider);
+            JMenuItem select_all = new JMenuItem("select all");
+            select_all.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seriesModel.setSelectAll();
+                }
+            });
+            m.add(select_all);
+            JMenuItem select_none = new JMenuItem("select none");
+            select_none.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seriesModel.setSelectNone();
+                }
+            });
+            m.add(select_none);
+            series.getPane().setCorner(JScrollPane.UPPER_LEFT_CORNER, b);
+
+            TableColumn column = series.getTable().getColumnModel().getColumn(4);
+
+//            ColorChooserEditor editor = new ColorChooserEditor();
+            column.setCellEditor(new ColorChooserEditor());
+            column.setCellRenderer(new ColorChooserEditor());
+//            series.getPane().setCorner(JScrollPane.UPPER_TRAILING_CORNER, cornerButton);
+
+            jTabbedPane.addTab("Series", series.getPane());
+
+            jTabbedPane.addTab("Data", JTableHelper.prepareIndexedTable(tmodel).getPane());
             if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null, jTabbedPane, "Configure Series...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
                 model.setProperty("showLegend", showLegendCheckBox.isSelected());
                 model.setProperty("defaultNodeType", defaultNodeType.getValue());
@@ -1132,6 +1184,7 @@ public class Plot {
                 model.setProperty("alternateColor", alternateColorCheckBox.isSelected());
                 model.setProperty("alternateNode", alternateNodeCheckBox.isSelected());
                 model.setProperty("alternateLine", alternateLineCheckBox.isSelected());
+                model.setProperty("maxLegend", StringUtils.parseInt(defaultMaxLegendText.getText(),0));
                 for (int i = 0; i < ytitles.length; i++) {
                     model.setYVisible(i, lines[i].isVisible());
                     model.setYVisible(i, lines[i].isVisible());
@@ -1139,6 +1192,7 @@ public class Plot {
                     model.setProperty(i, "nodeType", lines[i].getNodeType());
                     model.setProperty(i, "xmultiplier", lines[i].getXmultiplier());
                     model.setProperty(i, "ymultiplier", lines[i].getYmultiplier());
+                    model.setProperty(i, "color", lines[i].getColor());
                 }
                 model.modelUpdated();
             }
@@ -1184,8 +1238,17 @@ public class Plot {
     }
 
     public static class Config {
+        private static int maxLegendCount = 20;
         private static String defaultWindowTitle = "Hadrumaths Plot";
         private static ClassMap<Converter> objectConverters = new ClassMap<Converter>(Object.class, Converter.class);
+
+        public static int getMaxLegendCount() {
+            return maxLegendCount;
+        }
+
+        public static void setMaxLegendCount(int maxLegendCount) {
+            Config.maxLegendCount = maxLegendCount;
+        }
 
         public static String getDefaultWindowTitle() {
             return defaultWindowTitle;

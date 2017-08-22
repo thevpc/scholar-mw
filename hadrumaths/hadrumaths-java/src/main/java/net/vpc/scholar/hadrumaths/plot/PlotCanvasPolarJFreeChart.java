@@ -5,6 +5,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Plot;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -23,6 +24,7 @@ import java.util.HashSet;
 public class PlotCanvasPolarJFreeChart extends JPanel implements PlotComponentPanel {
     private PlotModelProvider plotModelProvider;
     private ChartPanel chartPanel;
+    private JColorPalette paintArray= Maths.DEFAULT_PALETTE ;
 
     public PlotCanvasPolarJFreeChart(PlotModelProvider plotModelProvider) {
         super(new BorderLayout());
@@ -94,6 +96,29 @@ public class PlotCanvasPolarJFreeChart extends JPanel implements PlotComponentPa
             data.addSeries(series);
         }
         Boolean legend = (Boolean) model.getProperty("showLegend", true);
+        Integer maxLegend=(Integer) model.getProperty("maxLegend", Plot.Config.getMaxLegendCount());
+        if(maxLegend<0){
+            maxLegend= Plot.Config.getMaxLegendCount();
+        }
+
+        int visibleCount=0;
+        for (int i = 0; i < yAxis.length; i++) {
+            boolean v=true;
+            if (ytitles != null && ytitles.length > i) {
+                if (!model.getYVisible(i)) {
+                    v=false;
+                }
+            }
+            if(v){
+                visibleCount++;
+            }
+        }
+
+
+        if (visibleCount > maxLegend && legend) {
+            legend = false;
+        }
+
         Boolean tooltips = (Boolean) model.getProperty("showTooltips", true);
         Boolean alternateColor = ((Boolean) model.getProperty("alternateColor", true));
         Boolean alternateNode = ((Boolean) model.getProperty("alternateNode", false));
@@ -125,6 +150,10 @@ public class PlotCanvasPolarJFreeChart extends JPanel implements PlotComponentPa
                     continue;
                 }
             }
+            Color color=(Color) model.getProperty(i, "color", null);
+            if(color==null){
+                color=paintArray.getColor(i*1.0f/yAxis.length);
+            }
             int nodeType = (Integer) model.getProperty(i, "nodeType", 0) % 6;
             if (nodeType <= 0) {
                 nodeType = ((Integer) model.getProperty("defaultNodeType", 0)) % 6;
@@ -135,6 +164,8 @@ public class PlotCanvasPolarJFreeChart extends JPanel implements PlotComponentPa
             }
             if (!alternateColor) {
                 r.setSeriesPaint(jfreeChartIndex, Color.BLACK);
+            }else {
+                r.setSeriesPaint(jfreeChartIndex, color);
             }
             if (alternateNode) {
                 nodeType = 2;
@@ -226,7 +257,6 @@ public class PlotCanvasPolarJFreeChart extends JPanel implements PlotComponentPa
 //        }
         //        plot.getRenderer().
         chartPanel = new ChartPanel(chart);
-
         chartPanel.setPreferredSize(new Dimension(600, 400));
         add(chartPanel);
 //        net.vpc.scholar.hadrumaths.Plot.buildJPopupMenu(chartPanel, plotModelProvider);

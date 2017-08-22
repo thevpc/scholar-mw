@@ -7,17 +7,22 @@ import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
+import net.vpc.scholar.hadrumaths.plot.JColorArrayPalette;
+import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Shape;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
+import org.jfree.chart.ChartColor;
 import sun.misc.Unsafe;
 
+import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -29,6 +34,7 @@ import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -304,6 +310,42 @@ public final class Maths {
         }
     };
 
+    public static JColorPalette DEFAULT_PALETTE=new JColorArrayPalette(new Color[]{
+            new Color(0xFF, 0x55, 0x55),
+            new Color(0x55, 0x55, 0xFF),
+            new Color(0x55, 0xFF, 0x55),
+            new Color(0xFF, 0xFF, 0x55),
+            new Color(0xFF, 0x55, 0xFF),
+            new Color(0x55, 0xFF, 0xFF),
+            Color.pink,
+            Color.gray,
+            new Color(0xc0, 0x00, 0x00),
+            new Color(0x00, 0x00, 0xC0),
+            new Color(0x00, 0xC0, 0x00),
+            new Color(0xC0, 0xC0, 0x00),
+            new Color(0xC0, 0x00, 0xC0),
+            new Color(0x00, 0xC0, 0xC0),
+            new Color(64, 64, 64),
+            new Color(0xFF, 0x40, 0x40),
+            new Color(0x40, 0x40, 0xFF),
+            new Color(0x40, 0xFF, 0x40),
+            new Color(0xFF, 0xFF, 0x40),
+            new Color(0xFF, 0x40, 0xFF),
+            new Color(0x40, 0xFF, 0xFF),
+            new Color(192, 192, 192),
+            new Color(0x80, 0x00, 0x00),
+            new Color(0x00, 0x00, 0x80),
+            new Color(0x00, 0x80, 0x00),
+            new Color(0x80, 0x80, 0x00),
+            new Color(0x80, 0x00, 0x80),
+            new Color(0x00, 0x80, 0x80),
+            new Color(0xFF, 0x80, 0x80),
+            new Color(0x80, 0x80, 0xFF),
+            new Color(0x80, 0xFF, 0x80),
+            new Color(0xFF, 0xFF, 0x80),
+            new Color(0x00, 0x80, 0x00),
+            new Color(0x80, 0xFF, 0xFF)
+    });
     static {
         MathsInitializerService.initialize();
         ServiceLoader<HadrumathsService> loader = ServiceLoader.load(HadrumathsService.class);
