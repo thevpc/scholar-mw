@@ -38,6 +38,11 @@ public class FrameWindowManager extends AbstractPlotWindowManager {
                     }
                 }
             }
+
+            @Override
+            public void onRemoved(PlotEvent event) {
+
+            }
         });
     }
 

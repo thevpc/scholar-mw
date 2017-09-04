@@ -6,7 +6,11 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 /**
  * @author vpc
@@ -52,7 +56,7 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
             PlotContainer t = getPlotWindowContainerFactory().create();
             t.setPlotTitle(containerName);
             t.setPlotWindowManager(getPlotWindowManager());
-            jTabbedPane.setTabComponentAt(index, toComponent(t));
+            jTabbedPane.setComponentAt(index, toComponent(t));
             if (component != null) {
                 t.add(component);
             }

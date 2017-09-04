@@ -5,4 +5,6 @@ public interface PlotPropertyListener {
     String SUB_COMPONENT_DISPLAY_TYPE = "SUB_COMPONENT_DISPLAY_TYPE";
 
     void onPropertyChange(PlotPropertyEvent event);
+
+    void onRemoved(PlotEvent event);
 }

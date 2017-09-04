@@ -46,7 +46,7 @@ public final class Plot {
     private Plot() {
     }
 
-    private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.create();
+    private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.createScatteredFrames();
 
     private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
 
@@ -67,7 +67,7 @@ public final class Plot {
     }
 
     public static PlotBuilder builder() {
-        return new PlotBuilder();
+        return new PlotBuilder().cd("/"+Config.getDefaultWindowTitle());
     }
 
     public static PlotBuilder domain(Domain domain) {
