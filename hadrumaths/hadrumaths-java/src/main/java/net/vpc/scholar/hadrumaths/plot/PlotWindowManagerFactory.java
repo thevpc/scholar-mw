@@ -21,6 +21,6 @@ public class PlotWindowManagerFactory extends AbstractFactory{
         return new ScatteredFramesWindowManager();
     }
     public static PlotWindowManager createSingleFrame() {
-        return new SingleTabbedFrameWindowManager();
+        return new FrameWindowManager();
     }
 }

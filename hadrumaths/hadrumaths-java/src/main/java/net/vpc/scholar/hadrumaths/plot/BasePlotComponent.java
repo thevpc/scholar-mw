@@ -8,6 +8,9 @@ import java.util.Objects;
 
 public abstract class BasePlotComponent extends JPanel implements PlotComponent{
     private List<PlotPropertyListener> listeners;
+    private PlotContainer parentPlotContainer;
+    private PlotWindowManager plotWindowManager;
+    private String plotTitle;
 
     public BasePlotComponent(LayoutManager layout, boolean isDoubleBuffered) {
         super(layout, isDoubleBuffered);
@@ -22,6 +25,30 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
     }
 
     public BasePlotComponent() {
+    }
+
+    @Override
+    public PlotWindowManager getPlotWindowManager() {
+        return plotWindowManager;
+    }
+
+    @Override
+    public void setPlotWindowManager(PlotWindowManager plotWindowManager) {
+        this.plotWindowManager = plotWindowManager;
+    }
+
+    @Override
+    public PlotContainer getParentPlotContainer() {
+        return parentPlotContainer;
+    }
+
+    public void setParentPlotContainer(PlotContainer parentPlotContainer) {
+        if(this.parentPlotContainer!=parentPlotContainer) {
+            this.parentPlotContainer = parentPlotContainer;
+//            if (!parentPlotContainer.containsPlotComponent(this)) {
+//                parentPlotContainer.add(this);
+//            }
+        }
     }
 
     @Override
@@ -50,5 +77,15 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
                 }
             }
         }
+    }
+
+    @Override
+    public String getPlotTitle() {
+        return plotTitle;
+    }
+
+    @Override
+    public void setPlotTitle(String plotTitle) {
+        this.plotTitle = plotTitle;
     }
 }

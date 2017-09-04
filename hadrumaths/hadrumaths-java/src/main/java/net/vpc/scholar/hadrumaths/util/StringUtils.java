@@ -57,7 +57,7 @@ public class StringUtils {
 
     public static boolean isInt(String v1) {
         try {
-            if (v1.length() == 0) {
+            if (v1==null || v1.length() == 0) {
                 return false;
             }
             if (!Character.isDigit(v1.charAt(0))) {
@@ -93,6 +93,11 @@ public class StringUtils {
             return "";
         }
         return str.trim();
+    }
+
+    public static String[] splitToArr(String str, String separators) {
+        List<String> s = split(str, separators);
+        return s.toArray(new String[s.size()]);
     }
 
     public static List<String> split(String str, String separators) {
@@ -518,6 +523,11 @@ public class StringUtils {
             sb.insert(0,' ');
         }
         return sb.toString();
+    }
+    public static String toCapitalized(String name){
+        char[] chars = name.toLowerCase().toCharArray();
+        chars[0]=Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 
 }

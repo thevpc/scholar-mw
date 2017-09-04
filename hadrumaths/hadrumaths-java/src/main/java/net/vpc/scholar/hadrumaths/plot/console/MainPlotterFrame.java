@@ -4,6 +4,8 @@ import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.util.swingext.*;
 
 import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,7 +91,6 @@ public class MainPlotterFrame extends JFrame {
                 new FileSelectedListener() {
                     public void fileSelected(FileEvent event) {
                         try {
-                            console.setFrameTitle(event.getFile().getName());
                             console.loadFile(event.getFile());
                             recentFilesMenu.addFile(event.getFile());
                         } catch (Throwable e1) {
@@ -233,13 +234,20 @@ public class MainPlotterFrame extends JFrame {
         if (internalFrame == null) {
             internalFrame = new JInternalFrame();
             internalFrame.setPreferredSize(new Dimension(600, 400));
-            internalFrame.setClosable(false);
+            internalFrame.setClosable(true);
             internalFrame.setIconifiable(true);
             internalFrame.setResizable(true);
             internalFrame.setMaximizable(true);
             internalFrame.setTitle(windowTitle);
             internalFrame.getContentPane().add(new DummyLabel());
             internalFrame.pack();
+            String finalWindowTitle = windowTitle;
+            internalFrame.addInternalFrameListener(new InternalFrameAdapter() {
+                @Override
+                public void internalFrameClosed(InternalFrameEvent e) {
+                    userWindows.remove(finalWindowTitle);
+                }
+            });
             addWindow(internalFrame);
             userWindows.put(windowTitle, internalFrame);
 //            internalFrame.moveToFront();
@@ -348,7 +356,6 @@ public class MainPlotterFrame extends JFrame {
             if (JFileChooser.APPROVE_OPTION == c.showOpenDialog(MainPlotterFrame.this)) {
                 File selectedFile = c.getSelectedFile();
                 try {
-                    console.setFrameTitle(selectedFile.getName());
                     console.loadFile(selectedFile);
                     recentFilesMenu.addFile(selectedFile);
                 } catch (Throwable e1) {

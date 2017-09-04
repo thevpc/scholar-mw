@@ -4,8 +4,11 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
 
+import java.lang.ref.WeakReference;
+
 public class ParametrizedScalarProduct extends GenericFunctionXY {
     private boolean hermitian;
+    private transient WeakReference<Expr> meSimplified=new WeakReference<Expr>(null);
     public ParametrizedScalarProduct(Expr xargument, Expr yargument,boolean hermitian) {
         super();
         init(xargument, yargument, null,false);
@@ -25,7 +28,12 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Complex evalComplex(Complex x, Complex y) {
-        throw new IllegalArgumentException("Could not evaluate");
+        Expr e = meSimplified.get();
+        if(e==null){
+            e = this.simplify();
+            meSimplified=new WeakReference<Expr>(e);
+        }
+        return e.toComplex();
     }
 
     @Override

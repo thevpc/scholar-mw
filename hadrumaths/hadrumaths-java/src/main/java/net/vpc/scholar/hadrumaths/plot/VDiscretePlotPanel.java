@@ -251,7 +251,11 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
     }
 
     public String getPlotTitle() {
-        return model2.getTitle();
+        String baseTitle = super.getPlotTitle();
+        if(baseTitle ==null){
+            return this.model2.getTitle();
+        }
+        return baseTitle;
     }
 
     public JComponent toComponent() {

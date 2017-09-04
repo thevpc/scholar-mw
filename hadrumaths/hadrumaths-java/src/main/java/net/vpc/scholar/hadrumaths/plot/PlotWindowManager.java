@@ -11,7 +11,9 @@ import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 /**
  * @author vpc
  */
-public interface PlotWindowManager extends PlotComponentDisplayer{
+public interface PlotWindowManager extends PlotComponentDisplayer {
+    void add(PlotComponent component, String path);
+
     void add(PlotComponent component);
 
     void remove(PlotComponent component);

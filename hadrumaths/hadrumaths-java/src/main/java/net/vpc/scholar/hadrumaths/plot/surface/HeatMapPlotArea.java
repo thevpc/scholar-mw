@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
+import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
 import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
 
 /**
@@ -42,8 +44,8 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
 //        dsteps(x, y, matrix, colorPalette, null);
 //    }
 
-    public HeatMapPlotArea(double[] x, double[] y, double[][] matrix, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
-        init(x, y, matrix,reverseY, colorPalette, preferredDimension);
+    public HeatMapPlotArea(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
+        init(model,reverseY, colorPalette, preferredDimension);
     }
 
     public HeatMapPlotArea(boolean horizontal, JColorPalette colorPalette, Dimension preferredDimension) {
@@ -60,10 +62,10 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
             y = Maths.dsteps(0.0, 0, 1.0);
             _matrix = new DMatrix(new double[][]{x}).transpose().getDoubleArray();
         }
-        init(x, y, _matrix, false, colorPalette, preferredDimension);
+        init(new ValuesPlotXYDoubleModelFace(x, y, _matrix,null,null), false, colorPalette, preferredDimension);
     }
 
-    private void init(double[] x, double[] y, double[][] matrix, boolean reverseY,JColorPalette colorPalette, Dimension preferredDimension) {
+    private void init(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
         addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
 
@@ -74,20 +76,22 @@ class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseLi
             }
         });
         addMouseListener(this);
-        setModel(x, y, matrix, reverseY,colorPalette, preferredDimension);
+        setModel(model, reverseY,colorPalette, preferredDimension);
     }
 
-    public void setModel(double[] x, double[] y, double[][] matrix, boolean reverseY,JColorPalette colorPalette, Dimension preferredDimension) {
+    public void setModel(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
         if (preferredDimension == null) {
             preferredDimension = new Dimension(400, 400);
         }
         setPreferredDimension(preferredDimension);
         setColorPalette(colorPalette);
-        setModel(x,y,matrix,reverseY);
+        setModel(model,reverseY);
     }
 
-    public void setModel(double[] x, double[] y, double[][] matrix, boolean reverseY) {
-        setxAxis(x);
+    public void setModel(ValuesPlotXYDoubleModelFace model, boolean reverseY) {
+        setxAxis(model.getX());
+        double[] y=model.getY();
+        double[][] matrix=model.getZ();
         if(reverseY) {
             double[][] matrix2 = new double[matrix.length][];
             for (int i = 0; i < matrix.length; i++) {

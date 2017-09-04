@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.plot.console;
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -152,7 +153,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
 
     public void ticMonitor() {
         for (final TaskComponent t : getTasks()) {
-            SwingUtilities.invokeLater(new Runnable() {
+            SwingUtils.invokeLater(new Runnable() {
                 public void run() {
                     t.ticMonitor();
                 }

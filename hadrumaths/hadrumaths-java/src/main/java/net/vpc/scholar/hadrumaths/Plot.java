@@ -4,17 +4,13 @@ import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
-import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.swingext.ColorChooserEditor;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
-import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,16 +19,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class Plot {
+public final class Plot {
     /**
      * Java Figure
      */
@@ -49,6 +42,9 @@ public class Plot {
      * Java Figure Bundle
      */
     public static final String JFB_FILE_EXTENSION = "jfb";
+
+    private Plot() {
+    }
 
     private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.create();
 
@@ -170,8 +166,32 @@ public class Plot {
         return builder().asCurve();
     }
 
+    public static PlotBuilder asBar() {
+        return builder().asBar();
+    }
+
+    public static PlotBuilder asRing() {
+        return builder().asRing();
+    }
+
+    public static PlotBuilder asBubble() {
+        return builder().asBubble();
+    }
+
+    public static PlotBuilder asArea() {
+        return builder().asArea();
+    }
+
+    public static PlotBuilder asPie() {
+        return builder().asPie();
+    }
+
     public static PlotBuilder asPolar() {
         return builder().asPolar();
+    }
+
+    public static PlotBuilder asField() {
+        return builder().asField();
     }
 
     public static PlotBuilder asAbs() {
@@ -217,15 +237,13 @@ public class Plot {
     public static PlotConsole console() {
         PlotConsole plotConsole = new PlotConsole();
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     plotConsole.show();
                 }
             });
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return plotConsole;
@@ -261,8 +279,7 @@ public class Plot {
         }
     }
 
-    public static PlotComponent loadPlot(File file) throws IOException {
-
+    public static boolean acceptFileExtension(File file) throws IOException {
         String e = IOUtils.getFileExtension(file).toLowerCase();
         if (!
                 (
@@ -271,61 +288,16 @@ public class Plot {
                                 || e.equals(JFIGDATA_FILE_EXTENSION)
                                 || e.equals(JFIGOBJ_FILE_EXTENSION)
                                 || e.equals(JFB_FILE_EXTENSION)
+                                || e.equals("m")
                 )
                 ) {
-            throw new IOException("Unsupported file extension " + e);
+            return false;
         }
-        PlotComponent plot = null;
-        if (e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)) {
-            Object o = null;
-            try {
-                o = IOUtils.loadZippedObject(file.getPath());
-            } catch (ClassNotFoundException ee) {
-                throw new IOException(ee);
-            }
-            if (o instanceof Complex) {
-                o = Maths.matrix(new Complex[][]{{(Complex) o}});
-            } else if (o instanceof Matrix) {
-                //let it
-            } else if (o instanceof DMatrix) {
-                //let it
-            } else if (o instanceof Number) {
-                o = Maths.matrix(new Complex[][]{{Complex.valueOf(((Number) o).doubleValue())}});
-            } else if (o instanceof VDiscrete) {
-                o = new VDiscrete[]{(VDiscrete) o};
-            } else if (o instanceof Discrete) {
-                o = new VDiscrete[]{new VDiscrete((Discrete) o)};
-            }
-            if (o != null) {
-                if (o instanceof Matrix) {
-                    plot = Plot.title(file.getName()).asHeatMap().plot((Matrix) o);
-                } else if (o instanceof VDiscrete[]) {
-                    plot = Plot.create(
-                            new VDiscretePlotModel().setVdiscretes((VDiscrete[]) o)
-                                    .setTitle(file.getName()), Plot.getDefaultWindowManager());
-                } else if (o instanceof DoubleToVector[]) {
-                    plot = Plot.nodisplay().title(file.getName()).plot((DoubleToVector[]) o);
-                } else if (o instanceof DDx[]) {
-                    plot = Plot.nodisplay().title(file.getName()).plot((DDx[]) o);
-                } else if (o instanceof DoubleToDouble[]) {
-                    plot = Plot.nodisplay().title(file.getName()).plot((DoubleToDouble[]) o);
-                } else if (o instanceof DoubleToComplex[]) {
-                    plot = Plot.title(file.getName()).asAbs().plot((DoubleToComplex[]) o);
-                } else {
-                    throw new IllegalArgumentException("Unsupported Type " + o.getClass());
-                }
-            } else {
-                throw new IllegalArgumentException("Unsupported Type " + file);
-            }
-        } else {
-            plot = create(loadPlotModel(file), Plot.getDefaultWindowManager());
-        }
-//                            frame.getContentPane().setLayout(new BorderLayout());
-//                            openFrames++;
-//                            frame.addWindowListener(wa);
-//                            frame.setTitle(selectedFile.getPath());
+        return true;
+    }
 
-        return plot;
+    public static PlotComponent loadPlot(File file) throws IOException {
+        return create(loadPlotModel(file), Plot.getDefaultWindowManager());
     }
 
     public static PlotPanel create(PlotModel model, PlotWindowManager windowManager) {
@@ -340,6 +312,9 @@ public class Plot {
         }
         if (model instanceof ValuesPlotModel) {
             return new ValuesPlotPanel((ValuesPlotModel) model, windowManager);
+        }
+        if (model instanceof PlotModelList) {
+            return new PlotModelListPanel((PlotModelList) model, windowManager);
         }
         throw new IllegalArgumentException("Unsupported Model " + model);
     }
@@ -720,12 +695,6 @@ public class Plot {
         }
     }
 
-    public PlotBuilder plotBuilderListener(PlotBuilderListener listener){
-        return builder().addPlotBuilderListener(listener);
-    }
-
-
-
     private static void saveDataCSV(File file, PlotModelProvider plotProvider) throws IOException {
         String endLine = System.getProperty("line.separator");
         String endCell = "\t";
@@ -783,7 +752,7 @@ public class Plot {
                     }
                     if (model.getY() != null && model.getY().length > 0) {
                         for (int i = 0; i < model.getY().length; i++) {
-                            if (model.getY()[i]!=null && j < model.getY()[i].length) {
+                            if (model.getY()[i] != null && j < model.getY()[i].length) {
                                 if (!newLine) {
                                     printStream.print(endCell);
                                 } else {
@@ -829,8 +798,8 @@ public class Plot {
 
     public static JPopupMenu buildJPopupMenu(PlotComponentPanel mainComponent, final PlotModelProvider modelProvider) {
         JPopupMenu popupMenu = mainComponent.getPopupMenu();
-        if(popupMenu!=null){
-            return buildJPopupMenu(popupMenu,modelProvider);
+        if (popupMenu != null) {
+            return buildJPopupMenu(popupMenu, modelProvider);
         }
         return null;
     }
@@ -854,20 +823,13 @@ public class Plot {
         } else {
             componentPopupMenu.addSeparator();
         }
-        return buildJPopupMenu(mainComponent,modelProvider);
+        return buildJPopupMenu(mainComponent, modelProvider);
     }
 
     public static JPopupMenu buildJPopupMenu(JPopupMenu componentPopupMenu, final PlotModelProvider modelProvider) {
         componentPopupMenu.addSeparator();
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         boolean enableViewMenu = true;
-        DoubleABSAction absAction = new DoubleABSAction(modelProvider);
-        DoubleREALAction realAction = new DoubleREALAction(modelProvider);
-        DoubleIMAGAction imagAction = new DoubleIMAGAction(modelProvider);
-        DoubleDBAction dbAction = new DoubleDBAction(modelProvider);
-        DoubleDB2Action db2Action = new DoubleDB2Action(modelProvider);
-        DoubleArgAction argAction = new DoubleArgAction(modelProvider);
-        ComplexAction complexAction = new ComplexAction(modelProvider);
 
         JMenuItem selectY = new JMenuItem("Configure Series");
         selectY.addActionListener(new ActionListener() {
@@ -892,161 +854,113 @@ public class Plot {
 
         ButtonGroup g;
         JCheckBoxMenuItem f;
-
-        g = new ButtonGroup();
-
-        f = new JCheckBoxMenuItem(absAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.ABS);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(realAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.REAL);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(imagAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.IMG);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(dbAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.DB);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(db2Action);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.DB2);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(argAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.ARG);
-        g.add(f);
-        functionsMenu.add(f);
-
-        f = new JCheckBoxMenuItem(complexAction);
-        f.setSelected(modelProvider.getModel().getZDoubleFunction() == ComplexAsDouble.COMPLEX);
-        g.add(f);
-        functionsMenu.add(f);
-
-        if (enableViewMenu) {
-
+        final PlotModel amodel = modelProvider.getModel();
+        if (amodel instanceof ValuesPlotModel) {
+            ValuesPlotModel model = (ValuesPlotModel) amodel;
             g = new ButtonGroup();
+            for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
+                f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
+                f.setSelected((model).getZDoubleFunction() == ComplexAsDouble.ABS);
+                g.add(f);
+                functionsMenu.add(f);
+            }
 
-            f = new JCheckBoxMenuItem(new PlotCourbeAction(modelProvider));
-            PlotType type = modelProvider.getModel().getPlotType();
-            f.setSelected(type == PlotType.CURVE);
-            g.add(f);
-            viewMenu.add(f);
+            if (enableViewMenu) {
 
-            f = new JCheckBoxMenuItem(new PlotHeatMapAction(modelProvider));
-            f.setSelected(type == PlotType.HEATMAP);
-            g.add(f);
-            viewMenu.add(f);
-
-            f = new JCheckBoxMenuItem(new PlotMeshAction(modelProvider));
-            f.setSelected(type == PlotType.MESH);
-            g.add(f);
-            viewMenu.add(f);
-
-            f = new JCheckBoxMenuItem(new PlotMatrixAction(modelProvider));
-            f.setSelected(type == PlotType.MATRIX);
-            g.add(f);
-            viewMenu.add(f);
-
-            f = new JCheckBoxMenuItem(new PlotPolarAction(modelProvider));
-            f.setSelected(type == PlotType.POLAR);
-            g.add(f);
-            viewMenu.add(f);
-
-            f = new JCheckBoxMenuItem(new PlotTableAction(modelProvider));
-            f.setSelected(type == PlotType.TABLE);
-            g.add(f);
-            viewMenu.add(f);
-        }
-        extProperties.addActionListener(new ActionListener() {
-
-
-            public void actionPerformed(ActionEvent e) {
-                Complex[][] z1 = modelProvider.getModel().getZ();
-                if (z1 != null) {
-                    Matrix c = Maths.matrix(z1);
-                    double n1 = Double.NaN;
-                    double n2 = Double.NaN;
-                    double n3 = Double.NaN;
-                    double n4 = Double.NaN;
-                    double cd1 = Double.NaN;
-                    double cd2 = Double.NaN;
-                    double cd3 = Double.NaN;
-                    Complex d1 = Complex.NaN;
-                    int m1 = c.getRowCount();
-                    int m2 = c.getColumnCount();
-                    try {
-                        n1 = c.norm1();
-                    } catch (Exception e1) {
-                        //
+                g = new ButtonGroup();
+                for (PlotType plotType : PlotType.values()) {
+                    if (!plotType.equals(PlotType.ALL) && !plotType.equals(PlotType.AUTO)) {
+                        f = new JCheckBoxMenuItem(new PlotTypeAction(modelProvider, StringUtils.toCapitalized(plotType.name()), plotType));
+                        PlotType type = (model).getPlotType();
+                        f.setSelected(type == PlotType.CURVE);
+                        g.add(f);
+                        viewMenu.add(f);
                     }
-                    try {
-                        n2 = c.norm2();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        n3 = c.norm3();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        n4 = c.normInf();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        cd1 = c.cond();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        cd2 = c.cond2();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        cd3 = c.condHadamard();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    try {
-                        d1 = c.det();
-                    } catch (Exception e1) {
-                        //
-                    }
-                    JPanel p = new JPanel(new GridBagLayout2().addLine("[<N1L][<+=N1]").addLine("[<N2L][<+=N2]").addLine("[<N3L][<+=N3]").addLine("[<N4L][<+=N4]").addLine("[<C1L][<+=C1]").addLine("[<C2L][<+=C2]").addLine("[<C3L][<+=C3]").addLine("[<D1L][<+=D1]").addLine("[<M1L][<+=M1]").addLine("[<M2L][<+=M2]").setInsets(".*", new Insets(3, 3, 3, 3)));
-                    p.add(new JLabel("Norm1"), "N1L");
-                    p.add(new JLabel(String.valueOf(n1)), "N1");
-                    p.add(new JLabel("Norm2"), "N2L");
-                    p.add(new JLabel(String.valueOf(n2)), "N2");
-                    p.add(new JLabel("Norm3"), "N3L");
-                    p.add(new JLabel(String.valueOf(n3)), "N3");
-                    p.add(new JLabel("NormInf"), "N4L");
-                    p.add(new JLabel(String.valueOf(n4)), "N4");
-                    p.add(new JLabel("Cond"), "C1L");
-                    p.add(new JLabel(String.valueOf(cd1)), "C1");
-                    p.add(new JLabel("Cond2"), "C2L");
-                    p.add(new JLabel(String.valueOf(cd2)), "C2");
-                    p.add(new JLabel("CondH"), "C3L");
-                    p.add(new JLabel(String.valueOf(cd3)), "C3");
-                    p.add(new JLabel("Det"), "D1L");
-                    p.add(new JLabel(String.valueOf(d1)), "D1");
-                    p.add(new JLabel("Rows"), "M1L");
-                    p.add(new JLabel(String.valueOf(m1)), "M1");
-                    p.add(new JLabel("Cols"), "M2L");
-                    p.add(new JLabel(String.valueOf(m2)), "M2");
-                    JOptionPane.showMessageDialog(null, p);
                 }
             }
-        });
+            extProperties.addActionListener(new ActionListener() {
+
+
+                public void actionPerformed(ActionEvent e) {
+                    Complex[][] z1 = (model).getZ();
+                    if (z1 != null) {
+                        Matrix c = Maths.matrix(z1);
+                        double n1 = Double.NaN;
+                        double n2 = Double.NaN;
+                        double n3 = Double.NaN;
+                        double n4 = Double.NaN;
+                        double cd1 = Double.NaN;
+                        double cd2 = Double.NaN;
+                        double cd3 = Double.NaN;
+                        Complex d1 = Complex.NaN;
+                        int m1 = c.getRowCount();
+                        int m2 = c.getColumnCount();
+                        try {
+                            n1 = c.norm1();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            n2 = c.norm2();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            n3 = c.norm3();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            n4 = c.normInf();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            cd1 = c.cond();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            cd2 = c.cond2();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            cd3 = c.condHadamard();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        try {
+                            d1 = c.det();
+                        } catch (Exception e1) {
+                            //
+                        }
+                        JPanel p = new JPanel(new GridBagLayout2().addLine("[<N1L][<+=N1]").addLine("[<N2L][<+=N2]").addLine("[<N3L][<+=N3]").addLine("[<N4L][<+=N4]").addLine("[<C1L][<+=C1]").addLine("[<C2L][<+=C2]").addLine("[<C3L][<+=C3]").addLine("[<D1L][<+=D1]").addLine("[<M1L][<+=M1]").addLine("[<M2L][<+=M2]").setInsets(".*", new Insets(3, 3, 3, 3)));
+                        p.add(new JLabel("Norm1"), "N1L");
+                        p.add(new JLabel(String.valueOf(n1)), "N1");
+                        p.add(new JLabel("Norm2"), "N2L");
+                        p.add(new JLabel(String.valueOf(n2)), "N2");
+                        p.add(new JLabel("Norm3"), "N3L");
+                        p.add(new JLabel(String.valueOf(n3)), "N3");
+                        p.add(new JLabel("NormInf"), "N4L");
+                        p.add(new JLabel(String.valueOf(n4)), "N4");
+                        p.add(new JLabel("Cond"), "C1L");
+                        p.add(new JLabel(String.valueOf(cd1)), "C1");
+                        p.add(new JLabel("Cond2"), "C2L");
+                        p.add(new JLabel(String.valueOf(cd2)), "C2");
+                        p.add(new JLabel("CondH"), "C3L");
+                        p.add(new JLabel(String.valueOf(cd3)), "C3");
+                        p.add(new JLabel("Det"), "D1L");
+                        p.add(new JLabel(String.valueOf(d1)), "D1");
+                        p.add(new JLabel("Rows"), "M1L");
+                        p.add(new JLabel(String.valueOf(m1)), "M1");
+                        p.add(new JLabel("Cols"), "M2L");
+                        p.add(new JLabel(String.valueOf(m2)), "M2");
+                        JOptionPane.showMessageDialog(null, p);
+                    }
+                }
+            });
+        }
         componentPopupMenu.addSeparator();
         componentPopupMenu.add(new SaveJFigAction(modelProvider));
         componentPopupMenu.add(new LoadPlotAction());
@@ -1054,7 +968,11 @@ public class Plot {
     }
 
     public static void configureSeries(final PlotModelProvider modelProvider) {
-        ValuesPlotModel model = modelProvider.getModel();
+        PlotModel amodel = modelProvider.getModel();
+        if (!(amodel instanceof ValuesPlotModel)) {
+            return;
+        }
+        ValuesPlotModel model = (ValuesPlotModel) amodel;
         String[] ytitles = model.getYtitles();
         if ((ytitles == null || ytitles.length == 0) && model.getZ().length > 0) {
             ytitles = new String[model.getZ().length];
@@ -1066,32 +984,38 @@ public class Plot {
             JTabbedPane jTabbedPane = new JTabbedPane();
             JPanel general = new JPanel(
                     new GridBagLayout2()
-                            .addLine("[<showLegend     :: ]")
-                            .addLine("[<alternateColor :: ]")
-                            .addLine("[<alternateNode  :: ]")
-                            .addLine("[<alternateLine  :: ]")
+                            .addLine("[<showLegend     ][<nodeLabelCheckBox  ][<threeDCheckBox  ]")
+                            .addLine("[<alternateColor ][<alternateNode  ][<alternateLine  ]")
+                            .addLine("[<lineStepTypeLabel][lineStepTypeCombo -]")
                             .addLine("[<defaultMaxLegendLabel][defaultMaxLegendText -]")
-                            .addLine("[<defaultLineTypeLabel][defaultLineType][zeroForDefaultsLabel1]")
-                            .addLine("[<defaultNodeTypeLabel][defaultNodeType][zeroForDefaultsLabel2]")
+                            .addLine("[<polarOffsetLabel][polarOffsetText -][<clockwiseCheckBox  ]")
+                            .addLine("[<defaultLineTypeLabel][defaultLineType - ][< zeroForDefaultsLabel1]")
+                            .addLine("[<defaultNodeTypeLabel][defaultNodeType - ][< zeroForDefaultsLabel2]")
                             .setInsets(".*", new Insets(3, 3, 3, 3))
             );
-            Boolean showLegendValue = (Boolean) model.getProperty("showLegend",true);
-            Integer maxLegendValue = (Integer) model.getProperty("maxLegend",Plot.Config.getMaxLegendCount());
-            if(maxLegendValue==null){
-                maxLegendValue=0;
+            PlotConfig config = (PlotConfig) model.getProperty("config", null);
+            if (config == null) {
+                config = new PlotConfig();
+                model.setProperty("config", config);
             }
-            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend");
-            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", (Boolean) model.getProperty("alternateColor", true));
-            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", (Boolean) model.getProperty("alternateLine", false));
-            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", (Boolean) model.getProperty("alternateNode", false));
-            showLegendCheckBox.setSelected(showLegendValue == null || showLegendValue);
+            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend == null ? true : config.showLegend);
+            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise == null ? true : config.clockwise);
+            final JCheckBox threeDCheckBox = new JCheckBox("3D", config.threeD == null ? false : config.threeD);
+            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", config.alternateColor == null ? true : config.alternateColor);
+            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", config.alternateLine == null ? false : config.alternateLine);
+            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", config.alternateNode == null ? false : config.alternateNode);
+            final JCheckBox nodeLabelCheckBox = new JCheckBox("Show Labels", config.nodeLabel == null ? false : config.nodeLabel);
             final JSpinner defaultLineType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JSpinner defaultNodeType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JLabel defaultLineTypeLabel = new JLabel("Default Line Type");
             final JLabel defaultNodeTypeLabel = new JLabel("Default Node Type");
+            final JLabel polarOffsetLabel = new JLabel("Polar Offset");
             final JLabel defaultMaxLegendLabel = new JLabel("Max Legend");
-            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(maxLegendValue));
-
+            final JLabel lineStepTypeLabel = new JLabel("Interpolation");
+            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(config.maxLegendCount == null ? Plot.Config.getMaxLegendCount() : config.maxLegendCount));
+            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset == null ? 0 : config.polarAngleOffset));
+            final JComboBox lineStepTypeCombo = new JComboBox(new Vector(Arrays.asList(PlotConfigLineStepType.values())));
+            lineStepTypeCombo.setSelectedItem(config.lineStepType == null ? PlotConfigLineStepType.DEFAULT : config.lineStepType);
             defaultLineType.setEnabled(!alternateLineCheckBox.isSelected());
             defaultNodeType.setEnabled(!alternateNodeCheckBox.isSelected());
             ItemListener itemListener = new ItemListener() {
@@ -1106,8 +1030,8 @@ public class Plot {
             alternateNodeCheckBox.addItemListener(itemListener);
             alternateColorCheckBox.addItemListener(itemListener);
 
-            defaultLineType.setValue(model.getProperty("defaultLineType", 0));
-            defaultNodeType.setValue(model.getProperty("defaultNodeType", 0));
+            defaultLineType.setValue(config.lineType == null ? 0 : config.lineType);
+            defaultNodeType.setValue(config.nodeType == null ? 0 : config.nodeType);
             general.add(showLegendCheckBox, "showLegend");
             general.add(defaultLineTypeLabel, "defaultLineTypeLabel");
             general.add(defaultNodeTypeLabel, "defaultNodeTypeLabel");
@@ -1115,37 +1039,46 @@ public class Plot {
             general.add(defaultNodeType, "defaultNodeType");
             general.add(alternateColorCheckBox, "alternateColor");
             general.add(alternateNodeCheckBox, "alternateNode");
+            general.add(nodeLabelCheckBox, "nodeLabelCheckBox");
             general.add(alternateLineCheckBox, "alternateLine");
             general.add(defaultMaxLegendLabel, "defaultMaxLegendLabel");
             general.add(defaultMaxLegendText, "defaultMaxLegendText");
+            general.add(threeDCheckBox, "threeDCheckBox");
+            general.add(clockwiseCheckBox, "clockwiseCheckBox");
+            general.add(polarOffsetLabel, "polarOffsetLabel");
+            general.add(polarOffsetText, "polarOffsetText");
+            general.add(lineStepTypeLabel, "lineStepTypeLabel");
+            general.add(lineStepTypeCombo, "lineStepTypeCombo");
             JLabel zeroForDefaultsLabel1 = new JLabel("<html><font size=-3 color=gray>(let zero for defaults)</font>");
             JLabel zeroForDefaultsLabel2 = new JLabel("<html><font size=-3 color=gray>(let zero for defaults)</font>");
             general.add(zeroForDefaultsLabel1, "zeroForDefaultsLabel1");
             general.add(zeroForDefaultsLabel2, "zeroForDefaultsLabel2");
             ModelSeriesItem[] lines = new ModelSeriesItem[ytitles.length];
             JColorPalette defaultPaintArray = Maths.DEFAULT_PALETTE;
+            config.ensureChildrenSize(ytitles.length);
             for (int i = 0; i < ytitles.length; i++) {
                 lines[i] = new ModelSeriesItem();
                 lines[i].setIndex(i);
                 lines[i].setTitle(ytitles[i]);
-                Color col=(Color) model.getProperty(i, "color", null);
-                if(col==null){
-                    col=defaultPaintArray.getColor(((float)i)/ytitles.length);
+                PlotConfig lineConfig = config.children.get(i);
+                Color col = (Color) lineConfig.color;
+                if (col == null) {
+                    col = defaultPaintArray.getColor(((float) i) / ytitles.length);
                 }
                 lines[i].setColor(col);
                 lines[i].setVisible(model.getYVisible(i));
-                lines[i].setLineType((Integer) model.getProperty(i, "lineType", 0));
-                lines[i].setNodeType((Integer) model.getProperty(i, "nodeType", 0));
-                lines[i].setXmultiplier(((Number) model.getProperty(i, "xmultiplier", 1.0)).doubleValue());
-                lines[i].setYmultiplier(((Number) model.getProperty(i, "ymultiplier", 1.0)).doubleValue());
+                lines[i].setLineType(lineConfig.lineType);
+                lines[i].setNodeType(lineConfig.nodeType);
+                lines[i].setXmultiplier(lineConfig.xmultiplier);
+                lines[i].setYmultiplier(lineConfig.ymultiplier);
             }
             jTabbedPane.addTab("General", general);
             ;
 
             ModelSeriesModel seriesModel = new ModelSeriesModel(lines);
             JTableHelper series = JTableHelper.prepareIndexedTable(seriesModel);
-                    JButton cornerButton = new JButton("#");
-                    JMenuBar b=new JMenuBar();
+            JButton cornerButton = new JButton("#");
+            JMenuBar b = new JMenuBar();
             JMenu m = new JMenu("#");
             b.add(m);
             ValuesPlotTableModel tmodel = new ValuesPlotTableModel(modelProvider);
@@ -1178,21 +1111,27 @@ public class Plot {
 
             jTabbedPane.addTab("Data", JTableHelper.prepareIndexedTable(tmodel).getPane());
             if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null, jTabbedPane, "Configure Series...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-                model.setProperty("showLegend", showLegendCheckBox.isSelected());
-                model.setProperty("defaultNodeType", defaultNodeType.getValue());
-                model.setProperty("defaultLineType", defaultLineType.getValue());
-                model.setProperty("alternateColor", alternateColorCheckBox.isSelected());
-                model.setProperty("alternateNode", alternateNodeCheckBox.isSelected());
-                model.setProperty("alternateLine", alternateLineCheckBox.isSelected());
-                model.setProperty("maxLegend", StringUtils.parseInt(defaultMaxLegendText.getText(),0));
+                config.showLegend = showLegendCheckBox.isSelected();
+                config.alternateColor = alternateColorCheckBox.isSelected();
+                config.alternateNode = alternateNodeCheckBox.isSelected();
+                config.alternateLine = alternateLineCheckBox.isSelected();
+                config.threeD = threeDCheckBox.isSelected();
+                config.nodeLabel = nodeLabelCheckBox.isSelected();
+                config.clockwise = clockwiseCheckBox.isSelected();
+                config.polarAngleOffset = StringUtils.parseInt(polarOffsetText.getText(), 0);
+                config.nodeType = ((Number) defaultNodeType.getValue()).intValue();
+                config.lineType = ((Number) defaultLineType.getValue()).intValue();
+                config.maxLegendCount = StringUtils.parseInt(defaultMaxLegendText.getText(), 0);
+                config.lineStepType = (PlotConfigLineStepType) lineStepTypeCombo.getSelectedItem();
+
                 for (int i = 0; i < ytitles.length; i++) {
                     model.setYVisible(i, lines[i].isVisible());
-                    model.setYVisible(i, lines[i].isVisible());
-                    model.setProperty(i, "lineType", lines[i].getLineType());
-                    model.setProperty(i, "nodeType", lines[i].getNodeType());
-                    model.setProperty(i, "xmultiplier", lines[i].getXmultiplier());
-                    model.setProperty(i, "ymultiplier", lines[i].getYmultiplier());
-                    model.setProperty(i, "color", lines[i].getColor());
+                    PlotConfig lineConfig = config.children.get(i);
+                    lineConfig.lineType = lines[i].getLineType();
+                    lineConfig.nodeType = lines[i].getNodeType();
+                    lineConfig.xmultiplier = lines[i].getXmultiplier();
+                    lineConfig.ymultiplier = lines[i].getYmultiplier();
+                    lineConfig.color = lines[i].getColor();
                 }
                 model.modelUpdated();
             }
@@ -1211,6 +1150,21 @@ public class Plot {
             return loadDataJfig(file);
         } else if (e.equals(JFB_FILE_EXTENSION)) {
             return loadDataBundle(file);
+        } else if (e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)) {
+            Object o = null;
+            try {
+                o = IOUtils.loadZippedObject(file.getPath());
+            } catch (ClassNotFoundException ee) {
+                throw new IOException(ee);
+            }
+            if (o != null) {
+                return Plot.title(file.getName()).createModel(o);
+            } else {
+                throw new IllegalArgumentException("Unsupported Type " + file);
+            }
+        } else if (e.equals("m")) {
+            Matrix matrix = Maths.loadMatrix(file);
+            return Plot.title(file.getName()).asMatrix().createModel(matrix);
         } else {
             throw new UnsupportedOperationException("Unsupported loading for file " + file);
         }
@@ -1236,6 +1190,134 @@ public class Plot {
         }
         return component;
     }
+
+    public static PlotBuilder plotBuilderListener(PlotBuilderListener listener) {
+        return builder().addPlotBuilderListener(listener);
+    }
+
+    public static PlotBuilder cd(String path) {
+        return builder().cd(path);
+    }
+
+//    private static class DoubleABSAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleABSAction(PlotModelProvider modelProvider) {
+//            super("Abs", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.ABS);
+//        }
+//    }
+//
+//    private static class DoubleREALAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleREALAction(PlotModelProvider modelProvider) {
+//            super("Real", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.REAL);
+//        }
+//    }
+//
+//    private static class DoubleIMAGAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleIMAGAction(PlotModelProvider modelProvider) {
+//            super("Imag", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.IMG);
+//        }
+//    }
+//
+//    private static class DoubleDBAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleDBAction(PlotModelProvider modelProvider) {
+//            super("DB", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.DB);
+//        }
+//    }
+//
+//    private static class DoubleDB2Action extends ValuesModelAction implements Serializable {
+//
+//        public DoubleDB2Action(PlotModelProvider modelProvider) {
+//            super("DB2", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.DB2);
+//        }
+//    }
+//
+//    private static class DoubleArgAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleArgAction(PlotModelProvider modelProvider) {
+//            super("Arg", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.ARG);
+//        }
+//    }
+//
+//    private static class ComplexAction extends ValuesModelAction implements Serializable {
+//
+//        public ComplexAction(PlotModelProvider modelProvider) {
+//            super("Complex", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setZDoubleFunction(ComplexAsDouble.COMPLEX);
+//        }
+//    }
+
+//    private static class PlotCourbeAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotCourbeAction(PlotModelProvider modelProvider) {
+//            super("Curves", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.CURVE);
+//        }
+//    }
+//
+//    private static class PlotHeatMapAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotHeatMapAction(PlotModelProvider modelProvider) {
+//            super("Heat Map", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.HEATMAP);
+//        }
+//    }
+//
+//    private static class PlotTableAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotTableAction(PlotModelProvider modelProvider) {
+//            super("Table", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.TABLE);
+//        }
+//    }
 
     public static class Config {
         private static int maxLegendCount = 20;
@@ -1278,125 +1360,52 @@ public class Plot {
         }
     }
 
-    private static class DoubleABSAction extends ValuesModelAction implements Serializable {
+    private static class DoubleTypeAction extends ValuesModelAction implements Serializable {
+        private ComplexAsDouble type;
 
-        public DoubleABSAction(PlotModelProvider modelProvider) {
-            super("Abs", modelProvider);
+        public DoubleTypeAction(PlotModelProvider modelProvider, String name, ComplexAsDouble type) {
+            super(name, modelProvider);
+            this.type = type;
         }
 
 
         public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.ABS);
+            getModel().setZDoubleFunction(type);
         }
     }
 
-    private static class DoubleREALAction extends ValuesModelAction implements Serializable {
-
-        public DoubleREALAction(PlotModelProvider modelProvider) {
-            super("Real", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.REAL);
-        }
-    }
-
-    private static class DoubleIMAGAction extends ValuesModelAction implements Serializable {
-
-        public DoubleIMAGAction(PlotModelProvider modelProvider) {
-            super("Imag", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.IMG);
-        }
-    }
-
-    private static class DoubleDBAction extends ValuesModelAction implements Serializable {
-
-        public DoubleDBAction(PlotModelProvider modelProvider) {
-            super("DB", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.DB);
-        }
-    }
-
-    private static class DoubleDB2Action extends ValuesModelAction implements Serializable {
-
-        public DoubleDB2Action(PlotModelProvider modelProvider) {
-            super("DB2", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.DB2);
-        }
-    }
-
-    private static class DoubleArgAction extends ValuesModelAction implements Serializable {
-
-        public DoubleArgAction(PlotModelProvider modelProvider) {
-            super("Arg", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.ARG);
-        }
-    }
-
-    private static class ComplexAction extends ValuesModelAction implements Serializable {
-
-        public ComplexAction(PlotModelProvider modelProvider) {
-            super("Complex", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(ComplexAsDouble.COMPLEX);
-        }
-    }
-
-    private static class PlotCourbeAction extends ValuesModelAction implements Serializable {
-
-        public PlotCourbeAction(PlotModelProvider modelProvider) {
-            super("Curves", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.CURVE);
-        }
-    }
-
-    private static class PlotHeatMapAction extends ValuesModelAction implements Serializable {
-
-        public PlotHeatMapAction(PlotModelProvider modelProvider) {
-            super("Heat Map", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.HEATMAP);
-        }
-    }
-
-    private static class PlotTableAction extends ValuesModelAction implements Serializable {
-
-        public PlotTableAction(PlotModelProvider modelProvider) {
-            super("Table", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.TABLE);
-        }
-    }
+//    private static class PlotMeshAction extends ValuesModelAction {
+//        public PlotMeshAction(PlotModelProvider modelProvider) {
+//            super("Mesh 3D", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.MESH);
+//        }
+//    }
+//
+//    private static class PlotMatrixAction extends ValuesModelAction {
+//        public PlotMatrixAction(PlotModelProvider modelProvider) {
+//            super("Matrix", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.MATRIX);
+//        }
+//    }
+//
+//    private static class PlotPolarAction extends ValuesModelAction {
+//        public PlotPolarAction(PlotModelProvider modelProvider) {
+//            super("Polar", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.POLAR);
+//        }
+//    }
 
     private static abstract class ModelAction extends AbstractPlotAction implements Serializable {
         PlotModelProvider modelProvider;
@@ -1421,41 +1430,21 @@ public class Plot {
         }
 
         public ValuesPlotModel getModel() {
-            return getModelProvider().getModel();
+            return (ValuesPlotModel) getModelProvider().getModel();
         }
     }
 
-    private static class PlotMeshAction extends ValuesModelAction {
-        public PlotMeshAction(PlotModelProvider modelProvider) {
-            super("Mesh 3D", modelProvider);
+    private static class PlotTypeAction extends ValuesModelAction {
+        private PlotType type;
+
+        public PlotTypeAction(PlotModelProvider modelProvider, String name, PlotType type) {
+            super(name, modelProvider);
+            this.type = type;
         }
 
 
         public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.MESH);
+            getModel().setPlotType(type);
         }
     }
-
-    private static class PlotMatrixAction extends ValuesModelAction {
-        public PlotMatrixAction(PlotModelProvider modelProvider) {
-            super("Matrix", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.MATRIX);
-        }
-    }
-
-    private static class PlotPolarAction extends ValuesModelAction {
-        public PlotPolarAction(PlotModelProvider modelProvider) {
-            super("Polar", modelProvider);
-        }
-
-
-        public void actionPerformed(ActionEvent e) {
-            getModel().setPlotType(PlotType.POLAR);
-        }
-    }
-
 }

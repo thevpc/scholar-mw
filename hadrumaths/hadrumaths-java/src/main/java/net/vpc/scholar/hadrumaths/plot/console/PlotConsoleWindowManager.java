@@ -1,14 +1,59 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.scholar.hadrumaths.plot.AbstractPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
+import net.vpc.scholar.hadrumaths.plot.PlotContainer;
+
+import javax.swing.*;
 
 /**
  * @author taha.bensalah@gmail.com on 7/22/16.
  */
 public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
     private PlotConsole plotConsole;
+    PlotContainer rootContainer = new AbstractPlotContainer() {
+        @Override
+        public void removePlotComponentImpl(PlotComponent component) {
+            plotConsole.getMainPlotterFrame().removeWindow(component.toComponent());
+        }
 
+        @Override
+        public void addPlotComponentImpl(PlotComponent component) {
+            ConsoleWindow w = plotConsole.getMainPlotterFrame().getWindow(createWindowPath(component.getPlotTitle()));
+            w.setComponent(component.toComponent());
+        }
+
+        @Override
+        public PlotComponent getPlotComponent(int index) {
+            return null;
+        }
+
+        @Override
+        public int getPlotComponentsCount() {
+            return 0;
+        }
+
+        @Override
+        public PlotContainer add(int index, String containerName) {
+            return null;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public int indexOfPlotComponent(PlotComponent plotComponent) {
+            return 0;
+        }
+
+        @Override
+        public JComponent toComponent() {
+            return null;
+        }
+    };
     public PlotConsoleWindowManager(PlotConsole plotConsole) {
         this.plotConsole = plotConsole;
     }
@@ -36,14 +81,9 @@ public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
             return new WindowPath(p,q);
         }
     }
-    @Override
-    public void removePlotComponentImpl(PlotComponent component) {
-        plotConsole.getMainPlotterFrame().removeWindow(component.toComponent());
-    }
 
     @Override
-    public void addPlotComponentImpl(PlotComponent component) {
-        ConsoleWindow w = plotConsole.getMainPlotterFrame().getWindow(createWindowPath(component.getPlotTitle()));
-        w.setComponent(component.toComponent());
+    public PlotContainer getRootContainer() {
+        return rootContainer;
     }
 }

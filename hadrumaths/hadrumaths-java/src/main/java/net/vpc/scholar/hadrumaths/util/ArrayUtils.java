@@ -1557,4 +1557,82 @@ public final class ArrayUtils {
     public static <T> T[][] newArray(Class type,int size,int size2){
         return (T[][]) Array.newInstance(type,size,size2);
     }
+
+    public static double[] toValidOneDimArray(double[] a){
+        if(a==null){
+            return new double[0];
+        }
+        return a;
+    }
+
+    public static double[][] toValidTwoDimArray(double[][] a){
+        if(a ==null){
+            return new double[0][];
+        }
+        for (int i = 0; i < a.length; i++) {
+            double[] d = a[i];
+            if(d==null){
+                a[i]=new double[0];
+            }
+        }
+        return a;
+    }
+
+    public static Complex[][] toValidTwoDimArray(Complex[][] a){
+        if(a ==null){
+            return new Complex[0][];
+        }
+        for (int i = 0; i < a.length; i++) {
+            Complex[] d = a[i];
+            if(d==null){
+                a[i]=new Complex[0];
+            }
+            for (int j = 0; j < a.length; j++) {
+                Complex c = a[i][j];
+                if(c==null){
+                    a[i][j]=Complex.ZERO;
+                }
+            }
+        }
+        return a;
+    }
+
+    public static double[] toValidOneDimArray(double[][] a){
+        return toValidOneDimArray(a,0);
+    }
+    public static double[] toValidOneDimArray(double[][] a, int expectedSize){
+        if(isNullOrEmptyOrHasNullElements(a)){
+            if(expectedSize<=0){
+                return new double[0];
+            }
+            return Maths.dsteps(1, expectedSize, 1.0);
+        }
+        return a[0];
+    }
+
+    public static int lengthOrZeroOneDimArray(double[][] a){
+        return toValidOneDimArray(a).length;
+    }
+
+    public static int lengthOrZero(double[] a){
+        if(a==null){
+            return 0;
+        }
+        return a.length;
+    }
+
+    public static boolean isNullOrEmptyOrHasNullElements(double[][] a){
+        if(a==null){
+            return true;
+        }
+        if(a.length==0){
+            return true;
+        }
+        for (double[] v : a) {
+            if(v==null){
+                return true;
+            }
+        }
+        return false;
+    }
 }

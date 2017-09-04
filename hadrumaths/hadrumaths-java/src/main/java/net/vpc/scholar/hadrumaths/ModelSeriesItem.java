@@ -6,10 +6,10 @@ class ModelSeriesItem {
     private int index;
     private String title;
     private boolean visible;
-    private int nodeType;
-    private int lineType;
-    private double xmultiplier;
-    private double ymultiplier;
+    private Integer nodeType;
+    private Integer lineType;
+    private Number xmultiplier;
+    private Number ymultiplier;
     private Color color;
 
     public int getIndex() {
@@ -36,35 +36,35 @@ class ModelSeriesItem {
         this.visible = visible;
     }
 
-    public int getNodeType() {
+    public Integer getNodeType() {
         return nodeType;
     }
 
-    public void setNodeType(int nodeType) {
+    public void setNodeType(Integer nodeType) {
         this.nodeType = nodeType;
     }
 
-    public int getLineType() {
+    public Integer getLineType() {
         return lineType;
     }
 
-    public void setLineType(int lineType) {
+    public void setLineType(Integer lineType) {
         this.lineType = lineType;
     }
 
-    public double getXmultiplier() {
+    public Number getXmultiplier() {
         return xmultiplier;
     }
 
-    public void setXmultiplier(double xmultiplier) {
+    public void setXmultiplier(Number xmultiplier) {
         this.xmultiplier = xmultiplier;
     }
 
-    public double getYmultiplier() {
+    public Number getYmultiplier() {
         return ymultiplier;
     }
 
-    public void setYmultiplier(double ymultiplier) {
+    public void setYmultiplier(Number ymultiplier) {
         this.ymultiplier = ymultiplier;
     }
 

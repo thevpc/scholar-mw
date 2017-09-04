@@ -16,7 +16,7 @@ public class ValuesPlotTableModel extends AbstractTableModel {
     private int cols=0;
 
     public ValuesPlotTableModel(PlotModelProvider modelProvider) {
-        this.model = modelProvider.getModel();
+        this.model = (ValuesPlotModel) modelProvider.getModel();
         model.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {

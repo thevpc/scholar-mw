@@ -204,10 +204,6 @@ public class ValuesPlotModel implements PlotModel {
         return x;
     }
 
-    public double[] getXVector() {
-        return x==null?null:x[0];
-    }
-
     public void setXVector(double[] x) {
         setX(new double[][]{x});
     }

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.plot.surface;
 import net.vpc.scholar.hadrumaths.*;
 
 import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,42 +36,31 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     };
 
 
-    public HeatMapPlot() {
-        this(null, null, null, new double[][]{{0}},false);
-    }
-
     public HeatMapPlot(PlotModelProvider plotModelProvider) {
-        this(plotModelProvider.getModel());
+        this((ValuesPlotModel) plotModelProvider.getModel());
         this.plotModelProvider=plotModelProvider;
 //        popupMenu = Plot.buildJPopupMenu(area, plotModelProvider);
     }
 
     public HeatMapPlot(ValuesPlotModel model) {
-        this(model.getTitle(),
-                model.getXVector(),
-                model.getY() == null || model.getY().length == 0 ? Maths.dsteps(1, model.getX().length, 1.0) : model.getY()[0]
-                , model.getZd(),model.getPlotType()== PlotType.HEATMAP
-        );
+        this(new ValuesPlotXYDoubleModelFace(model,null),model.getPlotType()== PlotType.HEATMAP);
         setModel(model);
     }
 
     public HeatMapPlot(PlotModelProvider plotModelProvider, JColorPalette palette, int preferredDim) {
-        this(plotModelProvider.getModel(),palette,preferredDim);
+        this((ValuesPlotModel) plotModelProvider.getModel(),palette,preferredDim);
         this.plotModelProvider=plotModelProvider;
 //        Plot.buildJPopupMenu(area, plotModelProvider);
     }
     public HeatMapPlot(ValuesPlotModel model, JColorPalette palette, int preferredDim) {
-        this(model.getTitle(),
-                model.getXVector(),
-                model.getY() == null || model.getY().length == 0 ? Maths.dsteps(1, model.getX().length, 1.0) : model.getY()[0]
-                , model.getZd(),
+        this(new ValuesPlotXYDoubleModelFace(model,null),
                 model.getPlotType()== PlotType.HEATMAP,
                 palette,preferredDim);
         setModel(model);
     }
 
-    public HeatMapPlot(String title, double[] x, double[] y, double[][] matrix, boolean reverseY) {
-        this(title, x, y, matrix, reverseY,null, 400);
+    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY) {
+        this(model, reverseY,null, 400);
     }
 
     @Override
@@ -98,16 +88,13 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         area.setNormalizer(normalizer);
     }
 
-    public HeatMapPlot(String title, double[] x, double[] y, double[][] matrix, boolean reverseY, JColorPalette colorPalette, int preferredDimension) {
+    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, int preferredDimension) {
         super(new BorderLayout());
-        area = new HeatMapPlotArea(x, y, matrix, reverseY,colorPalette, new Dimension(preferredDimension<=1?400:preferredDimension, preferredDimension<=1?400:preferredDimension));
+        area = new HeatMapPlotArea(model, reverseY,colorPalette, new Dimension(preferredDimension<=1?400:preferredDimension, preferredDimension<=1?400:preferredDimension));
         area.addPropertyChangeListener("colorPaletteContrasted", legendUpdater);
         area.addPropertyChangeListener("colorPalette", legendUpdater);
         legend = new HeatMapPlotArea(false, colorPalette, new Dimension(10, 400));
-        if (title == null) {
-            title = "";
-        }
-        titleLabel = new JLabel(title, SwingConstants.CENTER);
+        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
         if (titleLabel.getText().length() == 0) {
             titleLabel.setVisible(false);
         }
@@ -159,31 +146,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     }
 
     private void updateAreaByModel(){
-        double[][] zd = model.getZd();
-        double[] xVector = model.getXVector();
-        double[][] y2 = model.getY();
-        double[] y20 = null;
-        if(y2 == null || y2.length == 0 || (y2.length == 1 && y2[0]==null)){
-            y20=(Maths.dsteps(1, zd.length, 1.0));
-        }else{
-            y20=(y2[0]);
-        }
-        if(y20==null){
-            y20=new double[0];
-        }
-        DoubleList y = (DoubleList) Maths.dlist(y20.length);
-        DoubleArray2 z = new DoubleArray2(y20.length);
-        for (int i = 0; i < y20.length; i++) {
-            double v = y20[i];
-            if(model.getYVisible(i)){
-                y.append(v);
-                z.appendRow(zd[i]);
-            }
-        }
-        area.setModel(xVector,
-                y.toDoubleArray()
-                , z.toDoubleArray(),
-                model.getPlotType()== PlotType.HEATMAP);
+        area.setModel(new ValuesPlotXYDoubleModelFace(model,null), model.getPlotType()== PlotType.HEATMAP);
         repaint();
     }
 

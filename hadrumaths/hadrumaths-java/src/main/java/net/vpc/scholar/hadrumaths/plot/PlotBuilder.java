@@ -5,6 +5,7 @@ import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import java.util.*;
 
@@ -33,6 +34,7 @@ public class PlotBuilder {
     private DoubleFormatter xformat;
     private DoubleFormatter yformat;
     private Samples samples;
+    private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
     private List<PlotBuilderListener> listeners = new ArrayList<>();
 
@@ -64,6 +66,10 @@ public class PlotBuilder {
     }
 
     public PlotComponent plot(Object... any) {
+        return createPlotComponent(createModel(any));
+    }
+
+    public PlotModel createModel(Object... any) {
         List<Object> all = new ArrayList<>();
         all.addAll(itemsToPlot);
         for (Object o : any) {
@@ -71,7 +77,7 @@ public class PlotBuilder {
                 all.add(o);
             }
         }
-        return _plotArr(all.toArray());
+        return (_plotArr(all.toArray()));
     }
 
     public PlotBuilder mimic(PlotBuilder other) {
@@ -213,10 +219,12 @@ public class PlotBuilder {
         DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
         return xsamples(to.toDoubleArray());
     }
+
     public PlotBuilder ysamples(TList xvalue) {
         DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
         return ysamples(to.toDoubleArray());
     }
+
     public PlotBuilder zsamples(TList xvalue) {
         DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
         return zsamples(to.toDoubleArray());
@@ -224,7 +232,7 @@ public class PlotBuilder {
 
     public PlotBuilder xsamples(double[] xvalue) {
         if (samples instanceof AbsoluteSamples) {
-            AbsoluteSamples a=(AbsoluteSamples) samples;
+            AbsoluteSamples a = (AbsoluteSamples) samples;
             switch (samples.getDimension()) {
                 case 1: {
                     samples = Samples.absolute(xvalue);
@@ -247,7 +255,7 @@ public class PlotBuilder {
 
     public PlotBuilder ysamples(double[] yvalue) {
         if (samples instanceof AbsoluteSamples) {
-            AbsoluteSamples a=(AbsoluteSamples) samples;
+            AbsoluteSamples a = (AbsoluteSamples) samples;
             switch (samples.getDimension()) {
                 case 1: {
                     samples = Samples.absolute(a.getX(), yvalue);
@@ -270,7 +278,7 @@ public class PlotBuilder {
 
     public PlotBuilder zsamples(double[] zvalue) {
         if (samples instanceof AbsoluteSamples) {
-            AbsoluteSamples a=(AbsoluteSamples) samples;
+            AbsoluteSamples a = (AbsoluteSamples) samples;
             switch (samples.getDimension()) {
                 case 1: {
                     samples = Samples.absolute(a.getX(), a.getY(), zvalue);
@@ -404,8 +412,32 @@ public class PlotBuilder {
         return plotType(PlotType.CURVE);
     }
 
+    public PlotBuilder asBar() {
+        return plotType(PlotType.BAR);
+    }
+
+    public PlotBuilder asRing() {
+        return plotType(PlotType.RING);
+    }
+
+    public PlotBuilder asBubble() {
+        return plotType(PlotType.BUBBLE);
+    }
+
+    public PlotBuilder asArea() {
+        return plotType(PlotType.AREA);
+    }
+
+    public PlotBuilder asPie() {
+        return plotType(PlotType.PIE);
+    }
+
     public PlotBuilder asPolar() {
         return plotType(PlotType.POLAR);
+    }
+
+    public PlotBuilder asField() {
+        return plotType(PlotType.FIELD);
     }
 
     public PlotBuilder polarClockwise(boolean value) {
@@ -472,7 +504,7 @@ public class PlotBuilder {
 //    }
 
 
-    private PlotComponent _plotArr(Object[] any) {
+    private PlotModel _plotArr(Object[] any) {
         if (any == null) {
             return _plotAny(null);
         }
@@ -482,12 +514,12 @@ public class PlotBuilder {
         return _plotAny(any);
     }
 
-    private PlotComponent _plotAny(Object any) {
-        if(any instanceof PlotLines){
+    private PlotModel _plotAny(Object any) {
+        if (any instanceof PlotLines) {
             PlotLines y = (PlotLines) any;
             titles(y.titles());
             xsamples(y.xsamples());
-            any=y.getValues();
+            any = y.getValues();
         }
         PlotTypesHelper.TypeAndValue typeAndValue = PlotTypesHelper.resolveType(any);
         String s = typeAndValue.type;
@@ -503,11 +535,11 @@ public class PlotBuilder {
                 }
 //                if (s.equals("object") || s.equals("null")) {
                 //TODO should i return a container instead?
-                PlotComponent c = null;
+                PlotModelList list = new PlotModelList("All");
                 for (Object a : PlotTypesHelper.toObjectArray(o)) {
-                    c = _plotAny(a);
+                    list.add(_plotAny(a));
                 }
-                return c;
+                return list;
             case "complex[][]":
                 return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), PlotType.HEATMAP);
             case "number[][]":
@@ -670,36 +702,36 @@ public class PlotBuilder {
 //        return _plotExprArray(expressions);
 //    }
 
-    private PlotComponent _plotExprArray(Expr[] expressions) {
-        if(expressions.length==1 && samples instanceof AdaptiveSamples){
-            AdaptiveSamples adaptiveSamples=(AdaptiveSamples) samples;
-            String updateName0=updateName;
-            if(updateName0==null){
-                updateName0=UUID.randomUUID().toString();
+    private PlotModel _plotExprArray(Expr[] expressions) {
+        if (expressions.length == 1 && samples instanceof AdaptiveSamples) {
+            AdaptiveSamples adaptiveSamples = (AdaptiveSamples) samples;
+            String updateName0 = updateName;
+            if (updateName0 == null) {
+                updateName0 = UUID.randomUUID().toString();
                 update(updateName0);
             }
-            Object[] ref=new Object[1];
-            Maths.adaptiveEval(expressions[0],new AdaptiveConfig()
+            Object[] ref = new Object[1];
+            Maths.adaptiveEval(expressions[0], new AdaptiveConfig()
                     .setError(adaptiveSamples.getError())
                     .setMinimumXSamples(adaptiveSamples.getMinimumXSamples())
                     .setMaximumXSamples(adaptiveSamples.getMaximumXSamples())
                     .setListener(new SamplifyListener() {
-                @Override
-                public void onNewElements(AdaptiveEvent event) {
-                    samples(Samples.absolute(event.getSamples().x.toDoubleArray()));
-                    ref[0]=_plotExprArray(expressions);
-                }
-            }));
-            if(updateName==null) {
+                        @Override
+                        public void onNewElements(AdaptiveEvent event) {
+                            samples(Samples.absolute(event.getSamples().x.toDoubleArray()));
+                            ref[0] = _plotExprArray(expressions);
+                        }
+                    }));
+            if (updateName == null) {
                 Plot.setCachedPlotComponent(updateName0, null);
             }
-            return (PlotComponent) ref[0];
-        }else{
+            return (PlotModel) ref[0];
+        } else {
             return _plotExprArray0(expressions);
         }
     }
 
-    private PlotComponent _plotExprArray0(Expr[] expressions) {
+    private PlotModel _plotExprArray0(Expr[] expressions) {
         List<VDiscrete> discretes = new ArrayList<VDiscrete>();
         List<Expr> other = new ArrayList<Expr>();
         for (Expr expression : expressions) {
@@ -737,27 +769,32 @@ public class PlotBuilder {
         }
         if (discretes.size() == 0) {
             ComplexAsDouble c = getConverter(ComplexAsDouble.ABS);
-            ExpressionsPlotModel m = _createExpressionsPlotModel()
+            return (_createExpressionsPlotModel()
                     .setExpressions(other.toArray(new Expr[other.size()]))
-                    .setComplexAsDouble(c);
-            return _register(m);
+                    .setComplexAsDouble(c));
         } else if (other.size() == 0) {
-            return _register(
+            return (
                     new VDiscretePlotModel()
                             .setTitle(title)
                             .setPreferredLibraries(preferredLibraries)
                             .setVdiscretes(discretes)
             );
         } else {
-            PlotContainer container = getWindowManager().add("Expressions");
-            container.add(new VDiscretePlotPanel(
-                    new VDiscretePlotModel()
-                            .setTitle(title)
-                            .setPreferredLibraries(preferredLibraries)
-                            .setVdiscretes(discretes),
-                    getWindowManager()));
-            container.add(_plotArr(other.toArray(new Expr[other.size()])));
-            return container;
+            PlotModelList list = new PlotModelList("Expressions");
+            list.add(new VDiscretePlotModel()
+                    .setTitle(title)
+                    .setPreferredLibraries(preferredLibraries)
+                    .setVdiscretes(discretes));
+            list.add(_plotArr(other.toArray(new Expr[other.size()])));
+//            PlotContainer container = getWindowManager().add("Expressions");
+//            container.add(new VDiscretePlotPanel(
+//                    new VDiscretePlotModel()
+//                            .setTitle(title)
+//                            .setPreferredLibraries(preferredLibraries)
+//                            .setVdiscretes(discretes),
+//                    getWindowManager()));
+//            container.add(_plotArr(other.toArray(new Expr[other.size()])));
+            return list;
         }
     }
 
@@ -776,7 +813,7 @@ public class PlotBuilder {
 //        ExpressionsPlotModel m = _createExpressionsPlotModel()
 //                .setXprec(xs).setYprec(ys)
 //                .setExpressions(expressions);
-//        return _register(m);
+//        return createPlotComponent(m);
 //    }
 
 //    @Deprecated
@@ -861,7 +898,7 @@ public class PlotBuilder {
 //        return _plotPoints(xy);
 //    }
 
-    private PlotComponent _plotPoints(Point[][] xy) {
+    private PlotModel _plotPoints(Point[][] xy) {
         double[][] x = new double[xy.length][];
         double[][] y = new double[xy.length][];
         for (int i = 0; i < xy.length; i++) {
@@ -877,50 +914,50 @@ public class PlotBuilder {
 //            throw new IllegalArgumentException("Unsupported yet");
 //        }
         samples(Samples.absolute(x[0]));
-        return plot(y);
+        return _plotAny(y);
     }
 
 //    @Deprecated
 //    public PlotComponent plot(double[][] x, double[][] y) {
 //        ComplexAsDouble c = getConverter(ComplexAsDouble.ABS);
 //        PlotType t = _getPlotType(PlotType.CURVE);
-//        return _register(_defaultPlotModelXYZ(xname, null, yname, x, null, ArrayUtils.toComplex(y), c, t));
+//        return createPlotComponent(_defaultPlotModelXYZ(xname, null, yname, x, null, ArrayUtils.toComplex(y), c, t));
 //    }
 //
 //    @Deprecated
 //    public PlotComponent plot(Complex[][] x, Complex[][] y) {
-//        return _register(_defaultPlotModelXY(xname, yname, ArrayUtils.absdbl(x), y, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
+//        return createPlotComponent(_defaultPlotModelXY(xname, yname, ArrayUtils.absdbl(x), y, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
 //    }
 //
 //    @Deprecated
 //    public PlotComponent plot(Complex[] x, Complex[] y) {
-//        return _register(_defaultPlotModelXY(xname, yname, new double[][]{ArrayUtils.absdbl(x)}, new Complex[][]{y}, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
+//        return createPlotComponent(_defaultPlotModelXY(xname, yname, new double[][]{ArrayUtils.absdbl(x)}, new Complex[][]{y}, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
 //    }
 //
 //    @Deprecated
 //    public PlotComponent plot(double[] x, double[][] y) {
-//        return _register(_defaultPlotModelXY(null, null, new double[][]{x}, ArrayUtils.toComplex(y), getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
+//        return createPlotComponent(_defaultPlotModelXY(null, null, new double[][]{x}, ArrayUtils.toComplex(y), getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
 //    }
 //
 //    @Deprecated
 //    public PlotComponent plot(double[] x, Complex[][] y) {
-//        return _register(_defaultPlotModelXY(null, null, new double[][]{x}, y, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
+//        return createPlotComponent(_defaultPlotModelXY(null, null, new double[][]{x}, y, getConverter(ComplexAsDouble.ABS), _getPlotType(PlotType.CURVE)));
 //    }
 //
 //    @Deprecated
 //    public PlotComponent plot(String globalTitle, String[] title, double[] x, Complex[][] y, ComplexAsDouble type) {
-//        return _register(_defaultPlotModelXY(null, null, new double[][]{x}, y, type, _getPlotType(PlotType.CURVE)));
+//        return createPlotComponent(_defaultPlotModelXY(null, null, new double[][]{x}, y, type, _getPlotType(PlotType.CURVE)));
 //    }
 
-    private PlotComponent _plotComplexArray(Complex[][] z, PlotType preferredPlotType) {
+    private PlotModel _plotComplexArray(Complex[][] z, PlotType preferredPlotType) {
         //should i do differently?
 //        Complex[][] z=mm.getArray();
-        AbsoluteSamples aa=null;
+        AbsoluteSamples aa = null;
 
-        if((samples instanceof AdaptiveSamples)){
+        if ((samples instanceof AdaptiveSamples)) {
             throw new IllegalArgumentException("Expected Absolute");
         }
-        if(samples!=null) {
+        if (samples != null) {
             aa = Samples.toAbsoluteSamples(samples, domain);
         }
         double[] x = (aa == null ? null : aa.getX());
@@ -937,7 +974,7 @@ public class PlotBuilder {
         }
         if (x.length > 0 && y.length == 0 && z.length > 0) {
             PlotType t = _getPlotType(preferredPlotType != null ? preferredPlotType : PlotType.CURVE);
-            return _register(_defaultPlotModelXYZ(
+            return (_defaultPlotModelXYZ(
                     xname,
                     yname,
                     null,
@@ -948,7 +985,7 @@ public class PlotBuilder {
         }
         if (x.length == 0 && y.length > 0 && z.length > 0) {
             PlotType t = _getPlotType(preferredPlotType != null ? preferredPlotType : PlotType.CURVE);
-            return _register(_defaultPlotModelXYZ(
+            return (_defaultPlotModelXYZ(
                     xname,
                     yname,
                     null,
@@ -964,7 +1001,7 @@ public class PlotBuilder {
             for (int i = 0; i < y.length; i++) {
                 z[0][i] = Complex.valueOf(y[i]);
             }
-            return _register(_defaultPlotModelXYZ(
+            return (_defaultPlotModelXYZ(
                     xname,
                     yname,
                     null,
@@ -985,7 +1022,7 @@ public class PlotBuilder {
                 y = Maths.dsteps(1.0, z.length, 1.0);
             }
 
-            return _register(_defaultPlotModelXYZ(
+            return (_defaultPlotModelXYZ(
                     xname,
                     yname,
                     null,
@@ -996,7 +1033,8 @@ public class PlotBuilder {
         }
     }
 
-    private PlotComponent _register(PlotModel model) {
+    private PlotComponent createPlotComponent(PlotModel model) {
+        PlotWindowManager windowManager = getWindowManager();
         if (update != null) {
             if (update instanceof PlotPanel) {
                 PlotPanel updatePanel = (PlotPanel) update;
@@ -1007,22 +1045,22 @@ public class PlotBuilder {
                 } else {
                     if (parent != null) {
                         parent.remove(update);
-                        PlotPanel c = Plot.create(model, getWindowManager());
+                        PlotPanel c = Plot.create(model, windowManager);
                         parent.add(c);
                         fireOnPlot(c);
                         return c;
                     } else {
-                        getWindowManager().remove(update);
-                        PlotPanel c = Plot.create(model, getWindowManager());
-                        c.display();
+                        windowManager.remove(update);
+                        PlotPanel c = Plot.create(model, windowManager);
+                        windowManager.add(c, cwd());
                         fireOnPlot(c);
                         return c;
                     }
                 }
             } else {
-                getWindowManager().remove(update);
-                PlotPanel c = Plot.create(model, getWindowManager());
-                c.display();
+                windowManager.remove(update);
+                PlotPanel c = Plot.create(model, windowManager);
+                windowManager.add(c, cwd());
                 fireOnPlot(c);
                 return c;
             }
@@ -1038,34 +1076,34 @@ public class PlotBuilder {
                 } else {
                     if (parent != null) {
                         parent.remove(u);
-                        PlotPanel c = Plot.create(model, getWindowManager());
+                        PlotPanel c = Plot.create(model, windowManager);
                         parent.add(c);
                         Plot.setCachedPlotComponent(updateName, c);
                         fireOnPlot(c);
                         return c;
                     } else {
-                        getWindowManager().remove(u);
-                        PlotPanel c = Plot.create(model, getWindowManager());
-                        c.display();
+                        windowManager.remove(u);
+                        PlotPanel c = Plot.create(model, windowManager);
+                        windowManager.add(c, cwd());
                         Plot.setCachedPlotComponent(updateName, c);
                         fireOnPlot(c);
                         return c;
                     }
                 }
             } else {
-                getWindowManager().remove(u);
-                PlotPanel c = Plot.create(model, getWindowManager());
-                c.display();
+                windowManager.remove(u);
+                PlotPanel c = Plot.create(model, windowManager);
+                windowManager.add(c, cwd());
                 Plot.setCachedPlotComponent(updateName, c);
                 fireOnPlot(c);
                 return c;
             }
         } else {
-            PlotComponent c = Plot.create(model, getWindowManager());
+            PlotComponent c = Plot.create(model, windowManager);
             if (parent != null) {
                 parent.add(c);
             } else if (display) {
-                c.display();
+                windowManager.add(c, cwd());
             }
             fireOnPlot(c);
             return c;
@@ -1074,7 +1112,7 @@ public class PlotBuilder {
 
     private void fireOnPlot(PlotComponent c) {
         for (PlotBuilderListener listener : listeners) {
-            listener.onPlot(c,this);
+            listener.onPlot(c, this);
         }
     }
 
@@ -1111,16 +1149,16 @@ public class PlotBuilder {
 
     private ValuesPlotModel _defaultPlotModelXYZ(String xtitle, String ytitle, String ztitle, double[][] x, double[][] y, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType) {
         if (x == null && samples != null) {
-            if (! (samples instanceof AbsoluteSamples)) {
+            if (!(samples instanceof AbsoluteSamples)) {
                 throw new IllegalArgumentException("Samples should be absolute");
             }
-            x = new double[][]{((AbsoluteSamples)samples).getX()};
+            x = new double[][]{((AbsoluteSamples) samples).getX()};
         }
         if (y == null && samples != null) {
-            if (! (samples instanceof AbsoluteSamples)) {
+            if (!(samples instanceof AbsoluteSamples)) {
                 throw new IllegalArgumentException("Samples should be absolute");
             }
-            y = new double[][]{((AbsoluteSamples)samples).getY()};
+            y = new double[][]{((AbsoluteSamples) samples).getY()};
         }
         return new ValuesPlotModel(title, xtitle, ytitle, ztitle, titles, x, y, z, zDoubleFunction, plotType, properties)
                 .setEnabledLibraries(enabledExternalLibraries)
@@ -1130,17 +1168,41 @@ public class PlotBuilder {
                 ;
     }
 
-    public PlotBuilder addPlotBuilderListener(PlotBuilderListener listener){
+    public PlotBuilder addPlotBuilderListener(PlotBuilderListener listener) {
         listeners.add(listener);
         return this;
     }
 
-    public PlotBuilder removePlotBuilderListener(PlotBuilderListener listener){
+    public PlotBuilder removePlotBuilderListener(PlotBuilderListener listener) {
         listeners.remove(listener);
         return this;
     }
-    public PlotBuilder plotBuilderListener(PlotBuilderListener listener){
+
+    public PlotBuilder plotBuilderListener(PlotBuilderListener listener) {
         return this.addPlotBuilderListener(listener);
     }
+
+    public String cwd() {
+        return path;
+    }
+
+    public PlotBuilder cd(String path) {
+        if (path == null) {
+            path = "/";
+        }
+        if (!path.startsWith("/")) {
+            path = this.path + "/" + path;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : StringUtils.split(path, "/")) {
+            sb.append("/").append(s);
+        }
+        if (sb.length() == 0) {
+            sb.append("/");
+        }
+        this.path = sb.toString();
+        return this;
+    }
+
 
 }

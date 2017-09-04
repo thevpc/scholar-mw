@@ -254,42 +254,51 @@ public class LockMonitor extends JPanel implements ActionListener {
         }
 
         public void add(AppLock lock) {
-            synchronized (files) {
-                for (int i = files.size() - 1; i >= 0; i--) {
-                    AppLockInfo appLockInfo = files.get(i);
-                    AppLock file = appLockInfo.lock;
-                    if (file.equals(lock)) {
-                        appLockInfo.hits++;
-                        if(appLockInfo.hits>1){
-                            UIManager.getLookAndFeel().provideErrorFeedback(null);
+            SwingUtils.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (files) {
+                        for (int i = files.size() - 1; i >= 0; i--) {
+                            AppLockInfo appLockInfo = files.get(i);
+                            AppLock file = appLockInfo.lock;
+                            if (file.equals(lock)) {
+                                appLockInfo.hits++;
+                                if(appLockInfo.hits>1){
+                                    UIManager.getLookAndFeel().provideErrorFeedback(null);
+                                }
+                                appLockInfo.time = new Date();
+                                fireTableRowsUpdated(i, i);
+                                return;
+                            }
                         }
-                        appLockInfo.time = new Date();
-                        fireTableRowsUpdated(i, i);
-                        return;
+                        int a = files.size();
+                        AppLockInfo info = new AppLockInfo();
+                        info.lock = lock;
+                        info.hits = 1;
+                        info.time = new Date();
+                        files.add(info);
+                        fireTableRowsInserted(a, a);
                     }
                 }
-                int a = files.size();
-                AppLockInfo info = new AppLockInfo();
-                info.lock = lock;
-                info.hits = 1;
-                info.time = new Date();
-                files.add(info);
-                fireTableRowsInserted(a, a);
-            }
+            });
         }
 
         public void remove(AppLock lock) {
-            synchronized (files) {
-                for (int i = files.size() - 1; i >= 0; i--) {
-                    AppLockInfo appLockInfo = files.get(i);
-                    AppLock file = appLockInfo.lock;
-                    if (file.equals(lock)) {
-                        files.remove(i);
-                        fireTableRowsDeleted(i, i);
-                        return;
+            SwingUtils.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (files) {
+                        for (int i = files.size() - 1; i >= 0; i--) {
+                            AppLockInfo appLockInfo = files.get(i);
+                            AppLock file = appLockInfo.lock;
+                            if (file.equals(lock)) {
+                                files.remove(i);
+                                fireTableRowsDeleted(i, i);
+                                return;
+                            }
+                        }
                     }
-                }
-            }
+                }});
         }
 
         @Override

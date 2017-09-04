@@ -6,11 +6,11 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author vpc
@@ -38,6 +38,10 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
     public AbstractPlotWindowManager() {
     }
 
+    public AbstractPlotWindowManager(String globalTitle) {
+        this.globalTitle = globalTitle;
+    }
+
     public PlotWindowContainerFactory getPlotWindowContainerFactory() {
         return plotWindowContainerFactory;
     }
@@ -46,81 +50,123 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
         this.plotWindowContainerFactory = plotWindowContainerFactory;
     }
 
-    public AbstractPlotWindowManager(String globalTitle) {
-        this.globalTitle = globalTitle;
-    }
-
     protected void titleChanged(PlotComponent component) {
 
     }
 
     @Override
     public final void remove(final PlotComponent component) {
-        if(component==null){
+        if (component == null) {
             return;
         }
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    JComponent jComponent = component.toComponent();
-                    jComponent.removePropertyChangeListener("title", titleChangeListener);
-                    jComponent.putClientProperty(PlotWindowManager.class.getName(), null);
-                    removePlotComponentImpl(component);
-                }
-            });
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        SwingUtils.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                JComponent jComponent = component.toComponent();
+                jComponent.removePropertyChangeListener("title", titleChangeListener);
+                jComponent.putClientProperty(PlotWindowManager.class.getName(), null);
+                removePlotComponentImpl(component);
+            }
+        });
     }
-
-    public abstract void removePlotComponentImpl(PlotComponent component);
 
     @Override
     public final PlotContainer add(String name) {
-        PlotContainer container = getPlotWindowContainerFactory().create(name, this);
+        PlotContainer container = getPlotWindowContainerFactory().create();
+        container.setPlotTitle(name);
+        container.setPlotWindowManager(this);
         add(container);
         return container;
     }
 
     public final void add(final PlotComponent component) {
-        try {
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    JComponent jComponent = component.toComponent();
-                    jComponent.addPropertyChangeListener("title", titleChangeListener);
-                    jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
-                    jComponent.putClientProperty(PlotComponent.class.getName(), component);
-                    addPlotComponentImpl(component);
-                }
-            };
-            if (SwingUtilities.isEventDispatchThread()) {
-                r.run();
-            }else {
-                SwingUtilities.invokeAndWait(r);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        add(component, "/");
     }
 
-    public abstract void addPlotComponentImpl(PlotComponent component);
+    public final void add(final PlotComponent component, final String path) {
+        if (path == null || !path.startsWith("/")) {
+            throw new IllegalArgumentException("Invalid path " + path);
+        }
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                JComponent jComponent = component.toComponent();
+                jComponent.addPropertyChangeListener("title", titleChangeListener);
+                jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
+                jComponent.putClientProperty(PlotComponent.class.getName(), component);
+                component.setPlotWindowManager(AbstractPlotWindowManager.this);
+                addPlotComponentImpl(component, StringUtils.splitToArr(path, "/"));
+            }
+        };
+        SwingUtils.invokeAndWait(r);
+
+    }
+
 
     @Override
     public void display(PlotComponent plotComponent) {
         add(plotComponent);
     }
 
-    protected String validateTitle(String s){
-        if(StringUtils.isEmpty(s)){
-            s="Figure";
+    protected String validateTitle(String s) {
+        if (StringUtils.isEmpty(s)) {
+            s = "Figure";
         }
         return s;
     }
 
+    public abstract PlotContainer getRootContainer();
+
+    public PlotContainer getContainer(String[] path) {
+        if (path.length == 0) {
+            return getRootContainer();
+        }
+        return findOrCreateContainer(path, 0, getRootContainer());
+    }
+
+    private PlotContainer findOrCreateContainer(String[] path, int index, PlotContainer parent) {
+        String name = path[index];
+        int childIndex = parent.indexOfPlotComponent(name);
+        PlotContainer p=null;
+        if(childIndex<0){
+            p=parent.add(name);
+        }else {
+            PlotComponent child = parent.getPlotComponent(name);
+            if (child instanceof PlotContainer) {
+                p = (PlotContainer) child;
+            } else {
+                p = parent.add(childIndex, name);
+            }
+        }
+        if (index == path.length - 1) {
+            return p;
+        }
+        return findOrCreateContainer(path,index+1,p);
+//
+//        if (StringUtils.isInt(name)) {
+//
+//
+//            if (i < 0) {
+//                throw new IllegalArgumentException("Invalid index " + i);
+//            } else if (i < c) {
+//            } else {
+//                PlotContainer p = parent.add(String.valueOf(i));
+//                if (index == path.length - 1) {
+//                    return p;
+//                }
+//                return findOrCreateContainer(path,index+1,p);
+//            }
+//        } else {
+//            throw new IllegalArgumentException("Not yet supported non numeric path");
+//        }
+    }
+
+    public void removePlotComponentImpl(PlotComponent component) {
+        getRootContainer().remove(component);
+    }
+
+    public void addPlotComponentImpl(PlotComponent component, String[] path) {
+        getContainer(path).add(component);
+    }
 }

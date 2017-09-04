@@ -1,11 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
-
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,46 +34,40 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
     Mesh3DObject feObject;
     PlotModelProvider plotModelProvider;
 
-    public Mesh3DPlot(String title, double[] x, double[] y, double[][] z) {
-        this(title, x, y, z, null, null);
-    }
-
-    public Mesh3DPlot(ValuesPlotModel model) {
-        this(model, null);
-    }
-
+//    public Mesh3DPlot(String title, double[] x, double[] y, double[][] z) {
+//        this(title, x, y, z, null, null);
+//    }
+//
+//    public Mesh3DPlot(ValuesPlotModel model) {
+//        this(model, null);
+//    }
+//
     public Mesh3DPlot(PlotModelProvider modelProvider, JColorPalette colorPalette) {
-        this(modelProvider.getModel().getTitle(), modelProvider.getModel().getXVector(), modelProvider.getModel().getY() == null || modelProvider.getModel().getY().length == 0 ? Maths.dsteps(1, modelProvider.getModel().getX().length, 1.0) : modelProvider.getModel().getY()[0], modelProvider.getModel().getZd(),
-                colorPalette, modelProvider);
+        this((ValuesPlotModel) modelProvider.getModel(), colorPalette);
     }
 
     public Mesh3DPlot(ValuesPlotModel model, JColorPalette colorPalette) {
-        this(model.getTitle(), model.getXVector(), model.getY() == null || model.getY().length == 0 ? Maths.dsteps(1, model.getX().length, 1.0) : model.getY()[0], model.getZd(),
-                colorPalette, null);
+        this(new ValuesPlotXYDoubleModelFace(model,null), colorPalette, null);
     }
 
-    public Mesh3DPlot(String title, double[] x, double[] y, double[][] z, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
+    public Mesh3DPlot(ValuesPlotXYDoubleModelFace model, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
 
-        z=ArrayUtils.fillMatrix(z,Double.NaN);
         if (colorPalette == null) {
             colorPalette = HSBColorPalette.DEFAULT_PALETTE;
         }
-        if (x == null) {
-            x = z.length == 0 ? new double[0] : Maths.dsteps(0, z[0].length - 1, 1.0);
-        }
-        if (y == null) {
-            y = z.length == 0 ? new double[0] : Maths.dsteps(0, z.length - 1, 1.0);
-        }
-        Mesh3DObject p1 = new Mesh3DObject(null, x.length * y.length, (x.length - 1) * (y.length - 1));
 
-        titleLabel = new JLabel(title, SwingConstants.CENTER);
+        double[] x = model.getX();
+        double[] y = model.getY();
+        double[][] z = model.getZ();
+        Mesh3DObject p1 = new Mesh3DObject(null, model.getX().length * model.getY().length, (model.getX().length - 1) * (model.getY().length - 1));
 
+        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
 
         MinMax minMax = new MinMax();
         MinMax absVertZMinMax = new MinMax();
         MinMax vertXYMinMax = new MinMax();
         absVertZMinMax.registerAbsValues(z);
-        vertXYMinMax.registerValues(x);
+        vertXYMinMax.registerValues(model.getX());
         vertXYMinMax.registerValues(y);
         double zFactor = 1;
         if (!vertXYMinMax.isNaN()) {
@@ -85,9 +77,6 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
             zFactor /= absVertZMinMax.getMax();
         }
 
-        if(z.length!=y.length || z.length>0 && z[0].length!=x.length){
-            System.out.println("Why : "+z.length+" "+(z.length>0 ? z[0].length:0)+" for "+y.length+","+x.length);
-        }
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x.length; j++) {
                 p1.addVertex(new Mesh3DVector(x[j], y[i], z[i][j] * zFactor));//0

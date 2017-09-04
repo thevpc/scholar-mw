@@ -10,6 +10,6 @@ import java.awt.*;
 * To change this template use File | Settings | File Templates.
 */
 public interface PlotModelProvider {
-    ValuesPlotModel getModel();
+    PlotModel getModel();
     Component getComponent();
 }

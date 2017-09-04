@@ -3071,6 +3071,40 @@ public final class Maths {
         return y;
     }
 
+    public static double max(double a,double b) {
+        return a>b?a:b;
+    }
+
+    public static int max(int a,int b) {
+        return a>b?a:b;
+    }
+
+    public static long max(long a,long b) {
+        return a>b?a:b;
+    }
+
+    public static double min(double a,double b) {
+        return a<b?a:b;
+    }
+
+    public static int min(int a,int b) {
+        return a<b?a:b;
+    }
+
+    public static Complex min(Complex a,Complex b) {
+        int i = a.compareTo(b);
+        return i<=0?a:b;
+    }
+
+    public static Complex max(Complex a,Complex b) {
+        int i = a.compareTo(b);
+        return i>=0?a:b;
+    }
+
+    public static long min(long a,long b) {
+        return a<b?a:b;
+    }
+
     public static double[] minMax(double[] a) {
         double min = Double.MIN_VALUE;
         double max = Double.MAX_VALUE;
@@ -3232,6 +3266,10 @@ public final class Maths {
     }
 
     public static double abs(double a) {
+        return Math.abs(a);
+    }
+
+    public static int abs(int a) {
         return Math.abs(a);
     }
 

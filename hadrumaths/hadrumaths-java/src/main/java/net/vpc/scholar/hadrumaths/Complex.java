@@ -450,6 +450,12 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public int compareTo(Complex c) {
+        if(isReal() && c.isReal()){
+            return Double.compare(getReal(),c.getReal());
+        }
+        if(isImag() && c.isImag()){
+            return Double.compare(getImag(),c.getImag());
+        }
         double a1 = absdbl();
         double a2 = c.absdbl();
         if (a1 > a2) {
@@ -889,7 +895,11 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public boolean isDouble() {
-        return isReal();
+        try {
+            return isReal();
+        }catch (NullPointerException ex){
+            return isReal();
+        }
     }
 
     @Override
@@ -976,7 +986,11 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         if (isNaN() || isInfinite() || isZero()) {
             return NaN;
         }
-        return ONE;
+        double norm = norm();
+        if(norm==0){
+            return ZERO;
+        }
+        return div(norm);
     }
 
     public double norm() {
@@ -1098,5 +1112,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
             }
         }
         throw new IllegalArgumentException("Unsupported complex type " + b);
+    }
+
+    public boolean isFinite(){
+        return !isNaN() && !isInfinite();
     }
 }

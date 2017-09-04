@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.JTableHelper;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 import net.vpc.scholar.hadrumaths.util.swingext.*;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 
@@ -1475,7 +1476,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //    }
     private void mainPanel_add(final Component component) {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     mainPanel.add(component);
@@ -1488,7 +1489,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private void mainPanel_removeAll() {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     mainPanel.removeAll();
@@ -1501,7 +1502,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private void mainPanel_invalidate() {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     mainPanel.invalidate();
@@ -1606,7 +1607,11 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public String getPlotTitle() {
-        return this.model.getTitle();
+        String baseTitle = super.getPlotTitle();
+        if(baseTitle ==null){
+            return this.model.getTitle();
+        }
+        return baseTitle;
     }
 
     public JComponent toComponent() {

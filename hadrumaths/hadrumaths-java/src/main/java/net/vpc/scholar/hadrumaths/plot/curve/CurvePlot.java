@@ -16,7 +16,8 @@ public class CurvePlot extends JPanel implements PlotComponentPanel{
         super(new BorderLayout());
         this.modelProvider=modelProvider;
         this.USER_JFREECHART=USER_JFREECHART;
-        this.modelProvider.getModel().addPropertyChangeListener(new PropertyChangeListener() {
+        ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
+        model.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 updateChart();
@@ -25,7 +26,7 @@ public class CurvePlot extends JPanel implements PlotComponentPanel{
         updateChart();
     }
     private void updateChart(){
-        ValuesPlotModel model = this.modelProvider.getModel();
+        ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
         String theTitle  = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
         String theYTitle = model.getZtitle() == null ? "Y" : model.getZtitle();

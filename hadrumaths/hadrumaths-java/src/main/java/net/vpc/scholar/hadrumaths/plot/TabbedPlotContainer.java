@@ -9,49 +9,98 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * @author vpc
  */
 public class TabbedPlotContainer extends AbstractPlotContainer {
 
     private JTabbedPane jTabbedPane;
 
-    public TabbedPlotContainer(PlotWindowManager plotWindowManager, String globalTitle) {
-        super(plotWindowManager, globalTitle);
+    public TabbedPlotContainer() {
+        super();
+        setPlotWindowContainerFactory(PanelPlotWindowContainerFactory.INSTANCE);
     }
 
-    @Override
-    public void removePlotComponentImpl(PlotComponent component) {
+
+    public int indexOfPlotComponent(PlotComponent plotComponent) {
         if (jTabbedPane != null) {
             int tabCount = jTabbedPane.getTabCount();
             for (int i = 0; i < tabCount; i++) {
                 Component ii = jTabbedPane.getComponentAt(i);
-//                Component ii = jTabbedPane.getTabComponentAt(i);
-                if (component.toComponent() == ii) {
-                    jTabbedPane.removeTabAt(i);
-                    return;
+                if (ii != null && plotComponent.toComponent() == ii) {
+                    return i;
                 }
             }
         }
+        return -1;
+    }
+
+    @Override
+    public PlotComponent getPlotComponent(int index) {
+        if (jTabbedPane != null) {
+            Component c = jTabbedPane.getComponentAt(index);
+            if (c instanceof JComponent) {
+                return toPlotComponent((JComponent) c);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public PlotContainer add(int index, String containerName) {
+        if (index >= 0) {
+            PlotComponent component = getPlotComponent(index);
+            PlotContainer t = getPlotWindowContainerFactory().create();
+            t.setPlotTitle(containerName);
+            t.setPlotWindowManager(getPlotWindowManager());
+            jTabbedPane.setTabComponentAt(index, toComponent(t));
+            if (component != null) {
+                t.add(component);
+            }
+            return t;
+        }
+        return null;
+    }
+
+    @Override
+    public int getPlotComponentsCount() {
+        if (jTabbedPane != null) {
+            return jTabbedPane.getTabCount();
+        }
+        return 0;
+    }
+
+    @Override
+    public void removePlotComponentImpl(PlotComponent component) {
+        int index = indexOfPlotComponent(component);
+        jTabbedPane.removeTabAt(index);
     }
 
     public void addPlotComponentImpl(PlotComponent component) {
-        toComponent().add(validateTitle(component.getPlotTitle()), component.toComponent());
+        JComponent component1 = toComponent(component);
+        jTabbedPane.addTab(validateTitle(component.getPlotTitle()), component1);
     }
+
+//    private String id(Object o) {
+//        if (o instanceof PlotComponent) {
+//            return o.getClass().getSimpleName() + "@" + System.identityHashCode(o);
+//        } else if (o instanceof JComponent) {
+//            PlotComponent cc = (PlotComponent) ((JComponent) o).getClientProperty(PlotComponent.class.getName());
+//            return id(cc);
+//        } else {
+//            throw new IllegalArgumentException("Unsupported");
+//        }
+//    }
 
     public void clear() {
         if (jTabbedPane != null) {
             Component[] components = jTabbedPane.getComponents();
             for (Component component : components) {
-                if(component instanceof PlotComponent){
-                    remove((PlotComponent) component);
-                }else if(component instanceof JComponent){
-                    Object a = ((JComponent) component).getClientProperty(PlotComponent.class.getName());
-                    if(a!=null){
-                        remove((PlotComponent) a);
-                    }
+                if (component instanceof JComponent) {
+                    PlotComponent t = toPlotComponent((JComponent) component);
+                    remove(t);
                 }
             }
+            jTabbedPane.removeAll();
         }
     }
 
@@ -59,8 +108,8 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
     public JComponent toComponent() {
         if (jTabbedPane == null) {
             jTabbedPane = new JTabbedPane();
-            jTabbedPane.putClientProperty(PlotComponent.class.getName(),this);
-            jTabbedPane.setPreferredSize(new Dimension(600,400));
+            jTabbedPane.putClientProperty(PlotComponent.class.getName(), this);
+            jTabbedPane.setPreferredSize(new Dimension(600, 400));
         }
         return jTabbedPane;
     }

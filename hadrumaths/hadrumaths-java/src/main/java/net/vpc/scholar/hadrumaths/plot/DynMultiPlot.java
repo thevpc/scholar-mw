@@ -5,6 +5,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -125,7 +126,7 @@ public class DynMultiPlot  {
         }
 
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
 
                         @Override
             public void run() {
@@ -143,10 +144,7 @@ public class DynMultiPlot  {
                         }
                     });
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DynMultiPlot.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(DynMultiPlot.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }

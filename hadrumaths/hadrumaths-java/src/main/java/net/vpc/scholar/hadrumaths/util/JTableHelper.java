@@ -19,8 +19,8 @@ public class JTableHelper {
 //                return getPreferredSize().width < getParent().getWidth();
 //            }
         };
-        t.table.setAutoCreateRowSorter(true);
         t.table.setModel(model);
+        t.table.setAutoCreateRowSorter(true);
         t.pane=new JScrollPane(t.table);
         t.table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         SimpleRowHeaderRenderer r = new SimpleRowHeaderRenderer(t.table);

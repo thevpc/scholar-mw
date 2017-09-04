@@ -12,27 +12,14 @@ import java.awt.*;
  * @author vpc
  */
 public class ScatteredFramesWindowManager extends AbstractPlotWindowManager {
-    public void addPlotComponentImpl(PlotComponent component) {
-        createFrame(component.toComponent(), validateTitle(component.getPlotTitle()));
+    private PlotContainer rootContainer;
+
+    public ScatteredFramesWindowManager() {
+        rootContainer=new FramePlotContainer();
     }
 
     @Override
-    public void removePlotComponentImpl(PlotComponent component) {
-        JFrame f = (JFrame) component.toComponent().getClientProperty(JFrame.class.getName());
-        if (f != null) {
-            f.dispose();
-        }
-    }
-
-    private JFrame createFrame(JComponent cc,String title){
-        JFrame frame = new JFrame();
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(cc);
-        frame.pack();
-        frame.setVisible(true);
-        cc.putClientProperty(JFrame.class.getName(), frame);
-        return frame;
+    public PlotContainer getRootContainer() {
+        return rootContainer;
     }
 }

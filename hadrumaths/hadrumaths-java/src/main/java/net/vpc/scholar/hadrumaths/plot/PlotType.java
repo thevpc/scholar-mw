@@ -8,5 +8,5 @@ package net.vpc.scholar.hadrumaths.plot;
  * To change this template use File | Settings | File Templates.
  */
 public enum PlotType {
-    CURVE, MESH, HEATMAP,MATRIX, POLAR,AUTO,TABLE,ALL
+    CURVE, BAR, AREA, FIELD, PIE, RING, BUBBLE, MESH, HEATMAP, MATRIX, POLAR, AUTO, TABLE, ALL
 }

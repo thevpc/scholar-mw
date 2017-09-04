@@ -13,7 +13,17 @@ import javax.swing.*;
 public interface PlotComponent {
 
 
+    PlotWindowManager getPlotWindowManager();
+
+    void setPlotWindowManager(PlotWindowManager windowManager);
+
+    PlotContainer getParentPlotContainer();
+
+    void setParentPlotContainer(PlotContainer parentPlotContainer);
+
     String getPlotTitle();
+
+    void setPlotTitle(String title);
 
     String getLayoutConstraints();
 

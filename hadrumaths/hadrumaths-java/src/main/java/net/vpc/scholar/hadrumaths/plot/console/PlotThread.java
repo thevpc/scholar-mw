@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
 import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 
 import javax.swing.*;
@@ -84,7 +85,7 @@ class PlotThread extends Thread implements ProgressMonitor {
             } catch (Throwable e) {
                 plotter.getLog().error(e);
             }
-            SwingUtilities.invokeLater(new Runnable() {
+            SwingUtils.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     plotter.ticMonitor();

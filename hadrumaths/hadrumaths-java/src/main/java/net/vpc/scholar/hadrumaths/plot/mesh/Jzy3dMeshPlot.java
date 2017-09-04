@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.plot.mesh;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.chart.Settings;
@@ -33,12 +34,11 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
     private Chart chart;
 
     public Jzy3dMeshPlot(ValuesPlotModel model, JColorPalette colorPalette) {
-        this(model.getTitle(), model.getXVector(), model.getY() == null || model.getY().length == 0 ? Maths.dsteps(1, model.getX().length, 1.0) : model.getY()[0], model.getZd(),
-                colorPalette, null);
+        this(new ValuesPlotXYDoubleModelFace(model,null), colorPalette, null);
     }
 
     public Jzy3dMeshPlot(PlotModelProvider modelProvider, JColorPalette colorPalette) {
-        this(modelProvider.getModel().getTitle(), modelProvider.getModel().getXVector(), modelProvider.getModel().getY() == null || modelProvider.getModel().getY().length == 0 ? Maths.dsteps(1, modelProvider.getModel().getX().length, 1.0) : modelProvider.getModel().getY()[0], modelProvider.getModel().getZd(),
+        this(new ValuesPlotXYDoubleModelFace((ValuesPlotModel) modelProvider.getModel(),null),
                 colorPalette, modelProvider);
     }
 
@@ -52,18 +52,16 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         return null;
     }
 
-    public Jzy3dMeshPlot(String title, double[] x, double[] y, double[][] z, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
+    public Jzy3dMeshPlot(ValuesPlotXYDoubleModelFace model, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
         super(new BorderLayout());
-        titleLabel = new JLabel(title, SwingConstants.CENTER);
+        double[] x=model.getX();
+        double[] y=model.getY();
+        double[][] z=model.getZ();
+
+        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
 
         if (colorPalette == null) {
             colorPalette = HSBColorPalette.DEFAULT_PALETTE;
-        }
-        if (x == null) {
-            x = z.length == 0 ? new double[0] : Maths.dsteps(0, z[0].length - 1, 1.0);
-        }
-        if (y == null) {
-            y = z.length == 0 ? new double[0] : Maths.dsteps(0, z.length - 1, 1.0);
         }
         this.x = x;
         this.y = y;

@@ -20,6 +20,7 @@ import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 /**
  *
@@ -124,7 +125,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         }
 
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtils.invokeAndWait(new Runnable() {
 
                         @Override
             public void run() {
@@ -143,10 +144,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
                         }
                     });
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ConvergenceMultiPlotListener.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(ConvergenceMultiPlotListener.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }

@@ -1,9 +1,13 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
-import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
+import net.vpc.scholar.hadrumaths.plot.PlotBuilderListener;
+import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.util.*;
@@ -21,17 +25,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlotConsole implements PlotComponentDisplayer {
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
-
-    private long startTime=0;
     //    private JFrame currentFrame;
     public static int debugFramesCount = 0;
     public static String PLOT_CONSOLE_FILE_EXTENSION = "plotconsole";
     public static String PLOT_CONSOLE_FILE_DESC = "Java Plot Console";
     public static SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmmss");
     public static ExtensionFileChooserFilter CHOOSER_FILTER = new ExtensionFileChooserFilter(PLOT_CONSOLE_FILE_EXTENSION, PLOT_CONSOLE_FILE_DESC);
-
-
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+    private final Object autoSaving = new Object();
+    boolean disposing;
+    private long startTime = 0;
     //    private Plot currentCourbePlot;
     //    private StringBuffer xtitle = new StringBuffer();
     //    private StringBuffer ytitle = new StringBuffer();
@@ -48,24 +51,18 @@ public class PlotConsole implements PlotComponentDisplayer {
     private int globalProgressIndex;
     private JTextArea logger;
     private TLog log = new ConsoleLogger(this);
-
     private MainPlotterFrame mainPlotterFrame;
     private CloseOption closeOption = CloseOption.EXIT;
     private TaskMonitor taskMonitor;
-    private LockMonitor lockMonitor;
-    private final Object autoSaving = new Object();
 //    private PlotAxis currentY = null;
-
+    private LockMonitor lockMonitor;
     private boolean readOnly = false;
     private String autoSavingFilePattern;
     private File currentAutoSavingFile;
     private ObjectOutputStream autoSavingFileOutputStream;
     private boolean autoSave = false;
-
-
     private long progressPeriod = 2000;
     private File currentDirectory = null;
-
     private ProgressMonitorThread progressMonitorThread;
     private boolean cacheByIteration = false;
     private HFile cachePrefix = null;
@@ -111,8 +108,6 @@ public class PlotConsole implements PlotComponentDisplayer {
         }
         return this;
     }
-
-    boolean disposing;
 
     public void dispose() {
 
@@ -169,18 +164,19 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     public EnhancedProgressMonitor logger(String title) {
         EnhancedProgressMonitor logger = ProgressMonitorFactory.logger(5 * Maths.SECOND);
-        getTaskMonitor().addTask(logger,title,null);
+        getTaskMonitor().addTask(logger, title, null);
         return logger;
     }
+
     public PlotDataBuilder createPlot() {
         return new PlotDataBuilder(this);
     }
 
-    public PlotDataBuilder parametrizedPlotter(){
+    public PlotDataBuilder parametrizedPlotter() {
         return new PlotDataBuilder(this);
     }
 
-    public PlotBuilder plotter(){
+    public PlotBuilder plotter() {
         return new PlotBuilder().display(false).plotBuilderListener(new PlotBuilderListener() {
             @Override
             public void onPlot(PlotComponent component, PlotBuilder builder) {
@@ -351,11 +347,11 @@ public class PlotConsole implements PlotComponentDisplayer {
                                         if (cachePrefix != null) {
                                             if (cacheByIteration) {
                                                 if (directClone instanceof CacheAware) {
-                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct/" + serieTitle.toString()));
+                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/Direct/" + serieTitle.toString()));
                                                 }
                                             } else {
                                                 if (directClone instanceof CacheAware) {
-                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix ,"/Direct"));
+                                                    ((CacheAware) directClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/Direct"));
                                                 }
                                             }
                                         }
@@ -365,11 +361,11 @@ public class PlotConsole implements PlotComponentDisplayer {
                                         if (cachePrefix != null) {
                                             if (cacheByIteration) {
                                                 if (modelClone instanceof CacheAware) {
-                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct/" + serieTitle.toString()));
+                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/Direct/" + serieTitle.toString()));
                                                 }
                                             } else {
                                                 if (modelClone instanceof CacheAware) {
-                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix , "/Direct"));
+                                                    ((CacheAware) modelClone).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/Direct"));
                                                 }
                                             }
                                         }
@@ -510,7 +506,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 }
             }
         }
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtils.invokeLater(new Runnable() {
             public void run() {
                 action.execute(PlotConsole.this);
             }
@@ -518,25 +514,18 @@ public class PlotConsole implements PlotComponentDisplayer {
     }
 
     public void loadFile(File file) throws IOException {
-
         String e = IOUtils.getFileExtension(file).toLowerCase();
-        if (
-                (
-                        e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)
-                                || e.equals(Plot.JFIG_FILE_EXTENSION)
-                                || e.equals(Plot.JFIGDATA_FILE_EXTENSION)
-                                || e.equals(Plot.JFB_FILE_EXTENSION)
-                )
-                ) {
-            run(new ConsoleActionPlotFile(file));
-        } else if (e.equals(PLOT_CONSOLE_FILE_EXTENSION)) {
+        if (e.equals(PLOT_CONSOLE_FILE_EXTENSION)) {
             loadConsole(file);
+        } else if (Plot.acceptFileExtension(file)) {
+            run(new ConsoleActionPlotFile(file));
         } else {
             throw new IOException("Unsupported File Extension " + e);
         }
     }
 
     public void loadConsole(File file) throws IOException {
+        setFrameTitle(file.getName());
         setCurrentDirectory(file.getParentFile());
         ObjectInputStream oos = null;
         try {
@@ -603,6 +592,13 @@ public class PlotConsole implements PlotComponentDisplayer {
         return autoSavingFilePattern;
     }
 
+    public void setAutoSavingFilePattern(String autoSavingFilePattern) {
+        if (this.autoSavingFilePattern != null && !this.autoSavingFilePattern.equals(autoSavingFilePattern)) {
+            disposeAutoSave();
+        }
+        this.autoSavingFilePattern = autoSavingFilePattern;
+    }
+
     public File getCurrentAutoSavingFile() {
         if (currentAutoSavingFile == null) {
             String file = this.autoSavingFilePattern;
@@ -626,13 +622,6 @@ public class PlotConsole implements PlotComponentDisplayer {
             currentAutoSavingFile = new File(getCurrentDirectory(), file);
         }
         return currentAutoSavingFile;
-    }
-
-    public void setAutoSavingFilePattern(String autoSavingFilePattern) {
-        if (this.autoSavingFilePattern != null && !this.autoSavingFilePattern.equals(autoSavingFilePattern)) {
-            disposeAutoSave();
-        }
-        this.autoSavingFilePattern = autoSavingFilePattern;
     }
 
     public File getCurrentDirectory() {
@@ -677,7 +666,7 @@ public class PlotConsole implements PlotComponentDisplayer {
             }
             getMainPlotterFrame().addSystemWindow(f);
         }
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtils.invokeLater(new Runnable() {
             public void run() {
                 logger.append(msg + "\n");
             }
@@ -695,7 +684,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     }
 
     public String getFrameTitle() {
-        return "Hadhrumaths Console :: "+frameTitle;
+        return "Hadhrumaths Console :: " + frameTitle;
     }
 
     public void setFrameTitle(String frameTitle) {

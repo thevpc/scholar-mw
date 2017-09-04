@@ -15,7 +15,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,11 +102,27 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         }
         switch (type) {
             case CURVE: {
-                this.mainComponent = createCourbePanel();
+                this.mainComponent = createCurvePanel();
                 break;
             }
             case POLAR: {
                 this.mainComponent = createPolarPanel();
+                break;
+            }
+            case BAR: {
+                this.mainComponent = createBarPanel();
+                break;
+            }
+            case AREA: {
+                this.mainComponent = createAreaPanel();
+                break;
+            }
+            case PIE: {
+                this.mainComponent = createPiePanel();
+                break;
+            }
+            case FIELD: {
+                this.mainComponent = createVectorPanel();
                 break;
             }
             case MESH: {
@@ -124,6 +139,14 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
             }
             case TABLE: {
                 this.mainComponent = createTablePanel();
+                break;
+            }
+            case BUBBLE: {
+                this.mainComponent = createBubblePanel();
+                break;
+            }
+            case RING: {
+                this.mainComponent = createRingPanel();
                 break;
             }
             default: {
@@ -170,7 +193,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         return ChartFactory.createMesh(model, null);
     }
 
-    public PlotComponentPanel createCourbePanel() {
+    public PlotComponentPanel createCurvePanel() {
         if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
             return new PlotCanvasCurveJFreeChart(this);
         } else {
@@ -178,11 +201,59 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         }
     }
 
+    public PlotComponentPanel createBarPanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasBarJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
+    public PlotComponentPanel createAreaPanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasAreaJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
+    public PlotComponentPanel createPiePanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasPieJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
+    public PlotComponentPanel createVectorPanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasVectorJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
+    public PlotComponentPanel createRingPanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasRingJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
+    public PlotComponentPanel createBubblePanel() {
+        if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
+            return new PlotCanvasBubbleJFreeChart(this);
+        } else {
+            return createCurvePanel();
+        }
+    }
+
     public PlotComponentPanel createPolarPanel() {
         if (model.getPreferredLibraries().contains(ExternalLibrary.CHARTS_JFREECHART)) {
             return new PlotCanvasPolarJFreeChart(this);
         } else {
-            return createCourbePanel();
+            return createCurvePanel();
         }
     }
 
@@ -222,7 +293,11 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
     }
 
     public String getPlotTitle() {
-        return getModel().getTitle();
+        String baseTitle = super.getPlotTitle();
+        if(baseTitle ==null){
+            return this.model.getTitle();
+        }
+        return baseTitle;
     }
 
     public JComponent toComponent() {
