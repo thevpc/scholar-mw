@@ -100,37 +100,7 @@ public class FramePlotContainer extends AbstractPlotContainer {
         return toPlotComponent(getFrame(index));
     }
 
-    @Override
-    public PlotContainer add(int index, String containerName) {
-        if (index >= 0) {
-            PlotComponent plotComponent = getPlotComponent(index);
-            PlotContainer t = getPlotWindowContainerFactory().create();
-            t.setPlotTitle(containerName);
-            t.setPlotWindowManager(getPlotWindowManager());
-            JFrame frame=null;
-            if(index<frames.size()) {
-                frame = addFrame(index);
-                frame.setTitle(containerName);
-            }else{
-                frame =getFrame(index);
-            }
-            frame.getContentPane().removeAll();
-            frame.getContentPane().add(toComponent(t));
-            if(plotComponent!=null) {
-                t.add(plotComponent);
-            }
-            return t;
-        }
-        return null;
-    }
 
-    private JFrame addFrame(int index) {
-        JFrame f=new JFrame();
-        synchronized (frames) {
-            frames.add(index,f);
-        }
-        return f;
-    }
 
     private void showFrame(int i) {
         JFrame frame = getFrame(i);
@@ -157,14 +127,33 @@ public class FramePlotContainer extends AbstractPlotContainer {
         getFrame(index).dispose();
     }
 
-    public void addPlotComponentImpl(PlotComponent component) {
-        JFrame f = new JFrame(validateTitle(component.getPlotTitle()));
+    private JFrame addFrame(int index) {
+        JFrame f=new JFrame();
         f.getContentPane().setLayout(new BorderLayout());
-        f.getContentPane().add(toComponent(component));
         f.addWindowListener(windowMonitor);
-        f.pack();
-        f.setVisible(true);
-        frames.add(f);
+        synchronized (frames) {
+            if(index<0){
+                frames.add(f);
+            }else {
+                frames.add(index, f);
+            }
+        }
+        return f;
+    }
+
+    public void addComponentImpl(PlotComponent component, int index) {
+        JFrame frame=null;
+        if(index<frames.size()) {
+            frame = addFrame(index);
+            frame.setTitle(component.getPlotTitle());
+        }else{
+            frame =getFrame(index);
+        }
+
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(toComponent(component));
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public JComponent createComponent() {

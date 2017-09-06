@@ -6,11 +6,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 /**
  * @author vpc
@@ -50,22 +46,6 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
     }
 
     @Override
-    public PlotContainer add(int index, String containerName) {
-        if (index >= 0) {
-            PlotComponent component = getPlotComponent(index);
-            PlotContainer t = getPlotWindowContainerFactory().create();
-            t.setPlotTitle(containerName);
-            t.setPlotWindowManager(getPlotWindowManager());
-            jTabbedPane.setComponentAt(index, toComponent(t));
-            if (component != null) {
-                t.add(component);
-            }
-            return t;
-        }
-        return null;
-    }
-
-    @Override
     public int getPlotComponentsCount() {
         if (jTabbedPane != null) {
             return jTabbedPane.getTabCount();
@@ -79,9 +59,13 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
         jTabbedPane.removeTabAt(index);
     }
 
-    public void addPlotComponentImpl(PlotComponent component) {
+    public void addComponentImpl(PlotComponent component, int index) {
         JComponent component1 = toComponent(component);
-        jTabbedPane.addTab(validateTitle(component.getPlotTitle()), component1);
+        if(index<0) {
+            jTabbedPane.addTab(validateTitle(component.getPlotTitle()), component1);
+        }else{
+            jTabbedPane.setComponentAt(index, component1);
+        }
     }
 
 //    private String id(Object o) {
@@ -117,5 +101,6 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
         }
         return jTabbedPane;
     }
+
 
 }

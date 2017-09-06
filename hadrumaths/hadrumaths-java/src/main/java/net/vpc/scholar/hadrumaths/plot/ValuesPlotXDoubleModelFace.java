@@ -34,7 +34,7 @@ public class ValuesPlotXDoubleModelFace {
                     if(model.getYVisible(i)){
                         double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
                         double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1,yAxis[i].length-1),xmultiplier));
+                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1,yAxis[i].length),xmultiplier));
                         yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                     }
@@ -48,7 +48,7 @@ public class ValuesPlotXDoubleModelFace {
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                         if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length<yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
-                                xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length - 1),xmultiplier));
+                                xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length),xmultiplier));
                             } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
                             }

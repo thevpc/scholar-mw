@@ -49,6 +49,10 @@ public class PlotLines {
         addValue(p.getTitle(), p.getX(), p.getY());
     }
 
+    public void addValue(String name, double x, double y) {
+        addValue(name,x,Complex.valueOf(y));
+    }
+
     public void addValue(String name, double x, Complex y) {
         if (y == null) {
             throw new NullPointerException();
@@ -259,7 +263,7 @@ public class PlotLines {
         return doubleComplexMap;
     }
 
-    public PlotLines transformStretchDomain() {
+    public PlotLines stretchDomain() {
         double max = 0;
         for (String t : this.titles()) {
             max = Maths.max(max, this.getLine(t).length());
@@ -289,7 +293,7 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines transformInterpolate(InterpolationStrategy strategy) {
+    public PlotLines interpolate(InterpolationStrategy strategy) {
         Double[] xvalues = this.xvalues.toArray(new Double[this.xvalues.size()]);
         String[] xtitles = this.titles().toArray();
         TList<TList<Complex>> values = getValues(strategy);
@@ -363,6 +367,20 @@ public class PlotLines {
                         }
                         break;
                     }
+                    case ZERO:{
+                        //do nothing let it zero
+                        break;
+                    }
+                    case NAN:{
+                        //do nothing let it NAN
+                        for (Integer zeroIndex : indefinedValues) {
+                            if (zeroIndex > 0 && zeroIndex + 1 < t.size() && !indefinedValues.contains(zeroIndex - 1) && !indefinedValues.contains(zeroIndex + 1)) {
+                                t.set(zeroIndex, Complex.NaN);
+//                        t.set(zeroIndex, Complex.valueOf(3000));
+                            }
+                        }
+                        break;
+                    }
                     default: {
                         for (Integer zeroIndex : indefinedValues) {
                             if (zeroIndex > 0 && zeroIndex + 1 < t.size() && !indefinedValues.contains(zeroIndex - 1) && !indefinedValues.contains(zeroIndex + 1)) {
@@ -378,12 +396,6 @@ public class PlotLines {
             all.append(t);
         }
         return all;
-    }
-
-    public enum InterpolationStrategy {
-        DEFAULT,
-        SMOOTH,
-        PREDECESSOR,
     }
 
     public static class PlotPoint {

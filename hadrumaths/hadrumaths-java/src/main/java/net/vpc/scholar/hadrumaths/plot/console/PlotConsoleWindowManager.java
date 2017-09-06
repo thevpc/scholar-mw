@@ -19,9 +19,11 @@ public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
         }
 
         @Override
-        public void addPlotComponentImpl(PlotComponent component) {
-            ConsoleWindow w = plotConsole.getMainPlotterFrame().getWindow(createWindowPath(component.getPlotTitle()));
-            w.setComponent(component.toComponent());
+        public void addComponentImpl(PlotComponent component, int index) {
+            //if(index<=0) {
+                ConsoleWindow w = plotConsole.getMainPlotterFrame().getWindow(createWindowPath(component.getPlotTitle()));
+                w.setComponent(component.toComponent());
+            //}
         }
 
         @Override
@@ -34,10 +36,6 @@ public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
             return 0;
         }
 
-        @Override
-        public PlotContainer add(int index, String containerName) {
-            return null;
-        }
 
         @Override
         public void clear() {

@@ -27,9 +27,9 @@ public class ValuesPlotXYDoubleModelFace {
         }
         double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
 
-        this.x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(x0),defaultXMultiplier);
-        this.y = ArrayUtils.toValidOneDimArray(y0, this.x.length);
+        this.x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(x0,(z==null||z.length==0)?-1:z[0].length),defaultXMultiplier);
         this.z = Maths.toDouble(ArrayUtils.toValidTwoDimArray(z0), model.getZDoubleFunction());
+        this.y = ArrayUtils.toValidOneDimArray(y0, this.z.length);
 
         if (this.x.length == 0) {
             this.x = this.z.length == 0 ? new double[0] : Maths.dsteps(0, this.z[0].length - 1, 1.0);

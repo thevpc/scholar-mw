@@ -19,7 +19,7 @@ import java.util.Objects;
  * @author vpc
  */
 public abstract class AbstractPlotContainer implements PlotContainer {
-    private PlotWindowContainerFactory plotWindowContainerFactory=TabbedPlotWindowContainerFactory.INSTANCE;
+    private PlotWindowContainerFactory plotWindowContainerFactory = TabbedPlotWindowContainerFactory.INSTANCE;
     private String title = "Plot";
     private String layoutConstraints = "";
     private PlotWindowManager plotWindowManager;
@@ -47,7 +47,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
     @Override
     public PlotComponent getPlotComponent(String name) {
         int index = indexOfPlotComponent(name);
-        if(index>=0){
+        if (index >= 0) {
             return getPlotComponent(index);
         }
         return null;
@@ -58,15 +58,15 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         int count = getPlotComponentsCount();
         for (int i = 0; i < count; i++) {
             PlotComponent c = getPlotComponent(i);
-            if(c!=null) {
+            if (c != null) {
                 if (StringUtils.trim(c.getPlotTitle()).equals(StringUtils.trim(name))) {
                     return i;
                 }
             }
         }
-        if(StringUtils.isInt(name)){
-            int x=Integer.parseInt(name);
-            if(x>=0 && x<count){
+        if (name.startsWith("#") && StringUtils.isInt(name.substring(1))) {
+            int x = Integer.parseInt(name.substring(1));
+            if (x >= 0 && x < count) {
                 PlotComponent c = getPlotComponent(x);
                 if (c != null) {
                     return x;
@@ -152,24 +152,17 @@ public abstract class AbstractPlotContainer implements PlotContainer {
     }
 
     public void add(final PlotComponent component) {
-
-            SwingUtils.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    if (component.getParentPlotContainer() != AbstractPlotContainer.this) {
-                        component.setParentPlotContainer(AbstractPlotContainer.this);
-                    }
-                    JComponent jComponent = component.toComponent();
-                    jComponent.addPropertyChangeListener("title", titleChangeListener);
-                    jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
-                    jComponent.putClientProperty(PlotComponent.class.getName(), component);
-                    addPlotComponentImpl(component);
-                }
-            });
+        prepare(component);
+        SwingUtils.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                addComponentImpl(component, -1);
+            }
+        });
 
     }
 
-    public abstract void addPlotComponentImpl(PlotComponent component);
+    public abstract void addComponentImpl(PlotComponent component, int index);
 
     @Override
     public String getPlotTitle() {
@@ -177,9 +170,9 @@ public abstract class AbstractPlotContainer implements PlotContainer {
     }
 
     public void setPlotTitle(String title) {
-        String old=this.title;
+        String old = this.title;
         this.title = title;
-        firePlotPropertyEvent("title",old,title);
+        firePlotPropertyEvent("title", old, title);
     }
 
     public void display() {
@@ -264,5 +257,37 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 return;
             }
         }
+    }
+
+    private void prepare(PlotComponent component) {
+        if (component.getParentPlotContainer() != AbstractPlotContainer.this) {
+            component.setParentPlotContainer(AbstractPlotContainer.this);
+        }
+        JComponent jComponent = component.toComponent();
+        jComponent.addPropertyChangeListener("title", titleChangeListener);
+        jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
+        jComponent.putClientProperty(PlotComponent.class.getName(), component);
+    }
+
+    @Override
+    public PlotContainer add(int index, String containerName) {
+        PlotContainer container = getPlotWindowContainerFactory().create();
+        container.setPlotTitle(containerName);
+        container.setPlotWindowManager(plotWindowManager);
+        PlotComponent oldComponent = null;
+        if (index >= 0) {
+            oldComponent = getPlotComponent(index);
+        }
+        prepare(container);
+        SwingUtils.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                addComponentImpl(container, index);
+            }
+        });
+        if (oldComponent != null) {
+            container.add(oldComponent);
+        }
+        return container;
     }
 }

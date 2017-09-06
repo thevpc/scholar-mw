@@ -3087,6 +3087,48 @@ public final class Maths {
         return a<b?a:b;
     }
 
+    public static double min(double[] arr) {
+        if(arr.length==0){
+            return Double.NaN;
+        }
+        double min=Double.NaN;
+        for (int i = 0; i < arr.length; i++) {
+            if(Double.isNaN(min) || (!Double.isNaN(arr[i]) && arr[i]<min)){
+                min=arr[i];
+            }
+        }
+        return min;
+    }
+    public static double max(double[] arr) {
+        if(arr.length==0){
+            return Double.NaN;
+        }
+        double max=Double.NaN;
+        for (int i = 0; i < arr.length; i++) {
+            if(Double.isNaN(max) || (!Double.isNaN(arr[i]) && arr[i]>max)){
+                max=arr[i];
+            }
+        }
+        return max;
+    }
+    public static double avg(double[] arr) {
+        if(arr.length==0){
+            return Double.NaN;
+        }
+        double max=0;
+        int count=0;
+        for (int i = 0; i < arr.length; i++) {
+            if((!Double.isNaN(arr[i]))){
+                max+=arr[i];
+                count++;
+            }
+        }
+        if(count==0){
+            return Double.NaN;
+        }
+        return max/count;
+    }
+
     public static int min(int a,int b) {
         return a<b?a:b;
     }

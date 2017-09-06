@@ -54,21 +54,6 @@ public class PanelPlotContainer extends AbstractPlotContainer {
         return null;
     }
 
-    @Override
-    public PlotContainer add(int index, String containerName) {
-        if (index >= 0) {
-            PlotComponent component = getPlotComponent(index);
-            PlotContainer t = getPlotWindowContainerFactory().create();
-            t.setPlotTitle(containerName);
-            t.setPlotWindowManager(getPlotWindowManager());
-            panel.add(toComponent(t),index);
-            if (component != null) {
-                t.add(component);
-            }
-            return t;
-        }
-        return null;
-    }
 
     @Override
     public int getPlotComponentsCount() {
@@ -84,10 +69,14 @@ public class PanelPlotContainer extends AbstractPlotContainer {
         panel.remove(index);
     }
 
-    public void addPlotComponentImpl(PlotComponent component) {
-        JComponent component1 = toComponent(component);
+    public void addComponentImpl(PlotComponent component, int index) {
+        JComponent jcomp = toComponent(component);
         String title = validateTitle(component.getPlotTitle());//how to use this?
-        panel.add(component1);
+        if(index<0) {
+            panel.add(jcomp);
+        }else {
+            panel.add(jcomp,index);
+        }
     }
 
 //    private String id(Object o) {

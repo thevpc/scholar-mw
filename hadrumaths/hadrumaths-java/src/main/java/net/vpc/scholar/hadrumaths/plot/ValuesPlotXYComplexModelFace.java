@@ -22,9 +22,9 @@ public class ValuesPlotXYComplexModelFace {
         }
         double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
 
-        x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(model.getX()),defaultXMultiplier);
-        y = ArrayUtils.toValidOneDimArray(model.getY(), x.length);
+        x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(model.getX(),(z==null||z.length==0)?-1:z[0].length),defaultXMultiplier);
         z = ArrayUtils.toValidTwoDimArray(model.getZ());
+        y = ArrayUtils.toValidOneDimArray(model.getY(), z.length);
 
         if (x.length == 0) {
             x = z.length == 0 ? new double[0] : Maths.dsteps(0, z[0].length - 1, 1.0);

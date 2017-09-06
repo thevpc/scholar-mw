@@ -176,7 +176,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
     }
 
     @Override
-    public void addPlotComponentImpl(PlotComponent component) {
+    public void addComponentImpl(PlotComponent component, int index) {
         throw new IllegalArgumentException("Never called");
     }
 
