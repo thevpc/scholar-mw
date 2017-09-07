@@ -1587,7 +1587,7 @@ public final class ArrayUtils {
             if(d==null){
                 a[i]=new Complex[0];
             }
-            for (int j = 0; j < a.length; j++) {
+            for (int j = 0; j < a[i].length; j++) {
                 Complex c = a[i][j];
                 if(c==null){
                     a[i][j]=Complex.ZERO;

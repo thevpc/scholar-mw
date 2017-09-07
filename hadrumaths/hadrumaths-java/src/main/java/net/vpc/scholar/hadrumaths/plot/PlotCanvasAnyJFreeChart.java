@@ -21,6 +21,7 @@ import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.AreaRenderer;
@@ -44,6 +45,7 @@ import java.util.HashSet;
  * @author vpc
  */
 public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComponentPanel {
+    public static final Shape[] STANDARD_SERIES_SHAPES = DefaultDrawingSupplier.createStandardSeriesShapes();
     protected PlotModelProvider plotModelProvider;
     protected ChartPanel chartPanel;
     protected JColorPalette paintArray = Maths.DEFAULT_PALETTE;
@@ -514,9 +516,9 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 nodeType = lineConfig.nodeType;
                 if (nodeType == null) {
                     nodeType = config.nodeType;
-                }
-                if (nodeType == null) {
-                    nodeType = 0;
+                    if (nodeType == null) {
+                        nodeType = 0;
+                    }
                 } else {
                     nodeType = nodeType + 1;
                 }
@@ -524,43 +526,19 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             if (nodeType == -1) {
                 //will alternate by default
             } else {
-
-
-                switch (Maths.abs(nodeType) % 3) {
-                    case 0: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = false;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = true;
-                        }
-                        //leave defaults
-                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
-                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
-                        break;
+                if(nodeType==0){
+                    r.setSeriesShapesFilled(jfreeChartIndex, false);
+                    r.setSeriesShapesVisible(jfreeChartIndex, false);
+                }else{
+                    if (lineConfig.shapesVisible == null) {
+                        lineConfig.shapesVisible = true;
                     }
-                    case 1: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = true;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = false;
-                        }
-                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
-                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
-                        break;
+                    if (lineConfig.shapesFilled == null) {
+                        lineConfig.shapesFilled = true;
                     }
-                    case 2: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = true;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = true;
-                        }
-                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesFilled);
-                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesVisible);
-                        break;
-                    }
+                    r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
+                    r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
+                    r.setSeriesShape(jfreeChartIndex,STANDARD_SERIES_SHAPES[(nodeType-1)%STANDARD_SERIES_SHAPES.length]);
                 }
             }
             Integer lineType = null;

@@ -62,9 +62,6 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
         data = new ValuesPlotXDoubleModelFace(model, config);
         MinMax x_minmax = new MinMax();
         MinMax y_minmax = new MinMax();
-        if(data.getX(0).length!=data.getY(0).length){
-            data = new ValuesPlotXDoubleModelFace(model, config);
-        }
         for (int i = 0; i < data.size(); i++) {
             double[] y = data.getY(i);
             double[] x = data.getX(i);

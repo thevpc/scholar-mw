@@ -535,7 +535,7 @@ public class PlotBuilder {
                 }
 //                if (s.equals("object") || s.equals("null")) {
                 //TODO should i return a container instead?
-                PlotModelList list = new PlotModelList("All");
+                PlotModelList list = new PlotModelList(title);
                 for (Object a : PlotTypesHelper.toObjectArray(o)) {
                     list.add(_plotAny(a));
                 }

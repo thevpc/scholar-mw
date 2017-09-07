@@ -52,7 +52,28 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
 
     @Override
     public void setModel(PlotModel model) {
-        this.setModel((ValuesPlotModel) model);
+        if(model ==null){
+            throw new NullPointerException();
+        }
+
+        if(!(model instanceof PlotModelList)){
+            PlotModelList r=new PlotModelList(model.getTitle());
+            r.add(model);
+            model=r;
+        }
+        if (this.model != model) {
+            PlotModelList oldmodel=this.model;
+            Map<String, Object> oldPops=null;
+            if (oldmodel != null) {
+//                oldmodel.removePropertyChangeListener(plotListener);
+//                oldPops = new HashMap<>(this.model.getProperties());
+//                model.setZDoubleFunction(oldmodel.getZDoubleFunction());
+            }
+            this.model = (PlotModelList) model;
+//            this.model.setProperties(oldPops);
+//            this.model.addPropertyChangeListener(plotListener);
+            setup();
+        }
     }
     //    public ValuesPlotPanel(PlotWindowManager windowManager) {
 //        this(null, null,null,windowManager);
@@ -66,21 +87,7 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
         return this;
     }
 
-    public void setModel(PlotModelList model) {
-        if (this.model != model) {
-            PlotModelList oldmodel=this.model;
-            Map<String, Object> oldPops=null;
-            if (oldmodel != null) {
-//                oldmodel.removePropertyChangeListener(plotListener);
-//                oldPops = new HashMap<>(this.model.getProperties());
-//                model.setZDoubleFunction(oldmodel.getZDoubleFunction());
-            }
-            this.model = model;
-//            this.model.setProperties(oldPops);
-//            this.model.addPropertyChangeListener(plotListener);
-            setup();
-        }
-    }
+
 
 
     private void setup() {
@@ -124,7 +131,9 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     private JComponent createGrid() {
         int size = model.size();
         if(size<=1){
-            return Plot.create(model,windowManager).toComponent();
+            for (PlotModel plotModel : model) {
+                return Plot.create(plotModel,windowManager).toComponent();
+            }
         }
         if(size<=2){
             JPanel panel=new JPanel();

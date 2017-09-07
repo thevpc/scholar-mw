@@ -984,13 +984,13 @@ public final class Plot {
             JTabbedPane jTabbedPane = new JTabbedPane();
             JPanel general = new JPanel(
                     new GridBagLayout2()
-                            .addLine("[<showLegend     ][<nodeLabelCheckBox  ][<threeDCheckBox  ]")
-                            .addLine("[<alternateColor ][<alternateNode  ][<alternateLine  ]")
+                            .addLine("[<showLegend     ][<defaultMaxLegendLabel][defaultMaxLegendText -]")
+                            .addLine("[<alternateColor ][<nodeLabelCheckBox  ][<threeDCheckBox  ]")
+                            .addLine("[<alternateNode  ][<defaultNodeTypeLabel][defaultNodeType - ][< zeroForDefaultsLabel2]")
+                            .addLine("[<alternateLine  ][<defaultLineTypeLabel][defaultLineType - ][< zeroForDefaultsLabel1]")
                             .addLine("[<lineStepTypeLabel][lineStepTypeCombo -]")
-                            .addLine("[<defaultMaxLegendLabel][defaultMaxLegendText -]")
+                            .addLine("")
                             .addLine("[<polarOffsetLabel][polarOffsetText -][<clockwiseCheckBox  ]")
-                            .addLine("[<defaultLineTypeLabel][defaultLineType - ][< zeroForDefaultsLabel1]")
-                            .addLine("[<defaultNodeTypeLabel][defaultNodeType - ][< zeroForDefaultsLabel2]")
                             .setInsets(".*", new Insets(3, 3, 3, 3))
             );
             PlotConfig config = (PlotConfig) model.getProperty("config", null);

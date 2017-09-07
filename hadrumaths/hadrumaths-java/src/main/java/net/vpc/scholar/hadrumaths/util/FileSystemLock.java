@@ -67,11 +67,11 @@ public class FileSystemLock extends AbstractAppLock{
                                 is.close();
                             }
                         }
-                        return true;
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
                 }
+                file.delete();
                 AppLockManager.getInstance().fireLockReleased(this);
             }
         }

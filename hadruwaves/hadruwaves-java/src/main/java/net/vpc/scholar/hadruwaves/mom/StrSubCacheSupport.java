@@ -3,6 +3,7 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
+import net.vpc.scholar.hadrumaths.util.HFile;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
@@ -22,7 +23,7 @@ abstract class StrSubCacheSupport<T> extends CacheSupport<T> {
 
     protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, HashValue subdump,ProgressMonitor monitor) {
         super(new PersistenceCache(
-                IOUtils.createHFile(momStructure.persistentCache.getDumpFolder(momStructure.dump(), true)+"/"+cacheItemName),
+                new HFile(momStructure.persistentCache.getDumpFolder(momStructure.dump(), true),cacheItemName),
                 cacheItemName + ".dump",
                 momStructure.persistentCache
         ), cacheItemName, monitor);

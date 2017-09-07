@@ -130,10 +130,10 @@ public class PlotConfig implements Cloneable{
             config.alternateColor = true;
         }
         if (config.alternateNode == null) {
-            config.alternateNode = true;
+            config.alternateNode = false;
         }
         if (config.alternateLine == null) {
-            config.alternateLine = true;
+            config.alternateLine = false;
         }
 
         if (config.lineStepType == null) {
