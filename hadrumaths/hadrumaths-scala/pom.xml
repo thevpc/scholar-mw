@@ -8,7 +8,7 @@
     <version>${scholar-version}</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.15</scholar-version>
+        <scholar-version>3.1.17</scholar-version>
         <github.global.server>github</github.global.server>
     </properties>
     <distributionManagement>

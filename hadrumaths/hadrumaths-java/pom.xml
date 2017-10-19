@@ -12,7 +12,7 @@
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.1.15</scholar-version>
+        <scholar-version>3.1.17</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>
@@ -82,6 +82,17 @@
             <artifactId>junit</artifactId>
             <version>RELEASE</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>java-oo</groupId>
+            <!-- javac 7:
+            <artifactId>javac-oo-plugin</artifactId>
+            <version>0.5</version>-->
+            <!-- javac 8: -->
+            <artifactId>javac8-oo-plugin</artifactId>
+            <version>0.5</version>
+            <scope>provided</scope> <!-- compile-only dep -->
         </dependency>
     </dependencies>
     <build>
@@ -153,6 +164,10 @@
             <id>jzy3d-releases</id>
             <name>Jzy3d Snapshots</name>
             <url>http://maven.jzy3d.org/releases</url>
+        </repository>
+        <repository>
+            <id>amelentev</id>
+            <url>http://amelentev.github.io/mvnrepo/</url>
         </repository>
     </repositories>
 </project>

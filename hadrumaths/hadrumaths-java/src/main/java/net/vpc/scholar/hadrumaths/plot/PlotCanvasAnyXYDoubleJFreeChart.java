@@ -1,17 +1,21 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.*;
+import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.XYZDataset;
 
-import java.util.HashSet;
-
-public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFreeChart{
+public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFreeChart {
     private ValuesPlotXYDoubleModelFace data;
+
     public PlotCanvasAnyXYDoubleJFreeChart(PlotModelProvider plotModelProvider) {
         super(plotModelProvider);
+    }
+
+    @Override
+    protected int initialIndex(int index) {
+        return data.getInitialIndex(index);
     }
 
     protected XYZDataset createXYZDataset() {
@@ -25,8 +29,8 @@ public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFree
             for (int xi = 0; xi < y.length; xi++) {
                 double yf = y[yi];
                 double xf = x[xi];
-                double c = data.getZ(xi,yi);
-                if (c!=0 && Double.isFinite(c)) {
+                double c = data.getZ(xi, yi);
+                if (c != 0 && Double.isFinite(c)) {
                     listOfXYZ.add(new double[]{xf, yf, c});
                 }
             }
@@ -44,7 +48,6 @@ public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFree
         dataset.addSeries(data.getTitle(), series);
         return dataset;
     }
-
 
 
     protected void init() {

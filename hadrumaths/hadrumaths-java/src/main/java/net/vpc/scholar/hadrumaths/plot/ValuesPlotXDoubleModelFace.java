@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,50 +11,64 @@ public class ValuesPlotXDoubleModelFace {
     private String title;
     private double[][] x;
     private double[][] y;
+    private int[] initialIndexes;
     private String[] ytitles;
 
-    public ValuesPlotXDoubleModelFace(ValuesPlotModel model,PlotConfig plotConfig) {
-        this.title=model.getTitle();
+    public ValuesPlotXDoubleModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
+        this.title = model.getTitle();
 
         double[][] xAxis = model.getX();
         double[][] yAxis = model.getZd();
 
+        List<Integer> initialIndexesList = new ArrayList<>();
         List<double[]> xAxisList = new ArrayList<>();
         List<double[]> yAxisList = new ArrayList<>();
         List<String> yTitleList = new ArrayList<>();
-        if(plotConfig==null){
+        if (plotConfig == null) {
             plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig=PlotConfig.copy(plotConfig).validate(model.getZ().length);
+            plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
         }
-        if(yAxis==null){
+        if (yAxis == null) {
             //do nothing
-        }else{
-            double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
-            if(xAxis==null){
+        } else {
+            double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+            if (xAxis == null) {
                 for (int i = 0; i < yAxis.length; i++) {
-                    if(model.getYVisible(i)){
-                        double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
-                        double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1,yAxis[i].length),xmultiplier));
-                        yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
+                    if (model.getYVisible(i)) {
+                        initialIndexesList.add(i);
+                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length), xmultiplier));
+                        yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                     }
                 }
-            }else {
+            } else {
                 for (int i = 0; i < yAxis.length; i++) {
-                    if(model.getYVisible(i)) {
-                        double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
-                        double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-                        yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
+                    if (model.getYVisible(i)) {
+                        initialIndexesList.add(i);
+                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
-                        if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length<yAxis[i].length) {
+                        if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
-                                xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length),xmultiplier));
+                                boolean ok = false;
+                                for (int j = Math.min(i - 1,xAxis.length-1); j >= 0; j--) {
+                                    if (xAxis[j] != null && yAxis[i].length == xAxis[j].length) {
+                                        ok = true;
+                                        xAxisList.add(PlotModelUtils.mul(xAxis[j], xmultiplier));
+                                        break;
+                                    }
+                                }
+                                if (!ok) {
+                                    xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length), xmultiplier));
+                                }
                             } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
                             }
-                        }else{
-                            xAxisList.add(PlotModelUtils.mul(xAxis[i],xmultiplier));
+                        } else {
+                            xAxisList.add(PlotModelUtils.mul(xAxis[i], xmultiplier));
                         }
                     }
                 }
@@ -61,14 +76,15 @@ public class ValuesPlotXDoubleModelFace {
         }
         x = xAxisList.toArray(new double[xAxisList.size()][]);
         y = yAxisList.toArray(new double[yAxisList.size()][]);
+        initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
 
         //rename titles with the same name
-        HashSet<String> visited=new HashSet<>();
+        HashSet<String> visited = new HashSet<>();
         for (int i = 0; i < yTitleList.size(); i++) {
-            String key=yTitleList.get(i);
+            String key = yTitleList.get(i);
             int keyIndex = 1;
             while (true) {
-                String kk = keyIndex==1 ? key : (key+" "+keyIndex);
+                String kk = keyIndex == 1 ? key : (key + " " + keyIndex);
                 if (!visited.contains(kk)) {
                     visited.add(kk);
                     key = kk;
@@ -77,9 +93,9 @@ public class ValuesPlotXDoubleModelFace {
                 visited.add(kk);
                 keyIndex++;
             }
-            yTitleList.set(i,key);
+            yTitleList.set(i, key);
         }
-        ytitles =yTitleList.toArray(new String[yTitleList.size()]);
+        ytitles = yTitleList.toArray(new String[yTitleList.size()]);
     }
 
 //    public ValuesPlotXDoubleModelFace(double[] x, double[] y, double[][] z, String title) {
@@ -90,13 +106,18 @@ public class ValuesPlotXDoubleModelFace {
 //    }
 
 
+    public int getInitialIndex(int series) {
+        return initialIndexes[series];
+    }
+
     public double[] getX(int series) {
         return x[series];
     }
 
-    public String getYTitle(int series){
+    public String getYTitle(int series) {
         return ytitles[series];
     }
+
     public double[] getY(int series) {
         return y[series];
     }
@@ -106,10 +127,10 @@ public class ValuesPlotXDoubleModelFace {
     }
 
     public int getSeriesLength() {
-        int len=0;
+        int len = 0;
         for (double[] doubles : y) {
-            if(doubles.length>len){
-                len=doubles.length;
+            if (doubles.length > len) {
+                len = doubles.length;
             }
         }
         return len;

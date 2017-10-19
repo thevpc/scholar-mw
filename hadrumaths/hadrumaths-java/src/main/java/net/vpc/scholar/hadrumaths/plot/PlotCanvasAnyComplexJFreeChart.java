@@ -36,6 +36,11 @@ public abstract class PlotCanvasAnyComplexJFreeChart extends PlotCanvasAnyJFreeC
         return dataset;
     }
 
+    @Override
+    protected int initialIndex(int index) {
+        return data.getInitialIndex(index);
+    }
+
     protected void init() {
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         loadConfig();

@@ -59,6 +59,14 @@ public final class ArrayUtils {
         return r;
     }
 
+    public static int[] unboxIntegerList(List<Integer> c) {
+        int[] r = new int[c.size()];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = c.get(i);
+        }
+        return r;
+    }
+
     public static double[] complexListToDoubleArray(List<Complex> c) {
         double[] r = new double[c.size()];
         for (int i = 0; i < r.length; i++) {

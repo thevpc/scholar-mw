@@ -77,6 +77,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         config.defaultXMultiplier = getDefaultXMultiplier();
     }
 
+    protected abstract int initialIndex(int index);
     protected abstract int dataSize();
 
     protected abstract void init();
@@ -271,7 +272,8 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             r.setBaseItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
         }
         int jfreeChartIndex = 0;
-        for (int i = 0; i < dataSize(); i++) {
+        for (int ii = 0; ii < dataSize(); ii++) {
+            int i=initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
             if (config.alternateColor) {
@@ -485,7 +487,8 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             r.setBaseItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
         }
         int jfreeChartIndex = 0;
-        for (int i = 0; i < dataSize(); i++) {
+        for (int ii = 0; ii < dataSize(); ii++) {
+            int i=initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
             if (config.alternateColor) {

@@ -359,6 +359,10 @@ public final class Plot {
         throw new UnsupportedOperationException("Unknown file format");
     }
 
+    public static ValuesPlotModel loadDataJfig(String file) throws IOException {
+        return loadDataJfig(new File(file));
+    }
+
     public static ValuesPlotModel loadDataJfig(File file) throws IOException {
         FileReader fileReader = null;
         try {
@@ -429,33 +433,24 @@ public final class Plot {
                     }
 
                     m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
-                }
-                if (line != null) {
-                    if (line.startsWith("title =")) {
-                        m.setTitle(line.substring("title".length() + 2));
-                    }
-                    if (line.startsWith("name =")) {
-                        m.setTitle(line.substring("name".length() + 2));
-                    }
-                    if (line.startsWith("xlabel =")) {
-                        m.setxTitle(line.substring("xlabel".length() + 2));
-                    }
-
-                    if (line.startsWith("ylabel =")) {
-                        m.setyTitle(line.substring("ylabel".length() + 2));
-                    }
-
-                    if (line.startsWith("plotType =")) {
-                        m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
-                    }
-
-                    if (line.startsWith("zDoubleFunction =")) {
-                        m.setZDoubleFunction(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
-                    }
-
-                    if (line.startsWith("ytitle =")) {
-                        ytitlesList.add(line.substring("ytitle".length() + 2));
-                    }
+                }else if (line.startsWith("title =")) {
+                    m.setTitle(line.substring("title".length() + 2));
+                }else if (line.startsWith("name =")) {
+                    m.setTitle(line.substring("name".length() + 2));
+                }else if (line.startsWith("xlabel =")) {
+                    m.setxTitle(line.substring("xlabel".length() + 2));
+                }else if (line.startsWith("ylabel =")) {
+                    m.setyTitle(line.substring("ylabel".length() + 2));
+                }else if (line.startsWith("plotType =")) {
+                    m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
+                }else if (line.startsWith("zDoubleFunction =")) {
+                    m.setZDoubleFunction(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
+                }else if (line.startsWith("ytitle =")) {
+                    ytitlesList.add(line.substring("ytitle".length() + 2));
+                }else if (line.startsWith("xformat =")) {
+                    m.setXformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
+                }else if (line.startsWith("yformat =")) {
+                    m.setYformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
                 }
             }
             m.setYtitles(ytitlesList.toArray(new String[ytitlesList.size()]));
@@ -642,6 +637,12 @@ public final class Plot {
                 for (int i = 0; i < ytitles.length; i++) {
                     printStream.println("ytitle =" + (model.getYtitles()[i] == null ? "" : model.getYtitles()[i]) + endLine);
                 }
+            }
+            if(model.getXformat()!=null){
+                printStream.println("xformat =" + IOUtils.serializeObjectToString(model.getXformat()));
+            }
+            if(model.getYformat()!=null){
+                printStream.println("yformat =" + IOUtils.serializeObjectToString(model.getXformat()));
             }
         } finally {
             if (printStream != null) {

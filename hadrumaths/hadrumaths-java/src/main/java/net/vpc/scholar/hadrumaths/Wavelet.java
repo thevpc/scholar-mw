@@ -35,26 +35,26 @@ public class Wavelet {
 /*
 * usage sample
 */
-    public static void main(String[] arg) {
-// this is a test, just for fun!
-        float[] data = new float[33];// choose your length to be a power of 2 + 1
-// initialize!
-        for (int k = 0; k < data.length; ++k) {
-            data[k] = 1.0f;
-        }
-        Wavelet cdf = new Wavelet();
-        cdf.transform(data);
-// print out transformed data (one data element per row!)
-        System.out.println("--Transformed data--");
-        for (int k = 0; k < data.length; ++k) {
-            System.out.println(" data[ " + k + " ]= " + data[k]);
-        }
-        cdf.invTransform(data);
-        System.out.println("--Recovered data--");
-        for (int k = 0; k < data.length; ++k) {
-            System.out.println(" data[ " + k + " ]= " + data[k]);
-        }
-    }
+//    public static void main(String[] arg) {
+//// this is a test, just for fun!
+//        float[] data = new float[33];// choose your length to be a power of 2 + 1
+//// initialize!
+//        for (int k = 0; k < data.length; ++k) {
+//            data[k] = 1.0f;
+//        }
+//        Wavelet cdf = new Wavelet();
+//        cdf.transform(data);
+//// print out transformed data (one data element per row!)
+//        System.out.println("--Transformed data--");
+//        for (int k = 0; k < data.length; ++k) {
+//            System.out.println(" data[ " + k + " ]= " + data[k]);
+//        }
+//        cdf.invTransform(data);
+//        System.out.println("--Recovered data--");
+//        for (int k = 0; k < data.length; ++k) {
+//            System.out.println(" data[ " + k + " ]= " + data[k]);
+//        }
+//    }
 
 
 // linear splines!

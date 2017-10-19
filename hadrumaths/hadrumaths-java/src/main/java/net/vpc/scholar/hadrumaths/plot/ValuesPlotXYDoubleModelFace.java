@@ -13,6 +13,7 @@ public class ValuesPlotXYDoubleModelFace {
     private String title;
     private double[] x;
     private double[] y;
+    private int[] initialIndexes;
     private String[] ytitles;
     private double[][] z;
 
@@ -21,6 +22,7 @@ public class ValuesPlotXYDoubleModelFace {
         double[][] y0 = model.getY();
         Complex[][] z0 = model.getZ();
 
+        List<Integer> initialIndexesList = new ArrayList<>();
         if(plotConfig==null){
             plotConfig = (PlotConfig) model.getProperty("config", null);
             plotConfig=PlotConfig.copy(plotConfig).validate(z0.length);
@@ -46,11 +48,13 @@ public class ValuesPlotXYDoubleModelFace {
             double ymultiplier=plotConfig.getYMultiplierAt(i,1);
             double v = this.y[i]*ymultiplier;
             if (model.getYVisible(i)) {
+                initialIndexesList.add(i);
                 yl.append(v);
                 zl.appendRow(this.z[i]);
                 ys.add(PlotModelUtils.resolveYTitle(model,i));
             }
         }
+        initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
         this.y = yl.toDoubleArray();
         this.z = zl.toDoubleArray();
         ytitles = ys.toArray(new String[ys.size()]);
@@ -83,6 +87,9 @@ public class ValuesPlotXYDoubleModelFace {
         this.ytitles = ys.toArray(new String[ys.size()]);
     }
 
+    public int getInitialIndex(int series) {
+        return initialIndexes[series];
+    }
 
     public double[] getX() {
         return x;

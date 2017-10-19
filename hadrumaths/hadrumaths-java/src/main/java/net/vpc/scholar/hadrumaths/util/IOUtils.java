@@ -21,6 +21,7 @@ public final class IOUtils {
      */
     public static final int DEFAULT_BUFFER_SIZE = 1024;
     public static final String WRITE_TEMP_EXT = ".temp";
+    private static StringSerializer DEFAULT_STRING_SERIALIZER = new DefaultStringSerializer();
 
     /**
      * copy le flux d'entree dans le lux de sortie
@@ -398,6 +399,14 @@ public final class IOUtils {
         byte[] bytes = loadStreamAsByteArray(file.toURI().toURL());
         String str = new String(bytes);
         copy(new ByteArrayInputStream(str.replaceAll(oldContent, newContent).getBytes()), file);
+    }
+
+    public static String serializeObjectToString(Object object) throws IOException {
+        return DEFAULT_STRING_SERIALIZER.serialize(object);
+    }
+
+    public static Object deserializeObjectToString(String str) throws IOException{
+        return DEFAULT_STRING_SERIALIZER.deserialize(str);
     }
 
     public static void saveObject(String physicalName, Object object) throws IOException {

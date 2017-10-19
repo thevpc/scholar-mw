@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.util.CollectionUtils;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -196,6 +197,9 @@ public class PlotTypesHelper {
         }
         if (isComponentType(obj)) {
             return resolveComponentType(obj);
+        }
+        if (obj instanceof File) {
+            return new TypeAndValue("file", obj);
         }
         return new TypeAndValue("object", obj);
     }

@@ -7,6 +7,8 @@ import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -578,6 +580,30 @@ public class PlotBuilder {
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             case "null[]": {
                 return _plotComplexArray(new Complex[0][], plotType);
+//                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
+            }
+            case "file": {
+                try {
+                    PlotModel plotModel = Plot.loadPlotModel((File) o);
+                    if(plotModel instanceof ValuesPlotModel) {
+                        ValuesPlotModel v=(ValuesPlotModel) plotModel;
+                        if (xformat != null) {
+                            v.setXformat(xformat);
+                        }
+                        if (yformat != null) {
+                            v.setYformat(yformat);
+                        }
+                        if (xname != null) {
+                            v.setxTitle(xname);
+                        }
+                        if (yname != null) {
+                            v.setyTitle(yname);
+                        }
+                    }
+                    return plotModel;
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(e);
+                }
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             }
             default:

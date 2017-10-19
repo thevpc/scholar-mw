@@ -31,6 +31,11 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
         }
         return dataset;
     }
+    @Override
+    protected int initialIndex(int index) {
+        return data.getInitialIndex(index);
+    }
+
 
     protected PieDataset createPieDataset() {
         return new CategoryToPieDataset(createCategoryDataset(), TableOrder.BY_COLUMN, 0);

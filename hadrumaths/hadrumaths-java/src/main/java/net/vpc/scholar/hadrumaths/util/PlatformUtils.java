@@ -273,13 +273,27 @@ public class PlatformUtils {
 //        return freed1;
 //    }
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-//            boolean[] o=new boolean[100000];
-            gc2();
-//            System.out.println(Maths.formatMemory(gc2()));
-        }
-    }
+//    public static void main(String[] args) {
+//        for (int i = 0; i < 100; i++) {
+////            boolean[] o=new boolean[100000];
+//            gc2();
+////            System.out.println(Maths.formatMemory(gc2()));
+//        }
+//    }
 
+
+    public static <K,V> Map<K,V> merge(Map<K,V> destination,Map<K,V> ... sources){
+        if(destination==null){
+            destination=new HashMap<K,V>();
+        }
+        if(sources!=null){
+            for (Map<K, V> source : sources) {
+                if(source!=null) {
+                    destination.putAll(source);
+                }
+            }
+        }
+        return destination;
+    }
 
 }

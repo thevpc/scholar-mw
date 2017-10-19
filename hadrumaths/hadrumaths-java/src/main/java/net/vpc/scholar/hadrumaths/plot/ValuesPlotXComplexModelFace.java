@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ public class ValuesPlotXComplexModelFace {
     private String title;
     private double[][] x;
     private Complex[][] y;
+    private int[] initialIndexes;
     private String[] ytitles;
 
     public ValuesPlotXComplexModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
@@ -19,6 +21,7 @@ public class ValuesPlotXComplexModelFace {
         double[][] xAxis = model.getX();
         Complex[][] yAxis = model.getZ();
 
+        List<Integer> initialIndexesList = new ArrayList<>();
         List<double[]> xAxisList = new ArrayList<>();
         List<Complex[]> yAxisList = new ArrayList<>();
         List<String> yTitleList = new ArrayList<>();
@@ -33,6 +36,7 @@ public class ValuesPlotXComplexModelFace {
             if(xAxis==null){
                 for (int i = 0; i < yAxis.length; i++) {
                     if(model.getYVisible(i)){
+                        initialIndexesList.add(i);
                         double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
                         double ymultiplier=plotConfig.getYMultiplierAt(i,1);
                         xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1,yAxis[i].length),xmultiplier));
@@ -43,14 +47,24 @@ public class ValuesPlotXComplexModelFace {
             }else {
                 for (int i = 0; i < yAxis.length; i++) {
                     if(model.getYVisible(i)) {
+                        initialIndexesList.add(i);
                         double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
                         double ymultiplier=plotConfig.getYMultiplierAt(i,1);
                         yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                         if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length<yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
-                                xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length),xmultiplier));
-                            } else {
+                                boolean ok = false;
+                                for (int j = Math.min(i - 1,xAxis.length-1); j >= 0; j--) {
+                                    if (xAxis[j] != null && yAxis[i].length == xAxis[j].length) {
+                                        ok = true;
+                                        xAxisList.add(PlotModelUtils.mul(xAxis[j], xmultiplier));
+                                        break;
+                                    }
+                                }
+                                if (!ok) {
+                                    xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length), xmultiplier));
+                                }                            } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
                             }
                         }else{
@@ -62,6 +76,7 @@ public class ValuesPlotXComplexModelFace {
         }
         x = xAxisList.toArray(new double[xAxisList.size()][]);
         y = yAxisList.toArray(new Complex[yAxisList.size()][]);
+        initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
 
         //rename titles with the same name
         HashSet<String> visited=new HashSet<>();
@@ -90,6 +105,10 @@ public class ValuesPlotXComplexModelFace {
 //        this.title = title;
 //    }
 
+
+    public int getInitialIndex(int series) {
+        return initialIndexes[series];
+    }
 
     public double[] getX(int series) {
         return x[series];

@@ -1,12 +1,16 @@
 package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Plot;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
 public class SimplifyTest {
+    @Test
+    public void test2(){
+    }
     @Test
     public void test1(){
         Expr f1= mul(X , expr(3), expr(6) , Y);
