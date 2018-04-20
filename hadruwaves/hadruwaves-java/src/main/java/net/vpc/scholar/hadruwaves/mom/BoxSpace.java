@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -11,11 +13,13 @@ public final class BoxSpace implements Dumpable {
     private final BoxLimit limit;
     private final double width;
     private final double epsr;
+    private final double sigma;
 
-    public BoxSpace(BoxLimit limit, double epsr, double width) {
+    public BoxSpace(BoxLimit limit, double epsr, double width,double sigma) {
         this.limit = limit;
         this.epsr = epsr;
         this.width = width;
+        this.sigma = sigma;
     }
 
     
@@ -29,6 +33,9 @@ public final class BoxSpace implements Dumpable {
 
         if (!limit.equals(BoxLimit.NOTHING)) {
             h.add("epsr",epsr);
+            if(sigma!=0){
+                h.add("sigma",sigma);
+            }
         }
         return h.toString();
     }
@@ -46,7 +53,19 @@ public final class BoxSpace implements Dumpable {
         return width;
     }
 
+    public Complex getEps(double freq) {
+        if(sigma==0){
+            return Complex.valueOf(epsr* Maths.EPS0);
+        }else{
+            return Complex.valueOf(epsr* Maths.EPS0,sigma/(2*Math.PI*freq));
+        }
+    }
+
     public double getEpsr() {
         return epsr;
+    }
+
+    public double getSigma() {
+        return sigma;
     }
 }

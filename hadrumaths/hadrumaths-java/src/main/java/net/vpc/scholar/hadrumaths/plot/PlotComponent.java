@@ -27,6 +27,8 @@ public interface PlotComponent {
 
     String getLayoutConstraints();
 
+    PlotComponent setLayoutConstraints(String layoutConstraints);
+
     JComponent toComponent();
 
     void display();

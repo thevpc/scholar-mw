@@ -80,9 +80,6 @@ public interface EnhancedProgressMonitor extends ProgressMonitor {
 
     boolean isTerminated();
 
-    boolean isCancelled();
-
-
     Chronometer getChronometer();
 
     void setProgress(double progress, String message);

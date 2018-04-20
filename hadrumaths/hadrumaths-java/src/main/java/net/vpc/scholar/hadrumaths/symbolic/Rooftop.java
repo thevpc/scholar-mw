@@ -95,30 +95,39 @@ public class Rooftop extends Ref implements Cloneable{
             if (maxWest) {
                 m0 = (-1);
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
-                Expr rooftop = rooftopPartX(false, d1);
+                Expr rooftop = rooftopPartX(false, d1).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()),
+                                "SequencePattern", "E"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "E");
             }
             m0 = 0;
             while (m0 < nx) {
                 Domain d0 = Domain.forBounds(m0 / 2.0 * w + d.xmin(), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
-                Expr rooftop = rooftop(true, false, d0);
+                Expr rooftop = rooftop(true, false, d0).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()+1),
+                                "SequencePattern", "X"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "X");
                 m0 += 1;
             }
             if (maxEast) {
                 m0 = nx;
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
-                Expr rooftop = rooftopPartX(true, d1);
+                Expr rooftop = rooftopPartX(true, d1).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()+1),
+                                "SequencePattern", "E"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "E");
             }
         } else if (yside) {
             int m0 = 0;
@@ -126,30 +135,39 @@ public class Rooftop extends Ref implements Cloneable{
             if (maxNorth) {
                 m0 = (-1);
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
-                Expr rooftop = rooftopPartY(false, d1);
+                Expr rooftop = rooftopPartY(false, d1).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()+1),
+                                "SequencePattern", "N"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "N");
             }
             m0 = 0;
             while (m0 < ny) {
                 Domain d0 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
-                Expr rooftop = rooftop(false, true, d0);
+                Expr rooftop = rooftop(false, true, d0).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()+1),
+                                "SequencePattern", "Y"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "Y");
                 m0 += 1;
             }
             if (maxSouth) {
                 m0 = ny;
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
-                Expr rooftop = rooftopPartY(true, d1);
+                Expr rooftop = rooftopPartY(true, d1).setProperties(
+                        MapUtils.<String,Object>linkedMap(
+                                "SequenceType", "Rooftop",
+                                "SequenceIndex", "" + (list.size()+1),
+                                "SequencePattern", "S"
+                        )
+                );
                 list.append(rooftop);
-                rooftop.getProperties().put("SequenceType", "Rooftop");
-                rooftop.getProperties().put("SequenceIndex", "" + (list.size()));
-                rooftop.getProperties().put("SequencePattern", "S");
             }
 
         } else {
@@ -184,7 +202,7 @@ public class Rooftop extends Ref implements Cloneable{
         Expr px = Maths.sum(rooftopPartX(true, domain), rooftopPartX(false, domain));
         Expr py = Maths.sum(rooftopPartY(true, domain), rooftopPartY(false, domain));
         if (x && y) {
-            return mul(px, py);
+            return Maths.mul(px, py);
         } else if (x) {
             return px;
         } else if (y) {

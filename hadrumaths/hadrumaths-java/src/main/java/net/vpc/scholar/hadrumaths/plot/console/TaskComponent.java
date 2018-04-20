@@ -157,9 +157,12 @@ public class TaskComponent extends JPanel implements ActionListener {
         updateProgress(0, null);
     }
 
-    public void ticMonitor() {
+    public void ticMonitor(int index, int maxIndex) {
         if (thread != null) {
             double progressValue = thread.getProgressValue();
+            if(thread.getProgressMessage().getText().length()>0) {
+                descLabel.setText(thread.getProgressMessage().getText());
+            }
             if (!thread.isTerminated() && !pause.isSelected()) {
                 double d = thread.getProgressValue();
                 if(d<0 || d>1.0){
@@ -183,6 +186,7 @@ public class TaskComponent extends JPanel implements ActionListener {
                 timeElapValue.setText(Chronometer.formatPeriodNano(spent, Chronometer.DatePart.s));
                 timeRemLabel.setText("Remaining :");
                 timeRemValue.setText(Chronometer.formatPeriodNano(remaining, Chronometer.DatePart.s));
+                detach.setEnabled(index<maxIndex);
                 updateProgress(d100, thread.getProgressMessage().toString());
             } else if(thread.isTerminated()){
                 windowTitle.setForeground(Color.RED);

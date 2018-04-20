@@ -4,35 +4,26 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.*;
-
-import static net.vpc.scholar.hadrumaths.Maths.I;
-import static net.vpc.scholar.hadrumaths.Maths.cotanh;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-//import net.vpc.scholar.tmwlib.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.CutOffModalSources;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.ModeInfoComparator;
 
-import static net.vpc.scholar.hadrumaths.Maths.inv;
-import static net.vpc.scholar.hadrumaths.Maths.EPS0;
-import static net.vpc.scholar.hadruwaves.Physics.K0;
-import static net.vpc.scholar.hadrumaths.Maths.U0;
-import static net.vpc.scholar.hadruwaves.Physics.omega;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
-import static net.vpc.scholar.hadrumaths.Expressions.isSymmetric;
-import static net.vpc.scholar.hadrumaths.Expressions.isXSymmetric;
-import static net.vpc.scholar.hadrumaths.Expressions.isYSymmetric;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static net.vpc.scholar.hadrumaths.Expressions.*;
+import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.vpc.scholar.hadruwaves.Physics.K0;
+import static net.vpc.scholar.hadruwaves.Physics.omega;
+
+//import net.vpc.scholar.tmwlib.mom.ProjectType;
 
 /**
  * FnBaseFunctions must be initialized fnBaseFunctions.setDomain(getDomain());
@@ -49,29 +40,32 @@ import static net.vpc.scholar.hadrumaths.Expressions.isYSymmetric;
  */
 public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mom.ModeFunctions {
 
-    protected int size = Integer.MIN_VALUE;
+    private static ModeInfoFilter[] MODE_INFO_FILTER_0 = new ModeInfoFilter[0];
+    private static ModeIndexFilter[] MODE_INDEX_FILTER_0 = new ModeIndexFilter[0];
+    public ObjectCacheResolver cacheResolver;
+    public Domain domain;
+    protected int maxSize = Integer.MIN_VALUE;
     /**
      * defaults to 1GGz
      */
     protected double frequency = Double.NaN;
-    public Domain domain;
     protected ModeIteratorFactory modeIteratorFactory = new DefaultModeIteratorFactory();
     protected double cachedk0;
     protected double cachedOmega;
     protected ModeInfo[] cachedModesEvanescents;
     protected ModeInfo[] cachedModesPropagating;
+    protected int cachedPropagatingModesCount = -1;
     private ModeInfo[] cachedIndexes;
-    private List<ModeInfo>[] cachedIndexesByModeType=new List[ModeType.values().length];
+    private List<ModeInfo>[] cachedIndexesByModeType = new List[ModeType.values().length];
     private volatile DoubleToVector[] cachedFn = null;
     private volatile Complex[] cachedZn = null;
     private volatile Complex[] cachedYn = null;
-    protected int cachedPropagatingModesCount = -1;
     //    private AbstractStructure2D structure;
     private HintAxisType hintAxisType = HintAxisType.XY;
     private Axis hintInvariantAxis = null;
     private AxisXY hintSymmetryAxis = null;
     private StrLayer[] layers = new StrLayer[0];
-//    private ProjectType projectType;
+    //    private ProjectType projectType;
     private BoxSpace firstBoxSpace = BoxSpaceFactory.nothing();
     private BoxSpace secondBoxSpace = BoxSpaceFactory.nothing();
     private ModalSources sources = new CutOffModalSources(1);
@@ -79,20 +73,51 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     private WallBorders borders;
     private List<ModeInfoFilter> modeInfoFilters;
     private List<ModeIndexFilter> modeIndexFilters;
-    private static ModeInfoFilter[] MODE_INFO_FILTER_0 = new ModeInfoFilter[0];
-    private static ModeIndexFilter[] MODE_INDEX_FILTER_0 = new ModeIndexFilter[0];
     private boolean hintInvertTETMForZmode;
-    private ModeInfoComparator modeInfoComparator= CutoffModeComparator.INSTANCE;
+    private ModeInfoComparator modeInfoComparator = CutoffModeComparator.INSTANCE;
     private boolean enableDefaultFunctionProperties;
     private PropertyChangeSupport pcs;
 
     public ModeFunctionsBase(boolean complex, WallBorders borders) {
-        pcs=new PropertyChangeSupport(this);
+        pcs = new PropertyChangeSupport(this);
         this.complex = complex;
         this.borders = borders;
     }
+
     public ModeFunctionsBase() {
-        pcs=new PropertyChangeSupport(this);
+        pcs = new PropertyChangeSupport(this);
+    }
+
+    //    public Complex zn(int n) {
+//        if (cachedZn == null) {
+//            FnIndexes[] ind=getModes();
+//            Complex[] zn = new Complex[ind.length];
+//            for (int i = 0; i < ind.length; i++) {
+//                zn[i] = getImpedanceImpl(ind[i]);
+//            }
+//            cachedZn = zn;
+//        }
+//        return cachedZn[n];
+    //    }
+    public static String toStr(int[] x) {
+        StringBuilder sb = new StringBuilder("[").append(x.length).append("]{");
+        for (int i = 0; i < min(x.length, 3); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(x[i]);
+        }
+        if (x.length > 3) {
+            sb.append("...");
+        }
+        for (int i = max(x.length - 3, 3); i < x.length; i++) {
+            if (i > max(x.length - 3, 3)) {
+                sb.append(",");
+            }
+            sb.append(x[i]);
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     @Override
@@ -107,12 +132,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(property,listener);
+        pcs.addPropertyChangeListener(property, listener);
     }
 
     @Override
     public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(property,listener);
+        pcs.removePropertyChangeListener(property, listener);
     }
 
     @Override
@@ -131,12 +156,16 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     public boolean isHintEnableFunctionProperties() {
         return enableDefaultFunctionProperties;
     }
-
-
-
-    protected abstract DoubleToVector getFnImpl(ModeIndex i);
     //    public Complex firstBoxSpaceGamma(int n) {
 //        return getGammaImpl(cachedIndexes[n]);
+
+    public void setHintEnableFunctionProperties(boolean disableDefaultFunctionProperties) {
+        boolean old = this.enableDefaultFunctionProperties;
+        this.enableDefaultFunctionProperties = disableDefaultFunctionProperties;
+        firePropertyChange("enableDefaultFunctionProperties", old, this.enableDefaultFunctionProperties);
+    }
+
+    protected abstract DoubleToVector getFnImpl(ModeIndex i);
 
     //    }
     public abstract Complex getGammaImpl(ModeIndex i, BoxSpace bs);
@@ -188,16 +217,16 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                     switch (space.getLimit()) {
                         case OPEN: {
 //                            y = I(cachedOmega).mul(EPS0 * componentVectorSpace.getEpsr()).mul(cotanh(firstBoxSpaceGamma.mul(componentVectorSpace.getWidth()))).div(firstBoxSpaceGamma);
-                            y = I(cachedOmega).mul(EPS0 * space.getEpsr()).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                            y = I(cachedOmega).mul(space.getEps(frequency)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                             break;
                         }
                         case MATCHED_LOAD: {
-                            y = I(cachedOmega).mul(EPS0 * space.getEpsr()).div(gamma);
+                            y = I(cachedOmega).mul(space.getEps(frequency)).div(gamma);
                             break;
                         }
                         case SHORT: {
 //                            y = I.mul(cachedOmega).mul(EPS0 * componentVectorSpace.getEpsr()).div(cotanh(firstBoxSpaceGamma.mul(componentVectorSpace.getWidth()))).div(firstBoxSpaceGamma);
-                            y = I.mul(cachedOmega).mul(EPS0 * space.getEpsr()).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                            y = I.mul(cachedOmega).mul(space.getEps(frequency)).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                             break;
                         }
                         case NOTHING: {
@@ -244,7 +273,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
         }
         for (StrLayer couche : layers) {
-            ys.add(couche.impedance);
+            ys.add(couche.impedance.inv());
         }
         ys.inv();
         Complex z = ys.toComplex();
@@ -317,11 +346,11 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 //        K0 = K0(this.freq);// omega * Math.sqrt(U0 * EPS0);//nombre d'onde
 //        invalidateCache();
     //    }
-    @Override
-    public int getSize() {
-        return size;
-    }
 
+    @Override
+    public int getMaxSize() {
+        return maxSize;
+    }
 
     @Override
     public synchronized DoubleToVector apply(int index) {
@@ -347,7 +376,6 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     public synchronized DoubleToVector[] toArray() {
         return arr();
     }
-
 
     @Override
     public synchronized DoubleToVector[] fn() {
@@ -387,6 +415,10 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     public double getCutoffFrequency(ModeIndex i) {
         return 0;
     }
+    //
+//    public CFunctionXY2D fn(int n) {
+//        return fn()[n];
+//    }
 
     @Override
     public synchronized Complex[] zn() {
@@ -415,42 +447,6 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         cachedYn = fn;
         return cachedYn;
     }
-    //
-//    public CFunctionXY2D fn(int n) {
-//        return fn()[n];
-//    }
-
-    //    public Complex zn(int n) {
-//        if (cachedZn == null) {
-//            FnIndexes[] ind=getModes();
-//            Complex[] zn = new Complex[ind.length];
-//            for (int i = 0; i < ind.length; i++) {
-//                zn[i] = getImpedanceImpl(ind[i]);
-//            }
-//            cachedZn = zn;
-//        }
-//        return cachedZn[n];
-    //    }
-    public static String toStr(int[] x) {
-        StringBuilder sb = new StringBuilder("[").append(x.length).append("]{");
-        for (int i = 0; i < min(x.length, 3); i++) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(x[i]);
-        }
-        if (x.length > 3) {
-            sb.append("...");
-        }
-        for (int i = max(x.length - 3, 3); i < x.length; i++) {
-            if (i > max(x.length - 3, 3)) {
-                sb.append(",");
-            }
-            sb.append(x[i]);
-        }
-        sb.append("}");
-        return sb.toString();
-    }
 
     @Override
     public ModeInfo[] getVanishingModes() {
@@ -467,6 +463,9 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         }
         return cachedModesEvanescents;
     }
+    //    public boolean isPropagative(ModeInfo i) {
+//        return i.initialIndex < sources;
+//    }
 
     @Override
     public ModeInfo[] getPropagatingModes() {
@@ -483,9 +482,6 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         }
         return cachedModesPropagating;
     }
-    //    public boolean isPropagative(ModeInfo i) {
-//        return i.initialIndex < sources;
-//    }
 
     //
     @Override
@@ -600,7 +596,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             if (axisSymm != null) {
                 switch (axisSymm) {
                     case X: {
-                        if (!isSymmetric(index.fn,axisSymm)) {
+                        if (!isSymmetric(index.fn, axisSymm)) {
                             System.out.println(index + " rejected : not symm " + axisSymm);
                             return false;
                         }
@@ -633,10 +629,10 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public synchronized ModeInfo[] getModes() {
-        return getModes(ProgressMonitorFactory.none(),null);
+        return getModes((ProgressMonitor) null);
     }
 
-    protected void a() {
+    protected void rebuildObj() {
 //        if (getProjectType() == null) {
 //            throw new IllegalArgumentException("Invalid ProjectType value");
 //        }
@@ -646,8 +642,8 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         if (getSecondBoxSpace() == null) {
             throw new IllegalArgumentException("Invalid SecondBoxSpace value");
         }
-        if (getSize() <= 0) {
-            throw new IllegalArgumentException("Invalid Size value");
+        if (getMaxSize() <= 0) {
+            throw new IllegalArgumentException("Invalid Max Size value");
         }
         double f = getFrequency();
         if (Double.isNaN(f) || Double.isInfinite(f)) {
@@ -662,15 +658,15 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public synchronized List<ModeInfo> getModes(final ModeType mode) {
-        return getModes(mode,null);
+        return getModes(mode, null);
     }
 
     @Override
     public synchronized List<ModeInfo> getModes(final ModeType mode, ProgressMonitor monitor) {
         int modeOrdinal = mode.ordinal();
         List<ModeInfo> modeInfos = cachedIndexesByModeType[modeOrdinal];
-        if(modeInfos ==null){
-            cachedIndexesByModeType[modeOrdinal]=modeInfos=Collections.unmodifiableList(CollectionsUtils.filter(Arrays.asList(getModes(monitor,null)), new CollectionFilter<ModeInfo>() {
+        if (modeInfos == null) {
+            cachedIndexesByModeType[modeOrdinal] = modeInfos = Collections.unmodifiableList(CollectionsUtils.filter(Arrays.asList(getModes(monitor)), new CollectionFilter<ModeInfo>() {
                 @Override
                 public boolean accept(ModeInfo modeInfo, int baseIndex, Collection<ModeInfo> list) {
                     return modeInfo.mode.mtype == mode;
@@ -691,23 +687,24 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized ModeInfo[] getModes(ProgressMonitor monitor, ObjectCache objectCache) {
-        monitor= ProgressMonitorFactory.enhance(monitor);
+    public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
+        monitor = ProgressMonitorFactory.enhance(monitor);
+        ObjectCache objectCache = cacheResolver == null ? null : cacheResolver.resolveObjectCache();
         if (cachedIndexes == null) {
-            if(objectCache!=null){
+            if (objectCache != null) {
                 try {
                     cachedIndexes = (ModeInfo[]) objectCache.load("mode-functions", null);
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     //ignore
                 }
-                if(cachedIndexes!=null){
+                if (cachedIndexes != null) {
                     return cachedIndexes;
                 }
             }
-            if(objectCache==null){
-                System.out.println("Are you sure you want to load modes with no cache for "+this);
+            if (objectCache == null) {
+                System.out.println("Are you sure you want to load modes with no cache for " + this);
             }
-            a();
+            rebuildObj();
             /*
              * if (getProjectType().equals(ProjectType.WAVE_GUIDE) &&
              * (!BoxLimit.CHARGE_ADAPTEE.equals(getFirstBoxSpace().limit) ||
@@ -720,7 +717,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             EnhancedProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 2);
             ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
             Comparator<ModeInfo> comparator = getModeInfoComparator();
-            if(comparator!=null) {
+            if (comparator != null) {
                 Arrays.sort(_cachedIndexes, comparator);
             }
             int _cacheSize = _cachedIndexes.length;
@@ -729,7 +726,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
             ModeIndex[] propagativeModes = sources.getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount());
             HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
-            EnhancedProgressMonitor mon2=mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
+            EnhancedProgressMonitor mon2 = mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
             String message = toString() + ", evaluate mode properties";
             String str = toString();
             Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
@@ -746,7 +743,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                         } else {
                             nonPropagativeCount++;
                         }
-                        if(_enableDefaultFunctionProperties) {
+                        if (_enableDefaultFunctionProperties) {
                             HashMap<String, Object> properties = new HashMap<String, Object>(15);
                             properties.put("Type", str);
                             properties.put("Mode", index.mode.mtype.toString());
@@ -761,9 +758,9 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                             properties.put("invariance", (index.fn.isInvariant(Axis.X) ? "X" : "") + (index.fn.isInvariant(Axis.Y) ? "Y" : ""));
                             properties.put("Domain", domain.toString());
                             properties.put("index", index.index);
-                            properties.put("symmetry", (isXSymmetric(index.fn)?"X":"")+(isYSymmetric(index.fn)?"Y":""));
+                            properties.put("symmetry", (isXSymmetric(index.fn) ? "X" : "") + (isYSymmetric(index.fn) ? "Y" : ""));
                             properties.put("propagating", index.propagating);
-                            index.fn=(DoubleToVector) index.fn.setProperties(properties);
+                            index.fn = (DoubleToVector) index.fn.setProperties(properties);
                         }
                         mon2.setProgress(i, _cacheSize, message);
                     }
@@ -778,10 +775,10 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
             cachedIndexes = _cachedIndexes;
 
-            if(objectCache!=null){
+            if (objectCache != null) {
                 try {
-                    objectCache.store("mode-functions", cachedIndexes,monitor);
-                }catch (Exception ex){
+                    objectCache.store("mode-functions", cachedIndexes, monitor);
+                } catch (Exception ex) {
                     //ignore
                 }
             }
@@ -809,7 +806,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         index.fn = getFnImplByHints(index.getMode());
     }
 
-    protected DoubleToVector getFnImplByHints(ModeIndex i){
+    protected DoubleToVector getFnImplByHints(ModeIndex i) {
         HintAxisType fnAxis = hintAxisType;
         DoubleToVector fn = getFnImpl(i);
         switch (fnAxis) {
@@ -820,11 +817,11 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                 break;
             }
             case X_ONLY: {
-                fn= Maths.vector(fn.getComponent(Axis.X), Maths.DCZERO);
+                fn = Maths.vector(fn.getComponent(Axis.X), Maths.DCZERO);
                 break;
             }
             case Y_ONLY: {
-                fn=Maths.vector(Maths.DCZERO, fn.getComponent(Axis.Y));
+                fn = Maths.vector(Maths.DCZERO, fn.getComponent(Axis.Y));
                 break;
             }
         }
@@ -832,21 +829,25 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public ModeFunctions setSize(int fnMax) {
-        int old=this.size;
-        this.size = fnMax;
-        firePropertyChange("size",old,size);
+    public ModeFunctions setMaxSize(int maxSize) {
+        int old = this.maxSize;
+        this.maxSize = maxSize;
+        firePropertyChange("maxSize", old, maxSize);
         return this;
     }
-    public void setHintEnableFunctionProperties(boolean disableDefaultFunctionProperties) {
-        boolean old=this.enableDefaultFunctionProperties;
-        this.enableDefaultFunctionProperties = disableDefaultFunctionProperties;
-        firePropertyChange("enableDefaultFunctionProperties",old,this.enableDefaultFunctionProperties);
+
+    @Deprecated
+    @Override
+    public ModeFunctions setSize(int maxSize) {
+        return setMaxSize(maxSize);
     }
-    public void setModeInfoComparator(ModeInfoComparator modeInfoComparator) {
-        ModeInfoComparator old=this.modeInfoComparator;
-        this.modeInfoComparator = modeInfoComparator;
-        firePropertyChange("modeInfoComparator",old,this.modeInfoComparator);
+
+    @Override
+    public ModeFunctions setFirstBoxSpace(BoxSpace firstBoxSpace) {
+        BoxSpace old = this.firstBoxSpace;
+        this.firstBoxSpace = firstBoxSpace;
+        firePropertyChange("firstBoxSpace", old, firstBoxSpace);
+        return this;
     }
 
     //    public int getSources() {
@@ -863,67 +864,58 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 //    }
 
     @Override
-    public ModeFunctions setFirstBoxSpace(BoxSpace firstBoxSpace) {
-        BoxSpace old=this.firstBoxSpace;
-        this.firstBoxSpace = firstBoxSpace;
-        firePropertyChange("firstBoxSpace",old,firstBoxSpace);
-        return this;
-    }
-
-    @Override
     public ModeFunctions setSecondBoxSpace(BoxSpace secondBoxSpace) {
-        BoxSpace old=this.secondBoxSpace;
+        BoxSpace old = this.secondBoxSpace;
         this.secondBoxSpace = secondBoxSpace;
-        firePropertyChange("secondBoxSpace",old,secondBoxSpace);
+        firePropertyChange("secondBoxSpace", old, secondBoxSpace);
         return this;
     }
 
     @Override
     public ModeFunctions setFrequency(double frequency) {
-        double old=this.frequency;
+        double old = this.frequency;
         this.frequency = frequency;
-        firePropertyChange("frequency",old,frequency);
+        firePropertyChange("frequency", old, frequency);
         return this;
     }
 
     @Override
     public ModeFunctions setDomain(Domain domain) {
-        Domain old=this.domain;
+        Domain old = this.domain;
         this.domain = domain;
-        firePropertyChange("domain",old,domain);
+        firePropertyChange("domain", old, domain);
         return this;
     }
 
     @Override
     public ModeFunctions setSources(Sources sources) {
-        Sources old=this.sources;
+        Sources old = this.sources;
         this.sources = (sources == null || !(sources instanceof ModalSources)) ? new CutOffModalSources(1) : (ModalSources) sources;
-        firePropertyChange("sources",old,this.sources);
+        firePropertyChange("sources", old, this.sources);
         return this;
     }
 
     @Override
     public ModeFunctions setHintAxisType(HintAxisType hintAxisType) {
-        HintAxisType old=this.hintAxisType;
+        HintAxisType old = this.hintAxisType;
         this.hintAxisType = hintAxisType;
-        firePropertyChange("hintAxisType",old,this.hintAxisType);
+        firePropertyChange("hintAxisType", old, this.hintAxisType);
         return this;
     }
 
     @Override
     public ModeFunctions setHintInvariance(Axis invariantAxis) {
-        Axis old=this.hintInvariantAxis;
+        Axis old = this.hintInvariantAxis;
         this.hintInvariantAxis = invariantAxis;
-        firePropertyChange("hintInvariantAxis",old,this.hintInvariantAxis);
+        firePropertyChange("hintInvariantAxis", old, this.hintInvariantAxis);
         return this;
     }
 
-
     @Override
     public ModeFunctions setHintSymmetry(AxisXY symmetryAxis) {
-        AxisXY old=this.hintSymmetryAxis;
+        AxisXY old = this.hintSymmetryAxis;
         this.hintSymmetryAxis = symmetryAxis;
-        firePropertyChange("hintSymmetryAxis",old,this.hintSymmetryAxis);
+        firePropertyChange("hintSymmetryAxis", old, this.hintSymmetryAxis);
         return this;
     }
 
@@ -946,16 +938,17 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         }
         return this;
     }
+
     @Override
     public ModeFunctions removeModeInfoFilter(ModeInfoFilter modeInfoFilter) {
-        if (modeInfoFilters != null && modeInfoFilter!=null) {
-            List<ModeInfoFilter> old=new ArrayList<>(this.modeInfoFilters);
-            if(modeInfoFilters.remove(modeInfoFilter)) {
+        if (modeInfoFilters != null && modeInfoFilter != null) {
+            List<ModeInfoFilter> old = new ArrayList<>(this.modeInfoFilters);
+            if (modeInfoFilters.remove(modeInfoFilter)) {
                 if (modeInfoFilters.size() == 0) {
                     modeInfoFilters = null;
                 }
-                firePropertyChange("modeInfoFilterRemoved",modeInfoFilter,null);
-                firePropertyChange("modeInfoFilters",old,modeInfoFilters);
+                firePropertyChange("modeInfoFilterRemoved", modeInfoFilter, null);
+                firePropertyChange("modeInfoFilters", old, modeInfoFilters);
             }
         }
         return this;
@@ -963,38 +956,38 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public ModeFunctions removeModeIndexFilter(ModeIndexFilter modeIndexFilter) {
-        if (modeIndexFilters != null && modeIndexFilter!=null) {
-            List<ModeIndexFilter> old=new ArrayList<>(this.modeIndexFilters);
+        if (modeIndexFilters != null && modeIndexFilter != null) {
+            List<ModeIndexFilter> old = new ArrayList<>(this.modeIndexFilters);
             modeIndexFilters.remove(modeIndexFilter);
             if (modeIndexFilters.size() == 0) {
                 modeIndexFilters = null;
             }
-            firePropertyChange("modeIndexFilterRemoved",null,modeIndexFilter);
-            firePropertyChange("modeIndexFilters",old,modeInfoFilters);
+            firePropertyChange("modeIndexFilterRemoved", null, modeIndexFilter);
+            firePropertyChange("modeIndexFilters", old, modeInfoFilters);
         }
         return this;
     }
 
     @Override
     public ModeFunctions addModeInfoFilter(ModeInfoFilter modeInfoFilter) {
-        if(modeInfoFilter!=null) {
-            List<ModeInfoFilter> old=this.modeInfoFilters==null?null:new ArrayList<>(this.modeInfoFilters);
+        if (modeInfoFilter != null) {
+            List<ModeInfoFilter> old = this.modeInfoFilters == null ? null : new ArrayList<>(this.modeInfoFilters);
             if (modeInfoFilters == null) {
                 modeInfoFilters = new ArrayList<ModeInfoFilter>();
                 modeInfoFilters.add(modeInfoFilter);
             } else if (!modeInfoFilters.contains(modeInfoFilter)) {
                 modeInfoFilters.add(modeInfoFilter);
             }
-            firePropertyChange("modeInfoFilterAdded",null,modeInfoFilter);
-            firePropertyChange("modeInfoFilters",old,modeInfoFilters);
+            firePropertyChange("modeInfoFilterAdded", null, modeInfoFilter);
+            firePropertyChange("modeInfoFilters", old, modeInfoFilters);
         }
         return this;
     }
 
     @Override
     public ModeFunctions addModeIndexFilter(ModeIndexFilter modeIndexFilter) {
-        if(modeIndexFilter!=null) {
-            List<ModeIndexFilter> old=this.modeIndexFilters==null?null:new ArrayList<>(this.modeIndexFilters);
+        if (modeIndexFilter != null) {
+            List<ModeIndexFilter> old = this.modeIndexFilters == null ? null : new ArrayList<>(this.modeIndexFilters);
             if (modeIndexFilters == null) {
                 modeIndexFilters = new ArrayList<ModeIndexFilter>();
                 modeIndexFilters.add(modeIndexFilter);
@@ -1006,9 +999,10 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         }
         return this;
     }
+
     @Override
     public ModeFunctions setLayers(StrLayer[] couches) {
-        StrLayer[] old=this.layers==null?null:Arrays.copyOf(this.layers,this.layers.length);
+        StrLayer[] old = this.layers == null ? null : Arrays.copyOf(this.layers, this.layers.length);
         if (couches == null) {
             this.layers = StrLayer.NO_LAYERS;
         } else {
@@ -1020,6 +1014,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         firePropertyChange("layers", old, layers);
         return this;
     }
+
     /**
      * should not be called with true
      *
@@ -1030,19 +1025,19 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     @Override
     @Deprecated
     public ModeFunctions setHintInvertTETMForZmode(boolean hintInvertTETMForZmode) {
-        boolean old=this.hintInvertTETMForZmode;
+        boolean old = this.hintInvertTETMForZmode;
         this.hintInvertTETMForZmode = hintInvertTETMForZmode;
         firePropertyChange("hintInvertTETMForZmode", old, hintInvertTETMForZmode);
         return this;
     }
+
     @Override
     public ModeFunctions setModeIteratorFactory(ModeIteratorFactory modeIteratorFactory) {
-        ModeIteratorFactory old=this.modeIteratorFactory;
+        ModeIteratorFactory old = this.modeIteratorFactory;
         this.modeIteratorFactory = modeIteratorFactory;
         firePropertyChange("modeIteratorFactory", old, modeIteratorFactory);
         return this;
     }
-
 
     @Override
     public BoxSpace getFirstBoxSpace() {
@@ -1058,19 +1053,20 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     public Axis getHintInvariantAxis() {
         return hintInvariantAxis;
     }
+
     @Override
     public AxisXY getHintSymmetry() {
         return hintSymmetryAxis;
     }
-    //    public void setSources(int sources) {
-//        this.sources = sources;
-//        invalidateCache();
 
     //    }
     @Override
     public Domain getDomain() {
         return domain;
     }
+    //    public void setSources(int sources) {
+//        this.sources = sources;
+//        invalidateCache();
 
     @Override
     public double getK0() {
@@ -1104,7 +1100,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         return null;
     }
 
-    protected boolean isDefinitionFrequencyDependent(){
+    protected boolean isDefinitionFrequencyDependent() {
         if (modeInfoFilters != null) {
             for (ModeInfoFilter modeInfoFilter : modeInfoFilters) {
                 if (modeInfoFilter.isFrequencyDependent()) {
@@ -1125,24 +1121,24 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public Dumper getDumpStringHelper() {
-        return getDumpStringHelper(true,true);
+        return getDumpStringHelper(true, true);
     }
 
-    public Dumper getDumpStringHelper(boolean includeFreq,boolean includeSize) {
+    public Dumper getDumpStringHelper(boolean includeFreq, boolean includeSize) {
         Dumper h = new Dumper(this);
         h.add("domain", domain);
-        if(!includeFreq && isDefinitionFrequencyDependent()) {
-            includeFreq=true;
+        if (!includeFreq && isDefinitionFrequencyDependent()) {
+            includeFreq = true;
         }
         h.addNonNull("modeInfoFilters", modeInfoFilters);
         h.addNonNull("modeIndexFilters", modeIndexFilters);
         h.addNonNull("modeInfoComparator", modeInfoComparator);
         h.addNonNull("modeIteratorFactory", modeIteratorFactory);
-        if(includeSize) {
-            h.add("fnMax", size);
+        if (includeSize) {
+            h.add("maxSize", maxSize);
         }
-        if(includeFreq) {
-            h.add("freq", frequency);
+        if (includeFreq) {
+            h.add("frequency", frequency);
             h.addNonNull("sources", sources);
             h.add("firstBoxSpace", firstBoxSpace);
             h.add("secondBoxSpace", secondBoxSpace);
@@ -1299,32 +1295,40 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         return modeIndexFilters == null ? MODE_INDEX_FILTER_0 : modeIndexFilters.toArray(new ModeIndexFilter[modeIndexFilters.size()]);
     }
 
-
     @Override
     public StrLayer[] getLayers() {
         return layers;
     }
-
 
     @Override
     public boolean isHintInvertTETMForZmode() {
         return hintInvertTETMForZmode;
     }
 
-
     @Override
     public ModeIteratorFactory getModeIteratorFactory() {
         return modeIteratorFactory;
     }
 
-
     public ModeInfoComparator getModeInfoComparator() {
         return modeInfoComparator;
     }
 
+    public void setModeInfoComparator(ModeInfoComparator modeInfoComparator) {
+        ModeInfoComparator old = this.modeInfoComparator;
+        this.modeInfoComparator = modeInfoComparator;
+        firePropertyChange("modeInfoComparator", old, this.modeInfoComparator);
+    }
 
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         invalidateCache();
-        pcs.firePropertyChange(propertyName,oldValue,newValue);
+        pcs.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    @Override
+    public void setObjectCacheResolver(ObjectCacheResolver cacheResolver) {
+        ObjectCacheResolver old = this.cacheResolver;
+        this.cacheResolver = cacheResolver;
+        firePropertyChange("objectCacheResolver", old, cacheResolver);
     }
 }

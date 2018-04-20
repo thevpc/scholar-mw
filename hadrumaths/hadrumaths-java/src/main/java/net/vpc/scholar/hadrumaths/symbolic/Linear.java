@@ -23,14 +23,14 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
             return (Linear) e;
         }
         if(e instanceof XX){
-            return new Linear(1,0,0,Domain.EMPTYX);
+            return new Linear(1,0,0,Domain.FULLX);
         }
         if(e instanceof YY){
-            return new Linear(0,1,0,Domain.EMPTYX);
+            return new Linear(0,1,0,Domain.FULLX);
         }
-        if(e instanceof DoubleValue){
-            DoubleValue d = (DoubleValue) e;
-            return new Linear(0,0, d.getValue(),d.getDomain());
+        if(e.isDoubleValue()){
+            double d = e.toDouble();
+            return new Linear(0,0, d,e.getDomain());
         }
         return null;
     }

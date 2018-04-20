@@ -736,6 +736,15 @@ public final class ArrayUtils {
         return ret;
     }
 
+    public static Complex[] inv(Complex[] a) {
+        int max = a.length;
+        Complex[] ret = new Complex[max];
+        for (int i = 0; i < max; i++) {
+            ret[i] = a[i].inv();
+        }
+        return ret;
+    }
+
     public static Complex[] sub(Complex[] a, double[] b) {
         int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];

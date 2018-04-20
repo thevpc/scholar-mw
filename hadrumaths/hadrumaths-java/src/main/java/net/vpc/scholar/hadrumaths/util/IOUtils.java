@@ -405,7 +405,7 @@ public final class IOUtils {
         return DEFAULT_STRING_SERIALIZER.serialize(object);
     }
 
-    public static Object deserializeObjectToString(String str) throws IOException{
+    public static Object deserializeObjectToString(String str) throws IOException {
         return DEFAULT_STRING_SERIALIZER.deserialize(str);
     }
 
@@ -590,5 +590,33 @@ public final class IOUtils {
         try (PrintStream printStream = new PrintStream(file)) {
             printStream.print(str);
         }
+    }
+
+    public static String getArtifactVersion(String groupId, String artifactId) throws IOException {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties");
+        if(url==null){
+            throw new IOException("Not Such artifact : "+groupId + ":" + artifactId);
+        }
+        Properties p = new Properties();
+        p.load(url.openStream());
+        return p.getProperty("version");
+    }
+
+    public static String getArtifactVersionOrDev(String groupId, String artifactId) {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties");
+
+        if (url != null) {
+            Properties p = new Properties();
+            try {
+                p.load(url.openStream());
+            } catch (IOException e) {
+                //
+            }
+            String version = p.getProperty("version");
+            if(!StringUtils.isEmpty(version)) {
+                return version;
+            }
+        }
+        return "DEV";
     }
 }

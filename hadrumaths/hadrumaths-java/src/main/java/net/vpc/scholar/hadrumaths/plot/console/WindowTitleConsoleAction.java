@@ -9,6 +9,6 @@ public class WindowTitleConsoleAction implements ConsoleAction {
     }
 
     public void execute(PlotConsole plotter) {
-        plotter.silentSetWindowTitle(windowTitle);
+        plotter.silentSetFrameTitle(windowTitle);
     }
 }

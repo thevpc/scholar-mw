@@ -223,18 +223,18 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         Expr a = expression;
-        if (a.isDC() && a.toDC().getImag().isZero()) {
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return this;
         }
         return new Real(toDC());
     }
 
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         Expr a = expression;
-        if (a.isDC() && a.toDC().getImag().isZero()) {
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return FunctionFactory.DZEROXY;
         }
         return new Imag(toDC());

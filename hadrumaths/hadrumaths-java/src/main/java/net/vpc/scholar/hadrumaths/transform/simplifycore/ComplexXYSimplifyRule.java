@@ -29,7 +29,7 @@ public class ComplexXYSimplifyRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         ComplexValue ee = (ComplexValue) e;
-        if(ee.getDomain().equals(Domain.FULL(ee.getDomainDimension()))){
+        if(ee.getDomain().isFull()){
             return RewriteResult.bestEffort(ee.getValue());
         }
         return RewriteResult.unmodified(e);

@@ -176,44 +176,44 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                 Domain bounds1 = area1.getDomain();
                 if (filter.accept(MeshZoneType.BORDER_NORTH)) {
                     if (isAdgacent(bounds1, globalBounds, 'N', 'N')) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_NORTH);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth(), bounds1.getYwidth() / 2),  MeshZoneType.BORDER_NORTH);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'N', 'S').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_NORTH);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth(), bounds1.getYwidth() / 2),  MeshZoneType.BORDER_NORTH);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_SOUTH)) {
                     if (isAdgacent(bounds1, globalBounds, 'S', 'S')) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_SOUTH);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'S', 'N').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_SOUTH);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getXwidth(), bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_WEST)) {
                     if (isAdgacent(bounds1, globalBounds, 'W', 'W')) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_WEST);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()),  MeshZoneType.BORDER_WEST);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'W', 'E').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_WEST);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin(), bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()),  MeshZoneType.BORDER_WEST);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_EAST)) {
                     if (isAdgacent(bounds1, globalBounds, 'E', 'E')) {
-                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_EAST);
+                        MeshZone zzone = new MeshZone(Domain.forPoints(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()),  MeshZoneType.BORDER_EAST);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'E', 'W').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forWidthXY(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()), MeshZoneShape.RECTANGLE, MeshZoneType.BORDER_EAST);
+                        MeshZone zzone = new MeshZone(Domain.forWidthXY(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getXwidth() / 2, bounds1.getYwidth()),  MeshZoneType.BORDER_EAST);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
@@ -240,7 +240,7 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 double h2 = Math.min(bounds1.getYMax(), bounds2.getYMax());
                                 double hh = h2 - h1;
                                 if (ww > 1 && hh > 1) {
-                                    MeshZone zzone = new MeshZone(Domain.forPoints(x0 - ww / 2, h1, ww, hh), MeshZoneShape.RECTANGLE, MeshZoneType.ATTACHX);
+                                    MeshZone zzone = new MeshZone(Domain.forPoints(x0 - ww / 2, h1, ww, hh),  MeshZoneType.ATTACHX);
                                     zzone.setProperty("Attach For", "(" + i + "," + j + ")");
                                     added.add(zzone);
                                 }
@@ -264,7 +264,7 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 double w2 = Math.min(bounds1.getXMax(), bounds2.getXMax());
                                 double ww = w2 - w1;
                                 if (hh > 1 && ww > 1) {
-                                    MeshZone zzone = new MeshZone(Domain.forPoints(w1, y0 - hh / 2, ww, hh), MeshZoneShape.RECTANGLE, MeshZoneType.ATTACHY);
+                                    MeshZone zzone = new MeshZone(Domain.forPoints(w1, y0 - hh / 2, ww, hh),  MeshZoneType.ATTACHY);
                                     zzone.setProperty("Attach For", "(" + i + "," + j + ")");
                                     added.add(zzone);
                                 }

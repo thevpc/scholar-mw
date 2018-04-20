@@ -7,8 +7,10 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.FormatParamArray;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.format.params.DoubleFormat;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 
 /**
  *
@@ -19,10 +21,26 @@ public class NumberFormatter implements Formatter<Number>{
     }
 
     @Override
-    public String format(Number o, FormatParam... format) {
-        FormatParamArray formatArray=new FormatParamArray(format);
-        DoubleFormat df = (DoubleFormat) formatArray.getParam(DoubleFormat.class, false);
-        return df==null?o.toString():df.getFormat().format(o.doubleValue());
+    public String format(Number o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
     }
-    
+
+    @Override
+    public void format(StringBuilder sb, Number o, FormatParamSet format) {
+        DoubleFormat df =  format.getParam(DoubleFormat.class, false);
+        String v = df == null ? o.toString() : df.getFormat().format(o.doubleValue());
+        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+        if(!(v.startsWith("-")||v.startsWith("+"))){
+            par=false;
+        }
+        if(par){
+            sb.append("(");
+        }
+        sb.append(v);
+        if(par){
+            sb.append(")");
+        }
+    }
 }

@@ -1,11 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.AbstractFactory;
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
-import net.vpc.scholar.hadrumaths.GeometryFactory;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -66,6 +62,18 @@ public class SourceFactory extends AbstractFactory{
 
     public static PlanarSource createPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, Geometry geometry) {
         return new CstPlanarSource(xvalue, yvalue, characteristicImpedance, polarization, GeometryFactory.createPolygonList(geometry));
+    }
+
+    public static PlanarSources createPlanarSources(double value, Complex characteristicImpedance, Axis polarization, Domain geometry) {
+        return createPlanarSources(value,characteristicImpedance,polarization,geometry.toGeometry());
+    }
+
+    public static PlanarSources createPlanarSources(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, Domain geometry) {
+        return createPlanarSources(xvalue,yvalue,characteristicImpedance,polarization,geometry.toGeometry());
+    }
+
+    public static PlanarSource createPlanarSource(double value, Complex characteristicImpedance, Axis polarization, Domain geometry) {
+        return createPlanarSource(value,characteristicImpedance,polarization,geometry.toGeometry());
     }
 
     public static PlanarSource createPlanarSource(double value, Complex characteristicImpedance, Axis polarization, Geometry geometry) {

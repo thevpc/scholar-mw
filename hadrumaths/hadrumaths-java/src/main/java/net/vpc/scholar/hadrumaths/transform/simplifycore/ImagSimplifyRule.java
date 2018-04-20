@@ -69,10 +69,10 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
             if(first.isDC() && second.isDC()){
                 DoubleToComplex a = first.toDC();
                 DoubleToComplex b = second.toDC();
-                boolean aReal = a.getImag().isZero();
-                boolean aImag = a.getReal().isZero();
-                boolean bReal = b.getImag().isZero();
-                boolean bImag = b.getReal().isZero();
+                boolean aReal = a.getImagDD().isZero();
+                boolean aImag = a.getRealDD().isZero();
+                boolean bReal = b.getImagDD().isZero();
+                boolean bImag = b.getRealDD().isZero();
                 if((aReal && bReal) || (aImag && bImag)) {
                     return RewriteResult.bestEffort(FunctionFactory.DZEROXY);
                 }else if((aReal && bImag) || (bReal && aImag)){
@@ -80,7 +80,7 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
                 }
             }
         }
-        DoubleToDouble r = rbase.getValue().toDC().getImag();
+        DoubleToDouble r = rbase.getValue().toDC().getImagDD();
         if(!(r instanceof Imag)){
             return RewriteResult.newVal(r);
         }

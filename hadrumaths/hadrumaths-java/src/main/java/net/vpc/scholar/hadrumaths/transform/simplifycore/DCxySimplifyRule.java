@@ -33,15 +33,15 @@ public class DCxySimplifyRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         DCxy ee = (DCxy) e;
-        DoubleToDouble real = ee.getReal();
-        DoubleToDouble imag = ee.getImag();
+        DoubleToDouble real = ee.getRealDD();
+        DoubleToDouble imag = ee.getImagDD();
         RewriteResult exreal=ruleset.rewrite(real);
         RewriteResult eximag=ruleset.rewrite(imag);
         if(eximag.getValue().isZero()){
             return RewriteResult.bestEffort(exreal.getValue());
         }
         if(exreal.getValue().getDomain().equals(eximag.getValue().getDomain())){
-            if(exreal.getValue() instanceof DoubleValue && eximag.getValue() instanceof DoubleValue){
+            if(exreal.getValue().isDoubleValue() && eximag.getValue().isDoubleValue()){
                 DoubleValue a=(DoubleValue) exreal.getValue();
                 DoubleValue b=(DoubleValue) eximag.getValue();
                 return RewriteResult.bestEffort(new ComplexValue(Complex.valueOf(a.value,b.value), exreal.getValue().getDomain()));

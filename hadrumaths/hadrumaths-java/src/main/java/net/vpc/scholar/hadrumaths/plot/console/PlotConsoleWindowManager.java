@@ -4,6 +4,7 @@ import net.vpc.scholar.hadrumaths.plot.AbstractPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
 
@@ -15,14 +16,15 @@ public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
     PlotContainer rootContainer = new AbstractPlotContainer() {
         @Override
         public void removePlotComponentImpl(PlotComponent component) {
-            plotConsole.getMainPlotterFrame().removeWindow(component.toComponent());
+            plotConsole.getPlotConsoleFrame().removeWindow(component.toComponent());
         }
 
         @Override
         public void addComponentImpl(PlotComponent component, int index) {
+            plotConsole.display(component);
             //if(index<=0) {
-                ConsoleWindow w = plotConsole.getMainPlotterFrame().getWindow(createWindowPath(component.getPlotTitle()));
-                w.setComponent(component.toComponent());
+//                ConsoleWindow w = plotConsole.getPlotConsoleFrame().getWindow(createWindowPath(component.getPlotTitle()));
+//                w.setComponent(component.toComponent());
             //}
         }
 
@@ -83,5 +85,9 @@ public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
     @Override
     public PlotContainer getRootContainer() {
         return rootContainer;
+    }
+
+    public void addPlotComponentImpl(PlotComponent component, String[] path) {
+        plotConsole.display(component, StringUtils.toPath(path,"/"));
     }
 }

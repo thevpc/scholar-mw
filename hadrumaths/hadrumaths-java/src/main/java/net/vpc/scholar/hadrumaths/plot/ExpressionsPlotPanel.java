@@ -90,7 +90,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JRadioButton tableRadioButton = new JRadioButton("Table");
     private Expr[] selectedFunctions = new DoubleToVector[0];
     private int[] selectedFunctionsIndexes = new int[0];
-    private PlotWindowManager windowManager;
     //    private JComboBox showType = new JComboBox(ShowType.values());
     private JProgressBar updatingProgressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     //    private JLabel yPrecisionLabel = new JLabel("");
@@ -105,7 +104,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     //    private ButtonGroup fctGroup = new ButtonGroup();
     private JButton showContent = prepareButton("?", "Show Content");
     private ItemListener updatePlotItemListener = new UpdatePlotItemListener();
-    private String layoutConstraints = "";
     PropertyChangeListener modelUpdatesListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -150,7 +148,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         this.model = model;
         this.domainXY0 = null;
 
-        this.windowManager = windowManager;
+        setPlotWindowManager(windowManager);
 
         fxAxisRadioButton.setSelected(false);
         fyAxisRadioButton.setSelected(false);
@@ -1436,7 +1434,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             model2.setXVector(x);
             model2.setYVector(y);
             model2.setZ(yz);
-            model2.setZDoubleFunction(getComplexAsDouble());
+            model2.setConverter(getComplexAsDouble());
             PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asMatrix();
             JComponent jComponent = pb.xsamples(x).ysamples(y).plot(yz).toComponent();
             mainPanel_add(jComponent);
@@ -1536,7 +1534,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 model.setX(new double[][]{x});
                 model.setY(new double[][]{y});
                 model.setZ(yz);
-                model.setZDoubleFunction(getComplexAsDouble());
+                model.setConverter(getComplexAsDouble());
                 model.setTitle(this.model.getTitle());
                 PlotComponentPanel mesh = ChartFactory.createMesh(model, null);
                 Plot.buildJPopupMenu(mesh,new SimplePlotModelProvider(model,mesh.toComponent()));
@@ -1614,14 +1612,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         return baseTitle;
     }
 
-    public JComponent toComponent() {
-        return (JComponent) this;
-    }
-
-    public void display() {
-        windowManager.add(this);
-    }
-
     public DoubleToComplex getAxisExpression(Expr e, CellPosition rc) {
         return getAxisExpression(e, rc.getRow(), rc.getColumn());
     }
@@ -1633,15 +1623,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             return m.getComponent(r, c).toDC();
         }
         return FunctionFactory.CZEROXY;
-    }
-
-    @Override
-    public String getLayoutConstraints() {
-        return layoutConstraints;
-    }
-
-    public void setLayoutConstraints(String layoutConstraints) {
-        this.layoutConstraints = layoutConstraints;
     }
 
     @Override

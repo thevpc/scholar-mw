@@ -70,6 +70,9 @@ public class DDz extends AbstractDoubleToDouble implements Cloneable{
         this.defaultX = defaultX;
     }
 
+    public double getDefaultY() {
+        return defaultY;
+    }
 
     public DoubleToDouble getArg() {
         return base;

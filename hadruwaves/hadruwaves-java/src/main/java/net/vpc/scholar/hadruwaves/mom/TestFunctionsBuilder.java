@@ -54,6 +54,10 @@ public class TestFunctionsBuilder {
         return addGeometry(new Polygon(points));
     }
 
+    public TestFunctionsBuilder addGeometry(Domain geometry) {
+        return addGeometry(geometry.toGeometry());
+    }
+
     public TestFunctionsBuilder addGeometry(Geometry geometry) {
         if (this.geometry == null) {
             this.geometry = geometry;

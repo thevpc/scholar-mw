@@ -4,19 +4,29 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 
 /**
- *
  * @author vpc
  */
 public class DiscreteFormatter implements Formatter<Discrete> {
 
     @Override
-    public String format(Discrete o, FormatParam... format) {
-        return "Discrete("+FormatFactory.format(o.getDomain(),format)+","+o.getCountX()+":"+o.getCountY()+":"+o.getCountZ()+")";
+    public String format(Discrete o, FormatParamSet format) {
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
+        return sb.toString();
+    }
+
+    @Override
+    public void format(StringBuilder sb, Discrete o, FormatParamSet format) {
+        sb.append("Discrete(");
+        FormatFactory.format(sb, o.getDomain(), format);
+        sb.append(",");
+        sb.append(o.getCountX()).append(":").append(o.getCountY()).append(":").append(o.getCountZ());
+        sb.append(")");
     }
 }

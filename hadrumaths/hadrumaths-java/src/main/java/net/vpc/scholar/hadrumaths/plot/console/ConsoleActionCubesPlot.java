@@ -32,7 +32,7 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
         if (yvalues == null) {
             return;
         }
-        plotter.getMainPlotterFrame().getWindow(preferredPath)
+        plotter.getPlotConsoleFrame().getWindow(preferredPath)
                 .addChild(
                         plotTitle,
                         Plot.create(

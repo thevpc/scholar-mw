@@ -21,7 +21,7 @@ public class ValuesPlotModel implements PlotModel {
     private double[][] x=new double[0][0];
     private double[][] y=new double[0][0];
     private Complex[][] z=new Complex[0][0];
-    private ComplexAsDouble zDoubleFunction=ComplexAsDouble.ABS;
+    private ComplexAsDouble converter;
     private PlotType plotType=PlotType.CURVE;
     private PropertyChangeSupport changeSupport;
     private Map<String,Object> properties =new HashMap<String, Object>();
@@ -39,11 +39,11 @@ public class ValuesPlotModel implements PlotModel {
      * @param x
      * @param y
      * @param z
-     * @param zDoubleFunction
+     * @param converter
      * @param plotType
      */
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, double[] x, double[] y, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType, Map<String,Object> properties) {
-        this(title, xtitle, ytitle, ztitle, null, new double[][]{x}, new double[][]{y}, z, zDoubleFunction, plotType,properties);
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, double[] x, double[] y, Complex[][] z, ComplexAsDouble converter, PlotType plotType, Map<String,Object> properties) {
+        this(title, xtitle, ytitle, ztitle, null, new double[][]{x}, new double[][]{y}, z, converter, plotType,properties);
     }
 
     /**
@@ -54,16 +54,16 @@ public class ValuesPlotModel implements PlotModel {
      * @param yTitles
      * @param x
      * @param z
-     * @param zDoubleFunction
+     * @param converter
      */
-    public ValuesPlotModel(String title, String xtitle, String ztitle, String[] yTitles, double[][] x, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType, Map<String,Object> properties) {
-        this(title, xtitle, null, ztitle, yTitles, x, null, z, zDoubleFunction, plotType,properties);
+    public ValuesPlotModel(String title, String xtitle, String ztitle, String[] yTitles, double[][] x, Complex[][] z, ComplexAsDouble converter, PlotType plotType, Map<String,Object> properties) {
+        this(title, xtitle, null, ztitle, yTitles, x, null, z, converter, plotType,properties);
     }
     public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, double[][] z, PlotType plotType, Map<String,Object> properties) {
         this(title, xtitle, ytitle, ztitle, ytitles, x, y, toComplex(z), ComplexAsDouble.REAL, plotType,properties);
     }
 
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType, Map<String,Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Complex[][] z, ComplexAsDouble converter, PlotType plotType, Map<String,Object> properties) {
         changeSupport = new PropertyChangeSupport(this);
         this.title = title;
         this.name = title;
@@ -80,7 +80,7 @@ public class ValuesPlotModel implements PlotModel {
         setZ(z);
 
         ensureSize_yvisible();
-        this.zDoubleFunction = zDoubleFunction;
+        this.converter = converter;
         this.plotType = plotType;
         if(properties!=null){
             for (Map.Entry<String, Object> e : properties.entrySet()) {
@@ -312,14 +312,14 @@ public class ValuesPlotModel implements PlotModel {
         firePropertyChange("ytitle", old, this.ytitle);
     }
 
-    public ComplexAsDouble getZDoubleFunction() {
-        return zDoubleFunction;
+    public ComplexAsDouble getConverter() {
+        return converter;
     }
 
-    public void setZDoubleFunction(ComplexAsDouble zDoubleFunction) {
-        Object old=this.zDoubleFunction;
-        this.zDoubleFunction = zDoubleFunction;
-        firePropertyChange("zDoubleFunction", old, this.zDoubleFunction);
+    public void setConverter(ComplexAsDouble zDoubleFunction) {
+        Object old=this.converter;
+        this.converter = zDoubleFunction;
+        firePropertyChange("converter", old, this.converter);
     }
 
     public PlotType getPlotType() {
@@ -425,7 +425,7 @@ public class ValuesPlotModel implements PlotModel {
     }
 
     public double[][] getZd() {
-        return Maths.toDouble(getZ(), getZDoubleFunction());
+        return Maths.toDouble(getZ(), getConverter());
     }
 
     public void modelUpdated() {

@@ -230,7 +230,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
                         dmy + (j * maxAbsoluteSizeY),
                         maxAbsoluteSizeY
                 );
-                Geometry a = r;
+                Geometry a = r.toGeometry();
                 String prefix = "i,j :" + i + "," + j + " : " + gridPrecision + " : ";
                 //AreaComponent.showDialog(prefix+"before",a,p);
                 a = a.intersectGeometry(p);

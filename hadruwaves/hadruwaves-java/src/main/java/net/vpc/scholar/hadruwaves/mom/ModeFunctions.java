@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
@@ -40,9 +38,16 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     void setHintEnableFunctionProperties(boolean disableDefaultFunctionProperties);
 
-    int getSize();
+    int getMaxSize();
 
-    ModeFunctions setSize(int fnMax);
+    ModeFunctions setMaxSize(int maxSize);
+
+    /**
+     * @param maxSize
+     * @return
+     */
+    @Deprecated
+    ModeFunctions setSize(int maxSize);
 
     TList<Expr> list();
 
@@ -94,7 +99,7 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     List<DoubleToVector> getFunctions(ModeType mode, ProgressMonitor monitor);
 
-    ModeInfo[] getModes(ProgressMonitor monitor, ObjectCache cache);
+    ModeInfo[] getModes(ProgressMonitor monitor);
 
     double getCutoffFrequency(ModeIndex i);
 
@@ -182,4 +187,6 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
     TVector<Complex> scalarProduct(Expr testFunction);
 
     TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor);
+
+    void setObjectCacheResolver(ObjectCacheResolver cacheResolver);
 }

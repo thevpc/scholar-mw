@@ -25,12 +25,12 @@
 
 package net.vpc.scholar.hadrumaths.util;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.util.logging.Level;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -76,7 +76,7 @@ import java.io.InterruptedIOException;
  */
 public class ProgressMonitorInputStream2 extends FilterInputStream
 {
-    private javax.swing.ProgressMonitor monitor;
+    private ProgressMonitor pmonitor;
     private long             nread = 0;
     private long             size = 0;
 
@@ -84,30 +84,27 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
     /**
      * Constructs an object to monitor the progress of an input stream.
      *
-     * @param message Descriptive text to be placed in the dialog box
-     *                if one is popped up.
-     * @param parentComponent The component triggering the operation
-     *                        being monitored.
      * @param in The input stream to be monitored.
      */
-    public ProgressMonitorInputStream2(Component parentComponent,
-                                       Object message,
-                                       InputStream in, long size) {
+    public ProgressMonitorInputStream2(InputStream in, long size,ProgressMonitor pmonitor) {
         super(in);
         this.size=size;
-        monitor = new javax.swing.ProgressMonitor(parentComponent, message, null, 0, 100);
+        if(pmonitor==null){
+            throw new IllegalArgumentException("Missing Monitor");
+        }
+        this.pmonitor=pmonitor;
     }
 
 
-    /**
-     * Get the ProgressMonitor object being used by this stream. Normally
-     * this isn't needed unless you want to do something like change the
-     * descriptive text partway through reading the file.
-     * @return the ProgressMonitor object used by this object
-     */
-    public javax.swing.ProgressMonitor getProgressMonitor() {
-        return monitor;
-    }
+//    /**
+//     * Get the ProgressMonitor object being used by this stream. Normally
+//     * this isn't needed unless you want to do something like change the
+//     * descriptive text partway through reading the file.
+//     * @return the ProgressMonitor object used by this object
+//     */
+//    public javax.swing.ProgressMonitor getProgressMonitor() {
+//        return monitor;
+//    }
 
 
     /**
@@ -119,9 +116,9 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
         if(c>=0){
             nread++;
             int progress = (int) (((double) nread) * 100 / size);
-            monitor.setProgress(progress);
+            pmonitor.setProgress(progress,null);
         }
-        if (monitor.isCanceled()) {
+        if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
                                     new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
@@ -140,9 +137,9 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
         if(nr>0){
             nread+=nr;
             int progress = (int) (((double) nread) * 100 / size);
-            monitor.setProgress(progress);
+            pmonitor.setProgress(progress,null);
         }
-        if (monitor.isCanceled()) {
+        if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
                                     new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
@@ -162,10 +159,10 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
         int nr = in.read(b, off, len);
         if(nr>0){
             nread+=nr;
-            int progress = (int) (((double) nread) * 100 / size);
-            monitor.setProgress(progress);
+            double progress = (((double) nread) / size);
+            pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
         }
-        if (monitor.isCanceled()) {
+        if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
                                     new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
@@ -185,7 +182,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
             nread+=nr;
             size=nread+in.available();
             int progress = (int) (((double) nread) * 100 / size);
-            monitor.setProgress(progress);
+            pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
         }
         return nr;
     }
@@ -197,7 +194,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      */
     public void close() throws IOException {
         in.close();
-        monitor.close();
+        pmonitor.stop();
     }
 
 
@@ -209,6 +206,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
         in.reset();
         size=nread+in.available();
         int progress = (int) (((double) nread) * 100 / size);
-        monitor.setProgress(progress);
+        pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
     }
+
 }

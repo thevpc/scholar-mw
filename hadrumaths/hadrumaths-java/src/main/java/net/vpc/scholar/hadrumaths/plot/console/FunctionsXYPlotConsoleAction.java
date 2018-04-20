@@ -35,7 +35,7 @@ public class FunctionsXYPlotConsoleAction implements ConsoleAction {
                 .setPreferredLibraries(preferredLibraries)
                 .setSelectedAxis(new CellPosition[]{new CellPosition(0,0)})
         ;
-        plotter.getMainPlotterFrame().getWindow(preferredPath).addChild(
+        plotter.getPlotConsoleFrame().getWindow(preferredPath).addChild(
                 title, (JComponent) Plot.create(m, Plot.getDefaultWindowManager())
         );
     }

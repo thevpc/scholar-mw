@@ -264,7 +264,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public String toString() {
-        return "(" + getFirst() + " / " + getSecond() + ")";
+        return "((" + getFirst() + ") / (" + getSecond() + "))";
     }
 
     public Expr[] getExpressions() {
@@ -331,7 +331,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         return domainDim;
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -345,10 +345,10 @@ public class Div extends AbstractExprOperator implements Cloneable {
         if (getFirst().isDC() && getSecond().isDC()) {
             DoubleToComplex a = getFirst().toDC();
             DoubleToComplex b = getSecond().toDC();
-            boolean aReal = a.getImag().isZero();
-            boolean aImag = a.getReal().isZero();
-            boolean bReal = b.getImag().isZero();
-            boolean bImag = b.getReal().isZero();
+            boolean aReal = a.getImagDD().isZero();
+            boolean aImag = a.getRealDD().isZero();
+            boolean bReal = b.getImagDD().isZero();
+            boolean bImag = b.getRealDD().isZero();
             if ((aReal && bReal) || (aImag && bImag)) {
                 return FunctionFactory.DZEROXY;
             } else if ((aReal && bImag) || (bReal && aImag)) {
@@ -358,7 +358,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         return new Imag(toDC());
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -372,10 +372,10 @@ public class Div extends AbstractExprOperator implements Cloneable {
         if (getFirst().isDC() && getSecond().isDC()) {
             DoubleToComplex a = getFirst().toDC();
             DoubleToComplex b = getSecond().toDC();
-            boolean aReal = a.getImag().isZero();
-            boolean aImag = a.getReal().isZero();
-            boolean bReal = b.getImag().isZero();
-            boolean bImag = b.getReal().isZero();
+            boolean aReal = a.getImagDD().isZero();
+            boolean aImag = a.getRealDD().isZero();
+            boolean bReal = b.getImagDD().isZero();
+            boolean bImag = b.getRealDD().isZero();
             if (aReal && bReal) {
                 return this;
             } else if (aImag && bImag) {

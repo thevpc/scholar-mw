@@ -11,6 +11,7 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
     private PlotContainer parentPlotContainer;
     private PlotWindowManager plotWindowManager;
     private String plotTitle;
+    private String layoutConstraints = "";
 
     public BasePlotComponent(LayoutManager layout, boolean isDoubleBuffered) {
         super(layout, isDoubleBuffered);
@@ -88,4 +89,23 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
     public void setPlotTitle(String plotTitle) {
         this.plotTitle = plotTitle;
     }
+
+    @Override
+    public String getLayoutConstraints() {
+        return layoutConstraints;
+    }
+
+    public PlotComponent setLayoutConstraints(String layoutConstraints) {
+        this.layoutConstraints = layoutConstraints;
+        return this;
+    }
+
+    public JComponent toComponent() {
+        return (JComponent) this;
+    }
+
+    public void display() {
+        getPlotWindowManager().add(this);
+    }
+
 }

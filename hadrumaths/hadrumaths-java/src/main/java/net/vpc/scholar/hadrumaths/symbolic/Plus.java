@@ -126,7 +126,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
 
     public boolean isNaNImpl() {
         for (Expr expression : expressions) {
-            if (!expression.isNaN()) {
+            if (expression.isNaN()) {
                 return true;
             }
         }
@@ -507,7 +507,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -520,12 +520,12 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
         Expr[] expressions2 = new Expr[expressions.length];
         for (int i = 0; i < expressions.length; i++) {
-            expressions2[i] = expressions[i].toDC().getImag();
+            expressions2[i] = expressions[i].toDC().getImagDD();
         }
         return Maths.sum(expressions2).toDD();
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -538,7 +538,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
         Expr[] expressions2 = new Expr[expressions.length];
         for (int i = 0; i < expressions.length; i++) {
-            expressions2[i] = expressions[i].toDC().getReal();
+            expressions2[i] = expressions[i].toDC().getRealDD();
         }
         return Maths.sum(expressions2).toDD();
     }

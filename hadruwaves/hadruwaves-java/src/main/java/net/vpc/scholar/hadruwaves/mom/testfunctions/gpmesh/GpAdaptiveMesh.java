@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.MapUtils;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
@@ -120,12 +121,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                             System.out.println("Ignored null or zero");
                         }else  {
                             if (invariance == null || fct.isInvariant(invariance)) {
-                                Map<String, Object> properties = fct.getProperties();
-//                                if (properties == null) {
-//                                    properties = new LinkedHashMap<String, Object>();
-//                                }
-                                properties.put("Cell", partCounter);
-//                                fct.setProperties(properties);
+                                fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                 f.add(fct);
                             }
                         }
@@ -139,23 +135,13 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                             if (zone.getDomain().xmax() <= globalDomain.getCenterX()) {
                                 DoubleToVector fct = fmotif;
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    Map<String, Object> properties = fct.getProperties();
-//                                    if (properties == null) {
-//                                        properties = new LinkedHashMap<String, Object>();
-//                                    }
-                                    properties.put("Cell", partCounter);
-//                                    fct.setProperties(properties);
+                                    fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                     f.add(fct);
                                 }
                             } else {
                                 DoubleToVector fct = xsymmetric(fmotif);
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    Map<String, Object> properties = fct.getProperties();
-//                                    if (properties == null) {
-//                                        properties = new LinkedHashMap<String, Object>();
-//                                    }
-                                    properties.put("Cell", partCounter + " [Symmetric]");
-//                                    fct.setProperties(properties);
+                                    fct=(DoubleToVector) fct.setProperty("Cell", partCounter + " [Symmetric]");
                                     f.add(fct);
                                 }
                             }
@@ -170,23 +156,13 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                             if (zone.getDomain().ymax() <= globalDomain.getCenterY()) {
                                 DoubleToVector fct = fmotif;
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    Map<String, Object> properties = fct.getProperties();
-                                    if (properties == null) {
-                                        properties = new HashMap<String, Object>();
-                                    }
-                                    properties.put("Cell", partCounter);
-//                                    fct.setProperties(properties);
+                                    fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                     f.add(fct);
                                 }
                             } else {
                                 DoubleToVector fct = ysymmetric(fmotif);
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    Map<String, Object> properties = fct.getProperties();
-//                                    if (properties == null) {
-//                                        properties = new LinkedHashMap<String, Object>();
-//                                    }
-                                    properties.put("Cell", partCounter + " [Symmetric]");
-//                                    fct.setProperties(properties);
+                                    fct=(DoubleToVector) fct.setProperty("Cell", partCounter + " [Symmetric]");
                                     f.add(fct);
                                 }
                             }
@@ -206,12 +182,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     if (c2 != null) {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            Map<String, Object> properties = fct.getProperties();
-                                            if (properties == null) {
-                                                properties = new HashMap<String, Object>();
-                                            }
-                                            properties.put("Cell", partCounter);
-//                                            fct.setProperties(properties);
+                                            fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                             f.add(fct);
                                         }
                                     }
@@ -219,12 +190,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            Map<String, Object> properties = fct.getProperties();
-                                            if (properties == null) {
-                                                properties = new HashMap<String, Object>();
-                                            }
-                                            properties.put("Cell", partCounter);
-//                                            fct.setProperties(properties);
+                                            fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                             f.add(fct);
                                         }
                                     }
@@ -250,13 +216,12 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
                                         if (invariance == null || fct.isInvariant(invariance)) {
 
-                                            Map<String, Object> properties = fct.getProperties();
-//                                            if (properties == null) {
-//                                                properties = new LinkedHashMap<String, Object>();
-//                                            }
-                                            properties.put("Cell", partCounter);
-                                            properties.put("invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : ""));
-//                                            fct.setProperties(properties);
+                                            fct=(DoubleToVector) fct.setProperties(
+                                                    MapUtils.<String,Object>map(
+                                                            "Cell", partCounter,
+                                                        "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
+                                                    )
+                                            );
                                             f.add(fct);
                                         }
                                     }
@@ -264,12 +229,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            Map<String, Object> properties = fct.getProperties();
-//                                            if (properties == null) {
-//                                                properties = new LinkedHashMap<String, Object>();
-//                                            }
-                                            properties.put("Cell", partCounter);
-//                                            fct.setProperties(properties);
+                                            fct=(DoubleToVector) fct.setProperty("Cell", partCounter);
                                             f.add(fct);
                                         }
                                     }

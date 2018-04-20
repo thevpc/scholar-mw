@@ -71,11 +71,11 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         throw new IllegalArgumentException("Unsupported");
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return real;
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return imag;
     }
 
@@ -207,7 +207,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     private Expr toCanonical() {
         //amp*exp(iax)*exp(iby)
-        return mul(exp(mul(X, î, expr(a))), exp(mul(Y, î, expr(b))), expr(amp));
+        return Maths.mul(exp(Maths.mul(X, î, expr(a))), exp(Maths.mul(Y, î, expr(b))), expr(amp));
     }
 
     @Override
@@ -305,7 +305,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public boolean isDoubleExprImpl() {
-        return getImag().isZero();
+        return getImagDD().isZero();
     }
 
     @Override

@@ -8,7 +8,7 @@
     <version>${scholar-version}</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.17</scholar-version>
+        <scholar-version>3.1.21</scholar-version>
         <github.global.server>github</github.global.server>
     </properties>
     <distributionManagement>
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.12.2</version>
+            <version>2.12.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

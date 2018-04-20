@@ -37,15 +37,15 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
         Expr aa = ee.getArgument();
         RewriteResult rewriteResult = ruleset.rewrite(aa);
         Expr simplifiedArg = rewriteResult.getValue();
-        if(simplifiedArg instanceof DoubleValue) {
+        if(simplifiedArg.isDoubleValue()) {
             return RewriteResult.newVal(
-                    new DoubleValue(Maths.exp(((DoubleValue) simplifiedArg).getValue()),simplifiedArg.getDomain())
+                    new DoubleValue(Maths.exp(simplifiedArg.toDouble()),simplifiedArg.getDomain())
             );
-        }else if(simplifiedArg instanceof Complex){
-            Complex c=(Complex) simplifiedArg;
+        }else if(simplifiedArg.isComplex()){
+            Complex c=simplifiedArg.toComplex();
             if(c.isReal()) {
                 return RewriteResult.newVal(
-                        new DoubleValue(Maths.exp(c.realdbl()), simplifiedArg.getDomain())
+                        DoubleValue.valueOf(Maths.exp(c.realdbl()))
                 );
             }else if(c.isImag()){
                 return RewriteResult.newVal(
@@ -56,7 +56,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
                             Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl()))
                 );
             }
-        }else if(simplifiedArg instanceof ComplexValue){
+        }else if(simplifiedArg.isComplexValue()){
             ComplexValue cv=(ComplexValue) simplifiedArg;
             Complex c=cv.getValue();
             if(c.isReal()) {
@@ -76,8 +76,8 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
             //nothing to do
         }else if(simplifiedArg.isDC()){
             DoubleToComplex doubleToComplex = simplifiedArg.toDC();
-            Expr a= ruleset.rewriteOrSame(doubleToComplex.getReal()).toDD();
-            Expr b= ruleset.rewriteOrSame(doubleToComplex.getImag()).toDD();
+            Expr a= ruleset.rewriteOrSame(doubleToComplex.getRealDD()).toDD();
+            Expr b= ruleset.rewriteOrSame(doubleToComplex.getImagDD()).toDD();
             return RewriteResult.newVal(Maths.mul(new Exp(a),Maths.sum(Maths.cos(b),Maths.mul(Maths.I,Maths.sin(b)))));
         }
         if(rewriteResult.isUnmodified()) {

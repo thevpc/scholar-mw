@@ -30,4 +30,14 @@ public class DefaultProgressMonitor implements ProgressMonitor {
                 "value=" + getProgressValue() +
                 ')';
     }
+
+    @Override
+    public boolean isCanceled() {
+        return false;
+    }
+
+    @Override
+    public void stop() {
+
+    }
 }

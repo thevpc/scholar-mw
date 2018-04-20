@@ -90,7 +90,7 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
 
     public DoubleToDouble toDD() {
         if (!isDD()) {
-            boolean aa=isDD();
+//            boolean aa=isDD();
             throw new ClassCastException();
         }
         return this;
@@ -168,11 +168,11 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return Expressions.computeDouble(this, x);
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return new Real(this);
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return new Imag(this);
     }
 

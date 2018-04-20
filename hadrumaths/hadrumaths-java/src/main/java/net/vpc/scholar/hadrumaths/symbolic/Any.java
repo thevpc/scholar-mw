@@ -5,16 +5,11 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author vpc
@@ -30,13 +25,19 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
             }
         });
     }
+
+    public Expr object;
     protected String name;
     private Map<String, Object> properties;
 
-    public Expr object;
+//    public Any(Expr object) {
+//        this.object = unwrap(object);
+//    }
 
-    public Any(Expr object) {
-        this.object = unwrap(object);
+    public Any(Expr object, String name, Map<String, Object> properties) {
+        this.name = name;
+        this.properties = properties == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap<>(properties));
+        this.object = object;
     }
 
     public static Expr unwrap(Expr e) {
@@ -44,29 +45,41 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     public static Expr copyProperties(Expr a, Expr b) {
-        if(a.hasProperties()) {
-            b=b.setProperties(a.getProperties());
+        if (a.hasProperties()) {
+            b = b.setProperties(a.getProperties());
         }
-        if(a.getTitle()!=null){
-            b=b.setTitle(a.getTitle());
+        if (a.getTitle() != null) {
+            b = b.setTitle(a.getTitle());
         }
         return b;
     }
 
     public static Expr updateTitleVars(Expr b, String paramName, Expr paramValue) {
-        String paramValueS=paramName==null?"":paramValue.toString();
-        if(b.getTitle()!=null && b.getTitle().contains("${"+paramName+"}")){
-            return b.setTitle(b.getTitle().replace("${"+paramName+"}",paramValueS));
+        String paramValueS = paramName == null ? "" : paramValue.toString();
+        if (b.getTitle() != null && b.getTitle().contains("${" + paramName + "}")) {
+            return b.setTitle(b.getTitle().replace("${" + paramName + "}", paramValueS));
         }
         return b;
     }
 
     public static Expr updateTitleVars(Expr b, String paramName, double paramValue) {
-        String paramValueS=String.valueOf(paramValue);
-        if(b.getTitle()!=null && b.getTitle().contains("${"+paramName+"}")){
-            return b.setTitle(b.getTitle().replace("${"+paramName+"}",paramValueS));
+        String paramValueS = String.valueOf(paramValue);
+        if (b.getTitle() != null && b.getTitle().contains("${" + paramName + "}")) {
+            return b.setTitle(b.getTitle().replace("${" + paramName + "}", paramValueS));
         }
         return b;
+    }
+
+    public static Any wrap(Expr e) {
+        return !(e instanceof Any) ? new Any(e, e.getTitle(), e.getProperties()) : (((Any) e));
+    }
+
+    public static Any wrap(Expr object, String name, Map<String, Object> properties) {
+        if (object instanceof Any) {
+            return new Any(((Any) object).object, name, properties);
+        } else {
+            return new Any(object, name, properties);
+        }
     }
 
     public String getTitle() {
@@ -75,25 +88,20 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
 
     @Override
     public Expr setTitle(String name) {
-        this.name=name;
-        return this;
+        return new Any(object, name, properties);
     }
 
     @Override
     public Expr clone() {
         Any cloned = (Any) super.clone();
 //        cloned.object = object.clone();
-        if (properties != null && properties.size()>0) {
+        if (properties != null && properties.size() > 0) {
             cloned.properties = new HashMap<String, Object>(properties.size());
             for (Map.Entry<String, Object> e : properties.entrySet()) {
                 cloned.properties.put(e.getKey(), e.getValue());
             }
         }
         return cloned;
-    }
-
-    public Any wrap(Expr e) {
-        return !(e instanceof Any) ? new Any(e) : (((Any) e));
     }
 
     public boolean isZeroImpl() {
@@ -171,6 +179,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.lt(first, second)
         );
     }
+
     public Any lte(Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
@@ -178,6 +187,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.lte(first, second)
         );
     }
+
     public Any gt(Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
@@ -185,6 +195,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.gt(first, second)
         );
     }
+
     public Any gte(Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
@@ -192,6 +203,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.gte(first, second)
         );
     }
+
     public Any eq(Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
@@ -199,6 +211,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.eq(first, second)
         );
     }
+
     public Any ne(Expr e) {
         Expr first = object;
         Expr second = unwrap(e);
@@ -224,7 +237,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return object.isDD();
     }
 
-//    @Override
+    //    @Override
 //    public boolean isDDx() {
 //        return object.isDDx();
 //    }
@@ -242,9 +255,9 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public DoubleToVector toDV() {
         return
                 //wrap(
-                        object.toDV()
+                object.toDV()
                 //)
-        ;
+                ;
     }
 
     @Override
@@ -252,15 +265,15 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return
                 //wrap(
                 object.toDC()
-        //)
-        ;
+                //)
+                ;
     }
 
     @Override
     public DoubleToDouble toDD() {
         return
                 //wrap(
-                        object.toDD()
+                object.toDD()
                 //)
                 ;
     }
@@ -269,12 +282,12 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public DoubleToMatrix toDM() {
         return
                 //wrap(
-                        object.toDM()
+                object.toDM()
                 //)
                 ;
     }
 
-//    @Override
+    //    @Override
 //    public IDDx toDDx() {
 //        return wrap(object.toDDx());
 //    }
@@ -363,12 +376,12 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return wrap(object.toDM().getComponent(row, col));
     }
 
-    public DoubleToDouble getReal() {
-        return wrap(object.toDC().getReal());
+    public DoubleToDouble getRealDD() {
+        return wrap(object.toDC().getRealDD());
     }
 
-    public DoubleToDouble getImag() {
-        return wrap(object.toDC().getImag());
+    public DoubleToDouble getImagDD() {
+        return wrap(object.toDC().getImagDD());
     }
 
     public List<Expr> getSubExpressions() {
@@ -421,22 +434,19 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
 
     @Override
     public Any setParam(String name, double value) {
-        Any a=wrap(
-                        object.setParam(name, value)
-                );
-        copyProperties(this, a);
-        return a;
+        return wrap(
+                object.setParam(name, value),
+                getTitle(), getProperties()
+        );
     }
 
     @Override
     public Any setParam(String name, Expr value) {
         Expr e = object.setParam(name, value);
-        if(e==object) {
+        if (e == object) {
             return this;
         }
-        Any a=wrap(e);
-        copyProperties(this, a);
-        return a;
+        return wrap(e, getTitle(), getProperties());
     }
 
     @Override
@@ -458,8 +468,8 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public Expr simplify() {
         return //wrap(
                 object.simplify()
-        //)
-        ;
+                //)
+                ;
     }
 
 
@@ -491,7 +501,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public Expr composeX(Expr xreplacement) {
         return
                 //wrap(
-                        object.composeX(xreplacement)
+                object.composeX(xreplacement)
                 //)
                 ;
     }
@@ -500,8 +510,8 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public Expr composeY(Expr yreplacement) {
         return
                 //wrap(
-                        object.composeY(yreplacement)
-                        //)
+                object.composeY(yreplacement)
+                //)
                 ;
     }
 
@@ -524,6 +534,22 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return mul(Maths.expr(e));
     }
 
+    public Any mul(int e) {
+        return mul(Maths.expr(e));
+    }
+
+    public Any div(int e) {
+        return div(Maths.expr(e));
+    }
+
+    public Any sub(int e) {
+        return sub(Maths.expr(e));
+    }
+
+    public Any add(int e) {
+        return add(Maths.expr(e));
+    }
+
     public Any sub(double e) {
         return sub(Maths.expr(e));
     }
@@ -537,22 +563,22 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return
                 //wrap(
                 (DoubleToComplex) object.toDV().getComponent(a)
-                        //)
+                //)
                 ;
     }
 
     public DoubleToComplex getX() {
         return
                 //wrap(
-                        (DoubleToComplex)object.toDV().getComponent(Axis.X)
+                (DoubleToComplex) object.toDV().getComponent(Axis.X)
                 //)
-        ;
+                ;
     }
 
     public DoubleToComplex getY() {
         return
                 //wrap(
-                (DoubleToComplex)  object.toDV().getComponent(Axis.Y)
+                (DoubleToComplex) object.toDV().getComponent(Axis.Y)
                 //)
                 ;
     }
@@ -560,9 +586,9 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public DoubleToComplex getZ() {
         return
                 //wrap(
-                (DoubleToComplex)           object.toDV().getComponent(Axis.Z)
-        //)
-        ;
+                (DoubleToComplex) object.toDV().getComponent(Axis.Z)
+                //)
+                ;
     }
 
     @Override
@@ -631,21 +657,25 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 Maths.cos(object)
         );
     }
+
     public Any sin() {
         return wrap(
                 Maths.sin(object)
         );
     }
+
     public Any tan() {
         return wrap(
                 Maths.tan(object)
         );
     }
+
     public Any cotan() {
         return wrap(
                 Maths.cotan(object)
         );
     }
+
     public Any exp() {
         return wrap(
                 Maths.exp(object)
@@ -669,37 +699,17 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
 
     @Override
     public Expr setParam(ParamExpr paramExpr, double value) {
-        return wrap(object.setParam(paramExpr,value));
+        return wrap(object.setParam(paramExpr, value));
     }
 
     @Override
     public Expr setParam(ParamExpr paramExpr, Expr value) {
-        return wrap(object.setParam(paramExpr,value));
+        return wrap(object.setParam(paramExpr, value));
     }
 
     @Override
     public boolean isInfinite() {
         return object.isInfinite();
-    }
-
-    @Override
-    public Expr setProperty(String name, Object value) {
-        setSelfProperty(name, value);
-        return this;
-    }
-    
-
-    public void setSelfProperty(String name, Object value) {
-        if(value==null){
-            if(properties!=null){
-                properties.remove(name);
-            }
-        }else{
-            if(properties==null){
-                properties=new HashMap<String, Object>(2);
-            }
-            properties.put(name, value);
-        }
     }
 
     @Override
@@ -709,40 +719,43 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
 
     @Override
     public boolean hasProperties() {
-        return properties!=null && properties.size()>0;
+        return properties != null && properties.size() > 0;
     }
 
     @Override
     public Object getProperty(String name) {
-        return properties!=null ? properties.get(name):null;
+        return properties != null ? properties.get(name) : null;
     }
 
     @Override
     public Map<String, Object> getProperties() {
         if (properties == null) {
-            properties = new HashMap<String, Object>(2);
+            return Collections.emptyMap();
         }
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     @Override
-    public Expr setProperties(Map<String, Object> map) {
-        setSelfProperties(map);
-        return this;
-//        if(map!=null && !map.isEmpty()){
-//            Any a=(Any) clone();
-//            a.setSelfProperties(map);
-//        }
-//        return this;
-    }
-
-    public void setSelfProperties(Map<String, Object> map) {
-        if(map!=null && !map.isEmpty()){
-            if (properties == null) {
-                properties = new HashMap<String, Object>(2);
+    public Expr setProperties(Map<String, Object> map, boolean merge) {
+        if (map == null || map.isEmpty()) {
+            return this;
+        }
+        if (merge) {
+            Map<String, Object> map2 = new HashMap<>(getProperties());
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                Object v = entry.getValue();
+                if (v == null) {
+                    map2.remove(entry.getKey());
+                } else {
+                    map2.put(entry.getKey(), v);
+                }
             }
-            properties.putAll(map);
+            map2.putAll(map);
+            return new Any(object,name, map2);
+        } else {
+            return new Any(object,name, map);
         }
     }
+
 
 }

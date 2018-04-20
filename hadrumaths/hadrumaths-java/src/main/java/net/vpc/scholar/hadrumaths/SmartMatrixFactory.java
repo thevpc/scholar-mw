@@ -17,25 +17,25 @@ public class SmartMatrixFactory extends AbstractMatrixFactory {
         return matrix;
     }
 
-    @Override
-    public Matrix newIdentity(int rows, int cols) {
-        return new AbstractUnmodifiableMatrix(rows, cols, this) {
-            @Override
-            public Complex get(int row, int col) {
-                return (row == col) ? Complex.ONE : Complex.ZERO;
-            }
-        };
-    }
-
-    @Override
-    public Matrix newConstant(int rows, int cols, Complex value) {
-        return new AbstractUnmodifiableMatrix(rows, cols, this) {
-            @Override
-            public Complex get(int row, int col) {
-                return value;
-            }
-        };
-    }
+//    @Override
+//    public Matrix newIdentity(int rows, int cols) {
+//        return new AbstractUnmodifiableMatrix(rows, cols, this) {
+//            @Override
+//            public Complex get(int row, int col) {
+//                return (row == col) ? Complex.ONE : Complex.ZERO;
+//            }
+//        };
+//    }
+//
+//    @Override
+//    public Matrix newConstant(int rows, int cols, Complex value) {
+//        return new AbstractUnmodifiableMatrix(rows, cols, this) {
+//            @Override
+//            public Complex get(int row, int col) {
+//                return value;
+//            }
+//        };
+//    }
 
     @Override
     public String getId() {

@@ -294,11 +294,14 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
         if (comp != null) {
             Arrays.sort(validGpImpl, comp);
         }
-        for (DoubleToVector cFunctionVector2D : validGpImpl) {
-            Map<String, Object> properties = cFunctionVector2D.getProperties();
+        for (int i = 0; i < validGpImpl.length; i++) {
+            DoubleToVector cFunctionVector2D = validGpImpl[i];
+            Map<String, Object> properties = new HashMap<>();
             properties.put("Domain", cFunctionVector2D.getComponent(Axis.X).getDomain().expand(cFunctionVector2D.getComponent(Axis.Y).getDomain()));
             properties.put("DomainX", cFunctionVector2D.getComponent(Axis.X).getDomain());
             properties.put("DomainY", cFunctionVector2D.getComponent(Axis.Y).getDomain());
+            cFunctionVector2D = (DoubleToVector) cFunctionVector2D.setMergedProperties(properties);
+            validGpImpl[i]=cFunctionVector2D;
         }
         return validGpImpl;
 //            for (int i = 0; i < cachedFunctions.length; i++) {
@@ -313,7 +316,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
         }
         complex = false;
         for (DoubleToVector cFunctionVector2D : cachedFunctions) {
-            if (!cFunctionVector2D.getComponent(Axis.X).toDC().getImag().isZero() || !cFunctionVector2D.getComponent(Axis.Y).toDC().getImag().isZero()) {
+            if (!cFunctionVector2D.getComponent(Axis.X).toDC().getImagDD().isZero() || !cFunctionVector2D.getComponent(Axis.Y).toDC().getImagDD().isZero()) {
                 complex = true;
                 break;
             }

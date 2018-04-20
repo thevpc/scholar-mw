@@ -91,7 +91,7 @@ public class DoubleParam extends ParamExpr implements Cloneable{
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return this;
     }
 
@@ -102,7 +102,7 @@ public class DoubleParam extends ParamExpr implements Cloneable{
 
 
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return FunctionFactory.DZEROXY;
     }
 

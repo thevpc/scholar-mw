@@ -7,7 +7,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 /**
@@ -20,15 +22,23 @@ public class VDCxyFormatter implements Formatter<DoubleToVector> {
     }
 
     @Override
-    public String format(DoubleToVector o, FormatParam... format) {
-        StringBuilder b=new StringBuilder();
-        for (int i = 0; i < o.getComponentSize(); i++) {
-            if(i>0){
-                b.append(", ");
-            }
-            b.append(FormatFactory.formatArg(o.getComponent(Axis.values()[i]), format));
-        }
-        return "(" + b.toString() + ")";
+    public String format(DoubleToVector o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
     }
 
+    @Override
+    public void format(StringBuilder sb, DoubleToVector o, FormatParamSet format) {
+        sb.append("(");
+        format=format.add(RequireParenthesesFormat.INSTANCE);
+        for (int i = 0; i < o.getComponentSize(); i++) {
+            if(i>0){
+                sb.append(", ");
+            }
+            FormatFactory.format(sb,o.getComponent(Axis.values()[i]), format);
+        }
+        sb.append(")");
+
+    }
 }

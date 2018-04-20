@@ -99,6 +99,9 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
         this.defaultY = defaultY;
     }
 
+    public double getDefaultZ() {
+        return defaultZ;
+    }
 
     public DoubleToDouble getArg() {
         return base;

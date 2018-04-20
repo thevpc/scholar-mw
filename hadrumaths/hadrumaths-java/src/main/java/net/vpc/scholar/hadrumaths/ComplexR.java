@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Created by vpc on 4/7/17.
  */
-public final class ComplexR extends Complex {
+public final class ComplexR extends Complex implements DoubleToDouble{
     private static final long serialVersionUID=1;
     private double real;
 //    private double imag;
@@ -160,7 +161,10 @@ public final class ComplexR extends Complex {
     }
 
     public Complex abs() {
-        return Complex.valueOf(Math.abs(real));
+        if(real<0) {
+            return Complex.valueOf(Math.abs(real));
+        }
+        return this;
     }
 
     public double absdbl() {
@@ -324,9 +328,6 @@ public final class ComplexR extends Complex {
 
     @Override
     public String toString() {
-        if (Double.isNaN(real)) {
-            return String.valueOf(real);
-        }
         return String.valueOf(real);
     }
 
@@ -430,18 +431,10 @@ public final class ComplexR extends Complex {
         return true;
     }
 
-    public DoubleToComplex toDC() {
-        return new ComplexValue(this, Domain.FULLX);
-    }
 
     @Override
     public boolean isDV() {
         return true;
-    }
-
-    @Override
-    public DoubleToVector toDV() {
-        return null;
     }
 
     public DoubleToDouble toDD() {
@@ -461,6 +454,111 @@ public final class ComplexR extends Complex {
     }
 
     public double toReal() {
+        return real;
+    }
+
+    @Override
+    public DoubleToDouble getRealDD() {
+        double real = getReal();
+        return real==0?Maths.DDZERO : new DoubleValue(real,Domain.FULLX);
+    }
+
+    @Override
+    public DoubleToDouble getImagDD() {
+        return Maths.DDZERO;
+    }
+
+    @Override
+    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        double[][][] complexes = new double[z.length][y.length][x.length];
+        Arrays.fill(complexes,real);
+        if(ranges!=null){
+            ranges.set(Range.forBounds(0,x.length-1,0,y.length-1,0,z.length-1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        double[][] complexes = new double[y.length][x.length];
+        Arrays.fill(complexes,real);
+        if(ranges!=null){
+            ranges.set(Range.forBounds(0,x.length-1,0,y.length-1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
+        double[] complexes = new double[x.length];
+        Arrays.fill(complexes,real);
+        if(ranges!=null){
+            ranges.set(Range.forBounds(0,x.length-1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
+        double[] complexes = new double[y.length];
+        Arrays.fill(complexes,real);
+        if(ranges!=null){
+            ranges.set(Range.forBounds(0,y.length-1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public double computeDouble(double x, double y) {
+        return real;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z) {
+        return real;
+    }
+
+    @Override
+    public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
+        double[] complexes = new double[x.length];
+        Arrays.fill(complexes,real);
+        return complexes;
+    }
+
+    @Override
+    public double computeDouble(double x) {
+        return real;
+    }
+
+    @Override
+    public double[] computeDouble(double[] x) {
+        double[] complexes = new double[x.length];
+        Arrays.fill(complexes,real);
+        return complexes;
+    }
+
+    @Override
+    public double[][] computeDouble(double[] x, double[] y) {
+        double[][] complexes = new double[y.length][x.length];
+        Arrays.fill(complexes,real);
+        return complexes;
+    }
+
+    @Override
+    public double[] computeDouble(double x, double[] y) {
+        double[] complexes = new double[y.length];
+        Arrays.fill(complexes,real);
+        return complexes;
+    }
+
+    @Override
+    public double[][][] computeDouble(double[] x, double[] y, double[] z) {
+        double[][][] complexes = new double[z.length][y.length][x.length];
+        Arrays.fill(complexes,real);
+        return complexes;
+    }
+
+    public double toDouble(){
         return real;
     }
 }

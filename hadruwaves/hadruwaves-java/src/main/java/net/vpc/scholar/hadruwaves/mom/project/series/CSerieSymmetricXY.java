@@ -23,8 +23,8 @@ public class CSerieSymmetricXY extends CSerieXY implements Cloneable {
 
     public DoubleToComplex getFunction(int n) {
         DoubleToComplex f = base.getFunction(n);
-        DoubleToDouble r = symmetric(f.getReal(), Axis.X, getDomain());
-        DoubleToDouble i = symmetric(f.getImag(), Axis.X, getDomain());
+        DoubleToDouble r = symmetric(f.getRealDD(), Axis.X, getDomain());
+        DoubleToDouble i = symmetric(f.getImagDD(), Axis.X, getDomain());
         return Maths.sum(f, Maths.complex(r, i)).toDC();
     }
 

@@ -218,4 +218,14 @@ public abstract class PlotAxis implements Serializable, Cloneable, ProgressMonit
     public String toString() {
         return getClass().getSimpleName();
     }
+
+    @Override
+    public boolean isCanceled() {
+        return false;
+    }
+
+    @Override
+    public void stop() {
+
+    }
 }

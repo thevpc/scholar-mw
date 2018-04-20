@@ -7,14 +7,15 @@ package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.AxisXY;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,7 +85,7 @@ public class MomStructureHintsManager implements Cloneable, Dumpable {
     }
 
     public void setHintAxisType(HintAxisType value) {
-        setHint(HINT_AXIS_TYPE, value == null ? HintAxisType.XY: value);
+        setHint(HINT_AXIS_TYPE, value == null ? HintAxisType.XY : value);
     }
 
     public Float getHintDiscardFnByScalarProduct() {
@@ -230,5 +231,13 @@ public class MomStructureHintsManager implements Cloneable, Dumpable {
 
     public boolean isEmpty() {
         return parameters.isEmpty();
+    }
+
+    public void setAll(MomStructureHintsManager all) {
+        if (all != null) {
+            for (Map.Entry<String, Object> e : all.parameters.entrySet()) {
+                setHint(e.getKey(), e.getValue());
+            }
+        }
     }
 }

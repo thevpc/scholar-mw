@@ -16,9 +16,13 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public static final DoubleValue ZERO2 = new DoubleValue(0, Domain.EMPTYXY);
     public static final DoubleValue ZERO3 = new DoubleValue(0, Domain.EMPTYXYZ);
 
-    public static final DoubleValue NAN1 = new DoubleValue(Double.NaN, Domain.EMPTYX);
-    public static final DoubleValue NAN2 = new DoubleValue(Double.NaN, Domain.EMPTYXY);
-    public static final DoubleValue NAN3 = new DoubleValue(Double.NaN, Domain.EMPTYXYZ);
+    public static final DoubleValue ONE1 = new DoubleValue(1, Domain.FULLX);
+    public static final DoubleValue ONE2 = new DoubleValue(1, Domain.FULLXY);
+    public static final DoubleValue ONE3 = new DoubleValue(1, Domain.FULLXYZ);
+
+    public static final DoubleValue NAN1 = new DoubleValue(Double.NaN, Domain.FULLX);
+    public static final DoubleValue NAN2 = new DoubleValue(Double.NaN, Domain.FULLXY);
+    public static final DoubleValue NAN3 = new DoubleValue(Double.NaN, Domain.FULLXYZ);
 
     private static final long serialVersionUID = -1010101010101001006L;
     //    public static final int CODE = 1;
@@ -33,6 +37,17 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public DoubleValue(double cst, Domain domain) {
         this.value = cst;
         this.domain = cst == 0 ? (domain == null ? Domain.FULL(1) : Domain.ZERO(domain.dimension())) : domain == null ? Domain.FULL(1) : domain;
+    }
+
+    public static DoubleValue valueOf(double cst) {
+        if (cst == 0) {
+            return ZERO1;
+        } else if (cst == 1) {
+            return ONE1;
+        } else if (cst != cst) {
+            return NAN1;
+        }
+        return new DoubleValue(cst, Domain.FULLX);
     }
 
     public static DoubleValue valueOf(double cst, Domain domain) {
@@ -136,7 +151,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     public boolean isDouble() {
-        return getDomain().equals(Domain.FULL(getDomainDimension()));
+        return getDomain().isFull();
     }
 
     public boolean isMatrix() {
@@ -146,12 +161,11 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     @Override
     public double toDouble() {
-        if (!isDouble()) {
+        if (!isDoubleValue()) {
             throw new ClassCastException("Constrained double");
         }
         return value;
     }
-
 
     @Override
     public Expr setParam(String name, Expr value) {
@@ -556,5 +570,10 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     @Override
     public int getDomainDimension() {
         return domain.getDimension();
+    }
+
+    @Override
+    public boolean isDoubleValue() {
+        return true;
     }
 }

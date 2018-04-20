@@ -14,7 +14,7 @@ import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 public class DoubleToComplexDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         DoubleToComplex ff = (DoubleToComplex) f;
-        return Maths.complex(d.derive(ff.getReal(), varIndex).toDD(), d.derive(ff.getImag(), varIndex).toDD());
+        return Maths.complex(d.derive(ff.getRealDD(), varIndex).toDD(), d.derive(ff.getImagDD(), varIndex).toDD());
     }
 
 }

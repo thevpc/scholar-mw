@@ -5,6 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;

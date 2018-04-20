@@ -42,13 +42,11 @@ public final class Plot {
      * Java Figure Bundle
      */
     public static final String JFB_FILE_EXTENSION = "jfb";
+    private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.createScatteredFrames();
+    private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
 
     private Plot() {
     }
-
-    private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.createScatteredFrames();
-
-    private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
 
     public static PlotContainer create(String container) {
         return getDefaultWindowManager().add(container);
@@ -67,7 +65,7 @@ public final class Plot {
     }
 
     public static PlotBuilder builder() {
-        return new PlotBuilder().cd("/"+Config.getDefaultWindowTitle());
+        return new PlotBuilder().cd("/" + Config.getDefaultWindowTitle());
     }
 
     public static PlotBuilder domain(Domain domain) {
@@ -279,21 +277,19 @@ public final class Plot {
         }
     }
 
-    public static boolean acceptFileExtension(File file) throws IOException {
-        String e = IOUtils.getFileExtension(file).toLowerCase();
-        if (!
-                (
-                        e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)
-                                || e.equals(JFIG_FILE_EXTENSION)
-                                || e.equals(JFIGDATA_FILE_EXTENSION)
-                                || e.equals(JFIGOBJ_FILE_EXTENSION)
-                                || e.equals(JFB_FILE_EXTENSION)
-                                || e.equals("m")
-                )
-                ) {
-            return false;
-        }
-        return true;
+    public static boolean acceptExtension(String e) {
+        e=e.toLowerCase();
+        return e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)
+                || e.equals(JFIG_FILE_EXTENSION)
+                || e.equals(JFIGDATA_FILE_EXTENSION)
+                || e.equals(JFIGOBJ_FILE_EXTENSION)
+                || e.equals(JFB_FILE_EXTENSION)
+                || e.equals("m");
+    }
+
+    public static boolean acceptFileByExtension(File file) {
+        String e = IOUtils.getFileExtension(file);
+        return acceptExtension(e);
     }
 
     public static PlotComponent loadPlot(File file) throws IOException {
@@ -433,23 +429,23 @@ public final class Plot {
                     }
 
                     m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
-                }else if (line.startsWith("title =")) {
+                } else if (line.startsWith("title =")) {
                     m.setTitle(line.substring("title".length() + 2));
-                }else if (line.startsWith("name =")) {
+                } else if (line.startsWith("name =")) {
                     m.setTitle(line.substring("name".length() + 2));
-                }else if (line.startsWith("xlabel =")) {
+                } else if (line.startsWith("xlabel =")) {
                     m.setxTitle(line.substring("xlabel".length() + 2));
-                }else if (line.startsWith("ylabel =")) {
+                } else if (line.startsWith("ylabel =")) {
                     m.setyTitle(line.substring("ylabel".length() + 2));
-                }else if (line.startsWith("plotType =")) {
+                } else if (line.startsWith("plotType =")) {
                     m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
-                }else if (line.startsWith("zDoubleFunction =")) {
-                    m.setZDoubleFunction(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
-                }else if (line.startsWith("ytitle =")) {
+                } else if (line.startsWith("zDoubleFunction =")) {
+                    m.setConverter(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
+                } else if (line.startsWith("ytitle =")) {
                     ytitlesList.add(line.substring("ytitle".length() + 2));
-                }else if (line.startsWith("xformat =")) {
+                } else if (line.startsWith("xformat =")) {
                     m.setXformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
-                }else if (line.startsWith("yformat =")) {
+                } else if (line.startsWith("yformat =")) {
                     m.setYformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
                 }
             }
@@ -631,17 +627,19 @@ public final class Plot {
             printStream.println("ylabel =" + (model.getYtitle() == null ? "" : model.getYtitle()) + endLine);
             printStream.println("zlabel =" + (model.getZtitle() == null ? "" : model.getZtitle()) + endLine);
             printStream.println("plotType =" + model.getPlotType().toString() + endLine);
-            printStream.println("zDoubleFunction =" + model.getZDoubleFunction().toString() + endLine);
+            if (model.getConverter() != null) {
+                printStream.println("zDoubleFunction =" + model.getConverter().toString() + endLine);
+            }
             String[] ytitles = model.getYtitles();
             if (ytitles != null) {
                 for (int i = 0; i < ytitles.length; i++) {
                     printStream.println("ytitle =" + (model.getYtitles()[i] == null ? "" : model.getYtitles()[i]) + endLine);
                 }
             }
-            if(model.getXformat()!=null){
+            if (model.getXformat() != null) {
                 printStream.println("xformat =" + IOUtils.serializeObjectToString(model.getXformat()));
             }
-            if(model.getYformat()!=null){
+            if (model.getYformat() != null) {
                 printStream.println("yformat =" + IOUtils.serializeObjectToString(model.getXformat()));
             }
         } finally {
@@ -678,7 +676,7 @@ public final class Plot {
 //            printStream.println("ylabel =" + (model.getYtitle() == null ? "" : model.getYtitle()) + endLine);
 //            printStream.println("zlabel =" + (model.getZtitle() == null ? "" : model.getZtitle()) + endLine);
 //            printStream.println("plotType =" + model.getPlotType().toString() + endLine);
-//            printStream.println("zDoubleFunction =" + model.getZDoubleFunction().toString() + endLine);
+//            printStream.println("zDoubleFunction =" + model.getConverter().toString() + endLine);
 //            String[] ytitles = model.getYtitles();
 //            if (ytitles != null) {
 //                for (int i = 0; i < ytitles.length; i++) {
@@ -861,7 +859,7 @@ public final class Plot {
             g = new ButtonGroup();
             for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
                 f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
-                f.setSelected((model).getZDoubleFunction() == ComplexAsDouble.ABS);
+                f.setSelected(HadrumathsUtils.notNullValue(model.getConverter()) == ComplexAsDouble.ABS);
                 g.add(f);
                 functionsMenu.add(f);
             }
@@ -1208,7 +1206,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.ABS);
+//            getModel().setConverter(ComplexAsDouble.ABS);
 //        }
 //    }
 //
@@ -1220,7 +1218,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.REAL);
+//            getModel().setConverter(ComplexAsDouble.REAL);
 //        }
 //    }
 //
@@ -1232,7 +1230,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.IMG);
+//            getModel().setConverter(ComplexAsDouble.IMG);
 //        }
 //    }
 //
@@ -1244,7 +1242,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.DB);
+//            getModel().setConverter(ComplexAsDouble.DB);
 //        }
 //    }
 //
@@ -1256,7 +1254,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.DB2);
+//            getModel().setConverter(ComplexAsDouble.DB2);
 //        }
 //    }
 //
@@ -1268,7 +1266,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.ARG);
+//            getModel().setConverter(ComplexAsDouble.ARG);
 //        }
 //    }
 //
@@ -1280,7 +1278,7 @@ public final class Plot {
 //
 //
 //        public void actionPerformed(ActionEvent e) {
-//            getModel().setZDoubleFunction(ComplexAsDouble.COMPLEX);
+//            getModel().setConverter(ComplexAsDouble.COMPLEX);
 //        }
 //    }
 
@@ -1371,7 +1369,7 @@ public final class Plot {
 
 
         public void actionPerformed(ActionEvent e) {
-            getModel().setZDoubleFunction(type);
+            getModel().setConverter(type);
         }
     }
 

@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.util.dump;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
 
@@ -26,7 +27,7 @@ public class DumpManager {
         register(Expr.class, new DumpDelegate() {
             @Override
             public String getDumpString(Object object) {
-                return FormatFactory.format(object, DebugFormat.INSTANCE);
+                return FormatFactory.format(object, new FormatParamSet(DebugFormat.INSTANCE));
             }
         });
     }

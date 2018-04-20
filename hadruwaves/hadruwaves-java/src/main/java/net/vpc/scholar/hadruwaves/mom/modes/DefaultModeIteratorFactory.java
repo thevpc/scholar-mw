@@ -25,8 +25,7 @@ public class DefaultModeIteratorFactory implements ModeIteratorFactory {
     }
 
     public String dump() {
-        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        return h.toString();
+        return getClass().getSimpleName();
     }
 
     @Override

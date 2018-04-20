@@ -100,4 +100,40 @@ public interface TMatrixFactory<T> {
     void close();
 
     void reset();
+
+    TMatrix<T> newImmutableIdentity(int rows);
+
+    TMatrix<T> newImmutableConstant(int rows, int cols, T value);
+
+    TMatrix<T> newImmutableMatrix(int rows, int cols, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<T> item);
+
+    TMatrix<T> newImmutableColumnMatrix(T... values);
+
+    TMatrix<T> newImmutableRowMatrix(T... values);
+
+    TMatrix<T> newImmutableColumnMatrix(int rows, TVectorCell<T> cellFactory);
+
+    TMatrix<T> newImmutableRowMatrix(int columns, TVectorCell<T> cellFactory);
+
+    TMatrix<T> newImmutableSymmetric(int rows, int cols, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableHermitian(int rows, int cols, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableDiagonal(int rows, int cols, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableDiagonal(int rows, TVectorCell<T> cellFactory);
+
+    TMatrix<T> newImmutableDiagonal(T... c);
+
+    TMatrix<T> newImmutableMatrix(int dim, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableSymmetric(int dim, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableHermitian(int dim, TMatrixCell<T> cellFactory);
+
+    TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory);
+
+
 }

@@ -5,6 +5,8 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
@@ -18,17 +20,32 @@ import java.util.List;
 public class DFunctionAbstractSumXFormat implements Formatter<Plus> {
 
     @Override
-    public String format(Plus o, FormatParam... format) {
+    public String format(Plus o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
+    }
+
+    @Override
+    public void format(StringBuilder sb, Plus o, FormatParamSet format) {
+        boolean par=format.containsParam(RequireParenthesesFormat.INSTANCE);
         List<Expr> segments = o.getSubExpressions();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < segments.size(); i++) {
+        int size = segments.size();
+        if(par && size<=1){
+            par=false;
+        }
+        format=format.add(RequireParenthesesFormat.INSTANCE);
+        if(par){
+            sb.append("(");
+        }
+        for (int i = 0; i < size; i++) {
             if (i > 0) {
                 sb.append(" + ");
             }
-            sb.append("(");
-            sb.append(FormatFactory.format(segments.get(i), format));
-            sb.append(")");
+            FormatFactory.format(sb,segments.get(i), format);
         }
-        return sb.toString();
+        if(par){
+            sb.append("(");
+        }
     }
 }

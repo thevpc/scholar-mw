@@ -35,9 +35,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
 //            }
         }
     };
-    private PlotWindowManager windowManager;
     private File workingFolder;
-    private String layoutConstraints = "";
 
     public ValuesPlotPanel(ValuesPlotModel model, PlotWindowManager windowManager) {
         super(new BorderLayout());
@@ -45,7 +43,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         if (model != null) {
             setModel(model);
         }
-        this.windowManager = windowManager;
+        setPlotWindowManager(windowManager);
     }
 
     @Override
@@ -76,7 +74,9 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
             if (oldmodel != null) {
                 oldmodel.removePropertyChangeListener(plotListener);
                 oldPops = new HashMap<>(this.model.getProperties());
-                model.setZDoubleFunction(oldmodel.getZDoubleFunction());
+                if(model.getConverter()==null) {
+                    model.setConverter(oldmodel.getConverter());
+                }
             }
             this.model = model;
             this.model.setProperties(oldPops);
@@ -300,21 +300,4 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         return baseTitle;
     }
 
-    public JComponent toComponent() {
-        return (JComponent) this;
-    }
-
-    public void display() {
-        windowManager.add(this);
-    }
-
-
-    @Override
-    public String getLayoutConstraints() {
-        return layoutConstraints;
-    }
-
-    public void setLayoutConstraints(String layoutConstraints) {
-        this.layoutConstraints = layoutConstraints;
-    }
 }

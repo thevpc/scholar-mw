@@ -4,6 +4,7 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
@@ -18,13 +19,21 @@ import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
 public class AnyFormatter implements Formatter<Any> {
 
     @Override
-    public String format(Any o, FormatParam... format) {
-        FormatParamArray a=new FormatParamArray(format);
-        DebugFormat d=a.getParam(DebugFormat.class,false);
+    public void format(StringBuilder sb, Any o, FormatParamSet format) {
+        DebugFormat d=format.getParam(DebugFormat.class,false);
         if(d==null) {
-            return FormatFactory.format(o.getObject(), format);
+            FormatFactory.format(sb,o.getObject(), format);
         }else{
-            return "any("+FormatFactory.format(o.getObject(), format)+")";
+            sb.append("any(");
+            FormatFactory.format(sb,o.getObject(), format);
+            sb.append(")");
         }
+    }
+
+    @Override
+    public String format(Any o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
     }
 }

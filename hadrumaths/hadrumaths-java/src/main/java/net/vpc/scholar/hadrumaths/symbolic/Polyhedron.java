@@ -214,6 +214,11 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
         throw new IllegalArgumentException("Missing y");
     }
 
+    public double getMax() {
+        return max;
+    }
 
-
+    public Polygon getPolygon() {
+        return polygon;
+    }
 }

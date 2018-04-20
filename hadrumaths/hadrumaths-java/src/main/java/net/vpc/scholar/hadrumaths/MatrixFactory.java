@@ -19,6 +19,10 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
 
     Matrix newOnes(int rows, int cols);
 
+    Matrix newImmutableIdentity(int rows, int cols);
+
+    Matrix newImmutableConstant(int rows, int cols, Complex value);
+
     Matrix newConstant(int rows, int cols, Complex value);
 
     Matrix newZeros(int dim);
@@ -56,6 +60,7 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
     Matrix newColumnMatrix(int rows, VectorCell cellFactory);
 
     Matrix newRowMatrix(int columns, VectorCell cellFactory);
+    Matrix newImmutableRowMatrix(int columns, VectorCell cellFactory);
 
     Matrix newSymmetric(int rows, int cols, MatrixCell cellFactory);
 

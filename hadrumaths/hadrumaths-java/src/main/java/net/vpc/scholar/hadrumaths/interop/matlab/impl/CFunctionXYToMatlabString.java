@@ -17,8 +17,8 @@ public class CFunctionXYToMatlabString implements ToMatlabString<DoubleToComplex
 
     @Override
     public String toMatlabString(DoubleToComplex o, ToMatlabStringParam... format) {
-        DoubleToDouble real=o.getReal();
-        DoubleToDouble imag=o.getImag();
+        DoubleToDouble real=o.getRealDD();
+        DoubleToDouble imag=o.getImagDD();
         //DomainXY domain=o.getDomain();
         ToMatlabStringParamArray formatArray = new ToMatlabStringParamArray(format);
         String mul = formatArray.getParam(MatlabVectorizeFormat.class, false) == null ? " * " : " .* ";

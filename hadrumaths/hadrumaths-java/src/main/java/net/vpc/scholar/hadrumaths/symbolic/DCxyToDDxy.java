@@ -73,11 +73,6 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
         return true;
     }
 
-    @Override
-    public DoubleToVector toDV() {
-        return toDC().toDV();
-    }
-
     public boolean isDMImpl() {
         return base.isDM();
     }

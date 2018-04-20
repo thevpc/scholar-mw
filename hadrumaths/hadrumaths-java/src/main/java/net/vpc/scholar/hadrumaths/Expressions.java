@@ -243,7 +243,7 @@ public class Expressions {
         DoubleToDouble[] f = new DoubleToDouble[fct.length];
         int maxi = fct.length;
         for (int i = 0; i < maxi; i++) {
-            f[i] = fct[i].getReal();
+            f[i] = fct[i].getRealDD();
 
         }
         return f;
@@ -256,7 +256,7 @@ public class Expressions {
         DoubleToDouble[] f = new DoubleToDouble[fct.length];
         int maxi = fct.length;
         for (int i = 0; i < maxi; i++) {
-            f[i] = fct[i].getImag();
+            f[i] = fct[i].getImagDD();
 
         }
         return f;

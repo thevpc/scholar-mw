@@ -28,6 +28,29 @@ public class StringUtils {
 //            e.printStackTrace();
 //        }
 //    }
+
+    public static String toPath(String[] array1, String separator) {
+        if(array1==null||array1.length==0){
+            return separator;
+        }
+        StringBuilder sb=new StringBuilder();
+        for (String s : array1) {
+            sb.append(separator).append(s);
+        }
+        return sb.toString();
+    }
+
+    public static String toPath(List<String> array1, String separator) {
+        if(array1==null||array1.size()==0){
+            return separator;
+        }
+        StringBuilder sb=new StringBuilder();
+        for (String s : array1) {
+            sb.append(separator).append(s);
+        }
+        return sb.toString();
+    }
+
     public static String[] concat(String[] array1, String[] array2) {
         String[] r = new String[array1.length + array2.length];
         System.arraycopy(array1, 0, r, 0, array1.length);
@@ -509,7 +532,7 @@ public class StringUtils {
         }
     }
     public static String formatLeft(Object number,int size){
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb=new StringBuilder(size);
         sb.append(number);
         while (sb.length()<size){
             sb.append(' ');
@@ -517,7 +540,7 @@ public class StringUtils {
         return sb.toString();
     }
     public static String formatRight(Object number,int size){
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb=new StringBuilder(size);
         sb.append(number);
         while (sb.length()<size){
             sb.insert(0,' ');

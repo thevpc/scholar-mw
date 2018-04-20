@@ -2,14 +2,17 @@ package net.vpc.scholar.hadrumaths
 
 import java.util.logging.{Level, Logger}
 
+import net.vpc.scholar.hadrumaths.util.IOUtils
+
 /**
   * Created by vpc on 7/18/17.
   */
+@HadrumathsServiceDesc(order = 500)
 class HadrumathsScalaService extends HadrumathsService {
   private val log: Logger = Logger.getLogger(classOf[HadrumathsScalaService].getName())
 
   override def installService(): Unit = {
-    log.log(Level.INFO, "Initializing Hadrumaths Scala extension component...");
+    log.log(Level.INFO, "Initializing Hadrumaths Scala extension component... : (hadrumaths-scala version "+IOUtils.getArtifactVersionOrDev("net.vpc.scholar","hadrumaths-scala")+")");
     Plot.Config.registerConverter(classOf[Tuple2[Object, Object]], (i: Object) => {
       val tuple = i.asInstanceOf[Tuple2[Object, Object]]
       Array(tuple._1, tuple._2)

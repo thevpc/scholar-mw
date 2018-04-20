@@ -39,7 +39,7 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
         if(rbase.getValue() instanceof Real){
             return rbase;
         }
-        DoubleToDouble r = rbase.getValue().toDC().getReal();
+        DoubleToDouble r = rbase.getValue().toDC().getRealDD();
         if(!(r instanceof Real)){
             return RewriteResult.bestEffort(r);
         }
@@ -73,10 +73,10 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
             if(first.isDC() && second.isDC()){
                 DoubleToComplex a = first.toDC();
                 DoubleToComplex b = second.toDC();
-                boolean aReal = a.getImag().isZero();
-                boolean aImag = a.getReal().isZero();
-                boolean bReal = b.getImag().isZero();
-                boolean bImag = b.getReal().isZero();
+                boolean aReal = a.getImagDD().isZero();
+                boolean aImag = a.getRealDD().isZero();
+                boolean bReal = b.getImagDD().isZero();
+                boolean bImag = b.getRealDD().isZero();
                 if(aReal && bReal) {
                     return rbase;
                 }else if(aImag && bImag){
@@ -121,8 +121,8 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
         boolean someImag=false;
         for (int i = 0; i < expressions.size(); i++) {
             DoubleToComplex v = expressions.get(i).toDC();
-            real[i]= v.getReal();
-            imag[i]= v.getImag();
+            real[i]= v.getRealDD();
+            imag[i]= v.getImagDD();
             someReal=someReal|!real[i].isZero();
             someImag=someImag|!imag[i].isZero();
         }
@@ -138,8 +138,8 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
             DoubleToComplex e = expressions.get(0).toDC();
             if(expressions.size()==1){
                 return new DoubleToDouble[]{
-                        e.getReal(),
-                        e.getImag()
+                        e.getRealDD(),
+                        e.getImagDD()
                 };
             }else {
                 DoubleToComplex a= e;
@@ -151,8 +151,8 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
                     e2.remove(0);
                     b=Maths.mul(e2.toArray(new Expr[e2.size()])).toDC();
                 }
-                Sub realFull = new Sub(Maths.mul(a.getReal(), b.getReal()), Maths.mul(a.getImag(), b.getImag()));
-                DoubleToDouble imagFull = Maths.sum(Maths.mul(a.getReal(), b.getImag()), Maths.mul(a.getImag(), b.getReal())).toDD();
+                Sub realFull = new Sub(Maths.mul(a.getRealDD(), b.getRealDD()), Maths.mul(a.getImagDD(), b.getImagDD()));
+                DoubleToDouble imagFull = Maths.sum(Maths.mul(a.getRealDD(), b.getImagDD()), Maths.mul(a.getImagDD(), b.getRealDD())).toDD();
                 return new DoubleToDouble[]{realFull,imagFull};
             }
         }

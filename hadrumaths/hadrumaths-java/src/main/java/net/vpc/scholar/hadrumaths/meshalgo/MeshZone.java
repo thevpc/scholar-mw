@@ -27,7 +27,12 @@ public class MeshZone {
     private boolean scale=true;
 
     public MeshZone(Domain domain) {
-        this(domain, MeshZoneShape.RECTANGLE, MeshZoneType.MAIN);
+        this(domain.toGeometry(), MeshZoneShape.RECTANGLE, MeshZoneType.MAIN);
+        setDomain(domain);
+    }
+
+    public MeshZone(Domain domain, MeshZoneType type) {
+        this(domain.toGeometry(), MeshZoneShape.RECTANGLE, type);
         setDomain(domain);
     }
 

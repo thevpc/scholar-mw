@@ -25,7 +25,10 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
         double n = this.na * i.getN() + this.nb;
         double a = domain.xwidth();
         double b = domain.ywidth();
-        return Complex.valueOf(sqr(m * PI / a) + sqr(n * PI / b) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
+//        return Complex.valueOf(sqr(m * PI / a) + sqr(n * PI / b) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
+
+        return space.getEps(freq).div(Maths.EPS0).mul(Maths.sqr(Physics.K0(freq))).neg().add(sqr(m * PI / a) + sqr(n * PI / b))
+                .sqrt();
     }
 
 

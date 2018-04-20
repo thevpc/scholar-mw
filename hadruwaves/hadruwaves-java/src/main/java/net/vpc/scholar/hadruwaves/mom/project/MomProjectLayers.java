@@ -16,6 +16,8 @@ import net.vpc.scholar.hadrumaths.util.Configuration;
  */
 public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
 
+    public String bottomConductivityExpression;
+    public String topConductivityExpression;
     public String bottomThicknessExpression;
     public String topThicknessExpression;
     public String bottomEpsrExpression;
@@ -27,6 +29,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
     private List<MomProjectExtraLayer> extraLayers = new ArrayList<MomProjectExtraLayer>();
 
     public MomProjectLayers() {
+        this.topConductivityExpression = "0";
+        this.bottomConductivityExpression = "0";
         this.bottomThicknessExpression = "0";
         this.topThicknessExpression = "0";
         this.bottomEpsrExpression = "0";
@@ -42,10 +46,14 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         c.setString(key + ".max", maxExpression);
         c.setString(key + ".topLimit", topLimit.toString());
         c.setString(key + ".bottomLimit", bottomLimit.toString());
+        c.setString(key + ".topConductivity", topConductivityExpression);
+        c.setString(key + ".bottomConductivity", bottomConductivityExpression);
         MomProjectFactory.INSTANCE.store(c, key + ".extraLayers", new MomProjectList(extraLayers));
     }
 
     public void load(Configuration c, String key) {
+        bottomConductivityExpression = c.getString(key + ".bottomConductivity", "0");
+        topConductivityExpression = c.getString(key + ".topConductivity", "0");
         bottomThicknessExpression = c.getString(key + ".bottomThickness", "1");
         topThicknessExpression = c.getString(key + ".topThickness", "1");
         bottomEpsrExpression = c.getString(key + ".bottomEpsr", "1");
@@ -74,6 +82,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         hash = 83 * hash + (this.maxExpression != null ? this.maxExpression.hashCode() : 0);
         hash = 83 * hash + (this.topLimit != null ? this.topLimit.hashCode() : 0);
         hash = 83 * hash + (this.bottomLimit != null ? this.bottomLimit.hashCode() : 0);
+        hash = 83 * hash + (this.bottomConductivityExpression != null ? this.bottomConductivityExpression.hashCode() : 0);
+        hash = 83 * hash + (this.topConductivityExpression != null ? this.topConductivityExpression.hashCode() : 0);
         return hash;
     }
 
@@ -99,6 +109,12 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
             return false;
         }
         if (this.maxExpression != other.maxExpression && (this.maxExpression == null || !this.maxExpression.equals(other.maxExpression))) {
+            return false;
+        }
+        if (this.topConductivityExpression != other.topConductivityExpression && (this.topConductivityExpression == null || !this.topConductivityExpression.equals(other.topConductivityExpression))) {
+            return false;
+        }
+        if (this.bottomConductivityExpression != other.bottomConductivityExpression && (this.bottomConductivityExpression == null || !this.bottomConductivityExpression.equals(other.bottomConductivityExpression))) {
             return false;
         }
         if (this.topLimit != other.topLimit) {
@@ -137,6 +153,12 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         return getContext().evaluateDimension(bottomThicknessExpression);
     }
 
+    public double getTopConductivity() {
+        return getContext().evaluateDimension(topConductivityExpression);
+    }
+    public double getBottomConductivity() {
+        return getContext().evaluateDimension(bottomConductivityExpression);
+    }
     public double getTopThickness() {
         return getContext().evaluateDimension(topThicknessExpression);
     }
@@ -189,6 +211,22 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
 
     public void setBottomLimit(BoxLimit bottomLimit) {
         this.bottomLimit = bottomLimit;
+    }
+
+    public String getBottomConductivityExpression() {
+        return bottomConductivityExpression;
+    }
+
+    public void setBottomConductivityExpression(String bottomConductivityExpression) {
+        this.bottomConductivityExpression = bottomConductivityExpression;
+    }
+
+    public String getTopConductivityExpression() {
+        return topConductivityExpression;
+    }
+
+    public void setTopConductivityExpression(String topConductivityExpression) {
+        this.topConductivityExpression = topConductivityExpression;
     }
 
     public MomProject getContext() {

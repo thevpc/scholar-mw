@@ -9,8 +9,8 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.TLog;
 import net.vpc.scholar.hadrumaths.util.TLogNull;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
@@ -52,8 +52,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     public static final String CACHE_MATRIX_UNKNOWN = "matrix-unknown";
     //private double irisQuotient = 1.0 / 3.0;
     protected int k;
-    PersistenceCache persistentCache;
-    MomStructureMemoryCache memoryCache;
+    protected PersistenceCache persistentCache;
+    protected MomStructureMemoryCache memoryCache;
     private HashMap<String, Object> parameters = new HashMap<String, Object>();
     private MomStructureHintsManager hintsManager;
     private ElectricFieldEvaluator electricFieldEvaluator;
@@ -74,7 +74,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
      * calculation
      */
     private HashMap<String, Object> userObjects = new HashMap<String, Object>();
-    private ModeFunctions modeFunctions = ModeFunctionsFactory.createBox("EMEM");
+    //    private ModeFunctions modeFunctions = ModeFunctionsFactory.createBox("EMEM");
     private TestFunctions testFunctions = null;
     /*new GpAdaptativeMesh(
      new DefaultDPolygonList(new DomainXY(0, 0, 100, 100)),
@@ -101,8 +101,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
      * echelons selons choisis
      */
 //    private int testFunctionsCount = 4;
-    private BoxSpace firstBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1);
-    private BoxSpace secondBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1);
+    private BoxSpace firstBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1,0);
+    private BoxSpace secondBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1,0);
     /**
      * A/Lambda;
      */
@@ -112,11 +112,11 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
      */
     private double heightFactor = Double.NaN;
     /**
-     * largeur de la sructure (selon OY) = a/3
+     * largeur de la sructure (along OY)
      */
     private double ydim;
     /**
-     * longueur de la sructure (selon OX)
+     * longueur de la structure (along OX)
      */
     private double xdim;
     private double xmin;
@@ -133,6 +133,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     private HashValue buildHash;
     private MWStructureErrorHandler errorHandler = new DefaultMomStructureErrorHandler();
     private PropertyChangeSupport pcs;
+    private ModeFunctionsDelegate modeFunctionsDelegate = new ModeFunctionsDelegate(null);
     private PropertyChangeListener propertyDispatcher_modeFunctions = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -147,10 +148,75 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     };
 
     public MomStructure() {
+        init();
+    }
+
+    private void init() {
         persistentCache = new PersistenceCache(null, "structure.dump", null);
         hintsManager = new MomStructureHintsManager();
         memoryCache = new MomStructureMemoryCache(this);
         pcs = new PropertyChangeSupport(this);
+        modeFunctionsDelegate.setBase(ModeFunctionsFactory.createBox("EMEM"));
+        modeFunctionsDelegate.setStructure(this);
+        modeFunctionsDelegate.setObjectCacheResolver(new ObjectCacheResolver() {
+            @Override
+            public ObjectCache resolveObjectCache() {
+                return getCurrentCache(true);
+            }
+        });
+        this.modeFunctionsDelegate.addPropertyChangeListener(propertyDispatcher_modeFunctions);
+    }
+
+    public MomStructure(MomStructure other) {
+        init();
+        if (other != null) {
+
+            this.k = other.k;
+//            this.persistentCache;
+//            this.memoryCache;
+            this.parameters.putAll(other.parameters);
+            ;
+            this.hintsManager.setAll(other.getHintsManager());
+            this.electricFieldEvaluator = other.electricFieldEvaluator;
+            this.electricFieldFundamentalEvaluator = other.electricFieldFundamentalEvaluator;
+            this.currentEvaluator = other.currentEvaluator;
+            this.testFieldEvaluator = other.testFieldEvaluator;
+            this.poyntingVectorEvaluator = other.poyntingVectorEvaluator;
+            this.magneticFieldEvaluator = other.magneticFieldEvaluator;
+            this.matrixAEvaluator = other.matrixAEvaluator;
+            this.matrixBEvaluator = other.matrixBEvaluator;
+            this.sourceEvaluator = other.sourceEvaluator;
+            this.zinEvaluator = other.zinEvaluator;
+            this.matrixUnknownEvaluator = other.matrixUnknownEvaluator;
+            this.scalarProductOperator = other.scalarProductOperator;
+            this.userObjects.putAll(other.userObjects);
+//            this.modeFunctions = this.modeFunctions.clone();
+            this.testFunctions = other.testFunctions.clone();
+            this.sources = other.sources.clone();
+            this.log = other.log;
+            this.layers = Arrays.copyOf(other.layers, other.layers.length);
+            this.circuitType = other.circuitType;
+            this.modeFunctionsMax = other.modeFunctionsMax;
+            this.projectType = other.projectType;
+            this.firstBoxSpace = other.firstBoxSpace;
+            this.secondBoxSpace = other.secondBoxSpace;
+            this.widthFactor = other.widthFactor;
+            this.heightFactor = other.heightFactor;
+            this.ydim = other.ydim;
+            this.xdim = other.xdim;
+            this.xmin = other.xmin;
+            this.ymin = other.ymin;
+            this.xminFactor = other.xminFactor;
+            this.yminFactor = other.yminFactor;
+            this.frequency = other.frequency;
+            this.name = other.name;
+//            this.rebuild = true;
+//            this.buildHash;
+            this.errorHandler = other.errorHandler;
+            //this.pcs;
+            this.modeFunctionsDelegate.setBase(other.getModeFunctions().clone());
+            ;
+        }
     }
 
     public static MomStructure EEEE(Domain domain, double frequency, int modes, BoxSpace bottom, BoxSpace upper) {
@@ -196,7 +262,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void loadProject(MomProject structureConfig) {
-        persistentCache.setRootFolder(IOUtils.createHFile(structureConfig.getConfigFile().getParent()+"/"+structureConfig.getConfigFile().getName() + ".cache"));
+        persistentCache.setRootFolder(IOUtils.createHFile(structureConfig.getConfigFile().getParent() + "/" + structureConfig.getConfigFile().getName() + ".cache"));
         structureConfig.recompile();
         getHintsManager().setHintFnMode(structureConfig.getHintFnModes());
         //setHintDiscardFnByScalarProduct();
@@ -213,11 +279,17 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         setFirstBoxSpace(new BoxSpace(
                 structureConfig.getLayers().getTopLimit(),
                 structureConfig.getLayers().getTopEpsr(),
-                structureConfig.getLayers().getTopThickness()));
+                structureConfig.getLayers().getTopThickness(),
+                structureConfig.getLayers().getTopConductivity()
+                )
+        );
         setSecondBoxSpace(new BoxSpace(
                 structureConfig.getLayers().getBottomLimit(),
                 structureConfig.getLayers().getBottomEpsr(),
-                structureConfig.getLayers().getBottomThickness()));
+                structureConfig.getLayers().getBottomThickness(),
+                structureConfig.getLayers().getBottomConductivity()
+                )
+        );
         setModeFunctions(new DefaultBoxModeFunctions(structureConfig.getWallBorders()));
         setModeFunctionsCount(structureConfig.getMaxModes());
         setFrequency(structureConfig.getFrequency());
@@ -260,7 +332,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         if (this.sources != null) {
             this.sources = this.sources.clone();
         }
-        this.modeFunctions = other.getModeFunctionsTemplate();
+        this.modeFunctionsDelegate.setBase(other.getModeFunctionsTemplate());
         this.parameters = (HashMap<String, Object>) other.parameters.clone();
         this.firstBoxSpace = other.getFirstBoxSpace();
         this.secondBoxSpace = other.getSecondBoxSpace();
@@ -294,16 +366,22 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         sb.add("ydim", ydim);
         sb.add("xmin", xmin);
         sb.add("ymin", ymin);
-        sb.add("xminFactor", xminFactor);
-        sb.add("yminFactor", yminFactor);
-        sb.add("heightFactor", heightFactor);
-        sb.add("widthFactor", widthFactor);
+
+        // @NOTE :
+        // removed from dump as they do not influence calculation
+        // (all information is bundled in xdim,...
+        //
+//        sb.add("xminFactor", xminFactor);
+//        sb.add("yminFactor", yminFactor);
+//        sb.add("heightFactor", heightFactor);
+//        sb.add("widthFactor", widthFactor);
+
         sb.add("firstBoxSpace", firstBoxSpace);
         sb.add("secondBoxSpace", secondBoxSpace);
 
         sb.add("testFunctions", testFunctions);
 //        sb.add("testFunctions.count", testFunctionsCount);
-        sb.add("modeFunctions", modeFunctions);
+        sb.add("modeFunctions", modeFunctionsDelegate.getBase());
         sb.add("modeFunctions.count", modeFunctionsMax);
         sb.add("sources", sources);
 
@@ -361,18 +439,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     @Override
     public MomStructure clone() {
-        try {
-            MomStructure copy = (MomStructure) super.clone();
-            copy.testFunctions = this.getGpTestFunctionsTemplate();
-            copy.modeFunctions = this.getModeFunctionsTemplate();
-            copy.sources = this.sources == null ? null : this.sources.clone();
-            copy.parameters = (HashMap<String, Object>) this.parameters.clone();
-            copy.hintsManager = this.hintsManager.clone();
-            //            copy.hints = (HashMap<String, Object>) this.hints.clone();
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new Error();
-        }
+        return new MomStructure(this);
     }
 
     public int getModeFunctionsCount() {
@@ -382,8 +449,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     public void setModeFunctionsCount(int modeFunctionsMax) {
         int old = this.modeFunctionsMax;
         this.modeFunctionsMax = modeFunctionsMax;
-        if (old != this.modeFunctionsMax && modeFunctions != null) {
-            modeFunctions.setSize(this.modeFunctionsMax);
+        if (old != this.modeFunctionsMax) {
+            modeFunctionsDelegate.setMaxSize(this.modeFunctionsMax);
         }
         firePropertyChange("modeFunctionsMax", old, modeFunctionsMax);
         //cache_essai = null;
@@ -430,7 +497,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public MomStructure setXdim(double xdim) {
-        double old=this.xdim;
+        double old = this.xdim;
         this.xdim = xdim;
         firePropertyChange("xdim", old, this.xdim);
         return this;
@@ -468,29 +535,29 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
         if (ProjectType.WAVE_GUIDE.equals(projectType)) {
             if (BoxLimit.NOTHING.equals(firstBoxSpace.getLimit())) {
-                firstBoxSpace = BoxSpaceFactory.matchedLoad(firstBoxSpace.getEpsr());
+                firstBoxSpace = BoxSpaceFactory.matchedLoad(firstBoxSpace.getEpsr(),firstBoxSpace.getSigma());
                 //TODO
                 //System.err.println("firstBoxSpace overridden to " + firstBoxSpace);
             }
             if (BoxLimit.NOTHING.equals(secondBoxSpace.getLimit())) {
-                secondBoxSpace = BoxSpaceFactory.matchedLoad(secondBoxSpace.getEpsr());
+                secondBoxSpace = BoxSpaceFactory.matchedLoad(secondBoxSpace.getEpsr(),firstBoxSpace.getSigma());
                 //TODO
                 //System.err.println("secondBoxSpace overridden to " + secondBoxSpace);
             }
         }
 
-        modeFunctions = getModeFunctionsTemplate();
+        this.modeFunctionsDelegate.setBase(getModeFunctionsTemplate());
         ArrayList<DiscardFnByScalarProductModeInfoFilter> discardFnByScalarProductModeInfoFilterToRemove = new ArrayList<DiscardFnByScalarProductModeInfoFilter>();
-        for (ModeInfoFilter f : modeFunctions.getModeInfoFilters()) {
+        for (ModeInfoFilter f : modeFunctionsDelegate.getModeInfoFilters()) {
             if (f instanceof DiscardFnByScalarProductModeInfoFilter) {
                 discardFnByScalarProductModeInfoFilterToRemove.add((DiscardFnByScalarProductModeInfoFilter) f);
             }
         }
         for (DiscardFnByScalarProductModeInfoFilter discardFnByScalarProductModeInfoFilter : discardFnByScalarProductModeInfoFilterToRemove) {
-            modeFunctions.removeModeInfoFilter(discardFnByScalarProductModeInfoFilter);
+            this.modeFunctionsDelegate.removeModeInfoFilter(discardFnByScalarProductModeInfoFilter);
         }
 
-        applyModeFunctionsChanges(modeFunctions);
+        applyModeFunctionsChanges(this.modeFunctionsDelegate);
 
         testFunctions = getGpTestFunctionsTemplateImpl();
         //System.out.println("4- gpTestFunctions = " + gpTestFunctions);
@@ -535,11 +602,18 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
                 }
             }
             if (excludedFns.size() > 0) {
-                modeFunctions.addModeInfoFilter(new DiscardFnByScalarProductModeInfoFilter(excludedFns));
+                this.modeFunctionsDelegate.addModeInfoFilter(new DiscardFnByScalarProductModeInfoFilter(excludedFns));
             }
         }
         buildHash = new HashValue(dump0());
 
+    }
+
+    public ObjectCache getCurrentCache(boolean autoCreate) {
+        if (getPersistentCache().isEnabled()) {
+            return getPersistentCache().getObjectCache(hashValue(), autoCreate);
+        }
+        return null;
     }
 
     private ObjectCache getObjectCache() {
@@ -556,7 +630,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         ObjectCache objectCache = getObjectCache();
         if (objectCache != null) {
             testFunctions.arr(computationMonitor, objectCache);
-            modeFunctions.getModes(computationMonitor, objectCache);
+            this.modeFunctionsDelegate.getModes(computationMonitor);
         }
     }
 
@@ -565,8 +639,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public MomStructure setXmin(double x) {
-        double old_xmin=this.xmin;
-        double old_xminFactor=this.xminFactor;
+        double old_xmin = this.xmin;
+        double old_xminFactor = this.xminFactor;
         this.xmin = x;
         this.xminFactor = Double.NaN;
         firePropertyChange("xmin", old_xmin, this.xmin);
@@ -601,7 +675,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        return this;
 //    }
 
-        public double getLambda() {
+    public double getLambda() {
         return Physics.lambda(getFrequency());
     }
 
@@ -610,7 +684,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public MomStructure setFrequency(double f) {
-        double old=this.frequency;
+        double old = this.frequency;
         this.frequency = f;
         firePropertyChange("frequency", old, this.frequency);
         return this;
@@ -934,7 +1008,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void setHeightFactor(double heightFactor) {
-        double old=this.heightFactor;
+        double old = this.heightFactor;
         this.heightFactor = heightFactor;
         firePropertyChange("heightFactor", old, this.heightFactor);
     }
@@ -964,7 +1038,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void setXminFactor(double xMinFactor) {
-        double old=this.xminFactor;
+        double old = this.xminFactor;
         this.xminFactor = xMinFactor;
         firePropertyChange("xminFactor", old, this.xminFactor);
     }
@@ -974,8 +1048,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void setYminFactor(double yMinFactor) {
-        double old_yminFactor=this.yminFactor;
-        double old_ymin=this.ymin;
+        double old_yminFactor = this.yminFactor;
+        double old_ymin = this.ymin;
         this.yminFactor = yMinFactor;
         if (!Double.isNaN(yMinFactor)) {
             ymin = Double.NaN;
@@ -1005,14 +1079,14 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //    }
     public MomStructure setDomain(Domain newDomain) {
 
-        double old_ydim=this.ydim ;
-        double old_xdim=this.xdim ;
-        double old_xmin=this.xmin ;
-        double old_ymin=this.ymin ;
-        double old_xminFactor=this.xminFactor ;
-        double old_yminFactor=this.yminFactor ;
-        double old_heightFactor=this.heightFactor ;
-        double old_widthFactor=this.widthFactor ;
+        double old_ydim = this.ydim;
+        double old_xdim = this.xdim;
+        double old_xmin = this.xmin;
+        double old_ymin = this.ymin;
+        double old_xminFactor = this.xminFactor;
+        double old_yminFactor = this.yminFactor;
+        double old_heightFactor = this.heightFactor;
+        double old_widthFactor = this.widthFactor;
 
         this.ydim = newDomain.ywidth();
         this.xdim = newDomain.xwidth();
@@ -1024,14 +1098,14 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         this.widthFactor = Double.NaN;
 
 
-        firePropertyChange("ydim", old_ydim,this.ydim);
-        firePropertyChange("xdim", old_xdim,this.xdim);
-        firePropertyChange("xmin", old_xmin,this.xmin);
-        firePropertyChange("ymin", old_ymin,this.ymin);
-        firePropertyChange("xminFactor", old_xminFactor,this.xminFactor);
-        firePropertyChange("yminFactor", old_yminFactor,this.yminFactor);
-        firePropertyChange("heightFactor", old_heightFactor,this.heightFactor);
-        firePropertyChange("widthFactor", old_widthFactor,this.widthFactor);
+        firePropertyChange("ydim", old_ydim, this.ydim);
+        firePropertyChange("xdim", old_xdim, this.xdim);
+        firePropertyChange("xmin", old_xmin, this.xmin);
+        firePropertyChange("ymin", old_ymin, this.ymin);
+        firePropertyChange("xminFactor", old_xminFactor, this.xminFactor);
+        firePropertyChange("yminFactor", old_yminFactor, this.yminFactor);
+        firePropertyChange("heightFactor", old_heightFactor, this.heightFactor);
+        firePropertyChange("widthFactor", old_widthFactor, this.widthFactor);
         return this;
     }
 
@@ -1049,17 +1123,13 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //                }
 //            }
 //        }
-        return modeFunctions;
+        return this.modeFunctionsDelegate.getBase();
     }
 
     public void setModeFunctions(ModeFunctions modeFunctions) {
-        ModeFunctions old=this.modeFunctions;
-        if(old!=null){
-            old.removePropertyChangeListener(propertyDispatcher_modeFunctions);
-        }
-        this.modeFunctions = modeFunctions.clone();
-        this.modeFunctions.addPropertyChangeListener(propertyDispatcher_modeFunctions);
-        firePropertyChange("modeFunctions", old,this.modeFunctions);
+        ModeFunctions old = this.modeFunctionsDelegate.getBase();
+        modeFunctionsDelegate.setBase(modeFunctions.clone());
+        firePropertyChange("modeFunctions", old, this.modeFunctionsDelegate.getBase());
     }
 
     public TestFunctions getGpTestFunctionsTemplate() {
@@ -1080,6 +1150,13 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return sources == null ? null : sources.clone();
     }
 
+    public MomStructure setSources(Sources src) {
+        Sources old = this.sources;
+        this.sources = src;
+        firePropertyChange("sources", old, this.sources);
+        return this;
+    }
+
     public MomStructure setSources(Expr src) {
         return setSources(SourceFactory.createPlanarSource(src, Complex.valueOf(50)));
     }
@@ -1093,13 +1170,6 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             throw new IllegalArgumentException("Unsupported Source Type " + src.getClass().getName());
         }
 
-    }
-
-    public MomStructure setSources(Sources src) {
-        Sources old=this.sources;
-        this.sources = src;
-        firePropertyChange("sources", old,this.sources);
-        return this;
     }
 
     public MomStructure addSource(Source src) {
@@ -1137,6 +1207,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public ModeFunctions getModeFunctionsTemplate() {
+        ModeFunctions modeFunctions = modeFunctionsDelegate.getBase();
         if (modeFunctions == null) {
             throw new NoSuchElementException("Missing ModeFunctions");
         }
@@ -1155,25 +1226,25 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return testFunctions;
     }
 
+    public MomStructure setTestFunctions(TVector<Expr> expr) {
+        return setTestFunctions(TestFunctionsFactory.createList().addAll(expr));
+    }
+
     public MomStructure setTestFunctions(TestFunctions testFunctions) {
-        TestFunctions old=this.testFunctions;
-        if(old!=null){
+        TestFunctions old = this.testFunctions;
+        if (old != null) {
             old.removePropertyChangeListener(propertyDispatcher_testFunctions);
         }
         this.testFunctions = testFunctions;
         if (this.testFunctions != null) {
             this.testFunctions.setStructure(this);
         }
-        if(this.testFunctions != null){
+        if (this.testFunctions != null) {
             this.testFunctions.addPropertyChangeListener(propertyDispatcher_testFunctions);
         }
-        firePropertyChange("testFunctions",old,testFunctions);
+        firePropertyChange("testFunctions", old, testFunctions);
         invalidateCache();
         return this;
-    }
-
-    public MomStructure setTestFunctions(TVector<Expr> expr) {
-        return setTestFunctions(TestFunctionsFactory.createList().addAll(expr));
     }
 
     public MomStructure testFunctions(TestFunctions gpEssaiType) {
@@ -1271,7 +1342,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     public final TMatrix<Complex> getTestModeScalarProducts(ProgressMonitor monitor) {
         build();
-        return getModeFunctions().scalarProduct(Maths.elist(testFunctions.arr()),monitor);
+        return getModeFunctions().scalarProduct(Maths.elist(testFunctions.arr()), monitor);
     }
 
     public final TMatrix<Complex> getTestSourceScalarProducts() {
@@ -1402,7 +1473,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     protected void applyModeFunctionsChanges(ModeFunctions fn) {
         fn.setDomain(getDomainImpl());
-        fn.setSize(getModeFunctionsCount());
+        fn.setMaxSize(getModeFunctionsCount());
         fn.setFirstBoxSpace(getFirstBoxSpace());
         fn.setSecondBoxSpace(getSecondBoxSpace());
         fn.setFrequency(getFrequency());
@@ -1492,12 +1563,6 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return this;
     }
 
-    public ObjectCache getCurrentCache(boolean autoCreate) {
-        if (getPersistentCache().isEnabled()) {
-            return getPersistentCache().getObjectCache(hashValue(), autoCreate);
-        }
-        return null;
-    }
 
     public long getExecutionTime(String type) {
         Chronometer chrono = new Chronometer();
@@ -1709,7 +1774,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     public TMatrix<Complex> createScalarProductCache(ProgressMonitor monitor) {
         build();
-        return modeFunctions.scalarProduct(Maths.elist(testFunctions.arr()),monitor);
+        return modeFunctionsDelegate.scalarProduct(Maths.elist(testFunctions.arr()), monitor);
 //        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, 2);
 //        fnModeFunctions.getModes(mon[0], getObjectCache());
 //        HintAxisType axis = gpTestFunctions.getStructure().getHintsManager().getHintAxisType();
@@ -1762,7 +1827,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
-        return getModeFunctions().getModes(monitor, getCurrentCache(true));
+        return getModeFunctions().getModes(monitor);
     }
 
     public synchronized Complex[] getModesImpedances() {

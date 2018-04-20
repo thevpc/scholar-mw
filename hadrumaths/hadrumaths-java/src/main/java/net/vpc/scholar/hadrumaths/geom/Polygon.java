@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.geom.Path2D;
@@ -300,19 +301,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
 
     @Override
     public String toString() {
-        Dumper h = new Dumper(this);
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < xpoints.length; i++) {
-            sb.append("(");
-            sb.append(xpoints[i]);
-            sb.append(",");
-            sb.append(ypoints[i]);
-            sb.append(")");
-        }
-        sb.append("]");
-        h.add("points", sb.toString());
-        h.addNonNull("properties", properties);
-        return h.toString();
+        return FormatFactory.format(this);
     }
 
     @Override

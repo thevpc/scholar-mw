@@ -42,7 +42,7 @@ public class JListCardPanel extends JCardPanel {
             }
 
             public void anyUpdate(DocumentEvent e) {
-                ((FilteredListModel) (list.getModel())).setFilter(new TitleFiltredListModelFilter(filterText.getText()));
+                (getFilteredListModel()).setFilter(new TitleFiltredListModelFilter(filterText.getText()));
             }
         });
         p.add(spane, BorderLayout.CENTER);
@@ -69,15 +69,46 @@ public class JListCardPanel extends JCardPanel {
     }
 
     public void addPage(String id, String title, Icon icon, JComponent c) {
-        ((FilteredListModel) list.getModel()).addElement(new PanelPage(c, id, title, icon));
+        (getFilteredListModel()).addElement(new PanelPage(c, id, title, icon));
         main.add(c, id);
         if (list.getModel().getSize() == 1) {
             list.setSelectedIndex(list.getModel().getSize() - 1);
         }
     }
 
+    public void removePageAt(int index) {
+        FilteredListModel model = getFilteredListModel();
+        model.removeBaseAt(index);
+        main.remove(index);
+    }
+
+    private FilteredListModel getFilteredListModel() {
+        return (FilteredListModel) list.getModel();
+    }
+
+    public void setPageAt(int index, String id, String title, Icon icon, JComponent c) {
+        FilteredListModel model = getFilteredListModel();
+        if (index <= -1 || index >= model.getBaseSize()) {
+            addPage(id, title, icon, c);
+            return;
+        }
+        model.setElementAt(index, new PanelPage(c, id, title, icon));
+        main.add(c, id);
+        if (list.getModel().getSize() == 1) {
+            list.setSelectedIndex(list.getModel().getSize() - 1);
+        }
+    }
+
+    public JComponent getPageComponent(int index) {
+        return getPageComponents()[index];
+    }
+
+    public int getPageComponentsCount() {
+        return getPageComponents().length;
+    }
+
     public JComponent[] getPageComponents() {
-        FilteredListModel listModel = ((FilteredListModel) list.getModel());
+        FilteredListModel listModel = (getFilteredListModel());
         PanelPage[] pages = listModel.toArray();
         JComponent[] all = new JComponent[pages.length];
         for (int i = 0; i < pages.length; i++) {
@@ -92,14 +123,14 @@ public class JListCardPanel extends JCardPanel {
     }
 
     private PanelPage getPage(String id) {
-        if(id==null){
-            id="";
+        if (id == null) {
+            id = "";
         }
-        id=id.trim();
-        if(id.isEmpty()){
-            id="No Name";
+        id = id.trim();
+        if (id.isEmpty()) {
+            id = "No Name";
         }
-        FilteredListModel listModel = ((FilteredListModel) list.getModel());
+        FilteredListModel listModel = (getFilteredListModel());
         for (Object o : listModel.toArray()) {
             PanelPage p = (PanelPage) o;
             if (p.id.equals(id)) {
@@ -110,7 +141,7 @@ public class JListCardPanel extends JCardPanel {
     }
 
     public JComponent getPageComponentAt(int i) {
-        PanelPage o = ((FilteredListModel) list.getModel()).getElementAt(i);
+        PanelPage o = (getFilteredListModel()).getElementAt(i);
         return o.component;
     }
 
@@ -174,6 +205,11 @@ public class JListCardPanel extends JCardPanel {
             return delegate.get(index);
         }
 
+
+        public int getBaseSize() {
+            return realDelegate.size();
+        }
+
         public int getSize() {
             return delegate.size();
         }
@@ -210,61 +246,79 @@ public class JListCardPanel extends JCardPanel {
 
         private PanelPage findPanelPageById(String id) {
             for (PanelPage panelPage : delegate) {
-                if(panelPage.id.equals(id)){
+                if (panelPage.id.equals(id)) {
                     return panelPage;
                 }
             }
             return null;
         }
 
-        public static void main(String[] args) {
-            System.out.println(rename("hello [2]",6));
-        }
+//        public static void main(String[] args) {
+//            System.out.println(rename("hello [2]",6));
+//        }
 
-        private static String rename(String name,int index) {
-            Pattern p=Pattern.compile("^(.*)\\[([0-9]+)\\]$");
+        private static String rename(String name, int index) {
+            Pattern p = Pattern.compile("^(.*)\\[([0-9]+)\\]$");
             Matcher m = p.matcher(name);
-            if(m.find()){
+            if (m.find()) {
                 String prefix = m.group(1);
                 String suffix = m.group(2);
-                return prefix+"["+index+"]";
-            }else{
-                if(index==0){
+                return prefix + "[" + index + "]";
+            } else {
+                if (index == 0) {
                     return name;
                 }
-                return name+" ["+index+"]";
+                return name + " [" + index + "]";
             }
         }
 
         private void preInsertPanelPage(PanelPage page) {
-            if(page.id==null){
-                page.id="";
+            if (page.id == null) {
+                page.id = "";
             }
-            if(page.title==null){
-                page.title="";
+            if (page.title == null) {
+                page.title = "";
             }
-            if(page.title.isEmpty()){
-                page.title="Default";
+            if (page.title.isEmpty()) {
+                page.title = "Default";
             }
-            int loop=0;
-            while(true){
+            int loop = 0;
+            while (true) {
                 PanelPage p = findPanelPageById(page.id);
-                if(p!=null){
-                    page.id=rename(page.id,loop);
+                if (p != null) {
+                    page.id = rename(page.id, loop);
 //                    page.title=page.title+"'";
-                }else{
+                } else {
                     break;
                 }
                 loop++;
             }
         }
 
+        private void setElementAt(int index, PanelPage object) {
+            preInsertPanelPage(object);
+            for (PanelPage panelPage : delegate) {
+                if (panelPage.id.equals(object.id)) {
+                    object.id = object.id + "'";
+                    object.title = object.title + "'";
+//                    throw new IllegalArgumentException(object.id+" Already exists");
+                }
+            }
+            realDelegate.add(index, object);
+            if (filter.accept(object)) {
+                rebuild();
+//                int index = delegate.size();
+//                delegate.add(object);
+//                fireIntervalAdded(this, index, index);
+            }
+        }
+
         private void addElement(PanelPage object) {
             preInsertPanelPage(object);
             for (PanelPage panelPage : delegate) {
-                if(panelPage.id.equals(object.id)){
-                    object.id=object.id+"'";
-                    object.title=object.title+"'";
+                if (panelPage.id.equals(object.id)) {
+                    object.id = object.id + "'";
+                    object.title = object.title + "'";
 //                    throw new IllegalArgumentException(object.id+" Already exists");
                 }
             }
@@ -281,6 +335,11 @@ public class JListCardPanel extends JCardPanel {
         }
 
         public FilteredListModel() {
+        }
+
+        public void removeBaseAt(int index) {
+            realDelegate.remove(index);
+            rebuild();
         }
     }
 

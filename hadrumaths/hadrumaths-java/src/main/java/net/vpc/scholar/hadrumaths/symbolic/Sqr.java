@@ -27,20 +27,20 @@ public class Sqr extends GenericFunctionX implements Cloneable{
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImag().isZero()){
+        if(a.isDC() && a.toDC().getImagDD().isZero()){
             return this;
         }
-        return super.getReal();
+        return super.getRealDD();
     }
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImag().isZero()){
+        if(a.isDC() && a.toDC().getImagDD().isZero()){
             return FunctionFactory.DZEROXY;
         }
-        return super.getImag();
+        return super.getImagDD();
     }
 
     @Override

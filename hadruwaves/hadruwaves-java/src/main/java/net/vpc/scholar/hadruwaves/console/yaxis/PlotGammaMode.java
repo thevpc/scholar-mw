@@ -25,7 +25,7 @@ public class PlotGammaMode extends PlotAxisSeriesComplex implements Cloneable {
 
     protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
         ModeInfo fnIndexes = structure.getModeFunctions().getMode(mode, m, n);
-        return fnIndexes==null?Complex.NaN: fnIndexes.firstBoxSpaceGamma;
+        return fnIndexes==null?Complex.NaN : fnIndexes.firstBoxSpaceGamma;
     }
 
     public String toString() {

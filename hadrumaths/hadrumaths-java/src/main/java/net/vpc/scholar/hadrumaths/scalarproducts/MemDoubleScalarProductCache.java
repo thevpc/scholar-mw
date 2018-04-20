@@ -138,8 +138,8 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
                                 for (int n = 0; n < maxF; n++) {
                                     DoubleToVector fnndv = finalFn1[n].toDV();
                                     gfps[q][n] = (
-                                            finalSp1.evalDD(gpqv.getComponent(Axis.X).toDC().getReal(), fnndv.getComponent(Axis.X).toDC().getReal())
-                                                    + finalSp1.evalDD(gpqv.getComponent(Axis.Y).toDC().getReal(), fnndv.getComponent(Axis.Y).toDC().getReal()));
+                                            finalSp1.evalDD(gpqv.getComponent(Axis.X).toDC().getRealDD(), fnndv.getComponent(Axis.X).toDC().getRealDD())
+                                                    + finalSp1.evalDD(gpqv.getComponent(Axis.Y).toDC().getRealDD(), fnndv.getComponent(Axis.Y).toDC().getRealDD()));
                                     mon.inc(_monMessage, q, n);
                                 }
                             }

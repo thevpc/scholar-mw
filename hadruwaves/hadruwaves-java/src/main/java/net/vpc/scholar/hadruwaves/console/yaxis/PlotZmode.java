@@ -22,7 +22,7 @@ public class PlotZmode extends PlotAxisSeriesComplex implements Cloneable {
 
     protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
         ModeInfo indexes = structure.getModeFunctions().getMode(mode, m, n);
-        return indexes==null?Complex.NaN:indexes.impedance;
+        return indexes==null?Complex.NaN :indexes.impedance;
     }
 
     public String toString() {

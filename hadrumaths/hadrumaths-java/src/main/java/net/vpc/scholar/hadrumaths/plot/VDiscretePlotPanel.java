@@ -33,10 +33,8 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
     private Axis[] xyzValue = Axis.values();
     private Axis surfaceValue = Axis.Z;
 //    private String title;
-    private PlotWindowManager windowManager;
     private NormalizerType normalizerType = NormalizerType.FULL;
     private int revalidatingPlot = 0;
-    private String layoutConstraints = "";
     private VDiscretePlotModel model2;
 
 //    public VDiscretePlotPanel(PlotWindowManager windowManager, String title, Set<ExternalLibrary> preferredLibraries, VDiscrete... _model) {
@@ -48,7 +46,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
             model=new VDiscretePlotModel();
         }
         this.model2 = model;
-        this.windowManager = windowManager;
+        setPlotWindowManager(windowManager);
         JToolBar tb = new JToolBar();
         d2d3.setSelectedIndex(typeSurface - 1);
         tb.add(new JLabel("2D/3D"));
@@ -258,15 +256,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
         return baseTitle;
     }
 
-    public JComponent toComponent() {
-        return (JComponent) this;
-    }
-
-    public void display() {
-        windowManager.add(this);
-    }
-
-    public static enum NormalizerType {
+    public enum NormalizerType {
         MATRIX, CUBE, FULL
     }
 
@@ -319,15 +309,6 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
             }
             return normalize(baseValues, minMax.getMin(), minMax.getMax());
         }
-    }
-
-    @Override
-    public String getLayoutConstraints() {
-        return layoutConstraints;
-    }
-
-    public void setLayoutConstraints(String layoutConstraints) {
-        this.layoutConstraints = layoutConstraints;
     }
 
     @Override

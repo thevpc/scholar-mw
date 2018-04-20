@@ -1,9 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
+import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
 import net.vpc.scholar.hadrumaths.util.LRUMap;
@@ -32,7 +33,7 @@ public class FormatFactory extends AbstractFactory {
     public static ProductFormat PRODUCT_STAR = new ProductFormat("*");
     public static ProductFormat PRODUCT_NONE = new ProductFormat(null);
     public static ProductFormat PRODUCT_DOTSTAR = new ProductFormat(".*");
-    public static FormatParam[] toStringFormat = new FormatParam[0];
+    public static FormatParamSet toStringFormat = new FormatParamSet();
     private static PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -54,12 +55,13 @@ public class FormatFactory extends AbstractFactory {
         register(Matrix.class, new MatrixFormatter());
         register(DCxy.class, new CFunctionXYFormatter());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYFormatter());
-        register(Linear.class, new DLinearFunctionXYFormatter());
+        register(Linear.class, new LinearFormatter());
         register(CosXCosY.class, new CosCosFormatter());
         register(CosXPlusY.class, new CosXPlusYFormatter());
         register(DDxyAbstractSum.class, new DAbstractSumFunctionXYFormatter());
 //        register(DomainX.class, new DomainXFormatter());
         register(Domain.class, new DomainFormatter());
+        register(DomainExpr.class, new DomainExprFormatter());
         register(DoubleToVector.class, new VDCxyFormatter());
         register(Inv.class, new InvFormatter());
         register(Neg.class, new NegFormatter());
@@ -69,8 +71,13 @@ public class FormatFactory extends AbstractFactory {
         register(Div.class, new DivFormatter());
         register(Sub.class, new SubFormatter());
         register(Any.class, new AnyFormatter());
+        register(DDx.class, new DDxFormatter());
+        register(DDy.class, new DDyFormatter());
+        register(DDz.class, new DDzFormatter());
+        register(UFunction.class, new UFunctionFormatter());
 //        register(DDxToDDxy.class, new DDxToDDxyFormatter());
         register(Complex.class, new ComplexFormatter());
+        register(DDyIntegralX.class, new DDyIntegralXFormatter());
         register(AbstractComposedFunction.class, new GenericFunctionFormatter());
         register(ParamExpr.class, new ParamFormatter());
         register(DoubleValue.class, new DoubleValueFormatter());
@@ -84,19 +91,37 @@ public class FormatFactory extends AbstractFactory {
         register(AxisTransform.class, new AxisTransformFormatter());
         register(Shape.class, new DDxyPolygonFormatter());
         register(Discrete.class, new DiscreteFormatter());
+        register(Polygon.class, new PolygonFormatter());
+        register(Polyhedron.class, new PolyhedronFormatter());
+        register(String.class, new StringFormatter());
+        register(DDzIntegralXY.class, new DDzIntegralXYFormatter());
         register(VDiscrete.class, new VDiscreteFormatter());
         register(Real.class, new RealFormatter());
         register(Imag.class, new ImagFormatter());
         register(ComparatorExpr.class, new Formatter() {
             @Override
-            public String format(Object o, FormatParam... format) {
-                return o.toString();
+            public String format(Object o, FormatParamSet format) {
+                StringBuilder sb = new StringBuilder();
+                format(sb, o, format);
+                return sb.toString();
+            }
+
+            @Override
+            public void format(StringBuilder sb, Object o, FormatParamSet format) {
+                sb.append(o.toString());
             }
         });
         register(NotExpr.class, new Formatter() {
             @Override
-            public String format(Object o, FormatParam... format) {
-                return o.toString();
+            public String format(Object o, FormatParamSet format) {
+                StringBuilder sb = new StringBuilder();
+                format(sb, o, format);
+                return sb.toString();
+            }
+
+            @Override
+            public void format(StringBuilder sb, Object o, FormatParamSet format) {
+                sb.append(format(o, format));
             }
         });
     }
@@ -290,10 +315,19 @@ public class FormatFactory extends AbstractFactory {
 //        return putInto;
 //    }
 
+    public static String format(Object o) {
+        return format(o, FormatParamSet.EMPTY);
+    }
+
     @SuppressWarnings("unchecked")
-    public static String format(Object o, FormatParam... format) {
+    public static String format(Object o, FormatParamSet format) {
         Formatter best = map.getRequired(o.getClass());
         return best.format(o, format);
+    }
+
+    public static void format(StringBuilder sb, Object o, FormatParamSet format) {
+        Formatter best = map.getRequired(o.getClass());
+        best.format(sb, o, format);
     }
 
     public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty) {
@@ -324,53 +358,53 @@ public class FormatFactory extends AbstractFactory {
         return sb.toString();
     }
 
-    public static String formatArg(Expr e, FormatParam... format) {
-        String s = FormatFactory.format(e, format);
-        if (needsParams(s)) {
-            return ("(" + s + ")");
-        } else {
-            return s;
-        }
-    }
+//    public static String formatArg(Expr e, FormatParamSet format) {
+//        String s = FormatFactory.format(e, format);
+//        if (needsParams(s)) {
+//            return ("(" + s + ")");
+//        } else {
+//            return s;
+//        }
+//    }
 
-    private static boolean needsParams(String s) {
-        int pars = 0;
-        int braks = 0;
-        boolean inNumber = true;
-        for (char c : s.toCharArray()) {
-            if (c == '(') {
-                inNumber = false;
-                pars++;
-            } else if (c == ')') {
-                inNumber = false;
-                pars--;
-            } else if (c == '[') {
-                inNumber = false;
-                braks++;
-            } else if (c == ']') {
-                inNumber = false;
-                braks--;
-            } else {
-                if (pars == 0 && braks == 0) {
-                    if (c >= '0' && c <= '9') {
-                        inNumber = true;
-                    } else if (c == '.') {
-                        if (inNumber) {
-                            //ok
-                        } else {
-                            return true;
-                        }
-                    } else {
-                        inNumber = false;
-                        if (!Character.isAlphabetic(c)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
+//    private static boolean needsParams(String s) {
+//        int pars = 0;
+//        int braks = 0;
+//        boolean inNumber = true;
+//        for (char c : s.toCharArray()) {
+//            if (c == '(') {
+//                inNumber = false;
+//                pars++;
+//            } else if (c == ')') {
+//                inNumber = false;
+//                pars--;
+//            } else if (c == '[') {
+//                inNumber = false;
+//                braks++;
+//            } else if (c == ']') {
+//                inNumber = false;
+//                braks--;
+//            } else {
+//                if (pars == 0 && braks == 0) {
+//                    if (c >= '0' && c <= '9') {
+//                        inNumber = true;
+//                    } else if (c == '.') {
+//                        if (inNumber) {
+//                            //ok
+//                        } else {
+//                            return true;
+//                        }
+//                    } else {
+//                        inNumber = false;
+//                        if (!Character.isAlphabetic(c)) {
+//                            return true;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
     public static SimpleDateFormat getDateFormat(String format) {
@@ -392,5 +426,29 @@ public class FormatFactory extends AbstractFactory {
 
     public static String format(Date d, String format) {
         return getDateFormat(format).format(d);
+    }
+
+    public static boolean requireAppendDomain(Expr o, FormatParamSet format) {
+        return (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN));
+    }
+
+    public static boolean appendStarredDomain(StringBuilder sb, Expr o, FormatParamSet format) {
+        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+
+            ProductFormat pp = format.getParam(FormatFactory.PRODUCT_STAR);
+            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
+            sb.append(mul);
+            FormatFactory.format(sb, o.getDomain(), format);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean appendNonStarredDomain(StringBuilder sb, Expr o, FormatParamSet format) {
+        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+            FormatFactory.format(sb, o.getDomain(), format);
+            return true;
+        }
+        return false;
     }
 }

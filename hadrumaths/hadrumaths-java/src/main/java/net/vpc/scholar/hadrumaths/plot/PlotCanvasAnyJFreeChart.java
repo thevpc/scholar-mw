@@ -105,7 +105,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         } else {
             String s = String.valueOf(y);
             if (custom) {
-                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")", "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
+                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx="+x+"\ny="+y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
                 if (s == null) {
                     return;
                 }
@@ -143,7 +143,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         } else {
             String s = String.valueOf(y);
             if (custom) {
-                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")", "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
+                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx="+rowKey+"\ny="+y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
                 if (s == null) {
                     return;
                 }

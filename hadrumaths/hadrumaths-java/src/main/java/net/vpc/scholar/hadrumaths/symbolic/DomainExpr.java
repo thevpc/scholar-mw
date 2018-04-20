@@ -82,6 +82,30 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         return zmax;
     }
 
+    public Expr xmin() {
+        return xmin;
+    }
+
+    public Expr xmax() {
+        return xmax;
+    }
+
+    public Expr ymin() {
+        return ymin;
+    }
+
+    public Expr ymax() {
+        return ymax;
+    }
+
+    public Expr zmin() {
+        return zmin;
+    }
+
+    public Expr zmax() {
+        return zmax;
+    }
+
     @Override
     public boolean isInvariantImpl(Axis axis) {
         return true;
@@ -410,6 +434,10 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         );
     }
 
+    public int getDimension() {
+        return dimension;
+    }
+
     @Override
     public int getDomainDimension() {
         return dimension;
@@ -448,12 +476,12 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
 
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
 //        return this;
     }
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
 //        return FunctionFactory.DZEROXY;
     }

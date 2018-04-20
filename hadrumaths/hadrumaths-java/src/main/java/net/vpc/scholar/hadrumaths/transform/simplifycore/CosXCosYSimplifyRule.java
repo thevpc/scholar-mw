@@ -37,6 +37,10 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
         if(ee.getAmp()==0){
             return RewriteResult.bestEffort(DoubleValue.valueOf(0,e.getDomain()));
         }
+        if(ee.getA()==0 && ee.getC()==0){
+            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getA())*Maths.cos2(ee.getC()),e.getDomain()));
+        }
+
         if(ee.getA()==0 && ee.getB()!=0){
             return RewriteResult.newVal(new CosXCosY(ee.getAmp()* Maths.cos2(ee.getB()),0,0,ee.getC(),ee.getD(),ee.getDomain()));
         }

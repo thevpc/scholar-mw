@@ -18,6 +18,17 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     protected Domain domain;
     //    public static final CFunctionXY ZERO =new CFunctionXY(DCstFunctionXY.ZERO,DCstFunctionXY.ZERO).setName("0");
 
+    public static ComplexValue valueOf(Complex value){
+        return new ComplexValue(value);
+    }
+
+    public static ComplexValue valueOf(Complex value,Domain domain){
+        return new ComplexValue(value,domain);
+    }
+
+    public ComplexValue(Complex value) {
+        this(value,null);
+    }
     public ComplexValue(Complex value, Domain domain) {
         this.real = Maths.expr(value.getReal(), domain);
         this.imag = Maths.expr(value.getImag(), domain);
@@ -107,7 +118,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         if (imag.isZero()) {
             return real;
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
+        throw new UnsupportedOperationException("["+getClass().getName()+"]"+" Not supported yet.");
     }
 
 //    public boolean isDDx() {
@@ -155,11 +166,11 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         return domain.intersect(other.domain);
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return real;
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return imag;
     }
 
@@ -237,7 +248,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 
     @Override
     public boolean isComplexImpl() {
-        return getDomain().equals(Domain.FULL(getDomainDimension()));
+        return getDomain().isFull();
     }
 
     @Override
@@ -247,10 +258,10 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 
     @Override
     public Complex toComplex() {
-        if (getDomain().equals(Domain.FULL(getDomainDimension()))) {
-            return value;
-        }
-        throw new RuntimeException("Domain Constraints");
+        return value;
+//        if (getDomain().isFull()) {
+//        }
+//        throw new RuntimeException("Domain Constraints");
     }
 
     @Override
@@ -318,5 +329,10 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     @Override
     public Complex getComplexConstant() {
         return getValue();
+    }
+
+    @Override
+    public boolean isComplexValue() {
+        return true;
     }
 }

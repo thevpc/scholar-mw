@@ -2,8 +2,6 @@ package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
-import net.vpc.scholar.hadrumaths.util.IOUtils;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;

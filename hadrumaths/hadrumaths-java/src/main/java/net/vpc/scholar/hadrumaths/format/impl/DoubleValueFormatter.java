@@ -6,44 +6,54 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
 /**
- *
  * @author vpc
  */
-public class DoubleValueFormatter implements Formatter<DoubleValue>{
+public class DoubleValueFormatter implements Formatter<DoubleValue> {
     public DoubleValueFormatter() {
     }
 
     @Override
-    public String format(DoubleValue o, FormatParam... format) {
+    public String format(DoubleValue o, FormatParamSet format) {
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
+        return sb.toString();
+
+    }
+
+    @Override
+    public void format(StringBuilder sb, DoubleValue o, FormatParamSet format) {
         double v = o.getValue();
-        if(v==0){
-            return FormatFactory.format(0.0);
-        }else if(v==1){
-            String s=FormatFactory.format(o.getDomain(),format);
-            if(s.isEmpty()){
-                s=FormatFactory.format(1.0);
+        if (v == 0) {
+            FormatFactory.format(sb, 0.0, format);
+        } else if (v == 1) {
+            if (o.getDomain().isFull()) {
+                FormatFactory.format(sb, 1.0, format);
+            } else {
+                FormatFactory.format(sb, o.getDomain(), format);
             }
-            return s;
-        }else if(v==-1){
-            String s=FormatFactory.format(o.getDomain(),format);
-            if(s.isEmpty()){
-                s=FormatFactory.format(1.0);
+        } else if (v == -1) {
+            if (o.getDomain().isFull()) {
+                FormatFactory.format(sb, -1.0, format);
+            } else {
+                boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+                if (par) {
+                    sb.append("(");
+                }
+                sb.append("-");
+                FormatFactory.format(sb, o.getDomain(), format.add(RequireParenthesesFormat.INSTANCE));
+                if (par) {
+                    sb.append(")");
+                }
             }
-            return "-"+s;
-        }else{
-            String s = FormatFactory.format(o.getDomain(), format);
-            if(s.isEmpty()){
-                s=FormatFactory.format(o.getValue());
-            }else{
-                s=FormatFactory.format(o.getValue())+" * "+s;
-            }
-            return s;
+        } else {
+            FormatFactory.format(sb, o.getValue(), format);
+            FormatFactory.appendStarredDomain(sb,o,format);
         }
     }
-    
 }

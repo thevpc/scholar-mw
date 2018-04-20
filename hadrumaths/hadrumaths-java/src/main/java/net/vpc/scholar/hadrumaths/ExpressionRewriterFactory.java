@@ -45,6 +45,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , ParamExprNavRule.INSTANCE
 //                    ,DoubleXNavRule.INSTANCE
                     , DoubleXYNavRule.INSTANCE
+                    , DomainNavRule.INSTANCE
                     , GenericFunctionNavRule.INSTANCE
                     , ImagNavRule.INSTANCE
                     , InvNavRule.INSTANCE

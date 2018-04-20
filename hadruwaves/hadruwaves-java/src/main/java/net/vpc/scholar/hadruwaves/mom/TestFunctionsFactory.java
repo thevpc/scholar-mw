@@ -7,6 +7,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.AbstractFactory;
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
@@ -43,6 +44,9 @@ public class TestFunctionsFactory extends AbstractFactory {
         return createBuilder().addGeometry(new Polygon(points));
     }
 
+    public static TestFunctionsBuilder addGeometry(Domain geometry) {
+        return createBuilder().addGeometry(geometry.toGeometry());
+    }
     public static TestFunctionsBuilder addGeometry(Geometry geometry) {
         return createBuilder().addGeometry(geometry);
     }

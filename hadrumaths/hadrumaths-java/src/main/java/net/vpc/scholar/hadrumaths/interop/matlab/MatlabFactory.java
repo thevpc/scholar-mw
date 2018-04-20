@@ -88,8 +88,8 @@ public class MatlabFactory extends AbstractFactory {
                     + ")");
         } else {
 //            f = f.simplify();
-            DoubleToDouble r = f.getReal();
-            DoubleToDouble i = f.getImag();
+            DoubleToDouble r = f.getRealDD();
+            DoubleToDouble i = f.getImagDD();
             StringBuilder sb = new StringBuilder();
             DoubleToDouble[] s = null;
 
@@ -126,8 +126,8 @@ public class MatlabFactory extends AbstractFactory {
 
     public static String symdblquadString(DoubleToComplex f) {
 //        f = f.simplify();
-        DoubleToDouble r = f.getReal();
-        DoubleToDouble i = f.getImag();
+        DoubleToDouble r = f.getRealDD();
+        DoubleToDouble i = f.getImagDD();
         StringBuilder sb = new StringBuilder();
         DoubleToDouble[] s = null;
 
@@ -240,11 +240,11 @@ public class MatlabFactory extends AbstractFactory {
         }
         for (int i = 0; i < sum.length; i++) {
             DoubleToComplex cFunctionXY = sum[i];
-            if (cFunctionXY.getReal() != FunctionFactory.DZEROXY) {
-                putInto.add(Maths.complex(cFunctionXY.getReal(), FunctionFactory.DZEROXY));
+            if (cFunctionXY.getRealDD() != FunctionFactory.DZEROXY) {
+                putInto.add(Maths.complex(cFunctionXY.getRealDD(), FunctionFactory.DZEROXY));
             }
-            if (cFunctionXY.getImag() != FunctionFactory.DZEROXY) {
-                putInto.add(Maths.complex(FunctionFactory.DZEROXY, cFunctionXY.getImag()));
+            if (cFunctionXY.getImagDD() != FunctionFactory.DZEROXY) {
+                putInto.add(Maths.complex(FunctionFactory.DZEROXY, cFunctionXY.getImagDD()));
             }
         }
         return putInto;

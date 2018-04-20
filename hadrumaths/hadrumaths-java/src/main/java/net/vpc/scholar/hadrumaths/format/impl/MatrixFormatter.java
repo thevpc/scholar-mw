@@ -5,9 +5,11 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 
 /**
@@ -19,7 +21,15 @@ public class MatrixFormatter implements Formatter<Matrix>{
     }
 
     @Override
-    public String format(Matrix o, FormatParam... format) {
+    public String format(Matrix o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
+
+    }
+
+    @Override
+    public void format(StringBuilder sb, Matrix o, FormatParamSet format) {
         Complex[][] elements=o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {
@@ -31,7 +41,6 @@ public class MatrixFormatter implements Formatter<Matrix>{
             }
         }
 
-        StringBuilder sb = new StringBuilder();
         String lineSep = System.getProperty("line.separator");
         sb.append("[");
         for (int i = 0; i < elements.length; i++) {
@@ -44,9 +53,10 @@ public class MatrixFormatter implements Formatter<Matrix>{
                 if (j > 0) {
                     sbl.append(' ');
                 }
-                String disp = String.valueOf(elements[i][j]);
-                sbl.append(disp);
-                int x = colsWidth[j] - disp.length();
+                int oldLen = sbl.length();
+                FormatFactory.format(sbl,elements[i][j],format);
+                int newLen=sbl.length();
+                int x = colsWidth[j] - (newLen-oldLen);
                 while (x > 0) {
                     sbl.append(' ');
                     x--;
@@ -59,7 +69,5 @@ public class MatrixFormatter implements Formatter<Matrix>{
             sb.append(lineSep);
         }
         sb.append("]");
-        return sb.toString();
     }
-    
 }

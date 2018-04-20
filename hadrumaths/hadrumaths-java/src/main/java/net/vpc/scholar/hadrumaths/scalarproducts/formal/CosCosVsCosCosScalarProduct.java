@@ -76,11 +76,27 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);
-        return
-                diff == 0 ||
-//                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
-                (diff <0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
-                ;
+        if(diff==0)return true;
+        if(diff<0){
+            diff=-diff;
+        }
+        if(a<0){
+            a=-a;
+        }
+        if(b<0){
+            b=-b;
+        }
+        double c=a<b?b:a;
+
+        if(c==0){
+            return diff < tolerance;
+        }
+        return diff/c < tolerance;
+//        return
+//                diff == 0 ||
+////                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
+//                (diff <0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
+//                ;
     }
 
     private static double computeTolerant(Domain domain, CosXCosY f, CosXCosY g, double tolerance) {

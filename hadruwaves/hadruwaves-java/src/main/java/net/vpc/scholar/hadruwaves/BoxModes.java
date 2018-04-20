@@ -52,21 +52,21 @@ public abstract class BoxModes {
             case TM: {
                 switch (space.getLimit()) {
                     case OPEN: {
-                        y = I(cachedOmega).mul(EPS0 * space.getEpsr()).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                        y = I(cachedOmega).mul(space.getEps(freq)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                         break;
                     }
                     case MATCHED_LOAD: {
                         // i omega
                         //------------ * cotanh( gamma thikness)
                         // eps gamma
-                        y = I(cachedOmega).mul(EPS0 * space.getEpsr()).div(gamma);
+                        y = I(cachedOmega).mul(space.getEps(freq)).div(gamma);
                         break;
                     }
                     case SHORT: {
                         // i omega   cotanh( gamma thikness)
                         //-------- * -------------------------
                         // eps            gamma
-                        y = I.mul(cachedOmega).mul(EPS0 * space.getEpsr()).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                        y = I.mul(cachedOmega).mul(space.getEps(freq)).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                         break;
                     }
                     case NOTHING: {
@@ -156,15 +156,34 @@ public abstract class BoxModes {
     public ModeIndex[] indexes(int max) {
         return getIndexes(max);
     }
+
     public DoubleToVector[] functions(int max) {
         return getFunctions(max);
+    }
+
+    public Complex[] impedances(int max, double freq, BoxSpace space) {
+        Complex[] z = new Complex[max];
+        ModeIndex[] indexes = getIndexes(max);
+        for (int i = 0; i < indexes.length; i++) {
+            z[i] = getImpedance(indexes[i], freq, space);
+        }
+        return z;
+    }
+
+    public Complex[] admittances(int max, double freq, BoxSpace space) {
+        Complex[] z = new Complex[max];
+        ModeIndex[] indexes = getIndexes(max);
+        for (int i = 0; i < indexes.length; i++) {
+            z[i] = getAdmittance(indexes[i], freq, space);
+        }
+        return z;
     }
 
     public DoubleToVector[] getFunctions(int max) {
         ModeIndex[] indexes = getIndexes(max);
         DoubleToVector[] fct = new DoubleToVector[indexes.length];
         for (int i = 0; i < indexes.length; i++) {
-            fct[i]=getFunction(indexes[i]);
+            fct[i] = getFunction(indexes[i]);
         }
         return fct;
     }

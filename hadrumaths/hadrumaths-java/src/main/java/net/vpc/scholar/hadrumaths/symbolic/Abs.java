@@ -28,11 +28,11 @@ public class Abs extends GenericFunctionX implements Cloneable{
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return this;
     }
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return FunctionFactory.DZEROXY;
     }
 

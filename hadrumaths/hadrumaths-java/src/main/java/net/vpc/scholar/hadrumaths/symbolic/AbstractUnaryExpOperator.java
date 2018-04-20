@@ -212,14 +212,14 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
         return computeComplex(new double[]{x})[0];
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         if(expression.isDD()){
             return this;
         }
         return new Real(toDC());
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         if(expression.isDD()){
             return FunctionFactory.DZERO(getDomainDimension());
         }

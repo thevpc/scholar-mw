@@ -5,6 +5,7 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.Formatter;
@@ -17,8 +18,12 @@ public class ParamFormatter implements Formatter<ParamExpr> {
     }
 
     @Override
-    public String format(ParamExpr o, FormatParam... format) {
+    public String format(ParamExpr o, FormatParamSet format) {
         return o.getParamName();
     }
 
+    @Override
+    public void format(StringBuilder sb, ParamExpr o, FormatParamSet format) {
+        sb.append(o.getParamName());
+    }
 }

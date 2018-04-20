@@ -20,7 +20,7 @@ public class PlotBuilder {
     private PlotComponent update;
     private String updateName;
     private String title;
-    private String[] titles;
+    private List<String> titles=new ArrayList<>();
     private boolean display = true;
     private PlotType plotType;
     private ComplexAsDouble converter;
@@ -38,6 +38,7 @@ public class PlotBuilder {
     private Samples samples;
     private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
+    private List<Object> xsamplesToPlot = new ArrayList<>();
     private List<PlotBuilderListener> listeners = new ArrayList<>();
 
     public static ExpressionsPlotPanel.ShowType toShowType(PlotType pt) {
@@ -98,11 +99,22 @@ public class PlotBuilder {
         enabledExternalLibraries = other.enabledExternalLibraries == null ? null : EnumSet.copyOf(other.enabledExternalLibraries);
         preferredLibraries = other.preferredLibraries == null ? null : EnumSet.copyOf(other.preferredLibraries);
         properties = other.properties == null ? null : new HashMap<>(other.properties);
-        titles = other.titles == null ? null : Arrays.copyOf(other.titles, other.titles.length);
+        titles = other.titles == null ? null : new ArrayList<>(other.titles);
         xformat = other.xformat;
         yformat = other.yformat;
         parent = other.parent;
         itemsToPlot = new ArrayList<Object>(other.itemsToPlot);
+        xsamplesToPlot = new ArrayList<Object>(other.xsamplesToPlot);
+        return this;
+    }
+
+    public PlotBuilder addTitle(String item) {
+        titles.add(item);
+        return this;
+    }
+
+    public PlotBuilder addXsample(Object item) {
+        xsamplesToPlot.add(item);
         return this;
     }
 
@@ -125,6 +137,18 @@ public class PlotBuilder {
         this.xformat = format;
         return this;
     }
+
+//    public PlotBuilder xsamples(Object[] format) {
+//        this.samples=null;
+//        this.xformat = new ArrayDoubleFormatter(format);
+//        return this;
+//    }
+//
+//    public PlotBuilder xsamples(List format) {
+//        this.samples=null;
+//        this.xformat = new ListDoubleFormatter(format);
+//        return this;
+//    }
 
     public DoubleFormatter yformat() {
         return xformat;
@@ -217,9 +241,59 @@ public class PlotBuilder {
 //        return zsamples(yvalue.toDoubleArray());
 //    }
 
+    public PlotBuilder xsamples(Object[] xvalue) {
+        return xsamples(Arrays.asList(xvalue));
+    }
+
+    public PlotBuilder xsamples(List xvalue) {
+        if(xvalue.size()==0){
+            return xsamples(new double[0]);
+        }
+        Class componentType = xvalue.get(0).getClass();
+        if(
+                          componentType.equals(Double.TYPE)
+                        ||componentType.equals(Double.class)
+                        ||componentType.equals(Float.TYPE)
+                        ||componentType.equals(Float.class)
+                        ||componentType.equals(Integer.TYPE)
+                        ||componentType.equals(Integer.class)
+                        ||componentType.equals(Short.TYPE)
+                        ||componentType.equals(Short.class)
+                        ||componentType.equals(Long.TYPE)
+                        ||componentType.equals(Long.class)
+
+                ) {
+            DoubleList to = new DoubleArrayList(xvalue.size());
+            for (Object o : xvalue) {
+                to.append(((Number)o).doubleValue());
+            }
+            return xsamples(to.toDoubleArray());
+        }else{
+            xsamples=-1;
+            samples=null;
+            xformat(new ListDoubleFormatter(xvalue));
+            return this;
+        }
+    }
+
     public PlotBuilder xsamples(TList xvalue) {
-        DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
-        return xsamples(to.toDoubleArray());
+        if(xvalue.length()==0){
+            return xsamples(new double[0]);
+        }
+        TypeReference componentType = xvalue.getComponentType();
+        if(
+                componentType.getTypeClass().equals(Double.TYPE)
+                ||componentType.getTypeClass().equals(Double.class)
+
+                ) {
+            DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
+            return xsamples(to.toDoubleArray());
+        }else{
+            xsamples=-1;
+            samples=null;
+            xformat(new ListDoubleFormatter(xvalue.toJList()));
+            return this;
+        }
     }
 
     public PlotBuilder ysamples(TList xvalue) {
@@ -335,17 +409,17 @@ public class PlotBuilder {
     }
 
     public PlotBuilder titles(String... titles) {
-        this.titles = titles;
+        this.titles = new ArrayList<>(Arrays.asList(titles));
         return this;
     }
 
     public PlotBuilder titles(TList<String> titles) {
-        this.titles = titles.toArray(new String[titles.size()]);
+        this.titles = new ArrayList<>(titles.toJList());
         return this;
     }
 
     public PlotBuilder titles(List<String> titles) {
-        this.titles = titles.toArray(new String[titles.size()]);
+        this.titles = new ArrayList<>(titles);
         return this;
     }
 
@@ -598,6 +672,15 @@ public class PlotBuilder {
                         }
                         if (yname != null) {
                             v.setyTitle(yname);
+                        }
+                        if (converter != null) {
+                            v.setConverter(converter);
+                        }
+                        if (title != null) {
+                            v.setTitle(title);
+                        }
+                        if (titles != null && titles.size()>0) {
+                            v.setYtitles(titles.toArray(new String[titles.size()]));
                         }
                     }
                     return plotModel;
@@ -1161,7 +1244,7 @@ public class PlotBuilder {
     }
 
     private ValuesPlotModel _defaultPlotModelXY(String xtitle, String ztitle, double[][] x, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType) {
-        return new ValuesPlotModel(title, xtitle, ztitle, titles, x, z, zDoubleFunction, plotType, properties)
+        return new ValuesPlotModel(title, xtitle, ztitle, titles.toArray(new String[titles.size()]), x, z, zDoubleFunction, plotType, properties)
                 .setEnabledLibraries(enabledExternalLibraries)
                 .setPreferredLibraries(preferredLibraries)
                 ;
@@ -1186,7 +1269,7 @@ public class PlotBuilder {
             }
             y = new double[][]{((AbsoluteSamples) samples).getY()};
         }
-        return new ValuesPlotModel(title, xtitle, ytitle, ztitle, titles, x, y, z, zDoubleFunction, plotType, properties)
+        return new ValuesPlotModel(title, xtitle, ytitle, ztitle, titles.toArray(new String[titles.size()]), x, y, z, zDoubleFunction, plotType, properties)
                 .setEnabledLibraries(enabledExternalLibraries)
                 .setPreferredLibraries(preferredLibraries)
                 .setXformat(xformat)
@@ -1231,4 +1314,36 @@ public class PlotBuilder {
     }
 
 
+    private static class ArrayDoubleFormatter implements DoubleFormatter {
+        private final Object[] format;
+
+        public ArrayDoubleFormatter(Object[] format) {
+            this.format = format;
+        }
+
+        @Override
+        public String formatDouble(double value) {
+            int index = (int) value;
+            if(index<0 || index>= format.length){
+                return "";
+            }
+            return String.valueOf(format[index]);
+        }
+    }
+    private static class ListDoubleFormatter implements DoubleFormatter {
+        private final List format;
+
+        public ListDoubleFormatter(List format) {
+            this.format = format;
+        }
+
+        @Override
+        public String formatDouble(double value) {
+            int index = (int) value;
+            if(index<0 || index>= format.size()){
+                return "";
+            }
+            return String.valueOf(format.get(index));
+        }
+    }
 }

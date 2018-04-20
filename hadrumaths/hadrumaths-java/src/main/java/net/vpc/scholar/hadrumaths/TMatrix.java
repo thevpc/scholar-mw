@@ -128,6 +128,8 @@ public interface TMatrix<T> extends Normalizable,Serializable {
 
     TMatrix<T> mul(TMatrix<T> other);
 
+//    TMatrix<T> multiply(TMatrix<T> other);
+
     TMatrix<T> dotmul(TMatrix<T> other);
 
     TMatrix<T> dotdiv(TMatrix<T> other);

@@ -83,44 +83,44 @@ public class SinSeqYZ extends Ref implements Cloneable{
         Expr height = expr(domain.zwidth());
         Expr ymin = expr(domain.ymin());
         Expr zmin = expr(domain.zmin());
-        Expr pibyw = div(pi, width);
-        Expr pibyh = div(pi, height);
+        Expr pibyw = Maths.div(pi, width);
+        Expr pibyh = Maths.div(pi, height);
         if (maxWest) {
             if (maxEast) {
                 //cos(2 * m * (pi / width) * (X-min))
-                fy = cos(mul(two, m, pibyw, sub(Y, ymin))); //ok
+                fy = cos(Maths.mul(two, m, pibyw, Maths.sub(Y, ymin))); //ok
             } else {
                 //cos((m * 2+1)/2 * pi / width * (X-min))
-                fy = cos(mul(div(Maths.sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
+                fy = cos(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.sub(Y, ymin))); //ok
             }
         } else {
             if (maxEast) {
                 //fx = sin(((2 * m + 1) / 2 * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(mul(div(Maths.sum(mul(two, m), one), two), pibyw, sub(Y, ymin))); //ok
+                fy = sin(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.sub(Y, ymin))); //ok
             } else {
 //                fx = sin(((m+1) * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(mul(Maths.sum(m, one), pibyw, sub(Y, ymin))); //ok
+                fy = sin(Maths.mul(Maths.sum(m, one), pibyw, Maths.sub(Y, ymin))); //ok
             }
         }
         Expr fz = null;
         if (maxNorth) {
             if (maxSouth) {
 //                fy = cos((n * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(mul(n, pibyh, sub(Z, zmin))); //ok
+                fz = cos(Maths.mul(n, pibyh, Maths.sub(Z, zmin))); //ok
             } else {
 //                fy = cos(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(mul(div(Maths.sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
+                fz = cos(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.sub(Z, zmin))); //ok
             }
         } else {
             if (maxSouth) {
                 //fy = sin(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = sin(mul(div(Maths.sum(mul(two, n), one), two), pibyh, sub(Z, zmin))); //ok
+                fz = sin(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.sub(Z, zmin))); //ok
             } else {
                 //fy = sin(((n+1) * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(mul(Maths.sum(n, one), pibyh, sub(Z, zmin))); //ok
+                fz = cos(Maths.mul(Maths.sum(n, one), pibyh, Maths.sub(Z, zmin))); //ok
             }
         }
-        init(mul(fy, fz, Maths.expr(domain)));
+        init(Maths.mul(fy, fz, Maths.expr(domain)));
     }
 
     public boolean isMaxEast() {

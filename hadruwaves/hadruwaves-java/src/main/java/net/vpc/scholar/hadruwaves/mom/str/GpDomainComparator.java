@@ -25,7 +25,7 @@ public class GpDomainComparator implements TestFunctionsComparator, Serializable
     }
 
     private Domain lookupFirstDomain(DoubleToVector f) {
-        DoubleToDouble[] all={f.getComponent(Axis.X).toDC().getReal(),f.getComponent(Axis.Y).toDC().getReal(),f.getComponent(Axis.X).toDC().getImag(),f.getComponent(Axis.Y).toDC().getImag()};
+        DoubleToDouble[] all={f.getComponent(Axis.X).toDC().getRealDD(),f.getComponent(Axis.Y).toDC().getRealDD(),f.getComponent(Axis.X).toDC().getImagDD(),f.getComponent(Axis.Y).toDC().getImagDD()};
         Domain o=null;
         for (DoubleToDouble dFunctionXY : all) {
             if(dFunctionXY instanceof DDxyAbstractSum){

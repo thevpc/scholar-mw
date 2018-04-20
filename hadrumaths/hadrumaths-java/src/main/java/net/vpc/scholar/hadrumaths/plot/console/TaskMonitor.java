@@ -96,6 +96,18 @@ public class TaskMonitor extends JPanel implements ActionListener {
         return m;
     }
 
+    public ProgressMonitor addTask(String windowTitle, String descLabel,ConsoleTask task) {
+        plotConsole.start();
+        EnhancedProgressMonitor m= ProgressMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
+        list.add(new TaskComponent(this, m, windowTitle, descLabel));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                task.run(m);
+            }
+        }).start();
+        return m;
+    }
     public ProgressMonitor addTask(String windowTitle, String descLabel) {
         plotConsole.start();
         EnhancedProgressMonitor m= ProgressMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
@@ -152,10 +164,13 @@ public class TaskMonitor extends JPanel implements ActionListener {
     }
 
     public void ticMonitor() {
-        for (final TaskComponent t : getTasks()) {
+        TaskComponent[] tasks = getTasks();
+        for (int i = 0; i < tasks.length; i++) {
+            TaskComponent t = tasks[i];
+            int finalI = i;
             SwingUtils.invokeLater(new Runnable() {
                 public void run() {
-                    t.ticMonitor();
+                    t.ticMonitor(finalI,tasks.length-1);
                 }
             });
         }

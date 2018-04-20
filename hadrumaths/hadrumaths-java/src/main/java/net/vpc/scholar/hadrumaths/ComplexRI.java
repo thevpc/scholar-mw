@@ -14,9 +14,14 @@ public final class ComplexRI extends Complex {
     private double real;
     private double imag;
 
-    public ComplexRI(double real, double imag) {
+    ComplexRI(double real, double imag) {
         this.real = real;
         this.imag = imag;
+        if(Double.isInfinite(real) && Double.isNaN(imag)){
+            System.err.println("infinite real, NaN imag");
+        }else if(Double.isInfinite(imag) && Double.isNaN(real)){
+            System.err.println("infinite imag, NaN real");
+        }
     }
 
 
@@ -414,26 +419,18 @@ public final class ComplexRI extends Complex {
         //return log10().mul(10);
     }
 
+
     @Override
     public String toString() {
-        if (Double.isNaN(real) && Double.isNaN(imag)) {
-            return String.valueOf(imag);
-        }
-        if (Double.isNaN(real)) {
-            return String.valueOf(imag) + "i";
-        }
-        if (Double.isNaN(imag)) {
-            return String.valueOf(real);
-        }
-        String imag_string = String.valueOf(imag);
-        String real_string = String.valueOf(real);
-        if (imag == 0) {
-            return real_string;
-        } else if (real == 0) {
-            return (imag == 1) ? "i" : (imag == -1) ? "-i" : (imag_string + "i");
-        } else {
-            return real_string
-                    + ((imag == 1) ? "+i" : (imag == -1) ? "-i" : (imag > 0) ? ("+" + (imag_string + "i")) : (imag_string + "i"));
+        if(imag==0){
+            return realToString(real);
+        }else if(real==0){
+            return imagToString(imag);
+        }else {
+            if(imag<0){
+                return realToString(real)+imagToString(imag);
+            }
+            return realToString(real)+"+"+imagToString(imag);
         }
     }
 
@@ -551,10 +548,6 @@ public final class ComplexRI extends Complex {
 
     public boolean isDM() {
         return true;
-    }
-
-    public DoubleToComplex toDC() {
-        return new ComplexValue(this, Domain.FULLX);
     }
 
     @Override

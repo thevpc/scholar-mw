@@ -101,6 +101,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if (d > domainDim) {
                 domainDim = d;
             }
+            if(expression.isNaN()){
+                System.err.println("NaN in mul : "+expression);
+            }
         }
     }
 
@@ -397,7 +400,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -408,10 +411,10 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         if (allDD) {
             return FunctionFactory.DZERO(getDomainDimension());
         }
-        return super.getImag();
+        return super.getImagDD();
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         boolean allDD = true;
         for (Expr e : expressions) {
             if (!e.isDD()) {
@@ -422,7 +425,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         if (allDD) {
             return this;
         }
-        return super.getReal();
+        return super.getRealDD();
     }
 
     @Override

@@ -49,6 +49,26 @@ public class DDzIntegralXY extends AbstractDoubleToDouble implements Cloneable{
         );
     }
 
+    public DIntegralXY getIntegral() {
+        return integral;
+    }
+
+    public double getX0() {
+        return x0;
+    }
+
+    public double getX1() {
+        return x1;
+    }
+
+    public double getY0() {
+        return y0;
+    }
+
+    public double getY1() {
+        return y1;
+    }
+
     public boolean isZeroImpl() {
         return base.isZero();
     }

@@ -30,8 +30,8 @@ public class DCxyNavRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         DCxy ee = (DCxy) e;
-        RewriteResult rr = ruleset.rewrite(ee.getReal());
-        RewriteResult ii = ruleset.rewrite(ee.getImag());
+        RewriteResult rr = ruleset.rewrite(ee.getRealDD());
+        RewriteResult ii = ruleset.rewrite(ee.getImagDD());
         if (!rr.isRewritten() && !ii.isRewritten()) {
             return RewriteResult.unmodified(e);
         }

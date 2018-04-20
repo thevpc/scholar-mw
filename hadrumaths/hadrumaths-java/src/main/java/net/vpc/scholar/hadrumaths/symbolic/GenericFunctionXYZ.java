@@ -148,12 +148,12 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return new Real(this);
     }
 
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return new Imag(this);
     }
 

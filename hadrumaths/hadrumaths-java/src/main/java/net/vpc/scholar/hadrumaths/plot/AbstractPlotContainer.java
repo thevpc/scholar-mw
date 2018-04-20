@@ -108,8 +108,9 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         return layoutConstraints;
     }
 
-    public void setLayoutConstraints(String layoutConstraints) {
+    public PlotContainer setLayoutConstraints(String layoutConstraints) {
         this.layoutConstraints = layoutConstraints;
+        return this;
     }
 
     protected void titleChanged(PlotComponent component) {
@@ -289,5 +290,32 @@ public abstract class AbstractPlotContainer implements PlotContainer {
             container.add(oldComponent);
         }
         return container;
+    }
+
+    @Override
+    public void add(PlotComponent component, String path) {
+        if (path == null || !path.startsWith("/")) {
+            throw new IllegalArgumentException("Invalid path " + path);
+        }
+        List<String> pathList = StringUtils.split(path,"/");
+        if(pathList.size()==0) {
+            add(component);
+        }else{
+            String name=pathList.get(0);
+            int childIndex = indexOfPlotComponent(name);
+            PlotContainer pp=null;
+            if(childIndex<0){
+                pp=add(name);
+            }else {
+                PlotComponent child = getPlotComponent(name);
+                if (child instanceof PlotContainer) {
+                    pp = (PlotContainer) child;
+                } else {
+                    pp = add(childIndex, name);
+                }
+            }
+            pathList.remove(0);
+            pp.add(component,StringUtils.toPath(pathList,"/"));
+        }
     }
 }

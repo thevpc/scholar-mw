@@ -307,7 +307,7 @@ public final class FunctionFactory extends AbstractFactory{
     public static DoubleToDouble[] getRealFunctions(DoubleToComplex[] f) {
         DoubleToDouble[] g = new DoubleToDouble[f.length];
         for (int i = 0; i < g.length; i++) {
-            g[i] = f[i].getReal();
+            g[i] = f[i].getRealDD();
         }
         return g;
     }
@@ -315,7 +315,7 @@ public final class FunctionFactory extends AbstractFactory{
     public static DoubleToDouble[] getImagFunctions(DoubleToComplex[] f) {
         DoubleToDouble[] g = new DoubleToDouble[f.length];
         for (int i = 0; i < g.length; i++) {
-            g[i] = f[i].getReal();
+            g[i] = f[i].getRealDD();
         }
         return g;
     }

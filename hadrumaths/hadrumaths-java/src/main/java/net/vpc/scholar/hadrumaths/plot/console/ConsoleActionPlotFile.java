@@ -29,6 +29,6 @@ public class ConsoleActionPlotFile implements ConsoleAction {
         if (plot == null) {
             return;
         }
-        plotter.displayImpl(plot);
+        plotter.displayImpl(plot,null);
     }
 }

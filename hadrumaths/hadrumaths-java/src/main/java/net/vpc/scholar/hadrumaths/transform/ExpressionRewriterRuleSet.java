@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
@@ -150,8 +151,8 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     if(nextResult.isRewritten()) {//next next != null && !next.equals(curr)
                         if (Maths.Config.isDebugExpressionRewrite()) {
                             if (next.toString().equals(curr.toString()) && !(curr instanceof Any)) {
-                                String s1 = FormatFactory.format(curr, DebugFormat.INSTANCE);
-                                String s2 = FormatFactory.format(next, DebugFormat.INSTANCE);
+                                String s1 = FormatFactory.format(curr, new FormatParamSet(DebugFormat.INSTANCE));
+                                String s2 = FormatFactory.format(next, new FormatParamSet(DebugFormat.INSTANCE));
                                 if (s1.equals(s2)) {
                                     if(curr.getClass().getSimpleName().equals(next.getClass().getSimpleName())) {
                                         if(curr.equals(next)) {

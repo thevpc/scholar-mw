@@ -17,18 +17,29 @@ public class BoxSpaceFactory extends AbstractFactory{
     }
 
     public static BoxSpace openCircuit(double epsr,double width){
-        return new BoxSpace(BoxLimit.OPEN, epsr,width);
+        return new BoxSpace(BoxLimit.OPEN, epsr,width,0);
+    }
+
+    public static BoxSpace openCircuit(double epsr,double width,double sigma){
+        return new BoxSpace(BoxLimit.OPEN, epsr,width,sigma);
     }
 
     public static BoxSpace matchedLoad(double epsr){
-        return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN);
+        return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN,0);
+    }
+
+    public static BoxSpace matchedLoad(double epsr,double sigma){
+        return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN,sigma);
     }
 
     public static BoxSpace shortCircuit(double epsr,double width){
-        return new BoxSpace(BoxLimit.SHORT, epsr,width);
+        return new BoxSpace(BoxLimit.SHORT, epsr,width,0);
+    }
+    public static BoxSpace shortCircuit(double epsr,double width,double sigma){
+        return new BoxSpace(BoxLimit.SHORT, epsr,width,sigma);
     }
 
     public static BoxSpace nothing(){
-        return new BoxSpace(BoxLimit.NOTHING, 1,Double.NaN);
+        return new BoxSpace(BoxLimit.NOTHING, 1,Double.NaN,9);
     }
 }

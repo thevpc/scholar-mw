@@ -239,11 +239,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return new Real(toDC());
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return new Imag(toDC());
     }
 

@@ -55,9 +55,9 @@ public interface DoubleToComplex extends Expr {
     Complex[][][] computeComplex(double[] x, double[] y, double[] z);
 
 
-    DoubleToDouble getReal();
+    DoubleToDouble getRealDD();
 
-    DoubleToDouble getImag();
+    DoubleToDouble getImagDD();
 
 //    public IDCxy setName(String name);
 }

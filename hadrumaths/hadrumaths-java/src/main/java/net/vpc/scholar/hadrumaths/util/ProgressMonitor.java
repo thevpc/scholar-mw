@@ -19,6 +19,10 @@ public interface ProgressMonitor {
      */
     void setProgress(double progress, ProgressMessage message);
 
+    boolean isCanceled();
+
+    void stop();
+
 //    void setProgress(double progress, String message);
 
 }

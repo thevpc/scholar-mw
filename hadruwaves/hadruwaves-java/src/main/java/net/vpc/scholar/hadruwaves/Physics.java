@@ -679,7 +679,7 @@ public final class Physics {
         //FnBaseFunctions fnBaseFunctions = new Fn("EMMM");
         //FnBaseFunctions fnBaseFunctions = new Fn("MEME");
         fnModeFunctions.setDomain(Domain.forWidth(x, w, y, h));
-        fnModeFunctions.setSize(count < 1 ? 30 : count);
+        fnModeFunctions.setMaxSize(count < 1 ? 30 : count);
         fnModeFunctions.setHintFnModes(ModeType.TEM, ModeType.TM, ModeType.TE);
         //fnBaseFunctions.setHintFnModeTypes(Mode.TEM, ModeType.TM);
         fnModeFunctions.setFirstBoxSpace(BoxSpaceFactory.shortCircuit(2.2, 1.59 * 1E-3));

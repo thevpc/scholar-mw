@@ -1,12 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.PlotModelProvider;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotModel;
+import net.vpc.scholar.hadrumaths.util.HadrumathsUtils;
 
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -89,12 +87,12 @@ public class ValuesPlotTableModel extends AbstractTableModel {
         Complex[][] z = model.getZ();
         int c=columnIndex;
         Complex vv=(c<z[rowIndex].length)?z[rowIndex][c]:Complex.NaN;
-        switch (model.getZDoubleFunction()){
+        switch (HadrumathsUtils.notNullValue(model.getConverter())){
             case COMPLEX:{
                 return String.valueOf(vv);
             }
         }
-        return String.valueOf(Maths.toDouble(vv,model.getZDoubleFunction()));
+        return String.valueOf(Maths.toDouble(vv,HadrumathsUtils.notNullValue(model.getConverter())));
     }
 
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {

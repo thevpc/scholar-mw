@@ -66,7 +66,11 @@ public class ObjectCache {
                     InputStream fis = new BufferedInputStream(file.getInputStream());
                     long length = file.length();
                     if (length > 10000) {
-                        theIs = new ProgressMonitorInputStream2(null, "Reading " + file, fis, length);
+                        theIs = new ProgressMonitorInputStream2(fis, length,
+                                new DialogProgressMonitor(null,
+                                        "Reading ("+Maths.formatMemory(length)+") " + file
+                                        )
+                                );
                     } else {
                         theIs = fis;
                     }

@@ -57,12 +57,12 @@ public abstract class AxisFunction extends AbstractComposedFunction {
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return this;
     }
 
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return FunctionFactory.DZEROXY;
     }
 

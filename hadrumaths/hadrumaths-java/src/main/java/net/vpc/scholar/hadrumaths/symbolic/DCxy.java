@@ -257,11 +257,11 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         return domain.intersect(other.domain);
     }
 
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return real;
     }
 
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return imag;
     }
 
@@ -336,7 +336,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     }
 
     public boolean isInfiniteImpl() {
-        return getReal().isInfinite() || getImag().isInfinite();
+        return getRealDD().isInfinite() || getImagDD().isInfinite();
     }
 
     public List<Expr> getSubExpressions() {
@@ -427,7 +427,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public boolean isDoubleExprImpl() {
-        return getImag().isZero();
+        return getImagDD().isZero();
     }
 
 

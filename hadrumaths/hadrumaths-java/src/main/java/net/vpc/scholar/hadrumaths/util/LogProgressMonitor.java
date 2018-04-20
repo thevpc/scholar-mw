@@ -4,11 +4,14 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MemorySizeFormatter;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
     private static MemorySizeFormatter MF = new MemorySizeFormatter("0K0TF");
     private static Logger defaultLog = Logger.getLogger(LogProgressMonitor.class.getName());
+    private static FastMessageFormat defaultFastMessageFormat = createFastMessageFormat("used=${inuse-mem} | free=${free-mem} : ${value}");
 
     static {
         defaultLog.setUseParentHandlers(false);
@@ -16,7 +19,7 @@ public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
 
     private double progress;
     private ProgressMessage message;
-    private String messageFormat;
+    private FastMessageFormat fastMessageFormat;
     private Logger logger;
 
     /**
@@ -27,16 +30,50 @@ public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
      */
     public LogProgressMonitor(String messageFormat, Logger logger) {
         if (messageFormat == null) {
-            messageFormat = "use=%inuse-mem% | free=%free-mem% : %value%";
+            fastMessageFormat = defaultFastMessageFormat;
+        } else {
+            if (!messageFormat.contains("${value}")) {
+                messageFormat = messageFormat + " ${value}";
+            }
+            fastMessageFormat = createFastMessageFormat(messageFormat);
         }
-        if (messageFormat.indexOf("%value%") < 0) {
-            messageFormat = messageFormat + " %value%";
-        }
-        this.messageFormat = messageFormat;
+
+
         if (logger == null) {
             logger = getDefaultLogger();
         }
         this.logger = logger;
+    }
+
+    private static FastMessageFormat createFastMessageFormat(String format) {
+        FastMessageFormat fastMessageFormat = new FastMessageFormat();
+        fastMessageFormat.addVar("inuse-mem", new FastMessageFormat.Evaluator() {
+            @Override
+            public String eval(Map<String, Object> context) {
+                return MF.format(Maths.inUseMemory());
+            }
+        });
+        fastMessageFormat.addVar("free-mem", new FastMessageFormat.Evaluator() {
+            @Override
+            public String eval(Map<String, Object> context) {
+                return MF.format(Maths.maxFreeMemory());
+            }
+        });
+        fastMessageFormat.addVar("date", new FastMessageFormat.Evaluator() {
+            @Override
+            public String eval(Map<String, Object> context) {
+                return new Date().toString();
+            }
+        });
+        fastMessageFormat.addVar("value", new FastMessageFormat.Evaluator() {
+            @Override
+            public String eval(Map<String, Object> context) {
+                double progress = (double) context.get("progress");
+                return Double.isNaN(progress) ? "   ?%" : StringUtils.PERCENT_FORMAT.format(progress);
+            }
+        });
+        fastMessageFormat.parse(format);
+        return fastMessageFormat;
     }
 
     public static Logger getDefaultLogger() {
@@ -50,13 +87,9 @@ public class LogProgressMonitor extends AbstractEnhancedProgressMonitor {
     public void setProgressImpl(double progress, ProgressMessage message) {
         this.progress = progress;
         this.message = message;
-        long newd = System.currentTimeMillis();
-        String msg = messageFormat
-                .replace("%date%", new Date(newd).toString())
-                .replace("%value%", Double.isNaN(progress)?"   ?%":StringUtils.PERCENT_FORMAT.format(progress))
-                .replace("%inuse-mem%", MF.format(Maths.inUseMemory()))
-                .replace("%free-mem%", MF.format(Maths.maxFreeMemory()))
-                + " " + message;
+        Map<String, Object> context = new HashMap<>();
+        context.put("progress", progress);
+        String msg = fastMessageFormat.format(context) + " " + message;
         logger.log(message.getLevel(), msg);
     }
 

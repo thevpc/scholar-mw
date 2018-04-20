@@ -20,7 +20,7 @@ import java.util.logging.Level;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 6 janv. 2007 12:22:57
  */
-class PlotThread extends Thread implements ProgressMonitor {
+public class PlotThread extends Thread implements ProgressMonitor {
     private PlotAxis currentY = null;
     private ComputeTitle serieTitle;
     private ConsoleAwareObject direct;
@@ -141,4 +141,8 @@ class PlotThread extends Thread implements ProgressMonitor {
         //
     }
 
+    @Override
+    public boolean isCanceled() {
+        return false;
+    }
 }

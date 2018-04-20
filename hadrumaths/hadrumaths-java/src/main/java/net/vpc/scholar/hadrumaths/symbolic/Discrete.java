@@ -1232,7 +1232,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public DDiscrete getReal() {
+    public DDiscrete getRealDD() {
         double[][][] d = new double[zcount][ycount][xcount];
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
@@ -1258,7 +1258,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public DDiscrete getImag() {
+    public DDiscrete getImagDD() {
         double[][][] d = new double[zcount][ycount][xcount];
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {

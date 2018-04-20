@@ -12,7 +12,7 @@
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.1.17</scholar-version>
+        <scholar-version>3.1.21</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>
@@ -85,6 +85,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.vpc.common</groupId>
+            <artifactId>vpc-common-classpath</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>java-oo</groupId>
             <!-- javac 7:
             <artifactId>javac-oo-plugin</artifactId>
@@ -92,7 +99,8 @@
             <!-- javac 8: -->
             <artifactId>javac8-oo-plugin</artifactId>
             <version>0.5</version>
-            <scope>provided</scope> <!-- compile-only dep -->
+            <!--<scope>provided</scope>-->
+            <!-- compile-only dep -->
         </dependency>
     </dependencies>
     <build>
@@ -168,6 +176,14 @@
         <repository>
             <id>amelentev</id>
             <url>http://amelentev.github.io/mvnrepo/</url>
+        </repository>
+        <repository>
+            <id>vpc-public-maven</id>
+            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
 </project>

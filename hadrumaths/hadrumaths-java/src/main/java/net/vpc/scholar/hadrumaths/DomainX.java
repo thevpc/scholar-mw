@@ -61,8 +61,10 @@ public final class DomainX extends Domain implements Cloneable {
 
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmin()) ^ (Double.doubleToLongBits(this.xmin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmax()) ^ (Double.doubleToLongBits(this.xmax()) >>> 32));
+        long xminl = Double.doubleToLongBits(this.xmin);
+        long xmaxl = Double.doubleToLongBits(this.xmax);
+        hash = 43 * hash + (int) (xminl ^ (xminl >>> 32));
+        hash = 43 * hash + (int) (xmaxl ^ (xmaxl >>> 32));
         return hash;
     }
 

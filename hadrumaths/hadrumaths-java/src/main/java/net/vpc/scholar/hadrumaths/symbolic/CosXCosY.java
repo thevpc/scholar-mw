@@ -22,19 +22,19 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     public CosXCosY(double amp, double a, double b, double c, double d, Domain domain) {
         super(domain);
         if (Double.isNaN(amp)) {
-            throw new IllegalArgumentException("DCosCosFunctionXY amp=NaN");
+            throw new IllegalArgumentException("CosXCosY amp=NaN");
         }
         if (Double.isNaN(a)) {
-            throw new IllegalArgumentException("DCosCosFunctionXY a=NaN");
+            throw new IllegalArgumentException("CosXCosY a=NaN");
         }
         if (Double.isNaN(b)) {
-            throw new IllegalArgumentException("DCosCosFunctionXY b=NaN");
+            throw new IllegalArgumentException("CosXCosY b=NaN");
         }
         if (Double.isNaN(c)) {
-            throw new IllegalArgumentException("DCosCosFunctionXY c=NaN");
+            throw new IllegalArgumentException("CosXCosY c=NaN");
         }
         if (Double.isNaN(d)) {
-            throw new IllegalArgumentException("DCosCosFunctionXY d=NaN");
+            throw new IllegalArgumentException("CosXCosY d=NaN");
         }
         this.amp = amp;
         this.a = a;

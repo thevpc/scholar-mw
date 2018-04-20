@@ -5,10 +5,11 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
+import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
 import java.util.List;
 
@@ -18,18 +19,32 @@ import java.util.List;
 public class PlusFormatter implements Formatter<Plus> {
 
     @Override
-    public String format(Plus o, FormatParam... format) {
+    public String format(Plus o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
+    }
+
+    @Override
+    public void format(StringBuilder sb, Plus o, FormatParamSet format) {
+        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+        format = format.add(RequireParenthesesFormat.INSTANCE);
         List<Expr> segments = o.getSubExpressions();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < segments.size(); i++) {
+        int size = segments.size();
+        if (size>1 && par) {
+            sb.append("(");
+        }
+        for (int i = 0; i < size; i++) {
             Expr e = segments.get(i);
             if (i > 0) {
                 sb.append(" + ");
             }
-            sb.append(FormatFactory.formatArg(e, format));
+            FormatFactory.format(sb,e, format);
         }
-        return sb.toString();
-    }
 
+        if (size>1 && par) {
+            sb.append(")");
+        }
+    }
 
 }

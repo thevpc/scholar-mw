@@ -50,7 +50,7 @@ public class ConsoleActionPlot implements ConsoleAction {
         }
         switch (plotType) {
             case CURVE: {
-                ConsoleWindow window = plotter.getMainPlotterFrame().getWindow(preferredPath);
+                ConsoleWindow window = plotter.getPlotConsoleFrame().getWindow(preferredPath);
                 JComponent component = window.getComponent();
                 if (component == null) {
                     component = new JListCardPanel();
@@ -64,7 +64,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                     window.addChild(plotGroup, pageComponent);
                 }
                 ValuesPlotModel model = (ValuesPlotModel) ((ValuesPlotPanel) pageComponent).getModel();
-                model.setZDoubleFunction(complexAsDouble);
+                model.setConverter(complexAsDouble);
                 Complex[][] matrix = yvalues.getMatrix();
                 for (int i = 0; i < matrix.length; i++) {
                     Complex[] yvalue = matrix[i];
@@ -75,7 +75,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                 break;
             }
             case HEATMAP: {
-                plotter.getMainPlotterFrame().getWindow(preferredPath).addChild(
+                plotter.getPlotConsoleFrame().getWindow(preferredPath).addChild(
                         plotTitle,
                         (JComponent) Plot.create(new ValuesPlotModel(
                                 plotTitle,
@@ -85,7 +85,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                 break;
             }
             case MESH: {
-                plotter.getMainPlotterFrame().getWindow(preferredPath)
+                plotter.getPlotConsoleFrame().getWindow(preferredPath)
                         .addChild(
                                 plotTitle,
                                 (JComponent) Plot.create(new ValuesPlotModel(

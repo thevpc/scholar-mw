@@ -13,7 +13,7 @@ public final class ComplexI extends Complex {
     private static final long serialVersionUID=1;
     private double imag;
 
-    public ComplexI(double imag) {
+    ComplexI(double imag) {
         this.imag = imag;
         if(imag==0){
             throw new IllegalArgumentException("Zero Imag is Real!");
@@ -385,11 +385,7 @@ public final class ComplexI extends Complex {
 
     @Override
     public String toString() {
-        if (Double.isNaN(imag)) {
-            return String.valueOf(imag);
-        }
-        String imag_string = String.valueOf(imag);
-            return (imag == 1) ? "i" : (imag == -1) ? "-i" : (imag_string + "i");
+        return imagToString(imag);
     }
 
 //    public Complex angle() {
@@ -496,18 +492,9 @@ public final class ComplexI extends Complex {
         return true;
     }
 
-    public DoubleToComplex toDC() {
-        return new ComplexValue(this, Domain.FULLX);
-    }
-
     @Override
     public boolean isDV() {
         return true;
-    }
-
-    @Override
-    public DoubleToVector toDV() {
-        return null;
     }
 
     public DoubleToDouble toDD() {
@@ -541,5 +528,25 @@ public final class ComplexI extends Complex {
 
     public double toReal() {
         throw new ClassCastException("Complex has imaginary value and cant be cast to double");
+    }
+
+    @Override
+    public DoubleToDouble getRealDD() {
+        return Maths.DDZERO;
+//        double real = getReal();
+//        return real==0?Maths.DDZERO : new DoubleValue(real,Domain.FULLX);
+    }
+
+    @Override
+    public DoubleToDouble getImagDD() {
+        //never zero
+//        double imag = getImag();
+//        return imag==0?Maths.DDZERO : new DoubleValue(imag,Domain.FULLX);
+        return new DoubleValue(imag,Domain.FULLX);
+    }
+
+    @Override
+    public double toDouble() {
+        throw new ClassCastException("Not Real");
     }
 }

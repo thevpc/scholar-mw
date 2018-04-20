@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import java.io.Serializable;
@@ -27,9 +28,16 @@ public interface Expr extends Serializable {
     boolean isDouble();
 
     /**
+     * @return true if this expression is defined as a valid non param double value, domain constrainted (may have a domain domain)
+     */
+    boolean isDoubleValue();
+
+    /**
      * @return true if this expression is defined as a valid non param, non constrained complex value (full domain)
      */
     boolean isComplex();
+
+    boolean isComplexValue();
 
     /**
      * true if this expression is defined only for double values and is not handling complex values
@@ -51,8 +59,18 @@ public interface Expr extends Serializable {
      */
     boolean isMatrix();
 
+    /**
+     * return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
+     *
+     * @return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
+     */
     Complex toComplex();
 
+    /**
+     * return double value if this expression is defined as a valid non param double value. It may have domain. Otherwise throws ClassCastException
+     *
+     * @return double value if this expression is defined as a valid non param double value. It may have domain. Otherwise throws ClassCastException
+     */
     double toDouble();
 
     Matrix toMatrix();
@@ -113,6 +131,10 @@ public interface Expr extends Serializable {
 
     Expr setProperties(Map<String, Object> map);
 
+    Expr setMergedProperties(Map<String, Object> map);
+
+    Expr setProperties(Map<String, Object> map, boolean merge);
+
     Expr setProperty(String name, Object value);
 
     Expr composeX(Expr xreplacement);
@@ -149,4 +171,56 @@ public interface Expr extends Serializable {
     Domain domain();
 
     ComponentDimension getComponentDimension();
+
+    Expr mul(Domain domain);
+
+    Expr multiply(Domain domain);
+
+    Expr mul(Geometry domain);
+
+    Expr multiply(Geometry domain);
+
+    Expr mul(int other);
+
+    Expr mul(double other);
+
+    Expr mul(Expr other);
+
+    Expr multiply(int other);
+
+    Expr multiply(double other);
+
+    Expr multiply(Expr other);
+
+    Expr add(int other);
+
+    Expr add(double other);
+
+    Expr add(Expr other);
+
+    Expr divide(int other);
+
+    Expr divide(double other);
+
+    Expr divide(Expr other);
+
+    Expr div(int other);
+
+    Expr div(double other);
+
+    Expr div(Expr other);
+
+    Expr subtract(int other);
+
+    Expr subtract(double other);
+
+    Expr subtract(Expr other);
+
+    Expr sub(int other);
+
+    Expr sub(double other);
+
+    Expr sub(Expr other);
+
+    Expr negate();
 }

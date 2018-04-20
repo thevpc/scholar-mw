@@ -96,6 +96,7 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
     public JComponent toComponent() {
         if (jTabbedPane == null) {
             jTabbedPane = new JTabbedPane();
+            jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
             jTabbedPane.putClientProperty(PlotComponent.class.getName(), this);
             jTabbedPane.setPreferredSize(new Dimension(600, 400));
         }

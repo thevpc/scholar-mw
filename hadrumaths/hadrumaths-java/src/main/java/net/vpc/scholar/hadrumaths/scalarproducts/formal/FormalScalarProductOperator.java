@@ -189,12 +189,12 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
         DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2).toDD();
-        if(f1opt instanceof Mul){
-            f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
-        }
-        if(f2opt instanceof Mul){
-            f2opt= expressionRewriter.rewriteOrSame(f2).toDD();
-        }
+//        if(f1opt instanceof Mul){
+//            f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
+//        }
+//        if(f2opt instanceof Mul){
+//            f2opt= expressionRewriter.rewriteOrSame(f2).toDD();
+//        }
         Domain inter = f1opt.getDomain().intersect(f2opt.getDomain()).intersect(domain);
         if (f1opt.isZero() || f2opt.isZero()) {
             return 0;

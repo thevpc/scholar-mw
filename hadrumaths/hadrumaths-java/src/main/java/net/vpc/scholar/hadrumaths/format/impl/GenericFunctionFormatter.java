@@ -7,7 +7,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.AbstractComposedFunction;
 
 /**
@@ -17,21 +19,30 @@ import net.vpc.scholar.hadrumaths.symbolic.AbstractComposedFunction;
 public class GenericFunctionFormatter implements Formatter<AbstractComposedFunction> {
 
     @Override
-    public String format(AbstractComposedFunction o, FormatParam... format) {
-        StringBuilder sb = new StringBuilder();
+    public String format(AbstractComposedFunction o, FormatParamSet format) {
+        StringBuilder sb=new StringBuilder();
+        format(sb,o,format);
+        return sb.toString();
+    }
+
+    @Override
+    public void format(StringBuilder sb, AbstractComposedFunction o, FormatParamSet format) {
         Expr[] arguments = o.getArguments();
+        sb.append(o.getFunctionName()).append("(");
+
         if(arguments.length==1){
-            sb.append(FormatFactory.format(arguments[0], format));
+            format=format.remove(RequireParenthesesFormat.INSTANCE);
+            FormatFactory.format(sb,arguments[0], format);
         }else {
-            for (Expr a : arguments) {
-                if (sb.length() > 0) {
+            format=format.add(RequireParenthesesFormat.INSTANCE);
+            for (int i = 0; i < arguments.length; i++) {
+                Expr a = arguments[i];
+                if (i > 0) {
                     sb.append(", ");
                 }
-                sb.append(FormatFactory.formatArg(a, format));
+                FormatFactory.format(sb,a, format);
             }
         }
-        sb.insert(0,o.getFunctionName()+"(");
         sb.append(")");
-        return sb.toString();
     }
 }

@@ -26,12 +26,12 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
 
     public void setFunctions(DoubleToDouble... sum) {
         if (sum.length == 0) {
-            System.err.println("DSumFunctionXY : 0 segments");
+            System.err.println("DxySum : 0 segments");
         }
         ArrayList<DoubleToDouble> a = new ArrayList<DoubleToDouble>(sum.length);
         linearize(sum, a);
         if (a.size() == 0) {
-            System.err.println("DSumFunctionXY : 0 segments");
+            System.err.println("DxySum : 0 segments");
         }
         this.segments = a.toArray(new DoubleToDouble[a.size()]);
         double xmin = Double.NaN;
@@ -149,10 +149,7 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
 //    }
 
 
-    @Override
-    public boolean equals(Object o) {
-        throw new IllegalArgumentException("Not yet implemented");
-    }
+
 
     @Override
     public boolean isScalarExprImpl() {

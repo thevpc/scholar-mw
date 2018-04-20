@@ -372,15 +372,17 @@ object MathScala {
   }
 
   implicit class SGemortry(val value: Geometry) {
-    def *(v: Double): Expr = mul(Maths.expr(value), Complex.valueOf(v));
+    def *(v: Double): Expr = value.multiply(v);
 
-    def *(v: Expr): Expr = mul(Maths.expr(value), v);
+    def *(v: Int): Expr = value.multiply(v);
 
-    def *(v: Geometry): Expr = mul(Maths.expr(value), Maths.expr(v));
+    def *(v: Expr): Expr = value.multiply(v);
+
+    def *(v: Geometry): Expr = value.multiply(Maths.expr(v));
   }
 
 
-  implicit class SExpr(val value: Expr) extends Any(value) {
+  implicit class SExpr(val value: Expr) extends Any(value,null,null) {
 
     def +(v: Expr): Expr = add(Any.unwrap(v))
 
@@ -452,7 +454,7 @@ object MathScala {
     def apply(x: Array[Double], y: Array[Double]): Array[Array[Complex]] = value.computeComplex(x, y)
   }
 
-  implicit class SComplex(val value: Complex) extends Any(value) {
+  implicit class SComplex(val value: Complex) extends Any(value,null,null) {
 
     def +(v: Complex): Complex = value.add(v)
 

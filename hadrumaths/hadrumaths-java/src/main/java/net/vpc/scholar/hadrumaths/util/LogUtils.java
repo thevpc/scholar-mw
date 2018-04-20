@@ -35,7 +35,7 @@ public class LogUtils {
             }
             rootLogger.addHandler(new ConsoleHandler());
             setLevel(Level.CONFIG);
-            log.log(Level.CONFIG, "Initializing Maths Log sub-system...");
+//            log.log(Level.CONFIG, "Initializing Maths Log sub-system...");
         } catch (IOException e) {
             System.err.println("Unable to configure log");
             e.printStackTrace();

@@ -74,12 +74,19 @@ public final class DomainXYZ extends Domain implements Cloneable {
 
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmin()) ^ (Double.doubleToLongBits(this.xmin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmax()) ^ (Double.doubleToLongBits(this.xmax()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymin()) ^ (Double.doubleToLongBits(this.ymin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymax()) ^ (Double.doubleToLongBits(this.ymax()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmin()) ^ (Double.doubleToLongBits(this.zmin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmax()) ^ (Double.doubleToLongBits(this.zmax()) >>> 32));
+        long xminl = Double.doubleToLongBits(this.xmin);
+        long xmaxl = Double.doubleToLongBits(this.xmax);
+        long yminl = Double.doubleToLongBits(this.ymin);
+        long ymaxl = Double.doubleToLongBits(this.ymax);
+        long zminl = Double.doubleToLongBits(this.zmin);
+        long zmaxl = Double.doubleToLongBits(this.zmax);
+
+        hash = 43 * hash + (int) (xminl ^ (xminl >>> 32));
+        hash = 43 * hash + (int) (xmaxl ^ (xmaxl >>> 32));
+        hash = 43 * hash + (int) (yminl ^ (yminl >>> 32));
+        hash = 43 * hash + (int) (ymaxl ^ (ymaxl >>> 32));
+        hash = 43 * hash + (int) (zminl ^ (zminl >>> 32));
+        hash = 43 * hash + (int) (zmaxl ^ (zmaxl >>> 32));
         return hash;
     }
     @Override

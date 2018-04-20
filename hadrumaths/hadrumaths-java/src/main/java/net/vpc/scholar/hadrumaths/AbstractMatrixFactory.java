@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by vpc on 2/5/15.
@@ -25,6 +24,17 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     @Override
     public  Matrix newOnes(int rows, int cols) {
         return newConstant(rows, cols, Complex.ONE);
+    }
+
+
+    @Override
+    public  Matrix newImmutableConstant(int rows, int cols, Complex value) {
+        return new AbstractUnmodifiableMatrix(rows,cols,this) {
+            @Override
+            public Complex get(int row, int col) {
+                return value;
+            }
+        };
     }
 
     @Override
@@ -463,12 +473,12 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
-        return null;
+    public Matrix newMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newMatrix(rows,cols,CellIteratorType.FULL, cellFactory);
     }
 
     @Override
-    public TMatrix<Complex> newMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Complex> item) {
+    public Matrix newMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Complex> item) {
         Matrix e = newMatrix(rows, columns);
         switch (it) {
             case FULL: {
@@ -521,7 +531,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newColumnMatrix(int rows, TVectorCell<Complex> cellFactory) {
+    public Matrix newColumnMatrix(int rows, TVectorCell<Complex> cellFactory) {
         return newMatrix(rows, 1, CellIteratorType.FULL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -531,7 +541,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newRowMatrix(int columns, TVectorCell<Complex> cellFactory) {
+    public Matrix newRowMatrix(int columns, TVectorCell<Complex> cellFactory) {
         return newMatrix(1,columns, CellIteratorType.FULL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -541,7 +551,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newSymmetric(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+    public Matrix newSymmetric(int rows, int cols, TMatrixCell<Complex> cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -551,7 +561,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newHermitian(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+    public Matrix newHermitian(int rows, int cols, TMatrixCell<Complex> cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -561,7 +571,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newDiagonal(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+    public Matrix newDiagonal(int rows, int cols, TMatrixCell<Complex> cellFactory) {
         return newMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -571,7 +581,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newDiagonal(int rows, TVectorCell<Complex> cellFactory) {
+    public Matrix newDiagonal(int rows, TVectorCell<Complex> cellFactory) {
         return newMatrix(rows, rows,CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -581,7 +591,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newMatrix(int dim, TMatrixCell<Complex> cellFactory) {
+    public Matrix newMatrix(int dim, TMatrixCell<Complex> cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.FULL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -591,7 +601,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newSymmetric(int dim, TMatrixCell<Complex> cellFactory) {
+    public Matrix newSymmetric(int dim, TMatrixCell<Complex> cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -601,7 +611,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newHermitian(int dim, TMatrixCell<Complex> cellFactory) {
+    public Matrix newHermitian(int dim, TMatrixCell<Complex> cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -611,7 +621,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
     }
 
     @Override
-    public TMatrix<Complex> newDiagonal(int dim, TMatrixCell<Complex> cellFactory) {
+    public Matrix newDiagonal(int dim, TMatrixCell<Complex> cellFactory) {
         return newMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
@@ -619,4 +629,234 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
             }
         });
     }
+
+
+
+
+    @Override
+    public Matrix newImmutableMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows,cols,CellIteratorType.FULL, cellFactory);
+    }
+
+    @Override
+    public Matrix newImmutableMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Complex> item) {
+        switch (it) {
+            case FULL: {
+                return new AbstractUnmodifiableMatrix(rows,columns,this) {
+                    @Override
+                    public Complex get(int row, int col) {
+                        return item.get(row,col);
+                    }
+                };
+            }
+            case DIAGONAL: {
+                return new AbstractUnmodifiableMatrix(rows,columns,this) {
+                    @Override
+                    public Complex get(int row, int col) {
+                        return row==col?item.get(row,col):Complex.ZERO;
+                    }
+                };
+            }
+            case SYMETRIC: {
+                return new AbstractUnmodifiableMatrix(rows,columns,this) {
+                    @Override
+                    public Complex get(int row, int col) {
+                        return row<=col?item.get(row,col):item.get(col,row);
+                    }
+                };
+            }
+            case HERMITIAN: {
+                return new AbstractUnmodifiableMatrix(rows,columns,this) {
+                    @Override
+                    public Complex get(int row, int col) {
+                        return row<=col?item.get(row,col):item.get(col,row).conj();
+                    }
+                };
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported " + it);
+            }
+        }
+    }
+
+    @Override
+    public Matrix newImmutableColumnMatrix(int rows, TVectorCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows, 1, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+
+
+    @Override
+    public Matrix newImmutableSymmetric(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows, cols, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableHermitian(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows, cols, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableDiagonal(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableDiagonal(int rows, TVectorCell<Complex> cellFactory) {
+        return newImmutableMatrix(rows, rows,CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableMatrix(int dim, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(dim, dim, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableSymmetric(int dim, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(dim, dim, CellIteratorType.SYMETRIC, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableHermitian(int dim, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(dim, dim, CellIteratorType.HERMITIAN, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableDiagonal(int dim, TMatrixCell<Complex> cellFactory) {
+        return newImmutableMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row,column);
+            }
+        });
+    }
+
+    @Override
+    public  Matrix newImmutableIdentity(int dim) {
+        return newImmutableIdentity(dim, dim);
+    }
+
+    @Override
+    public  Matrix newImmutableColumnMatrix(final Complex... values) {
+        Complex[][] d = new Complex[values.length][1];
+        for (int i = 0; i < d.length; i++) {
+            d[i][0] = values[i];
+        }
+        return newMatrix(d);
+    }
+
+    @Override
+    public Matrix newImmutableRowMatrix(int columns, TVectorCell<Complex> cellFactory) {
+        return newImmutableMatrix(1,columns, CellIteratorType.FULL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(row);
+            }
+        });
+    }
+    @Override
+    public  Matrix newImmutableRowMatrix(final Complex... values) {
+        return newMatrix(new Complex[][]{values});
+    }
+
+
+    @Override
+    public  Matrix newImmutableRowMatrix(int columns, final VectorCell cellFactory) {
+        return newImmutableMatrix(1, columns, CellIteratorType.FULL, new MatrixCell() {
+            @Override
+            public Complex get(int row, int column) {
+                return cellFactory.get(column);
+            }
+        });
+    }
+
+
+//    @Override
+//    public  Matrix newImmutableColumnMatrix(int rows, final VectorCell cellFactory) {
+//        return newImmutableMatrix(rows, 1, CellIteratorType.FULL, new MatrixCell() {
+//            @Override
+//            public Complex get(int row, int column) {
+//                return cellFactory.get(row);
+//            }
+//        });
+//    }
+//    @Override
+//    public  Matrix newImmutableColumnMatrix(int rows, final TVectorCell<Complex> cellFactory) {
+//        return newImmutableMatrix(rows, 1, CellIteratorType.FULL, new MatrixCell() {
+//            @Override
+//            public Complex get(int row, int column) {
+//                return cellFactory.get(row);
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public  Matrix newImmutableRowMatrix(int columns, final TVectorCell<Complex> cellFactory) {
+//        return newImmutableMatrix(1, columns, CellIteratorType.FULL, new MatrixCell() {
+//            @Override
+//            public Complex get(int row, int column) {
+//                return cellFactory.get(column);
+//            }
+//        });
+//    }
+
+    @Override
+    public TMatrix<Complex> newImmutableDiagonal(Complex... c) {
+        return newImmutableMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new MatrixCell() {
+            @Override
+            public Complex get(int row, int column) {
+                return c[row];
+            }
+        });
+    }
+
+    @Override
+    public Matrix newImmutableIdentity(int rows, int cols) {
+        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<Complex>() {
+            @Override
+            public Complex get(int row, int column) {
+                return Complex.ONE;
+            }
+        });
+    }
+
 }

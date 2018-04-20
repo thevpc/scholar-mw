@@ -1,18 +1,18 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class Complex extends Number implements Expr, Cloneable, IConstantValue, Normalizable, VectorSpaceItem<Complex> {
-    private static final long serialVersionUID=1;
-    public static final Complex NaN = new ComplexI(Double.NaN);
+public abstract class Complex extends Number implements Expr, Cloneable, IConstantValue, Normalizable, VectorSpaceItem<Complex>, DoubleToComplex {
+    public static final Complex NaNRI = new ComplexRI(Double.NaN, Double.NaN);
+    public static final Complex NaN = new ComplexR(Double.NaN);
+    public static final Complex NaNI = new ComplexI(Double.NaN);
     public static final Complex ONE = new ComplexR(1);
     public static final Complex TWO = new ComplexR(2);
     public static final Complex MINUS_ONE = new ComplexR(-1);
@@ -24,7 +24,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public static final Complex PI = new ComplexR(Math.PI);
     public static final Complex POSITIVE_INFINITY = new ComplexR(Double.POSITIVE_INFINITY);
     public static final Complex NEGATIVE_INFINITY = new ComplexR(Double.NEGATIVE_INFINITY);
-
+    private static final long serialVersionUID = 1;
     public static DistanceStrategy<Complex> DISTANCE = new DistanceStrategy<Complex>() {
         @Override
         public double distance(Complex a, Complex b) {
@@ -32,52 +32,28 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         }
     };
 
-//    private double real;
-//    private double imag;
-//
-//    public Complex(double doubleValue) {
-//        this(doubleValue, 0);
-//    }
-//
-//    public Complex(String complex) {
-//        double[] d = parse(complex);
-//        this.real = d[0];
-//        this.imag = d[1];
-//    }
-//
-//    public Complex(double real, double imag) {
-//        this.real = real;
-//        this.imag = imag;
-////        if(Double.isNaN(real) || Double.isNaN(imag)){
-////            System.out.print("");
-////        }
-//    }
-
     public static Complex valueOf(double doubleValue) {
         if (doubleValue != doubleValue) {
             return NaN;
         }
-        if (doubleValue == 0) {
+        if (doubleValue == 0.0) {
             return ZERO;
         }
-        if (doubleValue == 1) {
+        if (doubleValue == 1.0) {
             return ONE;
         }
-        if (doubleValue == 2) {
+        if (doubleValue == 2.0) {
             return TWO;
         }
-        if (doubleValue == -1) {
+        if (doubleValue == -1.0) {
             return MINUS_ONE;
-        }
-        if (doubleValue != doubleValue) {
-            return NaN;
         }
         return new ComplexR(doubleValue);
     }
 
     public static Complex valueOf(double a, double b) {
-        if (a != a || b != b) {
-            return NaN;
+        if (a != a && b != b) {
+            return NaNRI;
         }
         if (b == 0) {
             return valueOf(a);
@@ -200,9 +176,39 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
             return MINUS_I;
         }
         if (iValue != iValue) {
-            return NaN;
+            return NaNI;
         }
         return new ComplexI(iValue);
+    }
+
+    public static void writeObjectHelper(Complex c, ObjectOutputStream oos) throws IOException {
+        if (c instanceof ComplexR) {
+            oos.writeByte(1);
+            oos.writeDouble(c.getReal());
+        } else if (c instanceof ComplexI) {
+            oos.writeByte(2);
+            oos.writeDouble(c.getImag());
+        } else {
+            oos.writeByte(0);
+            oos.writeDouble(c.getReal());
+            oos.writeDouble(c.getImag());
+        }
+    }
+
+    public static Complex readObjectResolveHelper(ObjectInputStream ois) throws IOException {
+        byte b = ois.readByte();
+        switch (b) {
+            case 0: {
+                return Complex.valueOf(ois.readDouble(), ois.readDouble());
+            }
+            case 1: {
+                return Complex.valueOf(ois.readDouble());
+            }
+            case 2: {
+                return Complex.I(ois.readDouble());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported complex type " + b);
     }
 
     @Override
@@ -212,33 +218,31 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public Expr setProperties(Map<String, Object> map) {
-        if (map != null && !map.isEmpty()) {
-            Any any = new Any(this);
-            return any.setProperties(map);
+        return setProperties(map, false);
+    }
+
+    @Override
+    public Expr setMergedProperties(Map<String, Object> map) {
+        return setProperties(map, true);
+    }
+
+    @Override
+    public Expr setProperties(Map<String, Object> map, boolean merge) {
+        if (map == null || map.isEmpty()) {
+            return this;
         }
-        return this;
+        return new Any(this, null, map);
     }
 
     @Override
     public Expr setProperty(String name, Object value) {
         HashMap<String, Object> m = new HashMap<>(1);
         m.put(name, value);
-        return setProperties(m);
+        return setProperties(m, true);
     }
 
     public Object getProperty(String name) {
         return null;
-    }
-
-    @Override
-    public Expr setTitle(String name) {
-        if (name != null) {
-            Any a = new Any(this);
-            a.setTitle(name);
-            return a;
-        } else {
-            return this;
-        }
     }
 
     @Override
@@ -264,6 +268,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     public double imagdbl() {
         return getImag();
+    }
+
+    public Complex add(int c) {
+        return Complex.valueOf(getReal() + c, getImag());
     }
 
     public Complex add(double c) {
@@ -315,6 +323,14 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Complex.valueOf(getReal() * c, getImag() * c);
     }
 
+    public Complex mul(int c) {
+        return Complex.valueOf(getReal() * c, getImag() * c);
+    }
+
+    public Expr multiply(Expr c) {
+        return mul(c);
+    }
+
     public Complex mulAll(double... c) {
         double r = getReal();
         double i = getImag();
@@ -364,6 +380,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public Complex mul(MutableComplex c) {
         return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
     }
+
     public Complex mul(Complex c) {
         return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
     }
@@ -392,11 +409,19 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Complex.valueOf(getReal() - c.getReal(), getImag() - c.getImag());
     }
 
+    public Complex sub(int c) {
+        return Complex.valueOf(getReal() - c, getImag());
+    }
+
     public Complex sub(double c) {
         return Complex.valueOf(getReal() - c, getImag());
     }
 
     public Complex div(double c) {
+        return Complex.valueOf(getReal() / c, getImag() / c);
+    }
+
+    public Complex div(int c) {
         return Complex.valueOf(getReal() / c, getImag() / c);
     }
 
@@ -450,11 +475,11 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public int compareTo(Complex c) {
-        if(isReal() && c.isReal()){
-            return Double.compare(getReal(),c.getReal());
+        if (isReal() && c.isReal()) {
+            return Double.compare(getReal(), c.getReal());
         }
-        if(isImag() && c.isImag()){
-            return Double.compare(getImag(),c.getImag());
+        if (isImag() && c.isImag()) {
+            return Double.compare(getImag(), c.getImag());
         }
         double a1 = absdbl();
         double a2 = c.absdbl();
@@ -578,7 +603,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         }
         //wolfram : http://mathworld.wolfram.com/InverseCosine.html
         // PI/2 + i ln (i *z + sqrt( 1-z2)
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
         // -i * ln(z+sqr(z+sqrt(z^2-1))
 //        return Complex.MINUS_I.mul(
@@ -603,14 +628,14 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Complex arg() {
-        return Complex.valueOf(Math.atan2(getImag() , getReal()));
+        return Complex.valueOf(Math.atan2(getImag(), getReal()));
     }
 
     public Complex asin() {
         if (isReal()) {
             return Complex.valueOf(Math.asin(getReal()));
         }
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
 //        return Complex.MINUS_I.mul(
 //
@@ -688,27 +713,17 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         //return log10().mul(10);
     }
 
-    @Override
-    public String toString() {
-        if (Double.isNaN(getReal()) && Double.isNaN(getImag())) {
-            return String.valueOf(getImag());
+    protected String imagToString(double d) {
+        if (Double.isNaN(d) || Double.isInfinite(d)) {
+            return String.valueOf(d) + "*i";
         }
-        if (Double.isNaN(getReal())) {
-            return String.valueOf(getImag()) + "i";
+        if (d == 1) {
+            return "i";
         }
-        if (Double.isNaN(getImag())) {
-            return String.valueOf(getReal());
+        if (d == -1) {
+            return "-i";
         }
-        String imag_string = String.valueOf(getImag());
-        String real_string = String.valueOf(getReal());
-        if (getImag() == 0) {
-            return real_string;
-        } else if (getReal() == 0) {
-            return (getImag() == 1) ? "i" : (getImag() == -1) ? "-i" : (imag_string + "i");
-        } else {
-            return real_string
-                    + ((getImag() == 1) ? "+i" : (getImag() == -1) ? "-i" : (getImag() > 0) ? ("+" + (imag_string + "i")) : (imag_string + "i"));
-        }
+        return String.valueOf(d) + "i";
     }
 
 //    public Complex angle() {
@@ -720,6 +735,26 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 ////        }
 //        return Complex.valueOf(Math.atan2(getImag(), getReal()));
 //    }
+
+    protected String realToString(double d) {
+        return String.valueOf(d);
+    }
+
+    @Override
+    public String toString() {
+        double real = getReal();
+        double imag = getImag();
+        if (imag == 0) {
+            return realToString(real);
+        } else if (real == 0) {
+            return imagToString(imag);
+        } else {
+            if (imag < 0) {
+                return realToString(real) + imagToString(imag);
+            }
+            return realToString(real) + "+" + imagToString(imag);
+        }
+    }
 
     public Complex sqr() {
         return this.mul(this);
@@ -796,6 +831,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Double.isInfinite(getReal()) || Double.isInfinite(getImag());
     }
 
+//    public boolean isDDx() {
+//        return isNaN() || imag == 0;
+//    }
+
     //    public static Complex sin(Complex c){
 //        return c.sin();
 //    }
@@ -819,10 +858,6 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return isNaN() || getImag() == 0;
     }
 
-//    public boolean isDDx() {
-//        return isNaN() || imag == 0;
-//    }
-
     public boolean isDM() {
         return true;
     }
@@ -836,9 +871,16 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return true;
     }
 
+//    public IDDx toDDx() {
+//        if (imag == 0) {
+//            return new DDxLinear(Domain.FULLX, 0, getReal());
+//        }
+//        throw new ClassCastException();
+//    }
+
     @Override
     public DoubleToVector toDV() {
-        return null;
+        return toDC().toDV();
     }
 
     public DoubleToDouble toDD() {
@@ -850,13 +892,6 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         }
         throw new ClassCastException();
     }
-
-//    public IDDx toDDx() {
-//        if (imag == 0) {
-//            return new DDxLinear(Domain.FULLX, 0, getReal());
-//        }
-//        throw new ClassCastException();
-//    }
 
     public DoubleToMatrix toDM() {
         return toDC().toDM();
@@ -897,7 +932,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public boolean isDouble() {
         try {
             return isReal();
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             return isReal();
         }
     }
@@ -920,7 +955,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     @Override
     public double toDouble() {
         if (!isDouble()) {
-            throw new RuntimeException("Not Real");
+            throw new ClassCastException("Not Real");
         }
         return getReal();
     }
@@ -955,6 +990,12 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return this;
     }
 
+//    @Override
+//    public Expr setTitle(String title) {
+//        getProperties().put("title", title);
+//        return this;
+//    }
+
     @Override
     public Expr composeX(Expr xreplacement) {
         return this;
@@ -965,11 +1006,14 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return this;
     }
 
-//    @Override
-//    public Expr setTitle(String title) {
-//        getProperties().put("title", title);
-//        return this;
-//    }
+    @Override
+    public Expr setTitle(String name) {
+        if (name != null) {
+            return new Any(this, name, null);
+        } else {
+            return this;
+        }
+    }
 
     @Override
     public boolean isScalarExpr() {
@@ -987,7 +1031,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
             return NaN;
         }
         double norm = norm();
-        if(norm==0){
+        if (norm == 0) {
             return ZERO;
         }
         return div(norm);
@@ -1014,12 +1058,13 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public Domain getDomain() {
-        return isZero() ? Domain.EMPTYX : Domain.FULLX;
+        return Domain.FULLX;
+//        return isZero() ? Domain.EMPTYX : Domain.FULLX;
     }
 
     @Override
     public Domain domain() {
-        return isZero() ? Domain.EMPTYX : Domain.FULLX;
+        return getDomain();
     }
 
     @Override
@@ -1084,37 +1129,279 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Maths.COMPLEX_VECTOR_SPACE;
     }
 
-    public static void writeObjectHelper(Complex c, ObjectOutputStream oos) throws IOException {
-        if (c instanceof ComplexR) {
-            oos.writeByte(1);
-            oos.writeDouble(c.getReal());
-        } else if (c instanceof ComplexI) {
-            oos.writeByte(2);
-            oos.writeDouble(c.getImag());
-        } else {
-            oos.writeByte(0);
-            oos.writeDouble(c.getReal());
-            oos.writeDouble(c.getImag());
-        }
-    }
-
-    public static Complex readObjectResolveHelper(ObjectInputStream ois) throws IOException {
-        byte b = ois.readByte();
-        switch (b) {
-            case 0: {
-                return Complex.valueOf(ois.readDouble(), ois.readDouble());
-            }
-            case 1: {
-                return Complex.valueOf(ois.readDouble());
-            }
-            case 2: {
-                return Complex.I(ois.readDouble());
-            }
-        }
-        throw new IllegalArgumentException("Unsupported complex type " + b);
-    }
-
-    public boolean isFinite(){
+    public boolean isFinite() {
         return !isNaN() && !isInfinite();
     }
+
+    @Override
+    public Complex computeComplex(double x) {
+        return this;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y) {
+        return this;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z) {
+        return this;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        if (ranges != null) {
+            ranges.set(Range.forBounds(0, x.length - 1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        if (ranges != null) {
+            ranges.set(Range.forBounds(0, x.length - 1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
+        Complex[] complexes = new Complex[y.length];
+        Arrays.fill(complexes, this);
+        if (ranges != null) {
+            ranges.set(Range.forBounds(0, y.length - 1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        Complex[][] complexes = new Complex[y.length][x.length];
+        ArrayUtils.fill(complexes, this);
+        if (ranges != null) {
+            ranges.set(Range.forBounds(0, x.length - 1, 0, y.length - 1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        ArrayUtils.fill(complexes, this);
+        if (ranges != null) {
+            ranges.set(Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1));
+        }
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, Domain d0) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, double y, Domain d0) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double x, double[] y, Domain d0) {
+        Complex[] complexes = new Complex[y.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
+        Complex[][] complexes = new Complex[y.length][x.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
+        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, double y) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] computeComplex(double x, double[] y) {
+        Complex[] complexes = new Complex[y.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][] computeComplex(double[] x, double[] y) {
+        Complex[][] complexes = new Complex[y.length][x.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
+        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public DoubleToDouble getRealDD() {
+        double real = getReal();
+        return real == 0 ? Maths.DDZERO : new DoubleValue(real, Domain.FULLX);
+    }
+
+    @Override
+    public DoubleToDouble getImagDD() {
+        double imag = getImag();
+        return imag == 0 ? Maths.DDZERO : new DoubleValue(imag, Domain.FULLX);
+    }
+
+    @Override
+    public boolean isDoubleValue() {
+        return isDouble();
+    }
+
+    @Override
+    public boolean isComplexValue() {
+        return true;
+    }
+
+
+    public Expr divide(Expr other) {
+        return div(other);
+    }
+
+
+    public Complex divide(double other) {
+        return div(other);
+    }
+
+    public Complex divide(Complex other) {
+        return div(other);
+    }
+
+    public Complex divide(MutableComplex other) {
+        return div(other);
+    }
+
+    public Complex multiply(int c) {
+        return mul(c);
+    }
+
+    public Complex multiply(double c) {
+        return mul(c);
+    }
+
+    public Complex multiply(Complex c) {
+        return mul(c);
+    }
+
+    public Complex multiply(MutableComplex c) {
+        return mul(c);
+    }
+
+    public Complex subtract(int c) {
+        return sub(c);
+    }
+
+    public Complex subtract(double c) {
+        return sub(c);
+    }
+
+    public Complex subtract(Complex c) {
+        return sub(c);
+    }
+
+    public Complex negate() {
+        return neg();
+    }
+
+    @Override
+    public Expr divide(int other) {
+        return div(other);
+    }
+
+    @Override
+    public Expr subtract(Expr other) {
+        return sub(other);
+    }
+
+    public Complex subtract(MutableComplex c) {
+        return sub(c);
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        if (other instanceof Complex) {
+            return mul((Complex) other);
+        }
+        return Maths.mul(this, other);
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        if (other instanceof Complex) {
+            return add((Complex) other);
+        }
+        return Maths.add(this, other);
+    }
+
+    @Override
+    public Expr div(Expr other) {
+        if (other instanceof Complex) {
+            return div((Complex) other);
+        }
+        return Maths.div(this, other);
+    }
+
+    @Override
+    public Expr sub(Expr other) {
+        if (other instanceof Complex) {
+            return sub((Complex) other);
+        }
+        return Maths.sub(this, other);
+    }
+
+    public Expr mul(Domain domain) {
+//        return mul(Maths.expr(domain));
+        return mul((Expr) domain);
+    }
+
+    public Expr mul(Geometry domain) {
+        return mul(Maths.expr(domain));
+    }
+
+    public Expr multiply(Domain domain) {
+        return mul(domain);
+    }
+
+    public Expr multiply(Geometry domain) {
+        return mul(domain);
+    }
+
+
 }

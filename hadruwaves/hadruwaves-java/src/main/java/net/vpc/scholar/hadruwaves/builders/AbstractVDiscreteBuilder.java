@@ -108,23 +108,28 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
     }
 
     public Vector computeVector(final Axis axis, Samples samples) {
-        AbsoluteSamples a = ((MomStructure) getStructure()).getDomain().toAbsolute(samples);
+        Domain d = ((MomStructure) getStructure()).getDomain();
+        AbsoluteSamples a = d.toAbsolute(samples);
         double[] z = a.getZ();
         if (z == null || z.length == 0) {
             z = new double[]{0};
         }
         double[] y = a.getY();
         if (y == null || y.length == 0) {
-            y = new double[]{0};
+            y = new double[]{d.getCenterY()};
         }
         double[] x = a.getX();
-        if (z.length <= 1 && a.getY().length <= 1) {
+        if (x == null || x.length == 0) {
+            x = new double[]{d.getCenterX()};
+        }
+
+        if (z.length <= 1 && y.length <= 1) {
             return computeVector(axis, x, y[0], z[0]);
         }
-        if (x.length <= 1 && a.getY().length <= 1) {
+        if (x.length <= 1 && y.length <= 1) {
             return computeVector(axis, x[0], y[0], z);
         }
-        if (x.length <= 1 && a.getZ().length <= 1) {
+        if (x.length <= 1 && z.length <= 1) {
             return computeVector(axis, x[0], y, z[0]);
         }
         throw new IllegalArgumentException("Not Supported count, not a Vector");

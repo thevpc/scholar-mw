@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.geom.*;
-import net.vpc.scholar.hadrumaths.symbolic.Range;
+import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
@@ -9,11 +9,15 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
  */
-public abstract class Domain extends AbstractGeometry implements Serializable, Dumpable, PolygonBuilder, Cloneable {
+public abstract class Domain /*extends AbstractGeometry*/ implements Serializable, Dumpable/*, PolygonBuilder*/, Cloneable, Expr {
 
     public static final Domain NaNX = new DomainX(Double.NaN, Double.NaN);
     public static final Domain NaNXY = new DomainXY(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
@@ -466,7 +470,7 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         return x >= xmin() && x < xmax();
     }
 
-    @Override
+    //    @Override
     public boolean contains(double x, double y) {
         return x >= xmin() && x < xmax() && y >= ymin() && y < ymax();
     }
@@ -1160,7 +1164,13 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
 
     @Override
     public Domain clone() {
-        return (Domain) super.clone();
+        try {
+            return (Domain) super.clone();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public Domain scale(double x) {
@@ -1183,7 +1193,7 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
     }
 
-    @Override
+    //    @Override
     public Polygon toPolygon() {
         return new Polygon(this);
     }
@@ -1193,7 +1203,7 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         return this;
     }
 
-    @Override
+    //    @Override
     public boolean isRectangular() {
         return true;
     }
@@ -1343,13 +1353,13 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
     public boolean isFull() {
         switch (dimension()) {
             case 1: {
-                return isInfiniteX();
+                return isUnconstrainedX();
             }
             case 2: {
-                return isInfiniteX() && isInfiniteY();
+                return isUnconstrainedX() && isUnconstrainedY();
             }
         }
-        return isInfiniteX() && isInfiniteY() && isInfiniteZ();
+        return isUnconstrainedX() && isUnconstrainedY() && isUnconstrainedZ();
     }
 
     public boolean isUnconstrainedX() {
@@ -1465,48 +1475,48 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
         throw new IllegalArgumentException("Unsupported Domain crossing");
     }
 
-    @Override
+    //    @Override
     public Geometry translateGeometry(double x, double y) {
         switch (dimension()) {
             case 1: {
                 if (y == 0) {
-                    return Domain.forWidth(xmin() + x, ywidth());
+                    return Domain.forWidth(xmin() + x, ywidth()).toTriangle();
 
                 } else {
                     throw new IllegalArgumentException("Unsupported");
                 }
             }
             case 2: {
-                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth());
+                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth()).toTriangle();
             }
             case 3: {
-                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth(), zmin(), zwidth());
+                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth(), zmin(), zwidth()).toTriangle();
             }
         }
         throw new IllegalArgumentException("Unsupported Domain dimension");
     }
 
-    @Override
+    //    @Override
     public boolean isPolygonal() {
         return getDimension() == 2;
     }
 
-    @Override
+    //    @Override
     public boolean isTriangular() {
         return false;
     }
 
-    @Override
+    //    @Override
     public boolean isSingular() {
         return isEmpty();
     }
 
-    @Override
+    //    @Override
     public Triangle toTriangle() {
         throw new IllegalArgumentException("Not Triangular");
     }
 
-    @Override
+    //    @Override
     public Path2D.Double getPath() {
         Path2D.Double p = new Path2D.Double();
         p.moveTo(xmin(), ymin());
@@ -1598,5 +1608,470 @@ public abstract class Domain extends AbstractGeometry implements Serializable, D
             }
         }
         return this;
+    }
+
+    public Domain multiply(Domain other) {
+        return mul(other);
+    }
+
+    public Domain mul(Domain other) {
+        return this.intersect(other);
+    }
+
+
+    @Override
+    public boolean isInvariant(Axis axis) {
+        return true;
+    }
+
+    @Override
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    public boolean isDoubleValue() {
+        return true;
+    }
+
+    @Override
+    public boolean isComplex() {
+        return true;
+    }
+
+    @Override
+    public boolean isComplexValue() {
+        return true;
+    }
+
+    @Override
+    public boolean isDoubleExpr() {
+        return true;
+    }
+
+    @Override
+    public boolean isScalarExpr() {
+        return true;
+    }
+
+    @Override
+    public boolean isMatrix() {
+        return true;
+    }
+
+    @Override
+    public Expr sub(Expr other) {
+        return Maths.sub(this, other);
+    }
+
+    @Override
+    public Complex toComplex() {
+        return Complex.ONE;
+    }
+
+    @Override
+    public double toDouble() {
+        return 1;
+    }
+
+    @Override
+    public Matrix toMatrix() {
+        return toComplex().toMatrix();
+    }
+
+    @Override
+    public boolean isDC() {
+        return true;
+    }
+
+    @Override
+    public boolean isDD() {
+        return true;
+    }
+
+    @Override
+    public boolean isDV() {
+        return true;
+    }
+
+    @Override
+    public boolean isDM() {
+        return true;
+    }
+
+    @Override
+    public boolean isZero() {
+        return false;
+    }
+
+    @Override
+    public boolean hasParams() {
+        return false;
+    }
+
+    public Expr neg() {
+        return Maths.neg(this);
+    }
+
+    public Expr mul(Geometry domain) {
+        return mul(Maths.expr(domain));
+    }
+
+    public Expr multiply(Geometry domain) {
+        return mul(domain);
+    }
+
+    public Expr divide(Expr other) {
+        return div(other);
+    }
+
+
+    public Expr divide(double other) {
+        return div(other);
+    }
+
+    public Expr multiply(int c) {
+        return mul(c);
+    }
+
+    public Expr multiply(double c) {
+        return mul(c);
+    }
+
+    public Expr multiply(Expr c) {
+        return mul(c);
+    }
+
+    public Expr subtract(int c) {
+        return sub(c);
+    }
+
+    public Expr subtract(double c) {
+        return sub(c);
+    }
+
+
+    public Expr negate() {
+        return neg();
+    }
+
+    @Override
+    public Expr divide(int other) {
+        return div(other);
+    }
+
+    @Override
+    public Expr subtract(Expr other) {
+        return sub(other);
+    }
+
+    @Override
+    public int getDomainDimension() {
+        return getDimension();
+    }
+
+    @Override
+    public Expr mul(int other) {
+        return DoubleValue.valueOf(other, this);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return DoubleValue.valueOf(other, this);
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        return Maths.mul(this, other);
+    }
+
+    @Override
+    public Expr add(int other) {
+        return DoubleValue.valueOf(other + 1, this);
+    }
+
+    @Override
+    public Expr add(double other) {
+        return DoubleValue.valueOf(other + 1, this);
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        return Maths.add(this, other);
+    }
+
+    @Override
+    public Expr div(int other) {
+        return DoubleValue.valueOf(1.0 / other, this);
+    }
+
+    @Override
+    public Expr div(double other) {
+        return DoubleValue.valueOf(1.0 / other, this);
+    }
+
+    @Override
+    public Expr div(Expr other) {
+        return Maths.div(this, other);
+    }
+
+    @Override
+    public Expr sub(int other) {
+        return DoubleValue.valueOf(1.0 - other, this);
+    }
+
+    @Override
+    public Expr sub(double other) {
+        return DoubleValue.valueOf(1.0 - other, this);
+    }
+
+    @Override
+    public Domain domain() {
+        return this;
+    }
+
+    @Override
+    public boolean hasProperties() {
+        return false;
+    }
+
+    @Override
+    public Expr simplify() {
+        return this;
+    }
+
+    @Override
+    public Expr normalize() {
+        return Maths.normalize((Expr) this);
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
+    public Expr setTitle(String name) {
+        if (name != null) {
+            return new Any(this,name,null);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public Expr setParam(ParamExpr paramExpr, double value) {
+        return this;
+    }
+
+    @Override
+    public Expr setParam(ParamExpr paramExpr, Expr value) {
+        return this;
+    }
+
+
+    public Expr setParam(String name, double value) {
+        return this;
+    }
+
+    @Override
+    public Expr setParam(String name, Expr value) {
+        return this;
+    }
+
+    @Override
+    public List<Expr> getSubExpressions() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public Expr composeX(Expr xreplacement) {
+        return this;
+    }
+
+    @Override
+    public Expr composeY(Expr yreplacement) {
+        return this;
+    }
+
+    @Override
+    public ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
+    }
+
+    @Override
+    public Expr setProperties(Map<String, Object> map) {
+        return setProperties(map,false);
+    }
+
+    @Override
+    public Expr setMergedProperties(Map<String, Object> map) {
+        return setProperties(map,true);
+    }
+
+    @Override
+    public Expr setProperties(Map<String, Object> map,boolean merge) {
+        if(map==null||map.isEmpty()){
+            return this;
+        }
+        return new Any(this,null,map);
+    }
+
+    @Override
+    public Expr setProperty(String name, Object value) {
+        HashMap<String, Object> m = new HashMap<>(1);
+        m.put(name, value);
+        return setProperties(m,true);
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return Collections.EMPTY_MAP;
+    }
+
+    @Override
+    public Integer getIntProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public Long getLongProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public String getStringProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public Double getDoubleProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public DoubleToComplex toDC() {
+        return new ComplexValue(Complex.ONE, this);
+    }
+
+    @Override
+    public DoubleToDouble toDD() {
+        return new DoubleValue(1, this);
+    }
+
+    @Override
+    public DoubleToVector toDV() {
+        return toDC().toDV();
+    }
+
+    @Override
+    public DoubleToMatrix toDM() {
+        return toDC().toDM();
+    }
+
+
+    public Geometry scale(Domain newDomain) {
+        return DomainScaleTool.create(getDomain(), newDomain).rescale(toGeometry());
+    }
+
+    public Geometry scale(int width, int height) {
+        return DomainScaleTool.create(getDomain(), Domain.forBounds(0, width, 0, height)).rescale(toGeometry());
+    }
+
+    public Geometry intersectGeometry(Geometry geometry) {
+        return toSurface().intersectGeometry(geometry);
+    }
+
+    public Geometry subtractGeometry(Geometry geometry) {
+        return toSurface().subtractGeometry(geometry);
+    }
+
+    public Geometry addGeometry(Domain geometry) {
+        return addGeometry(geometry.toGeometry());
+    }
+
+    public Geometry subtractGeometry(Domain geometry) {
+        return subtractGeometry(geometry.toGeometry());
+    }
+
+    public Geometry intersectGeometry(Domain geometry) {
+        return intersectGeometry(geometry.toGeometry());
+    }
+
+    public Geometry addGeometry(Geometry geometry) {
+        return toSurface().addGeometry(geometry);
+    }
+
+    public Geometry exclusiveOrGeometry(Geometry geometry) {
+        return toSurface().exclusiveOrGeometry(geometry);
+    }
+
+    public Surface toSurface() {
+        return new Surface(getPath());
+    }
+
+
+    public Geometry toGeometry() {
+        return new AbstractGeometry() {
+            @Override
+            public Path2D.Double getPath() {
+                return Domain.this.getPath();
+            }
+
+            @Override
+            public Domain getDomain() {
+                return Domain.this;
+            }
+
+            @Override
+            public boolean isRectangular() {
+                return true;
+            }
+
+            @Override
+            public boolean isPolygonal() {
+                return true;
+            }
+
+            @Override
+            public boolean isTriangular() {
+                return false;
+            }
+
+            @Override
+            public boolean isSingular() {
+                return false;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return Domain.this.isEmpty();
+            }
+
+            @Override
+            public Geometry translateGeometry(double x, double y) {
+                return Domain.this.translateGeometry(x, y);
+            }
+
+            @Override
+            public boolean contains(double x, double y) {
+                return Domain.this.contains(x, y);
+            }
+
+            @Override
+            public Polygon toPolygon() {
+                return Domain.this.toPolygon();
+            }
+
+            @Override
+            public Triangle toTriangle() {
+                return Domain.this.toTriangle();
+            }
+        };
     }
 }

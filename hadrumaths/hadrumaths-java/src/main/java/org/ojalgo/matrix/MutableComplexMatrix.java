@@ -1,7 +1,6 @@
 package org.ojalgo.matrix;
 
 import org.ojalgo.ProgrammingError;
-import org.ojalgo.matrix.*;
 import org.ojalgo.matrix.decomposition.*;
 import org.ojalgo.matrix.store.ComplexDenseStore;
 import org.ojalgo.matrix.store.MatrixStore;
@@ -11,6 +10,9 @@ import org.ojalgo.type.context.NumberContext;
 
 import java.math.BigDecimal;
 
+/**
+ * do not move, need to bein this package
+ */
 public class MutableComplexMatrix extends org.ojalgo.matrix.AbstractMatrix<ComplexNumber> {
 
     public static final MatrixFactory<ComplexNumber> FACTORY = new MatrixFactory<ComplexNumber>(MutableComplexMatrix.class, ComplexDenseStore.FACTORY);

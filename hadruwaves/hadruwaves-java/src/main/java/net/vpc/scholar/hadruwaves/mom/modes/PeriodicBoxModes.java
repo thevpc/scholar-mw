@@ -30,7 +30,16 @@ public class PeriodicBoxModes extends BoxModes {
     }
 
     public Complex getGamma(ModeIndex i, double freq, BoxSpace space) {
-        return Complex.valueOf(Maths.sqr(2 * i.getM() * Math.PI / domain.xwidth()) + Maths.sqr(2 * i.getN() * Math.PI / domain.ywidth()) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
+     //   return Complex.valueOf(Maths.sqr(2 * i.getM() * Math.PI / domain.xwidth()) + Maths.sqr(2 * i.getN() * Math.PI / domain.ywidth()) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
+        double m=i.getM();
+        double n=i.getN();
+        double a=domain.xwidth();
+        double b=domain.ywidth();
+
+        return space.getEps(freq).div(Maths.EPS0).mul(Maths.sqr(Physics.K0(freq))).neg().add(sqr(2 * m * PI / a) + sqr(2* n * PI / b))
+                .sqrt();
+
+//        return Complex.valueOf(Maths.sqr(2 * i.getM() * Math.PI / domain.xwidth()) + Maths.sqr(2 * i.getN() * Math.PI / domain.ywidth()) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
     }
 
     public double getCutoffFrequency(ModeIndex i) {

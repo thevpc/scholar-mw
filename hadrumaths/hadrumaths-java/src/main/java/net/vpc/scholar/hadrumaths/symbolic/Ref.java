@@ -193,12 +193,12 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
         return (object.toDM().getComponent(row, col));
     }
 
-    public DoubleToDouble getReal() {
-        return (toDC().getReal());
+    public DoubleToDouble getRealDD() {
+        return (toDC().getRealDD());
     }
 
-    public DoubleToDouble getImag() {
-        return (toDC().getImag());
+    public DoubleToDouble getImagDD() {
+        return (toDC().getImagDD());
     }
 
     public Expr clone() {
@@ -275,6 +275,22 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     public Expr setProperties(Map<String, Object> map) {
         return /*wrap*/(getObject().setProperties(map));
     }
+
+    @Override
+    public Expr setProperties(Map<String, Object> map, boolean merge) {
+        return getObject().setProperties(map, merge);
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        return getObject().getProperty(name);
+    }
+
+    @Override
+    public Expr setProperty(String name, Object value) {
+        return getObject().setProperty(name, value);
+    }
+
 
     @Override
     public boolean equals(Object o) {

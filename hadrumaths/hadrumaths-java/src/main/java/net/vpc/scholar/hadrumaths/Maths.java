@@ -19,7 +19,6 @@ import net.vpc.scholar.hadrumaths.symbolic.Shape;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
-import org.jfree.chart.ChartColor;
 import sun.misc.Unsafe;
 
 import java.awt.*;
@@ -35,6 +34,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -310,7 +310,7 @@ public final class Maths {
         }
     };
 
-    public static JColorPalette DEFAULT_PALETTE=new JColorArrayPalette(new Color[]{
+    public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette(new Color[]{
             new Color(0xFF, 0x55, 0x55),
             new Color(0x55, 0x55, 0xFF),
             new Color(0x55, 0xFF, 0x55),
@@ -346,19 +346,69 @@ public final class Maths {
             new Color(0x00, 0x80, 0x00),
             new Color(0x80, 0xFF, 0xFF)
     });
+
     static {
-        MathsInitializerService.initialize();
         ServiceLoader<HadrumathsService> loader = ServiceLoader.load(HadrumathsService.class);
+        TreeMap<Integer, List<HadrumathsService>> all = new TreeMap<>();
         for (HadrumathsService hadrumathsService : loader) {
-            try {
+            HadrumathsServiceDesc d = hadrumathsService.getClass().getAnnotation(HadrumathsServiceDesc.class);
+            if (d == null) {
+                throw new IllegalArgumentException("Missing @HadrumathsServiceDesc for " + hadrumathsService.getClass());
+            }
+            all.computeIfAbsent(d.order(), k -> new ArrayList<>()).add(hadrumathsService);
+        }
+        for (Map.Entry<Integer, List<HadrumathsService>> listEntry : all.entrySet()) {
+            for (HadrumathsService hadrumathsService : listEntry.getValue()) {
                 hadrumathsService.installService();
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
     }
 
     private Maths() {
+    }
+
+    public static DomainExpr xdomain(Expr min, Expr max) {
+        return DomainExpr.forBounds(min, max);
+    }
+
+    public static Domain xdomain(double min, double max) {
+        return Domain.forBounds(min, max);
+    }
+
+    public static Domain ydomain(double min, double max) {
+        return Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, min, max);
+    }
+
+    public static DomainExpr ydomain(DomainExpr min, DomainExpr max) {
+        return DomainExpr.forBounds(Complex.NEGATIVE_INFINITY, Complex.POSITIVE_INFINITY, min, max);
+    }
+
+    public static Domain zdomain(double min, double max) {
+        return Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, min, max);
+    }
+
+    public static DomainExpr zdomain(Expr min, Expr max) {
+        return DomainExpr.forBounds(Complex.NEGATIVE_INFINITY, Complex.POSITIVE_INFINITY, Complex.NEGATIVE_INFINITY, Complex.POSITIVE_INFINITY, min, max);
+    }
+
+    //    public static Domain domain(double min,double max){
+//        return Domain.forBounds(min,max);
+//    }
+//
+    public static Domain xydomain(double xmin, double xmax, double ymin, double ymax) {
+        return Domain.forBounds(xmin, xmax, ymin, ymax);
+    }
+
+    public static DomainExpr xydomain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
+        return DomainExpr.forBounds(xmin, xmax, ymin, ymax);
+    }
+
+    public static Domain xyzdomain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+        return Domain.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
+    }
+
+    public static DomainExpr xyzdomain(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
+        return DomainExpr.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
     //<editor-fold desc="parameters functions">
@@ -785,11 +835,11 @@ public final class Maths {
     }
 
     public static Vector NaNColumnVector(int dim) {
-        return constantColumnVector(dim, CNaN);
+        return constantColumnVector(dim, Complex.NaN);
     }
 
     public static Vector NaNRowVector(int dim) {
-        return constantRowVector(dim, CNaN);
+        return constantRowVector(dim, Complex.NaN);
     }
 
 
@@ -1354,6 +1404,9 @@ public final class Maths {
     }
 
     public static double[][] toDouble(Complex[][] c, ComplexAsDouble complexAsDouble) {
+        if (complexAsDouble == null) {
+            complexAsDouble = ComplexAsDouble.REAL;
+        }
         double[][] z = null;
         if (c != null) {
             switch (complexAsDouble) {
@@ -1843,16 +1896,16 @@ public final class Maths {
     }
 
     public static Any any(Expr e) {
-        return new Any(e);
+        return Any.wrap(e);
     }
 
     public static Any any(Double e) {
-        return new Any(expr(e));
+        return any(expr(e));
     }
 
-    public static Any any(Domain e) {
-        return new Any(expr(e));
-    }
+//    public static Any any(Domain e) {
+//        return new Any(expr(e));
+//    }
 
     @Deprecated
     public static TList<Expr> seq() {
@@ -2049,11 +2102,11 @@ public final class Maths {
     }
 
     public static boolean isReal(Expr e) {
-        return e.toDC().getImag().isZero();
+        return e.toDC().getImagDD().isZero();
     }
 
     public static boolean isImag(Expr e) {
-        return e.toDC().getReal().isZero();
+        return e.toDC().getRealDD().isZero();
     }
 
     public static Expr abs(Expr e) {
@@ -2418,8 +2471,31 @@ public final class Maths {
         }
     }
 
+    public static AxisFunction axis(Axis e) {
+        if (e == null) {
+            return null;
+        }
+        switch (e) {
+            case X:
+                return (AxisFunction) X;
+            case Y:
+                return (AxisFunction) Y;
+            case Z:
+                return (AxisFunction) Z;
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    public static Expr transformAxis(Expr e, AxisFunction a1, AxisFunction a2, AxisFunction a3) {
+        return transformAxis(e, a1.getAxis(), a2.getAxis(), a3.getAxis());
+    }
+
     public static Expr transformAxis(Expr e, Axis a1, Axis a2, Axis a3) {
         return new AxisTransform(e, new Axis[]{a1, a2, a3}, 3);
+    }
+
+    public static Expr transformAxis(Expr e, AxisFunction a1, AxisFunction a2) {
+        return transformAxis(e, a1.getAxis(), a2.getAxis());
     }
 
     public static Expr transformAxis(Expr e, Axis a1, Axis a2) {
@@ -2474,7 +2550,8 @@ public final class Maths {
     }
 
     public static boolean isInt(double d) {
-        return Math.floor(d) == d;
+        return ((int) (d)) == d;
+//        return Math.floor(d) == d;
     }
 
     /**
@@ -2506,7 +2583,7 @@ public final class Maths {
 
     public static DoubleToDouble expr(double value, Geometry geometry) {
         if (geometry == null) {
-            geometry = Domain.FULLXY;
+            geometry = Domain.FULLXY.toGeometry();
         }
         if (geometry.isRectangular()) {
             return DoubleValue.valueOf(value, geometry.getDomain());
@@ -2514,11 +2591,40 @@ public final class Maths {
         return new Shape(value, geometry);
     }
 
+    public static DoubleToDouble expr(double value, Domain geometry) {
+        if (geometry == null) {
+            geometry = Domain.FULLXY;
+        }
+//        return geometry.toDD();
+        if (geometry.isRectangular()) {
+            return DoubleValue.valueOf(value, geometry.getDomain());
+        }
+        return new Shape(value, geometry);
+    }
+
+    public static DoubleToDouble expr(Domain domain) {
+        return domain.toDD();
+    }
+
     public static DoubleToDouble expr(Geometry domain) {
         return expr(1, domain);
     }
 
     public static Expr expr(Complex a, Geometry geometry) {
+        if (geometry == null) {
+            geometry = Domain.FULLXY.toGeometry();
+        }
+        if (a.isReal()) {
+            return expr(a.getReal(), geometry);
+        }
+        if (geometry.isRectangular()) {
+            return new ComplexValue(a, geometry.getDomain());
+        } else {
+            throw new IllegalArgumentException("Not supported yet geometry with complex value");
+        }
+    }
+
+    public static Expr expr(Complex a, Domain geometry) {
         if (geometry == null) {
             geometry = Domain.FULLXY;
         }
@@ -3071,80 +3177,82 @@ public final class Maths {
         return y;
     }
 
-    public static double max(double a,double b) {
-        return a>b?a:b;
+    public static double max(double a, double b) {
+        return a > b ? a : b;
     }
 
-    public static int max(int a,int b) {
-        return a>b?a:b;
+    public static int max(int a, int b) {
+        return a > b ? a : b;
     }
 
-    public static long max(long a,long b) {
-        return a>b?a:b;
+    public static long max(long a, long b) {
+        return a > b ? a : b;
     }
 
-    public static double min(double a,double b) {
-        return a<b?a:b;
+    public static double min(double a, double b) {
+        return a < b ? a : b;
     }
 
     public static double min(double[] arr) {
-        if(arr.length==0){
+        if (arr.length == 0) {
             return Double.NaN;
         }
-        double min=Double.NaN;
+        double min = Double.NaN;
         for (int i = 0; i < arr.length; i++) {
-            if(Double.isNaN(min) || (!Double.isNaN(arr[i]) && arr[i]<min)){
-                min=arr[i];
+            if (Double.isNaN(min) || (!Double.isNaN(arr[i]) && arr[i] < min)) {
+                min = arr[i];
             }
         }
         return min;
     }
+
     public static double max(double[] arr) {
-        if(arr.length==0){
+        if (arr.length == 0) {
             return Double.NaN;
         }
-        double max=Double.NaN;
+        double max = Double.NaN;
         for (int i = 0; i < arr.length; i++) {
-            if(Double.isNaN(max) || (!Double.isNaN(arr[i]) && arr[i]>max)){
-                max=arr[i];
+            if (Double.isNaN(max) || (!Double.isNaN(arr[i]) && arr[i] > max)) {
+                max = arr[i];
             }
         }
         return max;
     }
+
     public static double avg(double[] arr) {
-        if(arr.length==0){
+        if (arr.length == 0) {
             return Double.NaN;
         }
-        double max=0;
-        int count=0;
+        double max = 0;
+        int count = 0;
         for (int i = 0; i < arr.length; i++) {
-            if((!Double.isNaN(arr[i]))){
-                max+=arr[i];
+            if ((!Double.isNaN(arr[i]))) {
+                max += arr[i];
                 count++;
             }
         }
-        if(count==0){
+        if (count == 0) {
             return Double.NaN;
         }
-        return max/count;
+        return max / count;
     }
 
-    public static int min(int a,int b) {
-        return a<b?a:b;
+    public static int min(int a, int b) {
+        return a < b ? a : b;
     }
 
-    public static Complex min(Complex a,Complex b) {
+    public static Complex min(Complex a, Complex b) {
         int i = a.compareTo(b);
-        return i<=0?a:b;
+        return i <= 0 ? a : b;
     }
 
-    public static Complex max(Complex a,Complex b) {
+    public static Complex max(Complex a, Complex b) {
         int i = a.compareTo(b);
-        return i>=0?a:b;
+        return i >= 0 ? a : b;
     }
 
-    public static long min(long a,long b) {
-        return a<b?a:b;
+    public static long min(long a, long b) {
+        return a < b ? a : b;
     }
 
     public static double[] minMax(double[] a) {
@@ -4019,6 +4127,18 @@ public final class Maths {
         return (Matrix) Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).to($COMPLEX);
     }
 
+    public static Complex scalarProduct(Matrix g, Matrix f) {
+        return g.scalarProduct(f);
+    }
+
+    public static Expr scalarProduct(Matrix g, TVector<Expr> f) {
+        return f.scalarProduct(false,g.to($EXPR));
+    }
+
+    public static Expr scalarProductAll(Matrix g, TVector<Expr> ... f ) {
+        return g.toVector().to($EXPR).scalarProductAll((TVector[]) f);
+    }
+
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f) {
         return scalarProduct(false, g, f);
     }
@@ -4452,6 +4572,14 @@ public final class Maths {
         return new Plus(all);
     }
 
+    public static <T> TMatrix<T> mul(TMatrix<T> a, TMatrix<T> b) {
+        return a.mul(b);
+    }
+
+    public static Matrix mul(Matrix a, Matrix b) {
+        return a.mul(b);
+    }
+
     public static Expr mul(Expr a, Expr b) {
         return EXPR_VECTOR_SPACE.mul(a, b);
     }
@@ -4671,9 +4799,9 @@ public final class Maths {
         });
     }
 
-    public static Expr expr(Domain d) {
-        return DoubleValue.valueOf(1, d);
-    }
+//    public static Expr expr(Domain d) {
+//        return DoubleValue.valueOf(1, d);
+//    }
 
     public static <T> T simplify(T a) {
         if (a instanceof Expr) {
@@ -4975,6 +5103,73 @@ public final class Maths {
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="general purpose functions">
 
+    public static void loopOver(Object[][] values, LoopAction action) {
+        int[] indexes = new int[values.length];
+        for (int i = 0; i < indexes.length; i++) {
+            if (values[i].length == 0) {
+                return;
+            }
+            indexes[i] = 0;
+        }
+        while (true) {
+            Object[] uplet = new Object[indexes.length];
+            for (int i = 0; i < uplet.length; i++) {
+                try {
+                    uplet[i] = values[i][indexes[i]];
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    System.out.println("Why");
+                }
+            }
+            action.next(uplet);
+
+            int depth = 0;
+            while (depth < indexes.length) {
+                indexes[depth]++;
+                if (indexes[depth] >= values[depth].length) {
+                    indexes[depth] = 0;
+                    depth++;
+                } else {
+                    break;
+                }
+            }
+            if (depth >= indexes.length) {
+                break;
+            }
+        }
+    }
+
+    public static void loopOver(Loop[] values, LoopAction action) {
+//        int[] indexes=new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            if (!values[i].hasNext()) {
+                return;
+            }
+            values[i].reset();
+        }
+        while (true) {
+            Object[] uplet = new Object[values.length];
+            for (int i = 0; i < uplet.length; i++) {
+                uplet[i] = values[i].get();
+            }
+
+            action.next(uplet);
+
+            int depth = 0;
+            while (depth < values.length) {
+                values[depth].next();
+                if (!values[depth].hasNext()) {
+                    values[depth].reset();
+                    depth++;
+                } else {
+                    break;
+                }
+            }
+            if (depth >= values.length) {
+                break;
+            }
+        }
+    }
+
     public static String formatMemory() {
         return memoryInfo().toString();
     }
@@ -5005,12 +5200,12 @@ public final class Maths {
         return Config.getMemorySizeFormatter().format(bytes);
     }
 
-    public static String formatFrequency(long frequency) {
+    public static String formatFrequency(double frequency) {
         return Config.getFrequencyFormatter().format(frequency);
     }
 
-    public static String formatFrequency(double frequency) {
-        return Config.getFrequencyFormatter().format(frequency);
+    public static String formatDimension(double dimension) {
+        return Config.getMetricFormatter().format(dimension);
     }
 
     public static String formatPeriod(long period) {

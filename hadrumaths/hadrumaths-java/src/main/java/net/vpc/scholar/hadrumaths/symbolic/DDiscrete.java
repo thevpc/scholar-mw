@@ -1431,12 +1431,12 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public DoubleToDouble getReal() {
+    public DoubleToDouble getRealDD() {
         return this;
     }
 
     @Override
-    public DoubleToDouble getImag() {
+    public DoubleToDouble getImagDD() {
         return FunctionFactory.DZERO(getDomainDimension());
     }
 

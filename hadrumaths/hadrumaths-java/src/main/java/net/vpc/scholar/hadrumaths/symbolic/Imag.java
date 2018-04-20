@@ -119,14 +119,6 @@ public class Imag extends DCxyToDDxy implements Cloneable{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!super.equals(o)) {
-            return false;
-        }
-        return getArg().equals(((Imag) o).getArg());
-    }
-
-    @Override
     public boolean isScalarExprImpl() {
         return getArg().isScalarExpr();
     }

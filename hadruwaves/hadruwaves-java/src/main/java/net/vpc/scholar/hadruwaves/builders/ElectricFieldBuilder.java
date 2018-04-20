@@ -12,9 +12,9 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface ElectricFieldBuilder extends ValueBuilder {
-    public ElectricFieldBuilder monitor(ProgressMonitor monitor);
+    ElectricFieldBuilder monitor(ProgressMonitor monitor);
 
-    public ElectricFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator);
+    ElectricFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator);
 
     Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);
 

@@ -155,7 +155,7 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
 
     @Override
     public EnhancedProgressMonitor terminate(String message) {
-        if (!isCancelled()) {
+        if (!isCanceled()) {
             setProgress(1, new StringProgressMessage(Level.INFO, message));
         }
         return this;
@@ -163,7 +163,7 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
 
     @Override
     public EnhancedProgressMonitor terminate(String message, Object... args) {
-        if (!isCancelled()) {
+        if (!isCanceled()) {
             setProgress(1, new FormattedProgressMessage(Level.INFO, message,args));
         }
         return this;
@@ -233,11 +233,11 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
 
     @Override
     public boolean isTerminated() {
-        return isCancelled() || getProgressValue() >= 1;
+        return isCanceled() || getProgressValue() >= 1;
     }
 
     @Override
-    public boolean isCancelled() {
+    public boolean isCanceled() {
         return cancelled;
     }
 
@@ -261,5 +261,11 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
     @Override
     public void setProgress(double progress, String message, Object... args) {
         setProgress(progress, new FormattedProgressMessage(Level.FINE, message, args));
+    }
+
+
+    @Override
+    public void stop() {
+
     }
 }

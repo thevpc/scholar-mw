@@ -75,11 +75,14 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
-                if(propertyName.equals("frequency")){
-                    if(isDefinitionFrequencyDependent()){
-                        lastScalarProductProductMatrix=null;
-                        lastScalarProductProductMatrixInput=null;
+                if(propertyName.equals("frequency")) {
+                    if (isDefinitionFrequencyDependent()) {
+                        lastScalarProductProductMatrix = null;
+                        lastScalarProductProductMatrixInput = null;
                     }
+                }else if(propertyName.equals("maxSize")){
+                    lastScalarProductProductMatrix=null;
+                    lastScalarProductProductMatrixInput=null;
                 }else {
                     lastScalarProductProductMatrix=null;
                     lastScalarProductProductMatrixInput=null;
@@ -208,7 +211,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
     @Override
     public ModeInfo[] getIndexesImpl(ProgressMonitor par0) {
-        int max = getSize();
+        int max = getMaxSize();
         //System.out.println("lookup for "+max+" fn modes for "+this);
         Chronometer chrono = new Chronometer();
         chrono.start();
@@ -341,12 +344,15 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             return scalarProductCache0(testFunctions,monitor);
         }
         if(lastScalarProductProductMatrix!=null && lastScalarProductProductMatrixInput!=null && lastScalarProductProductMatrixInput.equals(testFunctions)){
+//            if(lastScalarProductProductMatrix.getColumnCount() != count()){
+//                throw new IllegalStateException();
+//            }
             return lastScalarProductProductMatrix;
         }
         lastScalarProductProductMatrixInput=testFunctions.copy();
         ObjectCache objectCache = getMultipleTestFunctionObjectCache(testFunctions.toArray());
         int currentCount = count();
-        return lastScalarProductProductMatrix=objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
+        TMatrix<Complex> evaluated = objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
             @Override
             public void init() {
 
@@ -354,9 +360,10 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
             @Override
             public Object evaluate(Object[] args) {
-                return scalarProductCache0(testFunctions,monitor);
+                return scalarProductCache0(testFunctions, monitor);
             }
         });
+        return lastScalarProductProductMatrix= evaluated;
     }
 
     public TMatrix<Complex> scalarProductCache0(TList<Expr> testFunctions, ProgressMonitor monitor) {
@@ -454,5 +461,11 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             return Maths.dlist(sp.evalVDD(null, testFunction.toDV(), arr)).to(Maths.$COMPLEX);
         }
         return Maths.columnVector(sp.evalVDC(true, null, testFunction.toDV(), arr));
+    }
+
+    public void invalidateCache() {
+        super.invalidateCache();
+        lastScalarProductProductMatrix=null;
+        lastScalarProductProductMatrixInput=null;
     }
 }

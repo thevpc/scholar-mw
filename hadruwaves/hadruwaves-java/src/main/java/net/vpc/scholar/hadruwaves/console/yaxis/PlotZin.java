@@ -29,7 +29,7 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
         Complex z0 = Maths.CZERO;
         ModeFunctions fn = structure.getModeFunctions();
         DoubleToVector g = structure.getTestFunctions().arr()[0];
-        ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes(null,structure.getCurrentCache(true)) : fn.getVanishingModes();
+        ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
 //        System.out.println("------------------------------------------------------------------------");
 //        System.out.println("freq="+structure.getF());
@@ -53,7 +53,7 @@ public class PlotZin extends PlotAxisSeriesMatrixContent implements Cloneable {
         MutableComplex z0 = new MutableComplex();
         ModeFunctions fn = structure.getModeFunctions();
         DoubleToVector g = structure.getTestFunctions().arr()[0];
-        ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes(null,structure.getCurrentCache(true)) : fn.getVanishingModes();
+        ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
         System.out.println("------------------------------------------------------------------------");
         System.out.println("freq=" + structure.getFrequency());

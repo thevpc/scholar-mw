@@ -211,8 +211,8 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                                     for (int n = 0; n < maxF; n++) {
                                         DoubleToVector fnndv = finalFn2[n].toDV();
                                         gfps.set(q, n, Complex.valueOf(
-                                                finalSp1.evalDD(gpqv.getComponent(Axis.X).toDC().getReal(), fnndv.getComponent(Axis.X).toDC().getReal())
-                                                        + finalSp1.evalDD(gpqv.getComponent(Axis.Y).toDC().getReal(), fnndv.getComponent(Axis.Y).toDC().getReal())));
+                                                finalSp1.evalDD(gpqv.getComponent(Axis.X).toDC().getRealDD(), fnndv.getComponent(Axis.X).toDC().getRealDD())
+                                                        + finalSp1.evalDD(gpqv.getComponent(Axis.Y).toDC().getRealDD(), fnndv.getComponent(Axis.Y).toDC().getRealDD())));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -242,7 +242,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             } else {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, Complex.valueOf(finalSp2.evalDD(finalGp4[q].toDV().getComponent(Axis.X).toDC().getReal(), finalFn3[n].toDV().getComponent(Axis.X).toDC().getReal())));
+                                        gfps.set(q, n, Complex.valueOf(finalSp2.evalDD(finalGp4[q].toDV().getComponent(Axis.X).toDC().getRealDD(), finalFn3[n].toDV().getComponent(Axis.X).toDC().getRealDD())));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -271,7 +271,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             } else {
                                 for (int q = 0; q < finalGp5.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, Complex.valueOf(finalSp3.evalDD(finalGp5[q].toDV().getComponent(Axis.Y).toDC().getReal(), finalFn4[n].toDV().getComponent(Axis.Y).toDC().getReal())));
+                                        gfps.set(q, n, Complex.valueOf(finalSp3.evalDD(finalGp5[q].toDV().getComponent(Axis.Y).toDC().getRealDD(), finalFn4[n].toDV().getComponent(Axis.Y).toDC().getRealDD())));
                                         mon.inc(monMessage);
                                     }
                                 }

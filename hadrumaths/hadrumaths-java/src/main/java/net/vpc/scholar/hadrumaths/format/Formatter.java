@@ -5,10 +5,11 @@
 package net.vpc.scholar.hadrumaths.format;
 
 /**
- *
  * @author vpc
  */
 public interface Formatter<T> {
 
-    public String format(T o, FormatParam... format);
+    void format(StringBuilder sb, T o, FormatParamSet format);
+
+    String format(T o, FormatParamSet format);
 }

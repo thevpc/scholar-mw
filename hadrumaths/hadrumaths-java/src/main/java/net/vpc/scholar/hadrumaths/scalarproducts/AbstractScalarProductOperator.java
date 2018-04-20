@@ -158,10 +158,10 @@ public abstract class AbstractScalarProductOperator implements ScalarProductOper
 //        if (domain.isEmpty()) {
 //            return Complex.ZERO;
 //        }
-        DoubleToDouble r1 = f1.getReal();
-        DoubleToDouble i1 = f1.getImag();
-        DoubleToDouble r2 = f2.getReal();
-        DoubleToDouble i2 = f2.getImag();
+        DoubleToDouble r1 = f1.getRealDD();
+        DoubleToDouble i1 = f1.getImagDD();
+        DoubleToDouble r2 = f2.getRealDD();
+        DoubleToDouble i2 = f2.getImagDD();
 //        return Complex.valueOf(
 //                evalDD(domain, r1, r2) + evalDD(domain, i1, i2),
 //                evalDD(domain, r1, i2) - evalDD(domain, i1, r2)

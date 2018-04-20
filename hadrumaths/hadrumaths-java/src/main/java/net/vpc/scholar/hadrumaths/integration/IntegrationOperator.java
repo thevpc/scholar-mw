@@ -48,8 +48,8 @@ public abstract class IntegrationOperator implements Dumpable{
     }
 
     public Complex evalDC(Domain domain, DoubleToComplex f1) {
-        DoubleToDouble r1 = f1.getReal();
-        DoubleToDouble i1 = f1.getImag();
+        DoubleToDouble r1 = f1.getRealDD();
+        DoubleToDouble i1 = f1.getImagDD();
         return Complex.valueOf(
                 evalDD(domain, r1) + evalDD(domain, i1),
                 evalDD(domain, r1) - evalDD(domain, i1)

@@ -16,7 +16,7 @@ public class SimpleModeIteratorFactory implements ModeIteratorFactory {
                 return new PeriodicModeIterator(fn.getAvailableModes(),((DefaultBoxModeFunctions)fn).getAxis());
             }
         }
-        return new SimplePositiveModeIterator(fn.getAvailableModes(),fn.getHintInvariantAxis(),fn.getBorders(),fn.getSize());
+        return new SimplePositiveModeIterator(fn.getAvailableModes(),fn.getHintInvariantAxis(),fn.getBorders(),fn.getMaxSize());
     }
 
     @Override
@@ -25,8 +25,7 @@ public class SimpleModeIteratorFactory implements ModeIteratorFactory {
     }
 
     public String dump() {
-        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        return h.toString();
+        return getClass().getSimpleName();
     }
 
     @Override

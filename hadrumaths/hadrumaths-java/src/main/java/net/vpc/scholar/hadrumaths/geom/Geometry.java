@@ -6,6 +6,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
 
 import java.awt.geom.Path2D;
 import java.io.Serializable;
@@ -52,5 +53,13 @@ public interface Geometry extends Serializable {
     Geometry addGeometry(Geometry geometry);
 
     Geometry exclusiveOrGeometry(Geometry geometry);
+
+    Expr toExpr();
+
+    Expr multiply(int value);
+
+    Expr multiply(double value);
+
+    Expr multiply(Expr value);
 
 }

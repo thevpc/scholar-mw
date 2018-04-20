@@ -26,7 +26,7 @@ public class PolygonPlotConsoleAction implements ConsoleAction {
     }
 
     public void execute(PlotConsole plotter) {
-        MainPlotterFrame frame = plotter.getMainPlotterFrame();
+        PlotConsoleFrame frame = plotter.getPlotConsoleFrame();
         ConsoleWindow window = frame.getWindow(preferredPath);
         window.addChild(title, new PolygonPlot(geometryList, meshAlgo,pattern,domain));
     }

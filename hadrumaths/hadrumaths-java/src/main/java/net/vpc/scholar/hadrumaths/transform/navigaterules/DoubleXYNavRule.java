@@ -5,6 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;

@@ -33,16 +33,13 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
 //            }
         }
     };
-    private PlotWindowManager windowManager;
-    private String layoutConstraints = "";
-
     public PlotModelListPanel(PlotModelList model, PlotWindowManager windowManager) {
         super(new BorderLayout());
         setPreferredSize(new Dimension(400, 400));
         if (model != null) {
             setModel(model);
         }
-        this.windowManager = windowManager;
+        setPlotWindowManager(windowManager);
     }
 
     @Override
@@ -124,7 +121,7 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     private JComponent createTabbedPane() {
         JTabbedPane panel=new JTabbedPane();
         for (PlotModel plotModel : model) {
-            panel.addTab(plotModel.getTitle(),Plot.create(plotModel,windowManager).toComponent());
+            panel.addTab(plotModel.getTitle(),Plot.create(plotModel,getPlotWindowManager()).toComponent());
         }
         return panel;
     }
@@ -132,27 +129,27 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
         int size = model.size();
         if(size<=1){
             for (PlotModel plotModel : model) {
-                return Plot.create(plotModel,windowManager).toComponent();
+                return Plot.create(plotModel,getPlotWindowManager()).toComponent();
             }
         }
         if(size<=2){
             JPanel panel=new JPanel();
             panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));
             for (PlotModel plotModel : model) {
-                panel.add(Plot.create(plotModel,windowManager).toComponent());
+                panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
             }
             return panel;
         }
         if(size<=8){
             JPanel panel=new JPanel(new GridLayout(0,2));
             for (PlotModel plotModel : model) {
-                panel.add(Plot.create(plotModel,windowManager).toComponent());
+                panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
             }
             return panel;
         }
         JPanel panel=new JPanel(new GridLayout(0,4));
         for (PlotModel plotModel : model) {
-            panel.add(Plot.create(plotModel,windowManager).toComponent());
+            panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
         }
         return panel;
     }
@@ -165,21 +162,4 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
         return baseTitle;
     }
 
-    public JComponent toComponent() {
-        return this;
-    }
-
-    public void display() {
-        windowManager.add(this);
-    }
-
-
-    @Override
-    public String getLayoutConstraints() {
-        return layoutConstraints;
-    }
-
-    public void setLayoutConstraints(String layoutConstraints) {
-        this.layoutConstraints = layoutConstraints;
-    }
 }

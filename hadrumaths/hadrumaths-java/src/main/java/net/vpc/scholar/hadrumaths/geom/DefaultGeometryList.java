@@ -242,7 +242,7 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     @Override
     public Surface toSurface() {
         if (list.isEmpty()) {
-            return Domain.EMPTYXY.toSurface();
+            return Domain.EMPTYXY.toGeometry().toSurface();
         }
         Surface s = list.get(0).toSurface();
         for (int i = 1; i < list.size(); i++) {

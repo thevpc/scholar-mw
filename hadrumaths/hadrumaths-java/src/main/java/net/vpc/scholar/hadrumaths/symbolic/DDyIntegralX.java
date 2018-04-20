@@ -38,6 +38,22 @@ public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
         this.x1 = x1;
     }
 
+    public DoubleToDouble getBase() {
+        return base;
+    }
+
+    public DIntegralXY getIntegralXY() {
+        return integral;
+    }
+
+    public double getX0() {
+        return x0;
+    }
+
+    public double getX1() {
+        return x1;
+    }
+
     public DDyIntegralX(DoubleToDouble base) {
         this(base, new DQuadIntegralXY(), base.getDomain().xmin(), base.getDomain().xmax());
     }

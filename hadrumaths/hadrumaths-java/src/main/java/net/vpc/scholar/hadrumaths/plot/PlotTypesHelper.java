@@ -3,7 +3,6 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.util.CollectionUtils;
 
 import java.io.File;
@@ -151,8 +150,8 @@ public class PlotTypesHelper {
         if (obj instanceof Complex) {
             return new TypeAndValue("complex", obj);
         }
-        if (obj instanceof DoubleValue && ((DoubleValue) obj).getDomain().isFull()) {
-            return new TypeAndValue("number", ((DoubleValue) obj).getValue());
+        if (obj instanceof Expr && ((Expr) obj).isDouble()) {
+            return new TypeAndValue("number", ((Expr) obj).toDouble());
         }
         if (obj instanceof TMatrix) {
             TMatrix m = (TMatrix) obj;
