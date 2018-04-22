@@ -561,4 +561,10 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     public double toDouble(){
         return real;
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
+
 }

@@ -535,12 +535,12 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
         if (ProjectType.WAVE_GUIDE.equals(projectType)) {
             if (BoxLimit.NOTHING.equals(firstBoxSpace.getLimit())) {
-                firstBoxSpace = BoxSpaceFactory.matchedLoad(firstBoxSpace.getEpsr(),firstBoxSpace.getSigma());
+                firstBoxSpace = BoxSpaceFactory.matchedLoad(firstBoxSpace.getEpsr(),firstBoxSpace.getElectricConductivity());
                 //TODO
                 //System.err.println("firstBoxSpace overridden to " + firstBoxSpace);
             }
             if (BoxLimit.NOTHING.equals(secondBoxSpace.getLimit())) {
-                secondBoxSpace = BoxSpaceFactory.matchedLoad(secondBoxSpace.getEpsr(),firstBoxSpace.getSigma());
+                secondBoxSpace = BoxSpaceFactory.matchedLoad(secondBoxSpace.getEpsr(),firstBoxSpace.getElectricConductivity());
                 //TODO
                 //System.err.println("secondBoxSpace overridden to " + secondBoxSpace);
             }

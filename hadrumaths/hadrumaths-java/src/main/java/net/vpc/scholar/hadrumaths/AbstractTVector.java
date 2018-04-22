@@ -113,7 +113,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         VectorSpace<T> cs = getComponentVectorSpace();
         RepeatableOp<T> d = cs.addRepeatableOp();
         for (int i = 0; i < max; i++) {
-            d.append(cs.scalarProduct(hermitian, get(i), other.get(i)));
+            d.append(cs.mul(get(i), other.get(i)));
         }
         return d.eval();
     }

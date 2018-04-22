@@ -930,11 +930,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public boolean isDouble() {
-        try {
-            return isReal();
-        } catch (NullPointerException ex) {
-            return isReal();
-        }
+        return isReal();
     }
 
     @Override
@@ -1281,12 +1277,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public boolean isDoubleValue() {
-        return isDouble();
-    }
-
-    @Override
-    public boolean isComplexValue() {
+    public boolean isComplexExpr() {
         return true;
     }
 
@@ -1403,5 +1394,8 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return mul(domain);
     }
 
-
+    @Override
+    public boolean isDoubleTyped() {
+        return getImag()==0;
+    }
 }

@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.ExpressionRewriterFactory;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
@@ -160,9 +159,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
     public double[] evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble[] f2) {
         DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
-        if(f1opt instanceof Mul){
-            f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
-        }
+
         double[] rets=new double[f2.length];
         boolean f1zero = f1opt.isZero();
         Domain f1domain = f1opt.getDomain().intersect(domain);
@@ -186,9 +183,28 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         return rets;
     }
 
+    private DoubleToDouble[] optimizeFunctions(DoubleToDouble f1, DoubleToDouble f2){
+        Mul m = new Mul(f1, f2);
+        DoubleToDouble f1opt = expressionRewriter.rewriteOrSame(m).toDD();
+        if (f1opt instanceof Mul) {
+            List<Expr> subExpressions = f1opt.getSubExpressions();
+            if (subExpressions.size() == 1) {
+                return new DoubleToDouble[]{subExpressions.get(0).toDD(), Maths.expr(m.getDomain())};
+            }
+            if (subExpressions.size() == 2) {
+                return new DoubleToDouble[]{subExpressions.get(0).toDD(), subExpressions.get(1).toDD()};
+            }
+        }
+        return new DoubleToDouble[]{
+                expressionRewriter.rewriteOrSame(f1).toDD(),
+                expressionRewriter.rewriteOrSame(f2).toDD()
+        };
+    }
+
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
-        DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
-        DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2).toDD();
+        DoubleToDouble[] opts = optimizeFunctions(f1, f2);
+        DoubleToDouble f1opt= opts[0];
+        DoubleToDouble f2opt= opts[1];
 //        if(f1opt instanceof Mul){
 //            f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
 //        }

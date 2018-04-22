@@ -150,22 +150,13 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return Collections.EMPTY_LIST;
     }
 
-    public boolean isDouble() {
-        return getDomain().isFull();
-    }
+
 
     public boolean isMatrix() {
         return isDouble();
     }
 
 
-    @Override
-    public double toDouble() {
-        if (!isDoubleValue()) {
-            throw new ClassCastException("Constrained double");
-        }
-        return value;
-    }
 
     @Override
     public Expr setParam(String name, Expr value) {
@@ -215,10 +206,6 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return false;
     }
 
-
-    public boolean isDoubleExpr() {
-        return true;
-    }
 
     @Override
     public double computeDouble(double x, double y, double z) {
@@ -572,8 +559,24 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return domain.getDimension();
     }
 
+    public boolean isDouble() {
+        return getDomain().isUnconstrained();
+    }
     @Override
-    public boolean isDoubleValue() {
+    public double toDouble() {
+//        if (!isDoubleValue()) {
+//            throw new ClassCastException("Constrained double");
+//        }
+        return value;
+    }
+
+    public boolean isDoubleExpr() {
         return true;
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
+
 }

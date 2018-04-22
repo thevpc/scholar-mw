@@ -28,7 +28,7 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
         if(e instanceof YY){
             return new Linear(0,1,0,Domain.FULLX);
         }
-        if(e.isDoubleValue()){
+        if(e.isDoubleExpr()){
             double d = e.toDouble();
             return new Linear(0,0, d,e.getDomain());
         }
@@ -41,13 +41,8 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    public boolean isDouble() {
-        return super.isDouble();
-    }
-
-    @Override
     public boolean isDoubleImpl() {
-        return super.isDoubleImpl();
+        return getDomain().isUnconstrained() && isDoubleExpr();
     }
 
     @Override
@@ -209,4 +204,10 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeDoubleFromXY(this, x, y, z, d0, ranges);
     }
+
+    @Override
+    public boolean isDoubleExprImpl() {
+        return a==0 && b==0;
+    }
+
 }

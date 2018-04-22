@@ -34,6 +34,12 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     protected Ref() {
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return object.isDoubleTyped();
+    }
+
+
     public String getTitle() {
         return object.getTitle();
     }

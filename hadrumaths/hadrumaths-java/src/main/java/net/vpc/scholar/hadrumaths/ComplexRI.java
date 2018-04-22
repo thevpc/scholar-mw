@@ -596,4 +596,8 @@ public final class ComplexRI extends Complex {
         throw new ClassCastException("Complex has imaginary value and cant be cast to double");
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return imag==0;
+    }
 }

@@ -626,4 +626,9 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     public Expr getZ() {
         return getComponent(Axis.Z);
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
 }

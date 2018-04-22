@@ -278,7 +278,7 @@ public final class Plot {
     }
 
     public static boolean acceptExtension(String e) {
-        e=e.toLowerCase();
+        e = e.toLowerCase();
         return e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION)
                 || e.equals(JFIG_FILE_EXTENSION)
                 || e.equals(JFIGDATA_FILE_EXTENSION)
@@ -972,6 +972,8 @@ public final class Plot {
             return;
         }
         ValuesPlotModel model = (ValuesPlotModel) amodel;
+        Number polarAngleOffset=(Number)model.getProperties().get("polarAngleOffset");
+        Boolean polarClockwise=(Boolean)model.getProperties().get("polarClockwise");
         String[] ytitles = model.getYtitles();
         if ((ytitles == null || ytitles.length == 0) && model.getZ().length > 0) {
             ytitles = new String[model.getZ().length];
@@ -998,7 +1000,7 @@ public final class Plot {
                 model.setProperty("config", config);
             }
             final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend == null ? true : config.showLegend);
-            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise == null ? true : config.clockwise);
+            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise == null ? ((polarClockwise==null?true:polarClockwise.booleanValue())) : config.clockwise);
             final JCheckBox threeDCheckBox = new JCheckBox("3D", config.threeD == null ? false : config.threeD);
             final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", config.alternateColor == null ? true : config.alternateColor);
             final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", config.alternateLine == null ? false : config.alternateLine);
@@ -1012,7 +1014,7 @@ public final class Plot {
             final JLabel defaultMaxLegendLabel = new JLabel("Max Legend");
             final JLabel lineStepTypeLabel = new JLabel("Interpolation");
             final JTextField defaultMaxLegendText = new JTextField(String.valueOf(config.maxLegendCount == null ? Plot.Config.getMaxLegendCount() : config.maxLegendCount));
-            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset == null ? 0 : config.polarAngleOffset));
+            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset == null ? (polarAngleOffset==null?0:polarAngleOffset.doubleValue()) : config.polarAngleOffset));
             final JComboBox lineStepTypeCombo = new JComboBox(new Vector(Arrays.asList(PlotConfigLineStepType.values())));
             lineStepTypeCombo.setSelectedItem(config.lineStepType == null ? PlotConfigLineStepType.DEFAULT : config.lineStepType);
             defaultLineType.setEnabled(!alternateLineCheckBox.isSelected());

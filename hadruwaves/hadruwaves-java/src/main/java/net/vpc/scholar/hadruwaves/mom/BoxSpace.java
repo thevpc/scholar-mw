@@ -13,13 +13,13 @@ public final class BoxSpace implements Dumpable {
     private final BoxLimit limit;
     private final double width;
     private final double epsr;
-    private final double sigma;
+    private final double electricConductivity;
 
-    public BoxSpace(BoxLimit limit, double epsr, double width,double sigma) {
+    public BoxSpace(BoxLimit limit, double epsr, double width,double electricConductivity) {
         this.limit = limit;
         this.epsr = epsr;
         this.width = width;
-        this.sigma = sigma;
+        this.electricConductivity = electricConductivity;
     }
 
     
@@ -33,8 +33,8 @@ public final class BoxSpace implements Dumpable {
 
         if (!limit.equals(BoxLimit.NOTHING)) {
             h.add("epsr",epsr);
-            if(sigma!=0){
-                h.add("sigma",sigma);
+            if(electricConductivity !=0){
+                h.add("electricConductivity", electricConductivity);
             }
         }
         return h.toString();
@@ -54,10 +54,10 @@ public final class BoxSpace implements Dumpable {
     }
 
     public Complex getEps(double freq) {
-        if(sigma==0){
+        if(electricConductivity ==0){
             return Complex.valueOf(epsr* Maths.EPS0);
         }else{
-            return Complex.valueOf(epsr* Maths.EPS0,sigma/(2*Math.PI*freq));
+            return Complex.valueOf(epsr* Maths.EPS0, electricConductivity /(2*Math.PI*freq));
         }
     }
 
@@ -65,7 +65,7 @@ public final class BoxSpace implements Dumpable {
         return epsr;
     }
 
-    public double getSigma() {
-        return sigma;
+    public double getElectricConductivity() {
+        return electricConductivity;
     }
 }

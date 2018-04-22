@@ -1,7 +1,9 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.numeric;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
@@ -26,15 +28,28 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         Domain inter = f1.getDomain().intersect(f2.getDomain()).intersect(domain);
+        Expr f0 = Maths.mul(f1, f2);
+        DoubleToDouble sf = Maths.simplify(f0).toDD();
+//        Plot.title(f0.toString()).plot(f0,sf);
         switch (inter.getDimension()) {
             case 1: {
-                return integrator.integrateX(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax());
+                return integrator.integrateX(sf, inter.xmin(), inter.xmax());
+//                double v1 = integrator.integrateX(sf, inter.xmin(), inter.xmax());
+//                double v2 = integrator.integrateX(f0.toDD(), inter.xmin(), inter.xmax());
+//                System.out.println(Maths.rerr(v1,v2)+" -- "+v1+" -- "+v2);
+//                return v1;
             }
             case 2: {
-                return integrator.integrateXY(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
+                return integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
+//                double v1 = integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
+//                double v2 = integrator.integrateXY(f0.toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
+//                if(v1!=v2) {
+//                    System.out.println(Maths.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
+//                }
+//                return v1;
             }
             case 3: {
-                return integrator.integrateXYZ(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax(), inter.zmin(), inter.zmax());
+                return integrator.integrateXYZ(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax(), inter.zmin(), inter.zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported dimension");

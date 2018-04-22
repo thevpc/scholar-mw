@@ -249,11 +249,11 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex toComplex() {
-        Complex c = Complex.ONE;
+        MutableComplex c = MutableComplex.One();
         for (Expr e : expressions) {
-            c = c.mul(e.toComplex());
+            c.mul(e.toComplex());
         }
-        return c;
+        return c.toComplex();
     }
 
     @Override

@@ -192,4 +192,5 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
     public Expr getZ() {
         return getComponent(Axis.Z);
     }
+
 }

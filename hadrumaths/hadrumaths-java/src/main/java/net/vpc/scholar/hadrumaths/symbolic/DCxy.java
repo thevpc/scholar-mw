@@ -361,12 +361,18 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public Complex toComplex() {
-        throw new ClassCastException();
+        return Complex.valueOf(
+                real.toDouble(),
+                imag.toDouble()
+        );
     }
 
     @Override
     public double toDouble() {
-        throw new ClassCastException();
+        if(!imag.isZero()){
+            throw new ClassCastException();
+        }
+        return real.toDouble();
     }
 
     @Override

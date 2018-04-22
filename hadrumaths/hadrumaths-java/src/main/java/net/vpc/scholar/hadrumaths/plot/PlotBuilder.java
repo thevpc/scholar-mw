@@ -520,7 +520,7 @@ public class PlotBuilder {
         return param("polarClockwise", value);
     }
 
-    public PlotBuilder polarAngleOffset(int value) {
+    public PlotBuilder polarAngleOffset(double value) {
         return param("polarAngleOffset", value);
     }
 
@@ -621,16 +621,25 @@ public class PlotBuilder {
             case "number[][]":
                 asReal();
                 return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), PlotType.HEATMAP);
-            case "expr[]":
+            case "expr[]": {
                 return _plotExprArray(PlotTypesHelper.toExprArray(o));
+            }
             case "complex[]": {
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
-                return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                if(typeAndValue.props.containsKey("column")){
+                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y,Complex.class), PlotType.CURVE);
+                }else {
+                    return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                }
             }
             case "number[]": {
                 asReal();
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
-                return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                if(typeAndValue.props.containsKey("column")){
+                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y,Complex.class), PlotType.CURVE);
+                }else {
+                    return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                }
             }
             case "point":
                 return _plotPoints(new Point[][]{{(Point) o}});

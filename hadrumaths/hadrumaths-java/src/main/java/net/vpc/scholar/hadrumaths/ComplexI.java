@@ -549,4 +549,9 @@ public final class ComplexI extends Complex {
     public double toDouble() {
         throw new ClassCastException("Not Real");
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return false;
+    }
 }

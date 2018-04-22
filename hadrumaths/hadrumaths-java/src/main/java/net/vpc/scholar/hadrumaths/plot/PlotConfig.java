@@ -96,10 +96,10 @@ public class PlotConfig implements Cloneable{
         PlotConfig config=this;
 
         if (config.clockwise == null) {
-            config.clockwise = true;
+            //config.clockwise = true;
         }
         if (config.polarAngleOffset == null) {
-            config.polarAngleOffset = 0;
+            //config.polarAngleOffset = 0;
         }
 
         config.ensureChildrenSize(size);

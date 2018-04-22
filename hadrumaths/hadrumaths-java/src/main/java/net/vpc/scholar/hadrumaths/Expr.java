@@ -28,23 +28,24 @@ public interface Expr extends Serializable {
     boolean isDouble();
 
     /**
-     * @return true if this expression is defined as a valid non param double value, domain constrainted (may have a domain domain)
+     * @return true if this expression is defined as a valid non param, constrained double value
      */
-    boolean isDoubleValue();
-
-    /**
-     * @return true if this expression is defined as a valid non param, non constrained complex value (full domain)
-     */
-    boolean isComplex();
-
-    boolean isComplexValue();
+    boolean isDoubleExpr();
 
     /**
      * true if this expression is defined only for double values and is not handling complex values
      *
      * @return
      */
-    boolean isDoubleExpr();
+    boolean isDoubleTyped();
+
+    /**
+     * @return true if this expression is defined as a valid non param, non constrained complex value (full domain)
+     */
+    boolean isComplex();
+
+    boolean isComplexExpr();
+
 
     /**
      * defines a scalar expression aka defines only for X axis

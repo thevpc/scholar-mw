@@ -126,12 +126,7 @@ public abstract class AbstractExpBase implements Expr {
     }
 
     @Override
-    public boolean isDoubleValue() {
-        return false;
-    }
-
-    @Override
-    public boolean isComplexValue() {
+    public boolean isComplexExpr() {
         return false;
     }
 
@@ -244,4 +239,8 @@ public abstract class AbstractExpBase implements Expr {
         return Maths.neg(this);
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return false;
+    }
 }

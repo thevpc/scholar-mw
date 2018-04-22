@@ -240,8 +240,14 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public boolean isDoubleExprImpl() {
+        return false;
+    }
+
+    @Override
+    public boolean isDoubleTyped() {
         return true;
     }
+
     @Override
     public boolean isComplexImpl() {
         return isDouble();
@@ -265,7 +271,15 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     public Complex toComplex() {
         return Complex.valueOf(toDouble());
     }
-//    public double computeDouble(double x, double y) {
+
+    @Override
+    public double toDouble() {
+        if(!isDoubleExpr()){
+            throw new ClassCastException("Not Double");
+        }
+        return super.toDouble();
+    }
+    //    public double computeDouble(double x, double y) {
 //        return Expressions.computeDouble(this, x, y);
 //    }
 

@@ -1527,6 +1527,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return p;
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
 
     public double ywidth() {
         return ymax() - ymin();
@@ -1626,12 +1630,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public boolean isDouble() {
-        return true;
-    }
-
-    @Override
-    public boolean isDoubleValue() {
-        return true;
+        if(isUnconstrained()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -1640,7 +1642,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public boolean isComplexValue() {
+    public boolean isComplexExpr() {
         return true;
     }
 

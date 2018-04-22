@@ -44,6 +44,11 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         }
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return functionType==FunctionType.DOUBLE;
+    }
+
     public Expr getArgument() {
         return argument;
     }
@@ -342,41 +347,43 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
         }
         Expr e = simplify();
-        if (e instanceof Complex) {
-            return (Complex) e;
+        if(e instanceof GenericFunctionX){
+            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
         }
-        e = simplify();
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+        return e.toComplex();
         //return evalComplex(Complex.NaN);
     }
 
     @Override
     public double toDouble() {
         if (!isDouble()) {
-            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
         }
         Expr e = simplify();
-        if (e instanceof Complex) {
-            Complex cc = (Complex) e;
-            if (cc.isReal()) {
-                return cc.getReal();
-            }
+        if(e instanceof GenericFunctionX){
+            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
         }
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
+        return e.toDouble();
+//        if (e instanceof Complex) {
+//            Complex cc = (Complex) e;
+//            if (cc.isReal()) {
+//                return cc.getReal();
+//            }
+//        }
+//        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
 //        return evalDouble(Double.NaN);
     }
 
     @Override
     public Matrix toMatrix() {
         if (!isMatrix()) {
-            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
         }
         Expr e = simplify();
-        if (e instanceof Complex) {
-            return ((Complex) e).toMatrix();
+        if(e instanceof GenericFunctionX){
+            throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
         }
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to MAtrix");
-//        return evalDM(Double.NaN);
+        return e.toMatrix();
     }
 
     @Override

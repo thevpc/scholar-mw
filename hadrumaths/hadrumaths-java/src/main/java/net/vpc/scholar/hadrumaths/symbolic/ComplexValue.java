@@ -332,7 +332,12 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     }
 
     @Override
-    public boolean isComplexValue() {
+    public boolean isComplexExpr() {
         return true;
+    }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return value.isDoubleTyped();
     }
 }

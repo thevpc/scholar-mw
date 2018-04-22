@@ -43,6 +43,12 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         domain = expression.getDomain().transform(axis[0], axis[1], axis[2], dim);
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return expression.isDoubleTyped();
+    }
+
+
     public Domain convertDomain(Domain d) {
         if (d == null) {
             return null;

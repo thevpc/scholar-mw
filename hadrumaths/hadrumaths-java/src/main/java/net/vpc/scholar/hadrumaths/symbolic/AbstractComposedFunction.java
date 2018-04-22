@@ -17,6 +17,16 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
 
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        for (Expr e : getSubExpressions()) {
+            if (!e.isDoubleTyped()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public abstract Expr[] getArguments();
 
     @Override

@@ -4,6 +4,9 @@ import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
+import net.vpc.scholar.hadrumaths.geom.Point;
+import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
+import net.vpc.scholar.hadrumaths.integration.formal.FormalIntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
@@ -271,6 +274,8 @@ public final class Maths {
     public static final TypeReference<Complex> $COMPLEX = new ComplexTypeReference();
     public static final TypeReference<Double> $DOUBLE = new DoubleTypeReference();
     public static final TypeReference<Boolean> $BOOLEAN = new BooleanTypeReference();
+    public static final TypeReference<Point> $POINT = new PointTypeReference();
+    public static final TypeReference<File> $FILE = new FileTypeReference();
     //</editor-fold>
     public static final TypeReference<Integer> $INTEGER = new IntegerTypeReference();
     public static final TypeReference<Long> $LONG = new LongTypeReference();
@@ -3755,30 +3760,7 @@ public final class Maths {
     }
 
     public static Complex integrate(Expr e, Domain domain) {
-        if (e instanceof Any) {
-            e = Any.unwrap(e);
-        }
-        if (e instanceof Mul) {
-            Mul m = (Mul) e;
-            if (m.size() == 2) {
-                Expr expression = m.getExpression(0);
-                return scalarProduct(false, domain, expression, m.getExpression(1));
-            } else if (m.size() > 2) {
-                List<Expr> first = new ArrayList<Expr>();
-                List<Expr> second = new ArrayList<Expr>();
-                for (int i = 0; i < m.size(); i++) {
-                    if (i < 2) {
-                        first.add(m.getExpression(i));
-                    } else {
-                        second.add(m.getExpression(i));
-                    }
-                }
-                Expr firsts = (new Mul(first.toArray(new Expr[first.size()])));
-                Mul seconds = new Mul(second.toArray(new Expr[second.size()]));
-                return scalarProduct(false, domain, firsts, seconds);
-            }
-        }
-        throw new RuntimeException("Unsupported");
+        return Config.getDefaultIntegrationOperator().eval(domain,e);
     }
 
     public static Expr esum(int size, TVectorCell<Expr> f) {
@@ -3885,14 +3867,14 @@ public final class Maths {
             }
         }
         for (Expr expr : fn) {
-            if (!expr.isDoubleExpr()) {
+            if (!expr.isDoubleTyped()) {
                 doubleValue = false;
                 break;
             }
         }
         if (doubleValue) {
             for (Expr expr : gp) {
-                if (!expr.isDoubleExpr()) {
+                if (!expr.isDoubleTyped()) {
                     doubleValue = false;
                     break;
                 }
@@ -5620,6 +5602,7 @@ public final class Maths {
         //        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
         //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
         private static ScalarProductOperator defaultScalarProductOperator = null;
+        private static IntegrationOperator defaultIntegrationOperator = null;
         private static FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
         private static Map<ClassPair, Converter> converters = new HashMap<>();
         private static Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
@@ -5930,6 +5913,13 @@ public final class Maths {
             return defaultScalarProductOperator;
         }
 
+        public static IntegrationOperator getDefaultIntegrationOperator() {
+            if (defaultIntegrationOperator == null) {
+                defaultIntegrationOperator = new FormalIntegrationOperator();
+            }
+            return defaultIntegrationOperator;
+        }
+
         public static void setDefaultScalarProductOperator(ScalarProductOperator sp) {
             defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
         }
@@ -6195,6 +6185,12 @@ public final class Maths {
     }
 
     private static class BooleanTypeReference extends TypeReference<Boolean> {
+    }
+    private static class PointTypeReference extends TypeReference<Point> {
+
+    }
+
+    private static class FileTypeReference extends TypeReference<File> {
     }
 
     private static class IntegerTypeReference extends TypeReference<Integer> {

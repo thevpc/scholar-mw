@@ -260,7 +260,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex toComplex() {
-        return getFirst().toComplex().pow(getFirst().toComplex());
+        return getFirst().toComplex().pow(getSecond().toComplex());
     }
 
     @Override

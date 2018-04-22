@@ -16,6 +16,12 @@ public abstract class AxisFunction extends AbstractComposedFunction {
         super();
         this.domain = domain;
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
+
     protected Complex evalComplex(Complex c) {
         return c;
     }
@@ -119,8 +125,9 @@ public abstract class AxisFunction extends AbstractComposedFunction {
 
     @Override
     public boolean isDoubleExprImpl() {
-        return true;
+        return false;
     }
+
 
 
     @Override

@@ -51,9 +51,17 @@ public class PlotCanvasPolarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
                 legend == null ? true : legend,
                 tooltips == null ? true : tooltips,
                 false);
+        PlotModel model = plotModelProvider.getModel();
+        Number _polarAngleOffset=null;
+        Boolean _polarClockwise=null;
+        if(model instanceof ValuesPlotModel){
+            ValuesPlotModel vpm = (ValuesPlotModel) model;
+            _polarAngleOffset=(Number)vpm.getProperties().get("polarAngleOffset");
+            _polarClockwise=(Boolean)vpm.getProperties().get("polarClockwise");
+        }
         PolarPlot polarPlot = (PolarPlot) chart.getPlot();
-        boolean clockwise = config.clockwise == null ? true : config.clockwise;
-        double polarAngleOffset = config.polarAngleOffset == null ? 0 : config.polarAngleOffset.doubleValue();
+        boolean clockwise = config.clockwise == null ? (_polarClockwise==null?true:_polarClockwise.booleanValue()) : config.clockwise;
+        double polarAngleOffset = config.polarAngleOffset == null ? (_polarAngleOffset==null?0:_polarAngleOffset.doubleValue()) : config.polarAngleOffset.doubleValue();
         polarPlot.setCounterClockwise(!clockwise); // changes the direction of the ticks
         polarPlot.setAxisLocation(PolarAxisLocation.EAST_BELOW); // defines the placement of the axis
         polarPlot.setAngleOffset(polarAngleOffset);

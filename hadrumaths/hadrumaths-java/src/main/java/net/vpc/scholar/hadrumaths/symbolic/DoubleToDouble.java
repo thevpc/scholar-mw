@@ -14,28 +14,28 @@ import net.vpc.scholar.hadrumaths.Out;
  */
 public interface DoubleToDouble extends Expr {
 
-    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
+    double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
 
-    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges);
+    double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges);
 
-    public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges);
+    double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges);
 
-    public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges);
+    double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges);
 
-    public double computeDouble(double x, double y);
+    double computeDouble(double x, double y);
 
-    public double computeDouble(double x, double y, double z);
+    double computeDouble(double x, double y, double z);
 
-    public double[] computeDouble(double[] x, Domain d0, Out<Range> range);
+    double[] computeDouble(double[] x, Domain d0, Out<Range> range);
 
-    public double computeDouble(double x);
+    double computeDouble(double x);
 
-    public double[] computeDouble(double[] x);
+    double[] computeDouble(double[] x);
 
-    public double[][] computeDouble(double[] x, double[] y);
+    double[][] computeDouble(double[] x, double[] y);
 
-    public double[] computeDouble(double x, double[] y);
+    double[] computeDouble(double x, double[] y);
 
-    public double[][][] computeDouble(double[] x, double[] y, double[] z);
+    double[][][] computeDouble(double[] x, double[] y, double[] z);
 
 }

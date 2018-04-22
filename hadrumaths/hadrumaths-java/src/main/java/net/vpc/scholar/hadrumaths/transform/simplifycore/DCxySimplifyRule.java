@@ -41,7 +41,7 @@ public class DCxySimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(exreal.getValue());
         }
         if(exreal.getValue().getDomain().equals(eximag.getValue().getDomain())){
-            if(exreal.getValue().isDoubleValue() && eximag.getValue().isDoubleValue()){
+            if(exreal.getValue().isDoubleExpr() && eximag.getValue().isDoubleExpr()){
                 DoubleValue a=(DoubleValue) exreal.getValue();
                 DoubleValue b=(DoubleValue) eximag.getValue();
                 return RewriteResult.bestEffort(new ComplexValue(Complex.valueOf(a.value,b.value), exreal.getValue().getDomain()));

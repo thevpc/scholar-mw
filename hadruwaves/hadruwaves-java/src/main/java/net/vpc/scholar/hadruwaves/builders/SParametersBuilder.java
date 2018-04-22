@@ -9,8 +9,8 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface SParametersBuilder extends ValueBuilder{
-    public SParametersBuilder monitor(ProgressMonitor monitor);
-    public SParametersBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
+    SParametersBuilder monitor(ProgressMonitor monitor);
+    SParametersBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
 
     Matrix computeMatrix();
 

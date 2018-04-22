@@ -17,6 +17,16 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
     }
 
 
+    @Override
+    public boolean isDoubleTyped() {
+        for (Expr e : getSubExpressions()) {
+            if (!e.isDoubleTyped()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected boolean isDCImpl() {
         for (Expr e : getSubExpressions()) {
             if (!e.isDC()) {

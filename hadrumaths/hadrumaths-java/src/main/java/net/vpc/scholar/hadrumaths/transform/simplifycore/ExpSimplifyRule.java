@@ -37,7 +37,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
         Expr aa = ee.getArgument();
         RewriteResult rewriteResult = ruleset.rewrite(aa);
         Expr simplifiedArg = rewriteResult.getValue();
-        if(simplifiedArg.isDoubleValue()) {
+        if(simplifiedArg.isDoubleExpr()) {
             return RewriteResult.newVal(
                     new DoubleValue(Maths.exp(simplifiedArg.toDouble()),simplifiedArg.getDomain())
             );
@@ -56,7 +56,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
                             Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl()))
                 );
             }
-        }else if(simplifiedArg.isComplexValue()){
+        }else if(simplifiedArg.isComplexExpr()){
             ComplexValue cv=(ComplexValue) simplifiedArg;
             Complex c=cv.getValue();
             if(c.isReal()) {

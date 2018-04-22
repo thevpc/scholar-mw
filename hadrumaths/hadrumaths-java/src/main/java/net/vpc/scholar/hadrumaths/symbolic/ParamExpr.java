@@ -335,4 +335,10 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     public Expr getZ() {
         return getComponent(Axis.Z);
     }
+
+    @Override
+    public boolean isDoubleTyped() {
+        return true;
+    }
+
 }

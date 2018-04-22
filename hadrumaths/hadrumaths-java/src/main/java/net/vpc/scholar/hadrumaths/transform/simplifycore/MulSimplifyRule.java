@@ -156,9 +156,9 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
 //            //b.
 //        }
 
-        if (a.isDoubleValue()) {
+        if (a.isDoubleExpr()) {
             double cst = a.toDouble();
-            if (b.isDoubleValue()) {
+            if (b.isDoubleExpr()) {
                 return DoubleValue.valueOf(cst * b.toDouble(), fullDomain);
             } else if (b.isComplex()) {
                 Complex f=b.toComplex();
@@ -167,7 +167,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
                 } else {
                     return new ComplexValue(f.mul(cst), fullDomain);
                 }
-            } else if (b.isComplexValue()) {
+            } else if (b.isComplexExpr()) {
                 return new ComplexValue(b.toComplex().mul(cst), fullDomain);
             } else if (b instanceof Linear) {
                 Linear f = (Linear) b;
@@ -234,8 +234,8 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
 //                DDxyToDDx f = (DDxyToDDx) b;
 //                return new DDxyToDDx(Maths.mul(a, f.getBase()).toDD(), f.getDefaultY());
             }
-        } else if (a.isComplexValue()) {
-            if (b.isComplexValue()) {
+        } else if (a.isComplexExpr()) {
+            if (b.isComplexExpr()) {
                 return new ComplexValue(b.toComplex().mul(a.toComplex()), fullDomain);
             }
         } else if (a instanceof Complex) {
@@ -300,7 +300,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             }
             return null;
         }
-        if (b.isDoubleValue() || b.isComplexValue() || b instanceof AxisFunction) {
+        if (b.isDoubleExpr() || b.isComplexExpr() || b instanceof AxisFunction) {
             return simplify(b, a, fullDomain);
         }
         return null;

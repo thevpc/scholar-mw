@@ -757,5 +757,9 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         }
     }
 
+    @Override
+    public boolean isDoubleTyped() {
+        return object.isDoubleTyped();
+    }
 
 }

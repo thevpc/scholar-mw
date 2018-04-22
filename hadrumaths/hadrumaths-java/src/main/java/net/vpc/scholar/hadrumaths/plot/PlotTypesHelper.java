@@ -94,13 +94,18 @@ public class PlotTypesHelper {
 
     public static TypeAndValue resolveComponentType(Object obj) {
         List initial=new ArrayList();
+        boolean column=false;
         if (obj.getClass().isArray()) {
             int l = Array.getLength(obj);
             for (int i = 0; i < l; i++) {
                 initial.add(Array.get(obj,i));
             }
         }else if(obj instanceof TVector){
-            initial.addAll(Arrays.asList(((TVector) obj).toArray()));
+            TVector vv = (TVector) obj;
+            if(vv.isColumn()){
+                column=true;
+            }
+            initial.addAll(Arrays.asList(vv.toArray()));
         }else if(obj instanceof Collection){
             initial.addAll((Collection) obj);
         }else if(obj instanceof Iterable){
@@ -135,7 +140,11 @@ public class PlotTypesHelper {
         } else {
             t = "object";
         }
-        return compress(new TypeAndValue(t, all));
+        TypeAndValue t1 = new TypeAndValue(t, all);
+        if(column){
+            t1.props.put("column","true");
+        }
+        return compress(t1);
     }
     //should compress to  double[] or Complex[] if applicable!!
     protected static TypeAndValue compress(TypeAndValue t){
@@ -171,13 +180,32 @@ public class PlotTypesHelper {
             }
             return new TypeAndValue("number[][]",obj);
         }
-        if (obj instanceof Vector) {
-            for (Complex complex : ((Vector) obj).toArray()) {
-                if(!complex.isDouble()){
-                    return new TypeAndValue("complex[]",obj);
-                }
+        if (obj instanceof TVector) {
+            TVector vv = (TVector) obj;
+            if(vv.isConvertibleTo(Maths.$DOUBLE)) {
+                vv = vv.to(Maths.$DOUBLE);
+            }else if(vv.isConvertibleTo(Maths.$COMPLEX)){
+                vv=vv.to(Maths.$COMPLEX);
+            }else if(vv.isConvertibleTo(Maths.$EXPR)){
+                vv=vv.to(Maths.$EXPR);
             }
-            return new TypeAndValue("number[]", obj);
+            String subType="object";
+            if(vv.getComponentType().equals(Maths.$COMPLEX)) {
+                subType = "complex";
+            }else if(vv.getComponentType().equals(Maths.$EXPR)){
+                subType="expr";
+            }else if(vv.getComponentType().equals(Maths.$DOUBLE)){
+                subType="number";
+            }else if(vv.getComponentType().equals(Maths.$BOOLEAN)){
+                subType="boolean";
+            }else if(vv.getComponentType().equals(Maths.$POINT)){
+                subType="point";
+            }else if(vv.getComponentType().equals(Maths.$FILE)){
+                subType="file";
+            }
+            TypeAndValue typeAndValue = new TypeAndValue(subType+"[]", obj);
+            typeAndValue.props.put("column",String.valueOf(vv.isColumn()));
+            return typeAndValue;
         }
         if (obj instanceof ToDoubleArrayAware) {
             return (new TypeAndValue("number[]",((ToDoubleArrayAware) obj).toDoubleArray()));
@@ -224,6 +252,14 @@ public class PlotTypesHelper {
             return Complex.valueOf(((Number) obj).doubleValue());
         }
         throw new IllegalArgumentException("Not a Complex");
+    }
+
+    public static Object[][] toColumn(Object[] obj,Class cls) {
+        Object[][] vals = (Object[][]) Array.newInstance(cls,obj.length,1);
+        for (int i = 0; i < obj.length; i++) {
+            vals[i][0]=obj[i];
+        }
+        return vals;
     }
 
     public static Complex[] toComplexArray(Object obj) {
@@ -405,6 +441,7 @@ public class PlotTypesHelper {
     public static class TypeAndValue {
         public String type;
         public Object value;
+        public Map<String,String> props=new HashMap<>();
 
         public TypeAndValue(String type, Object value) {
             this.type = type;
