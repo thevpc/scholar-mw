@@ -8,5 +8,5 @@
 // * To change this template use File | Settings | File Templates.
 // */
 //public enum TypeCharge {
-//    CHARGE_ADAPTEE,COUPE_CIRCUIT,CIRCUIT_OUVERT
+//    MATCHED_LOAD,COUPE_CIRCUIT,CIRCUIT_OUVERT
 //}

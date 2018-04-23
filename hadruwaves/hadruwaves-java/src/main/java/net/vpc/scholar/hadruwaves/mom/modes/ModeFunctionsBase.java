@@ -707,8 +707,8 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             rebuildObj();
             /*
              * if (getProjectType().equals(ProjectType.WAVE_GUIDE) &&
-             * (!BoxLimit.CHARGE_ADAPTEE.equals(getFirstBoxSpace().limit) ||
-             * !BoxLimit.CHARGE_ADAPTEE.equals(getSecondBoxSpace().limit))) {
+             * (!BoxLimit.MATCHED_LOAD.equals(getFirstBoxSpace().limit) ||
+             * !BoxLimit.MATCHED_LOAD.equals(getSecondBoxSpace().limit))) {
              * throw new IllegalArgumentException("For waveguide projects limits
              * should be charge adaptee");
              }

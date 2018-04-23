@@ -127,7 +127,7 @@ public class Real extends DCxyToDDxy implements Cloneable{
 
     @Override
     public boolean isDoubleExprImpl() {
-        return true;
+        return false;
     }
 
     @Override

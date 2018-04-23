@@ -16,6 +16,7 @@ import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
 
 import java.io.File;
 import java.util.Collection;
+import net.vpc.scholar.hadruwaves.mom.MomCache;
 
 /**
  * @author vpc
@@ -113,12 +114,12 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public Collection<ObjectCache> getSimilarCaches(String property) {
+    public Collection<MomCache> getSimilarCaches(String property) {
         return momStructure.getSimilarCaches(property);
     }
 
 
-    public Collection<ObjectCache> getAllCaches() {
+    public Collection<MomCache> getAllCaches() {
         return momStructure.getAllCaches();
     }
 

@@ -125,6 +125,14 @@ public class PlotBuilder {
         return this;
     }
 
+    public PlotBuilder add(Object item,String title) {
+        if (item != null) {
+            itemsToPlot.add(item);
+            titles.add(title);
+        }
+        return this;
+    }
+
     public DoubleFormatter xformat() {
         return xformat;
     }

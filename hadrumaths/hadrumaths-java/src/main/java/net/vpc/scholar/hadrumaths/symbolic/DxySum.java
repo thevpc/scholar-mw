@@ -158,6 +158,11 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
 
     @Override
     public boolean isDoubleExprImpl() {
+        return false;
+    }
+
+    @Override
+    public boolean isDoubleTyped() {
         return true;
     }
 

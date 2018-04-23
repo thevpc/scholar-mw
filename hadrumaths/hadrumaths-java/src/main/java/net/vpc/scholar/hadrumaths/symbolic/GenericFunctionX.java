@@ -312,10 +312,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 
     @Override
     public boolean isDoubleExprImpl() {
-        if(! super.isDoubleExprImpl()){
-            return false;
-        }
-        return functionType.ordinal() <= FunctionType.DOUBLE.ordinal();
+        return false;
     }
 
     @Override

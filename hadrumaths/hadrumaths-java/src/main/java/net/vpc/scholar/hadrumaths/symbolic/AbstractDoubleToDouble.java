@@ -45,8 +45,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return r;
     }
 
-
-
     public Domain getDomainImpl() {
         return domain;
     }
@@ -73,11 +71,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     }
 
     public DoubleToDouble getSymmetricX(double x0) {
-        return ((AbstractDoubleToDouble)getSymmetricX()).translate(2 * (x0 - ((domain.xmin() + domain.xmax()) / 2)), 0);
+        return ((AbstractDoubleToDouble) getSymmetricX()).translate(2 * (x0 - ((domain.xmin() + domain.xmax()) / 2)), 0);
     }
 
     public DoubleToDouble getSymmetricY(double y0) {
-        return ((AbstractDoubleToDouble)getSymmetricY()).translate(0, 2 * (y0 - ((domain.ymin() + domain.ymax()) / 2)));
+        return ((AbstractDoubleToDouble) getSymmetricY()).translate(0, 2 * (y0 - ((domain.ymin() + domain.ymax()) / 2)));
     }
 
     public DoubleToDouble mul(double factor, Domain newDomain) {
@@ -122,7 +120,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     public DoubleToDouble clone() {
         return (DoubleToDouble) super.clone();
     }
-
 
     public boolean isZeroImpl() {
         return false;
@@ -204,7 +201,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 //        }
 //        throw new IllegalArgumentException("Unsupported");
 //    }
-
     public List<Expr> getSubExpressions() {
         return Collections.EMPTY_LIST;
     }
@@ -216,13 +212,21 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AbstractDoubleToDouble)) return false;
-        if (!(o.getClass().equals(getClass()))) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractDoubleToDouble)) {
+            return false;
+        }
+        if (!(o.getClass().equals(getClass()))) {
+            return false;
+        }
 
         AbstractDoubleToDouble dDxy = (AbstractDoubleToDouble) o;
 
-        if (domain != null ? !domain.equals(dDxy.domain) : dDxy.domain != null) return false;
+        if (domain != null ? !domain.equals(dDxy.domain) : dDxy.domain != null) {
+            return false;
+        }
 
         return true;
     }
@@ -253,7 +257,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return isDouble();
     }
 
-
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
@@ -274,10 +277,10 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public double toDouble() {
-        if(!isDoubleExpr()){
+        if (!isDoubleExpr()) {
             throw new ClassCastException("Not Double");
         }
-        return super.toDouble();
+        throw new RuntimeException("Unsupported yet toDouble in "+getClass().getName());
     }
     //    public double computeDouble(double x, double y) {
 //        return Expressions.computeDouble(this, x, y);
@@ -291,7 +294,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int bx = currRange.xmax;
             int cy = currRange.ymin;
             int dy = currRange.ymax;
-            BooleanArray3 d = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 d = BooleanArrays.newArray(z.length, y.length, x.length);
             currRange.setDefined(d);
             for (int i = currRange.zmin; i <= currRange.zmax; i++) {
                 for (int k = ax; k <= bx; k++) {
@@ -299,7 +302,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                         if (contains(x[k], y[j])) {
                             double v = computeDouble0(x[k], y[j]);
                             r[i][j][k] = v;
-                            d.set(i,j,k);
+                            d.set(i, j, k);
                         }
                     }
                 }
@@ -310,6 +313,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         }
         return r;
     }
+
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         double[][] r = new double[y.length][x.length];
         Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
@@ -318,14 +322,14 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int bx = currRange.xmax;
             int cy = currRange.ymin;
             int dy = currRange.ymax;
-            BooleanArray2 d = BooleanArrays.newArray(y.length,x.length);
+            BooleanArray2 d = BooleanArrays.newArray(y.length, x.length);
             currRange.setDefined(d);
             for (int k = ax; k <= bx; k++) {
                 for (int j = cy; j <= dy; j++) {
-                    if(contains(x[k], y[j])) {
+                    if (contains(x[k], y[j])) {
                         double v = computeDouble0(x[k], y[j]);
                         r[j][k] = v;
-                        d.set(j,k);
+                        d.set(j, k);
                     }
                 }
             }
@@ -335,7 +339,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         }
         return r;
     }
-
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
@@ -347,9 +350,9 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             BooleanArray1 d = BooleanArrays.newArray(x.length);
             currRange.setDefined(d);
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
-                if(contains(x[xIndex])) {
+                if (contains(x[xIndex])) {
                     r[xIndex] = computeDouble0(x[xIndex]);
-                }else{
+                } else {
                     d.clear(xIndex);
                 }
             }
@@ -367,7 +370,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         for (int zi = 0; zi < m.length; zi++) {
             for (int yi = 0; yi < m[zi].length; zi++) {
                 for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi]=Complex.valueOf(d[zi][yi][xi]);
+                    m[zi][yi][xi] = Complex.valueOf(d[zi][yi][xi]);
                 }
             }
         }
@@ -380,7 +383,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         for (int zi = 0; zi < m.length; zi++) {
             for (int yi = 0; yi < m[zi].length; zi++) {
                 for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi]= Maths.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
+                    m[zi][yi][xi] = Maths.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
                 }
             }
         }
@@ -410,19 +413,19 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                 return 0;
             }
             case 2: {
-                if (contains(x,y)) {
-                    return computeDouble0(x,y);
+                if (contains(x, y)) {
+                    return computeDouble0(x, y);
                 }
                 return 0;
             }
             case 3: {
-                if (contains(x,y,z)) {
-                    return computeDouble0(x,y,z);
+                if (contains(x, y, z)) {
+                    return computeDouble0(x, y, z);
                 }
                 return 0;
             }
         }
-        throw new IllegalArgumentException("Invalid domain "+getDomainDimension());
+        throw new IllegalArgumentException("Invalid domain " + getDomainDimension());
     }
 
     @Override
@@ -435,63 +438,59 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                 return 0;
             }
             case 2: {
-                if (contains(x,y)) {
-                    return computeDouble0(x,y);
+                if (contains(x, y)) {
+                    return computeDouble0(x, y);
                 }
                 return 0;
             }
         }
         if (contains(x, y)) {
-            return computeDouble0(x,y);
+            return computeDouble0(x, y);
         }
         return 0;
     }
-
 
     protected boolean contains(double x) {
         return domain.contains(x);
     }
 
-    protected boolean contains(double x,double y){
-        return domain.contains(x,y);
+    protected boolean contains(double x, double y) {
+        return domain.contains(x, y);
     }
 
-    protected boolean contains(double x,double y,double z) {
-        return domain.contains(x,y,z);
+    protected boolean contains(double x, double y, double z) {
+        return domain.contains(x, y, z);
     }
 
-    protected abstract double computeDouble0(double x) ;
+    protected abstract double computeDouble0(double x);
 
-    protected abstract double computeDouble0(double x,double y) ;
+    protected abstract double computeDouble0(double x, double y);
 
-    protected abstract double computeDouble0(double x,double y,double z) ;
-
-
+    protected abstract double computeDouble0(double x, double y, double z);
 
     @Override
     public double[] computeDouble(double[] x) {
-        return computeDouble(x,(Domain)null,null);
+        return computeDouble(x, (Domain) null, null);
     }
 
     @Override
     public double[] computeDouble(double x, double[] y) {
-        return computeDouble(x,y,(Domain)null,null);
+        return computeDouble(x, y, (Domain) null, null);
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        return computeDouble(x,y,z,(Domain)null,null);
+        return computeDouble(x, y, z, (Domain) null, null);
     }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y) {
-        return computeDouble(x,y,(Domain)null,null);
+        return computeDouble(x, y, (Domain) null, null);
     }
 
     @Override
     public ComponentDimension getComponentDimension() {
         return ComponentDimension.SCALAR;
     }
-
 
 }

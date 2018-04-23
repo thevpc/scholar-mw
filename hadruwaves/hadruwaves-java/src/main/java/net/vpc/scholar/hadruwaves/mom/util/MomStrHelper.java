@@ -10,6 +10,7 @@ import java.util.Collection;
 import net.vpc.scholar.hadruwaves.mom.project.*;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadruwaves.mom.MomCache;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
 
@@ -55,9 +56,9 @@ public interface MomStrHelper {
 
     public ObjectCache getCurrentCache(boolean autoCreate);
 
-    public Collection<ObjectCache> getSimilarCaches(String property);
+    public Collection<MomCache> getSimilarCaches(String property);
 
-    public Collection<ObjectCache> getAllCaches();
+    public Collection<MomCache> getAllCaches();
 
     public String getDump();
 }

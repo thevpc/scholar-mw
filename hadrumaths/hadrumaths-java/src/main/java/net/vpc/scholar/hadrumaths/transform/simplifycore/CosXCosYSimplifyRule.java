@@ -38,13 +38,13 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(DoubleValue.valueOf(0,e.getDomain()));
         }
         if(ee.getA()==0 && ee.getC()==0){
-            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getA())*Maths.cos2(ee.getC()),e.getDomain()));
+            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getB())*Maths.cos2(ee.getD()),e.getDomain()));
         }
 
-        if(ee.getA()==0 && ee.getB()!=0){
+        if(ee.getA()==0){
             return RewriteResult.newVal(new CosXCosY(ee.getAmp()* Maths.cos2(ee.getB()),0,0,ee.getC(),ee.getD(),ee.getDomain()));
         }
-        if(ee.getC()==0 && ee.getD()!=0){
+        if(ee.getC()==0){
             return RewriteResult.newVal(new CosXCosY(ee.getAmp()*Maths.cos2(ee.getD()),ee.getA(),ee.getB(),0,0,ee.getDomain()));
         }
         return RewriteResult.unmodified(e);

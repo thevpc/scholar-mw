@@ -335,7 +335,7 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         return null;
     }
 
-    public double getHauteur(int index) {
+    public double getHeight(int index) {
         Point pp2;
         Point pp3;
         switch (index) {

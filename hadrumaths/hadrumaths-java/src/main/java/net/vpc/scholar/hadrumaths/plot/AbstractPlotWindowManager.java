@@ -16,6 +16,7 @@ import java.beans.PropertyChangeListener;
  * @author vpc
  */
 public abstract class AbstractPlotWindowManager implements PlotWindowManager {
+
     private PlotWindowContainerFactory plotWindowContainerFactory = new TabbedPlotWindowContainerFactory();
     private String globalTitle = "Plot";
     private PropertyChangeListener titleChangeListener = new PropertyChangeListener() {
@@ -33,7 +34,6 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
             }
         }
     };
-
 
     public AbstractPlotWindowManager() {
     }
@@ -103,7 +103,6 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
 
     }
 
-
     @Override
     public void display(PlotComponent plotComponent) {
         add(plotComponent);
@@ -116,57 +115,7 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
         return s;
     }
 
-    public abstract PlotContainer getRootContainer();
+    public abstract void removePlotComponentImpl(PlotComponent component);
 
-    public PlotContainer getContainer(String[] path) {
-        if (path.length == 0) {
-            return getRootContainer();
-        }
-        return findOrCreateContainer(path, 0, getRootContainer());
-    }
-
-    private PlotContainer findOrCreateContainer(String[] path, int index, PlotContainer parent) {
-        String name = path[index];
-        int childIndex = parent.indexOfPlotComponent(name);
-        PlotContainer p=null;
-        if(childIndex<0){
-            p=parent.add(name);
-        }else {
-            PlotComponent child = parent.getPlotComponent(name);
-            if (child instanceof PlotContainer) {
-                p = (PlotContainer) child;
-            } else {
-                p = parent.add(childIndex, name);
-            }
-        }
-        if (index == path.length - 1) {
-            return p;
-        }
-        return findOrCreateContainer(path,index+1,p);
-//
-//        if (StringUtils.isInt(name)) {
-//
-//
-//            if (i < 0) {
-//                throw new IllegalArgumentException("Invalid index " + i);
-//            } else if (i < c) {
-//            } else {
-//                PlotContainer p = parent.add(String.valueOf(i));
-//                if (index == path.length - 1) {
-//                    return p;
-//                }
-//                return findOrCreateContainer(path,index+1,p);
-//            }
-//        } else {
-//            throw new IllegalArgumentException("Not yet supported non numeric path");
-//        }
-    }
-
-    public void removePlotComponentImpl(PlotComponent component) {
-        getRootContainer().remove(component);
-    }
-
-    public void addPlotComponentImpl(PlotComponent component, String[] path) {
-        getContainer(path).add(component);
-    }
+    public abstract void addPlotComponentImpl(PlotComponent component, String[] path);
 }

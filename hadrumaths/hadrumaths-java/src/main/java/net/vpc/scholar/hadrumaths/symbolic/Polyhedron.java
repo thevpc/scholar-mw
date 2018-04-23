@@ -70,8 +70,8 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
                 t2 = new Triangle(triangle.p1, triangle.p2, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
                     t3 = new Triangle(triangle.p1, triangle.p2, Point.create(x, y));
-                    double h2 = t2.getHauteur(3);
-                    v = h2 == 0 ? 0 : t3.getHauteur(3) / h2 * max;
+                    double h2 = t2.getHeight(3);
+                    v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
                         v = 0;
                     }
@@ -81,8 +81,8 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
                 t2 = new Triangle(triangle.p2, triangle.p3, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
                     t3 = new Triangle(triangle.p2, triangle.p3, Point.create(x, y));
-                    double h2 = t2.getHauteur(3);
-                    v = h2 == 0 ? 0 : t3.getHauteur(3) / h2 * max;
+                    double h2 = t2.getHeight(3);
+                    v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
                         v = 0;
                     }
@@ -93,8 +93,8 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
                 t2 = new Triangle(triangle.p3, triangle.p1, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
                     t3 = new Triangle(triangle.p3, triangle.p1, Point.create(x, y));
-                    double h2 = t2.getHauteur(3);
-                    v = h2 == 0 ? 0 : t3.getHauteur(3) / h2 * max;
+                    double h2 = t2.getHeight(3);
+                    v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
                         v = 0;
                     }

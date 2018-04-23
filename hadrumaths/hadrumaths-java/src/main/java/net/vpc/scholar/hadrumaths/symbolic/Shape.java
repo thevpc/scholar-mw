@@ -207,6 +207,11 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
+    public boolean isDoubleImpl() {
+        return false;
+    }
+
+    @Override
     public int getDomainDimension() {
         return 2;
     }

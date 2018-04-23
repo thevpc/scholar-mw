@@ -241,7 +241,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth);
     }
 
-    public static Domain forWidthXYY(double xmin, double ymin, double zmin, double xwidth, double ywidth, double zwidth) {
+    public static Domain forWidthXYZ(double xmin, double ymin, double zmin, double xwidth, double ywidth, double zwidth) {
         return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth, zmin, zmin + zwidth);
     }
 
@@ -1487,10 +1487,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 }
             }
             case 2: {
-                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth()).toTriangle();
+                return Domain.forWidth(xmin() + x, xwidth(), ymax() + y, ywidth()).toTriangle();
             }
             case 3: {
-                return Domain.forWidth(xmin() + x, ymax() + y, xwidth(), ywidth(), zmin(), zwidth()).toTriangle();
+                return Domain.forWidth(xmin() + x, xwidth(), ymax() + y, ywidth(), zmin(), zwidth()).toTriangle();
             }
         }
         throw new IllegalArgumentException("Unsupported Domain dimension");

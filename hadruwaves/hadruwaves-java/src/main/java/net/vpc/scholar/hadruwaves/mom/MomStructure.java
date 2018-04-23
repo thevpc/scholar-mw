@@ -1590,11 +1590,12 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
     }
 
-    public Collection<ObjectCache> getSimilarCaches(String property) {
-        ArrayList<ObjectCache> found = new ArrayList<ObjectCache>();
+    public Collection<MomCache> getSimilarCaches(String property) {
+        ArrayList<MomCache> found = new ArrayList<MomCache>();
         for (Iterator<ObjectCache> i = getPersistentCache().iterate(); i.hasNext(); ) {
             ObjectCache c = i.next();
-            Map<String, String> indexes = parseCacheValues(c);
+            MomCache mc=new MomCache(c);
+            Map<String, String> indexes = mc.parseCacheValues();
             MomStructure s = this.clone();
             String val = indexes.get(property);
             if ("circuitType".equals(property)) {
@@ -1609,53 +1610,19 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
                 s.setYdim(Double.valueOf(val));
             }
             if (s.dump().equals(c.getDump())) {
-                found.add(c);
+                found.add(mc);
             }
         }
         return found;
     }
 
-    public Map<String, String> parseCacheValues(ObjectCache c) {
-        return parseCacheValues(c, "projectType", "circuitType", "frequency", "width", "height");
-    }
+    
 
-    public Map<String, String> parseCacheValues(ObjectCache c, String... names) {
-        HashMap<String, String> parsedValues = new HashMap<String, String>();
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new StringReader(c.getDump()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                //TODO
-                for (String s : names) {
-                    if (line.startsWith("  " + s + " =")) {
-                        int ieq = line.indexOf('=');
-                        String k = line.substring(0, ieq).trim();
-                        String v = line.substring(ieq + 1).trim();
-                        parsedValues.put(k, v);
-                        break;
-                    }
-                }
-            }
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
-            }
-        }
-        return parsedValues;
-    }
-
-    public Collection<ObjectCache> getAllCaches() {
-        ArrayList<ObjectCache> found = new ArrayList<ObjectCache>();
+    public Collection<MomCache> getAllCaches() {
+        ArrayList<MomCache> found = new ArrayList<MomCache>();
         for (Iterator<ObjectCache> i = getPersistentCache().iterate(); i.hasNext(); ) {
             ObjectCache c = i.next();
-            found.add(c);
+            found.add(new MomCache(c));
         }
         return found;
     }

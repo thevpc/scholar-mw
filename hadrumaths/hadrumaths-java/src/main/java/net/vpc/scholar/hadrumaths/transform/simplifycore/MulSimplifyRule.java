@@ -91,8 +91,10 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             all.add(complexeVal);
         }
         all = simplify(all, fullDomain);
+        //no element in the multiplication, all are ones, so discarded!
+        //we return one in that case
         if (all.size() == 0) {
-            return RewriteResult.bestEffort(Complex.ZERO);
+            return RewriteResult.bestEffort(Complex.ONE);
         }
         if (all.size() == 1) {
             return RewriteResult.newVal(all.get(0));

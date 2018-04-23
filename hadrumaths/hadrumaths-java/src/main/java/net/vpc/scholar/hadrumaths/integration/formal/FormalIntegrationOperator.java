@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.integration.formal;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
+import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToCosXCosYRule;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by vpc on 11/22/16.
  */
-public class FormalIntegrationOperator extends AbstractIntegrationOperator{
+public class FormalIntegrationOperator extends AbstractIntegrationOperator {
     private List<FormalIntegrationOperatorHasher> hashers = new ArrayList<FormalIntegrationOperatorHasher>();
     private ClassMapList<FormalIntegrationOperatorHasher> hashersMap = new ClassMapList<FormalIntegrationOperatorHasher>();
 
@@ -59,43 +60,39 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator{
     }
 
     public double evalDD(Domain domain, DoubleToDouble f1) {
-        DoubleToDouble f1opt = expressionRewriter.rewriteOrSame(f1).toDD();
+        FormalScalarProductOperator delegateScalarProductOperator = (FormalScalarProductOperator) ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR;
+        DoubleToDouble f1opt = delegateScalarProductOperator.getExpressionRewriter().rewriteOrSame(f1).toDD();
         domain = domain == null ? f1opt.getDomain() : domain.intersect(f1opt.getDomain());
-        if (domain.isEmpty() || f1.isZero()) {
+        if (domain.isEmpty() || f1opt.isZero()) {
             return 0;
         }
         if (f1opt instanceof Any) {
-            return evalDD(domain,Any.unwrap(f1opt).toDD());
-        }else if (f1 instanceof Mul) {
-            List<Expr> subExpressions = f1.getSubExpressions();
+            return evalDD(domain, Any.unwrap(f1opt).toDD());
+        } else if (f1opt instanceof Mul) {
+            List<Expr> subExpressions = f1opt.getSubExpressions();
             if (subExpressions.size() == 0) {
                 return 0;
             }
             if (subExpressions.size() == 1) {
-                return ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR.evalDD(domain, subExpressions.get(0).toDD(), Maths.expr(domain));
+                return delegateScalarProductOperator.evalDD(domain, subExpressions.get(0).toDD(), Maths.expr(domain));
             }
             if (subExpressions.size() == 2) {
-                return ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR.evalDD(domain,
+                return delegateScalarProductOperator.evalDD(domain,
                         subExpressions.get(0).toDD(),
                         subExpressions.get(1).toDD());
             }
-            return ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR.evalDD(domain, f1opt, Maths.expr(domain));
-        }else if (f1 instanceof Plus) {
-            List<Expr> subExpressions = f1.getSubExpressions();
-            if (subExpressions.size() == 0) {
-                return 0;
+            TVector<Expr> others = new ExprArrayList(true, subExpressions.size());
+            for (int i = 1; i < subExpressions.size(); i++) {
+                others.add(subExpressions.get(i));
             }
-            double d = 0;
-            for (Expr subExpression : subExpressions) {
-                d += evalDD(domain, subExpression.toDD());
+            return delegateScalarProductOperator.evalDD(domain, subExpressions.get(0).toDD(), new Mul(others));
+        } else {
+            FormalScalarProductOperator ff = (FormalScalarProductOperator) delegateScalarProductOperator;
+            if (ff.getScalarProduct0(f1opt.getClass(), DoubleValue.class, 1) != null) {
+                return delegateScalarProductOperator.evalDD(f1opt.toDD(), Maths.expr(domain));
             }
-            return d;
-        }else if (f1 instanceof Sub) {
-            return evalDD(domain, ((Sub) f1).getFirst().toDD()) + evalDD(domain, ((Sub) f1).getSecond().toDD());
-        }else if (f1.isDoubleExpr()) {
-            return ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR.evalDD(domain, f1opt, Maths.expr(domain));
         }
-        return ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR.evalDD(domain, f1opt, Maths.expr(domain));
+        return delegateScalarProductOperator.evalDD(domain, f1opt, Maths.expr(domain));
     }
 
     public String dump() {

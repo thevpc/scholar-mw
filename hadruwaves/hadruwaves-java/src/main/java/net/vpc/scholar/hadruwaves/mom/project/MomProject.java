@@ -786,7 +786,7 @@ public class MomProject implements Serializable, Cloneable {
             height = -height;
         }
 
-        return Domain.forWidth(x, y, width, height);
+        return Domain.forWidth(x, width, y, height);
     }
 
     public void setHeight(double height) {

@@ -12,6 +12,7 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -97,10 +98,10 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         register(Plus.class, Object.class, Domain2To1ScalarProduct.INSTANCE,1);
     }
 
+    //
 //    public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class) {
-//
 //    }
-    public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class,int domainDimension) {
+    public FormalScalarProductHelper getScalarProduct0(Class f1Class, Class f2Class,int domainDimension) {
         ClassClassKey c0 = new ClassClassKey(f1Class, f2Class,domainDimension);
         FormalScalarProductHelper p = cache.get(c0);
         if (p != null) {
@@ -134,6 +135,14 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
             return p;
         }else{
             noHelperCache.add(c0);
+        }
+        return null;
+    }
+
+    public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class,int domainDimension) {
+        FormalScalarProductHelper p = getScalarProduct0(f1Class, f2Class,domainDimension);
+        if (p != null) {
+            return p;
         }
         if (fallbackHelper != null) {
             log.log(Level.FINE, "Not unsupported Scalar product : <" + f1Class + "," + f2Class + ">, fallback to " + fallback);
@@ -182,6 +191,18 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         }
         return rets;
     }
+    
+    public static void main(String[] args) {
+        Maths.Config.setCacheEnabled(false);
+//        Expr f1=cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193)));
+//        Expr f2=mul(cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193))) , cos(add(mul(complex(0) , X) ,complex(0))) , cos(add(mul(complex(0), Y) ,complex(0.08808395516141376))));
+        Expr f1=cos(add(mul(complex(0.5561038709368364) , X) , mul(CZERO , Y), CZERO));
+        Expr f2=mul(cos(add(mul(CZERO , X) , CZERO)) , cos(add(mul(CZERO , Y) , CZERO)));
+        System.out.println(f1.simplify());
+        System.out.println(f2.simplify());
+        DoubleToDouble[] r = new FormalScalarProductOperator(null).optimizeFunctions(f1.toDD(), f2.toDD());
+        System.out.println("__");
+    }
 
     private DoubleToDouble[] optimizeFunctions(DoubleToDouble f1, DoubleToDouble f2){
         Mul m = new Mul(f1, f2);
@@ -194,6 +215,13 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
             if (subExpressions.size() == 2) {
                 return new DoubleToDouble[]{subExpressions.get(0).toDD(), subExpressions.get(1).toDD()};
             }
+        }
+        //is this a simple case!
+        if(getScalarProduct0(f1opt.getClass(),DoubleValue.class,1)!=null){
+            return new DoubleToDouble[]{
+                    f1opt.toDD(),
+                    Maths.expr(m.getDomain())
+            };
         }
         return new DoubleToDouble[]{
                 expressionRewriter.rewriteOrSame(f1).toDD(),

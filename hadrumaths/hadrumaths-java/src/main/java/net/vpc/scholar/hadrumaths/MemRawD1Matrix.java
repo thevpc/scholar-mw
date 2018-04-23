@@ -1,8 +1,5 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,7 +7,7 @@ import java.util.ArrayList;
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
 public final class MemRawD1Matrix extends AbstractMatrix implements Serializable {
-    private static final long serialVersionUID=1;
+    private static final long serialVersionUID = 1;
 
     private double[] reals;
     private double[] imags;
@@ -130,7 +127,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
      * @param r  Array of row indices.
      * @param c1 Initial column index
      * @param c2 Final column index
-     * @return A(r(:), j0:j1)
+     * @return A(r ( :), j0:j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override

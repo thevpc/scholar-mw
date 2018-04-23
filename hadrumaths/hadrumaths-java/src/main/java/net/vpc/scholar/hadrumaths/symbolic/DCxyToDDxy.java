@@ -65,7 +65,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
 
     @Override
     public boolean isDoubleExprImpl() {
-        return true;
+        return false;
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.awt.*;
 /**
  * @author vpc
  */
-public class FrameWindowManager extends AbstractPlotWindowManager {
+public class FrameWindowManager extends AbstractComponentPlotWindowManager {
     private JFrame frame;
     private PlotContainer rootContainer;
 

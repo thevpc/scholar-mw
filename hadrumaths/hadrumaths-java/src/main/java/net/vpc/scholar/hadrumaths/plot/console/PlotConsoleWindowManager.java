@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotContainer;
-import net.vpc.scholar.hadrumaths.plot.AbstractPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
+import net.vpc.scholar.hadrumaths.plot.AbstractComponentPlotWindowManager;
 
 /**
  * @author taha.bensalah@gmail.com on 7/22/16.
  */
-public class PlotConsoleWindowManager extends AbstractPlotWindowManager {
+public class PlotConsoleWindowManager extends AbstractComponentPlotWindowManager {
     private PlotConsole plotConsole;
     PlotContainer rootContainer = new AbstractPlotContainer() {
         @Override

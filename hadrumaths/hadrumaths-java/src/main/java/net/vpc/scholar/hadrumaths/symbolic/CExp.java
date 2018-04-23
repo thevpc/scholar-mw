@@ -305,8 +305,14 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     @Override
     public boolean isDoubleExprImpl() {
+        return false;
+    }
+
+    @Override
+    public boolean isDoubleTyped() {
         return getImagDD().isZero();
     }
+
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {

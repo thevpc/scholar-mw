@@ -5,13 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * @author vpc
  */
-public class ScatteredFramesWindowManager extends AbstractPlotWindowManager {
+public class ScatteredFramesWindowManager extends AbstractComponentPlotWindowManager {
     private PlotContainer rootContainer;
 
     public ScatteredFramesWindowManager() {
