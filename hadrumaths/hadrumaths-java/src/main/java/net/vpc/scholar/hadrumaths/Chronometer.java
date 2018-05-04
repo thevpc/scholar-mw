@@ -120,20 +120,23 @@ public class Chronometer {
     }
 
     public int getMilliSeconds() {
+        long period=getTime()/1000000;
         return (int) (getTime() % 1000L);
     }
 
     public int getSeconds() {
-        return (int) ((getTime() % 60000L) / 1000L);
+        long period=getTime()/1000000;
+        return (int) ((period % 60000L) / 1000L);
     }
 
     public int getMinutes() {
-        return (int) ((getTime() % (1000L * 60L * 60L)) / 60000L);
+        long period=getTime()/1000000;
+        return (int) ((period % (1000L * 60L * 60L)) / 60000L);
     }
 
     public int getHours() {
-        //old 0x36ee80L
-        return (int) (getTime() / (1000L * 60L * 60L));
+        long period=getTime()/1000000;
+        return (int) (period / (1000L * 60L * 60L));
     }
 
 
@@ -161,9 +164,10 @@ public class Chronometer {
         return sb.toString();
     }
 
-    public static String formatPeriodNano(long period) {
+    public static String formatPeriodNano(long periodNano) {
         StringBuilder sb = new StringBuilder();
-        period=period/1000000;
+        int nano = (int) (periodNano % 1000000);
+        long period=periodNano/1000000;
         boolean started = false;
         int h = (int) (period / (1000L * 60L * 60L));
         int mn = (int) ((period % (1000L * 60L * 60L)) / 60000L);
@@ -183,6 +187,10 @@ public class Chronometer {
             //started=true;
         }
         sb.append(ms).append(" ms");
+
+        if(ms<10){
+            sb.append(" ").append(nano).append(" nanos");
+        }
         return sb.toString();
     }
 

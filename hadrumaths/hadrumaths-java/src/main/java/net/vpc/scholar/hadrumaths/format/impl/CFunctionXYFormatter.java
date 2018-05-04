@@ -52,7 +52,7 @@ public class CFunctionXYFormatter implements Formatter<DoubleToComplex> {
     public void format(StringBuilder sb, DoubleToComplex o, FormatParamSet format) {
         DoubleToDouble real = o.getRealDD();
         DoubleToDouble imag = o.getImagDD();
-        boolean par=format.containsParam(RequireParenthesesFormat.INSTANCE);
+        boolean par=format.containsParam(FormatFactory.REQUIRED_PARS);
         //DomainXY domain=o.getDomain();
         ProductFormat pp = format.getParam(FormatFactory.PRODUCT_STAR);
         String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");

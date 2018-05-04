@@ -100,4 +100,13 @@ public final class DomainXY extends Domain implements Cloneable {
         }
         return true;
     }
+
+    public boolean contains(double x, double y, double z) {
+        return x >= xmin()
+                && x < xmax()
+                && y >= ymin()
+                && y < ymax();
+    }
+
+
 }

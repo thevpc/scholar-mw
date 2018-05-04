@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
+import net.vpc.scholar.hadrumaths.util.MapBuilder;
 
 import java.util.Arrays;
 
@@ -26,6 +27,7 @@ class SimpleSeq2 implements TVectorCell<Expr> {
         String mname = m.getParamName();
         String nname = n.getParamName();
         Expr e = pattern.setParam(mname, value[0]).setParam(nname, value[1]);
+        e.setProperties(MapBuilder.<String,Object>of(mname, value[0],nname, value[1]).build());
 //                Map<String, Object> props = e.getProperties();
 //                props.put(mname, value[0]);
 //                props.put(nname, value[1]);

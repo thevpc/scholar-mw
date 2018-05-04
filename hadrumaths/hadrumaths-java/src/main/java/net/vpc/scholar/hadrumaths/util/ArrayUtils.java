@@ -1216,6 +1216,43 @@ public final class ArrayUtils {
         return d;
     }
 
+    public static Expr[] copy(Expr[] other) {
+        if (other == null) {
+            return null;
+        }
+        Expr[] d = new Expr[other.length];
+        if (d.length > 0) {
+            System.arraycopy(other, 0, d, 0, d.length);
+        }
+        return d;
+    }
+
+    public static Expr[][] copy(Expr[][] other) {
+        if (other == null) {
+            return null;
+        }
+        Expr[][] d = new Expr[other.length][];
+        if (d.length > 0) {
+            for (int i = 0; i < d.length; i++) {
+                d[i] = copy(other[i]);
+            }
+        }
+        return d;
+    }
+
+    public static Expr[][][] copy(Expr[][][] other) {
+        if (other == null) {
+            return null;
+        }
+        Expr[][][] d = new Expr[other.length][][];
+        if (d.length > 0) {
+            for (int i = 0; i < d.length; i++) {
+                d[i] = copy(other[i]);
+            }
+        }
+        return d;
+    }
+
     public static double[][] subarray(double[][] values, Range ranges) {
         if (ranges == null) {
             return new double[0][];

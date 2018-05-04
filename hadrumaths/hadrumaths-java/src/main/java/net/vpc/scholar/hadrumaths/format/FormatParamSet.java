@@ -94,7 +94,8 @@ public class FormatParamSet {
     }
 
     public boolean containsParam(FormatParam param) {
-        return getParam(param.getClass(), false)!=null;
+        Object pp = getParam(param.getClass(), false);
+        return pp !=null && pp.equals(param);
     }
 
     public <T extends FormatParam> T getParam(T param) {

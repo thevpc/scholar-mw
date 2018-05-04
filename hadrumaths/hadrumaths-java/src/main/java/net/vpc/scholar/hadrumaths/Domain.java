@@ -466,6 +466,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return Range.forBounds(lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]);
     }
 
+    public double computeDouble(double x,double y,double z) {
+        return contains(x,y,z)?1:0;
+    }
+
     public boolean contains(double x) {
         return x >= xmin() && x < xmax();
     }
@@ -1630,15 +1634,12 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public boolean isDouble() {
-        if(isUnconstrained()) {
-            return true;
-        }
-        return false;
+        return isUnconstrained();
     }
 
     @Override
     public boolean isComplex() {
-        return true;
+        return isUnconstrained();
     }
 
     @Override
@@ -1780,6 +1781,15 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     @Override
     public Expr mul(double other) {
         return DoubleValue.valueOf(other, this);
+    }
+
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return ComplexValue.valueOf(other,this);
     }
 
     @Override

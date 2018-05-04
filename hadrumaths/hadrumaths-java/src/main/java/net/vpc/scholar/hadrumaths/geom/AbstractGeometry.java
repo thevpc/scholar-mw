@@ -81,4 +81,15 @@ public abstract class AbstractGeometry implements Geometry {
     public Expr multiply(Expr value) {
         return toExpr().multiply(value);
     }
+
+    @Override
+    public boolean containsDomain(Domain geometry) {
+        return containsGeometry(geometry.toGeometry());
+    }
+
+    @Override
+    public boolean containsGeometry(Geometry geometry) {
+        Geometry inter = intersectGeometry(geometry);
+        return inter.equals(geometry);
+    }
 }

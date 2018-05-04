@@ -1304,7 +1304,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     public DMatrix flipHorizontally() {
-        double[][] newVals = new double[A[0].length][A.length];
+        double[][] newVals = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
                 newVals[A.length-1-i][j]=A[i][j];
@@ -1314,7 +1314,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     public DMatrix flipVertically() {
-        double[][] newVals = new double[A[0].length][A.length];
+        double[][] newVals = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
                 newVals[i][A[i].length-1-j]=A[i][j];

@@ -20,7 +20,7 @@ public class PlotBuilder {
     private PlotComponent update;
     private String updateName;
     private String title;
-    private List<String> titles=new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
     private boolean display = true;
     private PlotType plotType;
     private ComplexAsDouble converter;
@@ -35,6 +35,7 @@ public class PlotBuilder {
     private PlotWindowManager windowManager;
     private DoubleFormatter xformat;
     private DoubleFormatter yformat;
+    private DoubleFormatter zformat;
     private Samples samples;
     private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
@@ -102,6 +103,7 @@ public class PlotBuilder {
         titles = other.titles == null ? null : new ArrayList<>(other.titles);
         xformat = other.xformat;
         yformat = other.yformat;
+        zformat = other.zformat;
         parent = other.parent;
         itemsToPlot = new ArrayList<Object>(other.itemsToPlot);
         xsamplesToPlot = new ArrayList<Object>(other.xsamplesToPlot);
@@ -125,7 +127,7 @@ public class PlotBuilder {
         return this;
     }
 
-    public PlotBuilder add(Object item,String title) {
+    public PlotBuilder add(Object item, String title) {
         if (item != null) {
             itemsToPlot.add(item);
             titles.add(title);
@@ -143,6 +145,19 @@ public class PlotBuilder {
 
     public PlotBuilder xformat(DoubleFormatter format) {
         this.xformat = format;
+        return this;
+    }
+
+    public DoubleFormatter zformat() {
+        return xformat;
+    }
+
+    public PlotBuilder zformat(String format) {
+        return zformat(Maths.dblformat(format));
+    }
+
+    public PlotBuilder zformat(DoubleFormatter format) {
+        this.zformat = format;
         return this;
     }
 
@@ -254,51 +269,51 @@ public class PlotBuilder {
     }
 
     public PlotBuilder xsamples(List xvalue) {
-        if(xvalue.size()==0){
+        if (xvalue.size() == 0) {
             return xsamples(new double[0]);
         }
         Class componentType = xvalue.get(0).getClass();
-        if(
-                          componentType.equals(Double.TYPE)
-                        ||componentType.equals(Double.class)
-                        ||componentType.equals(Float.TYPE)
-                        ||componentType.equals(Float.class)
-                        ||componentType.equals(Integer.TYPE)
-                        ||componentType.equals(Integer.class)
-                        ||componentType.equals(Short.TYPE)
-                        ||componentType.equals(Short.class)
-                        ||componentType.equals(Long.TYPE)
-                        ||componentType.equals(Long.class)
+        if (
+                componentType.equals(Double.TYPE)
+                        || componentType.equals(Double.class)
+                        || componentType.equals(Float.TYPE)
+                        || componentType.equals(Float.class)
+                        || componentType.equals(Integer.TYPE)
+                        || componentType.equals(Integer.class)
+                        || componentType.equals(Short.TYPE)
+                        || componentType.equals(Short.class)
+                        || componentType.equals(Long.TYPE)
+                        || componentType.equals(Long.class)
 
                 ) {
             DoubleList to = new DoubleArrayList(xvalue.size());
             for (Object o : xvalue) {
-                to.append(((Number)o).doubleValue());
+                to.append(((Number) o).doubleValue());
             }
             return xsamples(to.toDoubleArray());
-        }else{
-            xsamples=-1;
-            samples=null;
+        } else {
+            xsamples = -1;
+            samples = null;
             xformat(new ListDoubleFormatter(xvalue));
             return this;
         }
     }
 
     public PlotBuilder xsamples(TList xvalue) {
-        if(xvalue.length()==0){
+        if (xvalue.length() == 0) {
             return xsamples(new double[0]);
         }
         TypeReference componentType = xvalue.getComponentType();
-        if(
+        if (
                 componentType.getTypeClass().equals(Double.TYPE)
-                ||componentType.getTypeClass().equals(Double.class)
+                        || componentType.getTypeClass().equals(Double.class)
 
                 ) {
             DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
             return xsamples(to.toDoubleArray());
-        }else{
-            xsamples=-1;
-            samples=null;
+        } else {
+            xsamples = -1;
+            samples = null;
             xformat(new ListDoubleFormatter(xvalue.toJList()));
             return this;
         }
@@ -624,28 +639,34 @@ public class PlotBuilder {
                     list.add(_plotAny(a));
                 }
                 return list;
-            case "complex[][]":
-                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), PlotType.HEATMAP);
-            case "number[][]":
+            case "complex[][]": {
+                boolean matrix = "true".equals(typeAndValue.props.get("matrix"));
+                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
+            }
+            case "number[][]": {
                 asReal();
-                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), PlotType.HEATMAP);
+                boolean matrix = "true".equals(typeAndValue.props.get("matrix"));
+                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
+            }
             case "expr[]": {
                 return _plotExprArray(PlotTypesHelper.toExprArray(o));
             }
             case "complex[]": {
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
-                if(typeAndValue.props.containsKey("column")){
-                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y,Complex.class), PlotType.CURVE);
-                }else {
+                boolean col = "true".equals(typeAndValue.props.get("column"));
+                if (col) {
+                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
+                } else {
                     return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
                 }
             }
             case "number[]": {
                 asReal();
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
-                if(typeAndValue.props.containsKey("column")){
-                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y,Complex.class), PlotType.CURVE);
-                }else {
+                boolean col = "true".equals(typeAndValue.props.get("column"));
+                if (col) {
+                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
+                } else {
                     return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
                 }
             }
@@ -676,8 +697,8 @@ public class PlotBuilder {
             case "file": {
                 try {
                     PlotModel plotModel = Plot.loadPlotModel((File) o);
-                    if(plotModel instanceof ValuesPlotModel) {
-                        ValuesPlotModel v=(ValuesPlotModel) plotModel;
+                    if (plotModel instanceof ValuesPlotModel) {
+                        ValuesPlotModel v = (ValuesPlotModel) plotModel;
                         if (xformat != null) {
                             v.setXformat(xformat);
                         }
@@ -696,7 +717,7 @@ public class PlotBuilder {
                         if (title != null) {
                             v.setTitle(title);
                         }
-                        if (titles != null && titles.size()>0) {
+                        if (titles != null && titles.size() > 0) {
                             v.setYtitles(titles.toArray(new String[titles.size()]));
                         }
                     }
@@ -1264,6 +1285,9 @@ public class PlotBuilder {
         return new ValuesPlotModel(title, xtitle, ztitle, titles.toArray(new String[titles.size()]), x, z, zDoubleFunction, plotType, properties)
                 .setEnabledLibraries(enabledExternalLibraries)
                 .setPreferredLibraries(preferredLibraries)
+                .setXformat(xformat)
+                .setYformat(yformat)
+                .setZformat(zformat)
                 ;
     }
 
@@ -1291,6 +1315,7 @@ public class PlotBuilder {
                 .setPreferredLibraries(preferredLibraries)
                 .setXformat(xformat)
                 .setYformat(yformat)
+                .setZformat(zformat)
                 ;
     }
 
@@ -1341,12 +1366,13 @@ public class PlotBuilder {
         @Override
         public String formatDouble(double value) {
             int index = (int) value;
-            if(index<0 || index>= format.length){
+            if (index < 0 || index >= format.length) {
                 return "";
             }
             return String.valueOf(format[index]);
         }
     }
+
     private static class ListDoubleFormatter implements DoubleFormatter {
         private final List format;
 
@@ -1357,7 +1383,7 @@ public class PlotBuilder {
         @Override
         public String formatDouble(double value) {
             int index = (int) value;
-            if(index<0 || index>= format.size()){
+            if (index < 0 || index >= format.size()) {
                 return "";
             }
             return String.valueOf(format.get(index));

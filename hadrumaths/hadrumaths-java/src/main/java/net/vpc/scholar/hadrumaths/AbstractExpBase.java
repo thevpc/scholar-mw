@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
 
 import java.util.Collections;
@@ -130,51 +131,66 @@ public abstract class AbstractExpBase implements Expr {
         return false;
     }
 
-    public Expr multiply(int other) {
+    public final Expr multiply(int other) {
         return mul(other);
     }
 
-    public Expr multiply(double other) {
+    public final Expr multiply(double other) {
         return mul(other);
     }
 
-    public Expr multiply(Expr other) {
+    public final Expr multiply(Expr other) {
         return mul(other);
     }
 
-    public Expr divide(int other) {
+    public final Expr divide(int other) {
         return div(other);
     }
 
-    public Expr divide(double other) {
+    public final Expr divide(double other) {
         return div(other);
     }
 
-    public Expr divide(Expr other) {
+    public final Expr divide(Expr other) {
         return div(other);
     }
 
-    public Expr subtract(int other) {
+    public final Expr subtract(int other) {
         return sub(other);
     }
 
-    public Expr subtract(double other) {
+    public final Expr subtract(double other) {
         return sub(other);
     }
 
-    public Expr subtract(Expr other) {
+    public final Expr subtract(Expr other) {
         return sub(other);
     }
 
-    public Expr mul(int other) {
-        return Maths.mul(this, other);
+    public final Expr mul(int other) {
+        return mul((double)other);
     }
 
-    public Expr mul(double other) {
-        return Maths.mul(this, other);
-    }
+//    public Expr mul(double other) {
+//        return Maths.mul(this, other);
+//    }
 
     public Expr mul(Expr other) {
+        if(other instanceof Domain) {
+            return mul((Domain) other);
+        }
+        if(other.isDouble()) {
+            return mul(other.toDouble());
+        }
+        if(other.isDoubleExpr()) {
+            return mul(other.toDouble()).mul(other.getDomain());
+        }
+        if(other.isComplex()) {
+            return mul(other.toComplex());
+        }
+        if(other.isComplexExpr()) {
+            return mul(other.toComplex()).mul(other.getDomain());
+        }
         return Maths.mul(this, other);
     }
 
@@ -214,24 +230,24 @@ public abstract class AbstractExpBase implements Expr {
         return Maths.sub(this, other);
     }
 
-    public Expr mul(Domain domain) {
-//        return mul(Maths.expr(domain));
-        return mul((Expr)domain);
-    }
+//    public Expr mul(Domain domain) {
+////        return mul(Maths.expr(domain));
+//        return mul((Expr)domain);
+//    }
 
     public Expr mul(Geometry domain) {
         return mul(Maths.expr(domain));
     }
 
-    public Expr multiply(Domain domain) {
+    public final Expr multiply(Domain domain) {
         return mul(domain);
     }
 
-    public Expr multiply(Geometry domain) {
+    public final Expr multiply(Geometry domain) {
         return mul(domain);
     }
 
-    public Expr negate() {
+    public final Expr negate() {
         return neg();
     }
 
@@ -243,4 +259,26 @@ public abstract class AbstractExpBase implements Expr {
     public boolean isDoubleTyped() {
         return false;
     }
+
+    @Override
+    public Expr mul(Domain domain) {
+        if(domain.isUnconstrained()){
+            return this;
+        }
+        return Maths.mul(domain,this);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return Maths.mul(DoubleValue.valueOf(other),this);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isDouble()) {
+            return mul(other.getReal());
+        }
+        return Maths.mul(other,this);
+    }
+
 }

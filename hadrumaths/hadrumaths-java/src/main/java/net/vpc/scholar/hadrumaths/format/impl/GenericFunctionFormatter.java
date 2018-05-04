@@ -31,10 +31,10 @@ public class GenericFunctionFormatter implements Formatter<AbstractComposedFunct
         sb.append(o.getFunctionName()).append("(");
 
         if(arguments.length==1){
-            format=format.remove(RequireParenthesesFormat.INSTANCE);
+            format=format.remove(FormatFactory.REQUIRED_PARS);
             FormatFactory.format(sb,arguments[0], format);
         }else {
-            format=format.add(RequireParenthesesFormat.INSTANCE);
+            format=format.add(FormatFactory.REQUIRED_PARS);
             for (int i = 0; i < arguments.length; i++) {
                 Expr a = arguments[i];
                 if (i > 0) {

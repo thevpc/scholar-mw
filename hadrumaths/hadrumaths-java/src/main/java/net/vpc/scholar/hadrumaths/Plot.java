@@ -447,6 +447,8 @@ public final class Plot {
                     m.setXformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
                 } else if (line.startsWith("yformat =")) {
                     m.setYformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
+                } else if (line.startsWith("zformat =")) {
+                    m.setZformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
                 }
             }
             m.setYtitles(ytitlesList.toArray(new String[ytitlesList.size()]));

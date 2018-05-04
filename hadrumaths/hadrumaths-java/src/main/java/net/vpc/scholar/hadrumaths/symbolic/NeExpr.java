@@ -32,4 +32,5 @@ public class NeExpr extends ComparatorExpr implements Cloneable{
     public Expr newInstance(Expr xargument,Expr yargument) {
         return new NeExpr(xargument,yargument);
     }
+
 }

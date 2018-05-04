@@ -8,14 +8,20 @@ import net.vpc.scholar.hadrumaths.format.FormatParam;
  */
 public class DomainFormat implements FormatParam {
 
-    public static enum Type {
+    public enum Type {
 
         NONE, GATE
     };
     private Type type;
+    private boolean ignoreFull;
 
-    public DomainFormat(Type type) {
+    public DomainFormat(Type type,boolean ignoreFull) {
         this.type = type;
+        this.ignoreFull = ignoreFull;
+    }
+
+    public boolean isIgnoreFull() {
+        return ignoreFull;
     }
 
     public Type getType() {

@@ -64,6 +64,20 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
         this.polygon1=i.polygon1;
         this.polygon2=i.polygon2;
     }
+
+    private RWG(double max,Domain domain,
+            Polygon polygon1,
+            Polygon polygon2,
+            Triangle tr1,
+            Triangle tr2) {
+        super(null);
+        this.domain=domain;
+        this.max=max;
+        this.tr1=tr1;
+        this.tr2=tr2;
+        this.polygon1=polygon1;
+        this.polygon2=polygon2;
+    }
     
     private class FinalInfo{
         Triangle tr1;
@@ -266,4 +280,18 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
 
+//    @Override
+//    public Expr mul(Domain domain) {
+//        return super.mul(domain);
+//    }
+
+    @Override
+    public Expr mul(double other) {
+        return new RWG(max*other,domain,polygon1,polygon2,tr1,tr2);
+    }
+
+//    @Override
+//    public Expr mul(Complex other) {
+//        return super.mul(other);
+//    }
 }

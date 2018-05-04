@@ -450,7 +450,7 @@ public class Expressions {
                 for (int t = d2.zmin; t <= d2.zmax; t++) {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
                         for (int k = d2.xmin; k <= d2.xmax; k++) {
-                            if(def2.get(t,j,k)) {
+                            if(def2!=null && def2.get(t,j,k)) {
                                 ret[t][j][k] = h.computeDouble(ret[t][j][k]);
                                 def0.set(t,j,k);
                             }else{
@@ -578,7 +578,7 @@ public class Expressions {
                 for (int t = d2.zmin; t <= d2.zmax; t++) {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
                         for (int k = d2.xmin; k <= d2.xmax; k++) {
-                            if(def2.get(t,j,k)) {
+                            if(def2!=null && def2.get(t,j,k)) {
                                 ret[t][j][k] = h.computeMatrix(ret[t][j][k]);
                                 def0.set(t,j,k);
                             }else{
@@ -699,7 +699,7 @@ public class Expressions {
                 for (int t = d2.zmin; t <= d2.zmax; t++) {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
                         for (int k = d2.xmin; k <= d2.xmax; k++) {
-                            if(def2.get(t,j,k)) {
+                            if(def2!=null && def2.get(t,j,k)) {
                                 ret[t][j][k] = h.computeComplex(ret[t][j][k]);
                                 def0.set(t,j,k);
                             }else{
@@ -1010,8 +1010,8 @@ public class Expressions {
                     for (int i = r0.ymin; i <= r0.ymax; i++) {
                         for (int j = r0.ymin; j <= r0.ymax; j++) {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
-                                o.value1Defined = def0.get(i,j,k);
-                                o.value2Defined = def2.get(i,j,k);
+                                o.value1Defined = def0!=null && def0.get(i,j,k);
+                                o.value2Defined = def2!=null && def2.get(i,j,k);
                                 ret1[i][j][k] = h.computeDouble(ret1[i][j][k], val[i][j][k], o);
                                 def0.set(i,j,k,o.resultDefined);
                             }
@@ -1334,8 +1334,8 @@ public class Expressions {
                     for (int i = r0.ymin; i <= r0.ymax; i++) {
                         for (int j = r0.ymin; j <= r0.ymax; j++) {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
-                                o.value1Defined = def0.get(i,j,k);
-                                o.value2Defined = def2.get(i,j,k);
+                                o.value1Defined = def0!=null && def0.get(i,j,k);
+                                o.value2Defined = def2!=null && def2.get(i,j,k);
                                 ret1[i][j][k] = h.computeComplex(ret1[i][j][k], val[i][j][k], o);
                                 def0.set(i,j,k,o.resultDefined);
                             }
@@ -1668,8 +1668,8 @@ public class Expressions {
                     for (int i = r0.ymin; i <= r0.ymax; i++) {
                         for (int j = r0.ymin; j <= r0.ymax; j++) {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
-                                o.value1Defined = def0.get(i,j,k);
-                                o.value2Defined = def2.get(i,j,k);
+                                o.value1Defined = def0!=null && def0.get(i,j,k);
+                                o.value2Defined = def2!=null && def2.get(i,j,k);
                                 ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], val[i][j][k],zero, o);
                                 def0.set(i,j,k, o.resultDefined);
                             }

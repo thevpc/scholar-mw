@@ -7,9 +7,9 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public final class RewriteResult {
 
-    private static final byte UNMODIFIED = 1;
-    private static final byte REWRITTEN = 2;
-    private static final byte BEST_EFFORT = 3;
+    public static final byte UNMODIFIED = 1;
+    public static final byte BEST_EFFORT = 2;
+    public static final byte NEW_VAL = 3;
     private final Expr value;
     private final byte type;
 //    private boolean rewritten;
@@ -17,7 +17,7 @@ public final class RewriteResult {
 
     public static RewriteResult newVal(Expr value) {
 //        return new RewriteResult(value);
-        return new RewriteResult(value, REWRITTEN);
+        return new RewriteResult(value, NEW_VAL);
     }
 
     public static RewriteResult unmodified(Expr value) {
@@ -61,6 +61,10 @@ public final class RewriteResult {
         return value;
     }
 
+    public byte getType() {
+        return type;
+    }
+
     public boolean isBestEffort() {
 //        return bestEffort || !rewritten;
         return type == BEST_EFFORT;
@@ -77,11 +81,16 @@ public final class RewriteResult {
         return type == UNMODIFIED;
     }
 
+    public boolean isNewVal() {
+//        return !rewritten;
+        return type == NEW_VAL;
+    }
+
     @Override
     public String toString() {
         return "RewriteResult{" +
                 "value=" + value +
-                ", " + (isRewritten()?"Rewritten":isUnmodified()?"Unmodified":isBestEffort()?"BestEffort":"Unknown") +
+                ", " + (isUnmodified()?"Unmodified":isBestEffort()?"BestEffort":isNewVal()?"NewVal":"Unknown") +
                 '}';
     }
 }

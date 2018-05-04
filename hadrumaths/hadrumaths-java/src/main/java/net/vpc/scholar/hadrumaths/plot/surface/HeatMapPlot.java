@@ -22,6 +22,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     private JLabel titleLabel;
     private StatusBar statusbar;
     private HeatMapPlotArea legend;
+    private HeatMapPlotUnitsArea legendUnits;
     PropertyChangeListener legendUpdater = new PropertyChangeListener() {
 
         public void propertyChange(PropertyChangeEvent evt) {
@@ -94,15 +95,20 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         area.addPropertyChangeListener("colorPaletteContrasted", legendUpdater);
         area.addPropertyChangeListener("colorPalette", legendUpdater);
         legend = new HeatMapPlotArea(false, colorPalette, new Dimension(10, 400));
+        legendUnits=new HeatMapPlotUnitsArea(false, area.getMinValue(),area.getMaxValue(),model.getZformat(), 5, new Dimension(50, 400));
         titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
         if (titleLabel.getText().length() == 0) {
             titleLabel.setVisible(false);
         }
         statusbar = new StatusBar();
         add(titleLabel, BorderLayout.NORTH);
-        JPanel p = new JPanel(new BorderLayout());
+
+        JPanel p = new JPanel();
+        p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
         p.setBorder(BorderFactory.createTitledBorder(""));
-        p.add(legend);
+        p.add(legendUnits,BorderLayout.PAGE_START);
+        p.add(legend,BorderLayout.CENTER);
+
         add(area, BorderLayout.CENTER);
         add(p, BorderLayout.LINE_START);
         add(statusbar, BorderLayout.SOUTH);

@@ -336,4 +336,21 @@ public class XX extends AxisFunction implements Cloneable {
         return Maths.identityMatrix(1);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new Linear(1,0,0,domain);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new Linear(other,0,0,Domain.FULLX);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return new Mul(other,this);
+    }
 }

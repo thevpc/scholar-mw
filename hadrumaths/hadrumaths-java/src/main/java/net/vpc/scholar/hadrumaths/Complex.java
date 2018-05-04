@@ -509,7 +509,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public boolean equals(Complex c) {
-        return getReal() == c.getReal() && getImag() == c.getImag();
+        return
+                Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal())
+                        && Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag())
+                ;
     }
 
     @Override
@@ -698,7 +701,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         double imag = getImag();
         double real = getReal();
         if (imag == 0) {
-            Complex.valueOf(Math.log10(real));
+            return Complex.valueOf(Math.log10(real));
         }
         return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
     }
@@ -863,7 +866,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public DoubleToComplex toDC() {
-        return new ComplexValue(this, Domain.FULLX);
+        return this;//new ComplexValue(this, Domain.FULLX);
     }
 
     @Override
@@ -880,7 +883,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public DoubleToVector toDV() {
-        return toDC().toDV();
+        return DefaultDoubleToVector.create(this);
     }
 
     public DoubleToDouble toDD() {
@@ -894,7 +897,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public DoubleToMatrix toDM() {
-        return toDC().toDM();
+        return DefaultDoubleToMatrix.create(this);
     }
 
     public boolean isReal() {
@@ -1379,7 +1382,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     public Expr mul(Domain domain) {
 //        return mul(Maths.expr(domain));
-        return mul((Expr) domain);
+        if (domain.isUnconstrained()) {
+            return this;
+        }
+        return new ComplexValue(this, domain);
     }
 
     public Expr mul(Geometry domain) {
@@ -1396,6 +1402,6 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public boolean isDoubleTyped() {
-        return getImag()==0;
+        return getImag() == 0;
     }
 }

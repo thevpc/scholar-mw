@@ -48,7 +48,7 @@ public abstract class PlotConsoleMenuItem {
         return order;
     }
 
-    public void actionPerformed(PlotConsole console,ActionEvent e){
+    public void actionPerformed(PlotConsole console, ActionEvent e) {
 
     }
 

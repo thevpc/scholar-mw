@@ -48,7 +48,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
 //        this(name, fx, fy, null);
 //    }
 
-    private DefaultDoubleToMatrix(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim, Map<String, Object> properties) {
+    private DefaultDoubleToMatrix(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim) {
         switch (dim){
             case 1:{
                 components = new DoubleToComplex[]{fx};
@@ -71,9 +71,6 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
             default:{
                 throw new UnsupportedComponentDimensionException(dim);
             }
-        }
-        if(properties!=null) {
-            setProperties(properties);
         }
     }
 
@@ -113,15 +110,15 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
     }
 
     public static DefaultDoubleToMatrix create(DoubleToComplex fx) {
-        return new DefaultDoubleToMatrix(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1, null);
+        return new DefaultDoubleToMatrix(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1);
     }
 
     public static DefaultDoubleToMatrix create(DoubleToComplex fx, DoubleToComplex fy) {
-        return new DefaultDoubleToMatrix(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2, null);
+        return new DefaultDoubleToMatrix(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2);
     }
 
     public static DefaultDoubleToMatrix create(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz) {
-        return new DefaultDoubleToMatrix(fx, fy, fz, 3, null);
+        return new DefaultDoubleToMatrix(fx, fy, fz, 3);
     }
 
     @Override
@@ -213,17 +210,17 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
 //    }
 
     @Override
-    public DefaultDoubleToMatrix clone() {
+    public DoubleToMatrix clone() {
         Map<String, Object> properties = hasProperties()?getProperties():null;
         switch (getComponentSize()) {
             case 1: {
-                return new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1, properties);
+                return (DoubleToMatrix) new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1).setProperties(properties);
             }
             case 2: {
-                return new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2, properties);
+                return (DoubleToMatrix) new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2).setProperties(properties);
             }
             case 3: {
-                return new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3, properties);
+                return (DoubleToMatrix) new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3).setProperties(properties);
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);

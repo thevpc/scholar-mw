@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * User: taha
@@ -190,4 +187,13 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
         );
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new UFunction(this.domain.intersect(domain), amp, a, b, c, d, e);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new UFunction(this.domain, amp*other, a, b, c, d, e);
+    }
 }

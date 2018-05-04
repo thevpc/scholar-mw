@@ -89,10 +89,11 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             maxIterations = 1;
         }
         boolean simplified=false;
+        RewriteResult next=null;
         while (maxIterations > 0) {
 //            String msg = DumpManager.getStackDepthWhites()+name+" :: REWRITE "+maxIterations+" :: "+e;
 //            System.out.println(msg);
-            RewriteResult next = rewriteOnce(curr);
+            next = rewriteOnce(curr);
             if (next.isRewritten() /*&& !next.equals(curr)*/) {
                 simplified=true;
                 if(next.isBestEffort()){
@@ -101,10 +102,13 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 curr = next.getValue();
                 maxIterations--;
             } else {
-                break;
+                if(simplified) {
+                    return RewriteResult.newVal(curr);
+                }
+                return next;
             }
         }
-        return simplified?RewriteResult.newVal(curr):RewriteResult.unmodified(e);
+        return next;
     }
 
     public List<ExpressionRewriterRule> getRulesByClass(Class<? extends Expr> cls) {
@@ -126,7 +130,11 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         Class<? extends Expr> cls = e.getClass();
         int appliedRulesCount=0;
         List<ExpressionRewriterRule> rulesByClass = getRulesByClass(cls);
+//        if(rulesByClass.size()==0){
+//            rulesByClass = getRulesByClass(cls);
+//        }
         int bestEfforts=0;
+        boolean debugExpressionRewrite = Maths.Config.isDebugExpressionRewrite();
         for (ExpressionRewriterRule rule : rulesByClass) {
 
                 appliedRulesCount++;
@@ -134,7 +142,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 boolean _debug = false;
                 String _debug_msg = "";
 
-                if (Maths.Config.isDebugExpressionRewrite()) {
+            if (debugExpressionRewrite) {
 //                    if (ThreadStack.depth() > 200) {
                     _debug = true;
                     _debug_msg = DumpManager.getStackDepthWhites() + name + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + Maths.dump(curr);
@@ -148,8 +156,15 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 //                }
                 if (nextResult!=null) {
                     Expr next=nextResult.getValue();
-                    if(nextResult.isRewritten()) {//next next != null && !next.equals(curr)
-                        if (Maths.Config.isDebugExpressionRewrite()) {
+                    if(nextResult.isUnmodified()) {//next next != null && !next.equals(curr)
+                        for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
+                            rewriteListener.onUnmodifiedExpr(this, e);
+                        }
+                    }else if(nextResult.isRewritten()) {//next next != null && !next.equals(curr)
+                        for (ExprRewriteListener rewriteListener : rewriteListeners) {
+                            rewriteListener.onRewriteExpr(this, e,next);
+                        }
+                        if (debugExpressionRewrite) {
                             if (next.toString().equals(curr.toString()) && !(curr instanceof Any)) {
                                 String s1 = FormatFactory.format(curr, new FormatParamSet(DebugFormat.INSTANCE));
                                 String s2 = FormatFactory.format(next, new FormatParamSet(DebugFormat.INSTANCE));
@@ -173,7 +188,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                             bestEfforts ++;
                         }
                         modified = true;
-                        if (Maths.Config.isDebugExpressionRewrite()) {
+                        if (debugExpressionRewrite) {
                             if (_debug) {
                                 System.out.println("<" + _debug_msg + " [RESULT] ==> " + next);
                             }
@@ -181,7 +196,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                         break;
                     }
                 } else {
-                    if (Maths.Config.isDebugExpressionRewrite()) {
+                    if (debugExpressionRewrite) {
                         if (_debug) {
                             System.out.println("<" + _debug_msg + " [RESULT] ==> NO CHANGE!!");
                         }
@@ -190,7 +205,9 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 
         }
         if(appliedRulesCount==0){
-            throw new NoSuchElementException("Not rule for " + curr.getClass().getSimpleName() + " in " + name);
+            if(curr.getSubExpressions().size()>0) {
+                throw new NoSuchElementException("Not rule for " + curr.getClass().getSimpleName() + " in " + name);
+            }
         }
         if (!modified) {
             return RewriteResult.unmodified(e);
@@ -236,4 +253,8 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         }
     }
 
+    @Override
+    public String toString() {
+        return "RuleSet{"+name+"}";
+    }
 }

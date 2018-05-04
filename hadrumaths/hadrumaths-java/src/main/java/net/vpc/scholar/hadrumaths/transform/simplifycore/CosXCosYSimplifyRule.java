@@ -41,11 +41,11 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getB())*Maths.cos2(ee.getD()),e.getDomain()));
         }
 
-        if(ee.getA()==0){
-            return RewriteResult.newVal(new CosXCosY(ee.getAmp()* Maths.cos2(ee.getB()),0,0,ee.getC(),ee.getD(),ee.getDomain()));
+        if(ee.getA()==0  && ee.getB()!=0){
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp()* Maths.cos2(ee.getB()),0,0,ee.getC(),ee.getD(),ee.getDomain()));
         }
-        if(ee.getC()==0){
-            return RewriteResult.newVal(new CosXCosY(ee.getAmp()*Maths.cos2(ee.getD()),ee.getA(),ee.getB(),0,0,ee.getDomain()));
+        if(ee.getC()==0 && ee.getD()!=0){
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp()*Maths.cos2(ee.getD()),ee.getA(),ee.getB(),0,0,ee.getDomain()));
         }
         return RewriteResult.unmodified(e);
     }

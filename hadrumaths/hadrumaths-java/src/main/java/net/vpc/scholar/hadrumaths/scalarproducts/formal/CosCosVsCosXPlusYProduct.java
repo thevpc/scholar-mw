@@ -86,6 +86,8 @@ final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
                         ((1.0/(16.0*a1*b1))*( cos(2*b1*ymax+2*a1*xmax+b3+c1+b2) - cos(2*b1*ymin+2*a1*xmax+b3+c1+b2) )) +
                         ((1.0/(8*a1))*(ymax-ymin)*(sin(b3-2*a1*xmin-c1-b2)));
 
+
+
             } else {
                 v=(((xmax-xmin)/(4.0*(b1-a3)))*( sin((b1-a3)*ymax+c1-b2-b3) - sin((b1-a3)*ymin+c1-b2+b3) )) +
                         (((xmax-xmin)/(4.0*(b1+a3)))*( sin((b1+a3)*ymax+c1-b2-b3) - sin((b1+a3)*ymin+c1-b2+b3) )) -

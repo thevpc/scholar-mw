@@ -31,7 +31,7 @@ public class VDCxyFormatter implements Formatter<DoubleToVector> {
     @Override
     public void format(StringBuilder sb, DoubleToVector o, FormatParamSet format) {
         sb.append("(");
-        format=format.add(RequireParenthesesFormat.INSTANCE);
+        format=format.add(FormatFactory.REQUIRED_PARS);
         for (int i = 0; i < o.getComponentSize(); i++) {
             if(i>0){
                 sb.append(", ");

@@ -24,7 +24,7 @@ public class PowFormatter implements Formatter<Pow> {
 
     @Override
     public void format(StringBuilder sb, Pow o, FormatParamSet format) {
-        format = format.add(RequireParenthesesFormat.INSTANCE);
+        format = format.add(FormatFactory.REQUIRED_PARS);
         sb.append("pow(");
         FormatFactory.format(sb, o.getFirst(), format);
         sb.append(", ");

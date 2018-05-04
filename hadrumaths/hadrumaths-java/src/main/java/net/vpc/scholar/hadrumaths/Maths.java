@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
 import net.vpc.scholar.hadrumaths.integration.formal.FormalIntegrationOperator;
+import net.vpc.scholar.hadrumaths.integration.formal.NumericIntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
@@ -46,10 +47,12 @@ import java.util.logging.Logger;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 public final class Maths {
+    private static double getit(double d){return d;}
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double E = Math.E;
     public static final DoubleToDouble DDZERO = DoubleValue.valueOf(0, Domain.FULLX);
+    public static final DoubleToDouble DDNAN = DoubleValue.valueOf(Double.NaN, Domain.FULLX);
     public static final DoubleToComplex DCZERO = DDZERO.toDC();
     public static final DoubleToVector DVZERO3 = DefaultDoubleToVector.create(DCZERO, DCZERO, DCZERO);
     public static final Expr EZERO = DDZERO;
@@ -1309,7 +1312,7 @@ public final class Maths {
     }
 
     public static Complex csum(Complex... c) {
-        MutableComplex x = new MutableComplex(0, 0);
+        MutableComplex x = new MutableComplex();
         for (Complex c1 : c) {
             x.add(c1);
         }
@@ -1321,7 +1324,7 @@ public final class Maths {
     }
 
     public static Complex csum(TVectorModel<Complex> c) {
-        MutableComplex x = new MutableComplex(0, 0);
+        MutableComplex x = new MutableComplex();
         int size = c.size();
         for (int i = 0; i < size; i++) {
             x.add(c.get(i));
@@ -1330,7 +1333,7 @@ public final class Maths {
     }
 
     public static Complex csum(int size, TVectorCell<Complex> c) {
-        MutableComplex x = new MutableComplex(0, 0);
+        MutableComplex x = new MutableComplex();
         for (int i = 0; i < size; i++) {
             x.add(c.get(i));
         }
@@ -3760,7 +3763,7 @@ public final class Maths {
     }
 
     public static Complex integrate(Expr e, Domain domain) {
-        return Config.getDefaultIntegrationOperator().eval(domain,e);
+        return Config.getIntegrationOperator().eval(domain,e);
     }
 
     public static Expr esum(int size, TVectorCell<Expr> f) {
@@ -3891,19 +3894,19 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getDefaultScalarProductOperator(), monitor);
+        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getDefaultScalarProductOperator(), monitor);
+        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getDefaultScalarProductOperator(), monitor);
+        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getScalarProductOperator(), monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getDefaultScalarProductOperator(), monitor);
+        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getScalarProductOperator(), monitor);
     }
 
     public static Expr gate(Axis axis, double a, double b) {
@@ -3977,7 +3980,7 @@ public final class Maths {
 //    }
 
     public static double scalarProduct(DoubleToDouble f1, DoubleToDouble f2) {
-        return Config.getDefaultScalarProductOperator().evalDD(null, f1, f2);
+        return Config.getScalarProductOperator().evalDD(null, f1, f2);
     }
 
     public static Vector scalarProduct(boolean hermitian, Expr f1, TVector<Expr> f2) {
@@ -4019,22 +4022,22 @@ public final class Maths {
     }
 
     public static Complex scalarProduct(boolean hermitian, Domain domain, Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, domain, f1, f2);
+        return Config.getScalarProductOperator().eval(hermitian, domain, f1, f2);
     }
 
     public static Complex scalarProduct(boolean hermitian, Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, f1, f2);
+        return Config.getScalarProductOperator().eval(hermitian, f1, f2);
     }
 
     public static Complex scalarProduct(Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(false, f1, f2);
+        return Config.getScalarProductOperator().eval(false, f1, f2);
     }
 
     public static Complex hscalarProduct(Expr f1, Expr f2) {
-        return Config.getDefaultScalarProductOperator().eval(true, f1, f2);
+        return Config.getScalarProductOperator().eval(true, f1, f2);
     }
 //    public static Complex scalarProduct(DomainXY domain, IDCxy f1, IDCxy f2) {
-//        return getDefaultScalarProductOperator().process(domain, f1, f2);
+//        return getScalarProductOperator().process(domain, f1, f2);
 //    }//
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
@@ -4046,7 +4049,7 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
-        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null));
+        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, null));
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f) {
@@ -4058,7 +4061,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, null);
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
@@ -4070,7 +4073,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
@@ -4082,7 +4085,7 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor));
+        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, monitor));
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
@@ -4094,7 +4097,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
     public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
@@ -4106,7 +4109,7 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
-        return (Matrix) Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null).to($COMPLEX);
+        return (Matrix) Config.getScalarProductOperator().eval(hermitian, g, f, null).to($COMPLEX);
     }
 
     public static Complex scalarProduct(Matrix g, Matrix f) {
@@ -4130,7 +4133,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, null);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, null);
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
@@ -4142,7 +4145,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, monitor);
     }
 
     public static TMatrix<Complex> scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
@@ -4154,7 +4157,7 @@ public final class Maths {
     }
 
     public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return matrix(Config.getDefaultScalarProductOperator().eval(hermitian, g, f, monitor));
+        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, monitor));
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
@@ -4166,7 +4169,7 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getDefaultScalarProductOperator().eval(hermitian, g, f, axis, monitor);
+        return Config.getScalarProductOperator().eval(hermitian, g, f, axis, monitor);
     }
 
     //    public static String scalarProductToMatlabString(DFunctionXY f1, DFunctionXY f2, DomainXY domain0, ToMatlabStringParam... format) {
@@ -4518,6 +4521,9 @@ public final class Maths {
         if (!c.isZero()) {
             all.add(c.toComplex());
         }
+        if(all.size()==1){
+            return all.get(0);
+        }
         return new Plus(all);
     }
 
@@ -4632,6 +4638,7 @@ public final class Maths {
             return CZERO;
         }
         List<Expr> all = new ArrayList<>();
+        Domain d=null;
         MutableComplex c = new MutableComplex(1, 0);
         Queue<Expr> t = new LinkedList<>();
         for (int i = 0; i < len; i++) {
@@ -4642,12 +4649,17 @@ public final class Maths {
                 if (e2 instanceof Mul) {
                     t.addAll(e2.getSubExpressions());
                 } else {
-                    if (e2.isComplex()) {
+                    if (e2.isComplexExpr()) {
                         Complex v = e2.toComplex();
                         if (c.isZero()) {
                             return CZERO;
                         }
                         c.mul(v);
+                        if(d==null){
+                            d=e2.getDomain();
+                        }else{
+                            d=d.intersect(e2.getDomain());
+                        }
                     } else {
                         all.add(e2);
                     }
@@ -4655,11 +4667,12 @@ public final class Maths {
             }
         }
         Complex complex = c.toComplex();
+        Expr complexExpr=d==null?complex:complex.mul(d);
         if (all.isEmpty()) {
-            return complex;
+            return complexExpr;
         }
-        if (!complex.equals(CONE)) {
-            all.add(0, complex);
+        if (!complexExpr.equals(CONE)) {
+            all.add(0, complexExpr);
         }
         return new Mul(all.toArray(new Expr[all.size()]));
     }
@@ -4805,7 +4818,7 @@ public final class Maths {
     public static double norm(Expr a) {
         //TODO conjugate a
         Expr aCong = a;
-        Complex c = Config.getDefaultScalarProductOperator().eval(true, a, aCong);
+        Complex c = Config.getScalarProductOperator().eval(true, a, aCong);
         return sqrt(c).absdbl();
     }
 
@@ -5096,11 +5109,11 @@ public final class Maths {
         while (true) {
             Object[] uplet = new Object[indexes.length];
             for (int i = 0; i < uplet.length; i++) {
-                try {
+//                try {
                     uplet[i] = values[i][indexes[i]];
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    System.out.println("Why");
-                }
+//                } catch (ArrayIndexOutOfBoundsException ex) {
+//                    System.out.println("");
+//                }
             }
             action.next(uplet);
 
@@ -5906,23 +5919,26 @@ public final class Maths {
             setFunctionDifferentiatorManager(manager);
         }
 
-        public static ScalarProductOperator getDefaultScalarProductOperator() {
+        public static ScalarProductOperator getScalarProductOperator() {
             if (defaultScalarProductOperator == null) {
                 defaultScalarProductOperator = ScalarProductOperatorFactory.formal();
             }
             return defaultScalarProductOperator;
         }
 
-        public static IntegrationOperator getDefaultIntegrationOperator() {
+        public static void setScalarProductOperator(ScalarProductOperator sp) {
+            defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
+        }
+        public static IntegrationOperator getIntegrationOperator() {
             if (defaultIntegrationOperator == null) {
-                defaultIntegrationOperator = new FormalIntegrationOperator();
+                defaultIntegrationOperator = IntegrationOperatorFactory.defaultValue();
             }
             return defaultIntegrationOperator;
         }
-
-        public static void setDefaultScalarProductOperator(ScalarProductOperator sp) {
-            defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
+        public static void setIntegrationOperator(IntegrationOperator op) {
+            defaultIntegrationOperator = op == null ? IntegrationOperatorFactory.defaultValue() : op;
         }
+
 
         public static String getLargeMatrixCachePath(boolean expand) {
             if (expand) {
@@ -6218,5 +6234,9 @@ public final class Maths {
     }
 
     private static class TListMatrixTypeReference extends TypeReference<TList<Matrix>> {
+    }
+
+    public static String getHadrumathsVersion(){
+        return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadrumaths");
     }
 }

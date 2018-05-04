@@ -71,20 +71,7 @@ public class PlotConsoleFrame extends JFrame {
         return jmi;
     }
 
-    protected JMenuBar createMenuBar() {
-        menubar = new JMenuBar();
-
-        fileMenu = new JMenu("File");
-        menubar.add(fileMenu);
-
-
-        toolsWindowsMenu = new JMenu("Tools");
-        menubar.add(toolsWindowsMenu);
-//        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
-        windowsMenu = new JMenu("Windows");
-        menubar.add(windowsMenu);
-
-
+    protected void prepareFileMenu(JMenu fileMenu){
         fileMenu.add(createMenuItem("Properties", new PlotConsolePropertiesAction()));
 
         fileMenu.add(createMenuItem("Load", new LoadAction()));
@@ -107,6 +94,30 @@ public class PlotConsoleFrame extends JFrame {
         fileMenu.add(createMenuItem("Close", new CloseAction()));
 
         fileMenu.add(createMenuItem("Exit", new ExitAction()));
+    }
+
+    protected void prepareToolsMenu(JMenu toolsWindowsMenu){
+
+    }
+
+    protected JMenuBar createMenuBar() {
+        menubar = new JMenuBar();
+
+        fileMenu = new JMenu("File");
+        prepareFileMenu(fileMenu);
+        menubar.add(fileMenu);
+
+
+        toolsWindowsMenu = new JMenu("Tools");
+        menubar.add(toolsWindowsMenu);
+        prepareToolsMenu(toolsWindowsMenu);
+
+//        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
+        windowsMenu = new JMenu("Windows");
+        menubar.add(windowsMenu);
+
+
+
         List<PlotConsoleMenuItem> menus = new ArrayList<>(Arrays.asList(console.getMenus()));
         Set<String> visitedMenuPos=new HashSet<>();
         Map<String,Integer> expectedMenuPos=new HashMap<>();

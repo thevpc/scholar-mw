@@ -787,7 +787,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 
     @Override
     public Expr scalarProduct(boolean hermitian, Expr a, Expr b) {
-        return Maths.Config.getDefaultScalarProductOperator().eval(hermitian, a,b);
+        return Maths.Config.getScalarProductOperator().eval(hermitian, a,b);
     }
 
     @Override
@@ -811,7 +811,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     private static class ExprAddRepeatableOp implements RepeatableOp<Expr> {
-        MutableComplex c = new MutableComplex(0,0);
+        MutableComplex c = new MutableComplex();
         Queue<Expr> t = new LinkedList<>();
         List<Expr> all = new ArrayList<>();
 

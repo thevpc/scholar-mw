@@ -862,12 +862,12 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public <R> boolean isConvertibleTo(TypeReference<R> other) {
-        if (
-                Maths.$COMPLEX.equals(other)
-                        || Maths.$EXPR.equals(other)
-                ) {
-            return true;
-        }
+//        if (
+//                Maths.$COMPLEX.equals(other)
+//                        || Maths.$EXPR.equals(other)
+//                ) {
+//            return true;
+//        }
         if (other.isAssignableFrom(getComponentType())) {
             return true;
         }

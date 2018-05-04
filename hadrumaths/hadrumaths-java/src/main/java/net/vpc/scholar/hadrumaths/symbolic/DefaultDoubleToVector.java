@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.*;
 
@@ -48,7 +49,11 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
 //        this(name, fx, fy, null);
 //    }
 
-    private DefaultDoubleToVector(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim, Map<String, Object> properties) {
+    private DefaultDoubleToVector(DoubleToComplex[] f, int dim) {
+        this(f[0],dim>1?f[1]:null,dim>2?f[2]:null,dim);
+    }
+
+    private DefaultDoubleToVector(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim) {
         switch (dim){
             case 1:{
                 components = new DoubleToComplex[]{fx};
@@ -71,9 +76,6 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
             default:{
                 throw new UnsupportedComponentDimensionException(dim);
             }
-        }
-        if(properties!=null) {
-            setProperties(properties);
         }
     }
 
@@ -113,15 +115,15 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx) {
-        return new DefaultDoubleToVector(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1, null);
+        return new DefaultDoubleToVector(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy) {
-        return new DefaultDoubleToVector(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2, null);
+        return new DefaultDoubleToVector(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz) {
-        return new DefaultDoubleToVector(fx, fy, fz, 3, null);
+        return new DefaultDoubleToVector(fx, fy, fz, 3);
     }
 
     @Override
@@ -238,17 +240,17 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
 //    }
 
     @Override
-    public DefaultDoubleToVector clone() {
+    public DoubleToVector clone() {
         Map<String, Object> properties = hasProperties()?getProperties():null;
         switch (getComponentSize()) {
             case 1: {
-                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1).setProperties(properties).toDV();
             }
             case 2: {
-                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), null, 2).setProperties(properties).toDV();
             }
             case 3: {
-                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3, properties);
+                return new DefaultDoubleToVector((DoubleToComplex) getComponent(Axis.X).clone(), (DoubleToComplex) getComponent(Axis.Y).clone(), (DoubleToComplex) getComponent(Axis.Z).clone(), 3).setProperties(properties).toDV();
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
@@ -356,12 +358,36 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector  implements Cl
         return result;
     }
 
-
-
-
-
     @Override
     public boolean isInvariantImpl(Axis axis) {
         return false;
+    }
+
+
+    @Override
+    public Expr mul(Domain domain) {
+        DoubleToComplex[] c2 = new DoubleToComplex[components.length];
+        for (int i = 0; i < components.length; i++) {
+            c2[i]=components[i].mul(domain).toDC();
+        }
+        return new DefaultDoubleToVector(c2,components.length);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        DoubleToComplex[] c2 = new DoubleToComplex[components.length];
+        for (int i = 0; i < components.length; i++) {
+            c2[i]=components[i].mul(other).toDC();
+        }
+        return new DefaultDoubleToVector(c2,components.length);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        DoubleToComplex[] c2 = new DoubleToComplex[components.length];
+        for (int i = 0; i < components.length; i++) {
+            c2[i]=components[i].mul(other).toDC();
+        }
+        return new DefaultDoubleToVector(c2,components.length);
     }
 }

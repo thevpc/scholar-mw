@@ -440,6 +440,35 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        double[][][] d = new double[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = this.values[i][j][k] * domain.computeDouble(x[k],y[j],z[i]);
+                }
+            }
+        }
+        return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.getReal());
+        }
+        Complex[][][] d = new Complex[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = other.mul(this.values[i][j][k]);
+                }
+            }
+        }
+        return new Discrete(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2],dimension);
+    }
+
     public DDiscrete mul(DDiscrete other) {
         double[][][] d = new double[zcount][ycount][xcount];
         for (int i = 0; i < zcount; i++) {

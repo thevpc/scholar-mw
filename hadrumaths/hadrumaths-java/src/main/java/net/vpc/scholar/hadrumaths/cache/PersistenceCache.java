@@ -200,6 +200,7 @@ public class PersistenceCache implements PersistentCacheConfig {
 
     public ObjectCache getObjectCache(HashValue dump, boolean createIfNotFound) {
         if (!isEnabled()) {
+            //isEnabled();
             return null;
         }
 //        DumpPath dp=new DumpPath(dump);
@@ -303,48 +304,56 @@ public class PersistenceCache implements PersistentCacheConfig {
 
     public CacheMode getEffectiveMode() {
         CacheMode m = mode == null ? CacheMode.INHERITED : mode;
+        if (m != CacheMode.INHERITED) {
+            return m;
+        }
         CacheMode p = parent == null ? (Maths.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
-        if (m == CacheMode.DISABLED || p == CacheMode.DISABLED) {
-            return CacheMode.DISABLED;
-        }
-        if (m == CacheMode.INHERITED) {
-            return p;
-        }
-        switch (p) {
-            case READ_ONLY: {
-                switch (m) {
-                    case ENABLED: {
-                        return CacheMode.READ_ONLY;
-                    }
-                    case READ_ONLY: {
-                        return CacheMode.READ_ONLY;
-                    }
-                    case WRITE_ONLY: {
-                        return CacheMode.DISABLED;
-                    }
-                }
-                return CacheMode.DISABLED;
-            }
-            case WRITE_ONLY: {
-                switch (m) {
-                    case ENABLED: {
-                        return CacheMode.WRITE_ONLY;
-                    }
-                    case READ_ONLY: {
-                        return CacheMode.DISABLED;
-                    }
-                    case WRITE_ONLY: {
-                        return CacheMode.WRITE_ONLY;
-                    }
-                }
-                return CacheMode.DISABLED;
-            }
-            case ENABLED: {
-                return m;
-            }
-        }
-        return CacheMode.DISABLED;
+        return p;
     }
+//public CacheMode getEffectiveMode() {
+//        CacheMode m = mode == null ? CacheMode.INHERITED : mode;
+//        CacheMode p = parent == null ? (Maths.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
+//        if (m == CacheMode.DISABLED || p == CacheMode.DISABLED) {
+//            return CacheMode.DISABLED;
+//        }
+//        if (m == CacheMode.INHERITED) {
+//            return p;
+//        }
+//        switch (p) {
+//            case READ_ONLY: {
+//                switch (m) {
+//                    case ENABLED: {
+//                        return CacheMode.READ_ONLY;
+//                    }
+//                    case READ_ONLY: {
+//                        return CacheMode.READ_ONLY;
+//                    }
+//                    case WRITE_ONLY: {
+//                        return CacheMode.DISABLED;
+//                    }
+//                }
+//                return CacheMode.DISABLED;
+//            }
+//            case WRITE_ONLY: {
+//                switch (m) {
+//                    case ENABLED: {
+//                        return CacheMode.WRITE_ONLY;
+//                    }
+//                    case READ_ONLY: {
+//                        return CacheMode.DISABLED;
+//                    }
+//                    case WRITE_ONLY: {
+//                        return CacheMode.WRITE_ONLY;
+//                    }
+//                }
+//                return CacheMode.DISABLED;
+//            }
+//            case ENABLED: {
+//                return m;
+//            }
+//        }
+//        return CacheMode.DISABLED;
+//    }
 
     public boolean isEnabled() {
         return getEffectiveMode() != CacheMode.DISABLED;
@@ -492,6 +501,9 @@ public class PersistenceCache implements PersistentCacheConfig {
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
     public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
+        if(objCache==null){
+            return (T) evaluator.evaluate(args);
+        }
         return objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
                 PersistenceCache.LOCK_TIMEOUT,
                 new Callable<T>() {
@@ -588,6 +600,9 @@ public class PersistenceCache implements PersistentCacheConfig {
         T value = null;
         if (isEnabled()) {
             ObjectCache objCache = getObjectCache(dump, true);
+            if(objCache==null){
+                return null;
+            }
             value = objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
                     PersistenceCache.LOCK_TIMEOUT,
                     new Callable<T>() {
@@ -600,6 +615,9 @@ public class PersistenceCache implements PersistentCacheConfig {
                             CacheMode cacheMode = getEffectiveMode();
                             if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
                                 momCache = getObjectCache(dump, true);
+                                if(momCache!=null){
+                                    return null;
+                                }
                                 Chronometer c = new Chronometer();
                                 c.start();
                                 try {
@@ -628,6 +646,9 @@ public class PersistenceCache implements PersistentCacheConfig {
             CacheMode cacheMode = getEffectiveMode();
             if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
                 objCache = getObjectCache(dump, true);
+                if(objCache!=null){
+                    return false;
+                }
                 try {
                     if (objCache.exists(cacheItemName)) {
                         return true;

@@ -17,8 +17,8 @@ public class LinearFormatter implements Formatter<Linear> {
 
     @Override
     public String format(Linear o, FormatParamSet format) {
-        StringBuilder sb=new StringBuilder();
-        format(sb,o,format);
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
         return sb.toString();
 
     }
@@ -35,7 +35,7 @@ public class LinearFormatter implements Formatter<Linear> {
         String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
         int initialLength = sb.length();
 
-        boolean par=format.containsParam(RequireParenthesesFormat.INSTANCE) || FormatFactory.requireAppendDomain(o,format);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS) || FormatFactory.requireAppendDomain(o, format);
         if (a == 0 && b == 0 && c == 0) {
             if (df != null) {
                 sb.append(df.getFormat().format(0));
@@ -45,78 +45,93 @@ public class LinearFormatter implements Formatter<Linear> {
                 return;
             }
         } else {
-            boolean lastNbr=false;
-            boolean par0=FormatFactory.requireAppendDomain(o,format) && ((a!=0?1:0) + (b!=0?1:0) + (c!=0?1:0)>1);
-            if(par0){
+            boolean lastNbr = false;
+            boolean par0 = FormatFactory.requireAppendDomain(o, format) && ((a != 0 ? 1 : 0) + (b != 0 ? 1 : 0) + (c != 0 ? 1 : 0) > 1);
+            if (par0) {
                 sb.append("(");
             }
             String v;
             if (a == 1) {
                 sb.append(x.getName());
-                lastNbr=true;
+                lastNbr = true;
             } else if (a == -1) {
                 sb.append("-").append(x.getName());
-                lastNbr=true;
-                par=true;
+                lastNbr = true;
+                par = true;
             } else if (a == 0) {
                 // dot nothing
             } else {
-                v = FormatFactory.toParamString(a, df, false, true);
+                v = FormatFactory.toParamString(a, df, false, true, false);
                 if (v.length() > 0) {
                     sb.append(v).append(mul).append(x.getName());
-                    lastNbr=true;
-                    if(v.startsWith("-")){
-                        par=true;
+                    lastNbr = true;
+                    if (v.startsWith("-")) {
+                        par = true;
                     }
                 }
             }
             if (b == 1) {
+                if (a != 0) {
+                    sb.append(" ");
+                    sb.append("+");
+                    sb.append(" ");
+                }
                 sb.append(y.getName());
-                lastNbr=true;
-            } else if (a == -1) {
-                sb.append("-").append(y.getName());
-                lastNbr=true;
-                par=true;
+                lastNbr = true;
+            } else if (b == -1) {
+                if (a != 0) {
+                    sb.append(" ");
+                }
+                sb.append("-");
+                if (a != 0) {
+                    sb.append(" ");
+                }
+                sb.append(y.getName());
+                lastNbr = true;
+                par = true;
             } else if (b == 0) {
                 // dot nothing
             } else {
-                v = FormatFactory.toParamString(b, df, sb.length() > initialLength, true);
+                if (a != 0) {
+                    sb.append(" ");
+                }
+                v = FormatFactory.toParamString(b, df, sb.length() > initialLength, true, a != 0);
                 if (v.length() > 0) {
                     sb.append(v).append(mul).append(y.getName());
-                    lastNbr=true;
-                    if(v.startsWith("-")){
-                        par=true;
+                    lastNbr = true;
+                    if (v.startsWith("-")) {
+                        par = true;
                     }
                 }
             }
-            if(sb.length()==initialLength && c==1){
-                if(o.getDomain().isFull()){
+            if (sb.length() == initialLength && c == 1) {
+                if (o.getDomain().isFull()) {
                     sb.append("1");
-                    lastNbr=true;
+                    lastNbr = true;
                     return;
-                }else{
-                    FormatFactory.format(sb,o.getDomain(), format);
-                    if(sb.length()-initialLength>0) {
+                } else {
+                    FormatFactory.format(sb, o.getDomain(), format);
+                    if (sb.length() - initialLength > 0) {
                         return;
                     }
                     sb.append("1");
                     return;
                 }
             }
-            v = FormatFactory.toParamString(c, df, lastNbr, true);
+            v = FormatFactory.toParamString(c, df, lastNbr, true, a != 0 || b != 0);
             if (v.length() > 0) {
                 sb.append(v);
-                if(v.startsWith("-")){
-                    par=true;
+                if (v.startsWith("-")) {
+                    par = true;
                 }
             }
-            if(par0){
+            if (par0) {
                 sb.append(")");
             }
         }
-        FormatFactory.appendStarredDomain(sb,o,format);
-        if(par){
-            sb.insert(initialLength,"(");
+        FormatFactory.appendStarredDomain(sb, o, format);
+        if (par) {
+            sb.insert(initialLength, "(");
             sb.append(")");
         }
     }

@@ -24,8 +24,8 @@ public class SubFormatter implements Formatter<Sub> {
 
     @Override
     public void format(StringBuilder sb, Sub o, FormatParamSet format) {
-        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
-        format = format.add(RequireParenthesesFormat.INSTANCE);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+        format = format.add(FormatFactory.REQUIRED_PARS);
         if (par) {
             sb.append("(");
         }

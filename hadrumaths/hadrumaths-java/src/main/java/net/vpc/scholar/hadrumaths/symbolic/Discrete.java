@@ -65,7 +65,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 //        dsteps(model, xvalues, yvalues, zvalues, dx, dy, dz, axis1, axis2, axis3);
 //    }
 
-    private Discrete(Domain domain, Complex[][][] values, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
+    public Discrete(Domain domain, Complex[][][] values, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         init(domain, values, x, y, z, dx, dy, dz, axis1, axis2, axis3, dim);
     }
 
@@ -287,6 +287,32 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
             for (int j = 0; j < ycount; j++) {
                 for (int k = 0; k < xcount; k++) {
                     d[i][j][k] = this.values[i][j][k].mul(c);
+                }
+            }
+        }
+        return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
+    }
+
+    @Override
+    public Discrete mul(Domain domain) {
+        Complex[][][] d = new Complex[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = this.values[i][j][k].mul(domain.computeDouble(x[k],y[j],z[i]));
+                }
+            }
+        }
+        return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
+    }
+
+    //@Override
+    public Discrete mul(DoubleToDouble other) {
+        Complex[][][] d = new Complex[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = this.values[i][j][k].mul(other.computeDouble(x[k],y[j],z[i]));
                 }
             }
         }
@@ -1436,12 +1462,14 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
             throw new IllegalArgumentException("Expression is not scalar");
         }
     }
-    private static AbsoluteSamples toAbsoluteSamples(Samples samples,Domain domain){
-        if(samples instanceof RelativeSamples){
+
+    private static AbsoluteSamples toAbsoluteSamples(Samples samples, Domain domain) {
+        if (samples instanceof RelativeSamples) {
             return ((RelativeSamples) samples).toAbsolute(domain);
         }
         return (AbsoluteSamples) samples;
     }
+
     public static Discrete discretize(Expr expr, Domain domain, Samples samples) {
         if (domain == null) {
             domain = expr.getDomain();
@@ -1457,7 +1485,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 //                                vv,
 //                                xx);
 //                    }
-                    AbsoluteSamples absoluteSamples=toAbsoluteSamples(samples,domain);
+                    AbsoluteSamples absoluteSamples = toAbsoluteSamples(samples, domain);
                     Complex[] model = expr.toDC().computeComplex(absoluteSamples.getX(), (Domain) null, null);
                     return Discrete.create(domain, model, absoluteSamples.getX());
                 }
@@ -1472,7 +1500,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 //                                xx,
 //                                yy);
 //                    }
-                    AbsoluteSamples absoluteSamples=toAbsoluteSamples(samples,domain);
+                    AbsoluteSamples absoluteSamples = toAbsoluteSamples(samples, domain);
                     Complex[][] model = expr.toDC().computeComplex(absoluteSamples.getX(), absoluteSamples.getY());
                     return Discrete.create(domain, model, absoluteSamples.getX(), absoluteSamples.getY());
                 }
@@ -1497,7 +1525,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 //                                zz);
                     }
 //                    Samples samples = domain.times(xSamples, ySamples, zSamples);
-                    AbsoluteSamples absoluteSamples=toAbsoluteSamples(samples,domain);
+                    AbsoluteSamples absoluteSamples = toAbsoluteSamples(samples, domain);
                     Complex[][][] model = expr.toDC().computeComplex(absoluteSamples.getX(), absoluteSamples.getY(), absoluteSamples.getZ(), null, null);
                     return Discrete.create(domain, model, absoluteSamples.getX(), absoluteSamples.getY(), absoluteSamples.getZ());
                 }
@@ -1523,5 +1551,337 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
             Normalizable o = other;
             return (this.norm() - o.norm()) / o.norm();
         }
+    }
+
+    public Complex sum() {
+        MutableComplex c = MutableComplex.Zero();
+        int len1 = values.length;
+        for (int i = 0; i < len1; i++) {
+            Complex[][] v2 = values[i];
+            int len2 = v2.length;
+            for (int j = 0; j < len2; j++) {
+                Complex[] v3 = v2[j];
+                int len3 = v3.length;
+                for (int k = 0; k < len3; k++) {
+                    c.add(v3[k]);
+                }
+            }
+        }
+        return c.toComplex();
+    }
+
+    public Complex avg() {
+        MutableComplex c = MutableComplex.Zero();
+        int len1 = values.length;
+        int count = 0;
+        for (int i = 0; i < len1; i++) {
+            Complex[][] v2 = values[i];
+            int len2 = v2.length;
+            for (int j = 0; j < len2; j++) {
+                Complex[] v3 = v2[j];
+                int len3 = v3.length;
+                count += len3;
+                for (int k = 0; k < len3; k++) {
+                    c.add(v3[k]);
+                }
+            }
+        }
+        return c.toComplex().div(count);
+    }
+
+//    @Override
+//    public Expr mul(Expr other) {
+//        if (other.isDouble()) {
+//            double dbl = other.toDouble();
+//            Domain dom = other.getDomain();
+//            if (dom.isUnconstrained()) {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = values[i][j][k].mul(dbl);
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values[i][j][k].mul(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            }
+//        } else if (other.isComplex()) {
+//            Complex dbl = other.toComplex();
+//            Domain dom = other.getDomain();
+//            if (dom.isUnconstrained()) {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = values[i][j][k].mul(dbl);
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values[i][j][k].mul(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            }
+//        }
+//        return super.mul(other);
+//    }
+
+    @Override
+    public Expr div(Expr other) {
+        if (other.isDouble()) {
+            double dbl = other.toDouble();
+            Domain dom = other.getDomain();
+            if (dom.isUnconstrained()) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values[i][j][k].div(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            } else {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values[i][j][k].div(dbl) : Complex.ZERO;
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        } else if (other.isComplex()) {
+            Complex dbl = other.toComplex();
+            Domain dom = other.getDomain();
+            if (dom.isUnconstrained()) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values[i][j][k].div(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            } else {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values[i][j][k].div(dbl) : Complex.ZERO;
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        }
+        return super.mul(other);
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        if (other.isDouble()) {
+            double dbl = other.toDouble();
+            Domain dom = other.getDomain();
+            if (dom.equals(getDomain())) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values[i][j][k].div(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values2[i][j][k].div(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        } else if (other.isComplex()) {
+            Complex dbl = other.toComplex();
+            Domain dom = other.getDomain();
+            if (dom.equals(getDomain())) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values[i][j][k].div(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values2[i][j][k].div(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        } else if (other instanceof Discrete && isSameSampling((Discrete) other)) {
+            Discrete dother = (Discrete) other;
+            Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+            for (int i = 0; i < values2.length; i++) {
+                for (int j = 0; j < values2[i].length; j++) {
+                    for (int k = 0; k < values2[i][j].length; k++) {
+                        values2[i][j][k] = values[i][j][k].add(dother.values[i][j][k]);
+                    }
+                }
+            }
+            return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+        }
+        return super.mul(other);
+    }
+
+    @Override
+    public Expr sub(Expr other) {
+        if (other.isDouble()) {
+            double dbl = other.toDouble();
+            Domain dom = other.getDomain();
+            if (dom.equals(getDomain())) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values2[i][j][k].sub(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values2[i][j][k].div(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        } else if (other.isComplex()) {
+            Complex dbl = other.toComplex();
+            Domain dom = other.getDomain();
+            if (dom.equals(getDomain())) {
+                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+                for (int i = 0; i < values2.length; i++) {
+                    for (int j = 0; j < values2[i].length; j++) {
+                        for (int k = 0; k < values2[i][j].length; k++) {
+                            values2[i][j][k] = values2[i][j][k].sub(dbl);
+                        }
+                    }
+                }
+                return new Discrete(this.domain, values, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+//            } else {
+//                Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+//                for (int i = 0; i < values2.length; i++) {
+//                    for (int j = 0; j < values2[i].length; j++) {
+//                        for (int k = 0; k < values2[i][j].length; k++) {
+//                            values2[i][j][k] = dom.contains(this.x[k], this.x[j], this.x[i]) ? values2[i][j][k].div(dbl) : Complex.ZERO;
+//                        }
+//                    }
+//                }
+//                return new Discrete(this.domain, values, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+            }
+        } else if (other instanceof Discrete && isSameSampling((Discrete) other)) {
+            Discrete dother = (Discrete) other;
+            Complex[/*Z*/][/*Y*/][/*X*/] values2 = new Complex[getCountZ()][getCountY()][getCountX()];
+            for (int i = 0; i < values2.length; i++) {
+                for (int j = 0; j < values2[i].length; j++) {
+                    for (int k = 0; k < values2[i][j].length; k++) {
+                        values2[i][j][k] = values[i][j][k].sub(dother.values[i][j][k]);
+                    }
+                }
+            }
+            return new Discrete(this.domain, values2, ArrayUtils.copy(x), ArrayUtils.copy(y), ArrayUtils.copy(z), dx, dy, dz, Axis.X, Axis.Y, Axis.Z, dimension);
+        }
+        return super.mul(other);
+    }
+
+
+    private boolean isSameSampling(Discrete other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.getDimension() != getDimension()) {
+            return false;
+        }
+        if (!other.getDomain().equals(getDomain())) {
+            return false;
+        }
+        if (other.getCountX() != getCountX()) {
+            return false;
+        }
+        if (other.getCountY() != getCountY()) {
+            return false;
+        }
+        if (other.getCountZ() != getCountZ()) {
+            return false;
+        }
+        if (!Arrays.equals(other.getX(), getX())) {
+            return false;
+        }
+        if (!Arrays.equals(other.getY(), getY())) {
+            return false;
+        }
+        if (!Arrays.equals(other.getZ(), getZ())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        if(other instanceof Domain) {
+            return mul((Domain) other);
+        }
+        if(other.isDouble()) {
+            return mul(other.toDouble());
+        }
+        if(other.isDoubleExpr()) {
+            return mul(other.toDouble()).mul(other.getDomain());
+        }
+        if(other.isComplex()) {
+            return mul(other.toComplex());
+        }
+        if(other.isComplexExpr()) {
+            return mul(other.toComplex()).mul(other.getDomain());
+        }
+        if(other instanceof Discrete) {
+            return mul((Discrete)other);
+        }
+        if(other instanceof DoubleToDouble) {
+            return mul((DoubleToDouble)other);
+        }
+        return Maths.mul(this, other);
     }
 }

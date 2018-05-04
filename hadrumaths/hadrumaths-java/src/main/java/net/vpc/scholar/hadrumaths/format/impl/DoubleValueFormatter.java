@@ -41,12 +41,12 @@ public class DoubleValueFormatter implements Formatter<DoubleValue> {
             if (o.getDomain().isFull()) {
                 FormatFactory.format(sb, -1.0, format);
             } else {
-                boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+                boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
                 if (par) {
                     sb.append("(");
                 }
                 sb.append("-");
-                FormatFactory.format(sb, o.getDomain(), format.add(RequireParenthesesFormat.INSTANCE));
+                FormatFactory.format(sb, o.getDomain(), format.add(FormatFactory.REQUIRED_PARS));
                 if (par) {
                     sb.append(")");
                 }

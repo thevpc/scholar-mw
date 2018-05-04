@@ -78,7 +78,7 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
     }
 
     public Linear(double a, double b, double c, Domain domain) {
-        super(domain);
+        super(domain==null?Domain.FULLXY:domain.toDomain(2));
         this.a = a;
         this.b = b;
         this.c = c;
@@ -210,4 +210,21 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
         return a==0 && b==0;
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new Linear(a,b,c,this.domain.intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new Linear(a*other,b*other,c*other,domain);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return new Mul(other,this);
+    }
 }

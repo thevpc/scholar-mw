@@ -82,7 +82,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
     public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor) {
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
-            sp = Maths.Config.getDefaultScalarProductOperator();
+            sp = Maths.Config.getScalarProductOperator();
         }
         int maxF = fn.length;
         double[][] gfps = new double[gp.length][maxF];

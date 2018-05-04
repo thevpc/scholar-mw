@@ -43,6 +43,27 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
         return new Neg(e);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return newInstance(getExpression().mul(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        if(other>=0){
+            return newInstance(getExpression().mul(other));
+        }else{
+            return newInstance(getExpression().mul(-other));
+        }
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return super.mul(other);
+    }
 
     @Override
     protected Expressions.UnaryExprHelper<? extends AbstractUnaryExpOperator> getExprHelper() {

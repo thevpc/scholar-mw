@@ -347,7 +347,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     public boolean isComplex() {
-        return isDouble();
+        return getDomain().isUnconstrained();
     }
 
 
@@ -579,4 +579,21 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return true;
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new DoubleValue(value,getDomain().intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new DoubleValue(value*other,getDomain().intersect(domain));
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return new ComplexValue(other.mul(value),getDomain().intersect(domain));
+    }
 }

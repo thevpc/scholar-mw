@@ -531,11 +531,15 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     public Any mul(double e) {
-        return mul(Maths.expr(e));
+        return wrap(object.mul(e));
     }
 
-    public Any mul(int e) {
-        return mul(Maths.expr(e));
+    public Any mul(Complex e) {
+        return wrap(object.mul(e));
+    }
+
+    public Any mul(Domain e) {
+        return wrap(object.mul(e));
     }
 
     public Any div(int e) {

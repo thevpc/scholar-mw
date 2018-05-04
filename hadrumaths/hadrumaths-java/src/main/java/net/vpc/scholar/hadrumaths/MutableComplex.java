@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.util.DevTools;
+//import net.vpc.scholar.hadrumaths.util.DevTools;
 
 /**
  * Created by vpc on 1/1/17.
@@ -147,13 +147,13 @@ public class MutableComplex {
     public MutableComplex(Complex c) {
         this.real = c.getReal();
         this.imag = c.getImag();
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public MutableComplex(double real, double imag) {
         this.real = real;
         this.imag = imag;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void addProduct(Complex complex1, MutableComplex complex2){
@@ -164,7 +164,7 @@ public class MutableComplex {
         this.real= r1 * r2 - i1 * i2;
         this.imag= r1 * i2 + i1 * r2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void addProduct(Complex complex1, Complex complex2){
@@ -175,7 +175,7 @@ public class MutableComplex {
         this.real+= r1 * r2 - i1 * i2;
         this.imag+= r1 * i2 + i1 * r2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void addProduct(Complex complex1, Complex complex2, Complex complex3){
@@ -190,7 +190,7 @@ public class MutableComplex {
         this.real+= A * C - B * D;
         this.imag+= A * D + B * C;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void addProduct(MutableComplex complex1, Complex complex2){
@@ -201,7 +201,7 @@ public class MutableComplex {
         this.real+= r1 * r2 - i1 * i2;
         this.imag+= r1 * i2 + i1 * r2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void addProduct(MutableComplex complex1, MutableComplex complex2){
@@ -212,35 +212,35 @@ public class MutableComplex {
         this.real+= a * c - b * d;
         this.imag+= a * d + b * c;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void add(Complex complex){
         this.real+=complex.getReal();
         this.imag+=complex.getImag();
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void add(MutableComplex complex){
         this.real+=complex.real;
         this.imag+=complex.real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void add(double real,double imag){
         this.real+=real;
         this.imag+=imag;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void mul(double real){
         this.real=this.real * real;
         this.imag=this.imag * real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void mul(double real,double imag){
@@ -249,7 +249,7 @@ public class MutableComplex {
         this.real=a * real - b * imag;
         this.imag=a * imag + b * real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void mul(MutableComplex complex){
@@ -260,7 +260,7 @@ public class MutableComplex {
         this.real=a * c - b * d;
         this.imag=a * d + b * c;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void mul(Complex complex){
@@ -271,7 +271,7 @@ public class MutableComplex {
         this.real=a * c - b * d;
         this.imag=a * d + b * c;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     //////////////////////////////////////
@@ -280,7 +280,7 @@ public class MutableComplex {
         this.real=this.real / real;
         this.imag=this.imag / real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void div(double real,double imag){
@@ -290,7 +290,7 @@ public class MutableComplex {
         this.real=(a* real +b* imag)/c2d2;
         this.imag=(b* real -a* imag)/c2d2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void div(MutableComplex other){
@@ -302,7 +302,7 @@ public class MutableComplex {
         this.real=(a*c+b*d)/c2d2;
         this.imag=(b*c-a*d)/c2d2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void div(Complex other){
@@ -314,7 +314,7 @@ public class MutableComplex {
         this.real=(a*c+b*d)/c2d2;
         this.imag=(b*c-a*d)/c2d2;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     ////////////////////////////////////////////
@@ -323,34 +323,34 @@ public class MutableComplex {
     public void add(double real){
         this.real+=real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void sub(Complex complex){
         this.real-=complex.getReal();
         this.imag-=complex.getImag();
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void sub(MutableComplex complex){
         this.real-=complex.real;
         this.imag-=complex.imag;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void sub(double real,double imag){
         this.real-=real;
         this.imag-=imag;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void sub(double real){
         this.real-=real;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public void zero() {
@@ -397,7 +397,7 @@ public class MutableComplex {
         real=-real;
         imag=-imag;
 //        return this;
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     @Override
@@ -552,7 +552,7 @@ public class MutableComplex {
             this.real=real / d;
             this.imag=-imag / d;
         }
-        DevTools.run(this::debug_check);
+        //DevTools.run(this::debug_check);
     }
 
     public double angle() {

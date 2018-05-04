@@ -28,13 +28,13 @@ public class DFunctionAbstractSumXFormat implements Formatter<Plus> {
 
     @Override
     public void format(StringBuilder sb, Plus o, FormatParamSet format) {
-        boolean par=format.containsParam(RequireParenthesesFormat.INSTANCE);
+        boolean par=format.containsParam(FormatFactory.REQUIRED_PARS);
         List<Expr> segments = o.getSubExpressions();
         int size = segments.size();
         if(par && size<=1){
             par=false;
         }
-        format=format.add(RequireParenthesesFormat.INSTANCE);
+        format=format.add(FormatFactory.REQUIRED_PARS);
         if(par){
             sb.append("(");
         }

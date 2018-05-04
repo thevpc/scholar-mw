@@ -266,4 +266,23 @@ public class YY extends AxisFunction implements Cloneable {
         }
         return Maths.identityMatrix(1);
     }
+
+    @Override
+    public Expr mul(Domain domain) {
+        return new Linear(0,1,0,domain);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new Linear(0,other,0,Domain.FULLXY);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return new Mul(other,this);
+    }
+
 }

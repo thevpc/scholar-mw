@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComponentDimension;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 
 import java.lang.ref.WeakReference;
@@ -76,5 +77,20 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
         int result = super.hashCode();
         result = 31 * result + (hermitian ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
+    }
+
+    @Override
+    public Expr mul(Domain other) {
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
     }
 }

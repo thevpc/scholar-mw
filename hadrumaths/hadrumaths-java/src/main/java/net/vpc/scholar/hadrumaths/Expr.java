@@ -28,7 +28,19 @@ public interface Expr extends Serializable {
     boolean isDouble();
 
     /**
-     * @return true if this expression is defined as a valid non param, constrained double value
+     * <table>
+     *     <tr><th>Expr</th><th>Type</th><th>isDoubleExpr</th><th>isDoubleTyped</th><th>isDouble</th></tr>
+     *     <tr><td>2.0</td><td>DoubleValue</td><td>true</td><td>true</td><td>true</td></tr>
+     *     <tr><td>2.0*II(0,10)</td><td>DoubleValue</td><td>true</td><td>true</td><td>false</td></tr>
+     *     <tr><td>2.0*II(0,10)</td><td>ComplexValue</td><td>true</td><td>true</td><td>false</td></tr>
+     *     <tr><td>(2.0+2.0î)*II(0,10)</td><td>ComplexValue</td><td>false</td><td>false</td><td>false</td></tr>
+     *     <tr><td>(2.0)*II(0,10)</td><td>Mul</td><td>true</td><td>true</td><td>true</td></tr>
+     *     <tr><td>(2.0+2.0î)*II(0,10)</td><td>Mul</td><td>false</td><td>false</td><td>false</td></tr>
+     *     <tr><td>X</td><td>XX</td><td>false</td><td>true</td><td>false</td></tr>
+     *     <tr><td>X+î</td><td>Plus</td><td>false</td><td>false</td><td>false</td></tr>
+     *     <tr><td>param("m")</td><td>Param</td><td>false</td><td>true</td><td>false</td></tr>
+     * </table>
+     * @return true if this expression is defined as a valid,non function, non param, (may be) constrained double value
      */
     boolean isDoubleExpr();
 
@@ -184,6 +196,8 @@ public interface Expr extends Serializable {
     Expr mul(int other);
 
     Expr mul(double other);
+
+    Expr mul(Complex other);
 
     Expr mul(Expr other);
 

@@ -261,4 +261,19 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new Mul(new DoubleValue(1,Domain.FULLX),this);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new Mul(new DoubleValue(other,Domain.FULLX),this);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        return new Mul(other,this);
+    }
+
 }

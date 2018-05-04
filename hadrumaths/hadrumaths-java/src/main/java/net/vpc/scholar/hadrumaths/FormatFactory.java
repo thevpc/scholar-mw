@@ -28,8 +28,10 @@ public class FormatFactory extends AbstractFactory {
     public static XFormat X = new XFormat("X");
     public static YFormat Y = new YFormat("Y");
     public static ZFormat Z = new ZFormat("Z");
-    public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE);
-    public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE);
+    public static RequireParenthesesFormat REQUIRED_PARS = RequireParenthesesFormat.INSTANCE;
+    public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE,true);
+    public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE,false);
+    public static DomainFormat NON_FULL_GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE,true);
     public static ProductFormat PRODUCT_STAR = new ProductFormat("*");
     public static ProductFormat PRODUCT_NONE = new ProductFormat(null);
     public static ProductFormat PRODUCT_DOTSTAR = new ProductFormat(".*");
@@ -330,18 +332,21 @@ public class FormatFactory extends AbstractFactory {
         best.format(sb, o, format);
     }
 
-    public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty) {
+    public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty,boolean prefixWithSpace) {
         StringBuilder sb = new StringBuilder();
         if (b == 0) {
             return zeroIsEmpty ? "" : ((prefixWithSign ? "+" : "") + "0.0");
         }
         if (prefixWithSign) {
+            if(prefixWithSpace){
+                sb.append(" ");
+            }
             double b0 = b;
             if (b < 0) {
-                sb.append(" - ");
+                sb.append("- ");
                 b0 = -b;
             } else if (b > 0) {
-                sb.append(" + ");
+                sb.append("+ ");
             }
             if (df != null) {
                 sb.append(df.getFormat().format(b0));
@@ -349,6 +354,9 @@ public class FormatFactory extends AbstractFactory {
                 sb.append(b0);
             }
         } else {
+            if(prefixWithSpace){
+                sb.append(" ");
+            }
             if (df != null) {
                 sb.append(df.getFormat().format(b));
             } else {

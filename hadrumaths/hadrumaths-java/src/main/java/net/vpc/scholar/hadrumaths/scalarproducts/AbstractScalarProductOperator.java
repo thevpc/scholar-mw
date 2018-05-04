@@ -183,6 +183,6 @@ public abstract class AbstractScalarProductOperator implements ScalarProductOper
         return evalDC(hermitian, null, f1, f2);
     }
 
-    public abstract ExpressionRewriter getExpressionRewriter();
+
 
 }

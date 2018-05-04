@@ -44,12 +44,23 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
         return RewriteResult.unmodified(e);
     }
 
-    public void clear() {
+    public <T> void clear() {
+        for (ExpressionRewriter set : sets.toArray(new ExpressionRewriter[sets.size()])) {
+            remove(set);
+        }
         sets.clear();
     }
 
     public void add(ExpressionRewriter set) {
         sets.add(set);
+        set.addRewriteListener(listenerListAdapter);
+        set.addRewriteFailListener(listenerFailListAdapter);
+    }
+
+    public void remove(ExpressionRewriter set) {
+        sets.remove(set);
+        set.removeRewriteListener(listenerListAdapter);
+        set.removeRewriteFailListener(listenerFailListAdapter);
     }
 
     public List<ExpressionRewriter> toList() {
@@ -58,7 +69,7 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
 
     @Override
     public String toString() {
-        return String.valueOf(name);
+        return "Suite("+String.valueOf(name)+")";
     }
 
     @Override

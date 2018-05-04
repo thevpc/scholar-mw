@@ -175,10 +175,14 @@ public class PlotTypesHelper {
             for (Object o : m.getRows()) {
                 TypeAndValue typeAndValue = resolveType(o);
                 if(typeAndValue.type.equals("complex[]")){
-                    return new TypeAndValue("complex[][]",obj);
+                    TypeAndValue typeAndValue1 = new TypeAndValue("complex[][]", obj);
+                    typeAndValue1.props.put("matrix","true");
+                    return typeAndValue1;
                 }
             }
-            return new TypeAndValue("number[][]",obj);
+            TypeAndValue typeAndValue = new TypeAndValue("number[][]", obj);
+            typeAndValue.props.put("matrix","true");
+            return typeAndValue;
         }
         if (obj instanceof TVector) {
             TVector vv = (TVector) obj;

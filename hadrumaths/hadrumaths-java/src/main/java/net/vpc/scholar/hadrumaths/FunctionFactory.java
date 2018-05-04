@@ -267,7 +267,7 @@ public final class FunctionFactory extends AbstractFactory{
     }
 
     public static CExp expIXexpIY(double amp, double a, double b, Domain domain) {
-        return new CExp(amp, a, b, domain);
+        return new CExp(Complex.valueOf(amp), a, b, domain);
     }
 
 //    public static IDDxy[] getXFunctions(DFunctionVector2D[] f) {

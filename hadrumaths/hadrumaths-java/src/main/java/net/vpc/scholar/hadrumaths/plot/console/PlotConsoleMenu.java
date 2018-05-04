@@ -9,6 +9,5 @@ public class PlotConsoleMenu extends PlotConsoleMenuItem{
 
     @Override
     public void actionPerformed(PlotConsole console,ActionEvent e) {
-        //do nothing!!
     }
 }

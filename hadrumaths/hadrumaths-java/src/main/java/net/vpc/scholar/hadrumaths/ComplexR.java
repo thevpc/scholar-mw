@@ -207,9 +207,9 @@ public final class ComplexR extends Complex implements DoubleToDouble{
         return compareTo((Complex) c);
     }
 
-    public boolean equals(Complex c) {
-        return real == c.getReal() && getImag() == c.getImag();
-    }
+//    public boolean equals(Complex c) {
+//        return real == c.getReal() && getImag() == c.getImag();
+//    }
 
     @Override
     public boolean equals(Object c) {
@@ -415,10 +415,6 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 //    public static Complex cosh(Complex c){
 //        return c.cosh();
 //    }
-    public boolean isDC() {
-        return true;
-    }
-
     public boolean isDD() {
         return true;
     }
@@ -427,22 +423,8 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 //        return isNaN() || imag == 0;
 //    }
 
-    public boolean isDM() {
-        return true;
-    }
-
-
-    @Override
-    public boolean isDV() {
-        return true;
-    }
-
     public DoubleToDouble toDD() {
         return DoubleValue.valueOf(getReal(), Domain.FULL(getDomainDimension()));
-    }
-
-    public DoubleToMatrix toDM() {
-        return toDC().toDM();
     }
 
     public boolean isReal() {

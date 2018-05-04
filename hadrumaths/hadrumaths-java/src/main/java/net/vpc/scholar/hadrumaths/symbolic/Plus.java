@@ -8,6 +8,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,12 +98,22 @@ public class Plus extends AbstractExprOperator implements Cloneable {
 
     public Plus(Expr... expressions) {
         this.expressions = expressions;
+//        boolean someUnconstrained=false;
+//        boolean someConstrained=false;
         for (Expr expression : expressions) {
             int d = expression.getDomainDimension();
             if (d > domainDim) {
                 domainDim = d;
             }
+//            if(expression.getDomain().isUnconstrained()){
+//                someUnconstrained=true;
+//            }else{
+//                someConstrained=true;
+//            }
         }
+//        if(someConstrained && someUnconstrained){
+//            System.out.println("Plus : someConstrained && someUnconstrained");
+//        }
     }
 
     public Expr clone() {
@@ -588,4 +599,39 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         return Expressions.computeMatrix(this, binaryExprHelper, x, y, z, d0, ranges);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        for (int i = 0; i < expr2.length; i++) {
+            expr2[i]=expr2[i].mul(domain);
+        }
+        return new Plus(expr2);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        if(other==0){
+            return Maths.DDZERO;
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        for (int i = 0; i < expr2.length; i++) {
+            expr2[i]=expr2[i].mul(other);
+        }
+        return new Plus(expr2);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if (other.isZero()) {
+            return Maths.DDZERO;
+        }
+        if (other.isReal()) {
+            return mul(other.toDouble());
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        for (int i = 0; i < expr2.length; i++) {
+            expr2[i]=expr2[i].mul(other);
+        }
+        return new Plus(expr2);
+    }
 }

@@ -289,4 +289,21 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
         return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new CosXCosY(amp,a,b,c,d,this.domain.intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new CosXCosY(amp*other,a,b,c,d,this.domain);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        return new Mul(other,this);
+    }
 }

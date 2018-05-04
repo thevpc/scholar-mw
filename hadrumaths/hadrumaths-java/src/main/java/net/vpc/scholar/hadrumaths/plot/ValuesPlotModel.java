@@ -29,6 +29,7 @@ public class ValuesPlotModel implements PlotModel {
     private Set<ExternalLibrary> enabledLibraries=EnumSet.allOf(ExternalLibrary.class);
     private DoubleFormatter xformat =null;
     private DoubleFormatter yformat =null;
+    private DoubleFormatter zformat =null;
 
     /**
      * surface
@@ -107,6 +108,15 @@ public class ValuesPlotModel implements PlotModel {
 
     public ValuesPlotModel setYformat(DoubleFormatter yformat) {
         this.yformat = yformat;
+        return this;
+    }
+
+    public DoubleFormatter getZformat() {
+        return zformat;
+    }
+
+    public ValuesPlotModel setZformat(DoubleFormatter zformat) {
+        this.zformat = zformat;
         return this;
     }
 

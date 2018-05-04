@@ -75,18 +75,51 @@ public class ComplexFormatter implements Formatter<Complex> {
     }
 
     private void format(double real, double imag, StringBuilder sb, FormatParamSet format) {
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         if (imag == 0) {
+            if(real>0){
+                par=false;
+            }
+            if(par){
+                sb.append("(");
+            }
             realToString(real, sb, format);
+            if(par){
+                sb.append(")");
+            }
+
         } else if (real == 0) {
+            if(imag>0){
+                par=false;
+            }
+            if(par){
+                sb.append("(");
+            }
             imagToString(imag, sb, format);
+            if(par){
+                sb.append(")");
+            }
         } else {
             if (imag < 0) {
+                if(par){
+                    sb.append("(");
+                }
                 realToString(real, sb, format);
-                imagToString(imag, sb, format);
+                sb.append("-");
+                imagToString(-imag, sb, format);
+                if(par){
+                    sb.append(")");
+                }
             } else {
+                if(par){
+                    sb.append("(");
+                }
                 realToString(real, sb, format);
                 sb.append("+");
                 imagToString(imag, sb, format);
+                if(par){
+                    sb.append(")");
+                }
             }
         }
     }

@@ -257,9 +257,17 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         Plus ee = (Plus) e;
+//        if(ee.toString().equals("(1117.2093362694857 * Y) + 1.5707963267948968")){
+//            System.out.println("Why");
+//        }
         DomainGroupedList grouped = new DomainGroupedList();
+        boolean someModification=false;
         for (Expr expression : ee.getSubExpressions()) {
-            expression = ruleset.rewriteOrSame(expression);
+            RewriteResult rewrite = ruleset.rewrite(expression);
+            if(!rewrite.isUnmodified()){
+                someModification=true;
+            }
+            expression = rewrite.getValue();
             if (expression instanceof Plus) {
                 for (Expr se : expression.getSubExpressions()) {
                     grouped.addxy(se);
@@ -272,7 +280,15 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //            grouped.domainx.put(domain, simplifyX((List) grouped.get(domain), grouped.fullx));
 //        }
         for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[grouped.domainxy.size()])) {
-            grouped.domainxy.put(domain, simplifyXY(grouped.get(domain), grouped.fullxy));
+            List<RewriteResult> rewriteResults = simplifyXY(grouped.get(domain), grouped.fullxy);
+            List<Expr> rewriteResults2 = new ArrayList<>();
+            for (RewriteResult rewriteResult : rewriteResults) {
+                rewriteResults2.add(rewriteResult.getValue());
+                if(rewriteResult.isRewritten() || rewriteResult.isBestEffort()){
+                    someModification=true;
+                }
+            }
+            grouped.domainxy.put(domain, rewriteResults2);
         }
 
         if (grouped.domainxy.size() > 0 || !grouped.complex.isReal()) {
@@ -299,7 +315,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
             if (!grouped.complex.isZero()) {
                 grouped.addxy(Maths.expr(grouped.complex, Domain.FULL(ee.getDomainDimension())));
             }
-            List<Expr> all = new ArrayList<Expr>();
+            List<RewriteResult> all = new ArrayList<RewriteResult>();
             for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[grouped.domainxy.size()])) {
                 all.addAll(simplifyXY(grouped.get(domain), grouped.fullxy));
             }
@@ -307,13 +323,27 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return RewriteResult.bestEffort(Complex.ZERO);
             }
             if (all.size() == 1) {
-                return RewriteResult.bestEffort(all.get(0));
+                //return RewriteResult.bestEffort(all.get(0));
+                RewriteResult rewriteResult = all.get(0);
+                return (rewriteResult.isUnmodified() && someModification)?RewriteResult.newVal(rewriteResult.getValue()) : rewriteResult;
             }
-            Expr newVal = Maths.sum(all.toArray(new Expr[all.size()]));
+            int r=someModification?RewriteResult.NEW_VAL:RewriteResult.UNMODIFIED;
+            List<Expr> exprs=new ArrayList<>();
+            for (int i = 0; i < all.size(); i++) {
+                if(r==-1 || r>all.get(i).getType()){
+                    r=all.get(i).getType();
+                }
+                exprs.add(all.get(i).getValue());
+            }
+            Expr newVal = Maths.sum(exprs.toArray(new Expr[exprs.size()]));
             if(newVal.equals(e)){
                return RewriteResult.unmodified(e);
             }
-            return RewriteResult.bestEffort(newVal);
+            if(r==RewriteResult.BEST_EFFORT) {
+                return RewriteResult.bestEffort(newVal);
+            }else{
+                return RewriteResult.unmodified(newVal);
+            }
 //        } else if (grouped.domainx.size() > 0) {
 //            List<Expr> all = new ArrayList<Expr>();
 //            grouped.addxy(new DoubleX(grouped.complex.getReal(), grouped.fullx));
@@ -368,13 +398,17 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //        return ok;
 //    }
 
-    private List<Expr> simplifyXY(List<Expr> all, Domain fullDomain) {
+    private List<RewriteResult> simplifyXY(List<Expr> all, Domain fullDomain) {
         if (all.size() < 2) {
-            return new ArrayList<Expr>(all);
+            ArrayList<RewriteResult> exprs = new ArrayList<>();
+            for (Expr expr : all) {
+                exprs.add(RewriteResult.unmodified(expr));
+            }
+            return exprs;
         }
         Expr[] arr = all.toArray(new Expr[all.size()]);
         boolean[] processed = new boolean[arr.length];
-        List<Expr> ok = new ArrayList<Expr>();
+        List<RewriteResult> ok = new ArrayList<RewriteResult>();
         boolean optimized;
         for (int i = 0; i < arr.length; i++) {
             Expr a = arr[i];
@@ -387,14 +421,14 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                         if (r != null) {
                             processed[i] = true;
                             processed[j] = true;
-                            ok.add(r);
+                            ok.add(RewriteResult.newVal(r));
                             optimized = true;
                             break;
                         }
                     }
                 }
                 if (!optimized) {
-                    ok.add(a);
+                    ok.add(RewriteResult.unmodified(a));
                 }
             }
         }
@@ -514,7 +548,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
         for (PlusPairSimplifier s : simplifiers.getAll(a.getClass(), b.getClass())) {
             Expr r = s.simplify(a, b, fullDomain, this);
             if(r!=null){
-                return r;
+                return (r);
             }
         }
         return null;
@@ -615,13 +649,13 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
         }
     }
 
-    protected static interface PlusPairSimplifier{
-        public Expr simplify(Expr a,Expr b,Domain domain,PlusSimplifyRule plusSimplifyRule);
+    protected interface PlusPairSimplifier{
+        Expr simplify(Expr a,Expr b,Domain domain,PlusSimplifyRule plusSimplifyRule);
     }
 
     protected static class ReverseSimplifier implements PlusPairSimplifier{
         public Expr simplify(Expr a,Expr b,Domain domain,PlusSimplifyRule plusSimplifyRule){
-            return plusSimplifyRule.simplifyXY(b,a,domain);
+            return plusSimplifyRule.simplifyXY(b, a, domain);
         }
     }
 

@@ -31,6 +31,13 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+//        if(e.getSubExpressions().get(0) instanceof DoubleValue && e.getSubExpressions().get(1) instanceof Complex){
+//            System.out.println("Why");
+//        }
+        RewriteResult e2 = rewrite0(e, ruleset);
+        return e2;
+    }
+    public RewriteResult rewrite0(Expr e, ExpressionRewriter ruleset) {
 //        RewriteResult rewriteResult = rewrite00(e, ruleset);
 //        return rewriteResult;
 //    }
@@ -48,6 +55,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             if(rewrite.isRewritten()){
                 updated=true;
             }
+            fullDomain = fullDomain.intersect(expression.getDomain());
             if (expression instanceof Mul) {
                 updated=true;
                 linearized.addAll(expression.getSubExpressions());
@@ -97,7 +105,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(Complex.ONE);
         }
         if (all.size() == 1) {
-            return RewriteResult.newVal(all.get(0));
+            Expr value = all.get(0);if(e.equals(value)){return RewriteResult.unmodified(e);}return RewriteResult.newVal(value);
         }
         Expr m2 = Maths.mul(all.toArray(new Expr[all.size()]));
         if(!updated && m2.equals(e)){
@@ -152,6 +160,12 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
     }
 
     protected Expr simplify(Expr a, Expr b, Domain fullDomain) {
+        if(a.isComplexExpr()){
+            return b.mul(a.toComplex()).mul(a.getDomain());
+        }
+        if(b.isComplexExpr()){
+            return a.mul(b.toComplex()).mul(b.getDomain());
+        }
         //process cross
 //        if (a.isDouble()) {
 //            double cst = a.toDouble();
@@ -160,101 +174,48 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
 
         if (a.isDoubleExpr()) {
             double cst = a.toDouble();
-            if (b.isDoubleExpr()) {
-                return DoubleValue.valueOf(cst * b.toDouble(), fullDomain);
-            } else if (b.isComplex()) {
-                Complex f=b.toComplex();
-                if (f.isReal()) {
-                    return DoubleValue.valueOf(f.getReal() * cst, fullDomain);
-                } else {
-                    return new ComplexValue(f.mul(cst), fullDomain);
+            //UPDATED
+            Domain theDomain = fullDomain.intersect(b.getDomain());
+            boolean domainChanged=!theDomain.equals(b.getDomain());
+            if (!domainChanged) {
+                if (cst == 1) {
+                    return b;
                 }
-            } else if (b.isComplexExpr()) {
-                return new ComplexValue(b.toComplex().mul(cst), fullDomain);
-            } else if (b instanceof Linear) {
-                Linear f = (Linear) b;
-                return new Linear(cst * f.a, cst * f.b, cst * f.c, fullDomain);
-            } else if (b instanceof Shape) {
-                Shape f = (Shape) b;
-                return new Shape(cst * f.value, f.getGeometry());
-            } else if (b instanceof RWG) {
-                RWG f = (RWG) b;
-                return new RWG(cst * f.max, f.polygon1, f.polygon2);
-            } else if (b instanceof Plus) {
-                Plus f = (Plus) b;
-                ArrayList<Expr> next = new ArrayList<Expr>();
-                DoubleValue newCst = DoubleValue.valueOf(cst, fullDomain);
-                for (Expr expression : f.getSubExpressions()) {
-                    next.add(Maths.mul(expression, newCst));
-                }
-                return Maths.sum(next.toArray(new Expr[next.size()]));
-            } else if (b instanceof Sub) {
-                Sub f = (Sub) b;
-                DoubleValue newCst = DoubleValue.valueOf(cst, fullDomain);
-                return new Sub(Maths.mul(f.getFirst(), newCst), Maths.mul(f.getSecond(), newCst));
-            } else if (b instanceof Div) {
-                Div f = (Div) b;
-                DoubleValue newCst = DoubleValue.valueOf(cst, fullDomain);
-                return new Div(Maths.mul(f.getFirst(), newCst), Maths.mul(f.getSecond(), newCst));
-//            } else if (b instanceof Pow) {
-//                Pow f = (Pow) b;
-//                DoubleXY newCst = new DoubleXY(cst.value, fullDomain);
-//                return new Div(new Mul(f.getFirst(), newCst), f.getSecond());
-            } else if (b instanceof Neg) {
-                Neg f = (Neg) b;
-                DoubleValue newCst = DoubleValue.valueOf(cst, fullDomain);
-                return new Neg(Maths.mul(f.getExpression(), newCst));
-                //removed because Imag is expanded to mul, if added mul to image will have stackoverflow exception
-//            } else if (b instanceof Imag) {
-//                Imag f = (Imag) b;
-//                DoubleValue newCst = new DoubleValue(cst.value, fullDomain);
-//                return new Imag(Maths.mul(f.getArg(), newCst).toDC());
-//            } else if (b instanceof Real) {
-//                Real f = (Real) b;
-//                DoubleValue newCst = new DoubleValue(cst.value, fullDomain);
-//                return (Maths.mul(f.getArg().getReal(), newCst));
-            } else if (b instanceof CosXCosY) {
-                CosXCosY f = (CosXCosY) b;
-                return new CosXCosY(cst* f.amp, f.a, f.b, f.c, f.d, fullDomain);
-            } else if (b instanceof CosXPlusY) {
-                CosXPlusY f = (CosXPlusY) b;
-                return new CosXPlusY(cst* f.amp, f.a, f.b, f.c, fullDomain);
-            } else if (b instanceof UFunction) {
-                UFunction f = (UFunction) b;
-                return new UFunction(fullDomain, cst * f.getAmp(), f.getA(), f.getB(), f.getC(), f.getD(), f.getE());
-            } else if (b instanceof DDiscrete) {
-                DDiscrete f = (DDiscrete) b;
-                Domain theDomain = fullDomain.intersect(f.getDomain());
-                if (theDomain.equals(f.getDomain())) {
-                    if (cst == 1) {
-                        return b;
-                    }
-                }
-                DoubleValue newCst = DoubleValue.valueOf(cst, fullDomain);
-                return f.mul(newCst);
-//            } else if (b instanceof DDxyToDDx) {
-//                DDxyToDDx f = (DDxyToDDx) b;
-//                return new DDxyToDDx(Maths.mul(a, f.getBase()).toDD(), f.getDefaultY());
             }
+            boolean expSimplifiableIfMulDomain= isExpSimplifiableIfMulDomain(b);
+            boolean expSimplifiableIfMulDouble=isExpSimplifiableIfMulDouble(b);
+            if(domainChanged){
+                if(expSimplifiableIfMulDomain && expSimplifiableIfMulDouble){
+                    return b.mul(fullDomain).mul(cst);
+                }
+            }else{
+                if(expSimplifiableIfMulDouble){
+                    return b.mul(cst);
+                }
+            }
+            return null;
         } else if (a.isComplexExpr()) {
-            if (b.isComplexExpr()) {
-                return new ComplexValue(b.toComplex().mul(a.toComplex()), fullDomain);
+            Complex cst = a.toComplex();
+            //UPDATED
+            Domain theDomain = fullDomain.intersect(b.getDomain());
+            boolean domainChanged=!theDomain.equals(b.getDomain());
+            if (!domainChanged) {
+                if (cst.equals(Maths.CONE)) {
+                    return b;
+                }
             }
-        } else if (a instanceof Complex) {
-            Complex ac = (Complex) a;
-            if (b instanceof Complex) {
-                Complex f = (Complex) b;
-                return ac.mul(f);
+            boolean expSimplifiableIfMulDomain= isExpSimplifiableIfMulDomain(b);
+            boolean expSimplifiableIfMulDouble=isExpSimplifiableIfMulComplex(b);
+            if(domainChanged){
+                if(expSimplifiableIfMulDomain && expSimplifiableIfMulDouble){
+                    return b.mul(fullDomain).mul(cst);
+                }
+            }else{
+                if(expSimplifiableIfMulDouble){
+                    return b.mul(cst);
+                }
             }
-            if (b instanceof ComplexValue) {
-                ComplexValue f = (ComplexValue) b;
-                return new ComplexValue(f.getValue().mul(ac), fullDomain);
-            }
-            if (ac.isReal()) {
-                return simplify(ac.toDD(), b, fullDomain);
-            } else {
-                return null;
-            }
+            return null;
         } else if (a instanceof XX) {
             XX ac = (XX) a;
             if (b instanceof XX) {
@@ -306,6 +267,30 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             return simplify(b, a, fullDomain);
         }
         return null;
+    }
+
+    private boolean isExpSimplifiableIfMulDouble(Expr b) {
+        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
+                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
+                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Plus || b instanceof Sub || b instanceof Neg
+                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
+    }
+    private boolean isExpSimplifiableIfMulComplex(Expr b) {
+        if(true)return true;
+        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
+                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
+                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Plus || b instanceof Sub || b instanceof Neg
+                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
+    }
+    private boolean isExpSimplifiableIfMulDomain(Expr b) {
+        if(true)return true;
+        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
+                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
+                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Plus || b instanceof Sub || b instanceof Neg
+                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }
 
     @Override

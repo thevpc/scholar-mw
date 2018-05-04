@@ -25,6 +25,8 @@
 
 package net.vpc.scholar.hadrumaths.util;
 
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+
 import java.awt.*;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -90,7 +92,7 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
         super(in);
         this.size=size;
         if(pmonitor==null){
-            throw new IllegalArgumentException("Missing Monitor");
+            pmonitor= ProgressMonitorFactory.logger(1000);
         }
         this.pmonitor=pmonitor;
     }

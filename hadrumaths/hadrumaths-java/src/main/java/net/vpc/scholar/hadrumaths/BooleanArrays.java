@@ -131,6 +131,9 @@ public class BooleanArrays {
         }
 
         public void copyFrom(BooleanArray3 other, Range r0) {
+            if(other==null){
+                return;
+            }
             for (int i = r0.zmin; i <= r0.zmax; i++) {
                 for (int j = r0.ymin; j <= r0.ymax; j++) {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {

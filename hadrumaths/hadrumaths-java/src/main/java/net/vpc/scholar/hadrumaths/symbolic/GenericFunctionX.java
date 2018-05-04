@@ -431,5 +431,10 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return newInstance(getArgument().toDM().getComponent(row, col));
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return newInstance(getArgument().mul(getArgument().getDomain().intersect(domain)));
+    }
+
 
 }

@@ -5,6 +5,7 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.FormatParamArray;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
@@ -31,7 +32,7 @@ public class NumberFormatter implements Formatter<Number>{
     public void format(StringBuilder sb, Number o, FormatParamSet format) {
         DoubleFormat df =  format.getParam(DoubleFormat.class, false);
         String v = df == null ? o.toString() : df.getFormat().format(o.doubleValue());
-        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         if(!(v.startsWith("-")||v.startsWith("+"))){
             par=false;
         }

@@ -77,7 +77,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
-            sp = Maths.Config.getDefaultScalarProductOperator();
+            sp = Maths.Config.getScalarProductOperator();
         }
 //        EnhancedProgressMonitor[] hmon = emonitor.split(new double[]{2, 1, 3});
 //        if (doSimplifyAll) {

@@ -215,4 +215,27 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     public int getDomainDimension() {
         return 2;
     }
+
+    @Override
+    public Expr mul(Geometry domain) {
+        return new Shape(value,getGeometry().intersectGeometry(domain));
+    }
+
+    @Override
+    public Expr mul(Domain domain) {
+        return new Shape(value,getGeometry().intersectGeometry(domain.toGeometry()));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new Shape(value*other,getGeometry());
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isReal()){
+            return mul(other.getReal());
+        }
+        return super.mul(other);
+    }
 }

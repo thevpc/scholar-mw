@@ -5,6 +5,7 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
@@ -28,7 +29,7 @@ public class DoubleFormatter implements Formatter<Double> {
     @Override
     public void format(StringBuilder sb, Double o, FormatParamSet format) {
         DoubleFormat df = format.getParam(DoubleFormat.class, false);
-        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         if (par && !(o.doubleValue() < 0)) {
             par = false;
         }

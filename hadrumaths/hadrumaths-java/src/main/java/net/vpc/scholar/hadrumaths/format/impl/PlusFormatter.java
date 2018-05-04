@@ -27,8 +27,8 @@ public class PlusFormatter implements Formatter<Plus> {
 
     @Override
     public void format(StringBuilder sb, Plus o, FormatParamSet format) {
-        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
-        format = format.add(RequireParenthesesFormat.INSTANCE);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+        format = format.add(FormatFactory.REQUIRED_PARS);
         List<Expr> segments = o.getSubExpressions();
         int size = segments.size();
         if (size>1 && par) {
@@ -39,7 +39,7 @@ public class PlusFormatter implements Formatter<Plus> {
             if (i > 0) {
                 sb.append(" + ");
             }
-            FormatFactory.format(sb,e, format);
+            FormatFactory.format(sb,e, format.add(FormatFactory.GATE_DOMAIN));
         }
 
         if (size>1 && par) {

@@ -8,6 +8,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.NonStateField;
 
 import java.util.Arrays;
@@ -95,8 +96,18 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 
     public Mul(Expr... expressions) {
         this.expressions = expressions;
+        if(this.expressions.length<1){
+            throw new IllegalArgumentException();
+        }
         domainDim = 0;
+//        int domainsCount=0;
         for (Expr expression : expressions) {
+//            if(expression instanceof Mul){
+//                System.out.println("why?");
+//            }
+//            if(expression instanceof Domain){
+//                domainsCount++;
+//            }
             int d = expression.getDomainDimension();
             if (d > domainDim) {
                 domainDim = d;
@@ -104,7 +115,13 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if(expression.isNaN()){
                 System.err.println("NaN in mul : "+expression);
             }
+//            if(expression instanceof Domain && ((Domain) expression).isUnconstrained()){
+//                System.out.println("Why");
+//            }
         }
+//        if(domainsCount>1){
+//            System.out.println("Why");
+//        }
     }
 
     public boolean isZeroImpl() {
@@ -472,4 +489,37 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, binaryExprHelper, x, y, z, d0, ranges);
     }
+
+    @Override
+    public Expr mul(Domain domain) {
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        for (int i = 0; i < expr2.length; i++) {
+            expr2[i]=expr2[i].mul(domain);
+        }
+        return Maths.mul(expr2);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        if(other==0){
+            return Maths.DDZERO;
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        expr2[0]=expr2[0].mul(other);
+        return Maths.mul(expr2);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isZero()){
+            return Maths.DDZERO;
+        }
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        expr2[0]=expr2[0].mul(other);
+        return Maths.mul(expr2);
+    }
+
 }

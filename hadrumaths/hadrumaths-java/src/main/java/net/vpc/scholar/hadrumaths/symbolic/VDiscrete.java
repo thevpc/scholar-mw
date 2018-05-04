@@ -14,7 +14,7 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 18 juil. 2007 23:36:28
  */
-public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Normalizable {
+public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Normalizable {
     private static final long serialVersionUID = 1L;
     private Discrete[] values;
     private Domain domain;
@@ -95,6 +95,22 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        switch (componentDimension.rows) {
+            case 1: {
+                return new VDiscrete(values[0].mul(domain));
+            }
+            case 2: {
+                return new VDiscrete(values[0].mul(domain), values[1].mul(domain));
+            }
+            case 3: {
+                return new VDiscrete(values[0].mul(domain), values[1].mul(domain), values[2].mul(domain));
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
     public VDiscrete rot() {
         switch (componentDimension.rows) {
             case 3: {
@@ -113,12 +129,12 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
 
 
     public Discrete getComponent(Axis axis) {
-        if(axis.ordinal()>=values.length){
-            throw new IllegalArgumentException("Component "+axis+" is not defined");
+        if (axis.ordinal() >= values.length) {
+            throw new IllegalArgumentException("Component " + axis + " is not defined");
         }
         Discrete value = values[axis.ordinal()];
-        if(value==null){
-            throw new IllegalArgumentException("Component "+axis+" is not defined");
+        if (value == null) {
+            throw new IllegalArgumentException("Component " + axis + " is not defined");
         }
         return value;
     }
@@ -256,6 +272,49 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
 
+    public Complex sum() {
+        switch (componentDimension.rows) {
+            case 1: {
+                values[Axis.X.ordinal()].sum();
+            }
+            case 2: {
+                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum());
+            }
+            case 3: {
+                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum());
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
+    public Complex avg() {
+        int cc = getCountX() * getCountY() * getCountZ();
+        switch (componentDimension.rows) {
+            case 1: {
+                values[Axis.X.ordinal()].avg();
+            }
+            case 2: {
+                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).div(cc);
+            }
+            case 3: {
+                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum()).div(cc);
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
+    public int getCountX() {
+        return values[Axis.X.ordinal()].getCountX();
+    }
+
+    public int getCountY() {
+        return values[Axis.Y.ordinal()].getCountX();
+    }
+
+    public int getCountZ() {
+        return values[Axis.Y.ordinal()].getCountX();
+    }
+
     public VDiscrete add(VDiscrete other) {
         switch (componentDimension.rows) {
             case 1: {
@@ -341,7 +400,6 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
     }
 
 
-
     public Matrix getMatrix(Axis axis, PlaneAxis plane, int index) {
         return Maths.matrix(getArray(axis, plane.getNormalAxis(), index));
     }
@@ -384,8 +442,6 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
     }
 
 
-
-
     @Override
     public ComponentDimension getComponentDimension() {
         return componentDimension;
@@ -418,7 +474,6 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
     }
 
 
-
 //    @Override
 //    public boolean isDDx() {
 //        return false;
@@ -441,19 +496,18 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
     }
 
 
-
     public Complex integrate(Domain domain, PlaneAxis axis, double fixedValue) {
         ComponentDimension dims = getComponentDimension();
-        MutableComplex c=new MutableComplex();
+        MutableComplex c = new MutableComplex();
         for (int i = 0; i < componentDimension.rows; i++) {
-            c.add(getComponent(Axis.values()[i]).integrate(domain,axis,fixedValue));
+            c.add(getComponent(Axis.values()[i]).integrate(domain, axis, fixedValue));
         }
         return c.toComplex();
     }
 
     public Complex integrate(Domain domain) {
         ComponentDimension dims = getComponentDimension();
-        MutableComplex c=new MutableComplex();
+        MutableComplex c = new MutableComplex();
         for (int i = 0; i < componentDimension.rows; i++) {
             c.add(getComponent(Axis.values()[i]).integrate(domain));
         }
@@ -468,7 +522,8 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
 
         VDiscrete vDiscrete = (VDiscrete) o;
 
-        if (componentDimension != null ? !componentDimension.equals(vDiscrete.componentDimension) : vDiscrete.componentDimension!= null) return false;
+        if (componentDimension != null ? !componentDimension.equals(vDiscrete.componentDimension) : vDiscrete.componentDimension != null)
+            return false;
         if (domain != null ? !domain.equals(vDiscrete.domain) : vDiscrete.domain != null) return false;
         if (!Arrays.equals(values, vDiscrete.values)) return false;
 
@@ -486,7 +541,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
 
     public static VDiscrete discretize(Expr expr, int xSamples, int ySamples, int zSamples) {
         if (expr.isScalarExpr()) {
-            return new VDiscrete(Discrete.discretize(expr,xSamples,ySamples,zSamples));
+            return new VDiscrete(Discrete.discretize(expr, xSamples, ySamples, zSamples));
         } else {
             DoubleToVector v = expr.toDV();
             ComponentDimension d = v.getComponentDimension();
@@ -513,28 +568,28 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
         }
     }
 
-    public static VDiscrete discretize(Expr expr, Domain domain,Samples samples) {
+    public static VDiscrete discretize(Expr expr, Domain domain, Samples samples) {
         if (expr.isScalarExpr()) {
-            return new VDiscrete(Discrete.discretize(expr,domain,samples));
+            return new VDiscrete(Discrete.discretize(expr, domain, samples));
         } else {
             DoubleToVector v = expr.toDV();
             ComponentDimension d = v.getComponentDimension();
             if (d.columns == 1) {
                 if (d.rows == 1) {
                     return new VDiscrete(
-                            Discrete.discretize(v.getComponent(Axis.X), domain,samples)
+                            Discrete.discretize(v.getComponent(Axis.X), domain, samples)
                     );
 
                 } else if (d.rows == 2) {
                     return new VDiscrete(
-                            Discrete.discretize(v.getComponent(Axis.X), domain,samples),
-                            Discrete.discretize(v.getComponent(Axis.Y), domain,samples)
+                            Discrete.discretize(v.getComponent(Axis.X), domain, samples),
+                            Discrete.discretize(v.getComponent(Axis.Y), domain, samples)
                     );
                 } else if (d.rows == 3) {
                     return new VDiscrete(
-                            Discrete.discretize(v.getComponent(Axis.X), domain,samples),
-                            Discrete.discretize(v.getComponent(Axis.Y), domain,samples),
-                            Discrete.discretize(v.getComponent(Axis.Z), domain,samples)
+                            Discrete.discretize(v.getComponent(Axis.X), domain, samples),
+                            Discrete.discretize(v.getComponent(Axis.Y), domain, samples),
+                            Discrete.discretize(v.getComponent(Axis.Z), domain, samples)
                     );
                 }
             }
@@ -549,12 +604,83 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable,Norma
 
     @Override
     public double getDistance(Normalizable other) {
-        if(other instanceof VDiscrete) {
+        if (other instanceof VDiscrete) {
             VDiscrete o = (VDiscrete) other;
             return (this.sub(o)).norm() / o.norm();
-        }else{
+        } else {
             Normalizable o = other;
-            return (this.norm()-o.norm()) / o.norm();
+            return (this.norm() - o.norm()) / o.norm();
         }
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        Discrete[] values2 = new Discrete[values.length];
+        for (int i = 0; i <values2.length; i++) {
+            Expr e = values2[i].add(other);
+            if(e instanceof Discrete) {
+                values2[i] = (Discrete) e;
+            }else{
+                return super.add(other);
+            }
+        }
+        return create(values2);
+    }
+
+    @Override
+    public Expr sub(Expr other) {
+        Discrete[] values2 = new Discrete[values.length];
+        for (int i = 0; i <values2.length; i++) {
+            Expr e = values2[i].sub(other);
+            if(e instanceof Discrete) {
+                values2[i] = (Discrete) e;
+            }else{
+                return super.sub(other);
+            }
+        }
+        return create(values2);
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        Discrete[] values2 = new Discrete[values.length];
+        for (int i = 0; i <values2.length; i++) {
+            Expr e = values2[i].mul(other);
+            if(e instanceof Discrete) {
+                values2[i] = (Discrete) e;
+            }else{
+                return super.mul(other);
+            }
+        }
+        return create(values2);
+    }
+
+    @Override
+    public Expr div(Expr other) {
+        Discrete[] values2 = new Discrete[values.length];
+        for (int i = 0; i <values2.length; i++) {
+            Expr e = values2[i].div(other);
+            if(e instanceof Discrete) {
+                values2[i] = (Discrete) e;
+            }else{
+                return super.div(other);
+            }
+        }
+        return create(values2);
+    }
+
+    private static VDiscrete create(Discrete[] values2){
+        switch (values2.length){
+            case 1:{
+                return new VDiscrete(values2[0]);
+            }
+            case 2:{
+                return new VDiscrete(values2[0],values2[1]);
+            }
+            case 3:{
+                return new VDiscrete(values2[0],values2[1],values2[2]);
+            }
+        }
+        throw new IllegalArgumentException("Invalid dimension "+values2.length);
     }
 }

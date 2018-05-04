@@ -228,7 +228,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
                     for (int i = abcd.zmin; i <= abcd.zmax; i++) {
                         for (int xIndex = ax; xIndex <= bx; xIndex++) {
                             for (int yIndex = cy; yIndex <= dy; yIndex++) {
-                                if (b2.get(i,yIndex,xIndex)) {
+                                if (b2!=null && b2.get(i,yIndex,xIndex)) {
                                     r[i][yIndex][xIndex] += r0[i][yIndex][xIndex];
                                     b.set(i,yIndex,xIndex);
                                 }

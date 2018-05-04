@@ -345,6 +345,29 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         return this;
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new Inv(expression.mul(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        if(other==0){
+            return Maths.DDZERO;
+        }
+        return new Inv(expression.mul(1/other));
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isZero()){
+            if(expression.isZero()){
+                return Maths.DDNAN;
+            }
+            return Maths.DDZERO;
+        }
+        return new Inv(expression.mul(other.inv()));
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 

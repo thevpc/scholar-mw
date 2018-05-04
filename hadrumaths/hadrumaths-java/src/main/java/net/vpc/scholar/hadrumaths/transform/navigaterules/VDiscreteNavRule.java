@@ -37,7 +37,7 @@ public class VDiscreteNavRule implements ExpressionRewriterRule {
         for (int i = 0; i < updated.length; i++) {
             Expr s1 = ee.getComponent(Axis.values()[i]);
             RewriteResult s2 = ruleset.rewrite(s1);
-            if (s2!=null) {
+            if (!s2.isUnmodified()) {
                 changed = true;
                 updated[i] = s2.getValue();
                 if(s2.isBestEffort()){

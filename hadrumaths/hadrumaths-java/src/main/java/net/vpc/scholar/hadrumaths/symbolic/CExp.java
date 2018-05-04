@@ -17,30 +17,41 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     protected Domain domain;
 
 
-    private double amp;
+    private Complex amp;
     private double a;
     private double b;
     private DoubleToDouble real;
     private DoubleToDouble imag;
 
+    public CExp(double amp, double a, double b, Domain domain) {
+        this(Complex.valueOf(amp),a,b,domain);
+    }
 
     /**
-     * amp*exp(iax)*exp(iby) = p.COS(a.x).COS(b.y) -
-     * p.COS(a.x-PI/2).COS(b.y-PI/2) +
-     * i.p.(COS(a.x).COS(b.y-PI/2)+COS(a.x-PI/2).COS(b.y))
+     * amp*exp(iax)*exp(iby) =
+     *      amp.COS(a.x).COS(b.y) - amp.COS(a.x-PI/2).COS(b.y-PI/2)
+     *    + i.amp.(COS(a.x).COS(b.y-PI/2)+COS(a.x-PI/2).COS(b.y))
+     *
+     * amp=m+in
+     *
+     * m (cos(aX)cos(bY) - sin(aX)sin(bY)) - n (cos(aX) sin(bY) + sin(aX) cos(bY))
+     + m i (cos(aX) sin(bY) + sin(aX) cos(bY)) +n i(cos(aX)cos(bY) - sin(aX)sin(bY))
      *
      * @param amp
      * @param a
      * @param b
      * @param domain
      */
-    public CExp(double amp, double a, double b, Domain domain) {
+    public CExp(Complex amp, double a, double b, Domain domain) {
         this.domain = domain;
-        this.real = Maths.sum(new CosXCosY(amp, a, 0, b, 0, domain),
-                new CosXCosY(-amp, a, -Math.PI / 2, b, -Math.PI / 2, domain)).toDD();
-        this.imag = Maths.sum(new CosXCosY(amp, a, 0, b, -Math.PI / 2, domain),
-                new CosXCosY(amp, a, -Math.PI / 2, b, 0, domain)).toDD();
-        this.amp = amp;
+        Expr cosAX=new Cos(X.mul(a));
+        Expr sinAX=new Sin(X.mul(a));
+        Expr cosBY=new Cos(Y.mul(b));
+        Expr sinBY=new Sin(Y.mul(b));
+        Complex m = Complex.valueOf(amp.getReal());
+        Complex n = Complex.valueOf(amp.getImag());
+        this.real= m.mul(cosAX.mul(cosBY).sub(sinAX.mul(sinBY))).sub(n.mul(cosAX.mul(sinBY).add(sinAX.mul(cosBY)))).toDD();
+        this.imag = m.mul(cosAX.mul(sinBY).add(sinAX.mul(cosBY))).add(n.mul(cosAX.mul(cosBY).sub(sinAX.mul(sinBY)))).toDD();
         this.a = a;
         this.b = b;
         if(domain.getDimension()==1){
@@ -59,10 +70,10 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     public boolean isInvariantImpl(Axis axis) {
         switch (axis){
             case X:{
-                return amp==0 || a==0;
+                return amp.isZero() || a==0;
             }
             case Y:{
-                return amp==0 || b==0;
+                return amp.isZero() || b==0;
             }
             case Z:{
                 return true;
@@ -180,15 +191,15 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
 
     public boolean isZeroImpl() {
-        return amp == 0;
+        return amp.isZero();
     }
 
     public boolean isNaNImpl() {
-        return Double.isNaN(amp) || Double.isNaN(a) || Double.isNaN(b) || Double.isInfinite(a) || Double.isInfinite(b);
+        return amp.isNaN() || Double.isNaN(a) || Double.isNaN(b) || Double.isInfinite(a) || Double.isInfinite(b);
     }
 
     public boolean isInfiniteImpl() {
-        return Double.isInfinite(amp);
+        return amp.isInfinite();
     }
 
     public Expr clone() {
@@ -207,7 +218,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     private Expr toCanonical() {
         //amp*exp(iax)*exp(iby)
-        return Maths.mul(exp(Maths.mul(X, î, expr(a))), exp(Maths.mul(Y, î, expr(b))), expr(amp));
+        return Maths.mul(exp(Maths.mul(X, î, expr(a))), exp(Maths.mul(Y, î, expr(b))), amp);
     }
 
     @Override
@@ -273,7 +284,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         CExp dCxyExp = (CExp) o;
 
         if (Double.compare(dCxyExp.a, a) != 0) return false;
-        if (Double.compare(dCxyExp.amp, amp) != 0) return false;
+        if (dCxyExp.amp.compareTo(amp) != 0) return false;
         if (Double.compare(dCxyExp.b, b) != 0) return false;
         if (domain != null ? !domain.equals(dCxyExp.domain) : dCxyExp.domain != null) return false;
         if (imag != null ? !imag.equals(dCxyExp.imag) : dCxyExp.imag != null) return false;
@@ -287,8 +298,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         int result = super.hashCode();
         long temp;
         result = 31 * result + (domain != null ? domain.hashCode() : 0);
-        temp = Double.doubleToLongBits(amp);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + amp.hashCode();
         temp = Double.doubleToLongBits(a);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(b);
@@ -327,4 +337,18 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         return Complex.ZERO;
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new CExp(amp,a,b,this.domain.intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new CExp(amp.mul(other),a,b,this.domain);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        return new CExp(amp.mul(other),a,b,this.domain);
+    }
 }

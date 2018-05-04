@@ -219,9 +219,12 @@ public final class ComplexRI extends Complex {
         return compareTo((Complex) c);
     }
 
-    public boolean equals(Complex c) {
-        return real == c.getReal() && imag == c.getImag();
-    }
+//    public boolean equals(Complex c) {
+//        return
+//                Double.doubleToLongBits(real) == Double.doubleToLongBits(c.getReal())
+//                        && Double.doubleToLongBits(imag) == Double.doubleToLongBits(c.getImag())
+//                ;
+//    }
 
     @Override
     public boolean equals(Object c) {
@@ -534,10 +537,6 @@ public final class ComplexRI extends Complex {
 //    public static Complex cosh(Complex c){
 //        return c.cosh();
 //    }
-    public boolean isDC() {
-        return true;
-    }
-
     public boolean isDD() {
         return isNaN() || imag == 0;
     }
@@ -545,20 +544,6 @@ public final class ComplexRI extends Complex {
 //    public boolean isDDx() {
 //        return isNaN() || imag == 0;
 //    }
-
-    public boolean isDM() {
-        return true;
-    }
-
-    @Override
-    public boolean isDV() {
-        return true;
-    }
-
-    @Override
-    public DoubleToVector toDV() {
-        return null;
-    }
 
     public DoubleToDouble toDD() {
         if (imag == 0) {
@@ -576,10 +561,6 @@ public final class ComplexRI extends Complex {
 //        }
 //        throw new ClassCastException();
 //    }
-
-    public DoubleToMatrix toDM() {
-        return toDC().toDM();
-    }
 
     public boolean isReal() {
         return imag == 0;

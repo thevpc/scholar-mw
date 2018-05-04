@@ -79,7 +79,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     }
 
     public DoubleToDouble mul(double factor, Domain newDomain) {
-        throw new IllegalArgumentException("Multiply Not Implemented in " + getClass().getSimpleName());
+        return mul(newDomain).mul(factor).toDD();
     }
 
 //    public IDDxy multiply(IDDxy other) {

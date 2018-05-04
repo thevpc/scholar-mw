@@ -48,6 +48,17 @@ public class DoubleParam extends ParamExpr implements Cloneable{
         return setParam(name, DoubleValue.valueOf(value, Domain.FULLX));
     }
 
+
+    @Override
+    public Complex toComplex() {
+        throw new IllegalArgumentException("Cannot process param " + getParamName() + " as Complex");
+    }
+
+    @Override
+    public Matrix toMatrix() {
+        throw new IllegalArgumentException("Cannot process param " + getParamName() + " as Matrix");
+    }
+
     @Override
     public Expr setParam(String name, Expr value) {
         if (getParamName().equals(name)) {

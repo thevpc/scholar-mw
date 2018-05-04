@@ -7,7 +7,10 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOpera
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToCosXCosYRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToDDxyLinearRule;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
@@ -21,14 +24,13 @@ import java.util.List;
 /**
  * Created by vpc on 11/22/16.
  */
-public class FormalIntegrationOperator extends AbstractIntegrationOperator {
+public class NumericIntegrationOperator extends AbstractIntegrationOperator {
     private List<FormalIntegrationOperatorHasher> hashers = new ArrayList<FormalIntegrationOperatorHasher>();
     private ClassMapList<FormalIntegrationOperatorHasher> hashersMap = new ClassMapList<FormalIntegrationOperatorHasher>();
 
     private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("OPTIMIZE_SP");
-    private FormalScalarProductOperator formalOperator;
-    public FormalIntegrationOperator(FormalScalarProductOperator formalOperator) {
-        this.formalOperator=formalOperator;
+
+    public NumericIntegrationOperator() {
         expressionRewriter.clear();
         ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
         for (ExpressionRewriterRule r : ExpressionRewriterFactory.NAVIGATION_RULES) {
@@ -61,7 +63,8 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
     }
 
     public double evalDD(Domain domain, DoubleToDouble f1) {
-        FormalScalarProductOperator delegateScalarProductOperator = formalOperator;
+        FormalScalarProductOperator delegateScalarProductOperator = (FormalScalarProductOperator) ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR;
+        ScalarProductOperator delegateNumericProductOperator = ScalarProductOperatorFactory.NUMERIC_SCALAR_PRODUCT_OPERATOR;
         DoubleToDouble f1opt = delegateScalarProductOperator.getExpressionRewriter().rewriteOrSame(f1).toDD();
         domain = domain == null ? f1opt.getDomain() : domain.intersect(f1opt.getDomain());
         if (domain.isEmpty() || f1opt.isZero()) {
@@ -75,10 +78,10 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
                 return 0;
             }
             if (subExpressions.size() == 1) {
-                return delegateScalarProductOperator.evalDD(domain, subExpressions.get(0).toDD(), Maths.expr(domain));
+                return delegateNumericProductOperator.evalDD(domain, subExpressions.get(0).toDD(), Maths.expr(domain));
             }
             if (subExpressions.size() == 2) {
-                return delegateScalarProductOperator.evalDD(domain,
+                return delegateNumericProductOperator.evalDD(domain,
                         subExpressions.get(0).toDD(),
                         subExpressions.get(1).toDD());
             }
@@ -86,14 +89,14 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
             for (int i = 1; i < subExpressions.size(); i++) {
                 others.add(subExpressions.get(i));
             }
-            return delegateScalarProductOperator.evalDD(domain, subExpressions.get(0).toDD(), new Mul(others));
+            return delegateNumericProductOperator.evalDD(domain, subExpressions.get(0).toDD(), new Mul(others));
         } else {
             FormalScalarProductOperator ff = (FormalScalarProductOperator) delegateScalarProductOperator;
             if (ff.getScalarProduct0(f1opt.getClass(), DoubleValue.class, 1) != null) {
-                return delegateScalarProductOperator.evalDD(f1opt.toDD(), Maths.expr(domain));
+                return delegateNumericProductOperator.evalDD(f1opt.toDD(), Maths.expr(domain));
             }
         }
-        return delegateScalarProductOperator.evalDD(domain, f1opt, Maths.expr(domain));
+        return delegateNumericProductOperator.evalDD(domain, f1opt, Maths.expr(domain));
     }
 
     public String dump() {
@@ -121,7 +124,7 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FormalIntegrationOperator that = (FormalIntegrationOperator) o;
+        NumericIntegrationOperator that = (NumericIntegrationOperator) o;
 
         if (hashers != null ? !hashers.equals(that.hashers) : that.hashers != null) return false;
         if (hashersMap != null ? !hashersMap.equals(that.hashersMap) : that.hashersMap != null) return false;

@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.DoubleArray2;
-import net.vpc.scholar.hadrumaths.DoubleList;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.ArrayList;
@@ -16,20 +13,25 @@ public class ValuesPlotXYDoubleModelFace {
     private int[] initialIndexes;
     private String[] ytitles;
     private double[][] z;
+    private DoubleFormatter xformat;
+    private DoubleFormatter yformat;
+    private DoubleFormatter zformat;
 
-    public ValuesPlotXYDoubleModelFace(ValuesPlotModel model,PlotConfig plotConfig) {
+    public ValuesPlotXYDoubleModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
         double[][] x0 = model.getX();
         double[][] y0 = model.getY();
         Complex[][] z0 = model.getZ();
-
+        xformat = model.getXformat();
+        yformat = model.getYformat();
+        zformat = model.getZformat();
         List<Integer> initialIndexesList = new ArrayList<>();
-        if(plotConfig==null){
+        if (plotConfig == null) {
             plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig=PlotConfig.copy(plotConfig).validate(z0.length);
+            plotConfig = PlotConfig.copy(plotConfig).validate(z0.length);
         }
-        double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
+        double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
 
-        this.x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(x0,(z==null||z.length==0)?-1:z[0].length),defaultXMultiplier);
+        this.x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(x0, (z == null || z.length == 0) ? -1 : z[0].length), defaultXMultiplier);
         this.z = Maths.toDouble(ArrayUtils.toValidTwoDimArray(z0), model.getConverter());
         this.y = ArrayUtils.toValidOneDimArray(y0, this.z.length);
 
@@ -42,16 +44,16 @@ public class ValuesPlotXYDoubleModelFace {
 
         title = model.getTitle();
         DoubleList yl = (DoubleList) Maths.dlist(this.y.length);
-        List<String> ys=new ArrayList<>(this.y.length);
+        List<String> ys = new ArrayList<>(this.y.length);
         DoubleArray2 zl = new DoubleArray2(this.y.length);
         for (int i = 0; i < this.y.length; i++) {
-            double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-            double v = this.y[i]*ymultiplier;
+            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+            double v = this.y[i] * ymultiplier;
             if (model.getYVisible(i)) {
                 initialIndexesList.add(i);
                 yl.append(v);
-                zl.appendRow(this.z[i]);
-                ys.add(PlotModelUtils.resolveYTitle(model,i));
+                zl.appendRow(i<this.z.length?this.z[i]:new double[]{0});
+                ys.add(PlotModelUtils.resolveYTitle(model, i));
             }
         }
         initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
@@ -60,7 +62,7 @@ public class ValuesPlotXYDoubleModelFace {
         ytitles = ys.toArray(new String[ys.size()]);
     }
 
-    public ValuesPlotXYDoubleModelFace(double[] x0, double[] y0, double[][] z0, String title,String[] ytitles) {
+    public ValuesPlotXYDoubleModelFace(double[] x0, double[] y0, double[][] z0, String title, String[] ytitles) {
         this.x = ArrayUtils.toValidOneDimArray(x0);
         this.y = ArrayUtils.toValidOneDimArray(y0);
         this.z = ArrayUtils.toValidTwoDimArray(z0);
@@ -74,13 +76,13 @@ public class ValuesPlotXYDoubleModelFace {
 
         this.title = title;
         DoubleList yl = (DoubleList) Maths.dlist(this.y.length);
-        List<String> ys=new ArrayList<>(this.y.length);
+        List<String> ys = new ArrayList<>(this.y.length);
         DoubleArray2 zl = new DoubleArray2(this.y.length);
         for (int i = 0; i < this.y.length; i++) {
             double v = this.y[i];
             yl.append(v);
             zl.appendRow(this.z[i]);
-            ys.add(PlotModelUtils.resolveYTitle(ytitles,i));
+            ys.add(PlotModelUtils.resolveYTitle(ytitles, i));
         }
         this.y = yl.toDoubleArray();
         this.z = zl.toDoubleArray();
@@ -117,5 +119,17 @@ public class ValuesPlotXYDoubleModelFace {
 
     public int size() {
         return y.length;
+    }
+
+    public DoubleFormatter getXformat() {
+        return xformat;
+    }
+
+    public DoubleFormatter getYformat() {
+        return yformat;
+    }
+
+    public DoubleFormatter getZformat() {
+        return zformat;
     }
 }

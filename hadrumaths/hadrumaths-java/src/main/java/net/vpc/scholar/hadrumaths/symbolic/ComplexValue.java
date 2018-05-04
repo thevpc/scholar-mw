@@ -340,4 +340,19 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     public boolean isDoubleTyped() {
         return value.isDoubleTyped();
     }
+
+    @Override
+    public Expr mul(Domain domain) {
+        return ComplexValue.valueOf(value,this.domain.intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return ComplexValue.valueOf(value.mul(other),this.domain);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        return ComplexValue.valueOf(value.mul(other),this.domain);
+    }
 }

@@ -26,12 +26,12 @@ public class NegFormatter implements Formatter<Neg> {
 
     @Override
     public void format(StringBuilder sb, Neg o, FormatParamSet format) {
-        boolean par = format.containsParam(RequireParenthesesFormat.INSTANCE);
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         if(par){
             sb.append("(");
         }
         sb.append("-");
-        FormatFactory.format(sb,o.getExpression(), format.add(RequireParenthesesFormat.INSTANCE));
+        FormatFactory.format(sb,o.getExpression(), format.add(FormatFactory.REQUIRED_PARS));
         if(par){
             sb.append(")");
         }

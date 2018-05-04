@@ -36,6 +36,9 @@ public final class ComplexOld extends Complex {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), real, imag);
+        int hash = 7;
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.imag) ^ (Double.doubleToLongBits(this.imag) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.real) ^ (Double.doubleToLongBits(this.real) >>> 32));
+        return hash;
     }
 }

@@ -220,4 +220,14 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         return amp * Maths.cos2(a * x + b* y + c);
     }
 
+    @Override
+    public Expr mul(Domain domain) {
+        return new CosXPlusY(amp,a,b,c,this.domain.intersect(domain));
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return new CosXPlusY(amp*other,a,b,c,this.domain.intersect(domain));
+    }
+
 }

@@ -501,7 +501,7 @@ public class PlotConsole implements PlotComponentDisplayer {
         return lockMonitor;
     }
 
-    public void run(final ConsoleAction action) {
+    public PlotConsole run(final ConsoleAction action) {
         if (disposing) {
             System.out.println("action after dispose ... " + action);
             throw new ConsoleDisposingException("action after dispose ... " + action);
@@ -523,9 +523,10 @@ public class PlotConsole implements PlotComponentDisplayer {
                 action.execute(PlotConsole.this);
             }
         });
+        return this;
     }
 
-    public void loadFiles(File[] files) throws IOException {
+    public PlotConsole loadFiles(File[] files) throws IOException {
         boolean first=true;
         String ext=null;
         for (File file : files) {
@@ -558,16 +559,16 @@ public class PlotConsole implements PlotComponentDisplayer {
             } else {
                 for (PlotConsoleFileSupport plotConsoleFileSupport : fileSupportList) {
                     if(ext.equals(plotConsoleFileSupport.getFileExtension())){
-                        run(plotConsoleFileSupport.createLoadAction(files));
-                        return;
+                        return run(plotConsoleFileSupport.createLoadAction(files));
                     }
                 }
                 throw new IOException("Unsupported File Extension " + ext);
             }
         }
+        return this;
     }
 
-    public void loadFile(File file) throws IOException {
+    public PlotConsole loadFile(File file) throws IOException {
         String e = IOUtils.getFileExtension(file).toLowerCase();
         if (e.equals(PLOT_CONSOLE_FILE_EXTENSION)) {
             loadConsole(file);
@@ -576,15 +577,15 @@ public class PlotConsole implements PlotComponentDisplayer {
         } else {
             for (PlotConsoleFileSupport plotConsoleFileSupport : fileSupportList) {
                 if(e.equals(plotConsoleFileSupport.getFileExtension())){
-                    run(plotConsoleFileSupport.createLoadAction(file));
-                    return;
+                    return run(plotConsoleFileSupport.createLoadAction(file));
                 }
             }
             throw new IOException("Unsupported File Extension " + e);
         }
+        return this;
     }
 
-    public void loadConsole(File file) throws IOException {
+    public PlotConsole loadConsole(File file) throws IOException {
         silentSetFrameTitle(file.getName());
         setCurrentDirectory(file.getParentFile());
         ObjectInputStream oos = null;
@@ -615,10 +616,11 @@ public class PlotConsole implements PlotComponentDisplayer {
                 oos.close();
             }
         }
+        return this;
     }
 
-    public void setWindowTitle(String windowTitle) {
-        run(new WindowTitleConsoleAction(windowTitle));
+    public PlotConsole setWindowTitle(String windowTitle) {
+        return run(new WindowTitleConsoleAction(windowTitle));
     }
 
 
@@ -644,19 +646,21 @@ public class PlotConsole implements PlotComponentDisplayer {
         return progressPeriod;
     }
 
-    public void setProgressPeriod(long progressPeriod) {
+    public PlotConsole setProgressPeriod(long progressPeriod) {
         this.progressPeriod = progressPeriod;
+        return this;
     }
 
     public String getAutoSavingFilePattern() {
         return autoSavingFilePattern;
     }
 
-    public void setAutoSavingFilePattern(String autoSavingFilePattern) {
+    public PlotConsole setAutoSavingFilePattern(String autoSavingFilePattern) {
         if (this.autoSavingFilePattern != null && !this.autoSavingFilePattern.equals(autoSavingFilePattern)) {
             disposeAutoSave();
         }
         this.autoSavingFilePattern = autoSavingFilePattern;
+        return this;
     }
 
     public File getCurrentAutoSavingFile() {
@@ -688,8 +692,9 @@ public class PlotConsole implements PlotComponentDisplayer {
         return currentDirectory;
     }
 
-    public void setCurrentDirectory(File currentDirectory) {
+    public PlotConsole setCurrentDirectory(File currentDirectory) {
         this.currentDirectory = currentDirectory;
+        return this;
     }
 
 
@@ -843,24 +848,28 @@ public class PlotConsole implements PlotComponentDisplayer {
         return fileSupportList.toArray(new PlotConsoleFileSupport[fileSupportList.size()]);
     }
 
-    public void addFileSupport(PlotConsoleFileSupport fileSupport){
+    public PlotConsole addFileSupport(PlotConsoleFileSupport fileSupport){
         fileSupportList.add(fileSupport);
+        return this;
     }
 
-    public void removeFileSupport(PlotConsoleFileSupport fileSupport){
+    public PlotConsole removeFileSupport(PlotConsoleFileSupport fileSupport){
         fileSupportList.remove(fileSupport);
+        return this;
     }
 
     public PlotConsoleMenuItem[] getMenus(){
         return menus.toArray(new PlotConsoleMenuItem[menus.size()]);
     }
 
-    public void addMenu(PlotConsoleMenuItem fileSupport){
+    public PlotConsole addMenu(PlotConsoleMenuItem fileSupport){
         menus.add(fileSupport);
+        return this;
     }
 
-    public void removeMenu(PlotConsoleMenuItem fileSupport){
+    public PlotConsole removeMenu(PlotConsoleMenuItem fileSupport){
         menus.remove(fileSupport);
+        return this;
     }
 
     public JInternalFrame getLogFrame() {

@@ -8,6 +8,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.NonStateField;
 
 import java.util.Arrays;
@@ -430,6 +431,38 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, binaryExprHelper, x, y, z, d0, ranges);
+    }
+
+    @Override
+    public Expr mul(Domain domain) {
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        for (int i = 0; i < expr2.length; i++) {
+            expr2[i]=expr2[i].mul(domain);
+        }
+        return new Div(expr2[0],expr2[1]);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        if(other==0){
+            return Maths.DDZERO;
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        expr2[0]=expr2[0].mul(other);
+        return new Mul(expr2[0],expr2[1]);
+    }
+
+    @Override
+    public Expr mul(Complex other) {
+        if(other.isZero()){
+            return Maths.DDZERO;
+        }
+        if(other.isReal()){
+            return mul(other.toDouble());
+        }
+        Expr[] expr2 = ArrayUtils.copy(expressions);
+        expr2[0]=expr2[0].mul(other);
+        return new Mul(expr2[0],expr2[1]);
     }
 
 }

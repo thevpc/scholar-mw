@@ -46,6 +46,10 @@ public interface Geometry extends Serializable {
 
     Geometry scale(int width, int height);
 
+    boolean containsDomain(Domain geometry);
+
+    boolean containsGeometry(Geometry geometry);
+
     Geometry intersectGeometry(Geometry geometry);
 
     Geometry subtractGeometry(Geometry geometry);

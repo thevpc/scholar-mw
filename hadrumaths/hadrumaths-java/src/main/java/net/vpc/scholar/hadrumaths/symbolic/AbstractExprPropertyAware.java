@@ -68,7 +68,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 
 
     protected boolean isDoubleImpl() {
-        return getDomain().isUnconstrained() && isDoubleExpr();
+        return getDomain().isUnconstrained() && isScalarExpr() && isDoubleExpr();
     }
 
     protected boolean isComplexImpl() {

@@ -17,30 +17,30 @@ import net.vpc.scholar.hadrumaths.Out;
  */
 public interface DoubleToMatrix extends Expr {
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z,Domain d0, Out<Range> ranges);
+     Matrix[][][] computeMatrix(double[] x, double[] y, double[] z,Domain d0, Out<Range> ranges);
 
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges);
+     Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges);
 
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges);
+     Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges);
 
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges);
+     Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges);
 
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges);
+     Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges);
 
-    public Matrix computeMatrix(double x);
+     Matrix computeMatrix(double x);
 
-    public Matrix computeMatrix(double x, double y);
+     Matrix computeMatrix(double x, double y);
 
-    public Matrix computeMatrix(double x, double y, double z);
+     Matrix computeMatrix(double x, double y, double z);
 
-    public ComponentDimension getComponentDimension();
+     ComponentDimension getComponentDimension();
 
-    public Expr getComponent(int row, int col);
+     Expr getComponent(int row, int col);
 
-    public String getComponentTitle(int row, int col);
+     String getComponentTitle(int row, int col);
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z);
-    public Matrix[][] computeMatrix(double[] x, double[] y);
-    public Matrix[] computeMatrix(double[] x);
+     Matrix[][][] computeMatrix(double[] x, double[] y, double[] z);
+     Matrix[][] computeMatrix(double[] x, double[] y);
+     Matrix[] computeMatrix(double[] x);
 //    public IDMxy setName(String name);
 }

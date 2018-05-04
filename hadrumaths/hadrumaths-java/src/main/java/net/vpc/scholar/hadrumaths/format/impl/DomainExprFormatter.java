@@ -70,7 +70,7 @@ public class DomainExprFormatter implements Formatter<DomainExpr>{
         String xf=format.getParam(FormatFactory.X).getName();
         String yf=format.getParam(FormatFactory.Y).getName();
         String zf=format.getParam(FormatFactory.Z).getName();
-        DomainFormat d= format.getParam(FormatFactory.GATE_DOMAIN);
+        DomainFormat d= format.getParam(FormatFactory.NON_FULL_GATE_DOMAIN);
         DoubleFormat df = format.getParam(DoubleFormat.class, false);
         ProductFormat pp = format.getParam(FormatFactory.PRODUCT_STAR);
         String mul = pp.getOp()==null?" ":(" "+pp.getOp()+" ");
