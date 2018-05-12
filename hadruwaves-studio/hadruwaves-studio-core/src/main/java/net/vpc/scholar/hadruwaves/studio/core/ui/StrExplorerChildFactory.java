@@ -13,25 +13,36 @@ import org.openide.nodes.Node;
  *
  * @author vpc
  */
-public class StrExplorerChildFactory extends ChildFactory<Object>{
+public class StrExplorerChildFactory extends ChildFactory<Object> {
+
     private Object baseObject;
 
     public StrExplorerChildFactory(Object baseObject) {
         this.baseObject = baseObject;
     }
-    
+
     @Override
     protected boolean createKeys(List<Object> toPopulate) {
-        if(baseObject==null){
+        if (baseObject == null) {
             toPopulate.add("A");
             toPopulate.add("B");
+            return true;
+        } else if (baseObject.equals("A")) {
+            toPopulate.add("A1");
+            toPopulate.add("A2");
+            return true;
+        } else if (baseObject.equals("B")) {
+            toPopulate.add("B1");
+            toPopulate.add("B2");
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
     protected Node createNodeForKey(Object key) {
         return new StrExplorerNode(key);
     }
-    
+
 }

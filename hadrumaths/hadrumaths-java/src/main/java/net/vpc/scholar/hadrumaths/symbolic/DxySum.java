@@ -17,7 +17,7 @@ import java.util.Arrays;
 @Deprecated
 public class DxySum extends DDxyAbstractSum implements Cloneable {
 
-    private static final long serialVersionUID = -1010101010101001043L;
+    private static final long serialVersionUID = 1L;
 
     public DxySum(DoubleToDouble... sum) {
         super(null);

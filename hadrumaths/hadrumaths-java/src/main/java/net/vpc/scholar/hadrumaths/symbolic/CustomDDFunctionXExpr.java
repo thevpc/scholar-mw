@@ -2,14 +2,16 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class CustomDDFunctionXExpr extends GenericFunctionX implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private CustomDDFunctionXDefinition definition;
-    public CustomDDFunctionXExpr(Expr arg, CustomDDFunctionXDefinition definition) {
-        super(definition.getName(),arg,FunctionType.DOUBLE);
+    public CustomDDFunctionXExpr(DoubleToDouble arg, CustomDDFunctionXDefinition definition) {
+        super(definition.getName(),arg.toDD(),FunctionType.DOUBLE);
         this.definition=definition;
     }
     @Override
@@ -17,17 +19,17 @@ public class CustomDDFunctionXExpr extends GenericFunctionX implements Cloneable
         return definition.getName();
     }
 
-    public Complex evalComplex(Complex c){
-        return Complex.valueOf(evalDouble(c.toDouble()));
+    public Complex computeComplexArg(Complex c, OutBoolean defined){
+        return Complex.valueOf(definition.getEval().evalDouble(c.toDouble()));
     }
 
-    protected double evalDouble(double c){
+    public double computeDoubleArg(double c, OutBoolean defined){
         return definition.getEval().evalDouble(c);
     }
 
     @Override
     public Expr newInstance(Expr argument) {
-        return new CustomDDFunctionXExpr(argument,definition);
+        return new CustomDDFunctionXExpr(argument.toDD(),definition);
     }
 
     @Override

@@ -56,6 +56,7 @@ public class FormatFactory extends AbstractFactory {
     static {
         register(Matrix.class, new MatrixFormatter());
         register(DCxy.class, new CFunctionXYFormatter());
+        register(CExp.class, new CExpFormatter());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYFormatter());
         register(Linear.class, new LinearFormatter());
         register(CosXCosY.class, new CosCosFormatter());
@@ -76,6 +77,7 @@ public class FormatFactory extends AbstractFactory {
         register(DDx.class, new DDxFormatter());
         register(DDy.class, new DDyFormatter());
         register(DDz.class, new DDzFormatter());
+        register(ComparatorExpr.class, new ComparatorExprFormatter());
         register(UFunction.class, new UFunctionFormatter());
 //        register(DDxToDDxy.class, new DDxToDDxyFormatter());
         register(Complex.class, new ComplexFormatter());
@@ -90,6 +92,7 @@ public class FormatFactory extends AbstractFactory {
         register(ComplexValue.class, new ComplexXYFormatter());
         register(YY.class, new YYFormatter());
         register(XX.class, new XXFormatter());
+        register(ZZ.class, new ZZFormatter());
         register(AxisTransform.class, new AxisTransformFormatter());
         register(Shape.class, new DDxyPolygonFormatter());
         register(Discrete.class, new DiscreteFormatter());
@@ -100,30 +103,25 @@ public class FormatFactory extends AbstractFactory {
         register(VDiscrete.class, new VDiscreteFormatter());
         register(Real.class, new RealFormatter());
         register(Imag.class, new ImagFormatter());
-        register(ComparatorExpr.class, new Formatter() {
+//        register(ComparatorExpr.class, new Formatter() {
+//            @Override
+//            public String format(Object o, FormatParamSet format) {
+//                StringBuilder sb = new StringBuilder();
+//                format(sb, o, format);
+//                return sb.toString();
+//            }
+//
+//            @Override
+//            public void format(StringBuilder sb, Object o, FormatParamSet format) {
+//                sb.append(o.toString());
+//            }
+//        });
+        register(NotExpr.class, new AbstractFormatter<NotExpr>() {
             @Override
-            public String format(Object o, FormatParamSet format) {
-                StringBuilder sb = new StringBuilder();
-                format(sb, o, format);
-                return sb.toString();
-            }
-
-            @Override
-            public void format(StringBuilder sb, Object o, FormatParamSet format) {
-                sb.append(o.toString());
-            }
-        });
-        register(NotExpr.class, new Formatter() {
-            @Override
-            public String format(Object o, FormatParamSet format) {
-                StringBuilder sb = new StringBuilder();
-                format(sb, o, format);
-                return sb.toString();
-            }
-
-            @Override
-            public void format(StringBuilder sb, Object o, FormatParamSet format) {
-                sb.append(format(o, format));
+            public void format(StringBuilder sb, NotExpr o, FormatParamSet format) {
+                sb.append("not(");
+                FormatFactory.format(sb,o.getArgument(),format);
+                sb.append(")");
             }
         });
     }
@@ -345,7 +343,7 @@ public class FormatFactory extends AbstractFactory {
             if (b < 0) {
                 sb.append("- ");
                 b0 = -b;
-            } else if (b > 0) {
+            } else if (b > 0 || Double.isNaN(b)) {
                 sb.append("+ ");
             }
             if (df != null) {

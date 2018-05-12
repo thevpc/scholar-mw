@@ -15,6 +15,7 @@ import java.util.List;
  * @author vpc
  */
 public abstract class AbstractUnaryExpOperator extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     private Expr expression;
 
@@ -56,16 +57,16 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
     }
 
     protected abstract AbstractUnaryExpOperator newInstance(Expr e);
-//    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeComplex(this, x, y, d0, ranges);
+//    public Complex[] computeComplexArg(double[] x, double y, Domain d0, Out<Range> ranges) {
+//        return Expressions.computeComplexArg(this, x, y, d0, ranges);
 //    }
 //
-//    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeComplex(this, x, y, d0, ranges);
+//    public Complex[] computeComplexArg(double x, double[] y, Domain d0, Out<Range> ranges) {
+//        return Expressions.computeComplexArg(this, x, y, d0, ranges);
 //    }
 //
-//    public Complex computeComplex(double x, double y) {
-//        return Expressions.computeComplex(this, x, y);
+//    public Complex computeComplexArg(double x, double y) {
+//        return Expressions.computeComplexArg(this, x, y);
 //    }
 //
 //    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -92,9 +93,9 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 //        return Expressions.computeDouble(this, x, y);
 //    }
 
-    public double computeDouble(double x) {
-        return Expressions.computeDouble(this, x);
-    }
+//    public double computeDouble(double x) {
+//        return Expressions.computeDouble(this, x);
+//    }
 
     public Expr clone() {
         AbstractUnaryExpOperator cloned = (AbstractUnaryExpOperator) super.clone();
@@ -192,25 +193,19 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
         return expression.getDomainDimension();
     }
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return expression.toDC().computeComplex(x,y,z).neg();
-    }
-
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        return -expression.toDD().computeDouble(x,y,z);
-    }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
         return expression.toDM().computeMatrix(x,y,z).neg();
     }
 
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
-    }
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     public DoubleToDouble getRealDD() {
         if(expression.isDD()){
@@ -271,12 +266,12 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public Complex toComplex() {
-        return getExprHelper().computeComplex(getExpression().toComplex());
+        return getExprHelper().computeComplex(getExpression().toComplex(), new OutBoolean());
     }
 
     @Override
     public double toDouble() {
-        return getExprHelper().computeDouble(getExpression().toDouble());
+        return getExprHelper().computeDouble(getExpression().toDouble(), new OutBoolean());
     }
 
     @Override

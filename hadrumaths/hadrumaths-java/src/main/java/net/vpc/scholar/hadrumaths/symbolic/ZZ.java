@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.Out;
  * Created by vpc on 4/30/14.
  */
 public class ZZ extends AxisFunction implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     public ZZ(Domain domain) {
         super(domain, "Z");
@@ -31,10 +32,6 @@ public class ZZ extends AxisFunction implements Cloneable {
         Expr xx = new ZZ(getDomain());
         xx= Any.copyProperties(this, xx);
         return xx;
-    }
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Missing Z");
     }
 
 
@@ -73,56 +70,6 @@ public class ZZ extends AxisFunction implements Cloneable {
         }
     }
 
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Missing Z");
-//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).ranges(x, y);
-//        if (nonNullRanges != null) {
-//            Complex[][] cc = new Complex[y.length][x.length];
-//            Arrays2.fillArray2ZeroComplex(cc, nonNullRanges);
-//            for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
-//                Complex v = new Complex(y[j], 0);
-//                for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
-//                    cc[j][k] = v;
-//                }
-//            }
-//            if (ranges != null) {
-//                ranges.set(nonNullRanges);
-//            }
-//            return cc;
-//        } else {
-//            Complex[][] cc = Arrays2.fillArray2Complex(x.length, y.length, Complex.ZERO);
-//            if (ranges != null) {
-//                ranges.set(null);
-//            }
-//            return cc;
-//        }
-    }
-
-    @Override
-    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Missing Z");
-//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).ranges(x, y);
-//        if (nonNullRanges != null) {
-//            double[][] cc = new double[y.length][x.length];
-//            for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
-//                double v = y[j];
-//                for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
-//                    cc[j][k] = v;
-//                }
-//            }
-//            if (ranges != null) {
-//                ranges.set(nonNullRanges);
-//            }
-//            return cc;
-//        } else {
-//            double[][] cc = new double[y.length][x.length];
-//            if (ranges != null) {
-//                ranges.set(null);
-//            }
-//            return cc;
-//        }
-    }
 
 
     @Override
@@ -237,20 +184,14 @@ public class ZZ extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
         if (domain.contains(x, y, z)) {
+            defined.set();
             return Complex.valueOf(z);
         }
         return Complex.ZERO;
     }
 
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
-            return z;
-        }
-        return 0;
-    }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
@@ -276,4 +217,46 @@ public class ZZ extends AxisFunction implements Cloneable {
         return new Mul(other,this);
     }
 
+
+    @Override
+    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+    @Override
+    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
+    public boolean isInvariantImpl(Axis axis) {
+        if(axis==Axis.Z){
+            return false;
+        }
+        return true;
+    }
 }

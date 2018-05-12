@@ -108,11 +108,11 @@
 ////        }
 ////        return r;
 ////    }
-//    public Complex computeComplex(double x, double y) {
+//    public Complex computeComplexArg(double x, double y) {
 //        Complex r = Complex.CZERO;
 //        for (int i = 0; i < segments.length; i++) {
 //            IDCxy f = segments[i];
-//            r = r.add(f.computeComplex(x, y));
+//            r = r.add(f.computeComplexArg(x, y));
 //        }
 //        return r;
 //    }

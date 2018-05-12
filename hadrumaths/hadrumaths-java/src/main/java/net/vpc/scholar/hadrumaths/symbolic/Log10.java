@@ -3,13 +3,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Log10 extends TrigoFunctionX implements Cloneable {
+    private static final long serialVersionUID = 1L;
     public Log10(Expr arg) {
-        super("log10", arg);
+        super("log10", arg, FunctionType.DOUBLE);
     }
 
     @Override
@@ -17,11 +19,11 @@ public class Log10 extends TrigoFunctionX implements Cloneable {
         return "log10";
     }
 
-    public Complex evalComplex(Complex c) {
+    public Complex computeComplexArg(Complex c, OutBoolean defined) {
         return c.log10();
     }
 
-    protected double evalDouble(double c) {
+    public double computeDoubleArg(double c, OutBoolean defined) {
         return Maths.log10(c);
     }
 

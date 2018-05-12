@@ -54,11 +54,18 @@ public class ComplexXYFormatter implements Formatter<ComplexValue>{
             }
             return;
         }else if(v.equals(Complex.MINUS_ONE)){
+            boolean pars = format.containsParam(FormatFactory.REQUIRED_PARS);
+            if(pars){
+                sb.append("(");
+            }
             sb.append("-");
             int length = sb.length();
             FormatFactory.format(sb,o.getDomain(), format);
             if(sb.length()==length) {
                 sb.append("1");
+            }
+            if(pars){
+                sb.append(")");
             }
             return ;
         }else{

@@ -3,6 +3,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
@@ -21,7 +23,17 @@ import java.util.List;
  * @creationtime 14 mai 2007 22:18:44
  */
 public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, DoubleToComplex,Cloneable {
-    private static final long serialVersionUID = -1010101010101001003L;
+    private static final long serialVersionUID = 1L;
+    static {
+        FormatFactory.register(DDiscrete.class, new AbstractFormatter<DDiscrete>() {
+            @Override
+            public void format(StringBuilder sb, DDiscrete o, FormatParamSet format) {
+                sb.append("DDiscrete(");
+                sb.append(Maths.dump(o.values));
+                sb.append(")");
+            }
+        });
+    }
     private Axis[] axis;
     private double[/*Z*/][/*Y*/][/*X*/] values;
     private double[] x;
@@ -35,6 +47,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     private double dz;
     private int dimension;
     private Domain domain;
+
 
 
 //    public Cube(Complex value, int x, int y, int z) {
@@ -70,7 +83,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //        dsteps(model, xvalues, yvalues, zvalues, dx, dy, dz, axis1, axis2, axis3);
 //    }
 
-    private DDiscrete(Domain domain, double[][][] values, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
+    public DDiscrete(Domain domain, double[][][] values, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         super(domain.toDomain(dim));
         init(domain, values, x, y, z, dx, dy, dz, axis1, axis2, axis3, dim);
     }
@@ -213,7 +226,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             }
             throw new IllegalArgumentException("Unsupported dimension "+dim);
         }else{
-            throw new IllegalArgumentException("Expression si either not double or not scalar");
+            throw new IllegalArgumentException("Expression is either not double or not scalar");
         }
     }
 
@@ -287,10 +300,10 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return Maths.dump(values);
     }
 
-    @Override
-    public String toString() {
-        return Maths.dump(values);
-    }
+//    @Override
+//    public String toString() {
+//        return Maths.dump(values);
+//    }
 
     private void init(Domain domain, double[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         this.domain = domain.toDomain(dim);
@@ -485,17 +498,35 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         switch (dimension) {
             case 1: {
                 int i = (int) ((x - domain.xmin()) / dx);
+                if(i<0 || i>=xcount){
+                    return null;
+                }
                 return IntPoint.create(i);
             }
             case 2: {
                 int i = (int) ((x - domain.xmin()) / dx);
+                if(i<0 || i>=xcount){
+                    return null;
+                }
                 int j = (int) ((y - domain.ymin()) / dy);
+                if(j<0 || j>=ycount){
+                    return null;
+                }
                 return IntPoint.create(i, j);
             }
         }
         int i = (int) ((x - domain.xmin()) / dx);
+        if(i<0 || i>=xcount){
+            return null;
+        }
         int j = (int) ((y - domain.ymin()) / dy);
+        if(j<0 || j>=ycount){
+            return null;
+        }
         int k = (int) ((z - domain.zmin()) / dz);
+        if(k<0 || k>=zcount){
+            return null;
+        }
         return IntPoint.create(i, j, k);
     }
 
@@ -1164,43 +1195,50 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     public Complex computeComplex(double x, double y, double z) {
+        return computeComplex(x,y,z,new OutBoolean());
+    }
+
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
         switch (dimension) {
             case 1: {
-                if (domain.contains(x)) {
+                if (contains(x)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
+                    defined.set();
                     return Complex.valueOf(values[0][0][xi]);
                 }
                 break;
             }
             case 2: {
-                if (domain.contains(x, y)) {
+                if (contains(x, y)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
                     int yi = (int) ((y - domain.ymin()) / dy);
+                    defined.set();
                     return Complex.valueOf(values[0][yi][xi]);
                 }
                 break;
             }
         }
-        if (domain.contains(x, y)) {
+        if (contains(x, y)) {
             int xi = (int) ((x - domain.xmin()) / dx);
             int yi = (int) ((y - domain.ymin()) / dy);
             int zi = (int) ((z - domain.zmin()) / dz);
+            defined.set();
             return Complex.valueOf(values[zi][yi][xi]);
         }
         return Complex.ZERO;
     }
 
-    public double computeDouble0(double x, double y, double z) {
+    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
         switch (dimension) {
             case 1: {
-                if (domain.contains(x)) {
+                if (contains(x)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
                     return values[0][0][xi];
                 }
                 break;
             }
             case 2: {
-                if (domain.contains(x, y)) {
+                if (contains(x, y)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
                     int yi = (int) ((y - domain.ymin()) / dy);
                     return values[0][yi][xi];
@@ -1208,7 +1246,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 break;
             }
         }
-        if (domain.contains(x, y)) {
+        if (contains(x, y)) {
             int xi = (int) ((x - domain.xmin()) / dx);
             int yi = (int) ((y - domain.ymin()) / dy);
             int zi = (int) ((z - domain.zmin()) / dz);
@@ -1218,7 +1256,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public double computeDouble0(double x) {
+    public double computeDouble0(double x, OutBoolean defined) {
         int xi = (int) ((x - domain.xmin()) / dx);
         return values[0][0][xi];
     }
@@ -1234,7 +1272,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     int xmax = currRange.xmax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                         double xx = xmin + xIndex * dx;
-                        if (domain.contains(xx)) {
+                        if (contains(xx)) {
                             int xi = (int) ((xx - domain.xmin()) / dx);
                             int xi0 = xi < xcount ? xi : (xcount - 1);
                             for (int yIndex = 0; yIndex < y.length; yIndex++) {
@@ -1262,7 +1300,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                         double xx = xmin + xIndex * dx;
                         for (int yIndex = ymin; yIndex <= ymax; yIndex++) {
                             double yy = ymin + yIndex * dy;
-                            if (domain.contains(xx, yy)) {
+                            if (contains(xx, yy)) {
                                 int xi = (int) ((xx - domain.xmin()) / dx);
                                 int yi = (int) ((yy - domain.ymin()) / dy);
                                 int yi0 = yi < ycount ? yi : (ycount - 1);
@@ -1292,7 +1330,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     int xmax = currRange.xmax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                         double xx = xmin + xIndex * dx;
-                        if (domain.contains(xx)) {
+                        if (contains(xx)) {
                             int xi = (int) ((xx - domain.xmin()) / dx);
                             int xi0 = xi < xcount ? xi : (xcount - 1);
                             for (int yIndex = 0; yIndex < y.length; yIndex++) {
@@ -1320,7 +1358,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                         double xx = xmin + xIndex * dx;
                         for (int yIndex = ymin; yIndex <= ymax; yIndex++) {
                             double yy = ymin + yIndex * dy;
-                            if (domain.contains(xx, yy)) {
+                            if (contains(xx, yy)) {
                                 int xi = (int) ((xx - domain.xmin()) / dx);
                                 int yi = (int) ((yy - domain.ymin()) / dy);
                                 int yi0 = yi < ycount ? yi : (ycount - 1);
@@ -1394,15 +1432,15 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             int zmax = currRange.zmax;
             for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                 double xx = x[xIndex];// xmin + xIndex * dx;
-                int xi = (int) ((xx - domain.xmin()) / dx);
                 for (int yIndex = ymin; yIndex <= ymax; yIndex++) {
 //                    double yy = ymin + yIndex * dy;
                     double yy = y[yIndex];//ymin + yIndex * dy;
-                    int yi = (int) ((yy - domain.ymin()) / dy);
                     for (int zIndex = zmin; zIndex <= zmax; zIndex++) {
                         double zz = z[zIndex];//zmin + zIndex * dz;
-                        int zi = (int) ((zz - domain.zmin()) / dz);
-                        r[zIndex][yIndex][xIndex] = values[zi][yi][xi];
+                        IntPoint indices = getIndices(xx, yy, zz);
+                        if(indices!=null) {
+                            r[zIndex][yIndex][xIndex] = values[indices.z][indices.y][indices.x];
+                        }
                     }
                 }
             }
@@ -1420,6 +1458,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return r;
     }
 
+
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeComplex(this, x, y, d0, ranges);
@@ -1431,20 +1470,35 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
+    public Complex computeComplex(double x) {
+        return computeComplex(x,new OutBoolean());
+    }
+
+    @Override
     public Complex computeComplex(double x, double y) {
+        return computeComplex(x,y,new OutBoolean());
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
         switch (dimension) {
             case 1: {
-                if (domain.contains(x)) {
-                    int xi = (int) ((x - domain.xmin()) / dx);
-                    return Complex.valueOf(values[0][0][xi]);
+                if (contains(x)) {
+                    IntPoint ii = getIndices(x, 0, 0);
+                    if(ii!=null) {
+                        return Complex.valueOf(values[0][0][ii.x]);
+                    }
+                    defined.set();
                 }
                 return Complex.ZERO;
             }
             case 2: {
-                if (domain.contains(x, y)) {
-                    int xi = (int) ((x - domain.xmin()) / dx);
-                    int yi = (int) ((y - domain.ymin()) / dy);
-                    return Complex.valueOf(values[0][yi][xi]);
+                if (contains(x, y)) {
+                    IntPoint ii = getIndices(x, y, 0);
+                    if(ii!=null) {
+                        return Complex.valueOf(values[0][ii.y][ii.x]);
+                    }
+                    defined.set();
                 }
                 return Complex.ZERO;
             }
@@ -1453,10 +1507,13 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public double computeDouble0(double x, double y) {
-        int xi = (int) ((x - domain.xmin()) / dx);
-        int yi = (int) ((y - domain.ymin()) / dy);
-        return (values[0][yi][xi]);
+    public double computeDouble0(double x, double y, OutBoolean defined) {
+        IntPoint ii = getIndices(x, y, domain.zmin());
+        if(ii!=null) {
+            defined.set();
+            return (values[0][ii.y][ii.x]);
+        }
+        return 0;
     }
 
     @Override
@@ -1566,7 +1623,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     int xmax = currRange.xmax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                         double xx = xmin + xIndex * dx;
-                        if (domain.contains(xx)) {
+                        if (contains(xx)) {
                             int xi = (int) ((xx - domain.xmin()) / dx);
                             int xi0 = xi < xcount ? xi : (xcount - 1);
                             r[xIndex] = Complex.valueOf(values[0][0][xi0]);
@@ -1585,8 +1642,11 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
+    public Complex computeComplex(double x,OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
 

@@ -10,8 +10,8 @@ import net.vpc.scholar.hadrumaths.symbolic.CustomDDFunctionXDefinition
   */
 object IntegrationExamples extends App{
 //  Maths.Config.setCacheEnabled(false)
-//  Maths.Config.setDefaultScalarProductOperator(ScalarProductOperatorFactory.hardFormal())
-  //  Maths.Config.setDefaultScalarProductOperator(ScalarProductOperatorFactory.quad())
+//  Maths.Config.setScalarProductOperator(ScalarProductOperatorFactory.hardFormal())
+  //  Maths.Config.setScalarProductOperator(ScalarProductOperatorFactory.quad())
 
 
   var T : CustomDDFunctionXDefinition=null;

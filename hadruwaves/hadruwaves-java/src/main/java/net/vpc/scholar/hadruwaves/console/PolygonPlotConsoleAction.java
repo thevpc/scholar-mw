@@ -8,7 +8,7 @@ import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 
 public class PolygonPlotConsoleAction implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000007L;
+    private static final long serialVersionUID = 1L;
     private GeometryList geometryList;
     private String title;
     private WindowPath preferredPath;

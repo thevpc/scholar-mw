@@ -10,7 +10,7 @@ public class ValuesPlotModel implements PlotModel {
     String DATA_PROPERTY = "DATA_PROPERTY";
 //    String PLOT_NAME_PROPERTY = "PLOT_NAME_PROPERTY";
 
-    private static final long serialVersionUID = -1010101010101001064L;
+    private static final long serialVersionUID = 1L;
     private String name="";
     private String title="";
     private String xtitle="";

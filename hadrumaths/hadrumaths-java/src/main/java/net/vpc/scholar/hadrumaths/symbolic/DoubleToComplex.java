@@ -5,23 +5,31 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * @author vpc
  */
-public interface DoubleToComplex extends Expr {
+public interface DoubleToComplex extends DoubleDomainExpr {
 
 
-    Complex computeComplex(double x);
+    default Complex computeComplex(double x) {
+        return computeComplex(x, new OutBoolean());
+    }
 
-    Complex computeComplex(double x, double y);
+    default Complex computeComplex(double x, double y) {
+        return computeComplex(x, y, new OutBoolean());
+    }
 
-    Complex computeComplex(double x, double y, double z);
+    default Complex computeComplex(double x, double y, double z) {
+        return computeComplex(x, y, z, new OutBoolean());
+    }
 
+    Complex computeComplex(double x, OutBoolean defined);
+
+    Complex computeComplex(double x, double y, OutBoolean defined);
+
+    Complex computeComplex(double x, double y, double z, OutBoolean defined);
 
     Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges);
 

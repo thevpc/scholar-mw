@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 
@@ -15,15 +16,18 @@ import java.util.List;
  */
 public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
 
-    private static final long serialVersionUID = -1010101010101001036L;
-    DoubleToDouble base;
+    private static final long serialVersionUID = 1L;
+    private DoubleToDouble base;
     //    DFunctionXFromXY base0;
-    DIntegralXY integral;
-    double x0;
-    double x1;
+    private DIntegralXY integral;
+    private double x0;
+    private double x1;
 
     /**
-     * f(x)=integral([x0,x], base(x).dx)
+     * f=integral2([x0,x],[y0,y] base(x,y).dx.dy)
+     * f(y)=integral([x0,x], base(x,y).dx)
+     * Let X=y
+     * f(X)=integral([x0,x], base(x,X).dx)
      *
      * @param base
      * @param integral
@@ -77,22 +81,22 @@ public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
                 return false;
             }
         }
-        return true;
+        return getArg().isInvariant(axis);
     }
 
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return integral.integrateX(base, x, x0, x1);
     }
 

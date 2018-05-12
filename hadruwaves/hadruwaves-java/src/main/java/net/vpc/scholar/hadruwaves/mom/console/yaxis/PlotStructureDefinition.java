@@ -1,13 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 
 import java.util.ArrayList;
@@ -65,17 +62,17 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 new AbstractDoubleToDouble(domain) {
 
                     @Override
-                    public double computeDouble0(double x) {
+                    public double computeDouble0(double x, OutBoolean defined) {
                         throw new IllegalArgumentException("Missing y");
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, double z) {
+                    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
                         return computeDouble(x, y);
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y) {
+                    public double computeDouble0(double x, double y, OutBoolean defined) {
                         for (DoubleToVector f : sf) {
                             if (f.getComponent(Axis.X).toDC().computeComplex(x, y).absdbl() > 0) {
                                 return 2;
@@ -97,17 +94,17 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 new AbstractDoubleToDouble(domain) {
 
                     @Override
-                    public double computeDouble0(double x) {
+                    public double computeDouble0(double x, OutBoolean defined) {
                         throw new IllegalArgumentException("Missing y");
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, double z) {
+                    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
                         return computeDouble(x, y);
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y) {
+                    public double computeDouble0(double x, double y, OutBoolean defined) {
                         for (DoubleToVector f : sf) {
                             if (f.getComponent(Axis.Y).toDC().computeComplex(x, y) != null) {
                                 return 10;

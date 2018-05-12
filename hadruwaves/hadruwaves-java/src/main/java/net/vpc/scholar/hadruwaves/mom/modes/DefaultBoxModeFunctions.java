@@ -320,6 +320,9 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             return scalarProduct0(dd,testFunction,arr());
         }
         ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
+        if(objectCache==null){
+            return scalarProduct0(dd,testFunction,arr());
+        }
         int currentCount = count();
         return objectCache.evaluate("test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
             @Override
@@ -351,6 +354,9 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         }
         lastScalarProductProductMatrixInput=testFunctions.copy();
         ObjectCache objectCache = getMultipleTestFunctionObjectCache(testFunctions.toArray());
+        if(objectCache==null){
+            return scalarProductCache0(testFunctions, monitor);
+        }
         int currentCount = count();
         TMatrix<Complex> evaluated = objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
             @Override
@@ -456,7 +462,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
     }
 
     private TVector<Complex> scalarProduct0(boolean dd,Expr testFunction, DoubleToVector[] arr) {
-        ScalarProductOperator sp = Maths.Config.getDefaultScalarProductOperator();
+        ScalarProductOperator sp = Maths.Config.getScalarProductOperator();
         if (dd) {
             return Maths.dlist(sp.evalVDD(null, testFunction.toDV(), arr)).to(Maths.$COMPLEX);
         }

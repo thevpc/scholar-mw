@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
-    private static final long serialVersionUID = -1010101010101001006L;
+    private static final long serialVersionUID = 1L;
     public static final Shape ZERO = new Shape(0, Domain.EMPTYXY);
 
 //    public static final int CODE = 1;
@@ -39,32 +39,32 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected boolean contains(double x) {
+    public boolean contains(double x) {
         throw new IllegalArgumentException("Missing Y");
     }
 
     @Override
-    protected boolean contains(double x, double y) {
+    public boolean contains(double x, double y) {
         return geometry.contains(x, y);
     }
 
     @Override
-    protected boolean contains(double x, double y, double z) {
+    public boolean contains(double x, double y, double z) {
         return geometry.contains(x, y);
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return value;
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return value;
     }
 

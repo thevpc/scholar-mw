@@ -15,7 +15,7 @@ package net.vpc.scholar.hadrumaths;
    */
 
 public class SingularValueDecomposition implements java.io.Serializable {
-    private static final long serialVersionUID = -1010101010101001037L;
+   private static final long serialVersionUID = 1L;
 
 /* ------------------------
    Class variables

@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import java.util.List;
 
 public class OptionFlip extends DefaultOption {
-    private static final long serialVersionUID = -1010101010101001031L;
+    private static final long serialVersionUID = 1L;
     FlipPrecision precision;
 
     public boolean isMeshAllowed(List<Triangle> t, int iteration) {

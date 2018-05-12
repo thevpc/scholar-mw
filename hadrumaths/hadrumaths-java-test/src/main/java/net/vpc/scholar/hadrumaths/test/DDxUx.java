@@ -46,7 +46,7 @@
 //    }
 //
 //    public double computeDouble(double x) {
-//        if (domain.contains(x)) {
+//        if (contains(x)) {
 //            return amp * Math.cos(a * x + b) / Math.sqrt(c * x * x + d * x + e);
 //        }
 //        return 0;

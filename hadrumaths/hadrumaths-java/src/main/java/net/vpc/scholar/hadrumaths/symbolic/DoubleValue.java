@@ -24,7 +24,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public static final DoubleValue NAN2 = new DoubleValue(Double.NaN, Domain.FULLXY);
     public static final DoubleValue NAN3 = new DoubleValue(Double.NaN, Domain.FULLXYZ);
 
-    private static final long serialVersionUID = -1010101010101001006L;
+    private static final long serialVersionUID = 1L;
     //    public static final int CODE = 1;
     public double value;
     protected Domain domain;
@@ -78,7 +78,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
 //    public double compute(double x, double y) {
-//        if (getDomain().contains(x, y)) {
+//        if (contains(x, y)) {
 //            return value;
 //        }
 //        return 0;
@@ -207,27 +207,45 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
 
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        return (domain.contains(x, y, z)) ? value : 0;
-    }
+//    @Override
+//    public double computeDouble(double x, double y, double z) {
+//        return computeDouble(x,y,z,new OutBoolean());
+//    }
 
     @Override
-    public double computeDouble(double x) {
-        return (domain.contains(x)) ? value : 0;
+    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+        if((contains(x, y, z))){
+            defined.set();
+            return value;
+        }
+        return 0;
     }
 
-    protected double computeDouble0(double x) {
-        return value;
+//    @Override
+//    public double computeDouble(double x) {
+//        return (contains(x)) ? value : 0;
+//    }
+
+    @Override
+    public double computeDouble(double x,OutBoolean defined) {
+        if(contains(x)) {
+            defined.set();
+            return value;
+        }
+        return 0;
     }
 
-    protected double computeDouble0(double x, double y) {
-        return value;
-    }
-
-    protected double computeDouble0(double x, double y, double z) {
-        return value;
-    }
+//    protected double computeDouble0(double x) {
+//        return value;
+//    }
+//
+//    protected double computeDouble0(double x, double y) {
+//        return value;
+//    }
+//
+//    protected double computeDouble0(double x, double y, double z) {
+//        return value;
+//    }
 
     public Complex getComplexConstant() {
         return Complex.valueOf(getValue());
@@ -374,19 +392,18 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] r = new double[z.length][y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
+        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y,z);
         if (currRange != null) {
             int ax = currRange.xmin;
             int bx = currRange.xmax;
             int cy = currRange.ymin;
             int dy = currRange.ymax;
-            BooleanArray3 d = BooleanArrays.newArray(z.length, y.length, x.length);
-            currRange.setDefined(d);
+            BooleanArray3 d = currRange.setDefined3(x.length, y.length, z.length);
             for (int i = currRange.zmin; i <= currRange.zmax; i++) {
                 for (int k = ax; k <= bx; k++) {
                     for (int j = cy; j <= dy; j++) {
                         if (contains(x[k], y[j])) {
-                            double v = computeDouble0(x[k], y[j]);
+                            double v = value;//computeDouble0(x[k], y[j], z[i]);
                             r[i][j][k] = v;
                             d.set(i, j, k);
                         }
@@ -413,7 +430,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
             for (int k = ax; k <= bx; k++) {
                 for (int j = cy; j <= dy; j++) {
                     if (contains(x[k], y[j])) {
-                        double v = computeDouble0(x[k], y[j]);
+                        double v = value;//computeDouble0(x[k], y[j]);
                         r[j][k] = v;
                         d.set(j, k);
                     }
@@ -438,7 +455,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
             currRange.setDefined(d);
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
                 if (contains(x[xIndex])) {
-                    r[xIndex] = computeDouble0(x[xIndex]);
+                    r[xIndex] = value;//computeDouble0(x[xIndex]);
                 } else {
                     d.clear(xIndex);
                 }
@@ -478,37 +495,40 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public double computeDouble(double x, double y) {
+    public double computeDouble(double x, double y,OutBoolean defined) {
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {
-                    return computeDouble0(x);
+                    defined.set();
+                    return value;//computeDouble0(x);
                 }
                 return 0;
             }
             case 2: {
                 if (contains(x, y)) {
-                    return computeDouble0(x, y);
+                    defined.set();
+                    return value;//computeDouble0(x, y);
                 }
                 return 0;
             }
         }
         if (contains(x, y)) {
-            return computeDouble0(x, y);
+            defined.set();
+            return value;//computeDouble0(x, y);
         }
         return 0;
     }
 
 
-    protected boolean contains(double x) {
+    public boolean contains(double x) {
         return domain.contains(x);
     }
 
-    protected boolean contains(double x, double y) {
+    public boolean contains(double x, double y) {
         return domain.contains(x, y);
     }
 
-    protected boolean contains(double x, double y, double z) {
+    public boolean contains(double x, double y, double z) {
         return domain.contains(x, y, z);
     }
 

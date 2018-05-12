@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
@@ -14,7 +11,7 @@ import net.vpc.scholar.hadrumaths.geom.Triangle;
  * Time: 14:29:58
  */
 public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001027L;
+    private static final long serialVersionUID = 1L;
 //    public static final DCstFunctionXY ZERO = new DCstFunctionXY(0, DomainXY.EMPTY);
 
 //    public static final int CODE = 1;
@@ -46,21 +43,21 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected boolean contains(double x) {
+    public boolean contains(double x) {
         throw new IllegalArgumentException("Missing Y");
     }
 
     @Override
-    protected boolean contains(double x, double y) {
+    public boolean contains(double x, double y) {
         return polygon.contains(x, y);
     }
 
     @Override
-    protected boolean contains(double x, double y, double z) {
+    public boolean contains(double x, double y, double z) {
         return polygon.contains(x, y);
     }
 
-    public double computeDouble0(double x, double y) {
+    public double computeDouble0(double x, double y, OutBoolean defined) {
 //        AreaComponent.showDialog(polygon.toArea(1E8));
         if (polygon.contains(x, y)) {
             if (isTriangle) {
@@ -110,13 +107,13 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
-        return computeDouble0(x, y);
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+        return computeDouble0(x, y, defined);
     }
 
     @Override

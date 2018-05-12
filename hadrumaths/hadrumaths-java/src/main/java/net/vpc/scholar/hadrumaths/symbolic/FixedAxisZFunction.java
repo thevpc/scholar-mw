@@ -1,9 +1,27 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.FormatFactory;
+import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
+
 /**
 * Created by vpc on 8/21/14.
 */
 public class FixedAxisZFunction extends AbstractDoubleToDouble implements Cloneable{
+    private static final long serialVersionUID = 1L;
+    static{
+        FormatFactory.register(FixedAxisZFunction.class, new AbstractFormatter<FixedAxisZFunction>() {
+            @Override
+            public void format(StringBuilder sb, FixedAxisZFunction o, FormatParamSet format) {
+                sb.append("FixedAxisZ(");
+                FormatFactory.format(sb,o.z,format.remove(FormatFactory.REQUIRED_PARS));
+                sb.append(", ");
+                FormatFactory.format(sb,o.base,format.remove(FormatFactory.REQUIRED_PARS));
+                sb.append(")");
+            }
+        });
+    }
     private double z;
     private DoubleToDouble base;
     public FixedAxisZFunction(DoubleToDouble base, double z) {
@@ -13,27 +31,27 @@ public class FixedAxisZFunction extends AbstractDoubleToDouble implements Clonea
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         return base.computeDouble(x);
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return base.computeDouble(x, y, z);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z0) {
+    protected double computeDouble0(double x, double y, double z0, OutBoolean defined) {
         return base.computeDouble(x, y, z);
     }
 
-    @Override
-    public String toString() {
-        return "FixedAxisZFunction{" +
-                "z=" + z +
-                ", base=" + base +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "FixedAxisZ(" +
+//                "," + z +
+//                ", " + base +
+//                ')';
+//    }
 
     @Override
     public boolean equals(Object o) {

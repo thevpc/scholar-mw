@@ -82,7 +82,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
     private transient boolean sizeIsSticky = false;
 
     /* use serialVersionUID from JDK 1.0.2 for interoperability */
-    private static final long serialVersionUID = 7997698588986878753L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Given a bit index, return word index containing it.

@@ -1,4 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-public interface CustomFunction {
+import java.io.Serializable;
+
+public interface CustomFunction extends Serializable {
 }

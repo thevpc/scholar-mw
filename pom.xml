@@ -3,7 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.vpc.scholar</groupId>
     <artifactId>scholar-mw</artifactId>
-    <version>3.1.22</version>
+    <name>net.vpc.scholar</name>
+    <version>3.1.23</version>
     <packaging>pom</packaging>
     <modules>
         <module>hadrumaths/hadrumaths-java</module>

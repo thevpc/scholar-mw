@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
-    private static final long serialVersionUID = -1010101010101001007L;
+    private static final long serialVersionUID = 1L;
     private MeshOptionsConsDes option = new MeshOptionsConsDes();
 
     public MeshConsDesAlgo(int maxTriangles) {

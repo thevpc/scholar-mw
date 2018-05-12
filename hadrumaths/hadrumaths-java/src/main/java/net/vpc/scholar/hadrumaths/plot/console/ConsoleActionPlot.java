@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.util.Set;
 
 public class ConsoleActionPlot implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000002L;
+    private static final long serialVersionUID = 1L;
     private NamedMatrix yvalues;
     private String plotTitle;
     private String plotGroup;

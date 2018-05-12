@@ -8,18 +8,19 @@ import net.vpc.scholar.hadrumaths.FunctionFactory;
  * Created by vpc on 4/30/14.
  */
 public abstract class TrigoFunctionX extends GenericFunctionX implements Cloneable{
-    public TrigoFunctionX(String name, Expr arg) {
-        super(name,arg);
+    private static final long serialVersionUID = 1L;
+    public TrigoFunctionX(String name, Expr arg,FunctionType lowerFunctionType) {
+        super(name,arg,lowerFunctionType);
     }
 
 
-    public Complex evalComplex(Complex c){
-        return c.atan();
-    }
-
-    protected double evalDouble(double c){
-        return Math.atan(c);
-    }
+//    public Complex evalComplex(Complex c){
+//        return c.atan();
+//    }
+//
+//    protected double computeDoubleArg(double c){
+//        return Math.atan(c);
+//    }
 
     @Override
     public DoubleToDouble getRealDD() {

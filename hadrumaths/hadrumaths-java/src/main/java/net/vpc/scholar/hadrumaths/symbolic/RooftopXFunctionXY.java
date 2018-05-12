@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.Out;
  * Time: 17:17:27
  */
 final public class RooftopXFunctionXY extends PieceXFunction implements Cloneable {
-    private static final long serialVersionUID = -1010101010101001054L;
+    private static final long serialVersionUID = 1L;
     public double crestValue;
     private Axis axis;
 

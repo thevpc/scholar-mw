@@ -16,10 +16,10 @@ import static net.vpc.scholar.hadrumaths.Maths.CZERO;
  * User: taha Date: 2 juil. 2003 Time: 16:42:35
  */
 public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cloneable{
+    private static final long serialVersionUID = 1L;
 
 //    public static final int X = Axis.X.ordinal();
 //    public static final int Y = Axis.Y.ordinal();
-    private static final long serialVersionUID = -1010101010101001009L;
     private ComponentDimension componentDimension;
     private DoubleToComplex[] components;
     private Domain domain;

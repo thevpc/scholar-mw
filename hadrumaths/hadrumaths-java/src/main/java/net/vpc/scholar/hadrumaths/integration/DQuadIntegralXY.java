@@ -6,6 +6,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
+import java.io.Serializable;
+
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
@@ -16,7 +18,8 @@ import static java.lang.Math.max;
  * Time: 18:55:20
  * To change this template use File | Settings | File Templates.
  */
-public class DQuadIntegralXY implements DIntegralXY, Dumpable {
+public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
+    private static final long serialVersionUID = 1L;
     private static final int ERR_MAX_STEP_REACHED = 1;
     private static final int ERR_MAX_FCT_COUNT = 2;
     private static final int ERR_NAN_OR_INFINITE = 3;
@@ -75,9 +78,8 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable {
     }
 
     public double integrateX(DoubleToDouble f, double y0, double xmin, double xmax) {
-
         double[] x = new double[]{xmin, (xmin + xmax) / 2.0, xmax};
-        double[] y = f.computeDouble(x, y0, null, null);
+        double[] y = f.computeDouble(x, y0,null, null);
         if(Double.isInfinite(y[2])){
             y = f.computeDouble(x, y0, null, null);
         }

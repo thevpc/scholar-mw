@@ -20,6 +20,7 @@ import java.util.List;
  * @author vpc
  */
 public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     static {
         ExpressionTransformFactory.setExpressionTransformer(AxisTransform.class, ExpressionTransform.class, new ExpressionTransformer() {
@@ -503,8 +504,8 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    public Complex computeComplex(double x, double y) {
-        return Expressions.computeComplex(this, x, y);
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        return Expressions.computeComplex(this, x, y,defined);
     }
 
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -527,13 +528,13 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y) {
-        return Expressions.computeDouble(this, x, y);
+    public double computeDouble(double x, double y,OutBoolean defined) {
+        return Expressions.computeDouble(this, x, y,defined);
     }
 
-    public double computeDouble(double x) {
-        return Expressions.computeDouble(this, x);
-    }
+//    public double computeDouble(double x) {
+//        return Expressions.computeDouble(this, x);
+//    }
 
 
     @Override
@@ -654,22 +655,27 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
-        x = xyz[0][0];
-        y = xyz[1][0];
-        z = xyz[2][0];
-
-        return expression.toDC().computeComplex(x, y, z);
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        if(contains(x,y,z)) {
+            double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
+            x = xyz[0][0];
+            y = xyz[1][0];
+            z = xyz[2][0];
+            return expression.toDC().computeComplex(x, y, z,defined);
+        }
+        return Complex.ZERO;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
-        double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
-        x = xyz[0][0];
-        y = xyz[1][0];
-        z = xyz[2][0];
-        return expression.toDD().computeDouble(x, y, z);
+    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+        if(contains(x,y,z)) {
+            double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
+            x = xyz[0][0];
+            y = xyz[1][0];
+            z = xyz[2][0];
+            return expression.toDD().computeDouble(x, y, z,defined);
+        }
+        return 0;
     }
 
     @Override
@@ -682,10 +688,13 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x) {
+    public Complex computeComplex(double x,OutBoolean defined) {
         double[][] xyz = convertXYZAxis(new double[]{x}, new double[0], new double[0]);
         x = xyz[0][0];
-        return computeComplex(new double[]{x})[0];
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
     public Axis[] getAxis() {
@@ -783,4 +792,15 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         result = 31 * result + (domain != null ? domain.hashCode() : 0);
         return result;
     }
+
+//    @Override
+//    public double computeDouble(double x) {
+//        throw new IllegalArgumentException("Missing Y");
+//    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Y");
+    }
+
 }

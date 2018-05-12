@@ -6,12 +6,11 @@ import net.vpc.scholar.hadrumaths.*;
 import java.util.Collections;
 import java.util.List;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
-
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:39:39
  */
 public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware implements DoubleToDouble {
+    private static final long serialVersionUID = 1L;
 
     protected Domain domain;
 
@@ -82,7 +81,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return mul(newDomain).mul(factor).toDD();
     }
 
-//    public IDDxy multiply(IDDxy other) {
+    //    public IDDxy multiply(IDDxy other) {
 //        if (other instanceof DDxyCst) {
 //            DDxyCst cst = ((DDxyCst) other);
 //            return cst.value == 0 ? FunctionFactory.DZEROXY : multiply(cst.value, domain.intersect(other.domain));
@@ -152,10 +151,10 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         throw new IllegalArgumentException("Not supported");
     }
 
-    @Override
-    public String toString() {
-        return FormatFactory.toString(this);
-    }
+//    @Override
+//    public String toString() {
+//        return FormatFactory.toString(this);
+//    }
 
     public boolean isDCImpl() {
         return true;
@@ -191,7 +190,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return toDC().toDV();
     }
 
-//    public boolean isDDx() {
+    //    public boolean isDDx() {
 //        return (isInvariant(Axis.Y) && isInvariant(Axis.Z));
 //    }
 //
@@ -280,7 +279,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         if (!isDoubleExpr()) {
             throw new ClassCastException("Not Double");
         }
-        throw new RuntimeException("Unsupported yet toDouble in "+getClass().getName());
+        throw new RuntimeException("Unsupported yet toDouble in " + getClass().getName());
     }
     //    public double computeDouble(double x, double y) {
 //        return Expressions.computeDouble(this, x, y);
@@ -288,21 +287,26 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] r = new double[z.length][y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
+        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
         if (currRange != null) {
             int ax = currRange.xmin;
             int bx = currRange.xmax;
             int cy = currRange.ymin;
             int dy = currRange.ymax;
-            BooleanArray3 d = BooleanArrays.newArray(z.length, y.length, x.length);
-            currRange.setDefined(d);
-            for (int i = currRange.zmin; i <= currRange.zmax; i++) {
-                for (int k = ax; k <= bx; k++) {
-                    for (int j = cy; j <= dy; j++) {
-                        if (contains(x[k], y[j])) {
-                            double v = computeDouble0(x[k], y[j]);
+            int ez = currRange.zmin;
+            int fz = currRange.zmax;
+            BooleanArray3 d = currRange.setDefined3(x.length, y.length, z.length);
+            OutBoolean defined = new OutBoolean();
+            for (int i = ez; i <= fz; i++) {
+                for (int j = cy; j <= dy; j++) {
+                    for (int k = ax; k <= bx; k++) {
+                        if (contains(x[k], y[j], z[i])) {
+                            defined.unset();
+                            double v = computeDouble0(x[k], y[j], z[i], defined);
                             r[i][j][k] = v;
-                            d.set(i, j, k);
+                            if(defined.isSet()) {
+                                d.set(i, j, k);
+                            }
                         }
                     }
                 }
@@ -322,14 +326,17 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int bx = currRange.xmax;
             int cy = currRange.ymin;
             int dy = currRange.ymax;
-            BooleanArray2 d = BooleanArrays.newArray(y.length, x.length);
-            currRange.setDefined(d);
+            BooleanArray2 d = currRange.setDefined2(x.length, y.length);
+            OutBoolean defined = new OutBoolean();
             for (int k = ax; k <= bx; k++) {
                 for (int j = cy; j <= dy; j++) {
                     if (contains(x[k], y[j])) {
-                        double v = computeDouble0(x[k], y[j]);
+                        defined.unset();
+                        double v = computeDouble0(x[k], y[j], defined);
                         r[j][k] = v;
-                        d.set(j, k);
+                        if(defined.isSet()) {
+                            d.set(j, k);
+                        }
                     }
                 }
             }
@@ -347,11 +354,15 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         if (currRange != null) {
             int ax = currRange.xmin;
             int bx = currRange.xmax;
-            BooleanArray1 d = BooleanArrays.newArray(x.length);
-            currRange.setDefined(d);
+            BooleanArray1 d = currRange.setDefined1(x.length);
+            OutBoolean defined = new OutBoolean();
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
                 if (contains(x[xIndex])) {
-                    r[xIndex] = computeDouble0(x[xIndex]);
+                    defined.unset();
+                    r[xIndex] = computeDouble0(x[xIndex], defined);
+                    if(defined.isSet()){
+                        d.set(xIndex);
+                    }
                 } else {
                     d.clear(xIndex);
                 }
@@ -363,7 +374,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return r;
     }
 
-//    @Override
+    //    @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] d = computeDouble(x, y, z, d0, ranges);
         Complex[][][] m = new Complex[d.length][d[0].length][d[0][0].length];
@@ -390,12 +401,17 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return m;
     }
 
+//    @Override
+//    public final double computeDouble(double x) {
+//        return computeDouble(x, new OutBoolean());
+//    }
+
     @Override
-    public final double computeDouble(double x) {
+    public final double computeDouble(double x, OutBoolean defined) {
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {
-                    return computeDouble0(x);
+                    return computeDouble0(x, defined);
                 }
                 return 0;
             }
@@ -403,24 +419,29 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         throw new IllegalArgumentException("Missing y");
     }
 
+//    @Override
+//    public final double computeDouble(double x, double y, double z) {
+//        return computeDouble(x, y, z, new OutBoolean());
+//    }
+
     @Override
-    public final double computeDouble(double x, double y, double z) {
+    public final double computeDouble(double x, double y, double z, OutBoolean defined) {
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {
-                    return computeDouble0(x);
+                    return computeDouble0(x, defined);
                 }
                 return 0;
             }
             case 2: {
                 if (contains(x, y)) {
-                    return computeDouble0(x, y);
+                    return computeDouble0(x, y, defined);
                 }
                 return 0;
             }
             case 3: {
                 if (contains(x, y, z)) {
-                    return computeDouble0(x, y, z);
+                    return computeDouble0(x, y, z, defined);
                 }
                 return 0;
             }
@@ -428,45 +449,50 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         throw new IllegalArgumentException("Invalid domain " + getDomainDimension());
     }
 
+//    @Override
+//    public double computeDouble(double x, double y) {
+//        return computeDouble(x,y,new OutBoolean());
+//    }
+
     @Override
-    public double computeDouble(double x, double y) {
+    public double computeDouble(double x, double y,OutBoolean defined) {
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {
-                    return computeDouble0(x);
+                    return computeDouble0(x, defined);
                 }
                 return 0;
             }
             case 2: {
                 if (contains(x, y)) {
-                    return computeDouble0(x, y);
+                    return computeDouble0(x, y, defined);
                 }
                 return 0;
             }
         }
         if (contains(x, y)) {
-            return computeDouble0(x, y);
+            return computeDouble0(x, y, defined);
         }
         return 0;
     }
 
-    protected boolean contains(double x) {
+    public boolean contains(double x) {
         return domain.contains(x);
     }
 
-    protected boolean contains(double x, double y) {
+    public boolean contains(double x, double y) {
         return domain.contains(x, y);
     }
 
-    protected boolean contains(double x, double y, double z) {
+    public boolean contains(double x, double y, double z) {
         return domain.contains(x, y, z);
     }
 
-    protected abstract double computeDouble0(double x);
+    protected abstract double computeDouble0(double x, OutBoolean defined);
 
-    protected abstract double computeDouble0(double x, double y);
+    protected abstract double computeDouble0(double x, double y, OutBoolean defined);
 
-    protected abstract double computeDouble0(double x, double y, double z);
+    protected abstract double computeDouble0(double x, double y, double z, OutBoolean defined);
 
     @Override
     public double[] computeDouble(double[] x) {

@@ -117,8 +117,19 @@ public class HWSProjectDataObject extends MultiDataObject {
             position = 1000
     )
     @Messages("LBL_HWSProject_EDITOR=Source")
-    public static MultiViewEditorElement createEditor(Lookup lkp) {
-        return new MultiViewEditorElement(lkp);
+//    public static MultiViewEditorElement createEditor(Lookup lkp) {
+//        MultiViewEditorElement e = new MultiViewEditorElement(lkp);
+//        return e;
+//    }
+    public static MultiViewElement createEditor(Lookup lkp) {
+        HWSProjectVisualElement e = new HWSProjectVisualElement(lkp);
+        return e;
     }
+
+    @Override
+    public void setModified(boolean modif) {
+        super.setModified(modif); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 
 }

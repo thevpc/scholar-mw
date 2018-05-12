@@ -18,6 +18,7 @@ import java.util.List;
  */
 //TODO fix me like Mul plz!!! (pbm in compute, domain is no so valid)
 public class Pow extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     static {
         ExpressionTransformFactory.setExpressionTransformer(Pow.class, ExpressionTransform.class, new ExpressionTransformer() {
@@ -32,7 +33,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     private Expr[] expressions;
     private int domainDim;
     @NonStateField
-    protected Domain _cache_domain;
+    protected transient Domain _cache_domain;
 
     public Pow(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
@@ -52,10 +53,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 double d = Math.pow(a, b);
+                defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -65,10 +67,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Complex d = a.pow(b);
+                defined.set();
                 options.resultDefined = def;
                 return d;
             } else {
@@ -82,6 +85,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.pow(b);
+                //defined.set();
                 options.resultDefined = def;
                 return d;
             } else {
@@ -159,14 +163,92 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y) {
-        return Expressions.computeDouble(this, x, y);
+//    public double computeDouble(double x, double y) {
+//        return Expressions.computeDouble(this, x, y);
+//    }
+
+//    public double computeDouble(double x) {
+//        return Expressions.computeDouble(this, x);
+//    }
+
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, y, z, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        Complex b = getSecond().toDC().computeComplex(x, y, z, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return a.pow(b);
     }
 
-    public double computeDouble(double x) {
-        return Expressions.computeDouble(this, x);
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, y, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        Complex b = getSecond().toDC().computeComplex(x, y, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return a.pow(b);
     }
 
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        Complex b = getSecond().toDC().computeComplex(x, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return a.pow(b);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, y, z, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, y, z, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return Math.pow(a,b);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, y, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, y, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return Math.pow(a,b);
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return Math.pow(a,b);
+    }
 
     @Override
     public final Domain getDomain() {
@@ -187,7 +269,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         Domain d = Domain.FULL(getDomainDimension());
         for (Expr expression : getSubExpressions()) {
             if (!expression.isZero()) {
-                d = d.intersect(expression.toDD().getDomain());
+                d = d.intersect(expression.getDomain());
             }
         }
         return d.toDomain(getDomainDimension());
@@ -391,25 +473,23 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return getFirst().toDC().computeComplex(x, y, z).pow(getSecond().toDC().computeComplex(x, y, z));
-    }
-
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        return Math.pow(getFirst().toDD().computeDouble(x, y, z), (getSecond().toDD().computeDouble(x, y, z)));
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, double z) {
+//        return getFirst().toDC().computeComplex(x, y, z).pow(getSecond().toDC().computeComplex(x, y, z));
+//    }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
         return getFirst().toDM().computeMatrix(x, y, z).pow(getSecond().toDM().computeMatrix(x, y, z));
     }
 
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
-    }
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {

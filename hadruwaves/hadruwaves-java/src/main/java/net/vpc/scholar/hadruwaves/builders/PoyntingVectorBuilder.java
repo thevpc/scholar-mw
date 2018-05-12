@@ -8,11 +8,16 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
-public interface PoyntingVectorBuilder extends ValueBuilder{
-    public PoyntingVectorBuilder monitor(ProgressMonitor monitor);
-    public PoyntingVectorBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
+public interface PoyntingVectorBuilder extends ValueBuilder {
+    PoyntingVectorBuilder monitor(ProgressMonitor monitor);
+
+    PoyntingVectorBuilder converge(ConvergenceEvaluator convergenceEvaluator);
 
     Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);
+
+    Matrix computeMatrix(Axis axis, double[] x, double y, double[] z);
+
+    Matrix computeMatrix(Axis axis, double x, double[] y, double[] z);
 
     VDiscrete computeVDiscrete(Samples samples);
 

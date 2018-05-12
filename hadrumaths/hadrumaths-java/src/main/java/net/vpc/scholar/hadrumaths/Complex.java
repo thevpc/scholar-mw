@@ -1132,8 +1132,21 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return !isNaN() && !isInfinite();
     }
 
+
     @Override
     public Complex computeComplex(double x) {
+        return this;
+    }
+
+    @Override
+    public Complex computeComplex(double x,OutBoolean defined) {
+        defined.set();
+        return this;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        defined.set();
         return this;
     }
 
@@ -1148,11 +1161,19 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        defined.set();
+        return this;
+    }
+
+    @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         Complex[] complexes = new Complex[x.length];
         Arrays.fill(complexes, this);
         if (ranges != null) {
-            ranges.set(Range.forBounds(0, x.length - 1));
+            Range t = Range.forBounds(0, x.length - 1);
+            t.setDefined1(x.length);
+            ranges.set(t);
         }
         return complexes;
     }
@@ -1162,7 +1183,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         Complex[] complexes = new Complex[x.length];
         Arrays.fill(complexes, this);
         if (ranges != null) {
-            ranges.set(Range.forBounds(0, x.length - 1));
+            Range t = Range.forBounds(0, x.length - 1);
+            t.setDefined1(x.length);
+            ranges.set(t);
         }
         return complexes;
     }
@@ -1172,7 +1195,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         Complex[] complexes = new Complex[y.length];
         Arrays.fill(complexes, this);
         if (ranges != null) {
-            ranges.set(Range.forBounds(0, y.length - 1));
+            Range t = Range.forBounds(0, y.length - 1);
+            t.setDefined1(y.length);
+            ranges.set(t);
         }
         return complexes;
     }
@@ -1182,17 +1207,21 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         Complex[][] complexes = new Complex[y.length][x.length];
         ArrayUtils.fill(complexes, this);
         if (ranges != null) {
-            ranges.set(Range.forBounds(0, x.length - 1, 0, y.length - 1));
+            Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1);
+            t.setDefined2(x.length,y.length);
+            ranges.set(t);
         }
         return complexes;
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        Complex[][][] complexes = new Complex[z.length][y.length][x.length];
         ArrayUtils.fill(complexes, this);
         if (ranges != null) {
-            ranges.set(Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1));
+            Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1);
+            t.setDefined3(x.length,y.length,z.length);
+            ranges.set(t);
         }
         return complexes;
     }
@@ -1404,4 +1433,12 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     public boolean isDoubleTyped() {
         return getImag() == 0;
     }
+
+    @Override
+    public Set<ParamExpr> getParams() {
+        return Collections.EMPTY_SET;
+    }
+
+
+
 }

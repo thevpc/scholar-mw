@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ConsoleActionPlotFile implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000002L;
+    private static final long serialVersionUID = 1L;
     private File file;
 
 

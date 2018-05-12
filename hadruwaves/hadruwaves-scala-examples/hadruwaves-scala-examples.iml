@@ -9,10 +9,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="hadruwaves-scala" />
-    <orderEntry type="module" module-name="hadrumaths-scala" />
-    <orderEntry type="module" module-name="hadruwaves" />
-    <orderEntry type="module" module-name="hadrumaths" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves-scala:3.1.21" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths-scala:3.1.21" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.21" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths:3.1.21" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />
@@ -52,7 +52,7 @@
     <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derby:10.13.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derbyclient:10.13.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.jblas:jblas:1.2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.scalanlp:jblas:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: de.mukis:de.mukis.jama:2.0.0.M1" level="project" />
     <orderEntry type="library" name="Maven: com.nativelibs4java:javacl:1.0.0-RC2" level="project" />
     <orderEntry type="library" name="Maven: com.nativelibs4java:javacl-core:1.0.0-RC2" level="project" />

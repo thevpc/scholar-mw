@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.Out;
  * Created by vpc on 8/24/14.
  */
 public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware implements DoubleToMatrix {
+    private static final long serialVersionUID = 1L;
     @Override
     public boolean isDMImpl() {
         return true;
@@ -158,20 +159,22 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][][][] values = new Complex[componentDimension.rows][componentDimension.columns][][][];
         Range rangeOut = Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1);
+        rangeOut.setDefined3(x.length,y.length,z.length);
         Out<Range> rangeOutHolder = new Out<Range>();
         for (int[] ii : componentDimension.iterate()) {
             rangeOutHolder.set(null);
             int r = ii[0];
             int c = ii[1];
             values[r][c] = getComponent(r, c).toDC().computeComplex(x, y, z, d0, rangeOutHolder);
-            if (rangeOut != null) {
+//            if (rangeOut != null) {
                 if (rangeOutHolder.get() == null) {
                     rangeOut = rangeOut.intersect(rangeOutHolder.get());
-                    if (rangeOut != null && rangeOut.isEmpty()) {
-                        rangeOut = null;
-                    }
+                    rangeOut.setDefined3(x.length,y.length,z.length);
+//                    if (rangeOut != null && rangeOut.isEmpty()) {
+//                        rangeOut = null;
+//                    }
                 }
-            }
+//            }
         }
         Matrix[][][] ret = new Matrix[z.length][y.length][x.length];
         for (int t = 0; t < z.length; t++) {
@@ -196,20 +199,23 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][] values = new Complex[componentDimension.rows][componentDimension.columns][];
         Range rangeOut = Range.forBounds(0, x.length - 1);
+        rangeOut.setDefined1(x.length);
         Out<Range> rangeOutHolder = new Out<Range>();
         for (int[] ii : componentDimension.iterate()) {
             rangeOutHolder.set(null);
             int r = ii[0];
             int c = ii[1];
             values[r][c] = getComponent(r, c).toDC().computeComplex(x, d0, rangeOutHolder);
-            if (rangeOut != null) {
-                if (rangeOutHolder.get() == null) {
+//            if (rangeOut != null) {
+                if (rangeOutHolder.get() != null) {
                     rangeOut = rangeOut.intersect(rangeOutHolder.get());
-                    if (rangeOut != null && rangeOut.isEmpty()) {
-                        rangeOut = null;
-                    }
+                    rangeOut.setDefined1(x.length);
+//                    if (rangeOut != null && rangeOut.isEmpty()) {
+//                        rangeOut = null;
+//
+//                    }
                 }
-            }
+//            }
         }
         Matrix[] ret = new Matrix[x.length];
         for (int j = 0; j < x.length; j++) {
@@ -271,6 +277,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][][] values = new Complex[componentDimension.rows][componentDimension.columns][][];
         Range rangeOut = Range.forBounds(0, x.length - 1, 0, y.length - 1);
+        rangeOut.setDefined2(x.length,y.length);
         Out<Range> rangeOutHolder = new Out<Range>();
         for (int[] ii : componentDimension.iterate()) {
             rangeOutHolder.set(null);
@@ -280,9 +287,10 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             if (rangeOut != null) {
                 if (rangeOutHolder.get() == null) {
                     rangeOut = rangeOut.intersect(rangeOutHolder.get());
-                    if (rangeOut != null && rangeOut.isEmpty()) {
-                        rangeOut = null;
-                    }
+                    rangeOut.setDefined2(x.length,y.length);
+//                    if (rangeOut != null && rangeOut.isEmpty()) {
+//                        rangeOut = null;
+//                    }
                 }
             }
         }

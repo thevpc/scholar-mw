@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
  */
 public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements Matrix {
 
-    private static final long serialVersionUID = -1010101010101001044L;
+    private static final long serialVersionUID = 1L;
     private transient MatrixFactory factory;
     private String factoryId;
 

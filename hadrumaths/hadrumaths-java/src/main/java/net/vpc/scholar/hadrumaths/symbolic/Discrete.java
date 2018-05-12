@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
@@ -16,7 +18,19 @@ import java.util.List;
  * @creationtime 14 mai 2007 22:18:44
  */
 public class Discrete extends AbstractDoubleToComplex implements Dumpable, Cloneable, Normalizable {
-    private static final long serialVersionUID = -1010101010101001003L;
+    private static final long serialVersionUID = 1L;
+
+    static {
+        FormatFactory.register(Discrete.class, new AbstractFormatter<Discrete>() {
+            @Override
+            public void format(StringBuilder sb, Discrete o, FormatParamSet format) {
+                sb.append("Discrete(");
+                sb.append(Maths.dump(o.values));
+                sb.append(")");
+            }
+        });
+    }
+
     private Axis[] axis;
     private Complex[/*Z*/][/*Y*/][/*X*/] values;
     private double[] x;
@@ -128,10 +142,10 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         return Maths.dump(values);
     }
 
-    @Override
-    public String toString() {
-        return Maths.dump(values);
-    }
+//    @Override
+//    public String toString() {
+//        return Maths.dump(values);
+//    }
 
     private void init(Domain domain, Complex[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         this.domain = domain.toDomain(dim);
@@ -299,7 +313,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
                 for (int k = 0; k < xcount; k++) {
-                    d[i][j][k] = this.values[i][j][k].mul(domain.computeDouble(x[k],y[j],z[i]));
+                    d[i][j][k] = this.values[i][j][k].mul(domain.computeDouble(x[k], y[j], z[i]));
                 }
             }
         }
@@ -312,7 +326,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
                 for (int k = 0; k < xcount; k++) {
-                    d[i][j][k] = this.values[i][j][k].mul(other.computeDouble(x[k],y[j],z[i]));
+                    d[i][j][k] = this.values[i][j][k].mul(other.computeDouble(x[k], y[j], z[i]));
                 }
             }
         }
@@ -885,6 +899,17 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
+        switch (axis) {
+            case X: {
+                return false;
+            }
+            case Y: {
+                return dimension<2;
+            }
+            case Z: {
+                return dimension<3;
+            }
+        }
         return false;
     }
 
@@ -949,28 +974,31 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
 
-    public Complex computeComplex(double x, double y, double z) {
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         switch (dimension) {
             case 1: {
-                if (domain.contains(x)) {
+                if (contains(x)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
+                    defined.set();
                     return values[0][0][xi];
                 }
                 break;
             }
             case 2: {
-                if (domain.contains(x, y)) {
+                if (contains(x, y)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
                     int yi = (int) ((y - domain.ymin()) / dy);
+                    defined.set();
                     return values[0][yi][xi];
                 }
                 break;
             }
         }
-        if (domain.contains(x, y)) {
+        if (contains(x, y)) {
             int xi = (int) ((x - domain.xmin()) / dx);
             int yi = (int) ((y - domain.ymin()) / dy);
             int zi = (int) ((z - domain.zmin()) / dz);
+            defined.set();
             return values[zi][yi][xi];
         }
         return Complex.ZERO;
@@ -987,7 +1015,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                     int xmax = currRange.xmax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                         double xx = xmin + xIndex * dx;
-                        if (domain.contains(xx)) {
+                        if (contains(xx)) {
                             int xi = (int) ((xx - domain.xmin()) / dx);
                             int xi0 = xi < xcount ? xi : (xcount - 1);
                             r[xIndex] = values[0][0][xi0];
@@ -1017,7 +1045,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                     int xmax = currRange.xmax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
                         double xx = xmin + xIndex * dx;
-                        if (domain.contains(xx)) {
+                        if (contains(xx)) {
                             int xi = (int) ((xx - domain.xmin()) / dx);
                             int xi0 = xi < xcount ? xi : (xcount - 1);
                             for (int yIndex = 0; yIndex < y.length; yIndex++) {
@@ -1045,7 +1073,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                         double xx = xmin + xIndex * dx;
                         for (int yIndex = ymin; yIndex <= ymax; yIndex++) {
                             double yy = ymin + yIndex * dy;
-                            if (domain.contains(xx, yy)) {
+                            if (contains(xx, yy)) {
                                 int xi = (int) ((xx - domain.xmin()) / dx);
                                 int yi = (int) ((yy - domain.ymin()) / dy);
                                 int yi0 = yi < ycount ? yi : (ycount - 1);
@@ -1088,7 +1116,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                         double zz = z[zIndex];//zmin + zIndex * dz;
                         int zi = (int) ((zz - domain.zmin()) / dz);
                         r[zIndex][yIndex][xIndex] = values[zi][yi][xi];
-//                        if (domain.contains(xx, yy, zz)) {
+//                        if (contains(xx, yy, zz)) {
 //                            int xi = (int) ((xx - domain.xmin) / dx);
 //                            int yi = (int) ((yy - domain.ymin) / dy);
 //                            int zi = (int) ((zz - domain.ymin) / dz);
@@ -1096,7 +1124,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 //                            int yi0 = yi < ycount ? yi : (ycount - 1);
 //                            int xi0 = xi < xcount ? xi : (xcount - 1);
 //                        }else{
-//                            boolean d = domain.contains(xx, yy, zz);
+//                            boolean d = contains(xx, yy, zz);
 //                            boolean d1 = domain1.contains(xx, yy, zz);
 //                            throw new IllegalArgumentException("??");
 //                        }
@@ -1128,19 +1156,21 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public Complex computeComplex(double x, double y) {
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
         switch (dimension) {
             case 1: {
-                if (domain.contains(x)) {
+                if (contains(x)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
+                    defined.set();
                     return values[0][0][xi];
                 }
                 return Complex.ZERO;
             }
             case 2: {
-                if (domain.contains(x, y)) {
+                if (contains(x, y)) {
                     int xi = (int) ((x - domain.xmin()) / dx);
                     int yi = (int) ((y - domain.ymin()) / dy);
+                    defined.set();
                     return values[0][yi][xi];
                 }
                 return Complex.ZERO;
@@ -1537,8 +1567,11 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x}, (Domain) null, null)[0];
+    public Complex computeComplex(double x, OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
 
@@ -1861,26 +1894,26 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 
     @Override
     public Expr mul(Expr other) {
-        if(other instanceof Domain) {
+        if (other instanceof Domain) {
             return mul((Domain) other);
         }
-        if(other.isDouble()) {
+        if (other.isDouble()) {
             return mul(other.toDouble());
         }
-        if(other.isDoubleExpr()) {
+        if (other.isDoubleExpr()) {
             return mul(other.toDouble()).mul(other.getDomain());
         }
-        if(other.isComplex()) {
+        if (other.isComplex()) {
             return mul(other.toComplex());
         }
-        if(other.isComplexExpr()) {
+        if (other.isComplexExpr()) {
             return mul(other.toComplex()).mul(other.getDomain());
         }
-        if(other instanceof Discrete) {
-            return mul((Discrete)other);
+        if (other instanceof Discrete) {
+            return mul((Discrete) other);
         }
-        if(other instanceof DoubleToDouble) {
-            return mul((DoubleToDouble)other);
+        if (other instanceof DoubleToDouble) {
+            return mul((DoubleToDouble) other);
         }
         return Maths.mul(this, other);
     }

@@ -81,6 +81,8 @@
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-linux-armhf:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-x86_64:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-i686:natives:1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.3" level="project" />
+    <orderEntry type="module" module-name="vpc-common-utils" />
     <orderEntry type="library" name="Maven: java-oo:javac8-oo-plugin:0.5" level="project" />
   </component>
 </module>

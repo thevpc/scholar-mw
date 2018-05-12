@@ -14,7 +14,7 @@ public class FractalScaleParam extends AbstractParam implements Cloneable{
     }
 
     public void configure(Object source,Object value) {
-        ((MomStructure) source).setK((Integer) value);
+        ((MomStructure) source).setFractalScale((Integer) value);
     }
 
 }

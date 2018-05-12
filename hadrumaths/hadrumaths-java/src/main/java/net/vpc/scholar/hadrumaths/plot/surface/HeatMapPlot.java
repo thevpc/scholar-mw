@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 public class HeatMapPlot extends JPanel implements PlotComponentPanel{
-    private static final long serialVersionUID = 1111111116L;
+    private static final long serialVersionUID = 1L;
     private HeatMapPlotArea area;
     private PlotModelProvider plotModelProvider;
     private ValuesPlotModel model;
@@ -270,15 +270,19 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
                     setText(v);
                 }else if(d instanceof Double){
                     double d0 = ((Double) d).doubleValue();
-                    DecimalFormat f=format;
-                    if(d0 >=1E-3 && d0<=1E4){
-                        f=simpleFormat;
+                    if(Double.isNaN(d0)){
+                        setText("NaN");
+                    }else {
+                        DecimalFormat f = format;
+                        if (d0 >= 1E-3 && d0 <= 1E4) {
+                            f = simpleFormat;
+                        }
+                        String v = f == null ? String.valueOf(d) : f.format(d);
+                        if (v.endsWith("E0")) {
+                            v = v.substring(0, v.length() - 2);
+                        }
+                        setText(v);
                     }
-                    String v = f == null ? String.valueOf(d) : f.format(d);
-                    if (v.endsWith("E0")) {
-                        v = v.substring(0, v.length() - 2);
-                    }
-                    setText(v);
                 }else if(d instanceof Float){
                     setAnyValue(((Float)d).doubleValue());
                 }else{

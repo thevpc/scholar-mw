@@ -77,7 +77,7 @@
 //    }
 //
 //    public double computeDouble(double x) {
-//        if (domain.contains(x)) {
+//        if (contains(x)) {
 //            return value;
 //        }
 //        return 0;

@@ -15,7 +15,7 @@
 // */
 //public class DDxToDDxy extends DDxy {
 //
-//    private static final long serialVersionUID = -1010101010101001005L;
+//private static final long serialVersionUID = 1L;
 //    private IDDx base;
 //
 //    public DDxToDDxy(IDDx base) {

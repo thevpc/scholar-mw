@@ -19,7 +19,7 @@ import net.vpc.scholar.hadrumaths.Matrix;
  * To change this template use File | Settings | File Templates.
  */
 class _old_HeatMapPlot extends JComponent {
-    private static final long serialVersionUID=1111111115L;
+    private static final long serialVersionUID = 1L;
     double[][] matrix;
     double[][] sourceMatrix;
     private Object[] xAxis;

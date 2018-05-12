@@ -5,7 +5,6 @@ import net.vpc.scholar.hadrumaths.geom.FractalAreaGeometryList;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
@@ -215,7 +214,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                             str = new MomStructure();
                             str.load(str2);
                         }
-                        str.setK(str2.realK - 1);
+                        str.setFractalScale(str2.realK - 1);
                         str.setDomain(polygon.getDomain(transform[i].getDomain(), domain));
                         if (isSimple) {
                             GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.getTestFunctions());

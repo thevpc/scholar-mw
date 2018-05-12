@@ -2,13 +2,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Sinh extends TrigoFunctionX implements Cloneable {
+    private static final long serialVersionUID = 1L;
     public Sinh(Expr arg) {
-        super("sinh", arg);
+        super("sinh", arg, FunctionType.COMPLEX);
     }
 
     @Override
@@ -16,11 +18,11 @@ public class Sinh extends TrigoFunctionX implements Cloneable {
         return "sinh";
     }
 
-    public Complex evalComplex(Complex c) {
+    public Complex computeComplexArg(Complex c, OutBoolean defined) {
         return c.sinh();
     }
 
-    protected double evalDouble(double c) {
+    public double computeDoubleArg(double c, OutBoolean defined) {
         return Math.sinh(c);
     }
 

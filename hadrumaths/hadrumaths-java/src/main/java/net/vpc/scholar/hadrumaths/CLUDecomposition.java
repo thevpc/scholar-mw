@@ -14,7 +14,7 @@ package net.vpc.scholar.hadrumaths;
  */
 public class CLUDecomposition implements java.io.Serializable {
 
-    private static final long serialVersionUID = -1010101010101001012L;
+    private static final long serialVersionUID = 1L;
 
     /*
      * ------------------------ Class variables ------------------------

@@ -81,7 +81,7 @@ public class CosXPlusYFormatter implements Formatter<CosXPlusY> {
             }
             if (a != 0 || b != 0 || c != 0) {
                 sb.append("cos(");
-                FormatFactory.format(sb, new Linear(a, b, c, domain), format.add(FormatFactory.NO_DOMAIN));
+                FormatFactory.format(sb, new Linear(a, b, c, domain), format.remove(FormatFactory.REQUIRED_PARS).add(FormatFactory.NO_DOMAIN));
                 sb.append(")");
             }
             FormatFactory.appendStarredDomain(sb, domain, format);

@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.symbolic.Linear;
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
  */
 final class CosCosVsLinearIntegralXY {
+    private static final long serialVersionUID = 1L;
 
     public double compute(Domain domain, double famp, double fa, double fb, double fc, double fd, double ga, double gb, double gc) {
         return primi_coslinear(domain, famp, fa, fb, fc, fd, ga, gb, gc);

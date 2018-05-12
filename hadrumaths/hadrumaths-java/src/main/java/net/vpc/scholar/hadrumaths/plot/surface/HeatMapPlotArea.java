@@ -20,7 +20,7 @@ import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
  * @creationtime 16 juin 2004 00:42:43
  */
 public class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseListener {
-    private static final long serialVersionUID = 1111111115L;
+    private static final long serialVersionUID = 1L;
     int rowsCount=0;
     int columnsCount=0;
     double minValue;
@@ -468,10 +468,34 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
                     iyy += 2;
                 }
 
-                if(Double.isNaN(dv) || Double.isInfinite(dv)){
-                    g.setColor(Color.WHITE);
+                if(Double.isNaN(dv)){
+                    if (current_yi == line && current_xj == column) {
+                        g.setColor(Color.LIGHT_GRAY);
+                    }else{
+                        g.setColor(Color.WHITE);
+                    }
+                    g.fillRect(xx, yy, ixx, iyy);
+                    g.setColor(Color.GREEN);
+                    g.drawLine(xx, yy, xx+ixx, yy+iyy);
+                    g.drawLine(xx, yy+iyy, xx+ixx, yy);
+                }else if(dv==Double.POSITIVE_INFINITY){
+                    if (current_yi == line && current_xj == column) {
+                        g.setColor(Color.LIGHT_GRAY);
+                    }else{
+                        g.setColor(Color.WHITE);
+                    }
                     g.fillRect(xx, yy, ixx, iyy);
                     g.setColor(Color.RED);
+                    g.drawLine(xx, yy, xx+ixx, yy+iyy);
+                    g.drawLine(xx, yy+iyy, xx+ixx, yy);
+                }else if(dv==Double.NEGATIVE_INFINITY){
+                    if (current_yi == line && current_xj == column) {
+                        g.setColor(Color.LIGHT_GRAY);
+                    }else{
+                        g.setColor(Color.WHITE);
+                    }
+                    g.fillRect(xx, yy, ixx, iyy);
+                    g.setColor(Color.BLUE);
                     g.drawLine(xx, yy, xx+ixx, yy+iyy);
                     g.drawLine(xx, yy+iyy, xx+ixx, yy);
                 }else{

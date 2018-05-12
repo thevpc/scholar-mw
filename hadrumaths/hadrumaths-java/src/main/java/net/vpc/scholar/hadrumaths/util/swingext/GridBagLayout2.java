@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @creationtime 5 mai 2006 00:52:57
  */
 public class GridBagLayout2 extends GridBagLayout {
-    private static final long serialVersionUID = -1010101010101001053L;
+    private static final long serialVersionUID = 1L;
     private String pattern;
     private boolean nonameAdded = false;
     int nonameIndex = 1;

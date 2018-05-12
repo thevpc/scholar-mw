@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public class ConsDesSurfacePrecision implements ConsDesPrecision {
-    private static final long serialVersionUID = -1010101010101001023L;
+    private static final long serialVersionUID = 1L;
     double airmax;
 
     public ConsDesSurfacePrecision(double air) {

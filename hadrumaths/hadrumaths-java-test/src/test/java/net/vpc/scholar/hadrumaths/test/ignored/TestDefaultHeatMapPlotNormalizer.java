@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.test;
+package net.vpc.scholar.hadrumaths.test.ignored;
 
 import net.vpc.scholar.hadrumaths.plot.surface.DefaultHeatMapPlotNormalizer;
 

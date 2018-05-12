@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class Polygon extends AbstractGeometry implements Cloneable {
 
-    private static final long serialVersionUID = -1010101010101001046L;
+    private static final long serialVersionUID = 1L;
     public double[] xpoints;
     public double[] ypoints;
     public int npoints;

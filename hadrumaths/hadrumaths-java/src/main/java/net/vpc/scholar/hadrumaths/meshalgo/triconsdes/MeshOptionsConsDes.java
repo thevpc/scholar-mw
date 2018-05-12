@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 public class MeshOptionsConsDes extends DefaultOption {
-    private static final long serialVersionUID = -1010101010101001058L;
+    private static final long serialVersionUID = 1L;
     ConsDesPrecision precision;
 
     public MeshOptionsConsDes() {

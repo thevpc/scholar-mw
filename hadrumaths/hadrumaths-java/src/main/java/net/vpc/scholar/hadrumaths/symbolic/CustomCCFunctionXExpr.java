@@ -2,11 +2,13 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class CustomCCFunctionXExpr extends GenericFunctionX implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private CustomCCFunctionXDefinition definition;
     public CustomCCFunctionXExpr(Expr arg, CustomCCFunctionXDefinition definition) {
         super(definition.getName(),arg,FunctionType.COMPLEX);
@@ -17,12 +19,18 @@ public class CustomCCFunctionXExpr extends GenericFunctionX implements Cloneable
         return definition.getName();
     }
 
-    public Complex evalComplex(Complex c){
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return definition.getEval().evalComplex(c);
     }
 
-    protected double evalDouble(double c){
-        return evalComplex(Complex.valueOf(c)).toDouble();
+    public double computeDoubleArg(double c, OutBoolean defined){
+        return computeComplexArg(Complex.valueOf(c), defined).toDouble();
     }
 
     @Override

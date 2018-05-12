@@ -13,7 +13,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  */
 public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
-    private static final long serialVersionUID = -1010101010101001022L;
+    private static final long serialVersionUID = 1L;
     protected Domain domain;
 
 
@@ -44,6 +44,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
      */
     public CExp(Complex amp, double a, double b, Domain domain) {
         this.domain = domain;
+        this.amp = amp;
         Expr cosAX=new Cos(X.mul(a));
         Expr sinAX=new Sin(X.mul(a));
         Expr cosBY=new Cos(Y.mul(b));
@@ -56,15 +57,35 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         this.b = b;
         if(domain.getDimension()==1){
             if(!isInvariant(Axis.Y)){
-                throw new IllegalArgumentException("Missing y domain");
+                this.domain=domain.expandDimension(2);
             }
         }
 //        name=("amp*exp(iax)*exp(iby)");
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x},(Domain) null,null)[0];
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public Complex getAmp() {
+        return amp;
+    }
+
+    public double getA() {
+        return a;
+    }
+
+    public double getB() {
+        return b;
+    }
+
+    @Override
+    public Complex computeComplex(double x,OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
     public boolean isInvariantImpl(Axis axis) {
@@ -95,8 +116,9 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         return computeComplex(x, y, d0, null);
     }
 
-    public Complex computeComplex(double x, double y) {
-        if (getDomain().contains(x, y)) {
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        if (contains(x, y)) {
+            defined.set();
             return Complex.I(a * x).exp().mul(Complex.I(b * y).exp()).mul(amp);
         }
         return Complex.ZERO;
@@ -330,8 +352,9 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        if (getDomain().contains(x, y,z)) {
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y,z)) {
+            defined.set();
             return Complex.I(a * x).exp().mul(Complex.I(b * y).exp()).mul(amp);
         }
         return Complex.ZERO;

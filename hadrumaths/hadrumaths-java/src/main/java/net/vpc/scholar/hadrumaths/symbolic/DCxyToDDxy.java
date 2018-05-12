@@ -14,6 +14,7 @@ import java.util.List;
  * @author vpc
  */
 public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
+    private static final long serialVersionUID = 1L;
 
     private DoubleToComplex base;
 
@@ -161,9 +162,9 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y) {
-        if (getDomain().contains(x, y)) {
-            return convertDouble(base.computeComplex(x, y));
+    public double computeDouble(double x, double y,OutBoolean defined) {
+        if (contains(x, y)) {
+            return convertDouble(base.computeComplex(x, y,defined));
         }
         return 0;
     }

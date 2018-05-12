@@ -21,7 +21,7 @@
 //        this.y = y - 1;
 //    }
 //
-//    protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
+//    protected Complex computeComplexArg(MomStructure structure, ParamSet x, ConsoleActionParams p) {
 //        return structure.computeFixedPoint(null).get(this.x, this.y);
 //    }
 //}

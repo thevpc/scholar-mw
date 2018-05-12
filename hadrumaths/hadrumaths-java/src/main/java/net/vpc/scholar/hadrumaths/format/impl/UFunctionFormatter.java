@@ -32,7 +32,7 @@ public class UFunctionFormatter extends AbstractFormatter<UFunction> {
         double c = o.getC();
         double d = o.getD();
         double e = o.getE();
-        FormatFactory.format(new Mul(
+        FormatFactory.format(sb,new Mul(
                 Complex.valueOf(amp),new Linear(a,0,b, Domain.FULLX)
         ),format);
         sb.append("/(");

@@ -1,15 +1,9 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
-import net.vpc.scholar.hadrumaths.integration.DRectLowIntegralXY;
-import net.vpc.scholar.hadrumaths.integration.DRectMidIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
 import net.vpc.scholar.hadrumaths.integration.formal.FormalIntegrationOperator;
 import net.vpc.scholar.hadrumaths.integration.formal.NumericIntegrationOperator;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
-import net.vpc.scholar.hadrumaths.scalarproducts.numeric.NumericScalarProductOperator;
-import net.vpc.scholar.hadrumaths.scalarproducts.numeric.SimpleNumericScalarProductOperator;
 
 /**
  * Created by vpc on 6/1/14.

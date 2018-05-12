@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.test;
+package net.vpc.scholar.hadrumaths.test.ignored;
 
 /**
  * Created by vpc on 8/6/16.

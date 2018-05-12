@@ -2,7 +2,9 @@ package net.vpc.scholar.hadrumaths.integration;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
-public interface DIntegralXY {
+import java.io.Serializable;
+
+public interface DIntegralXY extends Serializable {
     double integrateX(DoubleToDouble f, double xmin, double xmax);
 
     double integrateX(DoubleToDouble f, double y, double xmin, double xmax);

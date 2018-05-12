@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.vpc.scholar</groupId>
     <artifactId>hadruwaves-puppets</artifactId>
+    <name>net.vpc.scholar.hadruwaves-puppets</name>
     <version>1.0</version>
     <packaging>jar</packaging>
     <dependencies>

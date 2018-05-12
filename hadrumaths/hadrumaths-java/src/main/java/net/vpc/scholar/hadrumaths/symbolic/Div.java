@@ -18,6 +18,7 @@ import java.util.List;
  * @author vpc
  */
 public class Div extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     private static Expressions.BinaryExprHelper<Div> binaryExprHelper = new Expressions.BinaryExprHelper<Div>() {
         @Override
@@ -31,10 +32,11 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 double d = a / b;
+                defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -44,10 +46,11 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Complex d = a.div(b);
+                defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -61,6 +64,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.div(b);
+                //defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -80,7 +84,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         });
     }
     @NonStateField
-    protected Domain _cache_domain;
+    protected transient Domain _cache_domain;
     private Expr[] expressions;
     private int domainDim;
 
@@ -263,10 +267,10 @@ public class Div extends AbstractExprOperator implements Cloneable {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "((" + getFirst() + ") / (" + getSecond() + "))";
-    }
+//    @Override
+//    public String toString() {
+//        return "((" + getFirst() + ") / (" + getSecond() + "))";
+//    }
 
     public Expr[] getExpressions() {
         return expressions;
@@ -465,4 +469,123 @@ public class Div extends AbstractExprOperator implements Cloneable {
         return new Mul(expr2[0],expr2[1]);
     }
 
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        if(contains(x)){
+            OutBoolean defined2=new OutBoolean();
+            Complex a = getFirst().toDC().computeComplex(x, defined2);
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined2.unset();
+            Complex b = getSecond().toDC().computeComplex(x, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined.set();
+            return a.div(b);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        if(contains(x,y)){
+            OutBoolean defined2=new OutBoolean();
+            Complex a = getFirst().toDC().computeComplex(x,y, defined2);
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined2.unset();
+            Complex b = getSecond().toDC().computeComplex(x,y, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined.set();
+            return a.div(b);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        if(contains(x,y,z)){
+            OutBoolean defined2=new OutBoolean();
+            Complex a = getFirst().toDC().computeComplex(x,y,z, defined2);
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined2.unset();
+            Complex b = getSecond().toDC().computeComplex(x,y,z, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return Complex.ZERO;
+            }
+            defined.set();
+            return a.div(b);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        if(contains(x)){
+            OutBoolean defined2=new OutBoolean();
+            double a = getFirst().toDD().computeDouble(x, defined2);
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined2.unset();
+            double b = getSecond().toDD().computeDouble(x, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined.set();
+            return a/b;
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        if(contains(x,y)){
+            OutBoolean defined2=new OutBoolean();
+            double a = getFirst().toDD().computeDouble(x,y, defined2);
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined2.unset();
+            double b = getSecond().toDD().computeDouble(x,y, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined.set();
+            return a/b;
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        if(contains(x,y,z)){
+            OutBoolean defined2=new OutBoolean();
+            double a = getFirst().toDD().computeDouble(x,y,z, defined2);
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined2.unset();
+            double b = getSecond().toDD().computeDouble(x,y,z, defined2);
+            defined2.set();
+            if(!defined2.isSet()){
+                return 0;
+            }
+            defined.set();
+            return a/b;
+        }
+        return 0;
+    }
 }

@@ -18,7 +18,7 @@ import java.util.List;
  * @creationtime 22 mai 2007 00:02:41
  */
 public class MeshAlgoRect implements MeshAlgo, Cloneable {
-    private static final long serialVersionUID = -1010101010101001019L;
+    private static final long serialVersionUID = 1L;
     private int dividerX = 2;
     private int dividerY = 2;
     private double minRelativeSizeX = 0.01;

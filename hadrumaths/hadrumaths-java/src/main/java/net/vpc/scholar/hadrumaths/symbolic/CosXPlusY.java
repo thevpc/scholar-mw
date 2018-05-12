@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.util.DoubleValidator;
 
 /**
  * User: taha
@@ -8,14 +9,19 @@ import net.vpc.scholar.hadrumaths.*;
  * Time: 11:51:13
  */
 public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001040L;
+    private static final long serialVersionUID = 1L;
     public double amp;
     //    public static final int HASHCODE = 1;
     public double a; //ax
     public double b; //by
     public double c;
 
-    public CosXPlusY(double amp, double a, double b, double c, Domain domain) {
+    public CosXPlusY(
+            @DoubleValidator(NaN = false)
+            double amp,
+            @DoubleValidator(NaN = false) double a,
+            @DoubleValidator(NaN = false) double b,
+            @DoubleValidator(NaN = false) double c, Domain domain) {
         super(domain);
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("DCosCosFunctionXY amp=NaN");
@@ -205,18 +211,18 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         return result;
     }
 
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         if(b==0){
             return amp * Maths.cos2(a * x + c);
         }
         throw new IllegalArgumentException("Missing y");
     }
 
-    protected double computeDouble0(double x,double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b* y + c);
     }
 
-    protected double computeDouble0(double x,double y,double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b* y + c);
     }
 

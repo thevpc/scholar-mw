@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  * Created by vpc on 2/14/15.
  */
 public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
+    private static final long serialVersionUID = 1L;
     public static final ExprCubeFactory INSTANCE = new DefaultExprCubeFactory();
 
     @Override

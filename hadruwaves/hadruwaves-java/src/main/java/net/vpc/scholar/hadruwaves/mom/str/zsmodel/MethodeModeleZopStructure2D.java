@@ -56,13 +56,13 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //            MoMStructureRef md = new MoMStructureRef(getFolder());
 //            md.setAllValues(this);
 //            md.setWidth(getWidth() * (1 - getIrisQuotient()) / 2);
-//            md.setK(1);
+//            md.setFractalScale(1);
 //            ret = md.computeZin();
 //        } else if (theK > 2) {
 //            MethodeModeleZopStructure2D mm = new MethodeModeleZopStructure2D(getFolder());
 //            mm.setAllValues(this);
 //            mm.setWidth(getWidth() * (1 - getIrisQuotient()) / 2);
-//            mm.setK(theK - 1);
+//            mm.setFractalScale(theK - 1);
 //            ret = mm.computeZin();
 //        } else {
 //            return null;
@@ -82,7 +82,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //            md.setWidth(getWidth() * getMetalQuotient());
 //            md.setXminFactor(Double.NaN);
 //            md.setXmin(getXmin());
-//            md.setK(1);
+//            md.setFractalScale(1);
 //            ret = md.computeZin();
 //            return new Zoperator(ret, md.getBaseFunctions());
 //        } else if (theK > 2) {
@@ -91,7 +91,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //            mm.setWidth(getWidth() * getMetalQuotient());
 //            mm.setXminFactor(Double.NaN);
 //            mm.setXmin(getXmin());
-//            mm.setK(theK - 1);
+//            mm.setFractalScale(theK - 1);
 //            ret = mm.computeZin();
 //            return new Zoperator(ret, mm.getBaseFunctions());
 //        } else {
@@ -110,7 +110,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //            md.setWidth(getWidth() * getMetalQuotient());
 //            md.setXminFactor(Double.NaN);
 //            md.setXmin(getXmin() + getWidth() - md.getWidth());
-//            md.setK(1);
+//            md.setFractalScale(1);
 //            ret = md.computeZin();
 //            return new Zoperator(ret, md.getBaseFunctions());
 //        } else if (theK > 2) {
@@ -119,7 +119,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //            mm.setWidth(getWidth() * getMetalQuotient());
 //            mm.setXminFactor(Double.NaN);
 //            mm.setXmin(getXmin() + getWidth() - mm.getWidth());
-//            mm.setK(theK - 1);
+//            mm.setFractalScale(theK - 1);
 //            ret = mm.computeZin();
 //            return new Zoperator(ret, mm.getBaseFunctions());
 //        } else {
@@ -299,7 +299,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //        return Testcoeff;
 //    }
 //
-//    public void setK(int k) {
+//    public void setFractalScale(int k) {
 //        this.k = 1;
 //        this.realK = k;
 //        invalidateCache();
@@ -308,7 +308,7 @@ package net.vpc.scholar.hadruwaves.mom.str.zsmodel;
 //    public CMatrix resolveNextPointFixe(CMatrix Zinit, int kInit) {
 //        getLog().debug(1.2337139917695478E-4 / 4.11237997256516E-5);
 //        double a = getWidth();
-//        setK(1);
+//        setFractalScale(1);
 //        for (int ki = 0; ki < kInit; ki++) {
 //            setWidth(a * Math.pow(getMetalQuotient(), (kInit - ki)));
 //            CMatrix A_ = getAMatrix(Zinit);

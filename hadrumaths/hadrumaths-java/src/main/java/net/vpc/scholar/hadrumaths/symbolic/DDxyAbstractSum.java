@@ -9,7 +9,7 @@ import java.util.List;
 @Deprecated
 public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
 
-    private static final long serialVersionUID = -1010101010101001038L;
+    private static final long serialVersionUID = 1L;
     protected DoubleToDouble[] segments;
 
     protected DDxyAbstractSum(Domain domain) {
@@ -136,12 +136,12 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
 //        }
 //        return r;
 //    }
-    public double computeDouble(double x, double y) {
+    public double computeDouble(double x, double y,OutBoolean defined) {
         double r = 0;
-        if (domain.contains(x, y)) {
+        if (contains(x, y)) {
             for (DoubleToDouble f : segments) {
-                //            if (f.domain.contains(x, y)) {
-                r += f.computeDouble(x, y);
+                //            if (f.contains(x, y)) {
+                r += f.computeDouble(x, y,defined);
 //            }
             }
         }
@@ -149,7 +149,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
             r += f.computeDouble(x);
@@ -158,29 +158,29 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
-            r += f.computeDouble(x,y);
+            r += f.computeDouble(x, y);
         }
         return r;
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
-            r += f.computeDouble(x,y,z);
+            r += f.computeDouble(x, y, z);
         }
         return r;
     }
 
     @Override
-    public double[][] computeDouble(double[] x, double[] y, Domain d0,Out<Range> ranges) {
+    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         double[][] r = new double[y.length][x.length];
         Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
-        if(currRange!=null) {
-            BooleanArray2 b = BooleanArrays.newArray(y.length,x.length);
+        if (currRange != null) {
+            BooleanArray2 b = BooleanArrays.newArray(y.length, x.length);
             currRange.setDefined(b);
             for (DoubleToDouble f : segments) {
                 Out<Range> r2 = new Out<Range>();
@@ -194,9 +194,9 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
                     int dy = abcd.ymax;
                     for (int xIndex = ax; xIndex <= bx; xIndex++) {
                         for (int yIndex = cy; yIndex <= dy; yIndex++) {
-                            if (b2.get(yIndex,xIndex)) {
+                            if (b2.get(yIndex, xIndex)) {
                                 r[yIndex][xIndex] += r0[yIndex][xIndex];
-                                b.set(yIndex,xIndex);
+                                b.set(yIndex, xIndex);
                             }
                         }
                     }
@@ -208,16 +208,17 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
         }
         return r;
     }
+
     @Override
-    public double[][][] computeDouble(double[] x, double[] y,double[] z, Domain d0,Out<Range> ranges) {
+    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] r = new double[z.length][y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
-        if(currRange!=null) {
-            BooleanArray3 b = BooleanArrays.newArray(z.length,y.length,x.length);
+        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
+        if (currRange != null) {
+            BooleanArray3 b = BooleanArrays.newArray(z.length, y.length, x.length);
             currRange.setDefined(b);
             for (DoubleToDouble f : segments) {
                 Out<Range> r2 = new Out<Range>();
-                double[][][] r0 = f.computeDouble(x, y, z,d0, r2);
+                double[][][] r0 = f.computeDouble(x, y, z, d0, r2);
                 Range abcd = r2.get();
                 if (abcd != null) {
                     BooleanArray3 b2 = abcd.getDefined3();
@@ -228,9 +229,9 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
                     for (int i = abcd.zmin; i <= abcd.zmax; i++) {
                         for (int xIndex = ax; xIndex <= bx; xIndex++) {
                             for (int yIndex = cy; yIndex <= dy; yIndex++) {
-                                if (b2!=null && b2.get(i,yIndex,xIndex)) {
+                                if (b2 != null && b2.get(i, yIndex, xIndex)) {
                                     r[i][yIndex][xIndex] += r0[i][yIndex][xIndex];
-                                    b.set(i,yIndex,xIndex);
+                                    b.set(i, yIndex, xIndex);
                                 }
                             }
                         }

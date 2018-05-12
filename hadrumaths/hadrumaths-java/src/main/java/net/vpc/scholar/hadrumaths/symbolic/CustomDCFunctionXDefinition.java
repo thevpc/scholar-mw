@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Expr;
 
 public class CustomDCFunctionXDefinition implements CustomFunctionDefinition{
+    private static final long serialVersionUID = 1L;
     private String name;
     private CustomDCFunctionX eval;
 

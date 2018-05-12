@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
  * Created by vpc on 8/19/14.
  */
 public abstract class AxisFunction extends AbstractComposedFunction {
+    private static final long serialVersionUID = 1L;
     protected Domain domain;
     protected AxisFunction(Domain domain,String functionName) {
         super();

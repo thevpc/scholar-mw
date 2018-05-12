@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import java.util.List;
 
 public class ConsDesTriangleCountPrecision implements ConsDesPrecision {
-    private static final long serialVersionUID = -1010101010101001062L;
+    private static final long serialVersionUID = 1L;
     int nbre;
     public ConsDesTriangleCountPrecision(int nbr){
         nbre=nbr;

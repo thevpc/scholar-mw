@@ -11,7 +11,7 @@ import java.util.*;
  * @creationtime 18 janv. 2006 16:04:29
  */
 public class DefaultGeometryList extends AbstractGeometry implements GeometryList {
-    public static final long serialVersionUID = -1231231231240000009L;
+    private static final long serialVersionUID = 1L;
     private Domain domain = null;
     private Domain smallestDomain = null;
     private ArrayList<Geometry> list;

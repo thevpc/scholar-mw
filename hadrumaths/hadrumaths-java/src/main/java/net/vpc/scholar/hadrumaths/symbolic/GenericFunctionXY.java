@@ -9,16 +9,16 @@ import java.io.Serializable;
  * Created by vpc on 4/30/14.
  */
 public abstract class GenericFunctionXY extends AbstractComposedFunction {
+    private static final long serialVersionUID = 1L;
     private FunctionType functionType;
     @NonStateField
-    protected Domain _cache_domain;
+    protected transient Domain _cache_domain;
     @NonStateField
-    private Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper = new GenericFunctionXYBinaryExprHelper();
+    private Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper=new GenericFunctionXYBinaryExprHelperAnd();
     private Expr xargument;
     private Expr yargument;
 
     protected GenericFunctionXY() {
-
     }
 
     protected GenericFunctionXY(Expr xargument, Expr yargument) {
@@ -26,23 +26,27 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     }
 
     protected GenericFunctionXY(Expr xargument, Expr yargument, FunctionType lowerFunctionType) {
-        init(xargument,yargument,lowerFunctionType,true);
+        init(xargument, yargument, lowerFunctionType, true);
     }
 
-    protected void init(Expr xargument, Expr yargument, FunctionType lowerFunctionType,boolean checkDim) {
-        this.xargument=xargument;
-        this.yargument=yargument;
-        if(checkDim) {
-            if (!xargument.getComponentDimension().equals(yargument.getComponentDimension())) {
-                throw new IllegalArgumentException("Dimension Mismatch " + xargument.getComponentDimension() + " vs " + yargument.getComponentDimension());
-            }
-        }
+    protected void init(Expr xargument, Expr yargument, FunctionType lowerFunctionType, boolean checkDim) {
+//        if(checkDim) {
+//            if (!xargument.getComponentDimension().equals(yargument.getComponentDimension())) {
+//                ComponentDimension d=Maths.expandComponentDimension(xargument.getComponentDimension(),yargument.getComponentDimension());
+//                xargument=Maths.expandComponentDimension(xargument,d);
+//                yargument=Maths.expandComponentDimension(yargument,d);
+//            }
+//        }
+        ComponentDimension cd = xargument.getComponentDimension().expand(yargument.getComponentDimension());
+        this.xargument = Maths.expandComponentDimension(xargument, cd);
+        this.yargument = Maths.expandComponentDimension(yargument, cd);
         FunctionType functionType0 = null;
         if (xargument.isDD()) {
             functionType0 = FunctionType.DOUBLE;
         } else if (xargument.isDC()) {
             functionType0 = FunctionType.COMPLEX;
         } else if (xargument.isDM()) {
+//            xargument.isDC();
             functionType0 = FunctionType.MATRIX;
         } else {
             throw new IllegalArgumentException("Unknown functionType");
@@ -52,6 +56,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         } else if (yargument.isDC()) {
             functionType0 = FunctionType.COMPLEX;
         } else if (yargument.isDM()) {
+//            yargument.isDC();
             functionType0 = FunctionType.MATRIX;
         } else {
             throw new IllegalArgumentException("Unknown functionType");
@@ -65,11 +70,14 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
                 this.functionType = lowerFunctionType;
             }
         }
+//        if(this.functionType==FunctionType.MATRIX){
+//            System.out.println("Why");
+//        }
     }
 
     @Override
     public boolean isDoubleTyped() {
-        return functionType==FunctionType.DOUBLE;
+        return functionType == FunctionType.DOUBLE;
     }
 
 
@@ -83,7 +91,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 
     @Override
     public Expr[] getArguments() {
-        return new Expr[]{xargument,yargument};
+        return new Expr[]{xargument, yargument};
     }
 
     @Override
@@ -102,7 +110,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         return getXArgument().getDomain().intersect(getYArgument().getDomain());
 //        switch (this.functionType) {
 //            case DOUBLE: {
-//                if (evalDouble(0) == 0) {
+//                if (computeDoubleArg(0) == 0) {
 //                    return getXArgument().getDomain().intersect(getYArgument().getDomain());
 //                }
 //            }
@@ -172,48 +180,25 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     }
 
     @Override
-    public double computeDouble(double x) {
-        return computeDouble(new double[]{x})[0];
-    }
-
-    @Override
-    public double computeDouble(double x, double y) {
-        return computeDouble(new double[]{x}, new double[]{y}, null, null)[0][0];
-    }
-
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        return computeDouble(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
-    }
-
-    public Complex computeComplex(double x, double y, double z) {
-        if (getDomain().contains(x, y, z)) {
-            Complex xx = getXArgument().toDC().computeComplex(x, y, z);
-            Complex yy = getYArgument().toDC().computeComplex(x, y, z);
-            return evalComplex(xx, yy);
-        }
-        return Complex.ZERO;
-    }
-
-    @Override
     public Matrix computeMatrix(double x, double y) {
-        if (getDomain().contains(x, y)) {
+        if (contains(x, y)) {
             Matrix xx = getXArgument().toDM().computeMatrix(x, y);
             Matrix yy = getYArgument().toDM().computeMatrix(x, y);
-            return evalMatrix(xx,yy);
+            return evalMatrix(xx, yy);
         }
         return Complex.ZERO.toMatrix();
     }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        if (getDomain().contains(x, y, z)) {
+        if (contains(x, y, z)) {
             Matrix xx = getXArgument().toDM().computeMatrix(x, y, z);
             Matrix yy = getYArgument().toDM().computeMatrix(x, y, z);
-            return evalMatrix(xx,yy);
+            return evalMatrix(xx, yy);
         }
         return Complex.ZERO.toMatrix();
     }
+
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
@@ -235,7 +220,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         return Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
     }
 
-//    protected double evalCD(Complex x) {
+    //    protected double evalCD(Complex x) {
 //        return evalComplex(x).toDouble();
 //    }
 //
@@ -263,24 +248,24 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 //        return evalMM(c);
 //    }
 //
-    protected Matrix evalMatrix(Matrix x,Matrix y) {
+    protected Matrix evalMatrix(Matrix x, Matrix y) {
         int columnCount = x.getColumnCount();
         int rowCount = x.getRowCount();
-        if(
-                columnCount !=y.getColumnCount()
-                || rowCount !=y.getRowCount()
-                ){
+        if (
+                columnCount != y.getColumnCount()
+                        || rowCount != y.getRowCount()
+                ) {
             throw new IllegalArgumentException("Dimension mismatch");
         }
         return Maths.matrix(rowCount, columnCount, new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return evalComplex(x.get(row,column),y.get(row,column));
+                return computeComplexArg(x.get(row, column), y.get(row, column), true, true, new OutBoolean());
             }
         });
     }
 //
-//    public Complex computeComplex(Complex c) {
+//    public Complex computeComplexArg(Complex c) {
 //        return evalComplex(c);
 //    }
 
@@ -289,20 +274,96 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
      *
      * @param x
      * @param y
+     * @param xdef
+     * @param ydef
+     * @param defined
      * @return
      */
-    public abstract Complex evalComplex(Complex x, Complex y);
+    public abstract Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, OutBoolean defined);
 
-    public abstract Complex evalComplex(double x, double y);
+    public abstract Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined);
 
-    public abstract double evalDouble(double x, double y);
+    public abstract double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined);
 
     public abstract Expr newInstance(Expr xargument, Expr yargument);
 
     @Override
-    public String toString() {
-        return getFunctionName() + "(" + getXArgument() + "," + getYArgument() + ")";
+    public Complex computeComplex(double x, OutBoolean defined) {
+        if (contains(x)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            Complex a = getXArgument().toDC().computeComplex(x, xdefined);
+            Complex b = getYArgument().toDC().computeComplex(x, ydefined);
+            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+        }
+        return Complex.ZERO;
     }
+
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        if (contains(x, y)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            Complex a = getXArgument().toDC().computeComplex(x, y, xdefined);
+            Complex b = getYArgument().toDC().computeComplex(x, y, ydefined);
+            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        if (contains(x, y, z)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            Complex a = getXArgument().toDC().computeComplex(x, y, z, xdefined);
+            Complex b = getYArgument().toDC().computeComplex(x, y, z, ydefined);
+            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        if (contains(x)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            double a = getXArgument().toDD().computeDouble(x, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, ydefined);
+            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        if (contains(x, y)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            double a = getXArgument().toDD().computeDouble(x, y, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, y, ydefined);
+            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        if (contains(x, y, z)) {
+            OutBoolean xdefined = new OutBoolean();
+            OutBoolean ydefined = new OutBoolean();
+            double a = getXArgument().toDD().computeDouble(x, y, z, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, y, z, ydefined);
+            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+        }
+        return 0;
+    }
+
+    //    @Override
+//    public String toString() {
+//        return getFunctionName() + "(" + getXArgument() + "," + getYArgument() + ")";
+//    }
 
 
     public Expr newInstance(Expr... arguments) {
@@ -361,7 +422,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
         }
         Expr e = simplify();
-        if(e instanceof GenericFunctionXY){
+        if (e instanceof GenericFunctionXY) {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
         }
         return e.toComplex();
@@ -374,7 +435,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
         }
         Expr e = simplify();
-        if(e instanceof GenericFunctionXY){
+        if (e instanceof GenericFunctionXY) {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Double");
         }
         return e.toDouble();
@@ -386,7 +447,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
         }
         Expr e = simplify();
-        if(e instanceof GenericFunctionXY){
+        if (e instanceof GenericFunctionXY) {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
         }
         return e.toMatrix();
@@ -404,9 +465,9 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         Expr ya = getYArgument();
         Expr yb = ya.setParam(name, value);
         if (xa != xb || ya != yb) {
-            Expr e = newInstance(xb,yb);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            Expr e = newInstance(xb, yb);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -416,10 +477,10 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         if (isScalarExpr() && (row != col || col != 0)) {
             return FunctionFactory.DZEROXY;
         }
-        return newInstance(getXArgument().toDM().getComponent(row, col),getYArgument().toDM().getComponent(row, col));
+        return newInstance(getXArgument().toDM().getComponent(row, col), getYArgument().toDM().getComponent(row, col));
     }
 
-    private class GenericFunctionXYBinaryExprHelper implements Expressions.BinaryExprHelper<GenericFunctionXY>, Serializable {
+    private class GenericFunctionXYBinaryExprHelperAnd implements Expressions.BinaryExprHelper<GenericFunctionXY>, Serializable {
 
         @Override
         public int getBaseExprCount(GenericFunctionXY expr) {
@@ -432,29 +493,17 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         }
 
         @Override
-        public double computeDouble(double a, double b, Expressions.ComputeDefOptions options) {
-            boolean def = options.value1Defined && options.value2Defined;
-            if (def) {
-                double d = evalDouble(a, b);
-                options.resultDefined = true;
-                return d;
-            } else {
-                options.resultDefined = false;
-                return 0;
-            }
+        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+            double d = GenericFunctionXY.this.computeDoubleArg(a, b,options.value1Defined,options.value2Defined, defined);
+            options.resultDefined = defined.isSet();
+            return d;
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Expressions.ComputeDefOptions options) {
-            boolean def = options.value1Defined && options.value2Defined;
-            if (def) {
-                Complex d = evalComplex(a, b);
-                options.resultDefined = true;
-                return d;
-            } else {
-                options.resultDefined = false;
-                return Complex.ZERO;
-            }
+        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+            Complex d = GenericFunctionXY.this.computeComplexArg(a, b,options.value1Defined,options.value2Defined, defined);
+            options.resultDefined = defined.isSet();
+            return d;
         }
 
         @Override
@@ -470,5 +519,6 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             }
         }
     }
+
 
 }

@@ -6,11 +6,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
@@ -18,10 +15,10 @@ import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
 /**
- *
  * @author vpc
  */
 public class Neg extends AbstractUnaryExpOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     static {
         ExpressionTransformFactory.setExpressionTransformer(Neg.class, ExpressionTransform.class, new ExpressionTransformer() {
@@ -50,19 +47,73 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
 
     @Override
     public Expr mul(double other) {
-        if(other>=0){
+        if (other >= 0) {
             return newInstance(getExpression().mul(other));
-        }else{
+        } else {
             return newInstance(getExpression().mul(-other));
         }
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
         return super.mul(other);
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        Complex complex = getExpression().toDC().computeComplex(x, y, z, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return complex.neg();
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        double v = getExpression().toDD().computeDouble(x, y, z, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return -v;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        Complex complex = getExpression().toDC().computeComplex(x, y, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return complex.neg();
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        double v = getExpression().toDD().computeDouble(x, y, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return -v;
+    }
+
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        Complex complex = getExpression().toDC().computeComplex(x, defined);
+        if(!defined.isSet()){
+            return Complex.ZERO;
+        }
+        return complex.neg();
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        double v = getExpression().toDD().computeDouble(x, defined);
+        if(!defined.isSet()){
+            return 0;
+        }
+        return -v;
     }
 
     @Override
@@ -72,7 +123,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
 
     private static Expressions.UnaryExprHelper<Neg> exprHelper = new NegUnaryExprHelper();
 
-    private static class NegUnaryExprHelper implements Expressions.UnaryExprHelper<Neg> , Serializable{
+    private static class NegUnaryExprHelper implements Expressions.UnaryExprHelper<Neg>, Serializable {
 
         @Override
         public Expr getBaseExpr(Neg expr) {
@@ -80,17 +131,20 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double x) {
-            return - x;
+        public double computeDouble(double x, OutBoolean defined) {
+            defined.set();
+            return -x;
         }
 
         @Override
-        public Complex computeComplex(Complex x) {
+        public Complex computeComplex(Complex x, OutBoolean defined) {
+            defined.set();
             return x.neg();
         }
 
         @Override
         public Matrix computeMatrix(Matrix x) {
+            //defined.set();
             return x.neg();
         }
     }

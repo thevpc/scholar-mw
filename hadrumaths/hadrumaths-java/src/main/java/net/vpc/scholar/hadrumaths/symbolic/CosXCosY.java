@@ -4,6 +4,7 @@ import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.util.DoubleValidator;
 
 /**
  * User: taha
@@ -11,7 +12,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  * Time: 11:51:13
  */
 public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001040L;
+    private static final long serialVersionUID = 1L;
     public double amp;
     //    public static final int HASHCODE = 1;
     public double a;
@@ -19,7 +20,11 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     public double c;
     public double d;
 
-    public CosXCosY(double amp, double a, double b, double c, double d, Domain domain) {
+    public CosXCosY(@DoubleValidator(NaN = false)  double amp,
+                    @DoubleValidator(NaN = false) double a,
+                    @DoubleValidator(NaN = false) double b,
+                    @DoubleValidator(NaN = false) double c,
+                    @DoubleValidator(NaN = false) double d, Domain domain) {
         super(domain);
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("CosXCosY amp=NaN");
@@ -277,15 +282,15 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
         return result;
     }
 
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
-    protected double computeDouble0(double x,double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
     }
 
-    protected double computeDouble0(double x,double y,double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
     }
 

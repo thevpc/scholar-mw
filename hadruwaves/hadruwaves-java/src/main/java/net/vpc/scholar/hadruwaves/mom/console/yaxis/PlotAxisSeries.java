@@ -35,10 +35,10 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
     }
 
 //    protected NamedVector computeComplexes(MomStructure structure, ParamSet x) {
-//        return new NamedVector(toString(), new Complex[]{computeComplex(structure, x)}, new double[]{1}, new String[]{toString()});
+//        return new NamedVector(toString(), new Complex[]{computeComplexArg(structure, x)}, new double[]{1}, new String[]{toString()});
 //    }
 //
-//    protected Complex computeComplex(MomStructure structure, ParamSet x) {
+//    protected Complex computeComplexArg(MomStructure structure, ParamSet x) {
 //        return Complex.ZERO;
 //    }
 

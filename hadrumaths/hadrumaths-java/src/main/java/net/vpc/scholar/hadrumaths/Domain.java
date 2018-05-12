@@ -9,10 +9,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
@@ -33,7 +30,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public static final Domain ZEROXY = FULLXY;//forBounds(0, 0, 0, 0);
     public static final Domain ZEROXYZ = FULLXYZ;//forBounds(0, 0, 0, 0, 0, 0);
     protected final static double epsilon = 1E-12;
-    private static final long serialVersionUID = -1010101010101001042L;
+    private static final long serialVersionUID = 1L;
 
 
     public static Domain ZERO(int dim) {
@@ -466,8 +463,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return Range.forBounds(lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]);
     }
 
-    public double computeDouble(double x,double y,double z) {
-        return contains(x,y,z)?1:0;
+    public double computeDouble(double x, double y, double z) {
+        return contains(x, y, z) ? 1 : 0;
     }
 
     public boolean contains(double x) {
@@ -803,6 +800,71 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             }
         }
         return Double.isNaN(xmin()) || Double.isNaN(xmax()) || Double.isNaN(ymin()) || Double.isNaN(ymax()) || Double.isNaN(zmin()) || Double.isNaN(zmax());
+    }
+
+    public Domain expandAll(double xmin, double xmax) {
+        switch (getDomainDimension()) {
+            case 1:
+                return expand(xmin, xmax);
+            case 2:
+                return expand(xmin, xmax, xmin, xmax);
+            case 3:
+                return expand(xmin, xmax, xmin, xmax, xmin, xmax);
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    public Domain expand(double xmin, double xmax) {
+        return expand(xmin, xmax, 0, 0, 0, 0);
+    }
+
+    public Domain expand(double xmin, double xmax, double ymin, double ymax) {
+        return expand(xmin, xmax, ymin, xmax, 0, 0);
+    }
+
+    public Domain expand(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+        if (xmin < 0 || Double.isNaN(xmin)) {
+            throw new IllegalArgumentException("Invalid xmin");
+        }
+        if (xmax < 0 || Double.isNaN(xmax)) {
+            throw new IllegalArgumentException("Invalid xmax");
+        }
+        if (ymin < 0 || Double.isNaN(ymin)) {
+            throw new IllegalArgumentException("Invalid ymin");
+        }
+        if (ymax < 0 || Double.isNaN(ymax)) {
+            throw new IllegalArgumentException("Invalid ymax");
+        }
+        if (zmin < 0 || Double.isNaN(zmin)) {
+            throw new IllegalArgumentException("Invalid ymin");
+        }
+        if (zmax < 0 || Double.isNaN(zmax)) {
+            throw new IllegalArgumentException("Invalid ymax");
+        }
+        switch (getDomainDimension()) {
+            case 1: {
+                double xmin0 = getXMin() - xmin;
+                double xmax0 = getXMax() + xmax;
+                return forBounds(xmin0, xmax0);
+            }
+            case 2: {
+                double xmin0 = getXMin() - xmin;
+                double xmax0 = getXMax() + xmax;
+                double ymin0 = getYMin() - ymin;
+                double ymax0 = getYMax() + ymax;
+                return forBounds(xmin0, xmax0, ymin0, ymax0);
+            }
+            case 3: {
+                double xmin0 = getXMin() - xmin;
+                double xmax0 = getXMax() + xmax;
+                double ymin0 = getYMin() - ymin;
+                double ymax0 = getYMax() + ymax;
+                double zmin0 = getZMin() - zmin;
+                double zmax0 = getZMax() + zmax;
+                return forBounds(xmin0, xmax0, ymin0, ymax0, zmin0, zmax0);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
     }
 
     public Domain translate(double x, double y) {
@@ -1786,10 +1848,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
-        return ComplexValue.valueOf(other,this);
+        return ComplexValue.valueOf(other, this);
     }
 
     @Override
@@ -1865,7 +1927,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     @Override
     public Expr setTitle(String name) {
         if (name != null) {
-            return new Any(this,name,null);
+            return new Any(this, name, null);
         } else {
             return this;
         }
@@ -1913,27 +1975,27 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr setProperties(Map<String, Object> map) {
-        return setProperties(map,false);
+        return setProperties(map, false);
     }
 
     @Override
     public Expr setMergedProperties(Map<String, Object> map) {
-        return setProperties(map,true);
+        return setProperties(map, true);
     }
 
     @Override
-    public Expr setProperties(Map<String, Object> map,boolean merge) {
-        if(map==null||map.isEmpty()){
+    public Expr setProperties(Map<String, Object> map, boolean merge) {
+        if (map == null || map.isEmpty()) {
             return this;
         }
-        return new Any(this,null,map);
+        return new Any(this, null, map);
     }
 
     @Override
     public Expr setProperty(String name, Object value) {
         HashMap<String, Object> m = new HashMap<>(1);
         m.put(name, value);
-        return setProperties(m,true);
+        return setProperties(m, true);
     }
 
     @Override
@@ -2029,61 +2091,12 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
 
     public Geometry toGeometry() {
-        return new AbstractGeometry() {
-            @Override
-            public Path2D.Double getPath() {
-                return Domain.this.getPath();
-            }
-
-            @Override
-            public Domain getDomain() {
-                return Domain.this;
-            }
-
-            @Override
-            public boolean isRectangular() {
-                return true;
-            }
-
-            @Override
-            public boolean isPolygonal() {
-                return true;
-            }
-
-            @Override
-            public boolean isTriangular() {
-                return false;
-            }
-
-            @Override
-            public boolean isSingular() {
-                return false;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return Domain.this.isEmpty();
-            }
-
-            @Override
-            public Geometry translateGeometry(double x, double y) {
-                return Domain.this.translateGeometry(x, y);
-            }
-
-            @Override
-            public boolean contains(double x, double y) {
-                return Domain.this.contains(x, y);
-            }
-
-            @Override
-            public Polygon toPolygon() {
-                return Domain.this.toPolygon();
-            }
-
-            @Override
-            public Triangle toTriangle() {
-                return Domain.this.toTriangle();
-            }
-        };
+        return new DomainGeometry(this);
     }
+
+    @Override
+    public Set<ParamExpr> getParams() {
+        return Collections.EMPTY_SET;
+    }
+
 }

@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOpera
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
  */
 final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
+    private static final long serialVersionUID = 1L;
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

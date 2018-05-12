@@ -13,6 +13,7 @@ import java.util.Map;
  * Created by vpc on 4/29/14.
  */
 public abstract class AbstractExprPropertyAware extends AbstractExpBase{
+    private static final long serialVersionUID = 1L;
     public static final int CACHE_EVALUATED_hasPrams=1 << 0;
     public static final int CACHE_VALUE_OF__hasPrams=1 << 1;
     public static final int CACHE_EVALUATED_isComplex=1 << 2;
@@ -48,7 +49,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     public static final int CACHE_VALUE_OF__isDM=1 << 29;
 
 
-    protected int _cache_isProperties;//new BitSet(40);
+    protected transient int _cache_isProperties;//new BitSet(40);
 
     public AbstractExprPropertyAware() {
     }
@@ -169,17 +170,17 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 //        throw new IllegalArgumentException("computeMatrix() Not yet supported in " + getClass().getName());
 //    }
 
-//    public Complex computeComplex(double x, double y, double z) {
-//        return Expressions.computeComplex((DoubleToComplex) this, x, y, z);
+//    public Complex computeComplexArg(double x, double y, double z) {
+//        return Expressions.computeComplexArg((DoubleToComplex) this, x, y, z);
 //    }
 
 //    public double computeDouble(double x, double y, double z) {
-//        return toDC().computeComplex(x, y, z).toDouble();
+//        return toDC().computeComplexArg(x, y, z).toDouble();
 //    }
 
 
-//    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-//        throw new IllegalArgumentException("computeComplex() Not yet supported in " + getClass().getName());
+//    public Complex[][][] computeComplexArg(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+//        throw new IllegalArgumentException("computeComplexArg() Not yet supported in " + getClass().getName());
 //    }
 //
 //    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {

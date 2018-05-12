@@ -10,7 +10,7 @@ import java.util.*;
 public class ClassMap<V> {
 
 
-    private static final long serialVersionUID = -1010101010101001057L;
+    private static final long serialVersionUID = 1L;
     private HashMap<Class, V> values;
     private Class keyType;
     private Class<V> valueType;

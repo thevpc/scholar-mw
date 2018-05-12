@@ -12,7 +12,7 @@ import net.vpc.scholar.hadrumaths.Out;
  * Time: 17:17:27
  */
 public class PiecewiseSineXFunctionXY extends PieceXFunction implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001034L;
+    private static final long serialVersionUID = 1L;
     //    public double crestValue;
     private double factor;
 

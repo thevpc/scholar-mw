@@ -8,6 +8,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DxySum;
 
 
 public class DFunction2XY extends DxySum implements Cloneable{
+    private static final long serialVersionUID = 1L;
     public double bandWidth;
     public double bandx;
     public DoubleToDouble band1;

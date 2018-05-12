@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @creationtime 10 mai 2007 19:50:52
  */
 public final class GridPrecision implements Cloneable, Serializable, Dumpable {
-    private static final long serialVersionUID = -1010101010101001028L;
+    private static final long serialVersionUID = 1L;
     private int xmax = 1;
     private int ymax = 1;
     private int xmin = 1;

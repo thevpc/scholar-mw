@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.*;
  * Created by vpc on 8/24/14.
  */
 public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware implements DoubleToDouble, DoubleToComplex, DoubleToVector, DoubleToMatrix {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
@@ -47,10 +48,10 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
         return Expressions.computeComplex(this, x, y);
     }
 
-    @Override
-    public double computeDouble(double x) {
-        return Expressions.computeDouble(this, x);
-    }
+//    @Override
+//    public double computeDouble(double x) {
+//        return Expressions.computeDouble(this, x);
+//    }
 
     @Override
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -62,10 +63,10 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    @Override
-    public double computeDouble(double x, double y) {
-        return Expressions.computeDouble(this, x, y);
-    }
+//    @Override
+//    public double computeDouble(double x, double y) {
+//        return Expressions.computeDouble(this, x, y);
+//    }
 
 
     @Override
@@ -92,20 +93,23 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
         throw new ClassCastException();
     }
 
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x}, (Domain) null, null)[0];
-    }
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     @Override
     public Complex computeComplex(double x, double y, double z) {
         return computeComplex(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
     }
 
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        return computeDouble(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
-    }
+//    @Override
+//    public double computeDouble(double x, double y, double z) {
+//        return computeDouble(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
+//    }
 
     @Override
     public Matrix computeMatrix(double x) {
@@ -193,4 +197,23 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
         return getComponent(Axis.Z);
     }
 
+    @Override
+    public Complex computeComplex(double x) {
+        return computeComplex(x, new OutBoolean());
+    }
+
+    @Override
+    public boolean contains(double x) {
+        return getDomain().contains(x);
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        return getDomain().contains(x,y);
+    }
+
+    @Override
+    public boolean contains(double x, double y, double z) {
+        return getDomain().contains(x,y,z);
+    }
 }

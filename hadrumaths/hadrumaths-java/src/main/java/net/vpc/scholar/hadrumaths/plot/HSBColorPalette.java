@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import java.awt.Color;
 
 public class HSBColorPalette extends JColorPalette implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001029L;
+    private static final long serialVersionUID = 1L;
     public static final JColorPalette GRAY_PALETTE = new HSBColorPalette(-1, 0, 0, 0, 0, 0, 100);
     public static final JColorPalette DEFAULT_PALETTE = new HSBColorPalette(-1, 260, 0, 100, 100, 20, 95);
     private Color[] cache;

@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.TVectorCell;
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 public class SimplifiedSeq<T extends Expr> implements TVectorCell<Expr> {
+    private static final long serialVersionUID = 1L;
     private TVector<T> sequence;
 
     public SimplifiedSeq(TVector<T> sequence) {

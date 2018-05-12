@@ -14,7 +14,7 @@ package net.vpc.scholar.hadrumaths;
    */
 
 public class LUDecomposition implements java.io.Serializable {
-    private static final long serialVersionUID = -1010101010101001060L;
+      private static final long serialVersionUID = 1L;
 
 /* ------------------------
    Class variables

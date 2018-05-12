@@ -4,6 +4,8 @@ import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * Created by vpc on 4/29/14.
  */
 public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/DoubleToDouble, DoubleToComplex, DoubleToMatrix, DoubleToVector {
+    private static final long serialVersionUID = 1L;
     private final int dimension;
     private final Expr xmin;
     private final Expr xmax;
@@ -48,15 +51,43 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         );
     }
 
-    protected DomainExpr(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax,int dimension) {
+    protected DomainExpr(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax, int dimension) {
         this.dimension = dimension;
-        this.xmin = xmin;
-        this.xmax = xmax;
-        this.ymin = ymin;
-        this.ymax = ymax;
-        this.zmin = zmin;
-        this.zmax = zmax;
+        ComponentDimension cd = xmin.getComponentDimension().expand(xmax.getComponentDimension())
+                .expand(ymin.getComponentDimension()).expand(ymax.getComponentDimension())
+                .expand(zmin.getComponentDimension()).expand(zmax.getComponentDimension());
+        this.xmin = Maths.expandComponentDimension(xmin, cd);
+        this.xmax = Maths.expandComponentDimension(xmax, cd);
+        this.ymin = Maths.expandComponentDimension(ymin, cd);
+        this.ymax = Maths.expandComponentDimension(ymax, cd);
+        this.zmin = Maths.expandComponentDimension(zmin, cd);
+        this.zmax = Maths.expandComponentDimension(zmax, cd);
+        check(xmin);
+        check(xmax);
+        check(ymin);
+        check(ymax);
+        check(zmin);
+        check(zmax);
     }
+
+    private static void check(Expr e) {
+        if (!e.isInvariant(Axis.X)) {
+            throw new IllegalArgumentException("X not Allowed in Domain definition : " + e);
+        }
+        if (!e.isInvariant(Axis.Y)) {
+            throw new IllegalArgumentException("Y not Allowed in Domain definition: " + e);
+        }
+        if (!e.isInvariant(Axis.Z)) {
+            throw new IllegalArgumentException("Y not Allowed in Domain definition: " + e);
+        }
+        if(e.getDomain().getDomainDimension()!=1){
+            throw new IllegalArgumentException("Domain Exp value should not be a domain it self " + e);
+        }
+        if(!e.getDomain().isUnconstrained()){
+            throw new IllegalArgumentException("Domain Exp value should not be a domain it self " + e);
+        }
+    }
+
 
     public Expr getXmin() {
         return xmin;
@@ -133,7 +164,7 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
 
     @Override
     public List<Expr> getSubExpressions() {
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>(Arrays.asList(xmin, xmax, ymin, ymax, zmin, zmax));
     }
 
     @Override
@@ -165,11 +196,6 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
-    }
-
-    @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
     }
@@ -185,19 +211,14 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     @Override
-    public Complex computeComplex(double x, double y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
-    }
-
-    @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
     }
 
-    @Override
-    public double computeDouble(double x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
-    }
+//    @Override
+//    public double computeDouble(double x) {
+//        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+//    }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
@@ -215,9 +236,35 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     @Override
-    public double computeDouble(double x, double y) {
+    public double computeDouble(double x, OutBoolean defined) {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
     }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+    }
+
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+    }
+
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
@@ -249,10 +296,10 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
     }
 
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
-    }
+//    @Override
+//    public double computeDouble(double x, double y, double z) {
+//        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+//    }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
@@ -351,10 +398,10 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         return h.toString();
     }
 
-    @Override
-    public String toString() {
-        return dump();
-    }
+//    @Override
+//    public String toString() {
+//        return dump();
+//    }
 
 //    @Override
 //    public boolean equals(Object o) {
@@ -409,7 +456,7 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
 
     @Override
     public Expr composeX(Expr xreplacement) {
-         return new DomainExpr(
+        return new DomainExpr(
 
                 xmin.composeX(xreplacement),
                 xmax.composeX(xreplacement),
@@ -417,20 +464,20 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
                 ymax.composeX(xreplacement),
                 zmin.composeX(xreplacement),
                 zmax.composeX(xreplacement),
-                 dimension
+                dimension
         );
     }
 
     @Override
     public Expr composeY(Expr yreplacement) {
-         return new DomainExpr(
+        return new DomainExpr(
                 xmin.composeY(yreplacement),
                 xmax.composeY(yreplacement),
                 ymin.composeY(yreplacement),
                 ymax.composeY(yreplacement),
                 zmin.composeY(yreplacement),
                 zmax.composeY(yreplacement),
-                 dimension
+                dimension
         );
     }
 
@@ -444,15 +491,26 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     public ComponentDimension getComponentDimension() {
-        return ComponentDimension.SCALAR;
+        return this.xmin.getComponentDimension();
     }
 
     @Override
     public Expr getComponent(int row, int col) {
-        if (row == 0 && col == 0) {
-            return this;
+        if (getComponentDimension().equals(ComponentDimension.SCALAR)) {
+            if (row == 0 && col == 0) {
+                return this;
+            }
+            return FunctionFactory.DZEROXY;
         }
-        return FunctionFactory.DZEROXY;
+        return new DomainExpr(
+                getXmin().toDM().getComponent(row, col),
+                getXmax().toDM().getComponent(row, col),
+                getYmin().toDM().getComponent(row, col),
+                getYmax().toDM().getComponent(row, col),
+                getZmin().toDM().getComponent(row, col),
+                getZmax().toDM().getComponent(row, col),
+                dimension
+        );
     }
 
     @Override
@@ -480,6 +538,7 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
 //        return this;
     }
+
     @Override
     public DoubleToDouble getImagDD() {
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
@@ -559,9 +618,9 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         Expr ymax_ = this.ymax.setParam(name, value);
         Expr zmin_ = this.zmin.setParam(name, value);
         Expr zmax_ = this.zmax.setParam(name, value);
-        if(xmin_!=xmin || xmax_!=xmax
-                || ymin_!=ymin || ymax_!=ymax
-                || zmin_!=zmin || zmax_!=zmax
+        if (xmin_ != xmin || xmax_ != xmax
+                || ymin_ != ymin || ymax_ != ymax
+                || zmin_ != zmin || zmax_ != zmax
                 ) {
             return new DomainExpr(
                     xmin_,
@@ -572,44 +631,45 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
                     zmax_,
                     dimension
             );
-        }else{
+        } else {
             return this;
         }
     }
 
+
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x,y,(Domain) null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
  * Created by vpc on 8/24/14.
  */
 public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix implements DoubleToVector {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public boolean isDVImpl() {

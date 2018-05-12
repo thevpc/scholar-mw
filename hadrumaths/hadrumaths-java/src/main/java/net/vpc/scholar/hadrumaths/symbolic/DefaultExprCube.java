@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  * Created by vpc on 2/14/15.
  */
 public class DefaultExprCube extends AbstractExprCube{
+    private static final long serialVersionUID = 1L;
     private ExprCubeStore store;
 
     public DefaultExprCube(ExprCubeStore store) {

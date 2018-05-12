@@ -57,7 +57,7 @@
 //    }
 //
 //    public double compute(double x, double y) {
-//        if (domain.contains(x, y)) {
+//        if (contains(x, y)) {
 //            int i = (int) ((x - domain.xmin) / dx);
 //            int j = (int) ((y - domain.ymin) / dy);
 //            return values[j < values.length ? j : (values.length - 1)][i < values[0].length ? i : (values[0].length - 1)];

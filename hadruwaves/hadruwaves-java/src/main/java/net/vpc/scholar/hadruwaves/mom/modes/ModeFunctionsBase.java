@@ -1143,7 +1143,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             h.add("firstBoxSpace", firstBoxSpace);
             h.add("secondBoxSpace", secondBoxSpace);
         }
-        h.addNonNull("hintGpFnAxisType", hintAxisType);
+        h.addNonNull("hintAxisType", hintAxisType);
         h.addNonNull("hintInvariantAxis", hintInvariantAxis);
         h.addNonNull("hintSymmetryAxis", hintSymmetryAxis);
         if (isHintInvertTETMForZmode()) {

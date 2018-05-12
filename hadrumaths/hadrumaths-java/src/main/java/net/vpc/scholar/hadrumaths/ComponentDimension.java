@@ -86,4 +86,11 @@ public class ComponentDimension implements Serializable{
                 ", " + columns +
                 ')';
     }
+
+    public ComponentDimension expand(ComponentDimension other){
+        return ComponentDimension.create(
+                Math.max(this.rows,other.rows),
+                Math.max(this.columns,other.columns)
+        );
+    }
 }

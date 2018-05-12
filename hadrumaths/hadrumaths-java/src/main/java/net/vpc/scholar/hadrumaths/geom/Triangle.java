@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Triangle extends AbstractGeometry implements Serializable, PolygonBuilder, Cloneable {
-    private static final long serialVersionUID = -1010101010101001049L;
+    private static final long serialVersionUID = 1L;
     public static final Comparator<Triangle> SURFACE_COMPARATOR = new Comparator<Triangle>() {
         public int compare(Triangle o1, Triangle o2) {
             double s = o1.getSurface() - o2.getSurface();

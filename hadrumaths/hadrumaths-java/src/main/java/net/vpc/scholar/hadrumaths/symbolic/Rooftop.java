@@ -8,6 +8,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  * Created by vpc on 5/7/14.
  */
 public class Rooftop extends Ref implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private boolean maxEast;
     private boolean maxSouth;
     private boolean maxWest;
@@ -22,6 +23,7 @@ public class Rooftop extends Ref implements Cloneable{
         init(maxEast, maxEast, maxSouth, maxWest, xside,yside,nx, ny, domain);
     }
 
+    @TestInfo("DisableRandomCalls")
     public Rooftop(String borders, int nx, int ny, Domain domain) {
         boolean maxNorth = false;
         boolean maxEast = false;

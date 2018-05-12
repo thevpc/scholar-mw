@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -33,8 +34,8 @@ public class GenericFunctionXSimplifyRule implements ExpressionRewriterRule {
             IConstantValue argc = Expressions.toComplexValue(arg2.getValue());
             if (argc != null) {
                 //cos(0) is not zero!
-//            return new ComplexValue(ee.computeComplex(argc.getValue()), argc.getDomain().intersect(ee.getDomain()));
-                return RewriteResult.bestEffort(new ComplexValue(ee.computeComplex(argc.getComplexConstant()), ee.getDomain()));
+//            return new ComplexValue(ee.computeComplexArg(argc.getValue()), argc.getDomain().intersect(ee.getDomain()));
+                return RewriteResult.bestEffort(new ComplexValue(ee.computeComplexArg(argc.getComplexConstant(),new OutBoolean()), ee.getDomain()));
             }
             return RewriteResult.unmodified(e);
         }

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TestInfo;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
@@ -10,6 +11,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  * Created by vpc on 5/7/14.
  */
 public class SinSeqYZ extends Ref implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private boolean maxEast;
     private boolean maxSouth;
     private boolean maxWest;
@@ -22,6 +24,7 @@ public class SinSeqYZ extends Ref implements Cloneable{
         init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
     }
 
+    @TestInfo("DisableRandomCalls")
     public SinSeqYZ(String borders, DoubleParam m, DoubleParam n, Domain domain) {
         boolean maxNorth=false;
         boolean maxEast=false;

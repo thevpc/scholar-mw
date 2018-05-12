@@ -2,11 +2,13 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private CustomDCFunctionXYDefinition definition;
     public CustomDCFunctionXYExpr(Expr xarg,Expr yarg, CustomDCFunctionXYDefinition definition) {
         super(xarg,yarg,FunctionType.COMPLEX);
@@ -18,15 +20,27 @@ public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneab
         return definition.getName();
     }
 
-    public Complex evalComplex(Complex x, Complex y){
+    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, OutBoolean defined){
+        if(!xdef && !ydef){
+            return Complex.ZERO;
+        }
+        defined.set();
         return definition.getEval().evalComplex(x.toDouble(),y.toDouble());
     }
 
-    public Complex evalComplex(double x, double y){
+    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined){
+        if(!xdef && !ydef){
+            return Complex.ZERO;
+        }
+        defined.set();
         return (definition.getEval().evalComplex(x,y));
     }
 
-    public double evalDouble(double x, double y){
+    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined){
+        if(!xdef && !ydef){
+            return 0;
+        }
+        defined.set();
         return definition.getEval().evalComplex(x,y).toDouble();
     }
 

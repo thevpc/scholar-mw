@@ -1,14 +1,12 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Abs extends GenericFunctionX implements Cloneable{
+    private static final long serialVersionUID = 1L;
     public Abs(Expr arg) {
         super("abs",arg);
     }
@@ -19,11 +17,11 @@ public class Abs extends GenericFunctionX implements Cloneable{
     }
 
 
-    public Complex evalComplex(Complex c){
+    public Complex computeComplexArg(Complex c, OutBoolean defined){
         return c.abs();
     }
 
-    protected double evalDouble(double c){
+    public double computeDoubleArg(double c, OutBoolean defined){
         return Maths.abs(c);
     }
 

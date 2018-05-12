@@ -1,8 +1,11 @@
-package net.vpc.scholar.hadrumaths.test;
+package net.vpc.scholar.hadrumaths.test.removeme;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
 import java.util.HashMap;
 
@@ -16,6 +19,12 @@ public class TestDomain {
 
 
     public static void main(String[] args) {
+        Mul m = new Mul(new DoubleValue(3, Maths.xydomain(0, 1, 0, 1)), Maths.X);
+        Plus p=new Plus(m);
+        System.out.println(m);
+        System.out.println(p);
+    }
+    public static void main2(String[] args) {
         HashMap<String,String> a=new HashMap<String, String>(800000);
         for (int i = 1; i < 20000; i++) {
             for (int j = 1; j < 20000; j++) {

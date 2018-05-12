@@ -18,6 +18,7 @@ import java.util.List;
  * @author vpc
  */
 public class Sub extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
     private static Expressions.BinaryExprHelper<Sub> binaryExprHelper = new Expressions.BinaryExprHelper<Sub>() {
         @Override
         public int getBaseExprCount(Sub expr) {
@@ -30,10 +31,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 double d = a - b;
+                defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -43,11 +45,12 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Complex d = a.sub(b);
-                options.resultDefined = def;
+                defined.set();
+                options.resultDefined = true;
                 return d;
             } else {
                 options.resultDefined = false;
@@ -60,7 +63,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Matrix d = a.sub(b);
-                options.resultDefined = def;
+                //defined.set();
+                options.resultDefined = true;
                 return d;
             } else {
                 options.resultDefined = false;
@@ -82,7 +86,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     private Expr[] expressions;
     private int domainDim;
     @NonStateField
-    protected Domain _cache_domain;
+    protected transient Domain _cache_domain;
 
 
     public Sub(Expr first, Expr second) {
@@ -131,7 +135,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return getDomainImpl();
         }
-        if ( _cache_domain == null) {
+        if (_cache_domain == null) {
             _cache_domain = getDomainImpl();
         }
         return _cache_domain;
@@ -230,8 +234,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Sub(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -250,7 +254,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Sub(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -270,7 +274,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Sub(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -382,13 +386,81 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return getFirst().toDC().computeComplex(x, y, z).sub(getSecond().toDC().computeComplex(x, y, z));
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, y, z, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        Complex c = getSecond().toDC().computeComplex(x, y, z, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return a.sub(c);
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
-        return getFirst().toDD().computeDouble(x, y, z) - (getSecond().toDD().computeDouble(x, y, z));
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, y, z, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, y, z, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return a - b;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, y, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        Complex c = getSecond().toDC().computeComplex(x, y, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return a.sub(c);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, y, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, y, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return a - b;
+    }
+
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        Complex a = getFirst().toDC().computeComplex(x, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        Complex c = getSecond().toDC().computeComplex(x, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return a.sub(c);
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        double a = getFirst().toDD().computeDouble(x, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        double b = getSecond().toDD().computeDouble(x, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return a - b;
     }
 
     @Override
@@ -396,10 +468,13 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         return getFirst().toDM().computeMatrix(x, y, z).sub(getSecond().toDM().computeMatrix(x, y, z));
     }
 
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
-    }
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     public Matrix computeMatrix(double x) {
         return Expressions.computeMatrix(this, x);
@@ -438,21 +513,21 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     public Expr mul(Domain domain) {
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
-            expr2[i]=expr2[i].mul(domain);
+            expr2[i] = expr2[i].mul(domain);
         }
-        return new Sub(expr2[0],expr2[1]);
+        return new Sub(expr2[0], expr2[1]);
     }
 
     @Override
     public Expr mul(double other) {
-        if(other==0){
+        if (other == 0) {
             return Maths.DDZERO;
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
-            expr2[i]=expr2[i].mul(other);
+            expr2[i] = expr2[i].mul(other);
         }
-        return new Sub(expr2[0],expr2[1]);
+        return new Sub(expr2[0], expr2[1]);
     }
 
     @Override
@@ -465,9 +540,9 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
-            expr2[i]=expr2[i].mul(other);
+            expr2[i] = expr2[i].mul(other);
         }
-        return new Sub(expr2[0],expr2[1]);
+        return new Sub(expr2[0], expr2[1]);
     }
 
 

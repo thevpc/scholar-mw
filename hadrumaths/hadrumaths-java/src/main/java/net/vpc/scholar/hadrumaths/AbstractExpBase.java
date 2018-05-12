@@ -6,11 +6,10 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractExpBase implements Expr {
+    private static final long serialVersionUID = 1L;
     @Override
     public Integer getIntProperty(String name) {
         Number property = (Number) getProperty(name);
@@ -279,6 +278,21 @@ public abstract class AbstractExpBase implements Expr {
             return mul(other.getReal());
         }
         return Maths.mul(other,this);
+    }
+
+    @Override
+    public Set<ParamExpr> getParams() {
+        Set<ParamExpr> s=null;
+        for (Expr expr : getSubExpressions()) {
+            Set<ParamExpr> p = expr.getParams();
+            if(!p.isEmpty()){
+                if(s==null){
+                    s=new HashSet<>();
+                }
+                s.addAll(p);
+            }
+        }
+        return s==null?Collections.EMPTY_SET:s;
     }
 
 }

@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.plot.*;
 import java.util.Set;
 
 public class ConsoleActionCubesPlot implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000006L;
+    private static final long serialVersionUID = 1L;
     private VDiscrete yvalues;
     private String plotTitle;
     private String plotGroup;

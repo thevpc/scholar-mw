@@ -18,6 +18,10 @@ public interface ElectricFieldBuilder extends ValueBuilder {
 
     Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);
 
+    Matrix computeMatrix(Axis axis, double[] x, double y, double[] z);
+
+    Matrix computeMatrix(Axis axis, double x, double[] y, double[] z);
+
     VDiscrete computeVDiscrete(Samples samples);
 
     VDiscrete computeVDiscrete(double[] x, double[] y, double[] z);

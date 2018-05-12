@@ -2289,7 +2289,7 @@ public final class Maths {
         }
         double yerr = 0.02;
 //        DoubleToComplex dc = expr.toDC();
-//        Complex[][] complexes2 = dc.computeComplex(dsteps,dsteps);
+//        Complex[][] complexes2 = dc.computeComplexArg(dsteps,dsteps);
         AdaptiveResult1 s = new AdaptiveResult1();
         s.x.addAll(dsteps);
         for (double x : dsteps) {
@@ -6238,5 +6238,30 @@ public final class Maths {
 
     public static String getHadrumathsVersion(){
         return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadrumaths");
+    }
+
+    public static ComponentDimension expandComponentDimension(ComponentDimension d1,ComponentDimension d2){
+        return ComponentDimension.create(
+                Math.max(d1.rows,d2.rows),
+                Math.max(d1.columns,d2.columns)
+        );
+    }
+
+    public static Expr expandComponentDimension(Expr e,ComponentDimension d){
+        ComponentDimension d0 = e.getComponentDimension();
+        if(d0.equals(d)){
+            return e;
+        }
+        if(d0.rows>d.rows || d0.columns>d.columns){
+            throw new IllegalArgumentException("Unable to shrink component dim "+d0+" -> "+d);
+        }
+        if(d.equals(ComponentDimension.VECTOR2)){
+            return vector(e,Domain.FULLX);
+        }
+        if(d.equals(ComponentDimension.VECTOR3)){
+            DoubleToMatrix dm = e.toDM();
+            return vector(dm.getComponent(0,0),d.columns>=2?e.toDM().getComponent(1,0): Domain.FULLX, Domain.FULLX);
+        }
+        throw new IllegalArgumentException("Unable to expandComponentDimension component dim "+d0+" -> "+d);
     }
 }

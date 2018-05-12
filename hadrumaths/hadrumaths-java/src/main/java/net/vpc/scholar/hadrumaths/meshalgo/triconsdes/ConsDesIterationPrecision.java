@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class ConsDesIterationPrecision implements ConsDesPrecision {
-    private static final long serialVersionUID = -1010101010101001023L;
+    private static final long serialVersionUID = 1L;
     int iteration;
 
     public ConsDesIterationPrecision(int iteration) {

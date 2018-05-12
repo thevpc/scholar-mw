@@ -51,7 +51,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     public static final String CACHE_SRCGP = "test-src-scalar-products";
     public static final String CACHE_MATRIX_UNKNOWN = "matrix-unknown";
     //private double irisQuotient = 1.0 / 3.0;
-    protected int k;
+    protected int fractalScale;
     protected PersistenceCache persistentCache;
     protected MomStructureMemoryCache memoryCache;
     private HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -171,7 +171,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         init();
         if (other != null) {
 
-            this.k = other.k;
+            this.fractalScale = other.fractalScale;
 //            this.persistentCache;
 //            this.memoryCache;
             this.parameters.putAll(other.parameters);
@@ -302,7 +302,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         setSources(structureConfig.getSources());
         getPersistentCache().setEnabled(structureConfig.isCacheEnabled());
 //        setPropagativeModeSelector(structureConfig.getBox().boxType);//
-//        setK(structureConfig.getBox().boxType);//
+//        setFractalScale(structureConfig.getBox().boxType);//
 //        setHintDiscardFnByScalarProduct(structureConfig.getBox().y);//
 //        setHintFnMode(structureConfig.getBox().y);//
 //        setHintAxisType(structureConfig.getBox().y);//
@@ -312,7 +312,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     public void load(MomStructure other) {
         //        this.gpEssaiType = other.gpEssaiType;
 //        this.fnModeType = other.fnModeType;
-        setK(other.k);
+        setFractalScale(other.fractalScale);
         this.modeFunctionsMax = other.modeFunctionsMax;
 //        this.testFunctionsCount = other.testFunctionsCount;
         this.heightFactor = other.heightFactor;
@@ -384,8 +384,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         sb.add("modeFunctions", modeFunctionsDelegate.getBase());
         sb.add("modeFunctions.count", modeFunctionsMax);
         sb.add("sources", sources);
-
-        sb.add("fractalScale", k);
+        if(fractalScale!=0){
+            sb.add("fractalScale", fractalScale);
+        }
         if (getLayers() != null && getLayers().length > 0) {
             sb.add("layers", getLayers());
         }
@@ -456,14 +457,14 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         //cache_essai = null;
     }
 
-    public int getK() {
-        return k;
+    public int getFractalScale() {
+        return fractalScale;
     }
 
-    public void setK(int k) {
-        int old = this.k;
-        this.k = k;
-        firePropertyChange("k", old, k);
+    public void setFractalScale(int fractalScale) {
+        int old = this.fractalScale;
+        this.fractalScale = fractalScale;
+        firePropertyChange("fractalScale", old, fractalScale);
     }
 
     public double getYdim() {
@@ -717,9 +718,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     @Override
     public String toString() {
-        return "k=" + k + " ; a=lambda/" + (lambda(frequency) / xdim) + " ; k0*a=" + (K0(frequency) * xdim)
-//                + " ; nb_test_fct=" + testFunctionsCount
-                + " ; maxFn=" + modeFunctionsMax;
+        return "a=lambda/" + (lambda(frequency) / xdim) + " ; k0*a=" + (K0(frequency) * xdim)
+                + " ; modesCount=" + modeFunctionsMax+((fractalScale!=0)?(" ; fractalScale=" + fractalScale):"");
     }
 
 
@@ -1908,7 +1908,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         if (!useDefault) {
             return null;
         }
-        return Maths.Config.getDefaultScalarProductOperator();
+        return Maths.Config.getScalarProductOperator();
     }
 
     public PersistenceCache getCacheConfig() {

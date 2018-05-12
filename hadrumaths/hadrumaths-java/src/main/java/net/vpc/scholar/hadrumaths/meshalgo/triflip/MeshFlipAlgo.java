@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class MeshFlipAlgo implements MeshAlgo {
-    private static final long serialVersionUID = -1010101010101001065L;
+    private static final long serialVersionUID = 1L;
     OptionFlip option;
     ArrayList<Triangle> listeTriangle;
 

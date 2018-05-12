@@ -23,7 +23,7 @@ import java.util.TreeSet;
  */
 public final class BoxModesPattern implements RectangularGpPattern {
     public static final double EPS = 1E-3;
-    private static final long serialVersionUID = -1010101010101001068L;
+    private static final long serialVersionUID = 1L;
     //TODO this is the last serialVersionUID
     private int maxLoopCount = 10;
     private TreeSet<Integer> includedFunctions;

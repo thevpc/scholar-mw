@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 public class LogConsoleAction implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000001L;
+    private static final long serialVersionUID = 1L;
     private String msg;
 
     public LogConsoleAction(String msg) {

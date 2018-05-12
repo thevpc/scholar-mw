@@ -14,7 +14,7 @@ import java.util.List;
  * Time: 14:29:58
  */
 public final class RWG extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001052L;
+    private static final long serialVersionUID = 1L;
 //    public static final DCstFunctionXY ZERO = new DCstFunctionXY(0, DomainXY.EMPTY);
 
     //    public static final int CODE = 1;
@@ -146,12 +146,12 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected boolean contains(double x) {
+    public boolean contains(double x) {
        throw new IllegalArgumentException("Missing Y");
     }
 
     @Override
-    protected boolean contains(double x, double y) {
+    public boolean contains(double x, double y) {
         if (tr1.contains(x, y)) {
             return true;
         } else if (tr2.contains(x, y)) {
@@ -161,17 +161,17 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected boolean contains(double x, double y, double z) {
+    public boolean contains(double x, double y, double z) {
         return super.contains(x, y, z);
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         if (tr1.contains(x, y)) {
             return computeDouble(tr1, x, y);
         } else if (tr2.contains(x, y)) {
@@ -181,7 +181,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         if (tr1.contains(x, y)) {
             return computeDouble(tr1, x, y);
         } else if (tr2.contains(x, y)) {

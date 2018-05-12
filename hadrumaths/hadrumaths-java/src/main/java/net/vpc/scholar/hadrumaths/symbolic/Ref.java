@@ -18,6 +18,7 @@ import java.util.Map;
  * @author vpc
  */
 public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     static {
         ExpressionTransformFactory.setExpressionTransformer(Ref.class, ExpressionTransform.class, new ExpressionTransformer() {
@@ -267,10 +268,10 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
         return (object.setParam(name, value));
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(object);
-    }
+//    @Override
+//    public String toString() {
+//        return String.valueOf(object);
+//    }
 
     @Override
     public Map<String, Object> getProperties() {
@@ -387,6 +388,11 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        return object.toDC().computeComplex(x);
+    }
+
+    @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         return object.toDC().computeComplex(x, d0, ranges);
     }
@@ -419,5 +425,30 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     @Override
     public Expr getComponent(Axis a) {
         return object.toDV().getComponent(a);
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        return object.toDC().computeComplex(x, y, defined);
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        return object.toDC().computeComplex(x, y, z, defined);
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        return object.toDD().computeDouble(x, defined);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        return object.toDD().computeDouble(x, y, defined);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        return object.toDD().computeDouble(x, y, z, defined);
     }
 }

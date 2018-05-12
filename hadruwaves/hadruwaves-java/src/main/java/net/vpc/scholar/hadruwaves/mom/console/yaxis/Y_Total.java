@@ -27,7 +27,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //        super(name, type, graphix);
 //    }
 //
-//    protected abstract Complex computeComplex(AbstractStructure2D structure, ParamSet x);
+//    protected abstract Complex computeComplexArg(AbstractStructure2D structure, ParamSet x);
 //
 //    public ConsoleAction createConsoleAction(ComputeTitle serieTitle, AbstractStructure2D direct, AbstractStructure2D modele, ConsoleAxis axis, PlotConsole plotter, WindowPath preferredPath) {
 //        NamedMatrix yvalues;
@@ -177,7 +177,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //        while (x.hasNext()) {
 //            x.next();
 //            x.setParameter(structure);
-//            z[index] = computeComplex(structure, x);
+//            z[index] = computeComplexArg(structure, x);
 //            if (xlabel == null) {
 //                Object v = x.getValue();
 //                xs[index] = (v instanceof Number) ? ((Number) v).doubleValue() : index;

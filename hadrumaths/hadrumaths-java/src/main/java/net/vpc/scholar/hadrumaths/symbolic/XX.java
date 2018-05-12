@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
  * Created by vpc on 4/30/14.
  */
 public class XX extends AxisFunction implements Cloneable {
+    private static final long serialVersionUID = 1L;
     public XX(Domain domain) {
         super(domain, "X");
     }
@@ -313,20 +314,59 @@ public class XX extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
         if (domain.contains(x, y, z)) {
+            defined.set();
             return Complex.valueOf(x);
         }
         return Complex.ZERO;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        if (domain.contains(x, y)) {
+            defined.set();
+            return Complex.valueOf(x);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        if (domain.contains(x)) {
+            defined.set();
+            return Complex.valueOf(x);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z,OutBoolean defined) {
         if (domain.contains(x, y, z)) {
+            defined.set();
             return x;
         }
         return 0;
     }
+
+    @Override
+    public double computeDouble(double x, double y,OutBoolean defined) {
+        if (domain.contains(x, y)) {
+            defined.set();
+            return x;
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x,OutBoolean defined) {
+        if (domain.contains(x)) {
+            defined.set();
+            return x;
+        }
+        return 0;
+    }
+
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
@@ -335,6 +375,7 @@ public class XX extends AxisFunction implements Cloneable {
         }
         return Maths.identityMatrix(1);
     }
+
 
     @Override
     public Expr mul(Domain domain) {

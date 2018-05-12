@@ -15,7 +15,7 @@ import java.util.List;
 * To change this template use File | Settings | File Templates.
 */
 public class DDy extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001050L;
+    private static final long serialVersionUID = 1L;
     DoubleToDouble base;
     double defaultX;
     double defaultZ;
@@ -41,17 +41,17 @@ public class DDy extends AbstractDoubleToDouble implements Cloneable{
 //    }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         return base.computeDouble(defaultX,x,defaultZ);
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return base.computeDouble(defaultX,x,defaultZ);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return base.computeDouble(defaultX,x,defaultZ);
     }
 

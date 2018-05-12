@@ -11,6 +11,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  * Time: 15:13:30
  */
 final class CosCosCosCosIntegralXY {
+    private static final long serialVersionUID = 1L;
 //    public double compute(DomainXY domain, DFunctionXY f1, DFunctionXY f2, FormalScalarProduct sp) {
 //        DCosCosFunctionXY f1ok = (DCosCosFunctionXY) f1;
 //        DCosCosFunctionXY f2ok = (DCosCosFunctionXY) f2;

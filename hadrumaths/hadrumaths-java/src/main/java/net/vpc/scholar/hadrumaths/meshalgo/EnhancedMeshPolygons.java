@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.List;
 
 public class EnhancedMeshPolygons implements Serializable, Dumpable {
-    private static final long serialVersionUID = -1010101010101001048L;
+    private static final long serialVersionUID = 1L;
     private double surface;
     private Polygon[] polygon;
 

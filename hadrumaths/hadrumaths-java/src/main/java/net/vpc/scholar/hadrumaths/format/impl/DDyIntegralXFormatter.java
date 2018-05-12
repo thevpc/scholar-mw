@@ -20,13 +20,13 @@ public class DDyIntegralXFormatter extends AbstractFormatter<DDyIntegralX> {
     @Override
     public void format(StringBuilder sb, DDyIntegralX o, FormatParamSet format) {
         sb.append("DDyIntegralX(");
-        FormatFactory.format(o.getArg(),format);
+        FormatFactory.format(sb,o.getArg(),format);
         sb.append(",");
         sb.append(o.getIntegralXY().toString());
         sb.append(",");
-        FormatFactory.format(o.getX0(),format);
+        FormatFactory.format(sb,o.getX0(),format);
         sb.append(",");
-        FormatFactory.format(o.getX1(),format);
+        FormatFactory.format(sb,o.getX1(),format);
         sb.append(")");
     }
 

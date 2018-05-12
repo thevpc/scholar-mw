@@ -137,7 +137,8 @@ public class BooleanArrays {
             for (int i = r0.zmin; i <= r0.zmax; i++) {
                 for (int j = r0.ymin; j <= r0.ymax; j++) {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
-                        set(j, i, k, other.get(j, i, k));
+//                        set(j, i, k, other.get(j, i, k));
+                        set(i, j, k, other.get(i, j, k));
                     }
                 }
             }

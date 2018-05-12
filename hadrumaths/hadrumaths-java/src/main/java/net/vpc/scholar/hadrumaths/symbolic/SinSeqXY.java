@@ -10,6 +10,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  * Created by vpc on 5/7/14.
  */
 public class SinSeqXY extends Ref implements Cloneable{
+    private static final long serialVersionUID = 1L;
     private boolean maxEast;
     private boolean maxSouth;
     private boolean maxWest;
@@ -22,6 +23,7 @@ public class SinSeqXY extends Ref implements Cloneable{
         init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
     }
 
+    //@TestInfo("DisableRandomCalls")
     public SinSeqXY(String borders, DoubleParam m, DoubleParam n, Domain domain) {
         boolean maxNorth=false;
         boolean maxEast=false;

@@ -17,6 +17,7 @@ import java.util.List;
  * @author vpc
  */
 public class Inv extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     private static Expressions.UnaryExprHelper<Inv> exprHelper = new InvUnaryExprHelper();
 
@@ -177,16 +178,16 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     }
 
 
-//    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeComplex(this, x, y, d0, ranges);
+//    public Complex[] computeComplexArg(double[] x, double y, Domain d0, Out<Range> ranges) {
+//        return Expressions.computeComplexArg(this, x, y, d0, ranges);
 //    }
 //
-//    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeComplex(this, x, y, d0, ranges);
+//    public Complex[] computeComplexArg(double x, double[] y, Domain d0, Out<Range> ranges) {
+//        return Expressions.computeComplexArg(this, x, y, d0, ranges);
 //    }
 //
-//    public Complex computeComplex(double x, double y) {
-//        return Expressions.computeComplex(this, x, y);
+//    public Complex computeComplexArg(double x, double y) {
+//        return Expressions.computeComplexArg(this, x, y);
 //    }
 //
 //    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -270,8 +271,8 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.setParam(name, value);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -281,7 +282,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.composeX(xreplacement);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -292,7 +293,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         Expr updated = expression.composeY(yreplacement);
         if (updated != expression) {
             Expr e = new Inv(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -352,16 +353,16 @@ public class Inv extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Expr mul(double other) {
-        if(other==0){
+        if (other == 0) {
             return Maths.DDZERO;
         }
-        return new Inv(expression.mul(1/other));
+        return new Inv(expression.mul(1 / other));
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isZero()){
-            if(expression.isZero()){
+        if (other.isZero()) {
+            if (expression.isZero()) {
                 return Maths.DDNAN;
             }
             return Maths.DDZERO;
@@ -376,20 +377,74 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         return expression.getDomainDimension();
     }
 
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
+
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        DoubleToComplex c = expression.toDC();
+        Complex cc = c.computeComplex(x, y, z, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return cc.inv();
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return expression.toDC().computeComplex(x, y, z).inv();
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        DoubleToComplex c = expression.toDC();
+        Complex cc = c.computeComplex(x, y, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return cc.inv();
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
-        return 1 / expression.toDD().computeDouble(x, y, z);
+    public Complex computeComplex(double x, OutBoolean defined) {
+        DoubleToComplex c = expression.toDC();
+        Complex cc = c.computeComplex(x, defined);
+        if (!defined.isSet()) {
+            return Complex.ZERO;
+        }
+        return cc.inv();
     }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        DoubleToDouble doubleToDouble = expression.toDD();
+        double v = doubleToDouble.computeDouble(x, y, z, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return 1 / v;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        DoubleToDouble doubleToDouble = expression.toDD();
+        double v = doubleToDouble.computeDouble(x, y, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return 1 / v;
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        DoubleToDouble doubleToDouble = expression.toDD();
+        double v = doubleToDouble.computeDouble(x, defined);
+        if (!defined.isSet()) {
+            return 0;
+        }
+        return 1 / v;
+    }
+
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
@@ -404,12 +459,14 @@ public class Inv extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double x) {
+        public double computeDouble(double x, OutBoolean defined) {
+            defined.set();
             return 1 / x;
         }
 
         @Override
-        public Complex computeComplex(Complex x) {
+        public Complex computeComplex(Complex x, OutBoolean defined) {
+            defined.set();
             return x.inv();
         }
 

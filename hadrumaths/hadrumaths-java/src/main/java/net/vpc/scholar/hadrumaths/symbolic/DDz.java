@@ -13,7 +13,7 @@ import java.util.List;
 */
 public class DDz extends AbstractDoubleToDouble implements Cloneable{
 
-    private static final long serialVersionUID = -1010101010101001008L;
+    private static final long serialVersionUID = 1L;
     DoubleToDouble base;
     double defaultX;
     double defaultY;
@@ -37,17 +37,17 @@ public class DDz extends AbstractDoubleToDouble implements Cloneable{
         return base.isInfinite();
     }
 
-    public double computeDouble0(double x) {
+    public double computeDouble0(double x, OutBoolean defined) {
         return base.computeDouble(defaultX, defaultY,x);
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return base.computeDouble(defaultX, defaultY,x);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return base.computeDouble(defaultX, defaultY,x);
     }
 

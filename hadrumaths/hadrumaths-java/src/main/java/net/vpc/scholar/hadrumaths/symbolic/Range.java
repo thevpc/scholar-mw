@@ -3,11 +3,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.BooleanArray1;
 import net.vpc.scholar.hadrumaths.BooleanArray2;
 import net.vpc.scholar.hadrumaths.BooleanArray3;
+import net.vpc.scholar.hadrumaths.BooleanArrays;
+
+import java.io.Serializable;
 
 /**
  * Created by vpc on 4/17/14.
  */
-public class Range {
+public class Range implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     public final int xmin;
     public final int xmax;
@@ -73,6 +77,18 @@ public class Range {
         if (xwidth < 0 || ywidth < 0 || zwidth < 0) {
             throw new IllegalArgumentException("xwidth<0 || ywidth<0 || zwidth<0");
         }
+    }
+
+    public static Range empty1() {
+        return forBounds(0,0);
+    }
+
+    public static Range empty2() {
+        return forBounds(0,0,0,0);
+    }
+
+    public static Range empty3() {
+        return forBounds(0,0,0,0);
     }
 
     public static Range forBounds(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
@@ -149,6 +165,24 @@ public class Range {
             }
         }
         throw new IllegalArgumentException("Invalid Dimension. Expected "+dimension+" but got "+2);
+    }
+
+    public BooleanArray1 setDefined1(int size) {
+        BooleanArray1 defined = BooleanArrays.newArray(size);
+        setDefined(defined);
+        return defined;
+    }
+
+    public BooleanArray2 setDefined2(int xsize,int ysize) {
+        BooleanArray2 defined = BooleanArrays.newArray(xsize,ysize);
+        setDefined(defined);
+        return defined;
+    }
+
+    public BooleanArray3 setDefined3(int xsize,int ysize,int zsize) {
+        BooleanArray3 defined = BooleanArrays.newArray(xsize,ysize,zsize);
+        setDefined(defined);
+        return defined;
     }
 
     public void setDefined(BooleanArray1 defined) {

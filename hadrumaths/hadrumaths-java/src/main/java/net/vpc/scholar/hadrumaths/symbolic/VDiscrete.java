@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.PlaneAxis;
 import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
+import net.vpc.scholar.hadrumaths.util.IntValidator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -539,7 +540,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         return result;
     }
 
-    public static VDiscrete discretize(Expr expr, int xSamples, int ySamples, int zSamples) {
+    public static VDiscrete discretize(Expr expr, @IntValidator(min = 1,max = 100000) int xSamples, @IntValidator(min = 1,max = 100000)int ySamples, @IntValidator(min = 1,max = 100000)int zSamples) {
         if (expr.isScalarExpr()) {
             return new VDiscrete(Discrete.discretize(expr, xSamples, ySamples, zSamples));
         } else {

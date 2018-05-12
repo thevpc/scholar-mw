@@ -992,12 +992,12 @@ public class PlotBuilder {
 //        DoubleToMatrix m = e.toDM();//TODO
 //        int[][] items = m.getComponentDimension().iterate();
 //        if (items.length == 1) {
-//            Complex[] z = e.toDC().computeComplex(x, y, null, null);
+//            Complex[] z = e.toDC().computeComplexArg(x, y, null, null);
 //            return plot(y, z);
 //        } else {
 //            PlotContainer plotContainer = getWindowManager().add(title);
 //            for (int[] rc : items) {
-//                Complex[] z = m.getComponent(rc[0], rc[1]).toDC().computeComplex(x, y, null, null);
+//                Complex[] z = m.getComponent(rc[0], rc[1]).toDC().computeComplexArg(x, y, null, null);
 //                plotContainer.add(Plot.builder().mimic(this).nodisplay().plot(y, z));
 //            }
 //            return plotContainer;
@@ -1008,12 +1008,12 @@ public class PlotBuilder {
 //        DoubleToMatrix m = e.toDM();
 //        int[][] items = m.getComponentDimension().iterate();
 //        if (items.length == 1) {
-//            Complex[] z = e.toDC().computeComplex(x, y, null, null);
+//            Complex[] z = e.toDC().computeComplexArg(x, y, null, null);
 //            return plot(x, z);
 //        } else {
 //            PlotContainer plotContainer = getWindowManager().add(title);
 //            for (int[] rc : items) {
-//                Complex[] z = m.getComponent(rc[0], rc[1]).toDC().computeComplex(x, y, null, null);
+//                Complex[] z = m.getComponent(rc[0], rc[1]).toDC().computeComplexArg(x, y, null, null);
 //                plotContainer.add(Plot.builder().mimic(this).nodisplay().plot(x, z));
 //            }
 //            return plotContainer;

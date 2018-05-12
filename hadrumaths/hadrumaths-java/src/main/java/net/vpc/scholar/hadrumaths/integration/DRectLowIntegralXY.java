@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
  * change this template use File | Settings | File Templates.
  */
 public class DRectLowIntegralXY implements DIntegralXY,Dumpable {
+    private static final long serialVersionUID = 1L;
 
     private int xprecision;
     private int yprecision;

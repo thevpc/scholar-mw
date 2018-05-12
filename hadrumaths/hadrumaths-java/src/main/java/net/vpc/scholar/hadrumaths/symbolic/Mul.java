@@ -18,6 +18,7 @@ import java.util.List;
  * @author vpc
  */
 public class Mul extends AbstractExprOperator implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     private static Expressions.BinaryExprHelper<Mul> binaryExprHelper = new Expressions.BinaryExprHelper<Mul>() {
         @Override
@@ -31,10 +32,11 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 double d = a * b;
+                defined.set();
                 options.resultDefined = true;
                 return d;
             } else {
@@ -44,11 +46,12 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Complex d = a.mul(b);
-                options.resultDefined = def;
+                defined.set();
+                options.resultDefined = true;
                 return d;
             } else {
                 options.resultDefined = false;
@@ -61,7 +64,8 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.mul(b);
-                options.resultDefined = def;
+                //defined.set();
+                options.resultDefined = true;
                 return d;
             } else {
                 options.resultDefined = false;
@@ -75,7 +79,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Mul e = (Mul) expression;
-                ExpressionTransform t = transform;
+//                ExpressionTransform t = transform;
                 Expr[] e2 = new Expr[e.expressions.length];
                 for (int i = 0; i < e2.length; i++) {
                     e2[i] = ExpressionTransformFactory.transform(e.expressions[i], transform);
@@ -86,7 +90,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @NonStateField
-    protected Domain _cache_domain;
+    protected transient Domain _cache_domain;
     private Expr[] expressions;
     private int domainDim;
 
@@ -96,7 +100,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 
     public Mul(Expr... expressions) {
         this.expressions = expressions;
-        if(this.expressions.length<1){
+        if (this.expressions.length < 1) {
             throw new IllegalArgumentException();
         }
         domainDim = 0;
@@ -112,9 +116,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if (d > domainDim) {
                 domainDim = d;
             }
-            if(expression.isNaN()){
-                System.err.println("NaN in mul : "+expression);
-            }
+//            if(expression.isNaN()){
+//                System.err.println("NaN in mul : "+expression);
+//            }
 //            if(expression instanceof Domain && ((Domain) expression).isUnconstrained()){
 //                System.out.println("Why");
 //            }
@@ -305,8 +309,8 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -325,7 +329,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -345,16 +349,16 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Mul(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
     }
 
-    @Override
-    public String toString() {
-        return FormatFactory.toString(this);
-    }
+//    @Override
+//    public String toString() {
+//        return FormatFactory.toString(this);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -383,38 +387,124 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        Complex c = Complex.ONE;
-        for (Expr expression : expressions) {
-            c = c.mul(expression.toDC().computeComplex(x, y, z));
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        MutableComplex c = MutableComplex.One();
+        if (contains(x, y, z)) {
+            for (Expr expression : expressions) {
+                c.mul(expression.toDC().computeComplex(x, y, z, defined));
+                if (!defined.isSet()) {
+                    return Complex.ZERO;
+                }
+            }
         }
-        //super.computeComplex(x, y, z)
-        return c;
+        return c.toComplex();
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
-        double c = 0;
-        for (Expr expression : expressions) {
-            c *= (expression.toDD().computeDouble(x, y, z));
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        MutableComplex c = MutableComplex.One();
+        if (contains(x, y)) {
+            for (Expr expression : expressions) {
+                c.mul(expression.toDC().computeComplex(x, y, defined));
+                if (!defined.isSet()) {
+                    return Complex.ZERO;
+                }
+            }
         }
-        //super.computeComplex(x, y, z)
-        return c;
+        return c.toComplex();
+    }
+
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        MutableComplex c = MutableComplex.One();
+        if (contains(x)) {
+            for (Expr expression : expressions) {
+                c.mul(expression.toDC().computeComplex(x, defined));
+                if (!defined.isSet()) {
+                    return Complex.ZERO;
+                }
+            }
+        }
+        return c.toComplex();
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        //test if x,y,z is in the intersection of domains
+        if (contains(x, y, z)) {
+            double c = expressions[0].toDD().computeDouble(x, y, z,defined);
+            if(!defined.isSet()){
+                return 0;
+            }
+            for (int i = 1; i < expressions.length; i++) {
+                c *= (expressions[i].toDD().computeDouble(x, y, z));
+                if(!defined.isSet()){
+                    return 0;
+                }
+            }
+            return c;
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        //test if x,y,z is in the intersection of domains
+        if (contains(x, y)) {
+            double c = expressions[0].toDD().computeDouble(x, y,defined);
+            if(!defined.isSet()){
+                return 0;
+            }
+            for (int i = 1; i < expressions.length; i++) {
+                c *= (expressions[i].toDD().computeDouble(x, y));
+                if(!defined.isSet()){
+                    return 0;
+                }
+            }
+            return c;
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        //test if x,y,z is in the intersection of domains
+        if (contains(x)) {
+            double c = expressions[0].toDD().computeDouble(x,defined);
+            if(!defined.isSet()){
+                return 0;
+            }
+            for (int i = 1; i < expressions.length; i++) {
+                c *= (expressions[i].toDD().computeDouble(x));
+                if(!defined.isSet()){
+                    return 0;
+                }
+            }
+            return c;
+        }
+        return 0;
     }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        Matrix c = expressions[0].toDM().computeMatrix(x, y, z);
-        for (int i = 1; i < expressions.length; i++) {
-            c = c.mul(expressions[i].toDM().computeMatrix(x, y, z));
+        Domain d = getDomain();
+        if (d.contains(x, y, z)) {
+            Matrix c = expressions[0].toDM().computeMatrix(x, y, z);
+            for (int i = 1; i < expressions.length; i++) {
+                c = c.mul(expressions[i].toDM().computeMatrix(x, y, z));
+            }
+            return c;
         }
-        return c;
+        return Maths.zerosMatrix(1);
     }
 
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
-    }
+//    @Override
+//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
 
     public DoubleToDouble getImagDD() {
@@ -494,31 +584,31 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     public Expr mul(Domain domain) {
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
-            expr2[i]=expr2[i].mul(domain);
+            expr2[i] = expr2[i].mul(domain);
         }
         return Maths.mul(expr2);
     }
 
     @Override
     public Expr mul(double other) {
-        if(other==0){
+        if (other == 0) {
             return Maths.DDZERO;
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
-        expr2[0]=expr2[0].mul(other);
+        expr2[0] = expr2[0].mul(other);
         return Maths.mul(expr2);
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isZero()){
+        if (other.isZero()) {
             return Maths.DDZERO;
         }
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
-        expr2[0]=expr2[0].mul(other);
+        expr2[0] = expr2[0].mul(other);
         return Maths.mul(expr2);
     }
 

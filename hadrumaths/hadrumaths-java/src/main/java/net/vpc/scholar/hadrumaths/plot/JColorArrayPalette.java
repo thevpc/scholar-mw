@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Arrays;
 
 public class JColorArrayPalette extends JColorPalette{
-    private static final long serialVersionUID = -1010101010101001047L;
+    private static final long serialVersionUID = 1L;
     private Color[] model;
 
 

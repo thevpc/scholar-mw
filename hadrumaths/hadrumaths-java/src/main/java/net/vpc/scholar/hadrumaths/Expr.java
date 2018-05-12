@@ -6,6 +6,7 @@ import net.vpc.scholar.hadrumaths.symbolic.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -117,6 +118,8 @@ public interface Expr extends Serializable {
     Expr setParam(String name, double value);
 
     Expr setParam(String name, Expr value);
+
+    Set<ParamExpr> getParams();
 
     Expr setParam(ParamExpr paramExpr, double value);
 

@@ -8,7 +8,7 @@ import java.awt.*;
 import java.text.DecimalFormat;
 
 public class HeatMapPlotUnitsArea extends JComponent {
-    private static final long serialVersionUID = 1111111115L;
+    private static final long serialVersionUID = 1L;
     private static DecimalFormat df = new DecimalFormat("0.00");
     private int ticksCount = 10;
     private boolean horizontal;

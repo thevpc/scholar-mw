@@ -11,10 +11,12 @@ import net.vpc.scholar.hadrumaths.Out;
  * Created by vpc on 8/24/14.
  */
 public abstract class AbstractExprOperator extends AbstractVerboseExpr implements ExprOperator {
+    private static final long serialVersionUID = 1L;
 
     public Matrix computeMatrix(double x) {
         return Expressions.computeMatrix(this, x);
     }
+
 
 
     @Override
@@ -146,8 +148,8 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-//    public Complex computeComplex(double x, double y) {
-//        return Expressions.computeComplex(this, x, y);
+//    public Complex computeComplexArg(double x, double y) {
+//        return Expressions.computeComplexArg(this, x, y);
 //    }
 
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -170,13 +172,13 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y) {
-        return Expressions.computeDouble(this, x, y);
-    }
+//    public double computeDouble(double x, double y) {
+//        return Expressions.computeDouble(this, x, y);
+//    }
 
-    public double computeDouble(double x) {
-        return Expressions.computeDouble(this, x);
-    }
+//    public double computeDouble(double x) {
+//        return Expressions.computeDouble(this, x);
+//    }
 
     public DoubleToDouble getRealDD() {
         return new Real(this);
@@ -216,6 +218,7 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         }
         return this;
     }
+
     public Complex computeComplex(double x, double y, double z){
         return computeComplex(new double[]{x},new double[]{y},new double[]{z})[0][0][0];
     }
@@ -224,9 +227,12 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return computeComplex(new double[]{x},new double[]{y})[0][0];
     }
 
-    public Complex computeComplex(double x){
-        return computeComplex(new double[]{x},(Domain) null,null)[0];
-    }
+//    public Complex computeComplexArg(double x,OutBoolean defined){
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     protected boolean isInvariantImpl(Axis axis) {
         for (Expr expr : getSubExpressions()) {

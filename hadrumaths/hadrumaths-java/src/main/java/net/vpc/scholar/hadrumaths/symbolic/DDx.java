@@ -14,7 +14,21 @@ import java.util.List;
 */
 public class DDx extends AbstractDoubleToDouble implements Cloneable{
 
-    private static final long serialVersionUID = -1010101010101001008L;
+    private static final long serialVersionUID = 1L;
+//    static {
+//        FormatFactory.register(DDx.class, new AbstractFormatter<DDx>() {
+//            @Override
+//            public void format(StringBuilder sb, DDx o, FormatParamSet format) {
+//                sb.append("DDx(");
+//                sb.append(o.defaultY);
+//                sb.append(",");
+//                sb.append(o.defaultZ);
+//                sb.append(",");
+//                FormatFactory.format(sb,o.base,format);
+//                sb.append(")");
+//            }
+//        });
+//    }
     DoubleToDouble base;
     double defaultY;
     double defaultZ;
@@ -38,17 +52,17 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
         return base.isInfinite();
     }
 
-    public double computeDouble0(double x) {
+    public double computeDouble0(double x, OutBoolean defined) {
         return base.computeDouble(x, defaultY,defaultZ);
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return base.computeDouble(x, defaultY,defaultZ);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return base.computeDouble(x, defaultY,defaultZ);
     }
 

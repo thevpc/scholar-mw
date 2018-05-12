@@ -3,13 +3,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Cotanh extends TrigoFunctionX implements Cloneable{
+    private static final long serialVersionUID = 1L;
     public Cotanh(Expr arg) {
-        super("cotanh",arg);
+        super("cotanh",arg, FunctionType.COMPLEX);
     }
 
     @Override
@@ -18,11 +20,11 @@ public class Cotanh extends TrigoFunctionX implements Cloneable{
     }
 
 
-    public Complex evalComplex(Complex c){
+    public Complex computeComplexArg(Complex c, OutBoolean defined){
         return c.cotanh();
     }
 
-    protected double evalDouble(double c){
+    public double computeDoubleArg(double c, OutBoolean defined){
         return 1.0/Math.tanh(c);
     }
 

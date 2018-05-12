@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.Out;
  * Created by vpc on 4/30/14.
  */
 public class YY extends AxisFunction implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     public YY(Domain domain) {
         super(domain, "Y");
@@ -41,14 +42,8 @@ public class YY extends AxisFunction implements Cloneable {
 //    }
 
 
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Missing Y");
-    }
-    @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        throw new ClassCastException("Missing Y");
-    }
+
+
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
@@ -171,7 +166,7 @@ public class YY extends AxisFunction implements Cloneable {
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
-        throw new ClassCastException("Unsupported");
+        throw new ClassCastException("Missing Y");
     }
 
     @Override
@@ -244,27 +239,38 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        if (contains(x, y)) {
+            defined.set();
             return Complex.valueOf(y);
         }
         return Complex.ZERO;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        if (contains(x, y)) {
+            defined.set();
             return y;
         }
         return 0;
     }
+    @Override
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y, z)) {
+            defined.set();
+            return Complex.valueOf(y);
+        }
+        return Complex.ZERO;
+    }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
-            return Complex.valueOf(y).toMatrix();
+    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y, z)) {
+            defined.set();
+            return y;
         }
-        return Maths.identityMatrix(1);
+        return 0;
     }
 
     @Override
@@ -283,6 +289,21 @@ public class YY extends AxisFunction implements Cloneable {
             return mul(other.toDouble());
         }
         return new Mul(other,this);
+    }
+
+    @Override
+    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
+        throw new IllegalArgumentException("Missing Y");
+    }
+
+    @Override
+    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+        throw new IllegalArgumentException("Missing Y");
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Y");
     }
 
 }

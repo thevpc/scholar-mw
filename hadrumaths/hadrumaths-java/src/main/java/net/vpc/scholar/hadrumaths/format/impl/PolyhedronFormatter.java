@@ -21,9 +21,9 @@ public class PolyhedronFormatter extends AbstractFormatter<Polyhedron> {
     @Override
     public void format(StringBuilder sb, Polyhedron o, FormatParamSet format) {
         sb.append("Polyhedron(");
-        FormatFactory.format(o.getMax(),format);
+        FormatFactory.format(sb,o.getMax(),format);
         sb.append(",");
-        FormatFactory.format(o.getPolygon(),format);
+        FormatFactory.format(sb,o.getPolygon(),format);
         sb.append(")");
     }
 

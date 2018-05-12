@@ -70,7 +70,7 @@
 //    }
 //
 //    public double computeDouble(double x) {
-//        if (domain.contains(x)) {
+//        if (contains(x)) {
 //            double v = 0;
 //            // 0
 //            // a[n]*x

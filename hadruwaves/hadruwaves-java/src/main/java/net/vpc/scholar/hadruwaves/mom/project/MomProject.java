@@ -861,7 +861,7 @@ public class MomProject implements Serializable, Cloneable {
         }
         ProjectType pt = configuration.getString(structureConfigurationPrefix + ".projectType") == null ? ProjectType.PLANAR_STRUCTURE : ProjectType.valueOf(configuration.getString(structureConfigurationPrefix + ".projectType"));
         CircuitType ct = configuration.getString(structureConfigurationPrefix + ".circuitType") == null ? CircuitType.SERIAL : CircuitType.valueOf(configuration.getString(structureConfigurationPrefix + ".circuitType"));
-        HintAxisType ha = configuration.getString(structureConfigurationPrefix + ".hintGpFnAxisType") == null ? null : HintAxisType.valueOf(configuration.getString(structureConfigurationPrefix + ".hintGpFnAxisType"));
+        HintAxisType ha = configuration.getString(structureConfigurationPrefix + ".hintAxisType") == null ? null : HintAxisType.valueOf(configuration.getString(structureConfigurationPrefix + ".hintAxisType"));
         String modesStr = configuration.getString(structureConfigurationPrefix + ".hintFnModes");
         if (modesStr == null) {
             modesStr = "";
@@ -934,12 +934,12 @@ public class MomProject implements Serializable, Cloneable {
         configuration.setString(structureConfigurationPrefix + ".y", yExpression);
         configuration.setString(structureConfigurationPrefix + ".width", widthExpression);
         configuration.setString(structureConfigurationPrefix + ".height", heightExpression);
-        configuration.setString(structureConfigurationPrefix + ".maxModes", maxModesExpression == null ? null : maxModesExpression.toString());
+        configuration.setString(structureConfigurationPrefix + ".maxModes", maxModesExpression);
         configuration.setString(structureConfigurationPrefix + ".northWall", northWallExpression);
         configuration.setString(structureConfigurationPrefix + ".southWall", southWallExpression);
         configuration.setString(structureConfigurationPrefix + ".eastWall", eastWallExpression);
         configuration.setString(structureConfigurationPrefix + ".westWall", westWallExpression);
-        configuration.setString(structureConfigurationPrefix + ".hintGpFnAxisType", hintAxisType == null ? null : hintAxisType.toString());
+        configuration.setString(structureConfigurationPrefix + ".hintAxisType", hintAxisType == null ? null : hintAxisType.toString());
         configuration.setString(structureConfigurationPrefix + ".cacheEnabled", String.valueOf(cacheEnabled));
         StringBuilder ms = new StringBuilder();
         if (hintFnModes != null) {

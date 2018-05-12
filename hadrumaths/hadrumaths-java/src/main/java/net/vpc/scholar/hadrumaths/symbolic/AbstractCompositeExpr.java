@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  * Created by vpc on 4/29/14.
  */
 public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public boolean isInvariantImpl(Axis axis) {

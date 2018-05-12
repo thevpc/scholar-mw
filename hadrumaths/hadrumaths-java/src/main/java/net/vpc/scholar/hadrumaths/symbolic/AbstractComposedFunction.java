@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Expressions;
+import net.vpc.scholar.hadrumaths.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
  * Created by vpc on 4/30/14.
  */
 public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
+    private static final long serialVersionUID = 1L;
 
     public AbstractComposedFunction() {
 
@@ -180,24 +178,27 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
 //    }
 
     @Override
-    public DoubleToComplex getComponent(Axis a) {
+    public Expr getComponent(Axis a) {
         switch (a) {
             case X: {
-                return getComponent(0, 0).toDC();
+                return getComponent(0, 0);
             }
             case Y: {
-                return getComponent(1, 0).toDC();
+                return getComponent(1, 0);
             }
             case Z: {
-                return getComponent(2, 0).toDC();
+                return getComponent(2, 0);
             }
         }
         throw new IllegalArgumentException("Illegal axis");
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x})[0];
+    public Complex computeComplex(double x,OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
     @Override
@@ -301,6 +302,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         }
         return true;
     }
+
 
 //    @Override
 //    public boolean isScalarExpr() {

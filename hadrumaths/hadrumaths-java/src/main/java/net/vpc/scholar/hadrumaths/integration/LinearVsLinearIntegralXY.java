@@ -12,6 +12,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOpera
  * Time: 15:15:16
  */
 final class LinearVsLinearIntegralXY  {
+    private static final long serialVersionUID = 1L;
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         return primi_linear2(domain,(Linear) f1,(Linear) f2);
     }

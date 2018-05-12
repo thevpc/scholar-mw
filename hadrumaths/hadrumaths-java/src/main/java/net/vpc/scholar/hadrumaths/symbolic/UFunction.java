@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.*;
  * Time: 11:51:13
  */
 public final class UFunction extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001018L;
+    private static final long serialVersionUID = 1L;
 
     private double amp;
     private double a;
@@ -66,20 +66,20 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
                 return true;
             }
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
+        return true;
     }
 
 
-    public double computeDouble0(double x) {
+    public double computeDouble0(double x, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
     }
 
-    public double computeDouble0(double x, double y) {
+    public double computeDouble0(double x, double y, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
     }
 
     @Override
-    public double computeDouble0(double x, double y, double z) {
+    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
     }
 

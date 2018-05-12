@@ -2,6 +2,7 @@ package net.vpc.scholar.hadruwaves;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
+import net.vpc.scholar.hadrumaths.util.IOUtils;
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
@@ -725,6 +726,10 @@ public final class Physics {
         public static void setModeIndexCacheEnabled(boolean enabled) {
             ModeIndex.setCachedEnabled(enabled);
         }
+    }
+
+    public static String getHadruwavesVersion(){
+        return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadruwaves");
     }
 
 }

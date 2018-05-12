@@ -13,6 +13,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
  * To change this template use File | Settings | File Templates.
  */
 public class EssaiEchelonFunctionXY extends DFunction2XY implements Cloneable{
+    private static final long serialVersionUID = 1L;
     public EssaiEchelonFunctionXY(Domain domain, double bandx, double bandWidth) {
         super(domain, bandx, bandWidth);
         setFunctions(createTest(bandx,

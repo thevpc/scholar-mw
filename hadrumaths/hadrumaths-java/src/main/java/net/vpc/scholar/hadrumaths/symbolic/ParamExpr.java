@@ -7,20 +7,25 @@ import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Out;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by vpc on 4/29/14.
  */
-public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/TParam,DoubleToDouble,DoubleToComplex,DoubleToMatrix,DoubleToVector {
+public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/TParam, DoubleToDouble, DoubleToComplex, DoubleToMatrix, DoubleToVector {
+    private static final long serialVersionUID = 1L;
     private String paramName;
+
     protected ParamExpr(String name) {
-        paramName=name;
+        paramName = name;
     }
 
-    public String getParamName(){
+    public String getParamName() {
         return paramName;
     }
+
     @Override
     public boolean hasParamsImpl() {
         return true;
@@ -61,6 +66,7 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
         return this;
 //        throw new IllegalArgumentException("Param "+getName()+" could not be evaluated");
     }
+
     @Override
     public DoubleToDouble toDD() {
         return this;
@@ -80,179 +86,199 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+    public Complex computeComplex(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex computeComplex(double x, double y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
-    @Override
-    public double computeDouble(double x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
-    }
+//    @Override
+//    public double computeDouble(double x) {
+//        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+//    }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public double computeDouble(double x, double y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+    public double computeDouble(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x, double y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex computeComplex(double x, double y, double z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
-    @Override
-    public double computeDouble(double x, double y, double z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
-    }
+//    @Override
+//    public double computeDouble(double x, double y, double z) {
+//        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+//    }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Complex[] computeComplex(double[] x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double[] x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double x, double[] y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x) {
-        throw new IllegalArgumentException("Param "+ getTitle()+" could not be evaluated");
+        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(paramName);
-    }
+//    @Override
+//    public String toString() {
+//        return String.valueOf(paramName);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -289,37 +315,37 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
@@ -342,4 +368,10 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
         return true;
     }
 
+    @Override
+    public Set<ParamExpr> getParams() {
+        HashSet<ParamExpr> paramExprs = new HashSet<>(1);
+        paramExprs.add(this);
+        return paramExprs;
+    }
 }

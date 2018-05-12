@@ -11,7 +11,7 @@ package net.vpc.scholar.hadrumaths;
    */
 
 public class CholeskyDecomposition implements java.io.Serializable {
-    private static final long serialVersionUID = -1010101010101001010L;
+      private static final long serialVersionUID = 1L;
 
 /* ------------------------
    Class variables

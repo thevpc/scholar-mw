@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 public class FunctionsXYPlotConsoleAction implements ConsoleAction {
-    public static final long serialVersionUID = -1231231231240000003L;
+    private static final long serialVersionUID = 1L;
     private DoubleToVector[] fn;
     private String title;
     private Domain domain;

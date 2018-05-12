@@ -15,6 +15,7 @@ import java.util.*;
  * @author vpc
  */
 public class Any extends AbstractVerboseExprRef implements Cloneable {
+    private static final long serialVersionUID = 1L;
 
     static {
         ExpressionTransformFactory.setExpressionTransformer(Any.class, ExpressionTransform.class, new ExpressionTransformer() {
@@ -307,6 +308,16 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        return object.toDC().computeComplex(x, y, z, defined);
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        return object.toDC().computeComplex(x, y, defined);
+    }
+
+    @Override
     public Complex computeComplex(double x, double y) {
         return object.toDC().computeComplex(x, y);
     }
@@ -324,6 +335,43 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     @Override
     public double computeDouble(double x) {
         return object.toDD().computeDouble(x);
+    }
+
+    @Override
+    public double computeDouble(double x, OutBoolean defined) {
+        return object.toDD().computeDouble(x, defined);
+    }
+
+    public DoubleDomainExpr toD() {
+        if (object.isDD()) {
+            return object.toDD();
+        }
+        return object.toDC();
+    }
+
+    @Override
+    public boolean contains(double x, double y, double z) {
+        return toD().contains(x, y, z);
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        return toD().contains(x, y);
+    }
+
+    @Override
+    public boolean contains(double x) {
+        return toD().contains(x);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, OutBoolean defined) {
+        return object.toDD().computeDouble(x, y, defined);
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        return object.toDD().computeDouble(x, y, z, defined);
     }
 
     @Override
@@ -641,6 +689,11 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        return object.toDC().computeComplex(x, defined);
+    }
+
+    @Override
     public int getComponentSize() {
         return object.toDV().getComponentSize();
     }
@@ -755,9 +808,9 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
                 }
             }
             map2.putAll(map);
-            return new Any(object,name, map2);
+            return new Any(object, name, map2);
         } else {
-            return new Any(object,name, map);
+            return new Any(object, name, map);
         }
     }
 

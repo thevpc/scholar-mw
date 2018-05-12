@@ -3,11 +3,13 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Sqr extends GenericFunctionX implements Cloneable{
+    private static final long serialVersionUID = 1L;
     public Sqr(Expr arg) {
         super("sqr",arg);
     }
@@ -18,11 +20,11 @@ public class Sqr extends GenericFunctionX implements Cloneable{
     }
 
 
-    public Complex evalComplex(Complex c){
+    public Complex computeComplexArg(Complex c, OutBoolean defined){
         return c.sqr();
     }
 
-    protected double evalDouble(double c){
+    public double computeDoubleArg(double c, OutBoolean defined){
         return c*c;
     }
 

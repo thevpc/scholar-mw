@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
-    private static final long serialVersionUID = -1010101010101001020L;
+    private static final long serialVersionUID = 1L;
     private static final DCxy ZERO=new DCxy(FunctionFactory.DZEROXY);
     protected DoubleToDouble real;
     protected DoubleToDouble imag;
@@ -36,14 +36,19 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
     protected DCxy(Domain domain, DoubleToDouble real, DoubleToDouble imag) {
         this.domain = domain;
-        this.real = real == null ? FunctionFactory.DZEROXY : real;
-        this.imag = imag == null ? FunctionFactory.DZEROXY : imag;
+        this.real = real == null ? FunctionFactory.DZEROXY : real.toDD();
+        this.imag = imag == null ? FunctionFactory.DZEROXY : imag.toDD();
 //        name = (this.real.getName() + "+i." + this.imag.getName());
     }
+
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x},(Domain) null,null)[0];
+    public Complex computeComplex(double x,OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
+
     //    /**
 //     * &lt;this,other&gt;
 //     *
@@ -237,9 +242,11 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 //                new DDxyProduct(real, other.imag).add(new DDxyProduct(imag, other.real))
 //        );
 //    }
-    public Complex computeComplex(double x, double y) {
-        if (domain.contains(x, y)) {
-            return Complex.valueOf(real.computeDouble(x, y), imag.computeDouble(x, y));
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        if (contains(x, y)) {
+            Complex c = Complex.valueOf(real.computeDouble(x, y, defined), imag.computeDouble(x, y, defined));
+            defined.set();//not really necessary...
+            return c;
         }
         return Complex.ZERO;
     }
@@ -269,22 +276,22 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         return Maths.complex(real, Maths.mul(Maths.expr(-1, Domain.FULL(getDomainDimension())), imag).toDD());
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (!real.isZero()) {
-            sb.append(real.toString());
-        }
-        if (!imag.isZero()) {
-            String s = imag.toString();
-            if (!s.startsWith("-")) {
-                sb.append("+");
-            }
-            sb.append(s);
-            sb.append("*i");
-        }
-        return sb.toString();
-    }
+//    @Override
+//    public String toString() {
+//        StringBuilder sb = new StringBuilder();
+//        if (!real.isZero()) {
+//            sb.append(real.toString());
+//        }
+//        if (!imag.isZero()) {
+//            String s = imag.toString();
+//            if (!s.startsWith("-")) {
+//                sb.append("+");
+//            }
+//            sb.append(s);
+//            sb.append("*i");
+//        }
+//        return sb.toString();
+//    }
 
 
     //    public boolean isInvariant(Axis axis) {
@@ -442,9 +449,10 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y, z)) {
             Complex c = Complex.valueOf(real.computeDouble(x, y, z), imag.computeDouble(x, y, z));
+            defined.set();
             return c;
         }
         return Complex.ZERO;
@@ -452,7 +460,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {
-//        return computeComplex(x,y,z).toDouble();
+//        return computeComplexArg(x,y,z).toDouble();
 //    }
 
 

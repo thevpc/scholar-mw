@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @creationtime 10 juin 2007 13:51:49
  */
 final class ClassClassKey implements Serializable {
-    private static final long serialVersionUID = -1010101010101001066L;
+    private static final long serialVersionUID = 1L;
     int domainDimension;
     Class c1;
     Class c2;

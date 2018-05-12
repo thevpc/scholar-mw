@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.test.plot;
+package net.vpc.scholar.hadrumaths.test.ignored;
 
 
 import static net.vpc.scholar.hadrumaths.Maths.*;

@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.OutBoolean;
 
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  */
 public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneable {
 
-    private static final long serialVersionUID = -1010101010101001001L;
+    private static final long serialVersionUID = 1L;
     private Axis invariance;
     protected double periodWidthX;
     protected double periodWidthY;
@@ -169,9 +170,9 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
     }
 
     @Override
-    public double computeDouble(double x, double y) {
+    public double computeDouble(double x, double y,OutBoolean defined) {
         DoubleToDouble f = getSegment(x);
-        return f != null ? f.computeDouble(x, y) : 0;
+        return f != null ? f.computeDouble(x, y,defined) : 0;
     }
 
     public DoubleToDouble getSegment(double x) {

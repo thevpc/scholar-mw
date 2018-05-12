@@ -13,11 +13,12 @@ import net.vpc.scholar.hadrumaths.UnsupportedDomainDimensionException;
  * Time: 11:51:13
  */
 public final class Linear extends AbstractDoubleToDouble implements Cloneable{
-    private static final long serialVersionUID = -1010101010101001018L;
+    private static final long serialVersionUID = 1L;
     public double a;
     public double b;
     public double c;
 
+    @TestInfo("DisableRandomCalls")
     public static Linear castOrConvert(Expr e){
         if(e instanceof Linear){
             return (Linear) e;
@@ -87,15 +88,15 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
 //        }
     }
 
-    public double computeDouble0(double x, double y,double z) {
+    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return a * x + b *y +c;
     }
 
-    public double computeDouble0(double x, double y) {
+    public double computeDouble0(double x, double y, OutBoolean defined) {
         return a * x + b *y +c;
     }
 
-    public double computeDouble0(double x) {
+    public double computeDouble0(double x, OutBoolean defined) {
         if(b==0){
             return a * x +c;
         }

@@ -76,6 +76,7 @@ public class ComplexFormatter implements Formatter<Complex> {
 
     private void format(double real, double imag, StringBuilder sb, FormatParamSet format) {
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+        FormatParamSet subParams = format.remove(FormatFactory.REQUIRED_PARS);
         if (imag == 0) {
             if(real>0){
                 par=false;
@@ -83,7 +84,7 @@ public class ComplexFormatter implements Formatter<Complex> {
             if(par){
                 sb.append("(");
             }
-            realToString(real, sb, format);
+            realToString(real, sb, subParams);
             if(par){
                 sb.append(")");
             }
@@ -95,7 +96,7 @@ public class ComplexFormatter implements Formatter<Complex> {
             if(par){
                 sb.append("(");
             }
-            imagToString(imag, sb, format);
+            imagToString(imag, sb, subParams);
             if(par){
                 sb.append(")");
             }
@@ -104,9 +105,9 @@ public class ComplexFormatter implements Formatter<Complex> {
                 if(par){
                     sb.append("(");
                 }
-                realToString(real, sb, format);
+                realToString(real, sb, subParams);
                 sb.append("-");
-                imagToString(-imag, sb, format);
+                imagToString(-imag, sb, subParams);
                 if(par){
                     sb.append(")");
                 }
@@ -114,9 +115,9 @@ public class ComplexFormatter implements Formatter<Complex> {
                 if(par){
                     sb.append("(");
                 }
-                realToString(real, sb, format);
+                realToString(real, sb, subParams);
                 sb.append("+");
-                imagToString(imag, sb, format);
+                imagToString(imag, sb, subParams);
                 if(par){
                     sb.append(")");
                 }

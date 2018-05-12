@@ -95,7 +95,10 @@ public class LinearFormatter implements Formatter<Linear> {
                 if (a != 0) {
                     sb.append(" ");
                 }
-                v = FormatFactory.toParamString(b, df, sb.length() > initialLength, true, a != 0);
+                if (!(b < 0) && a!=0) {
+                    sb.append(" + ");
+                }
+                v = FormatFactory.toParamString(b, df, sb.length() > initialLength && b < 0, true, a != 0);
                 if (v.length() > 0) {
                     sb.append(v).append(mul).append(y.getName());
                     lastNbr = true;
@@ -118,6 +121,9 @@ public class LinearFormatter implements Formatter<Linear> {
                     return;
                 }
             }
+//            if (!(c <= 0)) {
+//                sb.append(" + ");
+//            }
             v = FormatFactory.toParamString(c, df, lastNbr, true, a != 0 || b != 0);
             if (v.length() > 0) {
                 sb.append(v);

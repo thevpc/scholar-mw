@@ -23,7 +23,7 @@
 //        this.returnActualGpCount = returnActualGpCount;
 //    }
 //
-//    protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
+//    protected Complex computeComplexArg(MomStructure structure, ParamSet x, ConsoleActionParams p) {
 //        return new Complex(computeTestConvergenceForZs(structure,this.start, this.error,this.returnActualGpCount,this));
 //    }
 //

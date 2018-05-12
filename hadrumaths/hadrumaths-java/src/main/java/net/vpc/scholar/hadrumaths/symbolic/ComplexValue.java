@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,IConstantValue {
 
-    private static final long serialVersionUID = -1010101010101001020L;
+    private static final long serialVersionUID = 1L;
     protected DoubleToDouble real;
     protected DoubleToDouble imag;
     protected Complex value;
@@ -37,8 +37,11 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(new double[]{x},(Domain) null,null)[0];
+    public Complex computeComplex(double x,OutBoolean defined) {
+        Out<Range> ranges = new Out<>();
+        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+        defined.set(ranges.get().getDefined1().get(0));
+        return complex;
     }
 
     public boolean isInvariantImpl(Axis axis) {
@@ -146,8 +149,9 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 //                new DDxyProduct(real, other.imag).add(new DDxyProduct(imag, other.real))
 //        );
 //    }
-    public Complex computeComplex(double x, double y) {
-        if (domain.contains(x, y)) {
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        if (contains(x, y)) {
+            defined.set();
             return value;
         }
         return Complex.ZERO;
@@ -178,10 +182,10 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         return new ComplexValue(value.conj(), domain);
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return value.toString();
+//    }
 
 
 
@@ -315,8 +319,9 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         return Expressions.computeComplexFromXY(this, x, y, z, d0, ranges);
     }
 
-    public Complex computeComplex(double x, double y, double z) {
-        if (domain.contains(x, y,z)) {
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y,z)) {
+            defined.set();
             return value;
         }
         return Complex.ZERO;

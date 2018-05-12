@@ -7,7 +7,6 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Out;
@@ -16,20 +15,21 @@ import net.vpc.scholar.hadrumaths.Out;
  * @author vpc
  */
 public class Imag extends DCxyToDDxy implements Cloneable{
+    private static final long serialVersionUID = 1L;
 
     public Imag(DoubleToComplex base) {
         super(base);
     }
 
     public boolean isInvariantImpl(Axis axis) {
-        switch (axis) {
-            case X:
-            case Y: {
-                return false;
-
-            }
-        }
-        return true;
+//        switch (axis) {
+//            case X:
+//            case Y: {
+//                return false;
+//
+//            }
+//        }
+        return getArg().isInvariant(axis);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Imag extends DCxyToDDxy implements Cloneable{
 //    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
 //        double[][] r = new double[y.length][x.length];
 //        Out<Range> r2 = new Out<Range>();
-//        Complex[][] cc = getArg().computeComplex(x, y, d0, r2);
+//        Complex[][] cc = getArg().computeComplexArg(x, y, d0, r2);
 //        Range currRange = r2.get();
 //        if (currRange != null) {
 //            int ax = currRange.xmin;
@@ -63,7 +63,7 @@ public class Imag extends DCxyToDDxy implements Cloneable{
 //    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
 //        double[][][] r = new double[z.length][y.length][x.length];
 //        Out<Range> r2 = new Out<Range>();
-//        Complex[][][] cc = getArg().computeComplex(x, y, z, d0, r2);
+//        Complex[][][] cc = getArg().computeComplexArg(x, y, z, d0, r2);
 //        Range currRange = r2.get();
 //        if (currRange != null) {
 //            int ax = currRange.xmin;
@@ -99,24 +99,24 @@ public class Imag extends DCxyToDDxy implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x) {
+    protected double computeDouble0(double x, OutBoolean defined) {
         return getArg().computeComplex(x).getImag();
     }
 
     @Override
-    protected double computeDouble0(double x, double y) {
+    protected double computeDouble0(double x, double y, OutBoolean defined) {
         return getArg().computeComplex(x, y).getImag();
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z) {
+    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
         return getArg().computeComplex(x, y, z).getImag();
     }
 
-    @Override
-    public String toString() {
-        return "imag(" + FormatFactory.format(getArg()) + ")";
-    }
+//    @Override
+//    public String toString() {
+//        return "imag(" + FormatFactory.format(getArg()) + ")";
+//    }
 
     @Override
     public boolean isScalarExprImpl() {

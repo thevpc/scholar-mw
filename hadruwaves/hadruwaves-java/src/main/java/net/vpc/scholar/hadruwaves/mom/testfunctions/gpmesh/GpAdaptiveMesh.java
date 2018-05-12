@@ -274,7 +274,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         super.setStructure(structure);
         for (GeometryList geometryList : polygons) {
             if(geometryList instanceof FractalAreaGeometryList){
-                ((FractalAreaGeometryList) geometryList).setLevel(structure.getK());
+                ((FractalAreaGeometryList) geometryList).setLevel(structure.getFractalScale());
             }
             if(geometryList instanceof MomStructureAware){
                 ((MomStructureAware) geometryList).setStructure(structure);
@@ -286,7 +286,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
         for (GeometryList geometryList : polygons) {
             if (geometryList instanceof FractalAreaGeometryList) {
-                ((FractalAreaGeometryList) geometryList).setLevel(getStructure().getK());
+                ((FractalAreaGeometryList) geometryList).setLevel(getStructure().getFractalScale());
             }
         }
 //        if (meshAlgo instanceof MeshAlgoRect && pattern instanceof RectMeshAttachGpPattern) {

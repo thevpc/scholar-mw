@@ -46,7 +46,7 @@
 //    }
 //
 //    public double computeDouble(double x) {
-//        if (domain.contains(x)) {
+//        if (contains(x)) {
 //            return (a * x + b);
 //        }
 //        return 0;

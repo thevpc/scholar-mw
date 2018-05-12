@@ -10,7 +10,7 @@ import java.util.*;
  * @creationtime 18 oct. 2006 09:57:45
  */
 public class FunctionsXYTableModel extends AbstractTableModel {
-    private static final long serialVersionUID = -1010101010101001063L;
+    private static final long serialVersionUID = 1L;
     private Expr[] base;
     private String[] titles;
     private boolean[] selected;
