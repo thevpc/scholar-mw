@@ -14,10 +14,17 @@ public interface BooleanArray2 {
 
     void set(int i, int j);
 
-    void copyFrom(BooleanArray2 other,Range r0);
+    void set(int i, BooleanArray1 arr);
+
+    void copyFrom(BooleanArray2 other, Range r0);
+
+    void addFrom(BooleanArray2 other, Range r0);
+
     void clear(int i, int j);
 
     BooleanArray2 copy();
+
+    boolean[][] toArray();
 
     int size1();
 

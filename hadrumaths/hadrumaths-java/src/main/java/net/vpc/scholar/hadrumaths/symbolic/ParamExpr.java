@@ -120,11 +120,6 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
     @Override
-    public Complex computeComplex(double x, double y) {
-        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
-    }
-
-    @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
@@ -189,10 +184,10 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, double z) {
+//        throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
+//    }
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {

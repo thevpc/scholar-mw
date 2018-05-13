@@ -36,10 +36,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
             if (def) {
                 double d = a - b;
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return 0;
             }
         }
@@ -50,24 +48,20 @@ public class Sub extends AbstractExprOperator implements Cloneable {
             if (def) {
                 Complex d = a.sub(b);
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return Complex.ZERO;
             }
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Matrix d = a.sub(b);
-                //defined.set();
-                options.resultDefined = true;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return zero;
             }
         }
@@ -387,79 +381,91 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, y, z, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
-        Complex c = getSecond().toDC().computeComplex(x, y, z, defined);
-        if (!defined.isSet()) {
+        Complex c = getSecond().toDC().computeComplex(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return a.sub(c);
     }
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, y, z, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, y, z, defined);
-        if (!defined.isSet()) {
+        double b = getSecond().toDD().computeDouble(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return a - b;
     }
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, y, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
-        Complex c = getSecond().toDC().computeComplex(x, y, defined);
-        if (!defined.isSet()) {
+        Complex c = getSecond().toDC().computeComplex(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return a.sub(c);
     }
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, y, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, y, defined);
-        if (!defined.isSet()) {
+        double b = getSecond().toDD().computeDouble(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return a - b;
     }
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
-        Complex c = getSecond().toDC().computeComplex(x, defined);
-        if (!defined.isSet()) {
+        Complex c = getSecond().toDC().computeComplex(x, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return a.sub(c);
     }
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, defined);
-        if (!defined.isSet()) {
+        double b = getSecond().toDD().computeDouble(x, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return a - b;
     }
 

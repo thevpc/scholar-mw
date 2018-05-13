@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:39:39
  */
-public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,IConstantValue {
+public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, IConstantValue {
 
     private static final long serialVersionUID = 1L;
     protected DoubleToDouble real;
@@ -18,31 +18,32 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     protected Domain domain;
     //    public static final CFunctionXY ZERO =new CFunctionXY(DCstFunctionXY.ZERO,DCstFunctionXY.ZERO).setName("0");
 
-    public static ComplexValue valueOf(Complex value){
+    public static ComplexValue valueOf(Complex value) {
         return new ComplexValue(value);
     }
 
-    public static ComplexValue valueOf(Complex value,Domain domain){
-        return new ComplexValue(value,domain);
+    public static ComplexValue valueOf(Complex value, Domain domain) {
+        return new ComplexValue(value, domain);
     }
 
     public ComplexValue(Complex value) {
-        this(value,null);
+        this(value, null);
     }
+
     public ComplexValue(Complex value, Domain domain) {
         this.real = Maths.expr(value.getReal(), domain);
         this.imag = Maths.expr(value.getImag(), domain);
         this.value = value;
-        this.domain = value.isZero()?Domain.ZERO(domain == null ? 1 : domain.getDimension()):domain == null ? Domain.FULLX : domain;
+        this.domain = value.isZero() ? Domain.ZERO(domain == null ? 1 : domain.getDimension()) : domain == null ? Domain.FULLX : domain;
     }
 
-    @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
-        Out<Range> ranges = new Out<>();
-        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-        defined.set(ranges.get().getDefined1().get(0));
-        return complex;
-    }
+//    @Override
+//    public Complex computeComplex(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     public boolean isInvariantImpl(Axis axis) {
         return true;
@@ -55,13 +56,13 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
         if (abcd != null) {
-            BooleanArray2 def0=BooleanArrays.newArray(y.length,x.length);
+            BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             abcd.setDefined(def0);
             Complex[][] c = new Complex[y.length][x.length];
             for (int j = abcd.ymin; j <= abcd.ymax; j++) {
                 for (int k = abcd.xmin; k <= abcd.xmax; k++) {
                     c[j][k] = value;
-                    def0.set(j,k);
+                    def0.set(j, k);
                 }
             }
             ArrayUtils.fillArray2ZeroComplex(c, abcd);
@@ -79,7 +80,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     }
 
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        if(getDomainDimension()!=1){
+        if (getDomainDimension() != 1) {
             throw new IllegalArgumentException("Missing Y");
         }
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x);
@@ -121,7 +122,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         if (imag.isZero()) {
             return real;
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+" Not supported yet.");
+        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + " Not supported yet.");
     }
 
 //    public boolean isDDx() {
@@ -149,7 +150,16 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 //                new DDxyProduct(real, other.imag).add(new DDxyProduct(imag, other.real))
 //        );
 //    }
-    public Complex computeComplex(double x, double y,OutBoolean defined) {
+
+    public Complex computeComplex(double x, OutBoolean defined) {
+        if (contains(x)) {
+            defined.set();
+            return value;
+        }
+        return Complex.ZERO;
+    }
+
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
         if (contains(x, y)) {
             defined.set();
             return value;
@@ -186,7 +196,6 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 //    public String toString() {
 //        return value.toString();
 //    }
-
 
 
     //    public boolean isInvariant(Axis axis) {
@@ -227,8 +236,8 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
     @Override
     public DoubleToComplex clone() {
         ComplexValue x = (ComplexValue) super.clone();
-        x.real=(DoubleToDouble) real.clone();
-        x.imag=(DoubleToDouble) imag.clone();
+        x.real = (DoubleToDouble) real.clone();
+        x.imag = (DoubleToDouble) imag.clone();
         return x;
     }
 
@@ -319,13 +328,14 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
         return Expressions.computeComplexFromXY(this, x, y, z, d0, ranges);
     }
 
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
-        if (contains(x, y,z)) {
+    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+        if (contains(x, y, z)) {
             defined.set();
             return value;
         }
         return Complex.ZERO;
     }
+
     @Override
     public int getDomainDimension() {
         return getDomain().getDimension();
@@ -348,16 +358,16 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable,I
 
     @Override
     public Expr mul(Domain domain) {
-        return ComplexValue.valueOf(value,this.domain.intersect(domain));
+        return ComplexValue.valueOf(value, this.domain.intersect(domain));
     }
 
     @Override
     public Expr mul(double other) {
-        return ComplexValue.valueOf(value.mul(other),this.domain);
+        return ComplexValue.valueOf(value.mul(other), this.domain);
     }
 
     @Override
     public Expr mul(Complex other) {
-        return ComplexValue.valueOf(value.mul(other),this.domain);
+        return ComplexValue.valueOf(value.mul(other), this.domain);
     }
 }

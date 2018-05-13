@@ -32,17 +32,17 @@ public class FixedAxisZFunction extends AbstractDoubleToDouble implements Clonea
 
     @Override
     protected double computeDouble0(double x, OutBoolean defined) {
-        return base.computeDouble(x);
+        return base.computeDouble(x,defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
-        return base.computeDouble(x, y, z);
+        return base.computeDouble(x, y, z,defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z0, OutBoolean defined) {
-        return base.computeDouble(x, y, z);
+        return base.computeDouble(x, y, z,defined);
     }
 
 //    @Override

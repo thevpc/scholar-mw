@@ -99,6 +99,54 @@ public final class ArrayUtils {
         return r;
     }
 
+    public static double[] booleanToDoubleArray(boolean[] c) {
+        double[] r = new double[c.length];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = c[i]?1:0;
+        }
+        return r;
+    }
+
+    public static double[][] booleanToDoubleArray(boolean[][] c) {
+        double[][] r = new double[c.length][];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = booleanToDoubleArray(c[i]);
+        }
+        return r;
+    }
+
+    public static double[][][] booleanToDoubleArray(boolean[][][] c) {
+        double[][][] r = new double[c.length][][];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = booleanToDoubleArray(c[i]);
+        }
+        return r;
+    }
+
+    public static int[] booleanToIntArray(boolean[] c) {
+        int[] r = new int[c.length];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = c[i]?1:0;
+        }
+        return r;
+    }
+
+    public static int[][] booleanToIntArray(boolean[][] c) {
+        int[][] r = new int[c.length][];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = booleanToIntArray(c[i]);
+        }
+        return r;
+    }
+
+    public static int[][][] booleanToIntArray(boolean[][][] c) {
+        int[][][] r = new int[c.length][][];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = booleanToIntArray(c[i]);
+        }
+        return r;
+    }
+
     public static double[] unbox(Double[] c) {
         double[] r = new double[c.length];
         for (int i = 0; i < r.length; i++) {

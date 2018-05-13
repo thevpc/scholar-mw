@@ -233,6 +233,11 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing Z");
+    }
+
+    @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
         throw new IllegalArgumentException("Missing Z");
     }

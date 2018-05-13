@@ -85,6 +85,52 @@ public class BooleanArrays {
                 set(j, other.get(j));
             }
         }
+
+        public void addFrom(BooleanArray1 other, Range r0) {
+            for (int j = r0.xmin; j <= r0.xmax; j++) {
+                if(other.get(j)) {
+                    set(j);
+                }
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !BooleanArray1.class.isAssignableFrom(getClass())) return false;
+
+            BooleanArray1 arr2 = (BooleanArray1) o;
+
+            int s1 = size();
+            if (s1 != arr2.size()) return false;
+            for (int i = 0; i < s1; i++) {
+                if (get(i) != arr2.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 0;
+            int s1 = size();
+            for (int i = 0; i < s1; i++) {
+                result = 31 * result + Boolean.hashCode(get(i));
+            }
+            result = 31 * result + size();
+            return result;
+        }
+
+        @Override
+        public boolean[] toArray() {
+            boolean[] b = new boolean[size()];
+            for (int i = 0; i < b.length; i++) {
+                b[i] = get(i);
+            }
+            return b;
+        }
+
     }
 
     public abstract static class AbstractBooleanArray2 implements BooleanArray2 {
@@ -111,6 +157,70 @@ public class BooleanArrays {
                 }
             }
         }
+
+        public void addFrom(BooleanArray2 other, Range r0) {
+            for (int i = r0.ymin; i <= r0.ymax; i++) {
+                for (int j = r0.xmin; j <= r0.xmax; j++) {
+                    if(other.get(i, j)) {
+                        set(i, j);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !BooleanArray2.class.isAssignableFrom(getClass())) return false;
+
+            BooleanArray2 arr2 = (BooleanArray2) o;
+
+            int s1 = size1();
+            int s2 = size2();
+            if (s1 != arr2.size1()) return false;
+            if (s2 != arr2.size2()) return false;
+            for (int i = 0; i < s1; i++) {
+                for (int j = 0; j < s2; j++) {
+                    if (get(i, j) != arr2.get(i, j)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 0;
+            int s1 = size1();
+            int s2 = size2();
+            for (int i = 0; i < s1; i++) {
+                for (int j = 0; j < s2; j++) {
+                    result = 31 * result + Boolean.hashCode(get(i, j));
+                }
+            }
+            result = 31 * result + size1();
+            result = 31 * result + size2();
+            return result;
+        }
+
+        @Override
+        public void set(int i, BooleanArray1 arr) {
+            for (int j = 0; j < arr.size(); j++) {
+                set(i, j, arr.get(j));
+            }
+        }
+
+        @Override
+        public boolean[][] toArray() {
+            boolean[][] b = new boolean[size1()][size2()];
+            for (int i = 0; i < b.length; i++) {
+                for (int j = 0; j < b[i].length; j++) {
+                    b[i][j] = get(i, j);
+                }
+            }
+            return b;
+        }
     }
 
     public abstract static class AbstractBooleanArray3 implements BooleanArray3 {
@@ -131,7 +241,7 @@ public class BooleanArrays {
         }
 
         public void copyFrom(BooleanArray3 other, Range r0) {
-            if(other==null){
+            if (other == null) {
                 return;
             }
             for (int i = r0.zmin; i <= r0.zmax; i++) {
@@ -143,6 +253,94 @@ public class BooleanArrays {
                 }
             }
         }
+        public void addFrom(BooleanArray3 other, Range r0) {
+            if (other == null) {
+                return;
+            }
+            for (int i = r0.zmin; i <= r0.zmax; i++) {
+                for (int j = r0.ymin; j <= r0.ymax; j++) {
+                    for (int k = r0.xmin; k <= r0.xmax; k++) {
+//                        set(j, i, k, other.get(j, i, k));
+                        if(other.get(i, j, k)) {
+                            set(i, j, k);
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !BooleanArray3.class.isAssignableFrom(getClass())) return false;
+
+            BooleanArray3 arr2 = (BooleanArray3) o;
+
+            int s1 = size1();
+            int s2 = size2();
+            int s3 = size3();
+            if (s1 != arr2.size1()) return false;
+            if (s2 != arr2.size2()) return false;
+            if (s3 != arr2.size3()) return false;
+            for (int i = 0; i < s1; i++) {
+                for (int j = 0; j < s2; j++) {
+                    for (int k = 0; k < s3; k++) {
+                        if (get(i, j, k) != arr2.get(i, j, k)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 0;
+            int s1 = size1();
+            int s2 = size2();
+            int s3 = size3();
+            for (int i = 0; i < s1; i++) {
+                for (int j = 0; j < s2; j++) {
+                    for (int k = 0; k < s3; k++) {
+                        result = 31 * result + Boolean.hashCode(get(i, j, k));
+                    }
+                }
+            }
+            result = 31 * result + size1();
+            result = 31 * result + size2();
+            return result;
+        }
+
+        @Override
+        public void set(int i, BooleanArray2 value) {
+            for (int j = 0; j < value.size1(); j++) {
+                for (int k = 0; k < value.size2(); k++) {
+                    set(i, j, k, value.get(j, k));
+                }
+            }
+        }
+
+        @Override
+        public void set(int i, int j, BooleanArray1 value) {
+            for (int k = 0; k < value.size(); k++) {
+                set(i, j, k, value.get(k));
+            }
+        }
+
+        @Override
+        public boolean[][][] toArray() {
+            boolean[][][] b = new boolean[size1()][size2()][size3()];
+            for (int i = 0; i < b.length; i++) {
+                for (int j = 0; j < b[i].length; j++) {
+                    for (int k = 0; k < b[i][j].length; k++) {
+                        b[i][j][k] = get(i, j, k);
+                    }
+                }
+            }
+            return b;
+        }
+
     }
 
     public static class Arr2 extends AbstractBooleanArray2 {
@@ -206,6 +404,41 @@ public class BooleanArrays {
             Arr2 a = new Arr2(size1, size2);
             a.val = (BitSet2) val.clone();
             return a;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !BooleanArray2.class.isAssignableFrom(getClass())) return false;
+
+            if (o instanceof Arr2) {
+                Arr2 arr2 = (Arr2) o;
+
+                if (size1 != arr2.size1) return false;
+                if (size2 != arr2.size2) return false;
+                return val != null ? val.equals(arr2.val) : arr2.val == null;
+            } else {
+                BooleanArray2 arr2 = (BooleanArray2) o;
+
+                if (size1 != arr2.size1()) return false;
+                if (size2 != arr2.size2()) return false;
+                for (int i = 0; i < size1; i++) {
+                    for (int j = 0; j < size1; j++) {
+                        if (get(i, j) != arr2.get(i, j)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int result = val != null ? val.hashCode() : 0;
+            result = 31 * result + size1;
+            result = 31 * result + size2;
+            return result;
         }
     }
 
@@ -351,17 +584,18 @@ public class BooleanArrays {
             return a;
         }
 
-        @Override
-        public void set(int i, BooleanArray2 value) {
-            if (value instanceof Arr2) {
-                int x = i * size2 * size3;
-                val.set(x, ((Arr2) value).val, 0, size2 * size3);
-            } else {
-                for (int j = 0; j < size2; j++) {
-                    val.set(i * size2 * size3 + j * size3, value.get(j).toBitSet(), 0, size3);
-                }
-            }
-        }
+//        @Override
+//        public void set(int i, BooleanArray2 value) {
+//            if (value instanceof Arr2) {
+//                int x = i * size2 * size3;
+//                val.set(x, ((Arr2) value).val, 0, size2 * size3);
+//            } else {
+//                for (int j = 0; j < size2; j++) {
+//                    val.set(i * size2 * size3 + j * size3, value.get(j).toBitSet(), 0, size3);
+//                }
+//            }
+//        }
+
     }
 
     public static String toString(BooleanArray1 a) {

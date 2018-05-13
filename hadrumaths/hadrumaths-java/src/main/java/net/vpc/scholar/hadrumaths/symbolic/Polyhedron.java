@@ -61,6 +61,7 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
 //        AreaComponent.showDialog(polygon.toArea(1E8));
         if (polygon.contains(x, y)) {
             if (isTriangle) {
+                defined.set();
                 Triangle t2;
                 Triangle t3;
                 double v;

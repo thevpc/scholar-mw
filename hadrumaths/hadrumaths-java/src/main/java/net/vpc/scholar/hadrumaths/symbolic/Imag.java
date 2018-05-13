@@ -100,17 +100,17 @@ public class Imag extends DCxyToDDxy implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, OutBoolean defined) {
-        return getArg().computeComplex(x).getImag();
+        return getArg().computeComplex(x,defined).getImag();
     }
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
-        return getArg().computeComplex(x, y).getImag();
+        return getArg().computeComplex(x, y,defined).getImag();
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
-        return getArg().computeComplex(x, y, z).getImag();
+        return getArg().computeComplex(x, y, z,defined).getImag();
     }
 
 //    @Override

@@ -420,40 +420,37 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         }
 
         @Override
-        public double computeDouble(double a, double b, double c, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, double c, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 double d = evalDouble(a, b, c);
-                options.resultDefined = true;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return 0;
             }
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Complex c, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, Complex c, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 Complex d = evalComplex(a, b, c);
-                options.resultDefined = true;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return Complex.ZERO;
             }
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 Matrix d = evalMatrix(a, b, c);
-                options.resultDefined = true;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return zero;
             }
         }

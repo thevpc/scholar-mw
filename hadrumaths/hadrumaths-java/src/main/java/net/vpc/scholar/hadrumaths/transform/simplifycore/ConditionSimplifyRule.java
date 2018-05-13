@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.NoneOutBoolean;
 import net.vpc.scholar.hadrumaths.OutBoolean;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -38,7 +39,7 @@ public class ConditionSimplifyRule implements ExpressionRewriterRule {
             if((xa.isDouble() || xa.isComplex()) && (ya.isDouble() ||ya.isComplex())){
                 Complex a=xa.toComplex();
                 Complex b=ya.toComplex();
-                return RewriteResult.bestEffort(c.computeComplexArg(a,b,true,true, new OutBoolean()));
+                return RewriteResult.bestEffort(c.computeComplexArg(a,b,true,true, NoneOutBoolean.INSTANCE));
             } else if(rxa.isUnmodified() && rya.isUnmodified()){
                 return RewriteResult.unmodified(e);
             }else if(rxa.isBestEffort() && rya.isBestEffort()){
@@ -54,7 +55,7 @@ public class ConditionSimplifyRule implements ExpressionRewriterRule {
             Expr xa= rxa.getValue();
             if((xa.isDouble() || xa.isComplex())){
                 Complex a=xa.toComplex();
-                return RewriteResult.bestEffort(c.computeComplexArg(a, new OutBoolean()));
+                return RewriteResult.bestEffort(c.computeComplexArg(a, NoneOutBoolean.INSTANCE));
             } else if(rxa.isUnmodified()){
                 return RewriteResult.unmodified(e);
             }else if(rxa.isBestEffort()){

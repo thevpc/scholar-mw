@@ -21,6 +21,8 @@ public interface BooleanArray3 {
 
     void set(int i, BooleanArray2 value);
 
+    void set(int i, int j, BooleanArray1 value);
+
     BooleanArray3 copy();
 
     int size1();
@@ -29,6 +31,19 @@ public interface BooleanArray3 {
 
     int size3();
 
+    /**
+     * copy all values
+     * @param other
+     * @param r0
+     */
     void copyFrom(BooleanArray3 other, Range r0);
 
+    /**
+     * copy true values
+     * @param other
+     * @param r0
+     */
+    void addFrom(BooleanArray3 other, Range r0);
+
+    boolean[][][] toArray();
 }

@@ -19,10 +19,12 @@ public class Tan extends TrigoFunctionX implements Cloneable {
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.tan();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Math.tan(c);
     }
 

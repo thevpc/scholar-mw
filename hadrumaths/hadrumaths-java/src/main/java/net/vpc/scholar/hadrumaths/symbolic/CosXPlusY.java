@@ -213,16 +213,19 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
 
     protected double computeDouble0(double x, OutBoolean defined) {
         if(b==0){
+            defined.set();
             return amp * Maths.cos2(a * x + c);
         }
         throw new IllegalArgumentException("Missing y");
     }
 
     protected double computeDouble0(double x, double y, OutBoolean defined) {
+        defined.set();
         return amp * Maths.cos2(a * x + b* y + c);
     }
 
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+        defined.set();
         return amp * Maths.cos2(a * x + b* y + c);
     }
 

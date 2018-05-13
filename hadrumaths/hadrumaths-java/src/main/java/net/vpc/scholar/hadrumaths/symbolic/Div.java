@@ -37,10 +37,8 @@ public class Div extends AbstractExprOperator implements Cloneable {
             if (def) {
                 double d = a / b;
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return 0;
             }
         }
@@ -51,24 +49,21 @@ public class Div extends AbstractExprOperator implements Cloneable {
             if (def) {
                 Complex d = a.div(b);
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return Complex.ZERO;
             }
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
+                defined.set();
                 Matrix d = a.div(b);
                 //defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return zero;
             }
         }
@@ -472,12 +467,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
         if(contains(x)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             Complex a = getFirst().toDC().computeComplex(x, defined2);
             if(!defined2.isSet()){
                 return Complex.ZERO;
             }
-            defined2.unset();
+            defined2.set(false);
             Complex b = getSecond().toDC().computeComplex(x, defined2);
             defined2.set();
             if(!defined2.isSet()){
@@ -492,12 +487,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
         if(contains(x,y)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             Complex a = getFirst().toDC().computeComplex(x,y, defined2);
             if(!defined2.isSet()){
                 return Complex.ZERO;
             }
-            defined2.unset();
+            defined2.set(false);
             Complex b = getSecond().toDC().computeComplex(x,y, defined2);
             defined2.set();
             if(!defined2.isSet()){
@@ -512,12 +507,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         if(contains(x,y,z)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             Complex a = getFirst().toDC().computeComplex(x,y,z, defined2);
             if(!defined2.isSet()){
                 return Complex.ZERO;
             }
-            defined2.unset();
+            defined2.set(false);
             Complex b = getSecond().toDC().computeComplex(x,y,z, defined2);
             defined2.set();
             if(!defined2.isSet()){
@@ -532,12 +527,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, OutBoolean defined) {
         if(contains(x)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             double a = getFirst().toDD().computeDouble(x, defined2);
             if(!defined2.isSet()){
                 return 0;
             }
-            defined2.unset();
+            defined2.set(false);
             double b = getSecond().toDD().computeDouble(x, defined2);
             defined2.set();
             if(!defined2.isSet()){
@@ -552,12 +547,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
         if(contains(x,y)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             double a = getFirst().toDD().computeDouble(x,y, defined2);
             if(!defined2.isSet()){
                 return 0;
             }
-            defined2.unset();
+            defined2.set(false);
             double b = getSecond().toDD().computeDouble(x,y, defined2);
             defined2.set();
             if(!defined2.isSet()){
@@ -572,12 +567,12 @@ public class Div extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
         if(contains(x,y,z)){
-            OutBoolean defined2=new OutBoolean();
+            ReadableOutBoolean defined2=OutBoolean.createReadable();
             double a = getFirst().toDD().computeDouble(x,y,z, defined2);
             if(!defined2.isSet()){
                 return 0;
             }
-            defined2.unset();
+            defined2.set(false);
             double b = getSecond().toDD().computeDouble(x,y,z, defined2);
             defined2.set();
             if(!defined2.isSet()){

@@ -95,6 +95,7 @@ public class DDzIntegralXY extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     protected double computeDouble0(final double z, OutBoolean defined) {
+        defined.set();
         FixedAxisZFunction basez = new FixedAxisZFunction(base,z);
         return integral.integrateXY(basez, x0, x1, y0, y1);
     }

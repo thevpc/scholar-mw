@@ -32,23 +32,52 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
 
     @Override
     public Matrix computeMatrix(double x, double y) {
+        return computeMatrix(x,y,OutBoolean.none());
+    }
+
+    //@Override
+    public Matrix computeMatrix(double x, double y,OutBoolean defined) {
         switch (getComponentSize()) {
             case 1: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y)
+                        getComponent(Axis.X).toDC().computeComplex(x, y,defined)
                 );
             }
             case 2: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y),
-                        getComponent(Axis.Y).toDC().computeComplex(x, y)
+                        getComponent(Axis.X).toDC().computeComplex(x, y,defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, y,defined)
                 );
             }
             case 3: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y),
-                        getComponent(Axis.Y).toDC().computeComplex(x, y),
-                        getComponent(Axis.Z).toDC().computeComplex(x, y)
+                        getComponent(Axis.X).toDC().computeComplex(x, y,defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, y,defined),
+                        getComponent(Axis.Z).toDC().computeComplex(x, y,defined)
+                );
+            }
+        }
+        throw new UnsupportedComponentDimensionException(getComponentDimension());
+    }
+ //@Override
+    public Matrix computeMatrix(double x, OutBoolean defined) {
+        switch (getComponentSize()) {
+            case 1: {
+                return Maths.columnMatrix(
+                        getComponent(Axis.X).toDC().computeComplex(x, defined)
+                );
+            }
+            case 2: {
+                return Maths.columnMatrix(
+                        getComponent(Axis.X).toDC().computeComplex(x, defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, defined)
+                );
+            }
+            case 3: {
+                return Maths.columnMatrix(
+                        getComponent(Axis.X).toDC().computeComplex(x, defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, defined),
+                        getComponent(Axis.Z).toDC().computeComplex(x, defined)
                 );
             }
         }
@@ -56,7 +85,17 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
     }
 
     @Override
+    public Matrix computeMatrix(double x) {
+        return computeMatrix(x,OutBoolean.none());
+    }
+
+    @Override
     public Matrix computeMatrix(double x, double y, double z) {
+        return computeMatrix(x,y,z,OutBoolean.none());
+    }
+
+    //@Override
+    public Matrix computeMatrix(double x, double y, double z,OutBoolean defined) {
 
         switch (getComponentSize()) {
             case 1: {

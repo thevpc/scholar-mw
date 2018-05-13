@@ -43,15 +43,6 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    @Override
-    public Complex computeComplex(double x, double y) {
-        return Expressions.computeComplex(this, x, y);
-    }
-
-//    @Override
-//    public double computeDouble(double x) {
-//        return Expressions.computeDouble(this, x);
-//    }
 
     @Override
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -62,12 +53,6 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
     public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
-
-    @Override
-    public double computeDouble(double x, double y) {
-        return Expressions.computeDouble(this, x, y);
-    }
-
 
     @Override
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -93,38 +78,38 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
         throw new ClassCastException();
     }
 
-    @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
-        Out<Range> ranges = new Out<>();
-        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-        defined.set(ranges.get().getDefined1().get(0));
-        return complex;
-    }
+//    @Override
+//    public Complex computeComplex(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return computeComplex(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, double z) {
+//        return computeComplex(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
+//    }
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {
 //        return computeDouble(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
 //    }
 
-    @Override
-    public Matrix computeMatrix(double x) {
-        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
-    }
-
-    @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        return computeMatrix(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
-    }
-
-    @Override
-    public double[] computeDouble(double x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
-    }
+//    @Override
+//    public Matrix computeMatrix(double x) {
+//        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
+//    }
+//
+//    @Override
+//    public Matrix computeMatrix(double x, double y, double z) {
+//        return computeMatrix(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
+//    }
+//
+//    @Override
+//    public double[] computeDouble(double x, double[] y) {
+//        return computeDouble(x, y, (Domain) null, null);
+//    }
 
 
     @Override

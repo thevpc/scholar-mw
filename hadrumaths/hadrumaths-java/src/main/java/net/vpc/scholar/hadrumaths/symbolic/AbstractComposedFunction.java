@@ -59,7 +59,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     @Override
     public DoubleToDouble toDD() {
         if (!isDD()) {
-            throw new ClassCastException();
+            throw new ClassCastException("Unable to Cast to DD :: "+getClass().getName()+" = "+toString());
         }
         return this;
     }
@@ -193,13 +193,14 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         throw new IllegalArgumentException("Illegal axis");
     }
 
-    @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
-        Out<Range> ranges = new Out<>();
-        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-        defined.set(ranges.get().getDefined1().get(0));
-        return complex;
-    }
+//    @Override
+//    public Complex computeComplex(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+//        Range range = ranges.get();
+//        defined.set(range!=null && range.getDefined1().get(0));
+//        return complex;
+//    }
 
     @Override
     public boolean isInvariantImpl(Axis axis) {

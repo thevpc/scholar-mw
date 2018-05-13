@@ -26,7 +26,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
         if (contains(x)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             Complex v = getXArgument().toDC().computeComplex(x, defined1);
             if (!v.isZero()) {
                 return getYArgument().toDC().computeComplex(x, defined);
@@ -40,7 +40,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
         if (contains(x, y)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             Complex v = getXArgument().toDC().computeComplex(x, y, defined1);
             if (!v.isZero()) {
                 return getYArgument().toDC().computeComplex(x, y, defined);
@@ -54,7 +54,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         if (contains(x, y, z)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             Complex v = getXArgument().toDC().computeComplex(x, y, z, defined1);
             if (!v.isZero()) {
                 return getYArgument().toDC().computeComplex(x, y, z, defined);
@@ -68,7 +68,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public double computeDouble(double x, OutBoolean defined) {
         if (contains(x)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             double v = getXArgument().toDD().computeDouble(x, defined1);
             if (v!=0) {
                 return getYArgument().toDD().computeDouble(x, defined);
@@ -82,7 +82,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
         if (contains(x, y)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             double v = getXArgument().toDD().computeDouble(x, y, defined1);
             if (v!=0) {
                 return getYArgument().toDD().computeDouble(x, y, defined);
@@ -96,7 +96,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
         if (contains(x, y, z)) {
-            OutBoolean defined1 = new OutBoolean();
+            OutBoolean defined1 = OutBoolean.create();
             double v = getXArgument().toDD().computeDouble(x, y, z, defined1);
             if (v!=0) {
                 return getYArgument().toDD().computeDouble(x, y, z, defined);

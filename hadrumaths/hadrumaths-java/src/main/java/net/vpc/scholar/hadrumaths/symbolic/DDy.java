@@ -42,17 +42,17 @@ public class DDy extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, OutBoolean defined) {
-        return base.computeDouble(defaultX,x,defaultZ);
+        return base.computeDouble(defaultX,x,defaultZ,defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
-        return base.computeDouble(defaultX,x,defaultZ);
+        return base.computeDouble(defaultX,x,defaultZ,defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
-        return base.computeDouble(defaultX,x,defaultZ);
+        return base.computeDouble(defaultX,x,defaultZ,defined);
     }
 
     public boolean isInvariantImpl(Axis axis) {

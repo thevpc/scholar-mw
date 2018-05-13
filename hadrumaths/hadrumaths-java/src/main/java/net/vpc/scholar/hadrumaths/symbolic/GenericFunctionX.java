@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by vpc on 4/30/14.
  */
-public abstract class GenericFunctionX extends AbstractComposedFunction implements DoubleToComplexX {
+public abstract class GenericFunctionX extends AbstractComposedFunction {
     private static final long serialVersionUID = 1L;
     private final FunctionType functionType;
     @NonStateField
@@ -89,12 +89,12 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
     public Domain getDomainImpl() {
         switch (this.functionType) {
             case DOUBLE: {
-                if (computeDoubleArg(0, new OutBoolean()) == 0) {
+                if (computeDoubleArg(0, NoneOutBoolean.INSTANCE) == 0) {
                     return getArgument().getDomain();
                 }
             }
             case COMPLEX: {
-                if (computeComplexArg(Complex.ZERO, new OutBoolean()).isZero()) {
+                if (computeComplexArg(Complex.ZERO, NoneOutBoolean.INSTANCE).isZero()) {
                     return getArgument().getDomain();
                 }
             }
@@ -130,6 +130,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
         return Expressions.computeComplex(this, exprHelper, x, y, d0, ranges);
     }
 
+
     @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeComplex(this, exprHelper, x, d0, ranges);
@@ -160,10 +161,10 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
         return Expressions.computeDouble(this, exprHelper, x, y, z, d0, ranges);
     }
 
-    @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
-        return computeComplex(x, defined);
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, OutBoolean defined) {
+//        return computeComplex(x, defined);
+//    }
 
     @Override
     public Matrix computeMatrix(double x, double y) {
@@ -212,19 +213,19 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
     }
 
     protected Complex evalMC(Matrix x) {
-        return computeComplexArg(x.toComplex(), new OutBoolean());
+        return computeComplexArg(x.toComplex(), NoneOutBoolean.INSTANCE);
     }
 
     protected Double evalMD(Matrix x) {
-        return computeComplexArg(x.toComplex(), new OutBoolean()).toDouble();
+        return computeComplexArg(x.toComplex(), NoneOutBoolean.INSTANCE).toDouble();
     }
 
     protected Matrix evalDM(double x) {
-        return computeComplexArg(Complex.valueOf(x), new OutBoolean()).toMatrix();
+        return computeComplexArg(Complex.valueOf(x), NoneOutBoolean.INSTANCE).toMatrix();
     }
 
     protected Matrix evalCM(Complex x) {
-        return computeComplexArg(x, new OutBoolean()).toMatrix();
+        return computeComplexArg(x, NoneOutBoolean.INSTANCE).toMatrix();
     }
 
     public Matrix computeMatrix(Matrix c) {
@@ -235,7 +236,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
         Complex[][] arrayCopy = x.getArrayCopy();
         for (int i = 0; i < arrayCopy.length; i++) {
             for (int j = 0; j < arrayCopy[i].length; j++) {
-                arrayCopy[i][j] = computeComplexArg(arrayCopy[i][j], new OutBoolean());
+                arrayCopy[i][j] = computeComplexArg(arrayCopy[i][j], NoneOutBoolean.INSTANCE);
             }
         }
         return Maths.matrix(arrayCopy);
@@ -246,27 +247,63 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
     protected abstract double computeDoubleArg(double c, OutBoolean defined);
 
     public double computeDouble(double x, double y, OutBoolean defined) {
-        double d = getArgument().toDD().computeDouble(x, y, defined);
-        if (defined.isSet()) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double d = getArgument().toDD().computeDouble(x, y, rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
     }
 
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        double d = getArgument().toDD().computeDouble(x, y, z, defined);
-        if (defined.isSet()) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double d = getArgument().toDD().computeDouble(x, y, z, rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
     }
 
     public double computeDouble(double x, OutBoolean defined) {
-        double d = getArgument().toDD().computeDouble(x, defined);
-        if (defined.isSet()) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double d = getArgument().toDD().computeDouble(x, rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
+    }
+
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex d = getArgument().toDC().computeComplex(x, y, rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
+            return computeComplexArg(d, defined);
+        }
+        return Complex.ZERO;
+    }
+
+    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex d = getArgument().toDC().computeComplex(x, y, z,rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
+            return computeComplexArg(d, defined);
+        }
+        return Complex.ZERO;
+    }
+
+    public Complex computeComplex(double x, OutBoolean defined) {
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex d = getArgument().toDC().computeComplex(x, rdefined);
+        if (rdefined.isSet()) {
+            defined.set();
+            return computeComplexArg(d, defined);
+        }
+        return Complex.ZERO;
     }
 
 //    @Override
@@ -310,9 +347,9 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
 
     @Override
     public boolean isDDImpl() {
-        if (!super.isDoubleExprImpl()) {
-            return false;
-        }
+//        if (!super.isDoubleExprImpl()) {
+//            return false;
+//        }
         return functionType.ordinal() <= FunctionType.DOUBLE.ordinal();
     }
 
@@ -390,7 +427,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction implemen
 
         @Override
         public double computeDouble(double x, OutBoolean defined) {
-            return GenericFunctionX.this.computeDouble(x, defined);
+            return GenericFunctionX.this.computeDoubleArg(x, defined);
         }
 
         @Override

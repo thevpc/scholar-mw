@@ -504,16 +504,17 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    public Complex computeComplex(double x, double y,OutBoolean defined) {
-        return Expressions.computeComplex(this, x, y,defined);
-    }
-
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
     public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
+    }
+
+    @Override
+    public Matrix computeMatrix(double x) {
+        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
     }
 
     public Matrix computeMatrix(double x, double y) {
@@ -655,6 +656,33 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
 
 
     @Override
+    public Complex computeComplex(double x,OutBoolean defined) {
+        if(contains(x)) {
+            if(true){
+                throw new IllegalArgumentException("Missing  Y and Y");
+            }
+            double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{0}, new double[]{0});
+            x = xyz[0][0];
+            return expression.toDC().computeComplex(x, defined);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
+    public Complex computeComplex(double x, double y,OutBoolean defined) {
+        if(contains(x,y)) {
+            if(true){
+                throw new IllegalArgumentException("Missing  Y and Y");
+            }
+            double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{0});
+            x = xyz[0][0];
+            y = xyz[1][0];
+            return expression.toDC().computeComplex(x, y, defined);
+        }
+        return Complex.ZERO;
+    }
+
+    @Override
     public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
         if(contains(x,y,z)) {
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
@@ -687,15 +715,15 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return expression.toDM().computeMatrix(x, y, z);
     }
 
-    @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
-        double[][] xyz = convertXYZAxis(new double[]{x}, new double[0], new double[0]);
-        x = xyz[0][0];
-        Out<Range> ranges = new Out<>();
-        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-        defined.set(ranges.get().getDefined1().get(0));
-        return complex;
-    }
+//    @Override
+//    public Complex computeComplex(double x,OutBoolean defined) {
+//        double[][] xyz = convertXYZAxis(new double[]{x}, new double[0], new double[0]);
+//        x = xyz[0][0];
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
     public Axis[] getAxis() {
         return axis;

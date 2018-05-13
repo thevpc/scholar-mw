@@ -266,12 +266,12 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public Complex toComplex() {
-        return getExprHelper().computeComplex(getExpression().toComplex(), new OutBoolean());
+        return getExprHelper().computeComplex(getExpression().toComplex(), NoneOutBoolean.INSTANCE);
     }
 
     @Override
     public double toDouble() {
-        return getExprHelper().computeDouble(getExpression().toDouble(), new OutBoolean());
+        return getExprHelper().computeDouble(getExpression().toDouble(), NoneOutBoolean.INSTANCE);
     }
 
     @Override

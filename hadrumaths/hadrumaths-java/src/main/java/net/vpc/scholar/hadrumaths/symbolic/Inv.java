@@ -388,67 +388,81 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         DoubleToComplex c = expression.toDC();
-        Complex cc = c.computeComplex(x, y, z, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex cc = c.computeComplex(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return cc.inv();
     }
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
         DoubleToComplex c = expression.toDC();
-        Complex cc = c.computeComplex(x, y, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex cc = c.computeComplex(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return cc.inv();
     }
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
         DoubleToComplex c = expression.toDC();
-        Complex cc = c.computeComplex(x, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Complex cc = c.computeComplex(x, rdefined);
+        if (!rdefined.isSet()) {
             return Complex.ZERO;
         }
+        defined.set();
         return cc.inv();
     }
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        double v = doubleToDouble.computeDouble(x, y, z, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double v = doubleToDouble.computeDouble(x, y, z, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return 1 / v;
     }
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        double v = doubleToDouble.computeDouble(x, y, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double v = doubleToDouble.computeDouble(x, y, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return 1 / v;
     }
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        double v = doubleToDouble.computeDouble(x, defined);
-        if (!defined.isSet()) {
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        double v = doubleToDouble.computeDouble(x, rdefined);
+        if (!rdefined.isSet()) {
             return 0;
         }
+        defined.set();
         return 1 / v;
     }
 
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return expression.toDM().computeMatrix(x, y, z).inv();
+        ReadableOutBoolean rdefined=OutBoolean.createReadable();
+        Matrix matrix = expression.toDM().computeMatrix(x, y, z);
+        return matrix.inv();
     }
 
     private static class InvUnaryExprHelper implements Expressions.UnaryExprHelper<Inv>, Serializable {

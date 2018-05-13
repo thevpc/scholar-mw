@@ -296,12 +296,12 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int ez = currRange.zmin;
             int fz = currRange.zmax;
             BooleanArray3 d = currRange.setDefined3(x.length, y.length, z.length);
-            OutBoolean defined = new OutBoolean();
+            ReadableOutBoolean defined = OutBoolean.createReadable();
             for (int i = ez; i <= fz; i++) {
                 for (int j = cy; j <= dy; j++) {
                     for (int k = ax; k <= bx; k++) {
                         if (contains(x[k], y[j], z[i])) {
-                            defined.unset();
+                            defined.set(false);
                             double v = computeDouble0(x[k], y[j], z[i], defined);
                             r[i][j][k] = v;
                             if(defined.isSet()) {
@@ -327,11 +327,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int cy = currRange.ymin;
             int dy = currRange.ymax;
             BooleanArray2 d = currRange.setDefined2(x.length, y.length);
-            OutBoolean defined = new OutBoolean();
+            ReadableOutBoolean defined = OutBoolean.createReadable();
             for (int k = ax; k <= bx; k++) {
                 for (int j = cy; j <= dy; j++) {
                     if (contains(x[k], y[j])) {
-                        defined.unset();
+                        defined.set(false);
                         double v = computeDouble0(x[k], y[j], defined);
                         r[j][k] = v;
                         if(defined.isSet()) {
@@ -355,10 +355,10 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int ax = currRange.xmin;
             int bx = currRange.xmax;
             BooleanArray1 d = currRange.setDefined1(x.length);
-            OutBoolean defined = new OutBoolean();
+            ReadableOutBoolean defined = OutBoolean.createReadable();
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
                 if (contains(x[xIndex])) {
-                    defined.unset();
+                    defined.set(false);
                     r[xIndex] = computeDouble0(x[xIndex], defined);
                     if(defined.isSet()){
                         d.set(xIndex);

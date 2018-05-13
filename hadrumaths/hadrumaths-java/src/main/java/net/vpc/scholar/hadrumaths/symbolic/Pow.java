@@ -58,10 +58,8 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             if (def) {
                 double d = Math.pow(a, b);
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return 0;
             }
         }
@@ -72,24 +70,20 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             if (def) {
                 Complex d = a.pow(b);
                 defined.set();
-                options.resultDefined = def;
                 return d;
             } else {
-                options.resultDefined = false;
                 return Complex.ZERO;
             }
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.pow(b);
-                //defined.set();
-                options.resultDefined = def;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return zero;
             }
         }
@@ -139,10 +133,6 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    public Complex computeComplex(double x, double y) {
-        return Expressions.computeComplex(this, x, y);
-    }
-
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
@@ -174,79 +164,91 @@ public class Pow extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, y, z, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
-        Complex b = getSecond().toDC().computeComplex(x, y, z, defined);
-        if(!defined.isSet()){
+        Complex b = getSecond().toDC().computeComplex(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return a.pow(b);
     }
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, y, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
-        Complex b = getSecond().toDC().computeComplex(x, y, defined);
-        if(!defined.isSet()){
+        Complex b = getSecond().toDC().computeComplex(x, y, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return a.pow(b);
     }
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
-        Complex a = getFirst().toDC().computeComplex(x, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
-        Complex b = getSecond().toDC().computeComplex(x, defined);
-        if(!defined.isSet()){
+        Complex b = getSecond().toDC().computeComplex(x, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return a.pow(b);
     }
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, y, z, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, y, z, defined);
-        if(!defined.isSet()){
+        double b = getSecond().toDD().computeDouble(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return Math.pow(a,b);
     }
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, y, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, y, defined);
-        if(!defined.isSet()){
+        double b = getSecond().toDD().computeDouble(x, y, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return Math.pow(a,b);
     }
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
-        double a = getFirst().toDD().computeDouble(x, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
-        double b = getSecond().toDD().computeDouble(x, defined);
-        if(!defined.isSet()){
+        double b = getSecond().toDD().computeDouble(x, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return Math.pow(a,b);
     }
 

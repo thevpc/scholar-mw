@@ -21,10 +21,12 @@ public class Cos extends TrigoFunctionX implements Cloneable {
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.cos();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Maths.cos2(c);
     }
 

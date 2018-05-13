@@ -19,10 +19,12 @@ public class Acotan extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.acotan();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return c==0?(Math.PI/2) : Math.atan(1/c);
     }
 
@@ -31,9 +33,9 @@ public class Acotan extends TrigoFunctionX implements Cloneable {
         return new Acotan(argument);
     }
 
-    @Override
-    public boolean isDDImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDDImpl() {
+//        return false;
+//    }
 
 }

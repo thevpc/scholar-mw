@@ -98,7 +98,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         Out<Range> r2 = ranges == null ? new Out<Range>() : ranges;
-        Complex[][][] c = base.computeComplex(x, y, z, d0, ranges);
+        Complex[][][] c = base.computeComplex(x, y, z, d0, r2);
         double[][][] r = new double[z.length][y.length][x.length];
         Range d = r2.get();
         if (d != null) {
@@ -120,7 +120,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
 
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Out<Range> r2 = ranges == null ? new Out<Range>() : ranges;
-        Complex[][] c = base.computeComplex(x, y, d0, ranges);
+        Complex[][] c = base.computeComplex(x, y, d0, r2);
         double[][] r = new double[y.length][x.length];
         Range d = r2.get();
         if (d != null) {
@@ -139,7 +139,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
 
     public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
         Out<Range> r2 = ranges == null ? new Out<Range>() : ranges;
-        Complex[] c = base.computeComplex(x, d0, ranges);
+        Complex[] c = base.computeComplex(x, d0, r2);
         double[] r = new double[x.length];
         Range d = r2.get();
         if (d != null) {

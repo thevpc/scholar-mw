@@ -20,10 +20,12 @@ public class Acos extends TrigoFunctionX implements Cloneable {
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.acos();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Math.acos(c);
     }
 

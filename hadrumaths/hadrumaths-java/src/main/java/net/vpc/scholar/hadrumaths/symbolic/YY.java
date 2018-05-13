@@ -35,8 +35,12 @@ public class YY extends AxisFunction implements Cloneable {
         return xx;
     }
 
+    @Override
+    public Complex computeComplex(double x, OutBoolean defined) {
+        throw new IllegalArgumentException("Missing y");
+    }
 
-//    @Override
+    //    @Override
 //    public Domain getDomain() {
 //        return getDomain().getDomainY();
 //    }

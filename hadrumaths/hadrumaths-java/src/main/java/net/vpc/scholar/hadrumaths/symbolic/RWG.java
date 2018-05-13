@@ -173,8 +173,10 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
         if (tr1.contains(x, y)) {
+            defined.set();
             return computeDouble(tr1, x, y);
         } else if (tr2.contains(x, y)) {
+            defined.set();
             return computeDouble(tr2, x, y);
         }
         return 0;

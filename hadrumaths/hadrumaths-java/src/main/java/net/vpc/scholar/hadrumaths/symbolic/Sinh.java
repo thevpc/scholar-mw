@@ -19,10 +19,12 @@ public class Sinh extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.sinh();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Math.sinh(c);
     }
 

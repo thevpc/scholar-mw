@@ -291,10 +291,10 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
     }
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, double z) {
+//        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+//    }
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {

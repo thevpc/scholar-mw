@@ -155,7 +155,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                         //
                     }
                     if (discrete != null) {
-                        int max = discrete.getCount(surfaceValue);
+                        int max = discrete.getCount(surfaceValue)-1;
                         if (slider.getMaximum() != max) {
                             slider.setMaximum(max);
                         }
@@ -163,8 +163,8 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                         if (value < 0) {
                             value = 0;
                         }
-                        if (value > (max - 1)) {
-                            value = max - 1;
+                        if (value > max) {
+                            value = max;
                         }
                         Complex[][] renderedValues0 = discrete.getArray(surfaceValue, value);
                         Complex[][] renderedValues = new Complex[model2.getVdiscretes().length * renderedValues0.length][renderedValues0.length == 0 ? 0 : renderedValues0[0].length];

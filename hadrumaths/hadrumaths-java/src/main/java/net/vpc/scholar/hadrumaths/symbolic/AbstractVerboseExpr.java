@@ -43,10 +43,10 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    @Override
-    public Complex computeComplex(double x, double y) {
-        return Expressions.computeComplex(this, x, y);
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y) {
+//        return Expressions.computeComplex(this, x, y);
+//    }
 
 //    @Override
 //    public double computeDouble(double x) {
@@ -101,10 +101,10 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
 //        return complex;
 //    }
 
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return computeComplex(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
-    }
+//    @Override
+//    public Complex computeComplex(double x, double y, double z) {
+//        return computeComplex(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
+//    }
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {
@@ -195,11 +195,6 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
     @Override
     public Expr getZ() {
         return getComponent(Axis.Z);
-    }
-
-    @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(x, new OutBoolean());
     }
 
     @Override

@@ -19,10 +19,12 @@ public class Asin extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.asin();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Math.asin(c);
     }
 

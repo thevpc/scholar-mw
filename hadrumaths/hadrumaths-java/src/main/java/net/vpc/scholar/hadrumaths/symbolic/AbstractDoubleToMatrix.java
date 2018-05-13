@@ -30,10 +30,10 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
     }
 
 
-    @Override
-    public Matrix computeMatrix(double x) {
-        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
-    }
+//    @Override
+//    public Matrix computeMatrix(double x) {
+//        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
+//    }
 
 //    @Override
 //    public Matrix computeMatrix(double x, double y) {

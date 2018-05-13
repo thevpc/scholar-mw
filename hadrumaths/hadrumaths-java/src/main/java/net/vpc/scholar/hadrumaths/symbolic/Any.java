@@ -308,6 +308,11 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
+    public double[] computeDouble(double x, double[] y) {
+        return object.toDD().computeDouble(x, y);
+    }
+
+    @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         return object.toDC().computeComplex(x, y, z, defined);
     }

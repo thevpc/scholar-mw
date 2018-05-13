@@ -20,10 +20,12 @@ public class Cosh extends TrigoFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.cosh();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return Math.cosh(c);
     }
 

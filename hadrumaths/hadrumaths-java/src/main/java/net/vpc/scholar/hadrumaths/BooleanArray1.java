@@ -21,4 +21,7 @@ public interface BooleanArray1 {
     int size();
 
     void copyFrom(BooleanArray1 other,Range r0);
+    void addFrom(BooleanArray1 other,Range r0);
+
+    boolean[] toArray();
 }

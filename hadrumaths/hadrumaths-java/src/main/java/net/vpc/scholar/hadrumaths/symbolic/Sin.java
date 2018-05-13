@@ -21,10 +21,12 @@ public class Sin extends TrigoFunctionX implements Cloneable {
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.sin();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Maths.sin2(c);
     }
 

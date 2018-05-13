@@ -21,10 +21,12 @@ public class Cotanh extends TrigoFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.cotanh();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return 1.0/Math.tanh(c);
     }
 

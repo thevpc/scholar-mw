@@ -1194,9 +1194,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return Collections.EMPTY_LIST;
     }
 
-    public Complex computeComplex(double x, double y, double z) {
-        return computeComplex(x,y,z,new OutBoolean());
-    }
+//    public Complex computeComplex(double x, double y, double z) {
+//        return computeComplex(x,y,z,new OutBoolean());
+//    }
 
     public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
         switch (dimension) {
@@ -1257,6 +1257,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 
     @Override
     public double computeDouble0(double x, OutBoolean defined) {
+        defined.set();
         int xi = (int) ((x - domain.xmin()) / dx);
         return values[0][0][xi];
     }
@@ -1470,16 +1471,6 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return computeComplex(x,new OutBoolean());
-    }
-
-    @Override
-    public Complex computeComplex(double x, double y) {
-        return computeComplex(x,y,new OutBoolean());
-    }
-
-    @Override
     public Complex computeComplex(double x, double y,OutBoolean defined) {
         switch (dimension) {
             case 1: {
@@ -1504,6 +1495,23 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             }
         }
         throw new IllegalArgumentException("Missing z");
+    }
+
+    @Override
+    public Complex computeComplex(double x,OutBoolean defined) {
+        switch (dimension) {
+            case 1: {
+                if (contains(x)) {
+                    IntPoint ii = getIndices(x, 0, 0);
+                    if(ii!=null) {
+                        return Complex.valueOf(values[0][0][ii.x]);
+                    }
+                    defined.set();
+                }
+                return Complex.ZERO;
+            }
+        }
+        throw new IllegalArgumentException("Missing y");
     }
 
     @Override
@@ -1641,13 +1649,13 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         throw new IllegalArgumentException("Missing z");
     }
 
-    @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
-        Out<Range> ranges = new Out<>();
-        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-        defined.set(ranges.get().getDefined1().get(0));
-        return complex;
-    }
+//    @Override
+//    public Complex computeComplex(double x,OutBoolean defined) {
+//        Out<Range> ranges = new Out<>();
+//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
+//        defined.set(ranges.get().getDefined1().get(0));
+//        return complex;
+//    }
 
 
     @Override

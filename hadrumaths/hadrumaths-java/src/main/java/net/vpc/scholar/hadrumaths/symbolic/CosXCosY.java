@@ -287,10 +287,12 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     }
 
     protected double computeDouble0(double x, double y, OutBoolean defined) {
+        defined.set();
         return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
     }
 
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+        defined.set();
         return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
     }
 

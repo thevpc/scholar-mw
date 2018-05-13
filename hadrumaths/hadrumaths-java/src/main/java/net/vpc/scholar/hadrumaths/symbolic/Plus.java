@@ -55,10 +55,8 @@ public class Plus extends AbstractExprOperator implements Cloneable {
             if (def) {
                 double d = a + b;
                 defined.set();
-                options.resultDefined = true;
                 return d;
             } else {
-                options.resultDefined = false;
                 return 0;
             }
         }
@@ -69,24 +67,20 @@ public class Plus extends AbstractExprOperator implements Cloneable {
             if (def) {
                 Complex d = a.add(b);
                 defined.set();
-                options.resultDefined = def;
                 return d;
             } else {
-                options.resultDefined = false;
                 return Complex.ZERO;
             }
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Matrix d = a.add(b);
-                //defined.set();
-                options.resultDefined = def;
+                defined.set();
                 return d;
             } else {
-                options.resultDefined = false;
                 return zero;
             }
         }

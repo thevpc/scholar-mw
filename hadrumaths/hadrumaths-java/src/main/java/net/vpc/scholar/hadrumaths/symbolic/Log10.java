@@ -20,10 +20,12 @@ public class Log10 extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.log10();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Maths.log10(c);
     }
 

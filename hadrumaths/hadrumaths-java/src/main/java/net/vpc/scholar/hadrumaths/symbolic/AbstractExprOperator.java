@@ -219,13 +219,13 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return this;
     }
 
-    public Complex computeComplex(double x, double y, double z){
-        return computeComplex(new double[]{x},new double[]{y},new double[]{z})[0][0][0];
-    }
+//    public Complex computeComplex(double x, double y, double z){
+//        return computeComplex(new double[]{x},new double[]{y},new double[]{z})[0][0][0];
+//    }
 
-    public Complex computeComplex(double x, double y){
-        return computeComplex(new double[]{x},new double[]{y})[0][0];
-    }
+//    public Complex computeComplex(double x, double y){
+//        return computeComplex(new double[]{x},new double[]{y})[0][0];
+//    }
 
 //    public Complex computeComplexArg(double x,OutBoolean defined){
 //        Out<Range> ranges = new Out<>();

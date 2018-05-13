@@ -20,10 +20,12 @@ public class Db2 extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.db2();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Maths.db2(c);
     }
 

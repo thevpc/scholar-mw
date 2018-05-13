@@ -14,15 +14,15 @@ public interface DoubleToComplex extends DoubleDomainExpr {
 
 
     default Complex computeComplex(double x) {
-        return computeComplex(x, new OutBoolean());
+        return computeComplex(x, NoneOutBoolean.INSTANCE);
     }
 
     default Complex computeComplex(double x, double y) {
-        return computeComplex(x, y, new OutBoolean());
+        return computeComplex(x, y, NoneOutBoolean.INSTANCE);
     }
 
     default Complex computeComplex(double x, double y, double z) {
-        return computeComplex(x, y, z, new OutBoolean());
+        return computeComplex(x, y, z, NoneOutBoolean.INSTANCE);
     }
 
     Complex computeComplex(double x, OutBoolean defined);

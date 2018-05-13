@@ -5,10 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * @author vpc
@@ -37,15 +34,15 @@ public interface DoubleToDouble extends DoubleDomainExpr {
     double computeDouble(double x, double y, double z, OutBoolean defined);
 
     default double computeDouble(double x) {
-        return computeDouble(x, new OutBoolean());
+        return computeDouble(x, NoneOutBoolean.INSTANCE);
     }
 
     default double computeDouble(double x, double y) {
-        return computeDouble(x, y, new OutBoolean());
+        return computeDouble(x, y, NoneOutBoolean.INSTANCE);
     }
 
     default double computeDouble(double x, double y, double z) {
-        return computeDouble(x, y, z, new OutBoolean());
+        return computeDouble(x, y, z, NoneOutBoolean.INSTANCE);
     }
 
     double[] computeDouble(double[] x);

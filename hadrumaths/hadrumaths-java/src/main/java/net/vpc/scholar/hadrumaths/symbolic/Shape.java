@@ -60,11 +60,13 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
+        defined.set();
         return value;
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+        defined.set();
         return value;
     }
 

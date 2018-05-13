@@ -19,10 +19,12 @@ public class Acosh extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.acosh();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Complex.valueOf(c).acosh().toReal();
     }
 

@@ -20,10 +20,12 @@ public class Asinh extends TrigoFunctionX implements Cloneable {
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.asinh();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Complex.valueOf(c).asinh().toReal();
     }
 

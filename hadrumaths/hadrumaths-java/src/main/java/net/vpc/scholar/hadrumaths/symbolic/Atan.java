@@ -17,10 +17,12 @@ public class Atan extends TrigoFunctionX implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined) {
+        defined.set();
         return c.atan();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined) {
+        defined.set();
         return Math.atan(c);
     }
 
@@ -29,9 +31,9 @@ public class Atan extends TrigoFunctionX implements Cloneable {
         return new Atan(argument);
     }
 
-    @Override
-    public boolean isDDImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDDImpl() {
+//        return false;
+//    }
 
 }

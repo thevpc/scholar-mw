@@ -87,16 +87,19 @@ public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, OutBoolean defined) {
+        defined.set();
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
+        defined.set();
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+        defined.set();
         return integral.integrateX(base, x, x0, x1);
     }
 

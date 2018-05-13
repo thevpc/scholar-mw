@@ -40,18 +40,18 @@ public class Real extends DCxyToDDxy implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, OutBoolean defined) {
-        return getArg().computeComplex(x).getReal();
+        return getArg().computeComplex(x,defined).getReal();
     }
 
 
     @Override
     protected double computeDouble0(double x, double y, OutBoolean defined) {
-        return getArg().computeComplex(x,y).getReal();
+        return getArg().computeComplex(x,y,defined).getReal();
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
-        return getArg().computeComplex(x,y,z).getReal();
+        return getArg().computeComplex(x,y,z,defined).getReal();
     }
 
 //    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {

@@ -174,13 +174,13 @@ public class Range implements Serializable{
     }
 
     public BooleanArray2 setDefined2(int xsize,int ysize) {
-        BooleanArray2 defined = BooleanArrays.newArray(xsize,ysize);
+        BooleanArray2 defined = BooleanArrays.newArray(ysize,xsize);
         setDefined(defined);
         return defined;
     }
 
     public BooleanArray3 setDefined3(int xsize,int ysize,int zsize) {
-        BooleanArray3 defined = BooleanArrays.newArray(xsize,ysize,zsize);
+        BooleanArray3 defined = BooleanArrays.newArray(zsize,ysize,xsize);
         setDefined(defined);
         return defined;
     }

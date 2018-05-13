@@ -64,55 +64,67 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        Complex complex = getExpression().toDC().computeComplex(x, y, z, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex complex = getExpression().toDC().computeComplex(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return complex.neg();
     }
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        double v = getExpression().toDD().computeDouble(x, y, z, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double v = getExpression().toDD().computeDouble(x, y, z, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return -v;
     }
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
-        Complex complex = getExpression().toDC().computeComplex(x, y, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex complex = getExpression().toDC().computeComplex(x, y, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return complex.neg();
     }
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
-        double v = getExpression().toDD().computeDouble(x, y, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double v = getExpression().toDD().computeDouble(x, y, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return -v;
     }
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
-        Complex complex = getExpression().toDC().computeComplex(x, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        Complex complex = getExpression().toDC().computeComplex(x, rdefined);
+        if(!rdefined.isSet()){
             return Complex.ZERO;
         }
+        defined.set();
         return complex.neg();
     }
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
-        double v = getExpression().toDD().computeDouble(x, defined);
-        if(!defined.isSet()){
+        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+        double v = getExpression().toDD().computeDouble(x, rdefined);
+        if(!rdefined.isSet()){
             return 0;
         }
+        defined.set();
         return -v;
     }
 
