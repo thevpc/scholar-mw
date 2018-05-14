@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 public abstract class ComparatorExpr extends GenericFunctionXY {
     private static final long serialVersionUID = 1L;
@@ -39,6 +40,59 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
     @Override
     public boolean isDMImpl() {
         return true;
+    }
+
+    @Override
+    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        switch (getFunctionType()) {
+            case DOUBLE:{
+                return Expressions.computeDouble(this, exprHelper, x, y, d0, ranges);
+            }
+            case COMPLEX:{
+                Complex[][] complexes = Expressions.computeComplex(this, exprHelper, x, y, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+            case MATRIX:{
+                Matrix[][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+        }
+        return new double[y.length][x.length];
+    }
+
+    @Override
+    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        switch (getFunctionType()) {
+            case DOUBLE:{
+                return Expressions.computeDouble(this, exprHelper, x, y, z, d0, ranges);
+            }
+            case COMPLEX:{
+                Complex[][][] complexes = Expressions.computeComplex(this, exprHelper, x, y, z, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+            case MATRIX:{
+                Matrix[][][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+        }
+        return new double[z.length][y.length][x.length];
+    }
+    @Override
+    public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
+        switch (getFunctionType()) {
+            case DOUBLE:{
+                return Expressions.computeDouble(this, exprHelper, x, d0, ranges);
+            }
+            case COMPLEX:{
+                Complex[] complexes = Expressions.computeComplex(this, exprHelper, x, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+            case MATRIX:{
+                Matrix[] complexes = Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
+                return ArrayUtils.getReal(complexes);
+            }
+        }
+        return new double[x.length];
     }
 
     @Override

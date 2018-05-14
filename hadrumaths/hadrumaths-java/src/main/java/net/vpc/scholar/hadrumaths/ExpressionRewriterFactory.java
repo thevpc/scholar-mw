@@ -106,6 +106,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , DDxNavRule.INSTANCE
                     , DDzNavRule.INSTANCE
                     , DDzIntegralXYNavRule.INSTANCE
+                    , DDyNavRule.INSTANCE
             )
     );
     public final static List<ExpressionRewriterRule> CANONICAL_RULES = new ArrayList<ExpressionRewriterRule>(

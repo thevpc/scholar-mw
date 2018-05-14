@@ -103,7 +103,7 @@ public class TestVals {
             exp2.isDD();
 //            Complex c = exp2.toDC().computeComplex(0, 0, 0);
             //exp.simplify();
-            //exp.isDD();
+            exp.isDD();
             //exp.getSubExpressions().get(0).isDD();
             ExprChecker exprChecker = new ExprChecker()
                     .setXprecision(101)
@@ -133,7 +133,6 @@ public class TestVals {
 //            boolean dd = ss.isDD();
             for (int i = 0; i < 100; i++) {
                 Expr d = g.generateDD();
-                System.out.println(i + " :: " + d);
                 if (!d.isDD()) {
                     System.out.println(i + " Why Not DD :: " + d);
                 } else {

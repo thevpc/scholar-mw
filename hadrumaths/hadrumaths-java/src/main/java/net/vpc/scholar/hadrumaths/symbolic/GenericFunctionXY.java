@@ -14,7 +14,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     @NonStateField
     protected transient Domain _cache_domain;
     @NonStateField
-    private Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper=new GenericFunctionXYBinaryExprHelperAnd();
+    protected Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper=new GenericFunctionXYBinaryExprHelperAnd();
     private Expr xargument;
     private Expr yargument;
 

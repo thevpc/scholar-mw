@@ -7,7 +7,8 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public final class ArrayUtils {
-    public static final Expr[] EMPTY_EXPR_ARRAY=new Expr[0];
+    public static final Expr[] EMPTY_EXPR_ARRAY = new Expr[0];
+
     private ArrayUtils() {
     }
 
@@ -102,7 +103,7 @@ public final class ArrayUtils {
     public static double[] booleanToDoubleArray(boolean[] c) {
         double[] r = new double[c.length];
         for (int i = 0; i < r.length; i++) {
-            r[i] = c[i]?1:0;
+            r[i] = c[i] ? 1 : 0;
         }
         return r;
     }
@@ -126,7 +127,7 @@ public final class ArrayUtils {
     public static int[] booleanToIntArray(boolean[] c) {
         int[] r = new int[c.length];
         for (int i = 0; i < r.length; i++) {
-            r[i] = c[i]?1:0;
+            r[i] = c[i] ? 1 : 0;
         }
         return r;
     }
@@ -451,6 +452,14 @@ public final class ArrayUtils {
         return ret;
     }
 
+    public static double[][][] getReal(Matrix[][][] c) {
+        double[][][] ret = new double[c.length][][];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = getReal(c[i]);
+        }
+        return ret;
+    }
+
     public static double[][][] getReal(Complex[][][] c) {
         double[][][] ret = new double[c.length][][];
         for (int i = 0; i < ret.length; i++) {
@@ -474,6 +483,25 @@ public final class ArrayUtils {
             for (int j = 0; j < ret[i].length; j++) {
                 ret[i][j] = c[i][j].getReal();
             }
+        }
+        return ret;
+    }
+
+    public static double[][] getReal(Matrix[][] c) {
+        double[][] ret = new double[c.length][];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = new double[c[i].length];
+            for (int j = 0; j < ret[i].length; j++) {
+                ret[i][j] = c[i][j].toComplex().getReal();
+            }
+        }
+        return ret;
+    }
+
+    public static double[] getReal(Matrix[] c) {
+        double[] ret = new double[c.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = c[i].toComplex().getReal();
         }
         return ret;
     }
@@ -643,46 +671,46 @@ public final class ArrayUtils {
 //    }
 
     public static Complex[][] fillMatrix(Complex[][] sourceMatrix, Complex value) {
-        int rowsCount=sourceMatrix==null?0:sourceMatrix.length;
-        int columnsCount=0;
-        if(rowsCount>0){
+        int rowsCount = sourceMatrix == null ? 0 : sourceMatrix.length;
+        int columnsCount = 0;
+        if (rowsCount > 0) {
             for (Complex[] doubles : sourceMatrix) {
-                if(columnsCount<doubles.length){
-                    columnsCount=doubles.length;
+                if (columnsCount < doubles.length) {
+                    columnsCount = doubles.length;
                 }
             }
         }
         for (int i = 0; i < rowsCount; i++) {
-            if(sourceMatrix[i].length<columnsCount){
-                Complex[] newRef=new Complex[columnsCount];
-                System.arraycopy(sourceMatrix[i],0,newRef,0,sourceMatrix[i].length);
+            if (sourceMatrix[i].length < columnsCount) {
+                Complex[] newRef = new Complex[columnsCount];
+                System.arraycopy(sourceMatrix[i], 0, newRef, 0, sourceMatrix[i].length);
                 for (int j = sourceMatrix[i].length; j < newRef.length; j++) {
-                    newRef[j]=value;
+                    newRef[j] = value;
                 }
-                sourceMatrix[i]=newRef;
+                sourceMatrix[i] = newRef;
             }
         }
         return sourceMatrix;
     }
 
     public static double[][] fillMatrix(double[][] sourceMatrix, double value) {
-        int rowsCount=sourceMatrix==null?0:sourceMatrix.length;
-        int columnsCount=0;
-        if(rowsCount>0){
+        int rowsCount = sourceMatrix == null ? 0 : sourceMatrix.length;
+        int columnsCount = 0;
+        if (rowsCount > 0) {
             for (double[] doubles : sourceMatrix) {
-                if(columnsCount<doubles.length){
-                    columnsCount=doubles.length;
+                if (columnsCount < doubles.length) {
+                    columnsCount = doubles.length;
                 }
             }
         }
         for (int i = 0; i < rowsCount; i++) {
-            if(sourceMatrix[i].length<columnsCount){
-                double[] newRef=new double[columnsCount];
-                System.arraycopy(sourceMatrix[i],0,newRef,0,sourceMatrix[i].length);
+            if (sourceMatrix[i].length < columnsCount) {
+                double[] newRef = new double[columnsCount];
+                System.arraycopy(sourceMatrix[i], 0, newRef, 0, sourceMatrix[i].length);
                 for (int j = sourceMatrix[i].length; j < newRef.length; j++) {
-                    newRef[j]=value;
+                    newRef[j] = value;
                 }
-                sourceMatrix[i]=newRef;
+                sourceMatrix[i] = newRef;
             }
         }
         return sourceMatrix;
@@ -720,22 +748,22 @@ public final class ArrayUtils {
     }
 
     public static Complex[][][] fill(Complex[][][] arr, Complex value) {
-        for (int zi = 0, len=arr.length; zi < len; zi++) {
+        for (int zi = 0, len = arr.length; zi < len; zi++) {
             fill(arr[zi], value);
         }
         return arr;
     }
 
     public static Matrix[] fill(Matrix[] c, Matrix value) {
-        for (int i = 0,len=c.length; i < len; i++) {
+        for (int i = 0, len = c.length; i < len; i++) {
             c[i] = value;
         }
         return c;
     }
 
     public static Matrix[][] fill(Matrix[][] c, Matrix value) {
-        for (int i = 0,len=c.length; i < len; i++) {
-            for (int j = 0,ilen=c[i].length; j < ilen; j++) {
+        for (int i = 0, len = c.length; i < len; i++) {
+            for (int j = 0, ilen = c[i].length; j < ilen; j++) {
                 c[i][j] = value;
             }
         }
@@ -1665,65 +1693,68 @@ public final class ArrayUtils {
         return result;
     }
 
-    public static <T> T[] newArray(TypeReference<T> type, int size){
-        return (T[])Array.newInstance(type.getTypeClass(),size);
-    }
-    public static <T> T[][] newArray(TypeReference<T> type,int size,int size2){
-        return (T[][]) Array.newInstance(type.getTypeClass(),size,size2);
-    }
-    public static <T> T[] newArray(Class type,int size){
-        return (T[]) Array.newInstance(type,size);
+    public static <T> T[] newArray(TypeReference<T> type, int size) {
+        return (T[]) Array.newInstance(type.getTypeClass(), size);
     }
 
-    public static <T> T[][] newArray(Class type,int size,int size2){
-        return (T[][]) Array.newInstance(type,size,size2);
+    public static <T> T[][] newArray(TypeReference<T> type, int size, int size2) {
+        return (T[][]) Array.newInstance(type.getTypeClass(), size, size2);
     }
 
-    public static double[] toValidOneDimArray(double[] a){
-        if(a==null){
+    public static <T> T[] newArray(Class type, int size) {
+        return (T[]) Array.newInstance(type, size);
+    }
+
+    public static <T> T[][] newArray(Class type, int size, int size2) {
+        return (T[][]) Array.newInstance(type, size, size2);
+    }
+
+    public static double[] toValidOneDimArray(double[] a) {
+        if (a == null) {
             return new double[0];
         }
         return a;
     }
 
-    public static double[][] toValidTwoDimArray(double[][] a){
-        if(a ==null){
+    public static double[][] toValidTwoDimArray(double[][] a) {
+        if (a == null) {
             return new double[0][];
         }
         for (int i = 0; i < a.length; i++) {
             double[] d = a[i];
-            if(d==null){
-                a[i]=new double[0];
+            if (d == null) {
+                a[i] = new double[0];
             }
         }
         return a;
     }
 
-    public static Complex[][] toValidTwoDimArray(Complex[][] a){
-        if(a ==null){
+    public static Complex[][] toValidTwoDimArray(Complex[][] a) {
+        if (a == null) {
             return new Complex[0][];
         }
         for (int i = 0; i < a.length; i++) {
             Complex[] d = a[i];
-            if(d==null){
-                a[i]=new Complex[0];
+            if (d == null) {
+                a[i] = new Complex[0];
             }
             for (int j = 0; j < a[i].length; j++) {
                 Complex c = a[i][j];
-                if(c==null){
-                    a[i][j]=Complex.ZERO;
+                if (c == null) {
+                    a[i][j] = Complex.ZERO;
                 }
             }
         }
         return a;
     }
 
-    public static double[] toValidOneDimArray(double[][] a){
-        return toValidOneDimArray(a,0);
+    public static double[] toValidOneDimArray(double[][] a) {
+        return toValidOneDimArray(a, 0);
     }
-    public static double[] toValidOneDimArray(double[][] a, int expectedSize){
-        if(isNullOrEmptyOrHasNullElements(a)){
-            if(expectedSize<=0){
+
+    public static double[] toValidOneDimArray(double[][] a, int expectedSize) {
+        if (isNullOrEmptyOrHasNullElements(a)) {
+            if (expectedSize <= 0) {
                 return new double[0];
             }
             return Maths.dsteps(1, expectedSize, 1.0);
@@ -1731,26 +1762,26 @@ public final class ArrayUtils {
         return a[0];
     }
 
-    public static int lengthOrZeroOneDimArray(double[][] a){
+    public static int lengthOrZeroOneDimArray(double[][] a) {
         return toValidOneDimArray(a).length;
     }
 
-    public static int lengthOrZero(double[] a){
-        if(a==null){
+    public static int lengthOrZero(double[] a) {
+        if (a == null) {
             return 0;
         }
         return a.length;
     }
 
-    public static boolean isNullOrEmptyOrHasNullElements(double[][] a){
-        if(a==null){
+    public static boolean isNullOrEmptyOrHasNullElements(double[][] a) {
+        if (a == null) {
             return true;
         }
-        if(a.length==0){
+        if (a.length == 0) {
             return true;
         }
         for (double[] v : a) {
-            if(v==null){
+            if (v == null) {
                 return true;
             }
         }

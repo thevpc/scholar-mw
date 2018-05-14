@@ -108,7 +108,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
-                    System.err.println("Rewrite Took too long : "+c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
+                    System.err.println("Expression Rewrite Took too long : "+c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
                 }
             }else{
                 r = rewriteImpl(e);
@@ -122,7 +122,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
-                    System.err.println("Rewrite Took too long : "+ c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
+                    System.err.println("Expression Rewrite Took too long : "+ c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
                 }
             }else{
                 r = rewriteImpl(e);
