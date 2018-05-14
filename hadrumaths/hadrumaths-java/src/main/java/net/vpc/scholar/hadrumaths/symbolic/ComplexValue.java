@@ -80,9 +80,9 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
     }
 
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        if (getDomainDimension() != 1) {
-            throw new IllegalArgumentException("Missing Y");
-        }
+//        if (getDomainDimension() != 1) {
+//            throw new IllegalArgumentException("Missing Y");
+//        }
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x);
         if (abcd != null) {
             BooleanArray1 def0 = BooleanArrays.newArray(x.length);

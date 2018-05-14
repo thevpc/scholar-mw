@@ -27,7 +27,7 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
         if (isDC()) {
             return getComponent(Axis.X).toDC();
         }
-        throw new IllegalArgumentException("Unsupported toDC");
+        throw new IllegalArgumentException("Unsupported toDC in "+getClass().getName()+" :: "+toString());
     }
 
     @Override

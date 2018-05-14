@@ -455,13 +455,13 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         if (currRange != null) {
             int ax = currRange.xmin;
             int bx = currRange.xmax;
-            BooleanArray1 d = BooleanArrays.newArray(x.length);
-            currRange.setDefined(d);
+            BooleanArray1 d = currRange.setDefined1(x.length);
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
                 if (contains(x[xIndex])) {
+                    d.set(xIndex);
                     r[xIndex] = value;//computeDouble0(x[xIndex]);
                 } else {
-                    d.clear(xIndex);
+                    //d.clear(xIndex);
                 }
             }
             if (ranges != null) {

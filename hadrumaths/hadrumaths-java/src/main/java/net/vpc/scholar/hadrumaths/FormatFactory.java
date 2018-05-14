@@ -94,7 +94,7 @@ public class FormatFactory extends AbstractFactory {
         register(XX.class, new XXFormatter());
         register(ZZ.class, new ZZFormatter());
         register(AxisTransform.class, new AxisTransformFormatter());
-        register(Shape.class, new DDxyPolygonFormatter());
+        register(Shape2D.class, new Shape2DFormatter());
         register(Discrete.class, new DiscreteFormatter());
         register(Polygon.class, new PolygonFormatter());
         register(Polyhedron.class, new PolyhedronFormatter());

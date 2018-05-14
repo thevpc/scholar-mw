@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.test.util;
 
+import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -108,13 +109,17 @@ public class ExprChecker {
     public void checkExpression(Expr exp) {
         try {
             boolean none = true;
+            double[] v1 = null;
+            Complex[] c1 = null;
             double[][] v2 = null;
             double[][][] v3 = null;
             Complex[][] c2 = null;
             Complex[][][] c3 = null;
-            Expr validExpr=replaceSpecial(exp);
-            System.out.println("CHECK  :: "+exp);
-            System.out.println("\tAS :: "+validExpr);
+            Expr validExpr = replaceSpecial(exp);
+            System.out.println("CHECK  :: " + exp);
+            if (!validExpr.equals(exp)) {
+                System.out.println("\tAS :: " + validExpr);
+            }
             if (isCheckDD()) {
                 if (validExpr.isDD()) {
                     DoubleToDouble exp2 = null;
@@ -123,6 +128,12 @@ public class ExprChecker {
                     } else {
                         System.out.println("DD not DoubleToDouble? How come? :: " + validExpr);
                         exp2 = validExpr.toDD();
+                    }
+                    if (isCheckX()) {
+                        if (validExpr.isInvariant(Axis.Y) && validExpr.isInvariant(Axis.Z)) {
+                            v1 = checkDoubleToDoubleX(exp2);
+                            none = false;
+                        }
                     }
                     if (isCheckXY()) {
                         if (validExpr.isInvariant(Axis.Z)) {
@@ -146,6 +157,12 @@ public class ExprChecker {
                         System.out.println("DC not DoubleToComplex? How come? :: " + validExpr);
                         exp2 = validExpr.toDC();
                     }
+                    if (isCheckX()) {
+                        if (validExpr.isInvariant(Axis.Y) && validExpr.isInvariant(Axis.Z)) {
+                            c1 = checkDoubleToComplexX(exp2);
+                            none = false;
+                        }
+                    }
                     if (isCheckXY()) {
                         if (validExpr.isInvariant(Axis.Z)) {
                             c2 = checkDoubleToComplexXY(exp2);
@@ -156,6 +173,21 @@ public class ExprChecker {
                         c3 = checkDoubleToComplexXYZ(exp2);
                         none = false;
                     }
+                }
+            }
+            if (v1 != null && c1 != null) {
+                Complex[] v1c = ArrayUtils.toComplex(v1);
+                if (!Arrays.deepEquals(c1, v1c)) {
+                    Plot.title("Incompatibility[C1]").plot(c1);
+                    Plot.title("Incompatibility[D1]").plot(v1c);
+
+                    Domain d = validExpr.getDomain();
+                    Domain domain = d.intersect(Maths.xdomain(-10, 10));
+                    domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
+                    AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision));
+                    double[] x = relative.getX();
+                    showDiff("Incompatibility[D1][C1]", v1c, c1, x);
+                    throw new IllegalArgumentException("Incompatibility between DD_X && DC_X  :: " + exp);
                 }
             }
             if (v2 != null && c2 != null) {
@@ -170,7 +202,7 @@ public class ExprChecker {
                     AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision));
                     double[] x = relative.getX();
                     double[] y = relative.getY();
-                    showDiff("Incompatibility[D2][C2]",v2c,c2,x,y);
+                    showDiff("Incompatibility[D2][C2]", v2c, c2, x, y);
                     throw new IllegalArgumentException("Incompatibility between DD_XY && DC_XY  :: " + exp);
                 }
             }
@@ -188,7 +220,7 @@ public class ExprChecker {
                     double[] y = relative.getY();
                     double[] z = relative.getZ();
 
-                    showDiff("Incompatibility[D2][C2]",v3c,c3,x,y,z);
+                    showDiff("Incompatibility[D2][C2]", v3c, c3, x, y, z);
 
                     throw new IllegalArgumentException("Incompatibility between DD_XYZ && DC_XYZ  :: " + exp);
                 }
@@ -260,7 +292,7 @@ public class ExprChecker {
             Plot.title("DD_XYZ(Each):" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesB));
 //            System.out.println(Arrays.deepToString(doublesA));
 //            System.out.println(Arrays.deepToString(doublesB));
-            showDiff("DD_XYZ Diff",doublesA,doublesB,x,y,z);
+            showDiff("DD_XYZ Diff", doublesA, doublesB, x, y, z);
 //            JOptionPane.showConfirmDialog(null,null);
             throw new IllegalArgumentException("Invalid");
         } else {
@@ -309,7 +341,7 @@ public class ExprChecker {
 //            System.out.println(Arrays.deepToString(doublesB));
 //            System.out.println(Arrays.deepToString(doublesA));
 //            JOptionPane.showConfirmDialog(null,null);
-            showDiff("DC_XYZ Diff",doublesA,doublesB,x,y,z);
+            showDiff("DC_XYZ Diff", doublesA, doublesB, x, y, z);
             throw new IllegalArgumentException("Invalid");
         } else {
             if (showSuccess) {
@@ -354,7 +386,7 @@ public class ExprChecker {
 //            System.out.println(Arrays.deepToString(doublesA));
 //            System.out.println(Arrays.deepToString(doublesB));
 //            JOptionPane.showConfirmDialog(null,null);
-            showDiff("DD_XY Diff",doublesA,doublesB,x,y);
+            showDiff("DD_XY Diff", doublesA, doublesB, x, y);
             throw new IllegalArgumentException("Invalid");
         } else {
             if (showSuccess) {
@@ -364,9 +396,50 @@ public class ExprChecker {
         return doublesA;
     }
 
+    public double[] checkDoubleToDoubleX(DoubleToDouble e) {
+        double[] doublesA = null;
+//        System.out.println("EXPRESSION= " + e);
+        Domain d = e.getDomain();
+        Domain domain = d.intersect(Maths.xdomain(-10, 10));
+        domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
+        AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision));
+        double[] x = relative.getX();
+
+        doublesA = e.computeDouble(x);
+
+        double[] doublesB = new double[x.length];
+        normalize(doublesA);
+        for (int k = 0; k < x.length; k++) {
+            BooleanRef defined = BooleanMarker.ref();
+            double v = e.computeDouble(x[k], defined);
+            if (!defined.get() && v != 0) {
+                throw new IllegalArgumentException("Undefined with non zero value");
+            }
+            doublesB[k] = v;
+        }
+        normalize(doublesB);
+//        System.out.println(d);
+//        System.out.println(domain);
+        boolean ok = ArrayUtils.equals(doublesA, doublesB);
+        if (!ok) {
+            System.out.println("Problem :: " + e);
+            Plot.title("DD_X(Bulk):" + e).xsamples(x).plot((Object) doublesA);
+            Plot.title("DD_X(Each):" + e).xsamples(x).plot((Object) doublesB);
+//            System.out.println(Arrays.deepToString(doublesA));
+//            System.out.println(Arrays.deepToString(doublesB));
+//            JOptionPane.showConfirmDialog(null,null);
+            showDiff("DD_X Diff", doublesA, doublesB, x);
+            throw new IllegalArgumentException("Invalid");
+        } else {
+            if (showSuccess) {
+                Plot.title("(OK)DD_X:" + e).xsamples(x).plot((Object) doublesA);
+            }
+        }
+        return doublesA;
+    }
+
     public Complex[][] checkDoubleToComplexXY(DoubleToComplex e) {
         Complex[][] doublesA = null;
-//        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
         Domain domain = d.intersect(Maths.xydomain(-10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
@@ -398,12 +471,53 @@ public class ExprChecker {
             Plot.title("DC_XY(Each):" + e).xsamples(x).ysamples(y).plot((Object) doublesB);
 //            System.out.println(Arrays.deepToString(doublesA));
 //            System.out.println(Arrays.deepToString(doublesB));
-            showDiff("DC_XY Diff",doublesA,doublesB,x,y);
+            showDiff("DC_XY Diff", doublesA, doublesB, x, y);
 //            JOptionPane.showConfirmDialog(null,null);
             throw new IllegalArgumentException("Invalid");
         } else {
             if (showSuccess) {
                 Plot.title("(OK)DC_XY:" + e).xsamples(x).ysamples(y).plot((Object) doublesA);
+            }
+        }
+        return doublesA;
+    }
+
+    public Complex[] checkDoubleToComplexX(DoubleToComplex e) {
+        Complex[] doublesA = null;
+        Domain d = e.getDomain();
+        Domain domain = d.intersect(Maths.xdomain(-10, 10));
+        domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
+        AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision));
+        double[] x = relative.getX();
+
+        doublesA = e.computeComplex(x);
+
+        Complex[] doublesB = new Complex[x.length];
+        normalize(doublesA);
+        for (int k = 0; k < x.length; k++) {
+            BooleanRef defined = BooleanMarker.ref();
+            Complex v = e.computeComplex(x[k], defined);
+            if (!defined.get() && !v.isZero()) {
+                throw new IllegalArgumentException("Undefined with non zero value");
+            }
+            doublesB[k] = v;
+        }
+        normalize(doublesB);
+//        System.out.println(d);
+//        System.out.println(domain);
+        boolean ok = ArrayUtils.equals(doublesA, doublesB);
+        if (!ok) {
+            System.out.println("Problem :: " + e);
+            Plot.title("DC_X(Bulk):" + e).xsamples(x).plot((Object) doublesA);
+            Plot.title("DC_X(Each):" + e).xsamples(x).plot((Object) doublesB);
+//            System.out.println(Arrays.deepToString(doublesA));
+//            System.out.println(Arrays.deepToString(doublesB));
+            showDiff("DC_X Diff", doublesA, doublesB, x);
+//            JOptionPane.showConfirmDialog(null,null);
+            throw new IllegalArgumentException("Invalid");
+        } else {
+            if (showSuccess) {
+                Plot.title("(OK)DC_X:" + e).xsamples(x).plot((Object) doublesA);
             }
         }
         return doublesA;
@@ -433,6 +547,14 @@ public class ExprChecker {
         }
     }
 
+    private static void normalize(double[] doublesB) {
+        for (int k = 0; k < doublesB.length; k++) {
+            if (doublesB[k] == 0) {
+                doublesB[k] = 0;
+            }
+        }
+    }
+
     private static void normalize(double[][] doublesB) {
         for (int j = 0; j < doublesB.length; j++) {
             for (int k = 0; k < doublesB[j].length; k++) {
@@ -453,8 +575,16 @@ public class ExprChecker {
         }
     }
 
-    public Expr replaceSpecial(Expr e){
-        ExpressionRewriterRuleSet r=new ExpressionRewriterRuleSet("Example");
+    private static void normalize(Complex[] doublesB) {
+        for (int k = 0; k < doublesB.length; k++) {
+            if (doublesB[k].isZero()) {
+                doublesB[k] = Complex.ZERO;
+            }
+        }
+    }
+
+    public Expr replaceSpecial(Expr e) {
+        ExpressionRewriterRuleSet r = new ExpressionRewriterRuleSet("Example");
         r.addRule(new ExpressionRewriterRule() {
             @Override
             public Class<? extends Expr>[] getTypes() {
@@ -464,7 +594,7 @@ public class ExprChecker {
             @Override
             public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
                 Expr r = Maths.simplify(e);
-                return r==e?RewriteResult.unmodified(e) : RewriteResult.newVal(r);
+                return r == e ? RewriteResult.unmodified(e) : RewriteResult.newVal(r);
             }
         });
         r.addRule(new ExpressionRewriterRule() {
@@ -486,55 +616,99 @@ public class ExprChecker {
 
     public void checkValue(Expr exp2, double vx, double vy, double vz) {
         Expr sexpr = replaceSpecial(exp2);
-        System.out.println("#### "+exp2+" ;; values "+vx+" , "+vy+" , "+vz);
-        double v = sexpr.toDD().computeDouble(vx, vy, vz);
-        Complex vc = sexpr.toDC().computeComplex(vx, vy, vz);
-        double[][][] v3 = sexpr.toDD().computeDouble(new double[]{vx}, new double[]{vy}, new double[]{vz});
-        Complex[][][] vc3 = sexpr.toDC().computeComplex(new double[]{vx}, new double[]{vy}, new double[]{vz});
-        System.out.println(v);
-        System.out.println(vc);
-        System.out.println(v3[0][0][0]);
-        System.out.println(vc3[0][0][0]);
+        System.out.println("#### " + exp2 + " ;; values " + vx + " , " + vy + " , " + vz);
+        if(exp2.isInvariant(Axis.Y) && exp2.isInvariant(Axis.Z)){
+            double v = sexpr.toDD().computeDouble(vx);
+            Complex vc = sexpr.toDC().computeComplex(vx);
+            double v3 = sexpr.toDD().computeDouble(new double[]{vx})[0];
+            Complex vc3 = sexpr.toDC().computeComplex(new double[]{vx})[0];
+            System.out.println("#X   :: "+v);
+            System.out.println("#X   :: "+vc);
+            System.out.println("#X   :: "+v3);
+            System.out.println("#X   :: "+vc3);
+            Assert.assertEquals(v,v3);
+            Assert.assertEquals(vc,vc3);
+        }
+        if(exp2.isInvariant(Axis.Z)){
+            double v = sexpr.toDD().computeDouble(vx, vy);
+            Complex vc = sexpr.toDC().computeComplex(vx, vy);
+            double[][] v3 = sexpr.toDD().computeDouble(new double[]{vx}, new double[]{vy});
+            Complex[][] vc3 = sexpr.toDC().computeComplex(new double[]{vx}, new double[]{vy});
+            System.out.println("#XY  :: "+v);
+            System.out.println("#XY  :: "+vc);
+            System.out.println("#XY  :: "+v3[0][0]);
+            System.out.println("#XY  :: "+vc3[0][0]);
+        }
+        {
+            double v = sexpr.toDD().computeDouble(vx, vy, vz);
+            Complex vc = sexpr.toDC().computeComplex(vx, vy, vz);
+            double[][][] v3 = sexpr.toDD().computeDouble(new double[]{vx}, new double[]{vy}, new double[]{vz});
+            Complex[][][] vc3 = sexpr.toDC().computeComplex(new double[]{vx}, new double[]{vy}, new double[]{vz});
+            System.out.println("#XYZ :: "+v);
+            System.out.println("#XYZ :: "+vc);
+            System.out.println("#XYZ :: "+v3[0][0][0]);
+            System.out.println("#XYZ :: "+vc3[0][0][0]);
+        }
     }
 
-    private void showDiff(String message,Complex[][][] c3,Complex[][][] v3c,double[] x,double[] y,double[] z){
+    private void showDiff(String message, Complex[][][] c3, Complex[][][] v3c, double[] x, double[] y, double[] z) {
         for (int i = 0; i < c3.length; i++) {
             for (int j = 0; j < c3[i].length; j++) {
                 for (int k = 0; k < c3[i][j].length; k++) {
-                    if(!c3[i][j][k].equals(v3c[i][j][k])){
-                        System.err.println(message+" : x["+k+"]="+x[k]+",y["+j+"]="+y[j]+",z["+i+"]="+z[i]+"  : "+v3c[i][j][k]+"  <>  "+c3[i][j][k]);
+                    if (!c3[i][j][k].equals(v3c[i][j][k])) {
+                        System.err.println(message + " : x[" + k + "]=" + x[k] + ",y[" + j + "]=" + y[j] + ",z[" + i + "]=" + z[i] + "  : " + v3c[i][j][k] + "  <>  " + c3[i][j][k]);
                     }
                 }
             }
         }
     }
-    private void showDiff(String message,double[][][] c3,double[][][] v3c,double[] x,double[] y,double[] z){
+
+    private void showDiff(String message, double[][][] c3, double[][][] v3c, double[] x, double[] y, double[] z) {
         for (int i = 0; i < c3.length; i++) {
             for (int j = 0; j < c3[i].length; j++) {
                 for (int k = 0; k < c3[i][j].length; k++) {
-                    if(Double.compare(c3[i][j][k],v3c[i][j][k])!=0){
-                        System.err.println(message+" : x["+k+"]="+x[k]+",y["+j+"]="+y[j]+",z["+i+"]="+z[i]+"  : "+v3c[i][j][k]+"  <>  "+c3[i][j][k]);
+                    if (Double.compare(c3[i][j][k], v3c[i][j][k]) != 0) {
+                        System.err.println(message + " : x[" + k + "]=" + x[k] + ",y[" + j + "]=" + y[j] + ",z[" + i + "]=" + z[i] + "  : " + v3c[i][j][k] + "  <>  " + c3[i][j][k]);
                     }
                 }
             }
         }
     }
-    private void showDiff(String message,Complex[][] c3,Complex[][] v3c,double[] x,double[] y){
-            for (int j = 0; j < c3.length; j++) {
-                for (int k = 0; k < c3[j].length; k++) {
-                    if(!c3[j][k].equals(v3c[j][k])){
-                        System.err.println(message+" : x["+k+"]="+x[k]+",y["+j+"]="+y[j]+"  : "+v3c[j][k]+"  <>  "+c3[j][k]);
-                    }
-                }
-            }
 
-    }
-    private void showDiff(String message,double[][] c3,double[][] v3c,double[] x,double[] y){
+    private void showDiff(String message, Complex[][] c3, Complex[][] v3c, double[] x, double[] y) {
         for (int j = 0; j < c3.length; j++) {
             for (int k = 0; k < c3[j].length; k++) {
-                if(Double.compare(c3[j][k],v3c[j][k])!=0){
-                    System.err.println(message+" : x["+k+"]="+x[k]+",y["+j+"]="+y[j]+"  : "+v3c[j][k]+"  <>  "+c3[j][k]);
+                if (!c3[j][k].equals(v3c[j][k])) {
+                    System.err.println(message + " : x[" + k + "]=" + x[k] + ",y[" + j + "]=" + y[j] + "  : " + v3c[j][k] + "  <>  " + c3[j][k]);
                 }
+            }
+        }
+
+    }
+
+    private void showDiff(String message, Complex[] c3, Complex[] v3c, double[] x) {
+        for (int j = 0; j < c3.length; j++) {
+            if (!c3[j].equals(v3c[j])) {
+                System.err.println(message + " : x[" + j + "]=" + x[j] + "  : " + v3c[j] + "  <>  " + c3[j]);
+            }
+        }
+
+    }
+
+    private void showDiff(String message, double[][] c3, double[][] v3c, double[] x, double[] y) {
+        for (int j = 0; j < c3.length; j++) {
+            for (int k = 0; k < c3[j].length; k++) {
+                if (Double.compare(c3[j][k], v3c[j][k]) != 0) {
+                    System.err.println(message + " : x[" + k + "]=" + x[k] + ",y[" + j + "]=" + y[j] + "  : " + v3c[j][k] + "  <>  " + c3[j][k]);
+                }
+            }
+        }
+    }
+
+    private void showDiff(String message, double[] c3, double[] v3c, double[] x) {
+        for (int j = 0; j < c3.length; j++) {
+            if (Double.compare(c3[j], v3c[j]) != 0) {
+                System.err.println(message + " : x[" + j + "]=" + x[j] + "  : " + v3c[j] + "  <>  " + c3[j]);
             }
         }
     }

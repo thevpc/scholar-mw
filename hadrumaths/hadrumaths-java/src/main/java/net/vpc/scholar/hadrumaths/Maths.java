@@ -6,8 +6,6 @@ import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
-import net.vpc.scholar.hadrumaths.integration.formal.FormalIntegrationOperator;
-import net.vpc.scholar.hadrumaths.integration.formal.NumericIntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
@@ -19,7 +17,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.Shape;
+import net.vpc.scholar.hadrumaths.symbolic.Shape2D;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
@@ -2602,7 +2600,7 @@ public final class Maths {
         if (geometry.isRectangular()) {
             return DoubleValue.valueOf(value, geometry.getDomain());
         }
-        return new Shape(value, geometry);
+        return new Shape2D(value, geometry);
     }
 
     public static DoubleToDouble expr(double value, Domain geometry) {
@@ -2613,7 +2611,7 @@ public final class Maths {
         if (geometry.isRectangular()) {
             return DoubleValue.valueOf(value, geometry.getDomain());
         }
-        return new Shape(value, geometry);
+        return new Shape2D(value, geometry);
     }
 
     public static DoubleToDouble expr(Domain domain) {

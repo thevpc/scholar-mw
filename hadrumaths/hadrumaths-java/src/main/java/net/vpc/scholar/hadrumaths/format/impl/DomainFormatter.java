@@ -33,7 +33,7 @@ public class DomainFormatter implements Formatter<Domain>{
     private static void format(StringBuilder sb,Domain o,Axis axis,DoubleFormat df, String x,String y,String z,FormatParamSet format,String emptyValue){
         switch (axis){
             case X:{
-                if(o.isUnconstrainedX()){
+                if(!Double.isNaN(o.xmin()) && !Double.isNaN(o.xmax()) && o.isUnconstrainedX()){
                     sb.append(emptyValue);
                     return ;
                 }
@@ -43,7 +43,7 @@ public class DomainFormatter implements Formatter<Domain>{
                 return;
             }
             case Y:{
-                if(o.isUnconstrainedY()){
+                if(!Double.isNaN(o.ymin()) && !Double.isNaN(o.ymax()) && o.isUnconstrainedY()){
                     sb.append(emptyValue);
                     return ;
                 }
@@ -53,7 +53,7 @@ public class DomainFormatter implements Formatter<Domain>{
                 return;
             }
             case Z:{
-                if(o.isUnconstrainedZ()){
+                if(!Double.isNaN(o.zmin()) && !Double.isNaN(o.zmax()) && o.isUnconstrainedZ()){
                     sb.append(emptyValue);
                     return ;
                 }
@@ -77,7 +77,7 @@ public class DomainFormatter implements Formatter<Domain>{
         String mul = pp.getOp()==null?" ":(" "+pp.getOp()+" ");
         switch(d.getType()){
             case GATE:{
-                if(o.isFull() && d.isIgnoreFull()){
+                if(!o.isNaN() && o.isFull() && d.isIgnoreFull()){
                     return;
                 }else {
                     switch (o.getDimension()){

@@ -95,10 +95,11 @@ public class TestVals {
 //            return ;
 //        }
         if (exp != null) {
-            Expr exp2 = exp;//.getSubExpressions().get(1);//.getSubExpressions().get(0);//.getSubExpressions().get(1);//.getSubExpressions().get(0);//.getSubExpressions().get(0).getSubExpressions().get(0);
+            Expr exp2 = exp;//.getSubExpressions().get(1);//.getSubExpressions().get(0);//.getSubExpressions().get(0);//.getSubExpressions().get(1);//.getSubExpressions().get(0);//.getSubExpressions().get(0).getSubExpressions().get(0);
+//            ((GteExpr)exp.getSubExpressions().get(1).getSubExpressions().get(0)).resetFunctionType(null);
 //            exp2=new IfThenElse(DoubleValue.ONE1,DoubleValue.ONE1,exp2.getSubExpressions().get(2));
 //            exp2=new IfThenElse(DoubleValue.ONE1,DoubleValue.ONE1,DoubleValue.TWO1);
-
+            exp2.isInvariant(Axis.Y);
             exp2.isDD();
 //            Complex c = exp2.toDC().computeComplex(0, 0, 0);
             //exp.simplify();
@@ -116,7 +117,7 @@ public class TestVals {
 
             exprChecker.setSaveError(false).setShowSuccess(false);
 
-//            exprChecker.checkValue(exp2, 3.0, 4.9, 0);
+//            exprChecker.checkValue(exp2, 2.0,-2.5, 0);
 //            if(true){
 //                return;
 //            }

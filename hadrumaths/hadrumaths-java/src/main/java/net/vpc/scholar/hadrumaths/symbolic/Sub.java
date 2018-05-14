@@ -139,9 +139,9 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     public Domain getDomainImpl() {
         Domain d = Domain.NaNX;
         for (Expr expression : getSubExpressions()) {
-            if (!expression.isZero()) {
+            //if (!expression.isZero()) {
                 d = d.expand(expression.getDomain());
-            }
+            //}
         }
         return d.toDomain(getDomainDimension());
 

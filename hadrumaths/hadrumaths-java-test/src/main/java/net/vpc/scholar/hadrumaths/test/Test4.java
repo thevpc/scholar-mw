@@ -10,7 +10,7 @@
 //import org.jzy3d.plot3d.builder.Builder;
 //import org.jzy3d.plot3d.builder.Mapper;
 //import org.jzy3d.plot3d.builder.concrete.OrthonormalGrid;
-//import org.jzy3d.plot3d.primitives.Shape;
+//import org.jzy3d.plot3d.primitives.Shape2D;
 //import org.jzy3d.plot3d.rendering.canvas.Quality;
 //
 //public class Test4 extends AbstractAnalysis {
@@ -33,7 +33,7 @@
 //        int steps = 80;
 //
 //        // Create the object to represent the function over the given range.
-//        final Shape surface = Builder.buildOrthonormal(new OrthonormalGrid(range, steps, range, steps), mapper);
+//        final Shape2D surface = Builder.buildOrthonormal(new OrthonormalGrid(range, steps, range, steps), mapper);
 //        surface.setColorMapper(new ColorMapper(new ColorMapRainbow(), surface.getBounds().getZmin(), surface.getBounds().getZmax(), new Color(1, 1, 1, .5f)));
 //        surface.setFaceDisplayed(true);
 //        surface.setWireframeDisplayed(false);

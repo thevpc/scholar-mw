@@ -80,6 +80,9 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 
     public double integrateX(DoubleToDouble f, double y0, double xmin, double xmax) {
         double[] x = new double[]{xmin, (xmin + xmax) / 2.0, xmax};
+        if(f.isZero()){
+            return 0;
+        }
         double[] y = f.computeDouble(x, y0,null, null);
         if(Double.isInfinite(y[2])){
             y = f.computeDouble(x, y0, null, null);
@@ -125,6 +128,9 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
     public double integrateY(DoubleToDouble f, double x0, double ymin, double ymax) {
 
         double[] yy = new double[]{ymin, (ymin + ymax) / 2.0, ymax};
+        if(f.isZero()){
+            return 0;
+        }
         double[] y = f.computeDouble(x0, yy, null, null);
         int fcnt = 3;
         double hmin = hminCoeff * abs(ymax - ymin);

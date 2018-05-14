@@ -272,7 +272,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
     private boolean isExpSimplifiableIfMulDouble(Expr b) {
         return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
                 || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
                 || b instanceof Plus || b instanceof Sub || b instanceof Neg
                 || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }
@@ -280,7 +280,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
         if(true)return true;
         return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
                 || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
                 || b instanceof Plus || b instanceof Sub || b instanceof Neg
                 || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }
@@ -288,7 +288,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
         if(true)return true;
         return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
                 || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape || b instanceof RWG
+                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
                 || b instanceof Plus || b instanceof Sub || b instanceof Neg
                 || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }

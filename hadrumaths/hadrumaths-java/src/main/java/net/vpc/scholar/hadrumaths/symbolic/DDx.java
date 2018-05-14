@@ -68,11 +68,14 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
 
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
         Out<Range> r2 = new Out<Range>();
-        double[][] yy = base.computeDouble(x, new double[]{defaultY}, d0 == null ? null : Domain.forBounds(d0.xmin(), d0.xmax(), base.getDomain().ymin(), base.getDomain().ymax()), r2);
+        double[][][] yy = base.computeDouble(x, new double[]{defaultY}, new double[]{defaultZ}, d0 == null ? null : Domain.forBounds(d0.xmin(), d0.xmax(), base.getDomain().ymin(), base.getDomain().ymax()), r2);
         if (range != null) {
-            range.set(Range.forBounds(r2.get().xmin, r2.get().xmax));
+            Range range1 = r2.get();
+            Range newRange = Range.forBounds(range1.xmin, range1.xmax);
+            newRange.setDefined(range1.getDefined3().get(0).get(0));
+            range.set(newRange);
         }
-        return yy[0];
+        return yy[0][0];
     }
 
     public boolean isInvariantImpl(Axis axis) {

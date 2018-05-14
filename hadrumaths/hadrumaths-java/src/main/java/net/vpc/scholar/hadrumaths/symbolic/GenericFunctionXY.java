@@ -40,6 +40,13 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         ComponentDimension cd = xargument.getComponentDimension().expand(yargument.getComponentDimension());
         this.xargument = Maths.expandComponentDimension(xargument, cd);
         this.yargument = Maths.expandComponentDimension(yargument, cd);
+        resetFunctionType(lowerFunctionType);
+//        if(this.functionType==FunctionType.MATRIX){
+//            System.out.println("Why");
+//        }
+    }
+
+    public void resetFunctionType(FunctionType lowerFunctionType){
         FunctionType functionType0 = null;
         if (xargument.isDD()) {
             functionType0 = FunctionType.DOUBLE;
@@ -51,11 +58,11 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         } else {
             throw new IllegalArgumentException("Unknown functionType");
         }
-        if (yargument.isDD()) {
+        if (yargument.isDD() && functionType0.ordinal()<=FunctionType.DOUBLE.ordinal()) {
             functionType0 = FunctionType.DOUBLE;
-        } else if (yargument.isDC()) {
+        } else if (yargument.isDC() && functionType0.ordinal()<=FunctionType.COMPLEX.ordinal()) {
             functionType0 = FunctionType.COMPLEX;
-        } else if (yargument.isDM()) {
+        } else if (yargument.isDM() && functionType0.ordinal()<=FunctionType.MATRIX.ordinal()) {
 //            yargument.isDC();
             functionType0 = FunctionType.MATRIX;
         } else {
@@ -70,9 +77,10 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
                 this.functionType = lowerFunctionType;
             }
         }
-//        if(this.functionType==FunctionType.MATRIX){
-//            System.out.println("Why");
-//        }
+    }
+
+    public FunctionType getFunctionType() {
+        return functionType;
     }
 
     @Override
@@ -282,6 +290,43 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 
     public abstract Expr newInstance(Expr xargument, Expr yargument);
 
+
+
+    @Override
+    public double computeDouble(double x, BooleanMarker defined) {
+        if (contains(x)) {
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
+            double a = getXArgument().toDD().computeDouble(x, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, ydefined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
+        }
+        return 0;
+    }
+    @Override
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        if (contains(x, y)) {
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
+            double a = getXArgument().toDD().computeDouble(x, y, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, y, ydefined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        if (contains(x, y, z)) {
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
+            double a = getXArgument().toDD().computeDouble(x, y, z, xdefined);
+            double b = getYArgument().toDD().computeDouble(x, y, z, ydefined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
+        }
+        return 0;
+    }
+
     @Override
     public Complex computeComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
@@ -293,7 +338,6 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         }
         return Complex.ZERO;
     }
-
 
     @Override
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
@@ -319,41 +363,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         return Complex.ZERO;
     }
 
-    @Override
-    public double computeDouble(double x, BooleanMarker defined) {
-        if (contains(x)) {
-            BooleanRef xdefined = BooleanMarker.ref();
-            BooleanRef ydefined = BooleanMarker.ref();
-            double a = getXArgument().toDD().computeDouble(x, xdefined);
-            double b = getYArgument().toDD().computeDouble(x, ydefined);
-            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
-        }
-        return 0;
-    }
 
-    @Override
-    public double computeDouble(double x, double y, BooleanMarker defined) {
-        if (contains(x, y)) {
-            BooleanRef xdefined = BooleanMarker.ref();
-            BooleanRef ydefined = BooleanMarker.ref();
-            double a = getXArgument().toDD().computeDouble(x, y, xdefined);
-            double b = getYArgument().toDD().computeDouble(x, y, ydefined);
-            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
-        }
-        return 0;
-    }
-
-    @Override
-    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
-        if (contains(x, y, z)) {
-            BooleanRef xdefined = BooleanMarker.ref();
-            BooleanRef ydefined = BooleanMarker.ref();
-            double a = getXArgument().toDD().computeDouble(x, y, z, xdefined);
-            double b = getYArgument().toDD().computeDouble(x, y, z, ydefined);
-            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
-        }
-        return 0;
-    }
 
     //    @Override
 //    public String toString() {

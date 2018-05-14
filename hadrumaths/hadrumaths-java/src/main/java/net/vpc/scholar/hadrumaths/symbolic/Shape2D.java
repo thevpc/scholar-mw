@@ -9,24 +9,24 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:29:58
  */
-public final class Shape extends AbstractDoubleToDouble implements Cloneable{
+public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
 
     private static final long serialVersionUID = 1L;
-    public static final Shape ZERO = new Shape(0, Domain.EMPTYXY);
+    public static final Shape2D ZERO = new Shape2D(0, Domain.EMPTYXY);
 
 //    public static final int CODE = 1;
     public double value;
     private Geometry geometry;
 
-    public Shape(double cst, Domain domain) {
+    public Shape2D(double cst, Domain domain) {
         this(cst, new Polygon(domain));
     }
 
-    public Shape(Domain domain) {
+    public Shape2D(Domain domain) {
         this(Maths.sqrt(domain.xwidth() * domain.ywidth()), new Polygon(domain));
     }
 
-    public Shape(double cst, Geometry geometry) {
+    public Shape2D(double cst, Geometry geometry) {
         super(cst == 0 ? Domain.EMPTYXY : geometry.getDomain());
         this.value = cst;
         this.geometry = geometry;
@@ -35,7 +35,7 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
-        return true;
+        return axis==Axis.Z;
     }
 
     @Override
@@ -72,7 +72,7 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public AbstractDoubleToDouble mul(double factor, Domain newDomain) {
-        return new Shape(factor * value,
+        return new Shape2D(factor * value,
                 newDomain == null ? domain : domain.intersect(newDomain)
         );
     }
@@ -89,7 +89,7 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public AbstractDoubleToDouble translate(double deltaX, double deltaY) {
-        return new Shape(value, domain.translate(deltaX, deltaY));
+        return new Shape2D(value, domain.translate(deltaX, deltaY));
     }
 
     @Override
@@ -105,6 +105,21 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     @Override
     public boolean isZeroImpl() {
         return value == 0;
+    }
+
+    @Override
+    public double toDouble() {
+        return value;
+    }
+
+    @Override
+    public Complex toComplex() {
+        return Complex.valueOf(value);
+    }
+
+    @Override
+    public Matrix toMatrix() {
+        return toComplex().toMatrix();
     }
 
     @Override
@@ -182,10 +197,10 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Shape)) return false;
+        if (!(o instanceof Shape2D)) return false;
         if (!super.equals(o)) return false;
 
-        Shape that = (Shape) o;
+        Shape2D that = (Shape2D) o;
 
         if (Double.compare(that.value, value) != 0) return false;
         if (geometry != null ? !geometry.equals(that.geometry) : that.geometry != null) return false;
@@ -220,17 +235,17 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public Expr mul(Geometry domain) {
-        return new Shape(value,getGeometry().intersectGeometry(domain));
+        return new Shape2D(value,getGeometry().intersectGeometry(domain));
     }
 
     @Override
     public Expr mul(Domain domain) {
-        return new Shape(value,getGeometry().intersectGeometry(domain.toGeometry()));
+        return new Shape2D(value,getGeometry().intersectGeometry(domain.toGeometry()));
     }
 
     @Override
     public Expr mul(double other) {
-        return new Shape(value*other,getGeometry());
+        return new Shape2D(value*other,getGeometry());
     }
 
     @Override

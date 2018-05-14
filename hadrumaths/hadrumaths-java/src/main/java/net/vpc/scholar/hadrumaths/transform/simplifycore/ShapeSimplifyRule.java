@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.Shape;
+import net.vpc.scholar.hadrumaths.symbolic.Shape2D;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -17,7 +17,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 public class ShapeSimplifyRule implements ExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ShapeSimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{Shape.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{Shape2D.class};
 
     @Override
     public Class<? extends Expr>[] getTypes() {
@@ -25,7 +25,7 @@ public class ShapeSimplifyRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-//        if (!(e instanceof Shape)) {
+//        if (!(e instanceof Shape2D)) {
 //            return null;
 //        }
         return RewriteResult.unmodified(e);
