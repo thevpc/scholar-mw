@@ -166,12 +166,12 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
     @Override
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         if (tr1.contains(x, y)) {
             defined.set();
             return computeDouble(tr1, x, y);
@@ -183,7 +183,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         if (tr1.contains(x, y)) {
             return computeDouble(tr1, x, y);
         } else if (tr2.contains(x, y)) {

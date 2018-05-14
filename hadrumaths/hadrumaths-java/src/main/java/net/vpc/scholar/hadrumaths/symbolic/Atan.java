@@ -16,12 +16,12 @@ public class Atan extends TrigoFunctionX implements Cloneable {
         return "atan";
     }
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined) {
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.atan();
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined) {
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Maths.atan(c);
     }

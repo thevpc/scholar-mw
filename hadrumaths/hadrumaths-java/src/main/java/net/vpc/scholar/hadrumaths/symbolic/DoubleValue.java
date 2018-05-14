@@ -213,11 +213,11 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
 //    @Override
 //    public double computeDouble(double x, double y, double z) {
-//        return computeDouble(x,y,z,new OutBoolean());
+//        return computeDouble(x,y,z,new BooleanMarker());
 //    }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         if((contains(x, y, z))){
             defined.set();
             return value;
@@ -231,7 +231,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 //    }
 
     @Override
-    public double computeDouble(double x,OutBoolean defined) {
+    public double computeDouble(double x,BooleanMarker defined) {
         if(contains(x)) {
             defined.set();
             return value;
@@ -499,7 +499,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {//
+    public double computeDouble(double x, double y,BooleanMarker defined) {//
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {

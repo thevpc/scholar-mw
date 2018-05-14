@@ -81,7 +81,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplex(double x,OutBoolean defined) {
+//    public Complex computeComplex(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));
@@ -116,7 +116,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         return computeComplex(x, y, d0, null);
     }
 
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
             defined.set();
             return Complex.I(a * x).exp().mul(Complex.I(b * y).exp()).mul(amp);
@@ -351,7 +351,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return Complex.I(a * x).exp().mul(Complex.I(b * y).exp()).mul(amp);
@@ -360,7 +360,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing y");
     }
 

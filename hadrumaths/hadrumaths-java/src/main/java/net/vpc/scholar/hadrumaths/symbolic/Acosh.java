@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
@@ -18,12 +18,12 @@ public class Acosh extends TrigoFunctionX implements Cloneable {
         return "acosh";
     }
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined) {
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.acosh();
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined) {
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Complex.valueOf(c).acosh().toReal();
     }

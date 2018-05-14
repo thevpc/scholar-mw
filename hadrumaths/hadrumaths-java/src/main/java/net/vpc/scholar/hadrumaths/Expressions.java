@@ -109,7 +109,7 @@ public class Expressions {
         return r[0][0];
     }
 
-    public static Complex computeComplex(DoubleToComplex f, double x, double y, OutBoolean defined) {
+    public static Complex computeComplex(DoubleToComplex f, double x, double y, BooleanMarker defined) {
         Out<Range> ranges = new Out<>();
         Complex[][] r = f.computeComplex(new double[]{x}, new double[]{y}, null, ranges);
         if (ranges.get().getDefined2().get(0, 0)) {
@@ -137,7 +137,7 @@ public class Expressions {
         return r[0][0];
     }
 
-    public static double computeDouble(DoubleToDouble f, double x, double y, OutBoolean defined) {
+    public static double computeDouble(DoubleToDouble f, double x, double y, BooleanMarker defined) {
         Out<Range> ranges = new Out<>();
         double[][] r = f.computeDouble(new double[]{x}, new double[]{y}, null, ranges);
         if (ranges.get().getDefined2().get(0, 0)) {
@@ -235,7 +235,7 @@ public class Expressions {
         return r[0];
     }
 
-    public static double computeDouble(DoubleToDouble f, double x, OutBoolean defined) {
+    public static double computeDouble(DoubleToDouble f, double x, BooleanMarker defined) {
         Out<Range> range = new Out<>();
         double[] r = f.computeDouble(new double[]{x}, null, range);
         if (range.get().getDefined1().get(0)) {
@@ -410,9 +410,9 @@ public class Expressions {
     public interface UnaryExprHelper<T extends Expr> {
         Expr getBaseExpr(T expr);
 
-        double computeDouble(double x, OutBoolean defined);
+        double computeDouble(double x, BooleanMarker defined);
 
-        Complex computeComplex(Complex x, OutBoolean defined);
+        Complex computeComplex(Complex x, BooleanMarker defined);
 
         Matrix computeMatrix(Matrix x);
     }
@@ -430,9 +430,9 @@ public class Expressions {
                 BooleanArray1 def2 = d2.getDefined1();
                 for (int k = d2.xmin; k <= d2.xmax; k++) {
                     if (def2.get(k)) {
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret[k] = h.computeDouble(ret[k], defined);
-                        if (defined.isSet()) {
+                        if (defined.get()) {
                             def0.set(k);
                         }
                     } else {
@@ -467,9 +467,9 @@ public class Expressions {
                 for (int j = d2.ymin; j <= d2.ymax; j++) {
                     for (int k = d2.xmin; k <= d2.xmax; k++) {
                         if (def2.get(j, k)) {
-                            ReadableOutBoolean defined = OutBoolean.createReadable();
+                            BooleanRef defined = BooleanMarker.ref();
                             ret[j][k] = h.computeDouble(ret[j][k], defined);
-                            if (defined.isSet()) {
+                            if (defined.get()) {
                                 def0.set(j, k);
                             }
                         } else {
@@ -511,9 +511,9 @@ public class Expressions {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
                         for (int k = d2.xmin; k <= d2.xmax; k++) {
                             if (def2 != null && def2.get(t, j, k)) {
-                                ReadableOutBoolean defined = OutBoolean.createReadable();
+                                BooleanRef defined = BooleanMarker.ref();
                                 ret[t][j][k] = h.computeDouble(ret[t][j][k], defined);
-                                if (defined.isSet()) {
+                                if (defined.get()) {
                                     def0.set(t, j, k);
                                 }
                             } else {
@@ -685,9 +685,9 @@ public class Expressions {
                 BooleanArray1 def2 = d2.getDefined1();
                 for (int k = d2.xmin; k <= d2.xmax; k++) {
                     if (def2 != null && def2.get(k)) {
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret[k] = h.computeComplex(ret[k], defined);
-                        if (defined.isSet()) {
+                        if (defined.get()) {
                             def0.set(k);
                         }
                     } else {
@@ -727,9 +727,9 @@ public class Expressions {
                 for (int j = d2.ymin; j <= d2.ymax; j++) {
                     for (int k = d2.xmin; k <= d2.xmax; k++) {
                         if (def2 != null && def2.get(j, k)) {
-                            ReadableOutBoolean defined = OutBoolean.createReadable();
+                            BooleanRef defined = BooleanMarker.ref();
                             ret[j][k] = h.computeComplex(ret[j][k], defined);
-                            if (defined.isSet()) {
+                            if (defined.get()) {
                                 def0.set(j, k);
                             }
                         } else {
@@ -771,9 +771,9 @@ public class Expressions {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
                         for (int k = d2.xmin; k <= d2.xmax; k++) {
                             if (def2 != null && def2.get(t, j, k)) {
-                                ReadableOutBoolean defined = OutBoolean.createReadable();
+                                BooleanRef defined = BooleanMarker.ref();
                                 ret[t][j][k] = h.computeComplex(ret[t][j][k], defined);
-                                if (defined.isSet()) {
+                                if (defined.get()) {
                                     def0.set(t, j, k);
                                 }
                             } else {
@@ -807,21 +807,21 @@ public class Expressions {
 
         Expr getBaseExpr(T expr, int index);
 
-        double computeDouble(double a, double b, OutBoolean defined, ComputeDefOptions options);
+        double computeDouble(double a, double b, BooleanMarker defined, ComputeDefOptions options);
 
-        Complex computeComplex(Complex a, Complex b, OutBoolean defined, ComputeDefOptions options);
+        Complex computeComplex(Complex a, Complex b, BooleanMarker defined, ComputeDefOptions options);
 
-        Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, ComputeDefOptions options);
+        Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public interface TernaryExprHelper<T extends Expr> {
         Expr getBaseExpr(T expr, int index);
 
-        double computeDouble(double a, double b, double c, OutBoolean defined, ComputeDefOptions options);
+        double computeDouble(double a, double b, double c, BooleanMarker defined, ComputeDefOptions options);
 
-        Complex computeComplex(Complex a, Complex b, Complex c, OutBoolean defined, ComputeDefOptions options);
+        Complex computeComplex(Complex a, Complex b, Complex c, BooleanMarker defined, ComputeDefOptions options);
 
-        Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, OutBoolean defined, ComputeDefOptions options);
+        Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public static final class ComputeDefOptions {
@@ -865,7 +865,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = def2 != null && def2.get(k);
-                        ReadableOutBoolean defined=ReadableOutBoolean.create();
+                        BooleanRef defined= BooleanRef.create();
                         ret1[k] = h.computeDouble(ret1[k], val[k], defined, o);
                         def0.set(k, defined.get());
                     }
@@ -873,7 +873,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = false;
-                        ReadableOutBoolean defined=ReadableOutBoolean.create();
+                        BooleanRef defined= BooleanRef.create();
                         ret1[k] = h.computeDouble(ret1[k], 0, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -922,7 +922,7 @@ public class Expressions {
                 o.value1Defined = def0 != null && def0.get(k);
                 o.value2Defined = def2 != null && def2.get(k);
                 o.value2Defined = def3 == null && def3.get(k);
-                ReadableOutBoolean defined = OutBoolean.createReadable();
+                BooleanRef defined = BooleanMarker.ref();
                 ret1[k] = h.computeDouble(ret1[k], ret2 == null ? 0 : ret2[k], ret3 == null ? 0 : ret3[k], defined, o);
                 def0.set(k, defined.get());
             }
@@ -976,7 +976,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            ReadableOutBoolean defined=ReadableOutBoolean.create();
+                            BooleanRef defined= BooleanRef.create();
                             ret1[j][k] = h.computeDouble(ret1[j][k], val[j][k], defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -986,7 +986,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = false;
-                            ReadableOutBoolean defined=ReadableOutBoolean.create();
+                            BooleanRef defined= BooleanRef.create();
                             ret1[j][k] = h.computeDouble(ret1[j][k], 0, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1047,7 +1047,7 @@ public class Expressions {
                     o.value1Defined = def0 != null && def0.get(j, k);
                     o.value2Defined = def2 != null && def2.get(j, k);
                     o.value3Defined = def3 != null && def3.get(j, k);
-                    ReadableOutBoolean defined = OutBoolean.createReadable();
+                    BooleanRef defined = BooleanMarker.ref();
                     ret1[j][k] = h.computeDouble(ret1[j][k], ret2 == null ? 0 : ret2[j][k], ret3 == null ? 0 : ret3[j][k], defined, o);
                     def0.set(j, k, defined.get());
                 }
@@ -1101,7 +1101,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = def2 != null && def2.get(i, j, k);
-                                ReadableOutBoolean defined=ReadableOutBoolean.create();
+                                BooleanRef defined= BooleanRef.create();
                                 ret1[i][j][k] = h.computeDouble(ret1[i][j][k], val[i][j][k], defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1113,7 +1113,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = false;
-                                ReadableOutBoolean defined=ReadableOutBoolean.create();
+                                BooleanRef defined= BooleanRef.create();
                                 ret1[i][j][k] = h.computeDouble(ret1[i][j][k], 0, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1167,7 +1167,7 @@ public class Expressions {
                         o.value1Defined = def0 != null && def0.get(i, j, k);
                         o.value2Defined = def2 != null && def2.get(i, j, k);
                         o.value3Defined = def3 != null && def3.get(i, j, k);
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret1[i][j][k] = h.computeDouble(ret1[i][j][k], ret2 == null ? 0 : ret2[i][j][k], ret3 == null ? 0 : ret3[i][j][k], defined, o);
                         def0.set(i, j, k, defined.get());
                     }
@@ -1212,7 +1212,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = def2 != null && def2.get(k);
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret1[k] = h.computeComplex(ret1[k], val[k], defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1220,7 +1220,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = false;
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret1[k] = h.computeComplex(ret1[k], zero, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1271,7 +1271,7 @@ public class Expressions {
                 o.value1Defined = def0 != null && def0.get(k);
                 o.value2Defined = def2 != null && def2.get(k);
                 o.value3Defined = def3 != null && def3.get(k);
-                ReadableOutBoolean defined = OutBoolean.createReadable();
+                BooleanRef defined = BooleanMarker.ref();
                 ret1[k] = h.computeComplex(ret1[k], ret2 == null ? Complex.ZERO : ret2[k], ret3 == null ? Complex.ZERO : ret3[k], defined, o);
                 def0.set(k, defined.get());
             }
@@ -1317,7 +1317,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            ReadableOutBoolean defined=ReadableOutBoolean.create();
+                            BooleanRef defined= BooleanRef.create();
                             ret1[j][k] = h.computeComplex(ret1[j][k], val[j][k], defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1327,7 +1327,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = false;
-                            ReadableOutBoolean defined = OutBoolean.createReadable();
+                            BooleanRef defined = BooleanMarker.ref();
                             ret1[j][k] = h.computeComplex(ret1[j][k], zero, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1379,7 +1379,7 @@ public class Expressions {
                     o.value1Defined = def0 != null && def0.get(j, k);
                     o.value2Defined = def2 != null && def2.get(j, k);
                     o.value3Defined = def3 != null && def3.get(j, k);
-                    ReadableOutBoolean defined = OutBoolean.createReadable();
+                    BooleanRef defined = BooleanMarker.ref();
                     ret1[j][k] = h.computeComplex(ret1[j][k], ret2 == null ? Complex.ZERO : ret2[j][k], ret3 == null ? Complex.ZERO : ret3[j][k], defined, o);
                     def0.set(j, k, defined.get());
                 }
@@ -1433,7 +1433,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = def2 != null && def2.get(i, j, k);
-                                ReadableOutBoolean defined = OutBoolean.createReadable();
+                                BooleanRef defined = BooleanMarker.ref();
                                 ret1[i][j][k] = h.computeComplex(ret1[i][j][k], val[i][j][k], defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1445,7 +1445,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = false;
-                                ReadableOutBoolean defined = OutBoolean.createReadable();
+                                BooleanRef defined = BooleanMarker.ref();
                                 ret1[i][j][k] = h.computeComplex(ret1[i][j][k], zero, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1499,7 +1499,7 @@ public class Expressions {
                         o.value1Defined = def0 != null && def0.get(i, j, k);
                         o.value2Defined = def2 != null && def2.get(i, j, k);
                         o.value3Defined = def3 != null && def3.get(i, j, k);
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret1[i][j][k] = h.computeComplex(ret1[i][j][k], ret2 == null ? Complex.ZERO : ret2[i][j][k], ret3 == null ? Complex.ZERO : ret3[i][j][k], defined, o);
                         def0.set(i, j, k, defined.get());
                     }
@@ -1549,7 +1549,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = def2 != null && def2.get(k);
-                        ReadableOutBoolean defined=ReadableOutBoolean.create();
+                        BooleanRef defined= BooleanRef.create();
                         ret1[k] = h.computeMatrix(ret1[k], val[k], zero, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1557,7 +1557,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = false;
-                        ReadableOutBoolean defined=ReadableOutBoolean.create();
+                        BooleanRef defined= BooleanRef.create();
                         ret1[k] = h.computeMatrix(ret1[k], zero, zero, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1608,7 +1608,7 @@ public class Expressions {
                 o.value1Defined = def0 != null && def0.get(k);
                 o.value2Defined = def2 != null && def2.get(k);
                 o.value3Defined = def3 != null && def3.get(k);
-                ReadableOutBoolean defined = OutBoolean.createReadable();
+                BooleanRef defined = BooleanMarker.ref();
                 ret1[k] = h.computeMatrix(ret1[k], ret2 == null ? zero : ret2[k], ret3 == null ? zero : ret3[k], zero, defined, o);
                 def0.set(k, defined.get());
             }
@@ -1658,7 +1658,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            ReadableOutBoolean defined=ReadableOutBoolean.create();
+                            BooleanRef defined= BooleanRef.create();
                             ret1[j][k] = h.computeMatrix(ret1[j][k], val[j][k], zero, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1668,7 +1668,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = false;
-                            ReadableOutBoolean defined=ReadableOutBoolean.create();
+                            BooleanRef defined= BooleanRef.create();
                             ret1[j][k] = h.computeMatrix(ret1[j][k], zero, zero, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1722,7 +1722,7 @@ public class Expressions {
                     o.value1Defined = def0 != null && def0.get(j, k);
                     o.value2Defined = def2 != null && def2.get(j, k);
                     o.value3Defined = def3 != null && def3.get(j, k);
-                    ReadableOutBoolean defined = OutBoolean.createReadable();
+                    BooleanRef defined = BooleanMarker.ref();
                     ret1[j][k] = h.computeMatrix(ret1[j][k], ret2 == null ? zero : ret2[j][k], ret3 == null ? zero : ret3[j][k], zero, defined, o);
                     def0.set(j, k, defined.get());
                 }
@@ -1777,7 +1777,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = def2 != null && def2.get(i, j, k);
-                                ReadableOutBoolean defined=ReadableOutBoolean.create();
+                                BooleanRef defined= BooleanRef.create();
                                 ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], val[i][j][k], zero, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1789,7 +1789,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = false;
-                                ReadableOutBoolean defined=ReadableOutBoolean.create();
+                                BooleanRef defined= BooleanRef.create();
                                 ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], zero, zero, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1845,7 +1845,7 @@ public class Expressions {
                         o.value1Defined = def0 != null && def0.get(i, j, k);
                         o.value2Defined = def2 != null && def2.get(i, j, k);
                         o.value3Defined = def3 != null && def3.get(i, j, k);
-                        ReadableOutBoolean defined = OutBoolean.createReadable();
+                        BooleanRef defined = BooleanMarker.ref();
                         ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], ret2 == null ? zero : ret2[i][j][k], ret3 == null ? zero : ret3[i][j][k], zero, defined, o);
                         def0.set(i, j, k, defined.get());
                     }

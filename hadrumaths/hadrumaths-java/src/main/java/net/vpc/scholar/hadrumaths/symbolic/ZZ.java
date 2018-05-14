@@ -184,7 +184,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         if (domain.contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(z);
@@ -195,11 +195,11 @@ public class ZZ extends AxisFunction implements Cloneable {
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return computeMatrix(x,y,z,OutBoolean.none());
+        return computeMatrix(x,y,z, BooleanMarker.none());
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return z;
@@ -208,7 +208,7 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y, double z,OutBoolean defined) {
+    public Matrix computeMatrix(double x, double y, double z,BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(z).toMatrix();
@@ -248,22 +248,22 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Z");
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Z");
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Z");
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Z");
     }
 

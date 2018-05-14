@@ -227,7 +227,7 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
 //        return computeComplex(new double[]{x},new double[]{y})[0][0];
 //    }
 
-//    public Complex computeComplexArg(double x,OutBoolean defined){
+//    public Complex computeComplexArg(double x,BooleanMarker defined){
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

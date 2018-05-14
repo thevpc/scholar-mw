@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
@@ -20,12 +20,12 @@ public class Cos extends TrigoFunctionX implements Cloneable {
     }
 
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined) {
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.cos();
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined) {
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Maths.cos2(c);
     }

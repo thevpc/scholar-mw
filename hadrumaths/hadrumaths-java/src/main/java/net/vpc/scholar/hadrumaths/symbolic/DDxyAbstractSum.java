@@ -136,7 +136,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
 //        }
 //        return r;
 //    }
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         double r = 0;
         if (contains(x, y)) {
             for (DoubleToDouble f : segments) {
@@ -149,7 +149,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     }
 
     @Override
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
             r += f.computeDouble(x,defined);
@@ -158,7 +158,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     }
 
     @Override
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
             r += f.computeDouble(x, y,defined);
@@ -167,7 +167,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
             r += f.computeDouble(x, y, z,defined);

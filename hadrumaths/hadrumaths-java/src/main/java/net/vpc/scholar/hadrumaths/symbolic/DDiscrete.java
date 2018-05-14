@@ -1195,10 +1195,10 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
 //    public Complex computeComplex(double x, double y, double z) {
-//        return computeComplex(x,y,z,new OutBoolean());
+//        return computeComplex(x,y,z,new BooleanMarker());
 //    }
 
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1228,7 +1228,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return Complex.ZERO;
     }
 
-    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1256,7 +1256,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public double computeDouble0(double x, OutBoolean defined) {
+    public double computeDouble0(double x, BooleanMarker defined) {
         defined.set();
         int xi = (int) ((x - domain.xmin()) / dx);
         return values[0][0][xi];
@@ -1471,7 +1471,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x, double y,OutBoolean defined) {
+    public Complex computeComplex(double x, double y,BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1498,7 +1498,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
+    public Complex computeComplex(double x,BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1515,7 +1515,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public double computeDouble0(double x, double y, OutBoolean defined) {
+    public double computeDouble0(double x, double y, BooleanMarker defined) {
         IntPoint ii = getIndices(x, y, domain.zmin());
         if(ii!=null) {
             defined.set();
@@ -1650,7 +1650,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
 //    @Override
-//    public Complex computeComplex(double x,OutBoolean defined) {
+//    public Complex computeComplex(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

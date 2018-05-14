@@ -2,11 +2,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.NonStateField;
-import net.vpc.scholar.hadrumaths.util.RandomItem;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vpc on 4/30/14.
@@ -156,7 +153,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
     }
 
 //    @Override
-//    public Complex computeComplex(double x, double y, OutBoolean defined) {
+//    public Complex computeComplex(double x, double y, BooleanMarker defined) {
 //        return computeComplex(x, defined);
 //    }
 
@@ -198,11 +195,11 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
     }
 
-    protected double evalCD(Complex x, OutBoolean defined) {
+    protected double evalCD(Complex x, BooleanMarker defined) {
         return computeComplexArg(x, defined).toDouble();
     }
 
-    protected Complex evalDC(double x, OutBoolean defined) {
+    protected Complex evalDC(double x, BooleanMarker defined) {
         return computeComplexArg(Complex.valueOf(x), defined);
     }
 
@@ -242,7 +239,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
      * @param defined
      * @return
      */
-    public abstract Complex computeComplexArg(Complex c, OutBoolean defined);
+    public abstract Complex computeComplexArg(Complex c, BooleanMarker defined);
 
     /**
      * should call defined.set();
@@ -250,62 +247,62 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
      * @param defined
      * @return
      */
-    protected abstract double computeDoubleArg(double c, OutBoolean defined);
+    protected abstract double computeDoubleArg(double c, BooleanMarker defined);
 
-    public double computeDouble(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double d = getArgument().toDD().computeDouble(x, y, rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
     }
 
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double d = getArgument().toDD().computeDouble(x, y, z, rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
     }
 
-    public double computeDouble(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double d = getArgument().toDD().computeDouble(x, rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeDoubleArg(d, defined);
         }
         return 0;
     }
 
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex d = getArgument().toDC().computeComplex(x, y, rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeComplexArg(d, defined);
         }
         return Complex.ZERO;
     }
 
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex d = getArgument().toDC().computeComplex(x, y, z,rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeComplexArg(d, defined);
         }
         return Complex.ZERO;
     }
 
-    public Complex computeComplex(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex d = getArgument().toDC().computeComplex(x, rdefined);
-        if (rdefined.isSet()) {
+        if (rdefined.get()) {
             defined.set();
             return computeComplexArg(d, defined);
         }
@@ -432,12 +429,12 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         }
 
         @Override
-        public double computeDouble(double x, OutBoolean defined) {
+        public double computeDouble(double x, BooleanMarker defined) {
             return GenericFunctionX.this.computeDoubleArg(x, defined);
         }
 
         @Override
-        public Complex computeComplex(Complex x, OutBoolean defined) {
+        public Complex computeComplex(Complex x, BooleanMarker defined) {
             return GenericFunctionX.this.computeComplexArg(x, defined);
         }
 

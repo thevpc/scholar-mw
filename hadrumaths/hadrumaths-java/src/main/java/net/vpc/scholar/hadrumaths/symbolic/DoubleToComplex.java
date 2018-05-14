@@ -25,11 +25,11 @@ public interface DoubleToComplex extends DoubleDomainExpr {
         return computeComplex(x, y, z, NoneOutBoolean.INSTANCE);
     }
 
-    Complex computeComplex(double x, OutBoolean defined);
+    Complex computeComplex(double x, BooleanMarker defined);
 
-    Complex computeComplex(double x, double y, OutBoolean defined);
+    Complex computeComplex(double x, double y, BooleanMarker defined);
 
-    Complex computeComplex(double x, double y, double z, OutBoolean defined);
+    Complex computeComplex(double x, double y, double z, BooleanMarker defined);
 
     Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges);
 

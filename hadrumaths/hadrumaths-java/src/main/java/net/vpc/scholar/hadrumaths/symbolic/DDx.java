@@ -52,17 +52,17 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
         return base.isInfinite();
     }
 
-    public double computeDouble0(double x, OutBoolean defined) {
+    public double computeDouble0(double x, BooleanMarker defined) {
         return base.computeDouble(x, defaultY,defaultZ,defined);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         return base.computeDouble(x, defaultY,defaultZ,defined);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         return base.computeDouble(x, defaultY,defaultZ,defined);
     }
 

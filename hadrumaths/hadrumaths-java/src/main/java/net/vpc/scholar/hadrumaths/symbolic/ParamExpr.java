@@ -90,17 +90,17 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
@@ -145,17 +145,17 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 

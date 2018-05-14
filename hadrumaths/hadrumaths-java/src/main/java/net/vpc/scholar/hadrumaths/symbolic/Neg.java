@@ -63,10 +63,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -74,10 +74,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -85,10 +85,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -96,10 +96,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -107,10 +107,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -118,10 +118,10 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -143,13 +143,13 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double x, OutBoolean defined) {
+        public double computeDouble(double x, BooleanMarker defined) {
             defined.set();
             return -x;
         }
 
         @Override
-        public Complex computeComplex(Complex x, OutBoolean defined) {
+        public Complex computeComplex(Complex x, BooleanMarker defined) {
             defined.set();
             return x.neg();
         }

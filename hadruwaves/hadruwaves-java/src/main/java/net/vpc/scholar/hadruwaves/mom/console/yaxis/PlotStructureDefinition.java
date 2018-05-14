@@ -62,17 +62,17 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 new AbstractDoubleToDouble(domain) {
 
                     @Override
-                    public double computeDouble0(double x, OutBoolean defined) {
+                    public double computeDouble0(double x, BooleanMarker defined) {
                         throw new IllegalArgumentException("Missing y");
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
+                    public double computeDouble0(double x, double y, double z, BooleanMarker defined) {
                         return computeDouble(x, y);
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, OutBoolean defined) {
+                    public double computeDouble0(double x, double y, BooleanMarker defined) {
                         for (DoubleToVector f : sf) {
                             if (f.getComponent(Axis.X).toDC().computeComplex(x, y).absdbl() > 0) {
                                 return 2;
@@ -94,17 +94,17 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 new AbstractDoubleToDouble(domain) {
 
                     @Override
-                    public double computeDouble0(double x, OutBoolean defined) {
+                    public double computeDouble0(double x, BooleanMarker defined) {
                         throw new IllegalArgumentException("Missing y");
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
+                    public double computeDouble0(double x, double y, double z, BooleanMarker defined) {
                         return computeDouble(x, y);
                     }
 
                     @Override
-                    public double computeDouble0(double x, double y, OutBoolean defined) {
+                    public double computeDouble0(double x, double y, BooleanMarker defined) {
                         for (DoubleToVector f : sf) {
                             if (f.getComponent(Axis.Y).toDC().computeComplex(x, y) != null) {
                                 return 10;

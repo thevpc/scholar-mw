@@ -75,7 +75,7 @@ package net.vpc.scholar.hadruwaves.mom.console.params;
 ////        super(NAME, 0);
 ////        this.min = min;
 ////        this.max = max;
-////        int[] values = new int[Math.max(min.length, max.length)];
+////        int[] values = new int[Maths.max(min.length, max.length)];
 ////        for (int i = 0; i < values.length; i++) {
 ////            values[i] = i;
 ////        }

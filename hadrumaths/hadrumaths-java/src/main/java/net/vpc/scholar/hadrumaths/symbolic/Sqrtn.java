@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 
 /**
  * Created by vpc on 4/30/14.
@@ -22,12 +22,12 @@ public class Sqrtn extends GenericFunctionX implements Cloneable{
     }
 
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined){
         defined.set();
         return c.sqrt(n);
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined){
+    public double computeDoubleArg(double c, BooleanMarker defined){
         defined.set();
         return Maths.sqrt(c,n);
     }

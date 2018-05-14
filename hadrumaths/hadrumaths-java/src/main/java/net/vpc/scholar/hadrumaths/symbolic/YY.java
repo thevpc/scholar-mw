@@ -36,7 +36,7 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
@@ -243,7 +243,7 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
             defined.set();
             return Complex.valueOf(y);
@@ -252,7 +252,7 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
             defined.set();
             return y;
@@ -260,7 +260,7 @@ public class YY extends AxisFunction implements Cloneable {
         return 0;
     }
     @Override
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(y);
@@ -269,7 +269,7 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return y;
@@ -306,7 +306,7 @@ public class YY extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Y");
     }
 

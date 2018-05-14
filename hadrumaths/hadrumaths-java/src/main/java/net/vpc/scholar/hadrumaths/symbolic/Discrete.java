@@ -1021,7 +1021,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
 
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1203,7 +1203,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1227,7 +1227,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1629,7 +1629,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
 //    @Override
-//    public Complex computeComplex(double x, OutBoolean defined) {
+//    public Complex computeComplex(double x, BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

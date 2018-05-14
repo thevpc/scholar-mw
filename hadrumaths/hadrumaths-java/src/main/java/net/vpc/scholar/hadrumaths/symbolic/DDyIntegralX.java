@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 
@@ -86,19 +86,19 @@ public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
 
 
     @Override
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         defined.set();
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         defined.set();
         return integral.integrateX(base, x, x0, x1);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         defined.set();
         return integral.integrateX(base, x, x0, x1);
     }

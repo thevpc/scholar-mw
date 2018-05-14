@@ -32,7 +32,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 double d = a * b;
@@ -44,7 +44,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Complex d = a.mul(b);
@@ -56,7 +56,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.mul(b);
@@ -381,14 +381,14 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             MutableComplex c = MutableComplex.One();
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             for (Expr expression : expressions) {
                 c.mul(expression.toDC().computeComplex(x, y, z, rdefined));
-                //could not call isSet on OutBoolean that is not created by our selves
-                if (!rdefined.isSet()) {
+                //could not call get on BooleanMarker that is not created by our selves
+                if (!rdefined.get()) {
                     return Complex.ZERO;
                 }
                 rdefined.reset();
@@ -400,13 +400,13 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
             MutableComplex c = MutableComplex.One();
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             for (Expr expression : expressions) {
                 c.mul(expression.toDC().computeComplex(x, y, rdefined));
-                if (!rdefined.isSet()) {
+                if (!rdefined.get()) {
                     return Complex.ZERO;
                 }
                 rdefined.reset();
@@ -418,13 +418,13 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
             MutableComplex c = MutableComplex.One();
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             for (Expr expression : expressions) {
                 c.mul(expression.toDC().computeComplex(x, rdefined));
-                if (!rdefined.isSet()) {
+                if (!rdefined.get()) {
                     return Complex.ZERO;
                 }
                 rdefined.reset();
@@ -436,18 +436,18 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         //test if x,y,z is in the intersection of domains
         if (contains(x, y, z)) {
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             double c = expressions[0].toDD().computeDouble(x, y, z, rdefined);
-            if (!rdefined.isSet()) {
+            if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x, y, z,rdefined));
-                if (!rdefined.isSet()) {
+                if (!rdefined.get()) {
                     return 0;
                 }
             }
@@ -458,18 +458,18 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         //test if x,y,z is in the intersection of domains
         if (contains(x, y)) {
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             double c = expressions[0].toDD().computeDouble(x, y, rdefined);
-            if (!rdefined.isSet()) {
+            if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x, y,rdefined));
-                if (!rdefined.isSet()) {
+                if (!rdefined.get()) {
                     return 0;
                 }
             }
@@ -480,18 +480,18 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         //test if x,y,z is in the intersection of domains
         if (contains(x)) {
-            ReadableOutBoolean rdefined = OutBoolean.createReadable();
+            BooleanRef rdefined = BooleanMarker.ref();
             double c = expressions[0].toDD().computeDouble(x, rdefined);
-            if (!rdefined.isSet()) {
+            if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x,rdefined));
-                if (!rdefined.isSet()) {
+                if (!rdefined.get()) {
                     return 0;
                 }
             }
@@ -517,7 +517,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//    public Complex computeComplexArg(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

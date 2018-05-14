@@ -88,17 +88,17 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
 //        }
     }
 
-    public double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         defined.set();
         return a * x + b *y +c;
     }
 
-    public double computeDouble0(double x, double y, OutBoolean defined) {
+    public double computeDouble0(double x, double y, BooleanMarker defined) {
         defined.set();
         return a * x + b *y +c;
     }
 
-    public double computeDouble0(double x, OutBoolean defined) {
+    public double computeDouble0(double x, BooleanMarker defined) {
         if(b==0){
             defined.set();
             return a * x +c;

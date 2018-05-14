@@ -79,7 +79,7 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
     }
 
 //    @Override
-//    public Complex computeComplex(double x,OutBoolean defined) {
+//    public Complex computeComplex(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

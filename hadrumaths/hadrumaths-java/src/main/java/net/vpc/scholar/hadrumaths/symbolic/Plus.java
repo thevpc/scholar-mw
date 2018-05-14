@@ -50,7 +50,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 double d = a + b;
@@ -62,7 +62,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Complex d = a.add(b);
@@ -74,7 +74,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
                 Matrix d = a.add(b);
@@ -301,7 +301,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         double d = 0;
         for (Expr expression : expressions) {
             d += expression.toDD().computeDouble(x, defined);
@@ -309,7 +309,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         return d;
     }
 
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         double d = 0;
         for (Expr expression : expressions) {
             d += expression.toDD().computeDouble(x, y, defined);
@@ -317,7 +317,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         return d;
     }
 
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         double d = 0;
         for (Expr expression : expressions) {
             d += expression.toDD().computeDouble(x, y, z, defined);
@@ -494,7 +494,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         MutableComplex c = new MutableComplex();
         for (Expr expression : expressions) {
             c.add(expression.toDC().computeComplex(x, y, z, defined));
@@ -503,7 +503,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         MutableComplex c = new MutableComplex();
         for (Expr expression : expressions) {
             c.add(expression.toDC().computeComplex(x, y, defined));
@@ -512,7 +512,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         MutableComplex c = new MutableComplex();
         for (Expr expression : expressions) {
             c.add(expression.toDC().computeComplex(x, defined));
@@ -531,7 +531,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//    public Complex computeComplexArg(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

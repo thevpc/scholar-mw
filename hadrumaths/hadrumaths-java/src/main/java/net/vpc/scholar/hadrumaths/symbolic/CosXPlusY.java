@@ -211,7 +211,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         return result;
     }
 
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         if(b==0){
             defined.set();
             return amp * Maths.cos2(a * x + c);
@@ -219,12 +219,12 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         throw new IllegalArgumentException("Missing y");
     }
 
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         defined.set();
         return amp * Maths.cos2(a * x + b* y + c);
     }
 
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         defined.set();
         return amp * Maths.cos2(a * x + b* y + c);
     }

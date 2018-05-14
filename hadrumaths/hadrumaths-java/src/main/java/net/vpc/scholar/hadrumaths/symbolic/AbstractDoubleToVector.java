@@ -32,11 +32,11 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
 
     @Override
     public Matrix computeMatrix(double x, double y) {
-        return computeMatrix(x,y,OutBoolean.none());
+        return computeMatrix(x,y, BooleanMarker.none());
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y,OutBoolean defined) {
+    public Matrix computeMatrix(double x, double y,BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
                 return Maths.columnMatrix(
@@ -60,7 +60,7 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
         throw new UnsupportedComponentDimensionException(getComponentDimension());
     }
  //@Override
-    public Matrix computeMatrix(double x, OutBoolean defined) {
+    public Matrix computeMatrix(double x, BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
                 return Maths.columnMatrix(
@@ -86,16 +86,16 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
 
     @Override
     public Matrix computeMatrix(double x) {
-        return computeMatrix(x,OutBoolean.none());
+        return computeMatrix(x, BooleanMarker.none());
     }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return computeMatrix(x,y,z,OutBoolean.none());
+        return computeMatrix(x,y,z, BooleanMarker.none());
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y, double z,OutBoolean defined) {
+    public Matrix computeMatrix(double x, double y, double z,BooleanMarker defined) {
 
         switch (getComponentSize()) {
             case 1: {

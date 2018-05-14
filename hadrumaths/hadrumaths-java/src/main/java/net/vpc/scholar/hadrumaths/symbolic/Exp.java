@@ -16,12 +16,12 @@ public class Exp extends GenericFunctionX implements Cloneable{
         return "exp";
     }
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined){
         defined.set();
         return c.exp();
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined){
+    public double computeDoubleArg(double c, BooleanMarker defined){
         defined.set();
         return Maths.exp(c);
     }

@@ -49,7 +49,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 //    }
 
     @Override
-    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, OutBoolean defined) {
+    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined) {
         if(!xdef && !ydef){
             return Complex.ZERO;
         }
@@ -74,7 +74,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
     }
 
     @Override
-    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined) {
+    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
         if(!xdef && !ydef){
             return Complex.ZERO;
         }
@@ -84,7 +84,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
     }
 
     @Override
-    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined) {
+    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
         if(!xdef && !ydef){
             return 0;
         }

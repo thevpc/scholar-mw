@@ -44,6 +44,7 @@ public class ExprGenerator {
 //                                || ComplexOld.class.equals(cls)
                                 || Polyhedron.class.equals(cls)
                                 || DDyIntegralX.class.equals(cls)
+                                || SinSeqYZ.class.equals(cls)
                                 ) {
                             System.err.println("Ignored " + cls);
                         } else {
@@ -378,6 +379,10 @@ public class ExprGenerator {
             Double a = generateAny(Double.class, null, complexity - 1);
             Double b = generateAny(Double.class, null, complexity - 1);
             return (T) Complex.valueOf(a, b);
+        } else if (cls.equals(DomainExpr.class)) {
+            Double a = generateAny(Double.class, null, complexity - 1);
+            Double b = generateAny(Double.class, null, complexity - 1);
+            return (T) DomainExpr.forBounds(Complex.ZERO,Complex.ONE);
         } else if (cls.equals(Plus.class)) {
             return (T) new Plus(
                     generateAny(Expr.class, null, complexity - 1),

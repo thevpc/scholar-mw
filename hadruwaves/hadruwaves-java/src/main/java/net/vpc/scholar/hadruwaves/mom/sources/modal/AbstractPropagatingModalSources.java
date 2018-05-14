@@ -3,6 +3,8 @@ package net.vpc.scholar.hadruwaves.mom.sources.modal;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
@@ -30,7 +32,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     public int getSourceCountForDimensions(ModeFunctions fn) {
-        int x = ((int) (Math.max(fn.getDomain().xwidth(),fn.getDomain().ywidth()) / lambda(fn.getFrequency()))) + 1;
+        int x = ((int) (Maths.max(fn.getDomain().xwidth(),fn.getDomain().ywidth()) / lambda(fn.getFrequency()))) + 1;
         int val = (x < 0 || x >= this.sourceCountPerDimension.length) ? this.defaultSourceCount : this.sourceCountPerDimension[x - 1];
         if (val == 0) {
             return x;

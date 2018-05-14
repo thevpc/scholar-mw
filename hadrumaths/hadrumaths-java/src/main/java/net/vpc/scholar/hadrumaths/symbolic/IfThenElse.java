@@ -23,11 +23,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             Complex v = getXArgument().toDC().computeComplex(x, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, defined);
                 } else {
@@ -39,11 +39,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             Complex v = getXArgument().toDC().computeComplex(x, y, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, y, defined);
                 } else {
@@ -55,11 +55,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             Complex v = getXArgument().toDC().computeComplex(x, y, z, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, y, z, defined);
                 } else {
@@ -71,11 +71,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         if (contains(x)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             double v = getXArgument().toDD().computeDouble(x, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, defined);
                 } else {
@@ -87,11 +87,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             double v = getXArgument().toDD().computeDouble(x, y, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, y, defined);
                 } else {
@@ -103,11 +103,11 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
-            ReadableOutBoolean defined1 = OutBoolean.createReadable();
+            BooleanRef defined1 = BooleanMarker.ref();
             double v = getXArgument().toDD().computeDouble(x, y, z, defined1);
-            if (defined1.isSet()) {
+            if (defined1.get()) {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, y, z, defined);
                 } else {
@@ -169,7 +169,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToDouble ydd = getYArgument().toDD();
             DoubleToDouble zdd = getZArgument().toDD();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int i = r0.zmin; i <= r0.zmax; i++) {
                 for (int j = r0.ymin; j <= r0.ymax; j++) {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
@@ -216,7 +216,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToComplex ydd = getYArgument().toDC();
             DoubleToComplex zdd = getZArgument().toDC();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int i = r0.zmin; i <= r0.zmax; i++) {
                 for (int j = r0.ymin; j <= r0.ymax; j++) {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
@@ -263,7 +263,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToDouble ydd = getYArgument().toDD();
             DoubleToDouble zdd = getZArgument().toDD();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int j = r0.ymin; j <= r0.ymax; j++) {
                 for (int k = r0.xmin; k <= r0.xmax; k++) {
                     if (def0.get(j, k)) {
@@ -308,7 +308,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToComplex ydd = getYArgument().toDC();
             DoubleToComplex zdd = getZArgument().toDC();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int j = r0.ymin; j <= r0.ymax; j++) {
                 for (int k = r0.xmin; k <= r0.xmax; k++) {
                     if (def0.get(j, k)) {
@@ -353,7 +353,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToDouble ydd = getYArgument().toDD();
             DoubleToDouble zdd = getZArgument().toDD();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int k = r0.xmin; k <= r0.xmax; k++) {
                 if (def0.get(k)) {
                     if (ret1[k] != 0) {
@@ -396,7 +396,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             }
             DoubleToComplex ydd = getYArgument().toDC();
             DoubleToComplex zdd = getZArgument().toDC();
-            ReadableOutBoolean readable = OutBoolean.createReadable();
+            BooleanRef readable = BooleanMarker.ref();
             for (int k = r0.xmin; k <= r0.xmax; k++) {
                 if (def0.get(k)) {
                     if (!ret1[k].isZero()) {

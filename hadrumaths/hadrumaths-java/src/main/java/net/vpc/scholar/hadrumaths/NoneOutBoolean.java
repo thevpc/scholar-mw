@@ -1,22 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-public class NoneOutBoolean implements OutBoolean {
-    public static final OutBoolean INSTANCE=new NoneOutBoolean();
-
-    public boolean get() {
-        throw new IllegalArgumentException();
-    }
-
+public class NoneOutBoolean implements BooleanMarker {
+    public static final BooleanMarker INSTANCE=new NoneOutBoolean();
     public void set(boolean t) {
 
     }
 
     public void set() {
 
-    }
-
-    public void unset() {
-        throw new IllegalArgumentException();
     }
 
     public boolean isSet() {

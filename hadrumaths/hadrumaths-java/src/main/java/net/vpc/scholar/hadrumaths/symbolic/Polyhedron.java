@@ -57,7 +57,7 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
         return polygon.contains(x, y);
     }
 
-    public double computeDouble0(double x, double y, OutBoolean defined) {
+    public double computeDouble0(double x, double y, BooleanMarker defined) {
 //        AreaComponent.showDialog(polygon.toArea(1E8));
         if (polygon.contains(x, y)) {
             if (isTriangle) {
@@ -108,12 +108,12 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
     }
 
     @Override
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing y");
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         return computeDouble0(x, y, defined);
     }
 

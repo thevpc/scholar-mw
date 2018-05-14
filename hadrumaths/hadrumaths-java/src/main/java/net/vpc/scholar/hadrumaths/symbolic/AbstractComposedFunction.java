@@ -194,7 +194,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     }
 
 //    @Override
-//    public Complex computeComplex(double x,OutBoolean defined) {
+//    public Complex computeComplex(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        Range range = ranges.get();

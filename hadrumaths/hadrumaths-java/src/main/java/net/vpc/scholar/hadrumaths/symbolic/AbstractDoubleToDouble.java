@@ -296,15 +296,15 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int ez = currRange.zmin;
             int fz = currRange.zmax;
             BooleanArray3 d = currRange.setDefined3(x.length, y.length, z.length);
-            ReadableOutBoolean defined = OutBoolean.createReadable();
+            BooleanRef defined = BooleanMarker.ref();
             for (int i = ez; i <= fz; i++) {
                 for (int j = cy; j <= dy; j++) {
                     for (int k = ax; k <= bx; k++) {
                         if (contains(x[k], y[j], z[i])) {
-                            defined.set(false);
+                            defined.reset();
                             double v = computeDouble0(x[k], y[j], z[i], defined);
                             r[i][j][k] = v;
-                            if(defined.isSet()) {
+                            if(defined.get()) {
                                 d.set(i, j, k);
                             }
                         }
@@ -327,14 +327,14 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int cy = currRange.ymin;
             int dy = currRange.ymax;
             BooleanArray2 d = currRange.setDefined2(x.length, y.length);
-            ReadableOutBoolean defined = OutBoolean.createReadable();
+            BooleanRef defined = BooleanMarker.ref();
             for (int k = ax; k <= bx; k++) {
                 for (int j = cy; j <= dy; j++) {
                     if (contains(x[k], y[j])) {
-                        defined.set(false);
+                        defined.reset();
                         double v = computeDouble0(x[k], y[j], defined);
                         r[j][k] = v;
-                        if(defined.isSet()) {
+                        if(defined.get()) {
                             d.set(j, k);
                         }
                     }
@@ -355,12 +355,12 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
             int ax = currRange.xmin;
             int bx = currRange.xmax;
             BooleanArray1 d = currRange.setDefined1(x.length);
-            ReadableOutBoolean defined = OutBoolean.createReadable();
+            BooleanRef defined = BooleanMarker.ref();
             for (int xIndex = ax; xIndex <= bx; xIndex++) {
                 if (contains(x[xIndex])) {
-                    defined.set(false);
+                    defined.reset();
                     r[xIndex] = computeDouble0(x[xIndex], defined);
-                    if(defined.isSet()){
+                    if(defined.get()){
                         d.set(xIndex);
                     }
                 } else {
@@ -403,11 +403,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
 //    @Override
 //    public final double computeDouble(double x) {
-//        return computeDouble(x, new OutBoolean());
+//        return computeDouble(x, new BooleanMarker());
 //    }
 
     @Override
-    public final double computeDouble(double x, OutBoolean defined) {
+    public final double computeDouble(double x, BooleanMarker defined) {
         if (contains(x)) {
             return computeDouble0(x, defined);
         }
@@ -425,11 +425,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
 //    @Override
 //    public final double computeDouble(double x, double y, double z) {
-//        return computeDouble(x, y, z, new OutBoolean());
+//        return computeDouble(x, y, z, new BooleanMarker());
 //    }
 
     @Override
-    public final double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public final double computeDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x,y,z)) {
             return computeDouble0(x, y, z, defined);
         }
@@ -459,11 +459,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
 //    @Override
 //    public double computeDouble(double x, double y) {
-//        return computeDouble(x,y,new OutBoolean());
+//        return computeDouble(x,y,new BooleanMarker());
 //    }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         if (contains(x,y)) {
             return computeDouble0(x, y, defined);
         }
@@ -500,11 +500,11 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return domain.contains(x, y, z);
     }
 
-    protected abstract double computeDouble0(double x, OutBoolean defined);
+    protected abstract double computeDouble0(double x, BooleanMarker defined);
 
-    protected abstract double computeDouble0(double x, double y, OutBoolean defined);
+    protected abstract double computeDouble0(double x, double y, BooleanMarker defined);
 
-    protected abstract double computeDouble0(double x, double y, double z, OutBoolean defined);
+    protected abstract double computeDouble0(double x, double y, double z, BooleanMarker defined);
 
     @Override
     public double[] computeDouble(double[] x) {

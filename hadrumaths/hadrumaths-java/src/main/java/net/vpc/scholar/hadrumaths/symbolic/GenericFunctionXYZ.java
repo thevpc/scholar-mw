@@ -176,7 +176,7 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
     }
 
 //    @Override
-//    public Complex computeComplex(double x, double y, OutBoolean defined) {
+//    public Complex computeComplex(double x, double y, BooleanMarker defined) {
 //        //TODO
 //        defined.set();
 //        return computeComplex(new double[]{x}, new double[]{y})[0][0];
@@ -188,20 +188,20 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
 //    }
 
 //    @Override
-//    public double computeDouble(double x, double y, OutBoolean defined) {
+//    public double computeDouble(double x, double y, BooleanMarker defined) {
 //        //TODO
 //        defined.set();
 //        return computeDouble(new double[]{x}, new double[]{y}, null, null)[0][0];
 //    }
 
 //    @Override
-//    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+//    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
 //        //TODO
 //        defined.set();
 //        return computeDouble(new double[]{x}, new double[]{y}, new double[]{z}, null, null)[0][0][0];
 //    }
 
-//    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+//    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
 //        if (contains(x, y, z)) {
 //            Complex xx = getXArgument().toDC().computeComplex(x, y, z, defined);
 //            Complex yy = getYArgument().toDC().computeComplex(x, y, z, defined);
@@ -420,7 +420,7 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         }
 
         @Override
-        public double computeDouble(double a, double b, double c, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, double c, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 double d = evalDouble(a, b, c);
@@ -432,7 +432,7 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, Complex c, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, Complex c, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 Complex d = evalComplex(a, b, c);
@@ -444,7 +444,7 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.isDefined3();
             if (def) {
                 Matrix d = evalMatrix(a, b, c);

@@ -314,7 +314,7 @@ public class XX extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         if (domain.contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(x);
@@ -323,7 +323,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (domain.contains(x, y)) {
             defined.set();
             return Complex.valueOf(x);
@@ -332,7 +332,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         if (domain.contains(x)) {
             defined.set();
             return Complex.valueOf(x);
@@ -341,7 +341,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return x;
@@ -350,7 +350,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         if (contains(x, y)) {
             defined.set();
             return x;
@@ -359,7 +359,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x,OutBoolean defined) {
+    public double computeDouble(double x,BooleanMarker defined) {
         if (contains(x)) {
             defined.set();
             return x;

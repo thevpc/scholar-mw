@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
 
@@ -31,17 +31,17 @@ public class FixedAxisZFunction extends AbstractDoubleToDouble implements Clonea
     }
 
     @Override
-    protected double computeDouble0(double x, OutBoolean defined) {
+    protected double computeDouble0(double x, BooleanMarker defined) {
         return base.computeDouble(x,defined);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, BooleanMarker defined) {
         return base.computeDouble(x, y, z,defined);
     }
 
     @Override
-    protected double computeDouble0(double x, double y, double z0, OutBoolean defined) {
+    protected double computeDouble0(double x, double y, double z0, BooleanMarker defined) {
         return base.computeDouble(x, y, z,defined);
     }
 

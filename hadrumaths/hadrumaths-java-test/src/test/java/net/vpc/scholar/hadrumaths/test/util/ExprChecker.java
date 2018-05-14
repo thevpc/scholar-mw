@@ -241,9 +241,9 @@ public class ExprChecker {
         for (int i = 0; i < z.length; i++) {
             for (int j = 0; j < y.length; j++) {
                 for (int k = 0; k < x.length; k++) {
-                    ReadableOutBoolean defined = OutBoolean.createReadable();
+                    BooleanRef defined = BooleanMarker.ref();
                     double v = e.computeDouble(x[k], y[j], z[i], defined);
-                    if (!defined.isSet() && v != 0) {
+                    if (!defined.get() && v != 0) {
                         throw new IllegalArgumentException("Undefined with non zero value");
                     }
                     doublesB[i][j][k] = v;
@@ -289,9 +289,9 @@ public class ExprChecker {
         for (int i = 0; i < z.length; i++) {
             for (int j = 0; j < y.length; j++) {
                 for (int k = 0; k < x.length; k++) {
-                    ReadableOutBoolean defined = OutBoolean.createReadable();
+                    BooleanRef defined = BooleanMarker.ref();
                     Complex v = e.computeComplex(x[k], y[j], z[i], defined);
-                    if (!defined.isSet() && !v.isZero()) {
+                    if (!defined.get() && !v.isZero()) {
                         throw new IllegalArgumentException("Undefined with non zero value");
                     }
                     doublesB[i][j][k] = v;
@@ -335,9 +335,9 @@ public class ExprChecker {
         normalize(doublesA);
         for (int j = 0; j < y.length; j++) {
             for (int k = 0; k < x.length; k++) {
-                ReadableOutBoolean defined = OutBoolean.createReadable();
+                BooleanRef defined = BooleanMarker.ref();
                 double v = e.computeDouble(x[k], y[j], defined);
-                if (!defined.isSet() && v != 0) {
+                if (!defined.get() && v != 0) {
                     throw new IllegalArgumentException("Undefined with non zero value");
                 }
                 doublesB[j][k] = v;
@@ -380,9 +380,9 @@ public class ExprChecker {
         normalize(doublesA);
         for (int j = 0; j < y.length; j++) {
             for (int k = 0; k < x.length; k++) {
-                ReadableOutBoolean defined = OutBoolean.createReadable();
+                BooleanRef defined = BooleanMarker.ref();
                 Complex v = e.computeComplex(x[k], y[j], defined);
-                if (!defined.isSet() && !v.isZero()) {
+                if (!defined.get() && !v.isZero()) {
                     throw new IllegalArgumentException("Undefined with non zero value");
                 }
                 doublesB[j][k] = v;

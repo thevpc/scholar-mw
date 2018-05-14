@@ -94,7 +94,7 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
     }
 
 //    @Override
-//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//    public Complex computeComplexArg(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

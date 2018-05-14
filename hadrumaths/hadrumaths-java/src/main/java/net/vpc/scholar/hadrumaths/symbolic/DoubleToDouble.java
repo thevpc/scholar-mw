@@ -27,11 +27,11 @@ public interface DoubleToDouble extends DoubleDomainExpr {
      * @param defined by ref, will return false if the expression is not defined for this value
      * @return
      */
-    double computeDouble(double x, OutBoolean defined);
+    double computeDouble(double x, BooleanMarker defined);
 
-    double computeDouble(double x, double y, OutBoolean defined);
+    double computeDouble(double x, double y, BooleanMarker defined);
 
-    double computeDouble(double x, double y, double z, OutBoolean defined);
+    double computeDouble(double x, double y, double z, BooleanMarker defined);
 
     default double computeDouble(double x) {
         return computeDouble(x, NoneOutBoolean.INSTANCE);

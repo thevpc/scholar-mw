@@ -6,7 +6,6 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -236,32 +235,32 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 

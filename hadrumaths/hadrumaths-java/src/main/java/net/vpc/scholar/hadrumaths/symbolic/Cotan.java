@@ -16,12 +16,12 @@ public class Cotan extends TrigoFunctionX implements Cloneable{
         return "cotan";
     }
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined){
         defined.set();
         return c.cotan();
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined){
+    public double computeDoubleArg(double c, BooleanMarker defined){
         defined.set();
         return 1.0/ Maths.tan(c);
     }

@@ -274,83 +274,83 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
      * @param defined
      * @return
      */
-    public abstract Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, OutBoolean defined);
+    public abstract Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined);
 
-    public abstract Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined);
+    public abstract Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined);
 
-    public abstract double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined);
+    public abstract double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined);
 
     public abstract Expr newInstance(Expr xargument, Expr yargument);
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             Complex a = getXArgument().toDC().computeComplex(x, xdefined);
             Complex b = getYArgument().toDC().computeComplex(x, ydefined);
-            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+            return computeComplexArg(a, b, xdefined.get(), ydefined.get(), defined);
         }
         return Complex.ZERO;
     }
 
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             Complex a = getXArgument().toDC().computeComplex(x, y, xdefined);
             Complex b = getYArgument().toDC().computeComplex(x, y, ydefined);
-            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+            return computeComplexArg(a, b, xdefined.get(), ydefined.get(), defined);
         }
         return Complex.ZERO;
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             Complex a = getXArgument().toDC().computeComplex(x, y, z, xdefined);
             Complex b = getYArgument().toDC().computeComplex(x, y, z, ydefined);
-            return computeComplexArg(a, b, xdefined.isSet(), ydefined.isSet(), defined);
+            return computeComplexArg(a, b, xdefined.get(), ydefined.get(), defined);
         }
         return Complex.ZERO;
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         if (contains(x)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             double a = getXArgument().toDD().computeDouble(x, xdefined);
             double b = getYArgument().toDD().computeDouble(x, ydefined);
-            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
         }
         return 0;
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             double a = getXArgument().toDD().computeDouble(x, y, xdefined);
             double b = getYArgument().toDD().computeDouble(x, y, ydefined);
-            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
         }
         return 0;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
-            ReadableOutBoolean xdefined = OutBoolean.createReadable();
-            ReadableOutBoolean ydefined = OutBoolean.createReadable();
+            BooleanRef xdefined = BooleanMarker.ref();
+            BooleanRef ydefined = BooleanMarker.ref();
             double a = getXArgument().toDD().computeDouble(x, y, z, xdefined);
             double b = getYArgument().toDD().computeDouble(x, y, z, ydefined);
-            return computeDoubleArg(a, b, ydefined.isSet(), xdefined.isSet(), defined);
+            return computeDoubleArg(a, b, ydefined.get(), xdefined.get(), defined);
         }
         return 0;
     }
@@ -488,19 +488,19 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         }
 
         @Override
-        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             double d = GenericFunctionXY.this.computeDoubleArg(a, b,options.value1Defined,options.value2Defined, defined);
             return d;
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             Complex d = GenericFunctionXY.this.computeComplexArg(a, b,options.value1Defined,options.value2Defined, defined);
             return d;
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = evalMatrix(a, b);

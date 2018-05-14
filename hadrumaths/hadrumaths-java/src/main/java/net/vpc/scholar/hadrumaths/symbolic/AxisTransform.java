@@ -529,7 +529,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         return Expressions.computeDouble(this, x, y,defined);
     }
 
@@ -656,7 +656,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
+    public Complex computeComplex(double x,BooleanMarker defined) {
         if(contains(x)) {
             if(true){
                 throw new IllegalArgumentException("Missing  Y and Y");
@@ -669,7 +669,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y,OutBoolean defined) {
+    public Complex computeComplex(double x, double y,BooleanMarker defined) {
         if(contains(x,y)) {
             if(true){
                 throw new IllegalArgumentException("Missing  Y and Y");
@@ -683,7 +683,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         if(contains(x,y,z)) {
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
             x = xyz[0][0];
@@ -695,7 +695,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         if(contains(x,y,z)) {
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
             x = xyz[0][0];
@@ -716,7 +716,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplex(double x,OutBoolean defined) {
+//    public Complex computeComplex(double x,BooleanMarker defined) {
 //        double[][] xyz = convertXYZAxis(new double[]{x}, new double[0], new double[0]);
 //        x = xyz[0][0];
 //        Out<Range> ranges = new Out<>();
@@ -827,7 +827,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
 //    }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         throw new IllegalArgumentException("Missing Y");
     }
 

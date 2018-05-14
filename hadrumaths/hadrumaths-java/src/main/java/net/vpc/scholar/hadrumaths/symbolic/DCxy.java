@@ -53,7 +53,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplex(double x, OutBoolean defined) {
+//    public Complex computeComplex(double x, BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));
@@ -690,10 +690,10 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
-            ReadableOutBoolean ro = OutBoolean.createReadable();
-            ReadableOutBoolean ri = OutBoolean.createReadable();
+            BooleanRef ro = BooleanMarker.ref();
+            BooleanRef ri = BooleanMarker.ref();
             double r = 0;
             double i = 0;
             switch (zStatus) {
@@ -703,14 +703,14 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 }
                 case Z_R: {
                     r = real.computeDouble(x, y, z, ro);
-                    if (ro.isSet()) {
+                    if (ro.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r);
                 }
                 case Z_I: {
                     i = imag.computeDouble(x, y, z, ri);
-                    if (ri.isSet()) {
+                    if (ri.get()) {
                         defined.set();
                     }
                     return Complex.I(i);
@@ -718,7 +718,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 case Z_RI: {
                     r = real.computeDouble(x, y, z, ro);
                     i = imag.computeDouble(x, y, z, ri);
-                    if (ri.isSet() || ri.isSet()) {
+                    if (ri.get() || ri.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r, i);
@@ -728,10 +728,10 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         return Complex.ZERO;
     }
 
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            ReadableOutBoolean ro = OutBoolean.createReadable();
-            ReadableOutBoolean ri = OutBoolean.createReadable();
+            BooleanRef ro = BooleanMarker.ref();
+            BooleanRef ri = BooleanMarker.ref();
             double r = 0;
             double i = 0;
             switch (zStatus) {
@@ -741,14 +741,14 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 }
                 case Z_R: {
                     r = real.computeDouble(x, y, ro);
-                    if (ro.isSet()) {
+                    if (ro.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r);
                 }
                 case Z_I: {
                     i = imag.computeDouble(x, y, ri);
-                    if (ri.isSet()) {
+                    if (ri.get()) {
                         defined.set();
                     }
                     return Complex.I(i);
@@ -756,7 +756,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 case Z_RI: {
                     r = real.computeDouble(x, y, ro);
                     i = imag.computeDouble(x, y, ri);
-                    if (ri.isSet() || ri.isSet()) {
+                    if (ri.get() || ri.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r, i);
@@ -767,10 +767,10 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
-            ReadableOutBoolean ro = OutBoolean.createReadable();
-            ReadableOutBoolean ri = OutBoolean.createReadable();
+            BooleanRef ro = BooleanMarker.ref();
+            BooleanRef ri = BooleanMarker.ref();
             double r = 0;
             double i = 0;
             switch (zStatus) {
@@ -780,14 +780,14 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 }
                 case Z_R: {
                     r = real.computeDouble(x, ro);
-                    if (ro.isSet()) {
+                    if (ro.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r);
                 }
                 case Z_I: {
                     i = imag.computeDouble(x, ri);
-                    if (ri.isSet()) {
+                    if (ri.get()) {
                         defined.set();
                     }
                     return Complex.I(i);
@@ -795,7 +795,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 case Z_RI: {
                     r = real.computeDouble(x, ro);
                     i = imag.computeDouble(x, ri);
-                    if (ri.isSet() || ri.isSet()) {
+                    if (ri.get() || ri.get()) {
                         defined.set();
                     }
                     return Complex.valueOf(r, i);

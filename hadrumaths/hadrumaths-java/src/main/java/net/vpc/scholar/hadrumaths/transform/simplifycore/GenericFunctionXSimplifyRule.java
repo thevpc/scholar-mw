@@ -8,7 +8,6 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
 import net.vpc.scholar.hadrumaths.NoneOutBoolean;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;

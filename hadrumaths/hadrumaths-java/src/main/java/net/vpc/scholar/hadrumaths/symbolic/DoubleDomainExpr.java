@@ -5,10 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * @author vpc

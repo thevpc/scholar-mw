@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 
 import java.util.ArrayList;
 
@@ -170,7 +170,7 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
     }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         DoubleToDouble f = getSegment(x);
         return f != null ? f.computeDouble(x, y,defined) : 0;
     }

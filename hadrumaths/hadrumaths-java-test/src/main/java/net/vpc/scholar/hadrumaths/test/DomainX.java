@@ -262,10 +262,10 @@
 //    }
 //
 //    public DomainX intersect(DomainX other) {
-////        double x1= Math.max(xmin,other.xmin);
-////        double x2=Math.min(xmax,other.xmax);
-////        double y1=Math.max(ymin,other.ymin);
-////        double y2=Math.min(ymax,other.ymax);
+////        double x1= Maths.max(xmin,other.xmin);
+////        double x2=Maths.min(xmax,other.xmax);
+////        double y1=Maths.max(ymin,other.ymin);
+////        double y2=Maths.min(ymax,other.ymax);
 //        if (other.isEmpty()) {
 //            return this;
 //        }
@@ -292,8 +292,8 @@
 //        if (other.isEmpty()) {
 //            return this;
 //        }
-//        double x1 = Math.min(xmin, other.xmin);
-//        double x2 = Math.max(xmax, other.xmax);
+//        double x1 = Maths.min(xmin, other.xmin);
+//        double x2 = Maths.max(xmax, other.xmax);
 //        return new DomainX(x1, x2);
 //    }
 //
@@ -312,7 +312,7 @@
 //    public DomainX getSymmetricX(double x0) {
 //        double x1 = xmin + 2 * (x0 - xmin);
 //        double x2 = xmax + 2 * (x0 - xmax);
-//        return new DomainX(Math.min(x1, x2), Math.max(x1, x2));
+//        return new DomainX(Maths.min(x1, x2), Maths.max(x1, x2));
 //    }
 //
 //    public double getCenterX() {

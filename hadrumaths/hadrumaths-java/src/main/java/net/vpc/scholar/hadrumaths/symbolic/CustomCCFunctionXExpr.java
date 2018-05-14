@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
  * Created by vpc on 4/30/14.
@@ -24,12 +24,12 @@ public class CustomCCFunctionXExpr extends GenericFunctionX implements Cloneable
         return super.toString();
     }
 
-    public Complex computeComplexArg(Complex c, OutBoolean defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined){
         defined.set();
         return definition.getEval().evalComplex(c);
     }
 
-    public double computeDoubleArg(double c, OutBoolean defined){
+    public double computeDoubleArg(double c, BooleanMarker defined){
         return computeComplexArg(Complex.valueOf(c), defined).toDouble();
     }
 

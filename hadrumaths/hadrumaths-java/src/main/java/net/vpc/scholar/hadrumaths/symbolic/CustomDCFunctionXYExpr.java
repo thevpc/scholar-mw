@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 
 /**
  * Created by vpc on 4/30/14.
@@ -20,7 +20,7 @@ public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneab
         return definition.getName();
     }
 
-    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, OutBoolean defined){
+    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined){
         if(!xdef && !ydef){
             return Complex.ZERO;
         }
@@ -28,7 +28,7 @@ public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneab
         return definition.getEval().evalComplex(x.toDouble(),y.toDouble());
     }
 
-    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined){
+    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined){
         if(!xdef && !ydef){
             return Complex.ZERO;
         }
@@ -36,7 +36,7 @@ public class CustomDCFunctionXYExpr extends GenericFunctionXY implements Cloneab
         return (definition.getEval().evalComplex(x,y));
     }
 
-    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, OutBoolean defined){
+    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined){
         if(!xdef && !ydef){
             return 0;
         }

@@ -53,7 +53,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public double computeDouble(double a, double b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 double d = Maths.pow(a, b);
@@ -65,7 +65,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Complex computeComplex(Complex a, Complex b, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Complex computeComplex(Complex a, Complex b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Complex d = a.pow(b);
@@ -77,7 +77,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, OutBoolean defined, Expressions.ComputeDefOptions options) {
+        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
                 Matrix d = a.pow(b);
@@ -163,14 +163,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -178,14 +178,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -193,14 +193,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public Complex computeComplex(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return Complex.ZERO;
         }
         defined.set();
@@ -208,14 +208,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -223,14 +223,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -238,14 +238,14 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined = OutBoolean.createReadable();
+    public double computeDouble(double x, BooleanMarker defined) {
+        BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, rdefined);
-        if(!rdefined.isSet()){
+        if(!rdefined.get()){
             return 0;
         }
         defined.set();
@@ -486,7 +486,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     }
 
 //    @Override
-//    public Complex computeComplexArg(double x,OutBoolean defined) {
+//    public Complex computeComplexArg(double x,BooleanMarker defined) {
 //        Out<Range> ranges = new Out<>();
 //        Complex complex = computeComplexArg(new double[]{x}, null, ranges)[0];
 //        defined.set(ranges.get().getDefined1().get(0));

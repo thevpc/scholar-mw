@@ -16,8 +16,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static net.vpc.scholar.hadrumaths.Expressions.*;
 import static net.vpc.scholar.hadrumaths.Maths.*;
 import static net.vpc.scholar.hadruwaves.Physics.K0;

@@ -3,9 +3,6 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by vpc on 4/7/17.
@@ -509,13 +506,13 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,BooleanMarker defined) {
         defined.set();
         return real;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,OutBoolean defined) {
+    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
         defined.set();
         return real;
     }
@@ -533,7 +530,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     @Override
-    public double computeDouble(double x,OutBoolean defined) {
+    public double computeDouble(double x,BooleanMarker defined) {
         defined.set();
         return real;
     }

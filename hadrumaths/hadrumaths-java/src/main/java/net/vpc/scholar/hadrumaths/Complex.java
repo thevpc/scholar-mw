@@ -1147,13 +1147,13 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public Complex computeComplex(double x,OutBoolean defined) {
+    public Complex computeComplex(double x,BooleanMarker defined) {
         defined.set();
         return this;
     }
 
     @Override
-    public Complex computeComplex(double x, double y,OutBoolean defined) {
+    public Complex computeComplex(double x, double y,BooleanMarker defined) {
         defined.set();
         return this;
     }
@@ -1169,7 +1169,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z,OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
         defined.set();
         return this;
     }

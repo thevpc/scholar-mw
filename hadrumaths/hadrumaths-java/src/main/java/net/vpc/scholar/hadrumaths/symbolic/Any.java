@@ -313,12 +313,12 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         return object.toDC().computeComplex(x, y, z, defined);
     }
 
     @Override
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         return object.toDC().computeComplex(x, y, defined);
     }
 
@@ -343,7 +343,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, OutBoolean defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         return object.toDD().computeDouble(x, defined);
     }
 
@@ -370,12 +370,12 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, OutBoolean defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         return object.toDD().computeDouble(x, y, defined);
     }
 
     @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         return object.toDD().computeDouble(x, y, z, defined);
     }
 
@@ -694,7 +694,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, OutBoolean defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         return object.toDC().computeComplex(x, defined);
     }
 
