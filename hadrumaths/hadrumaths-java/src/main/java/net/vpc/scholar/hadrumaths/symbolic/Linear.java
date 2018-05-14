@@ -200,10 +200,13 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
         return result;
     }
 
-    @Override
-    public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
-        throw new IllegalArgumentException("Missing y");
-    }
+//    @Override
+//    public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
+//        if(b==0){
+//            return sup;
+//        }
+//        throw new IllegalArgumentException("Missing y");
+//    }
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeDoubleFromXY(this, x, y, z, d0, ranges);

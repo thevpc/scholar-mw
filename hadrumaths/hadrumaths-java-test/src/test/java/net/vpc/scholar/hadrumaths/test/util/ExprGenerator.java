@@ -316,7 +316,7 @@ public class ExprGenerator {
                 return filter == null || filter.accept(value);
             }
         };
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             Object o = generateAny0(cls, filter2, complexity);
             if (o == null) {
                 throw new IllegalArgumentException("Why");

@@ -105,7 +105,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
         double[] o = quadstepX(f, y0, xmin, xmax, y[0], y[1], y[2], fcnt, hmin, hmax);
         switch ((int) o[2]) {
             case ERR_MAX_STEP_REACHED: {
-                System.out.println("Minimum step size reached; singularity possible.");
+//                System.out.println("Minimum step size reached; singularity possible.");
                 //throw new IllegalArgumentException("Minimum step size reached; singularity possible.");
                 break;
             }
@@ -115,7 +115,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
                 break;
             }
             case ERR_NAN_OR_INFINITE: {
-                System.out.println("Infinite or Not-a-Number function value encountered.");
+//                System.out.println("Infinite or Not-a-Number function value encountered.");
                 //throw new IllegalArgumentException("Infinite or Not-a-Number function value encountered.");
                 break;
             }
@@ -150,7 +150,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
         double[] o = quadstepY(f, x0, ymin, ymax, y[0], y[1], y[2], fcnt, hmin, hmax);
         switch ((int) o[2]) {
             case ERR_MAX_STEP_REACHED: {
-                System.out.println("Minimum step size reached; singularity possible.");
+//                System.out.println("Minimum step size reached; singularity possible.");
                 //throw new IllegalArgumentException("Minimum step size reached; singularity possible.");
                 break;
             }
@@ -160,7 +160,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
                 break;
             }
             case ERR_NAN_OR_INFINITE: {
-                System.out.println("Infinite or Not-a-Number function value encountered.");
+//                System.out.println("Infinite or Not-a-Number function value encountered.");
                 //throw new IllegalArgumentException("Infinite or Not-a-Number function value encountered.");
                 break;
             }

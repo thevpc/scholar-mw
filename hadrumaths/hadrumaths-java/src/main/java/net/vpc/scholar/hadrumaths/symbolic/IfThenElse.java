@@ -31,7 +31,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, defined);
                 } else {
-                    return getYArgument().toDC().computeComplex(x, defined);
+                    return getZArgument().toDC().computeComplex(x, defined);
                 }
             }
         }
@@ -47,7 +47,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, y, defined);
                 } else {
-                    return getYArgument().toDC().computeComplex(x, y, defined);
+                    return getZArgument().toDC().computeComplex(x, y, defined);
                 }
             }
         }
@@ -63,7 +63,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (!v.isZero()) {
                     return getYArgument().toDC().computeComplex(x, y, z, defined);
                 } else {
-                    return getYArgument().toDC().computeComplex(x, y, z, defined);
+                    return getZArgument().toDC().computeComplex(x, y, z, defined);
                 }
             }
         }
@@ -79,7 +79,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, defined);
                 } else {
-                    return getYArgument().toDD().computeDouble(x, defined);
+                    return getZArgument().toDD().computeDouble(x, defined);
                 }
             }
         }
@@ -95,7 +95,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, y, defined);
                 } else {
-                    return getYArgument().toDD().computeDouble(x, y, defined);
+                    return getZArgument().toDD().computeDouble(x, y, defined);
                 }
             }
         }
@@ -111,7 +111,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                 if (v != 0) {
                     return getYArgument().toDD().computeDouble(x, y, z, defined);
                 } else {
-                    return getYArgument().toDD().computeDouble(x, y, z, defined);
+                    return getZArgument().toDD().computeDouble(x, y, z, defined);
                 }
             }
         }

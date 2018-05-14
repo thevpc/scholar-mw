@@ -92,17 +92,20 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , PowSimplifyRule.INSTANCE
                     , RealSimplifyRule.INSTANCE
                     , SubSimplifyRule.INSTANCE
-                    , ComplexNavRule.INSTANCE
                     , VDCxySimplifyRule.INSTANCE
                     , ShapeSimplifyRule.INSTANCE
+                    , ConditionSimplifyRule.INSTANCE
+                    , ParametrizedScalarProductSimplifyRule.INSTANCE
+                    , ExpSimplifyRule.INSTANCE
+                    , ComplexNavRule.INSTANCE
                     , ParamExprNavRule.INSTANCE
                     , DiscreteNavRule.INSTANCE
                     , DDiscreteNavRule.INSTANCE
                     , VDiscreteNavRule.INSTANCE
                     , AxisTransformNavRule.INSTANCE
-                    , ConditionSimplifyRule.INSTANCE
-                    , ParametrizedScalarProductSimplifyRule.INSTANCE
-                    , ExpSimplifyRule.INSTANCE
+                    , DDxNavRule.INSTANCE
+                    , DDzNavRule.INSTANCE
+                    , DDzIntegralXYNavRule.INSTANCE
             )
     );
     public final static List<ExpressionRewriterRule> CANONICAL_RULES = new ArrayList<ExpressionRewriterRule>(
@@ -130,12 +133,8 @@ public class ExpressionRewriterFactory extends AbstractFactory {
     public static void rebuild() {
         OPTIMIZE_COMPUTE.clear();
         ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
-        for (ExpressionRewriterRule r : NAVIGATION_RULES) {
-            CANONICAL_RULE_SET.addRule(r);
-        }
-        for (ExpressionRewriterRule r : CANONICAL_RULES) {
-            CANONICAL_RULE_SET.addRule(r);
-        }
+        CANONICAL_RULE_SET.addAllRules(NAVIGATION_RULES);
+        CANONICAL_RULE_SET.addAllRules(CANONICAL_RULES);
         OPTIMIZE_COMPUTE.add(CANONICAL_RULE_SET);
 
 

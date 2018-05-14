@@ -5,9 +5,10 @@ import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.CosXPlusY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
-import static net.vpc.scholar.hadrumaths.Maths.abs;
-import static net.vpc.scholar.hadrumaths.Maths.cos;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
 import static net.vpc.scholar.hadrumaths.Maths.sin;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha
@@ -77,50 +78,111 @@ final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
                         (((1.0/(4*a1))*(cos(b3)*(ymax-ymin)))*( sin(2*a1*xmax+c1+b2) - sin(2*a1*xmin+c1+b2)));
             } else
             if( b1==a3 ){
-
-                v=((1.0/4.0 )* (xmax-xmin)*(ymax-ymin) * cos(c1-b2-b3)) +
-                        ((1.0/4.0)*(xmax-xmin)*( sin(2*b1*ymax+c1-b2+b3) - sin(2*b1*ymin+c1-b2+b3) )) -
-                        ( (1.0/(16.0*a1*b1)) * ( cos(2*b1*ymax+2*a1*xmax+b3+c1+b2) - cos(2*b1*ymin+2*a1*xmax+b3+c1+b2) ) ) -
-                        ((1.0/(8*a1))*(ymax-ymin)*(sin(b3-2*a1*xmax-c1-b2))) +
-                        ((1.0/(16.0*a1*b1))*( cos(2*b1*ymax+2*a1*xmax+b3+c1+b2) - cos(2*b1*ymin+2*a1*xmax+b3+c1+b2) )) +
-                        ((1.0/(8*a1))*(ymax-ymin)*(sin(b3-2*a1*xmin-c1-b2)));
-
-
+                v=((1.0/4.0 )* (xmax-xmin)*(ymax-ymin) * cos(b3-c1+b2))+
+                        ((1.0/(8.0*b1))*(xmax-xmin)*( sin(2.0*b1*ymax+c1-b2+b3) - sin(2.0*b1*ymin+c1-b2+b3) ))-
+                        ((1.0/(8.0*a1))*(ymax-ymin)*( sin(b3-2.0*a1*xmax-c1-b2) - sin(b3-2.0*a1*xmin-c1-b2) ))+
+                        ( (1.0/(16.0*a1*b1)) * (
+                                cos(2.0*b1*ymin+2.0*a1*xmax+b3+c1+b2) -
+                                        cos(2.0*b1*ymax+2.0*a1*xmax+b3+c1+b2) -
+                                        cos(2.0*b1*ymin+2.0*a1*xmin+b3+c1+b2) +
+                                        cos(2.0*b1*ymax+2.0*a1*xmin+b3+c1+b2) ));
 
             } else {
-                v=(((xmax-xmin)/(4.0*(b1-a3)))*( sin((b1-a3)*ymax+c1-b2-b3) - sin((b1-a3)*ymin+c1-b2+b3) )) +
-                        (((xmax-xmin)/(4.0*(b1+a3)))*( sin((b1+a3)*ymax+c1-b2-b3) - sin((b1+a3)*ymin+c1-b2+b3) )) -
-                        (((1.0)/(8.0*a1*(b1+a3)))*( cos((b1+a3)*ymax+2.0*a1*xmax+c1+b2+b3) - cos((b1+a3)*ymin+2.0*a1*xmax+c1+b2+b3) ))+
-                        (((1.0)/(8.0*a1*(a3-b1)))*( cos((a3-b1)*ymax-2.0*a1*xmax-c1-b2+b3) - cos((a3-b1)*ymin-2.0*a1*xmax-c1-b2+b3) ))+
-                        (((1.0)/(8.0*a1*(b1+a3)))*( cos((b1+a3)*ymax+2.0*a1*xmin+c1+b2+b3) - cos((b1+a3)*ymin+2.0*a1*xmin+c1+b2+b3) ))-
-                        (((1.0)/(8.0*a1*(a3-b1)))*( cos((a3-b1)*ymax-2.0*a1*xmin-c1-b2+b3) - cos((a3-b1)*ymin-2.0*a1*xmin-c1-b2+b3) ));
+                if ((b1+a3)==0) {
+                    v=((1.0/4.0 )* (xmax-xmin)*(ymax-ymin) * cos(b3+c1-b2)) -
+                            ((1.0/(8.0*b1))*(xmax-xmin)*( sin(b3-2.0*b1*ymax-c1+b2) - sin(b3-2.0*b1*ymin-c1+b2) ))+
+                            ((1.0/(8.0*a1))*(ymax-ymin)*( sin(b3+2.0*a1*xmax+c1+b2) - sin(b3+2.0*a1*xmin+c1+b2) ))-
+                            ( (1.0/(16.0*a1*b1)) * ( cos(b3-2.0*b1*ymax-2.0*a1*xmax-c1-b2) - cos(b3-2.0*b1*ymin-2.0*a1*xmax-c1-b2)))+
+                            ( (1.0/(16.0*a1*b1)) * ( cos(b3-2.0*b1*ymax-2.0*a1*xmin-c1-b2) - cos(b3-2.0*b1*ymin-2.0*a1*xmin-c1-b2)));
+
+                }else{
+                    v=( ((1.0/(4.0*(a3-b1)))*(xmax-xmin)) *( sin((a3-b1)*ymax+b3-c1+b2) - sin((a3-b1)*ymin+b3-c1+b2) ))+
+                            ( ((1.0/(4.0*(a3+b1)))*(xmax-xmin)) *( sin((a3+b1)*ymax+b3+c1-b2) - sin((a3+b1)*ymin+b3+c1-b2) )) -
+                            ((1.0/(8.0*a1*(a3+b1)))*( cos((a3+b1)*ymax+b3+2.0*a1*xmax+c1+b2) - cos((a3+b1)*ymin+b3+2.0*a1*xmax+c1+b2) ))+
+                            ((1.0/(8.0*a1*(a3-b1)))*( cos((a3-b1)*ymax+b3-2.0*a1*xmax-c1-b2) - cos((a3-b1)*ymin+b3-2.0*a1*xmax-c1-b2) ))+
+                            ((1.0/(8.0*a1*(a3+b1)))*( cos((a3+b1)*ymax+b3+2.0*a1*xmin+c1+b2) - cos((a3+b1)*ymin+b3+2.0*a1*xmin+c1+b2) ))-
+                            ((1.0/(8.0*a1*(a3-b1)))*( cos((a3-b1)*ymax+b3-2.0*a1*xmin-c1-b2) - cos((a3-b1)*ymin+b3-2.0*a1*xmin-c1-b2) ));
+                }
             }
         } else {
             if(b1==0 && a3==0){
                 v=((cos(b3)*(ymax-ymin)/(2.0*(a1-a2)))*( sin((a1-a2)*xmax+c1-b2) - sin((a1-a2)*xmin+c1-b2) ))+
                         ((cos(b3)*(ymax-ymin)/(2.0*(a1+a2)))*( sin((a1+a2)*xmax+c1+b2) - sin((a1+a2)*xmin+c1+b2) )) ;
             }
-            else
-            if(b1==a3){
-                v=((-1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+(a1-a2)*xmax+c1-b2) - cos(2.0*b1*ymin+(a1-a2)*xmax+c1-b2) )) +
-                        (((-1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmax-c1+b2))) +
-                        ((1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+(a1-a2)*xmin+c1-b2) - cos(2.0*b1*ymin+(a1-a2)*xmin+c1-b2) )) +
-                        (((1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmin-c1+b2))) +
-                        ((-1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+(a1+a2)*xmax+c1+b2) - cos(2.0*b1*ymin+(a1+a2)*xmax+c1+b2) )) +
-                        (((-1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmax-c1-b2))) +
-                        ((1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+(a1+a2)*xmin+c1+b2) - cos(2.0*b1*ymin+(a1+a2)*xmin+c1+b2) )) +
-                        (((1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmin-c1-b2)));
+            else if(b1==a3){
+                if((a1+a2)==0){
+                    v=((1.0/4.0 )* (xmax-xmin)*(ymax-ymin) * cos(b3-c1-b2)) +
+                            ( (1.0/(8.0*b1)) * (xmax-xmin) *( sin(2.0*b1*ymax+b3+c1+b2) - sin(2.0*b1*ymin+b3+c1+b2) )) -
+                            ( (1.0/(8.0*a1)) * (ymax-ymin) *( sin(b3-2.0*a1*xmax-c1+b2) - sin(b3-2.0*a1*xmin-c1+b2) )) -
+                            ( (1.0/(16.0*a1*b1)) * ( cos(2.0*b1*ymax+b3+2.0*a1*xmax+c1-b2) - cos(2.0*b1*ymin+b3+2.0*a1*xmax+c1-b2) ) ) +
+                            ( (1.0/(16.0*a1*b1)) * ( cos(2.0*b1*ymax+b3+2.0*a1*xmin+c1-b2) - cos(2.0*b1*ymin+b3+2.0*a1*xmin+c1-b2) ) );
+
+                }else{
+                    v=((-1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+b3+(a1-a2)*xmax+c1-b2) - cos(2.0*b1*ymin+b3+(a1-a2)*xmax+c1-b2) ))+
+                            (((-1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmax-c1+b2))) +
+                            ((1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+b3+(a1-a2)*xmin+c1-b2) - cos(2.0*b1*ymin+b3+(a1-a2)*xmin+c1-b2) ))+
+                            (((1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmin-c1+b2))) +
+                            ((-1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+b3+(a1+a2)*xmax+c1+b2) - cos(2.0*b1*ymin+b3+(a1+a2)*xmax+c1+b2) )) +
+                            (((-1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmax-c1-b2))) +
+                            ((1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+b3+(a1+a2)*xmin+c1+b2) - cos(2.0*b1*ymin+b3+(a1+a2)*xmin+c1+b2) )) +
+                            (((1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmin-c1-b2)));
+
+
+//                    v=((-1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+(a1-a2)*xmax+c1-b2) - cos(2.0*b1*ymin+(a1-a2)*xmax+c1-b2) )) +
+//                            (((-1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmax-c1+b2))) +
+//                            ((1.0/(8.0*b1*(a1-a2)))*( cos(2.0*b1*ymax+(a1-a2)*xmin+c1-b2) - cos(2.0*b1*ymin+(a1-a2)*xmin+c1-b2) )) +
+//                            (((1.0*(ymax-ymin))/(4.0*(a1-a2)))*(sin(b3-(a1-a2)*xmin-c1+b2))) +
+//                            ((-1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+(a1+a2)*xmax+c1+b2) - cos(2.0*b1*ymin+(a1+a2)*xmax+c1+b2) )) +
+//                            (((-1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmax-c1-b2))) +
+//                            ((1.0/(8.0*b1*(a1+a2)))*( cos(2.0*b1*ymax+(a1+a2)*xmin+c1+b2) - cos(2.0*b1*ymin+(a1+a2)*xmin+c1+b2) )) +
+//                            (((1.0*(ymax-ymin))/(4.0*(a1+a2)))*(sin(b3-(a1+a2)*xmin-c1-b2)));
+                }
+
             }
             else {
+                if( (b1+a3)==0){
+                    if((a1+a2)==0) {
+                        //v=0.0;
+                        v= ((1.0/(8.0*a1))*(ymax-ymin) * ( sin(b3+2.0*a1*xmax+c1-b2) - sin(b3+2.0*a1*xmin+c1-b2) )) -
+                                ((1.0/(16.0*a1*b1))* (cos(b3-2.0*b1*ymax-2.0*a1*xmax-c1+b2) - cos(b3-2.0*b1*ymin-2.0*a1*xmax-c1+b2)))+
+                                ((1.0/(16.0*a1*b1))* (cos(b3-2.0*b1*ymax-2.0*a1*xmin-c1+b2) - cos(b3-2.0*b1*ymin-2.0*a1*xmin-c1+b2)))-
+                                ((1.0/(8.0*b1))*(xmax-xmin) * ( sin(b3-2.0*b1*ymax-c1-b2) - sin(b3-2.0*b1*ymin-c1-b2) )) +
+                                ((1.0/(4.0))*(xmax-xmin)*(ymax-ymin) * cos(b3+c1+b2));
+                    } else {
+                        v=((1.0/(4.0*(a1-a2)) )*(ymax-ymin) * ( sin(b3+(a1-a2)*xmax+c1-b2))) -
+                                ( (1.0/(8.0*b1*(a1-a2)) )* ( cos(b3-2.0*b1*ymax-(a1-a2)*xmax-c1+b2) - cos(b3-2.0*b1*ymin-(a1-a2)*xmax-c1+b2) ) )-
+                                ( (1.0/(4.0*(a1-a2)) )*(ymax-ymin) * ( sin(b3+(a1-a2)*xmin+c1-b2))) +
+                                ( (1.0/(8.0*b1*(a1-a2)) )* ( cos(b3-2.0*b1*ymax-(a1-a2)*xmin-c1+b2) - cos(b3-2.0*b1*ymin-(a1-a2)*xmin-c1+b2) ) ) +
+                                ( (1.0/(4.0*(a1+a2)) )*(ymax-ymin) * ( sin(b3+(a1+a2)*xmax+c1+b2))) -
+                                ( (1.0/(8.0*b1*(a1+a2)) )* ( cos(b3-2.0*b1*ymax-(a1+a2)*xmax-c1-b2) - cos(b3-2.0*b1*ymin-(a1+a2)*xmax-c1-b2) ) ) -
+                                ( (1.0/(4.0*(a1+a2)) )*(ymax-ymin) * ( sin(b3+(a1+a2)*xmin+c1+b2))) +
+                                ( (1.0/(8.0*b1*(a1+a2)) )* ( cos(b3-2.0*b1*ymax-(a1+a2)*xmin-c1-b2) - cos(b3-2.0*b1*ymin-(a1+a2)*xmin-c1-b2) ) )
+                        ;
+                    }
 
-                v = (((-1.0) / (4.0 * (a1 - a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 - a2) * xmax + c1 - b2 + b3) - cos((a3 + b1) * ymin + (a1 - a2) * xmax + c1 - b2 + b3))) +
-                        (((1.0) / (4.0 * (a1 - a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 - a2) * xmax - c1 + b2 + b3) - cos((a3 - b1) * ymin - (a1 - a2) * xmax - c1 + b2 + b3))) +
-                        (((1.0) / (4.0 * (a1 - a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 - a2) * xmin + c1 - b2 + b3) - cos((a3 + b1) * ymin + (a1 - a2) * xmin + c1 - b2 + b3))) +
-                        (((-1.0) / (4.0 * (a1 - a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 - a2) * xmin - c1 + b2 + b3) - cos((a3 - b1) * ymin - (a1 - a2) * xmin - c1 + b2 + b3))) +
-                        (((-1.0) / (4.0 * (a1 + a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 + a2) * xmax + c1 + b2 + b3) - cos((a3 + b1) * ymin + (a1 + a2) * xmax + c1 + b2 + b3))) +
-                        (((1.0) / (4.0 * (a1 + a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 + a2) * xmax - c1 - b2 + b3) - cos((a3 - b1) * ymin - (a1 + a2) * xmax - c1 - b2 + b3))) +
-                        (((1.0) / (4.0 * (a1 + a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 + a2) * xmin + c1 + b2 + b3) - cos((a3 + b1) * ymin + (a1 + a2) * xmin + c1 + b2 + b3))) +
-                        (((-1.0) / (4.0 * (a1 + a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 + a2) * xmin - c1 - b2 + b3) - cos((a3 - b1) * ymin - (a1 + a2) * xmin - c1 - b2 + b3)));
+
+                } else {
+                    if((a1+a2)==0) {
+                        v=( (-1.0/(8.0*a1*(a3+b1))) * ( cos((a3 + b1) * ymax+b3+2.0*a1*xmax+c1-b2) - cos((a3 + b1) * ymin+b3+2.0*a1*xmax+c1-b2) ))+
+                                ( (1.0/(8.0*a1*(a3-b1))) * ( cos((a3 - b1) * ymax+b3-2.0*a1*xmax-c1+b2) - cos((a3 - b1) * ymin+b3-2.0*a1*xmax-c1+b2) ))+
+                                ( (1.0/(8.0*a1*(a3+b1))) * ( cos((a3 + b1) * ymax+b3+2.0*a1*xmin+c1-b2) - cos((a3 + b1) * ymin+b3+2.0*a1*xmin+c1-b2) ))+
+                                ( (-1.0/(8.0*a1*(a3-b1))) * ( cos((a3 - b1) * ymax+b3-2.0*a1*xmin-c1+b2) - cos((a3 - b1) * ymin+b3-2.0*a1*xmin-c1+b2) ))+
+                                ((1.0/(4.0*(a3-b1)) )*(xmax-xmin) * ( sin((a3 - b1) * ymax+b3-c1-b2) - sin((a3 - b1) * ymin+b3-c1-b2) ))+
+                                ((1.0/(4.0*(a3+b1)) )*(xmax-xmin) * ( sin((a3 + b1) * ymax+b3+c1+b2) - sin((a3 + b1) * ymin+b3+c1+b2) ));
+                    }
+                    else{
+                        v = (((-1.0) / (4.0 * (a1 - a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 - a2) * xmax + c1 - b2 + b3) - cos((a3 + b1) * ymin + (a1 - a2) * xmax + c1 - b2 + b3))) +
+                                (((1.0) / (4.0 * (a1 - a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 - a2) * xmax - c1 + b2 + b3) - cos((a3 - b1) * ymin - (a1 - a2) * xmax - c1 + b2 + b3))) +
+                                (((1.0) / (4.0 * (a1 - a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 - a2) * xmin + c1 - b2 + b3) - cos((a3 + b1) * ymin + (a1 - a2) * xmin + c1 - b2 + b3))) +
+                                (((-1.0) / (4.0 * (a1 - a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 - a2) * xmin - c1 + b2 + b3) - cos((a3 - b1) * ymin - (a1 - a2) * xmin - c1 + b2 + b3))) +
+                                (((-1.0) / (4.0 * (a1 + a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 + a2) * xmax + c1 + b2 + b3) - cos((a3 + b1) * ymin + (a1 + a2) * xmax + c1 + b2 + b3))) +
+                                (((1.0) / (4.0 * (a1 + a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 + a2) * xmax - c1 - b2 + b3) - cos((a3 - b1) * ymin - (a1 + a2) * xmax - c1 - b2 + b3))) +
+                                (((1.0) / (4.0 * (a1 + a2) * (a3 + b1))) * (cos((a3 + b1) * ymax + (a1 + a2) * xmin + c1 + b2 + b3) - cos((a3 + b1) * ymin + (a1 + a2) * xmin + c1 + b2 + b3))) +
+                                (((-1.0) / (4.0 * (a1 + a2) * (a3 - b1))) * (cos((a3 - b1) * ymax - (a1 + a2) * xmin - c1 - b2 + b3) - cos((a3 - b1) * ymin - (a1 + a2) * xmin - c1 - b2 + b3)));
+
+                    }
+
+                }
             }
         }
         return v*f.getAmp() * g.getAmp();
@@ -132,7 +194,7 @@ final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
         return
                 diff == 0 ||
 //                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
-                (diff <0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
+                        (diff <0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
                 ;
     }
 
