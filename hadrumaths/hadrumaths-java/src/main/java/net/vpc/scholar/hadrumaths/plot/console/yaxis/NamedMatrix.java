@@ -132,7 +132,7 @@ public class NamedMatrix implements Serializable, Cloneable {
         if(this.matrix[0].length==other.matrix[0].length){
             append(this.matrix,this.matrix.length,other.matrix,other.matrix.length,matrix);
         }else{
-            int mm=Math.max(this.matrix[0].length,other.matrix[0].length);
+            int mm=Maths.max(this.matrix[0].length,other.matrix[0].length);
             append(this.matrix,this.matrix.length,other.matrix,other.matrix.length,matrix);
             for(int i=0;i<matrix.length;i++){
                 Complex[] cc=matrix[i];

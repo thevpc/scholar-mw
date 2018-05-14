@@ -23,7 +23,7 @@ public final class Shape extends AbstractDoubleToDouble implements Cloneable{
     }
 
     public Shape(Domain domain) {
-        this(Math.sqrt(domain.xwidth() * domain.ywidth()), new Polygon(domain));
+        this(Maths.sqrt(domain.xwidth() * domain.ywidth()), new Polygon(domain));
     }
 
     public Shape(double cst, Geometry geometry) {

@@ -1549,7 +1549,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         ComponentDimension m = ComponentDimension.SCALAR;
         for (Expr selectedFunction : selectedFunctions) {
             ComponentDimension d = selectedFunction.getComponentDimension();
-            m = ComponentDimension.create(Math.max(d.rows, m.rows), Math.max(d.columns, m.columns));
+            m = ComponentDimension.create(Maths.max(d.rows, m.rows), Maths.max(d.columns, m.columns));
         }
 
         return m;

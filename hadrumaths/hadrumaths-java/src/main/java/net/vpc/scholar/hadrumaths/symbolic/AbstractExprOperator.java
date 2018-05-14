@@ -38,23 +38,23 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return true;
     }
 
-    protected boolean isComplexImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isComplex()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    protected boolean isComplexImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isComplex()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
-    protected boolean isDoubleImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isDouble()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    protected boolean isDoubleImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isDouble()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     protected boolean isMatrixImpl() {
         for (Expr e : getSubExpressions()) {
@@ -243,14 +243,14 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return true;
     }
 
-    public boolean isDoubleExprImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isDoubleExpr()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    public boolean isDoubleExprImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isDoubleExpr()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {

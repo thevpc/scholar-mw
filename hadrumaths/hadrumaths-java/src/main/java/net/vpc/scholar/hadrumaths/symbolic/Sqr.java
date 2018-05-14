@@ -21,10 +21,12 @@ public class Sqr extends GenericFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.sqr();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return c*c;
     }
 

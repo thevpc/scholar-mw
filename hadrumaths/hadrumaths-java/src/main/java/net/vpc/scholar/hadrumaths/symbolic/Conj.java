@@ -21,10 +21,12 @@ public class Conj extends GenericFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.conj();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return c;
     }
 

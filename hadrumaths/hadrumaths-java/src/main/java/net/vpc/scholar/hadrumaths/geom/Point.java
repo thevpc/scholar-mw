@@ -45,16 +45,16 @@ public class Point implements Serializable,Cloneable {
     }
 
     public double distance(Point q) {
-        int d = Math.max(dimension, q.dimension);
+        int d = Maths.max(dimension, q.dimension);
         switch (d) {
             case 1: {
-                return Math.sqrt((x - q.x) * (x - q.x));
+                return Maths.sqrt((x - q.x) * (x - q.x));
             }
             case 2: {
-                return (Math.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y)));
+                return (Maths.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y)));
             }
         }
-        return (Math.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y) + (z - q.z) * (z - q.z)));
+        return (Maths.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y) + (z - q.z) * (z - q.z)));
     }
     public Point translate(double dx,double dy){
         switch (dimension){

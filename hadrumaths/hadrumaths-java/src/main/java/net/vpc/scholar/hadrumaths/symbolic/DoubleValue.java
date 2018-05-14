@@ -20,6 +20,10 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public static final DoubleValue ONE2 = new DoubleValue(1, Domain.FULLXY);
     public static final DoubleValue ONE3 = new DoubleValue(1, Domain.FULLXYZ);
 
+    public static final DoubleValue TWO1 = new DoubleValue(2, Domain.FULLX);
+    public static final DoubleValue TWO2 = new DoubleValue(2, Domain.FULLXY);
+    public static final DoubleValue TWO3 = new DoubleValue(2, Domain.FULLXYZ);
+
     public static final DoubleValue NAN1 = new DoubleValue(Double.NaN, Domain.FULLX);
     public static final DoubleValue NAN2 = new DoubleValue(Double.NaN, Domain.FULLXY);
     public static final DoubleValue NAN3 = new DoubleValue(Double.NaN, Domain.FULLXYZ);
@@ -31,7 +35,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     public DoubleValue(Domain domain) {
         this(
-                domain.dimension() == 1 ? domain.xwidth() : domain.dimension() == 2 ? Math.sqrt(domain.xwidth() * domain.ywidth()) : Math.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth()), domain);
+                domain.dimension() == 1 ? domain.xwidth() : domain.dimension() == 2 ? Maths.sqrt(domain.xwidth() * domain.ywidth()) : Maths.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth()), domain);
     }
 
     public DoubleValue(double cst, Domain domain) {
@@ -495,7 +499,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public double computeDouble(double x, double y,OutBoolean defined) {
+    public double computeDouble(double x, double y,OutBoolean defined) {//
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {

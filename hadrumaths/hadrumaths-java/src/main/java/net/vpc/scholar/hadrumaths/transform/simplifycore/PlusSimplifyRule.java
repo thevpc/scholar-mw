@@ -495,7 +495,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //                DDxPolynome fb = (DDxPolynome) b;
 //                double[] coeffs1 = fa.getA();
 //                double[] coeffs2 = fb.getA();
-//                double[] coeffs3 = new double[Math.max(coeffs1.length, coeffs2.length)];
+//                double[] coeffs3 = new double[Maths.max(coeffs1.length, coeffs2.length)];
 //                for (int i = 0; i < coeffs1.length; i++) {
 //                    coeffs3[i] = coeffs1[i];
 //                }

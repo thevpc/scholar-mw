@@ -121,7 +121,7 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         // Create a chart
         final Chart chart = AWTChartComponentFactory.chart(Quality.Advanced, "awt");
         chart.getScene().getGraph().add(surface);
-        chart.setViewPoint(new Coord3d(-0.4 * Math.PI, Math.PI / 4, 0));
+        chart.setViewPoint(new Coord3d(-0.4 * Maths.PI, Maths.PI / 4, 0));
 
 //        chart.setViewPoint(new Coord3d(-Math.PI/2,Math.PI/4,0));
 //        chart.setViewPoint(new Coord3d(-3*Math.PI/4,Math.PI/4,0));

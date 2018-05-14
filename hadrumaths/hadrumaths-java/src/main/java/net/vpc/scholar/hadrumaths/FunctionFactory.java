@@ -12,8 +12,6 @@ import net.vpc.scholar.hadrumaths.symbolic.PiecewiseSineXFunctionXY;
 import net.vpc.scholar.hadrumaths.symbolic.RooftopXFunctionXY;
 import net.vpc.scholar.hadrumaths.symbolic.UFunction;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.sqrt;
 import static net.vpc.scholar.hadrumaths.Maths.CZERO;
 import static net.vpc.scholar.hadrumaths.Maths.HALF_PI;
 
@@ -94,7 +92,7 @@ public final class FunctionFactory extends AbstractFactory{
      */
     public static CosXCosY cosXcentredCrest(double k, Domain domain) {
         double w = domain.xmax() - domain.xmin();
-        double amp = k == 0 ? (1 / w) : 1 / Math.sqrt(k * PI * w);
+        double amp = k == 0 ? (1 / w) : 1 / Maths.sqrt(k * Maths.PI * w);
         return new CosXCosY(amp, -k, k * (w + domain.xmin()) - (HALF_PI), 0, 0, domain);
     }
 
@@ -124,15 +122,15 @@ public final class FunctionFactory extends AbstractFactory{
      */
     public static DoubleToDouble cosXcentredWell(double ampCoeff, double k, Domain domain) {
         double w = domain.xmax() - domain.xmin();
-        double amp = 1;//ampCoeff*k==0?sqrt(1/w):(1 / Math.sqrt(PI * k * w));
-        return new CosXCosY(amp, PI * k / w, -PI * k * domain.xmin() / w, 0, 0, domain);
+        double amp = 1;//ampCoeff*k==0?sqrt(1/w):(1 / Maths.sqrt(PI * k * w));
+        return new CosXCosY(amp, Maths.PI * k / w, -Maths.PI * k * domain.xmin() / w, 0, 0, domain);
     }
 
     //TODO
     public static DoubleToDouble cosXcentredWellInv(double ampCoeff, double k, Domain domain) {
         double w = domain.xmax() - domain.xmin();
-        double amp = 1;//ampCoeff*k==0?sqrt(1/w):(1 / Math.sqrt(PI * k * w));
-        return new CosXCosY(amp, -PI * k / w, +PI * k * domain.xmax() / w, 0, 0, domain);
+        double amp = 1;//ampCoeff*k==0?sqrt(1/w):(1 / Maths.sqrt(PI * k * w));
+        return new CosXCosY(amp, -Maths.PI * k / w, +Maths.PI * k * domain.xmax() / w, 0, 0, domain);
     }
 
     //TODO a revoir ?
@@ -146,9 +144,9 @@ public final class FunctionFactory extends AbstractFactory{
         double w = d.xmax() - d.xmin();
 
         return n == 0
-                ? Maths.expr(sqrt(1 / w), d)
-                : cosX(sqrt(2 / w),
-                2 * n * PI / w,
+                ? Maths.expr(Maths.sqrt(1 / w), d)
+                : cosX(Maths.sqrt(2 / w),
+                2 * n * Maths.PI / w,
                 0,
                 d);
     }
@@ -158,25 +156,25 @@ public final class FunctionFactory extends AbstractFactory{
     }
 
     public static CosXCosY sinXcosY0(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b - Math.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        return new CosXCosY(amp, a, b - Maths.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
     }
 
     public static CosXCosY sinXcosY0(double a, double b, double c, double d, Domain domain) {
-        CosXCosY s = new CosXCosY(1, a, b - Math.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
-        return new CosXCosY(1.0 / Math.sqrt(Maths.scalarProduct(s, s)), a, b - Math.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        CosXCosY s = new CosXCosY(1, a, b - Maths.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        return new CosXCosY(1.0 / Maths.sqrt(Maths.scalarProduct(s, s)), a, b - Maths.PI / 2, c, d, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
     }
 
     public static CosXCosY sinXsinY0(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b - Math.PI / 2, c, d - Math.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        return new CosXCosY(amp, a, b - Maths.PI / 2, c, d - Maths.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
     }
 
     public static CosXCosY cosXsinY0(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b, c, d - Math.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        return new CosXCosY(amp, a, b, c, d - Maths.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
     }
 
     public static CosXCosY cosXsinY0(double a, double b, double c, double d, Domain domain) {
-        CosXCosY s = new CosXCosY(1, a, b, c, d - Math.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
-        return new CosXCosY(1.0 / Math.sqrt(Maths.scalarProduct(s, s)), a, b, c, d - Math.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        CosXCosY s = new CosXCosY(1, a, b, c, d - Maths.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
+        return new CosXCosY(1.0 / Maths.sqrt(Maths.scalarProduct(s, s)), a, b, c, d - Maths.PI / 2, Domain.forBounds(0, domain.xwidth(), 0, domain.ywidth())).translate(domain.xmin(), domain.ymin());
     }
 
     public static CosXCosY cosXcosY(double amp, double a, double b, double c, double d, Domain domain) {
@@ -184,15 +182,15 @@ public final class FunctionFactory extends AbstractFactory{
     }
 
     public static CosXCosY cosXsinY(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b, c, d - Math.PI / 2, domain);
+        return new CosXCosY(amp, a, b, c, d - Maths.PI / 2, domain);
     }
 
     public static CosXCosY sinXcosY(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b - Math.PI / 2, c, d, domain);
+        return new CosXCosY(amp, a, b - Maths.PI / 2, c, d, domain);
     }
 
     public static CosXCosY sinXsinY(double amp, double a, double b, double c, double d, Domain domain) {
-        return new CosXCosY(amp, a, b - Math.PI / 2, c, d - Math.PI / 2, domain);
+        return new CosXCosY(amp, a, b - Maths.PI / 2, c, d - Maths.PI / 2, domain);
     }
 
     public static CosXCosY cosX(double amp, double a, double b, Domain domain) {
@@ -201,7 +199,7 @@ public final class FunctionFactory extends AbstractFactory{
 
 
     public static CosXCosY sinX(double amp, double a, double b, Domain domain) {
-        return new CosXCosY(amp, a, b - Math.PI / 2, 0, 0, domain);
+        return new CosXCosY(amp, a, b - Maths.PI / 2, 0, 0, domain);
     }
 
     public static CosXCosY cosY(double amp, double a, double b, Domain domain) {
@@ -209,7 +207,7 @@ public final class FunctionFactory extends AbstractFactory{
     }
 
     public static CosXCosY sinY(double amp, double a, double b, Domain domain) {
-        return new CosXCosY(amp, 0, 0, a, b - Math.PI / 2, domain);
+        return new CosXCosY(amp, 0, 0, a, b - Maths.PI / 2, domain);
     }
 
     public static Linear segment(double a, double b, double c, Domain domain) {
@@ -253,13 +251,13 @@ public final class FunctionFactory extends AbstractFactory{
     public static RooftopXFunctionXY rooftop(Axis axis, int count, boolean crestOnEdge, Domain domain) {
         RooftopXFunctionXY r0 = new RooftopXFunctionXY(domain, axis, 1, count, crestOnEdge);
         double d = Maths.scalarProduct(r0, r0);
-        return new RooftopXFunctionXY(domain, axis, 1 / sqrt(d), count, crestOnEdge);
+        return new RooftopXFunctionXY(domain, axis, 1 / Maths.sqrt(d), count, crestOnEdge);
 //        // w=domain.width;
 //        //seg=sx+t avec s=pente=v/(w/(2*count))
 //        //|seg|=integrale((sx+t)*(sx+t))=integrale((s2x2+2stx+t2))
 //        double amp2seg=1.0/(2*segWidth
 //        return new RooftopXFunctionXY(domain,axis,
-//                count * 2 / Math.sqrt(((domain.width / count) * domain.height)), count, crestOnEdge);
+//                count * 2 / Maths.sqrt(((domain.width / count) * domain.height)), count, crestOnEdge);
     }
 
     public static PiecewiseSineXFunctionXY archeSinus(Axis axis, double factor, Domain domain) {

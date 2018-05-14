@@ -32,6 +32,10 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     AnyNavRule.INSTANCE
                     , ComplexNavRule.INSTANCE
                     , ComplexXYNavRule.INSTANCE
+                    , DDxNavRule.INSTANCE
+                    , DDyNavRule.INSTANCE
+                    , DDzNavRule.INSTANCE
+                    , DDzIntegralXYNavRule.INSTANCE
                     , DCxyExpNavRule.INSTANCE
                     , DCxyNavRule.INSTANCE
 //                    ,DDxCosNavRule.INSTANCE
@@ -40,7 +44,6 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 //                    ,DDxPolynomeNavRule.INSTANCE
 //                    ,DDxUxNavRule.INSTANCE
 //                    ,DDxyToDDxNavRule.INSTANCE
-                    , DDyNavRule.INSTANCE
                     , DivNavRule.INSTANCE
                     , ParamExprNavRule.INSTANCE
 //                    ,DoubleXNavRule.INSTANCE
@@ -61,6 +64,9 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , DDiscreteNavRule.INSTANCE
                     , VDiscreteNavRule.INSTANCE
                     , AxisTransformNavRule.INSTANCE
+                    , RooftopXFunctionXYNavRule.INSTANCE
+                    , SinSeqYZNavRule.INSTANCE
+                    , DefaultDoubleToMatrixNavRule.INSTANCE
             )
     );
     public static final List<ExpressionRewriterRule> SIMPLIFY_RULES = new ArrayList<ExpressionRewriterRule>(

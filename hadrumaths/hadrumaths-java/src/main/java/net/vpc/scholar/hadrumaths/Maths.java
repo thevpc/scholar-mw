@@ -47,7 +47,10 @@ import java.util.logging.Logger;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 public final class Maths {
-    private static double getit(double d){return d;}
+    private static double getit(double d) {
+        return d;
+    }
+
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double E = Math.E;
@@ -1288,7 +1291,10 @@ public final class Maths {
     }
 
     public static double acotan(double c) {
-        return 1.0 / Math.atan(c);
+        if(c==0){
+            return HALF_PI;
+        }
+        return Math.atan(1/c);
     }
 
     public static double exp(double c) {
@@ -3267,8 +3273,8 @@ public final class Maths {
         double min = Double.MIN_VALUE;
         double max = Double.MAX_VALUE;
         for (double value : a) {
-            min = Math.min(min, value);
-            max = Math.max(max, value);
+            min = Maths.min(min, value);
+            max = Maths.max(max, value);
         }
         return new double[]{min, max};
     }
@@ -3278,8 +3284,8 @@ public final class Maths {
         double max = Double.MIN_VALUE;
         for (double anA : a) {
             double abs = Math.abs(anA);
-            min = Math.min(min, abs);
-            max = Math.max(max, abs);
+            min = Maths.min(min, abs);
+            max = Maths.max(max, abs);
         }
         return new double[]{min, max};
     }
@@ -3291,8 +3297,8 @@ public final class Maths {
         for (double anA : a) {
             if (!Double.isNaN(anA) && !Double.isInfinite(anA)) {
                 double abs = Math.abs(anA);
-                min = Math.min(min, abs);
-                max = Math.max(max, abs);
+                min = Maths.min(min, abs);
+                max = Maths.max(max, abs);
                 b = true;
             }
         }
@@ -3320,7 +3326,7 @@ public final class Maths {
     }
 
     public static double[] div(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
+        int max = Maths.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] / b[i];
@@ -3329,7 +3335,7 @@ public final class Maths {
     }
 
     public static double[] mul(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
+        int max = Maths.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] * b[i];
@@ -3338,7 +3344,7 @@ public final class Maths {
     }
 
     public static double[] sub(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
+        int max = Maths.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] - b[i];
@@ -3356,7 +3362,7 @@ public final class Maths {
     }
 
     public static double[] add(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
+        int max = Maths.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] + b[i];
@@ -3410,17 +3416,20 @@ public final class Maths {
     }
 
     public static double sinh(double x) {
-        return (Math.exp(x) - Math.exp(-x)) / 2;
+        return Math.sinh(x);
+//        return (Math.exp(x) - Math.exp(-x)) / 2;
     }
 
     public static double cosh(double x) {
-        return (Math.exp(x) + Math.exp(-x)) / 2;
+        return Math.cosh(x);
+//        return (Math.exp(x) + Math.exp(-x)) / 2;
     }
 
     public static double tanh(double x) {
-        double a = Math.exp(+x);
-        double b = Math.exp(-x);
-        return a == Double.POSITIVE_INFINITY ? 1 : b == Double.POSITIVE_INFINITY ? -1 : (a - b) / (a + b);
+        return Math.tanh(x);
+//        double a = Math.exp(+x);
+//        double b = Math.exp(-x);
+//        return a == Double.POSITIVE_INFINITY ? 1 : b == Double.POSITIVE_INFINITY ? -1 : (a - b) / (a + b);
     }
 
     public static double abs(double a) {
@@ -3572,8 +3581,8 @@ public final class Maths {
     }
 
     public static double[][] add(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Maths.max(a.length, b.length);
+        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3584,8 +3593,8 @@ public final class Maths {
     }
 
     public static double[][] sub(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Maths.max(a.length, b.length);
+        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3596,8 +3605,8 @@ public final class Maths {
     }
 
     public static double[][] div(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Maths.max(a.length, b.length);
+        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3608,8 +3617,8 @@ public final class Maths {
     }
 
     public static double[][] mul(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Maths.max(a.length, b.length);
+        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3763,7 +3772,7 @@ public final class Maths {
     }
 
     public static Complex integrate(Expr e, Domain domain) {
-        return Config.getIntegrationOperator().eval(domain,e);
+        return Config.getIntegrationOperator().eval(domain, e);
     }
 
     public static Expr esum(int size, TVectorCell<Expr> f) {
@@ -4117,10 +4126,10 @@ public final class Maths {
     }
 
     public static Expr scalarProduct(Matrix g, TVector<Expr> f) {
-        return f.scalarProduct(false,g.to($EXPR));
+        return f.scalarProduct(false, g.to($EXPR));
     }
 
-    public static Expr scalarProductAll(Matrix g, TVector<Expr> ... f ) {
+    public static Expr scalarProductAll(Matrix g, TVector<Expr>... f) {
         return g.toVector().to($EXPR).scalarProductAll((TVector[]) f);
     }
 
@@ -4521,7 +4530,7 @@ public final class Maths {
         if (!c.isZero()) {
             all.add(c.toComplex());
         }
-        if(all.size()==1){
+        if (all.size() == 1) {
             return all.get(0);
         }
         return new Plus(all);
@@ -4638,7 +4647,7 @@ public final class Maths {
             return CZERO;
         }
         List<Expr> all = new ArrayList<>();
-        Domain d=null;
+        Domain d = null;
         MutableComplex c = new MutableComplex(1, 0);
         Queue<Expr> t = new LinkedList<>();
         for (int i = 0; i < len; i++) {
@@ -4655,10 +4664,10 @@ public final class Maths {
                             return CZERO;
                         }
                         c.mul(v);
-                        if(d==null){
-                            d=e2.getDomain();
-                        }else{
-                            d=d.intersect(e2.getDomain());
+                        if (d == null) {
+                            d = e2.getDomain();
+                        } else {
+                            d = d.intersect(e2.getDomain());
                         }
                     } else {
                         all.add(e2);
@@ -4667,7 +4676,7 @@ public final class Maths {
             }
         }
         Complex complex = c.toComplex();
-        Expr complexExpr=d==null?complex:complex.mul(d);
+        Expr complexExpr = d == null ? complex : complex.mul(d);
         if (all.isEmpty()) {
             return complexExpr;
         }
@@ -5110,7 +5119,7 @@ public final class Maths {
             Object[] uplet = new Object[indexes.length];
             for (int i = 0; i < uplet.length; i++) {
 //                try {
-                    uplet[i] = values[i][indexes[i]];
+                uplet[i] = values[i][indexes[i]];
 //                } catch (ArrayIndexOutOfBoundsException ex) {
 //                    System.out.println("");
 //                }
@@ -5929,12 +5938,14 @@ public final class Maths {
         public static void setScalarProductOperator(ScalarProductOperator sp) {
             defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
         }
+
         public static IntegrationOperator getIntegrationOperator() {
             if (defaultIntegrationOperator == null) {
                 defaultIntegrationOperator = IntegrationOperatorFactory.defaultValue();
             }
             return defaultIntegrationOperator;
         }
+
         public static void setIntegrationOperator(IntegrationOperator op) {
             defaultIntegrationOperator = op == null ? IntegrationOperatorFactory.defaultValue() : op;
         }
@@ -6202,6 +6213,7 @@ public final class Maths {
 
     private static class BooleanTypeReference extends TypeReference<Boolean> {
     }
+
     private static class PointTypeReference extends TypeReference<Point> {
 
     }
@@ -6236,32 +6248,56 @@ public final class Maths {
     private static class TListMatrixTypeReference extends TypeReference<TList<Matrix>> {
     }
 
-    public static String getHadrumathsVersion(){
+    public static String getHadrumathsVersion() {
         return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadrumaths");
     }
 
-    public static ComponentDimension expandComponentDimension(ComponentDimension d1,ComponentDimension d2){
+    public static ComponentDimension expandComponentDimension(ComponentDimension d1, ComponentDimension d2) {
         return ComponentDimension.create(
-                Math.max(d1.rows,d2.rows),
-                Math.max(d1.columns,d2.columns)
+                Maths.max(d1.rows, d2.rows),
+                Maths.max(d1.columns, d2.columns)
         );
     }
 
-    public static Expr expandComponentDimension(Expr e,ComponentDimension d){
+    public static Expr expandComponentDimension(Expr e, ComponentDimension d) {
         ComponentDimension d0 = e.getComponentDimension();
-        if(d0.equals(d)){
+        if (d0.equals(d)) {
             return e;
         }
-        if(d0.rows>d.rows || d0.columns>d.columns){
-            throw new IllegalArgumentException("Unable to shrink component dim "+d0+" -> "+d);
+        if (d0.rows > d.rows || d0.columns > d.columns) {
+            throw new IllegalArgumentException("Unable to shrink component dim " + d0 + " -> " + d);
         }
-        if(d.equals(ComponentDimension.VECTOR2)){
-            return vector(e,Domain.FULLX);
+        if (d.equals(ComponentDimension.VECTOR2)) {
+            return vector(e, Domain.FULLX);
         }
-        if(d.equals(ComponentDimension.VECTOR3)){
+        if (d.equals(ComponentDimension.VECTOR3)) {
             DoubleToMatrix dm = e.toDM();
-            return vector(dm.getComponent(0,0),d.columns>=2?e.toDM().getComponent(1,0): Domain.FULLX, Domain.FULLX);
+            return vector(dm.getComponent(0, 0), d.columns >= 2 ? e.toDM().getComponent(1, 0) : Domain.FULLX, Domain.FULLX);
         }
-        throw new IllegalArgumentException("Unable to expandComponentDimension component dim "+d0+" -> "+d);
+        throw new IllegalArgumentException("Unable to expandComponentDimension component dim " + d0 + " -> " + d);
+    }
+
+    public static double atan2(double y, double x) {
+        return Math.atan2(y, x);
+    }
+
+    public static double ceil(double a) {
+        return Math.ceil(a);
+    }
+
+    public static double floor(double a) {
+        return Math.floor(a);
+    }
+
+    public static long round(double a) {
+        return Math.round(a);
+    }
+
+    public static int round(float a) {
+        return Math.round(a);
+    }
+
+    public static double random(){
+        return Math.random();
     }
 }

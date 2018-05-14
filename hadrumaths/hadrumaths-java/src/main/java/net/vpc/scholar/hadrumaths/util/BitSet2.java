@@ -3,6 +3,8 @@ package net.vpc.scholar.hadrumaths.util;
 /**
  * Created by vpc on 4/7/17.
  */
+import net.vpc.scholar.hadrumaths.Maths;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -312,7 +314,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
     private void ensureCapacity(int wordsRequired) {
         if (words.length < wordsRequired) {
             // Allocate larger of doubled size or required size
-            int request = Math.max(2 * words.length, wordsRequired);
+            int request = Maths.max(2 * words.length, wordsRequired);
             words = Arrays.copyOf(words, request);
             sizeIsSticky = false;
         }
@@ -885,7 +887,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
      * @since  1.4
      */
     public boolean intersects(BitSet2 set) {
-        for (int i = Math.min(wordsInUse, set.wordsInUse) - 1; i >= 0; i--)
+        for (int i = Maths.min(wordsInUse, set.wordsInUse) - 1; i >= 0; i--)
             if ((words[i] & set.words[i]) != 0)
                 return true;
         return false;
@@ -941,7 +943,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
         if (this == set)
             return;
 
-        int wordsInCommon = Math.min(wordsInUse, set.wordsInUse);
+        int wordsInCommon = Maths.min(wordsInUse, set.wordsInUse);
 
         if (wordsInUse < set.wordsInUse) {
             ensureCapacity(set.wordsInUse);
@@ -977,7 +979,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
      * @param  set a bit set
      */
     public void xor(BitSet2 set) {
-        int wordsInCommon = Math.min(wordsInUse, set.wordsInUse);
+        int wordsInCommon = Maths.min(wordsInUse, set.wordsInUse);
 
         if (wordsInUse < set.wordsInUse) {
             ensureCapacity(set.wordsInUse);
@@ -1008,7 +1010,7 @@ public class BitSet2 implements Cloneable, java.io.Serializable {
      */
     public void andNot(BitSet2 set) {
         // Perform logical (a & !b) on words in common
-        for (int i = Math.min(wordsInUse, set.wordsInUse) - 1; i >= 0; i--)
+        for (int i = Maths.min(wordsInUse, set.wordsInUse) - 1; i >= 0; i--)
             words[i] &= ~set.words[i];
 
         recalculateWordsInUse();

@@ -74,8 +74,8 @@ public class CurveStat extends Graph {
             g.setFont(getTextFont());
             g.setColor(getTextColor());
             String message = "Graphics.Graph.EmptyTables";
-            int cx = Math.max((getWidth() - getMetrics().stringWidth(message)) / 2, 0);
-            int cy = Math.max(getHeight() / 2 - getFontMetrics(getTitleFont()).getDescent(), 0);
+            int cx = Maths.max((getWidth() - getMetrics().stringWidth(message)) / 2, 0);
+            int cy = Maths.max(getHeight() / 2 - getFontMetrics(getTitleFont()).getDescent(), 0);
             g.drawString(message, cx, cy);
         }
     }
@@ -87,16 +87,16 @@ public class CurveStat extends Graph {
         g.setColor(getPaperColor());
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        int nbSupp = Math.max(getWidth() / legendWidth, 1);
+        int nbSupp = Maths.max(getWidth() / legendWidth, 1);
         legendHeight = ((nbrCurves / nbSupp) + 1) * 20 + getMetrics().getHeight();
         xScale = (getWidth() - yLabsMaxLen - 20) / xMaxValue;
-        yScale = (getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - xLabsMaxLen * Maths.sin2(Math.PI / 4) - 20) / yMaxValue;
-        int xValXscale = (int) Math.round(xMaxValue * xScale) + 1;
-        int yValXscale = (int) Math.round(yMaxValue * yScale) + 1;
+        yScale = (getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - xLabsMaxLen * Maths.sin2(Maths.PI / 4) - 20) / yMaxValue;
+        int xValXscale = (int) Maths.round(xMaxValue * xScale) + 1;
+        int yValXscale = (int) Maths.round(yMaxValue * yScale) + 1;
 
         // draw the getTitle() centered at the bottom of the graph
         int titleWidth = getMetrics().stringWidth(getTitle());
-        int cx = Math.max((getWidth() - titleWidth) / 2, 0);
+        int cx = Maths.max((getWidth() - titleWidth) / 2, 0);
         int cy = getHeight() - getMetrics().getDescent();
         g.setFont(getTitleFont());
         g.setColor(getTextColor());
@@ -107,9 +107,9 @@ public class CurveStat extends Graph {
         //setYUnit(yUserUnit);
         if (xValXscale > 10 && yValXscale > 10) {
 
-            cx = Math.max(((getWidth() - xValXscale) / 2), yLabsMaxLen + 5);
-            cy = getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - (int) (xLabsMaxLen * Maths.sin2(Math.PI / 4)) - 5;
-            cy = (int) Math.round(cy - (yMaxValue * yScale));
+            cx = Maths.max(((getWidth() - xValXscale) / 2), yLabsMaxLen + 5);
+            cy = getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - (int) (xLabsMaxLen * Maths.sin2(Maths.PI / 4)) - 5;
+            cy = (int) Maths.round(cy - (yMaxValue * yScale));
 
             g.setFont(getTextFont());
 
@@ -129,10 +129,10 @@ public class CurveStat extends Graph {
                             pxNbr = (int) (pxMaxValue * xScale) / 15 + 1;
                         }
                         if (mxMaxValue != 0) {
-                            mxNbr = (int) (Math.abs(mxMaxValue * xScale) / 15) + 1;
+                            mxNbr = (int) (Maths.abs(mxMaxValue * xScale) / 15) + 1;
                         }
                         xUnit = xMaxValue / (pxNbr + mxNbr);
-                        xValXscale = (int) Math.round(xUnit * (pxNbr + mxNbr + 1) * xScale);
+                        xValXscale = (int) Maths.round(xUnit * (pxNbr + mxNbr + 1) * xScale);
 
                     } else {
                         xUnit = xUserUnit;
@@ -155,10 +155,10 @@ public class CurveStat extends Graph {
                             pyNbr = (int) (pyMaxValue * yScale) / 15 + 1;
                         }
                         if (myMaxValue != 0) {
-                            myNbr = (int) (Math.abs(myMaxValue * yScale) / 15) + 1;
+                            myNbr = (int) (Maths.abs(myMaxValue * yScale) / 15) + 1;
                         }
                         yUnit = yMaxValue / (pyNbr + myNbr);
-                        yValXscale = (int) Math.round(yUnit * (pyNbr + myNbr + 1) * yScale);
+                        yValXscale = (int) Maths.round(yUnit * (pyNbr + myNbr + 1) * yScale);
 
                     } else {
                         yUnit = yUserUnit;
@@ -171,35 +171,35 @@ public class CurveStat extends Graph {
                 g.setColor(gridBg);
                 g.fillRect(cx, cy, xValXscale, yValXscale);
                 g.setColor(gridColor);
-                int X = cx - (int) Math.round(mxMaxValue * xScale);
+                int X = cx - (int) Maths.round(mxMaxValue * xScale);
                 AffineTransform at = new AffineTransform();
                 for (int l = (0 - mxNbr); l < pxNbr + 1; l++) {
                     if (l == 0) {
                         g.fillRect(X - 1, cy, 3, yValXscale);
                     } else {
-                        g.drawLine(X + (int) Math.round(xUnit * xScale * l), cy, X + (int) Math.round(xUnit * xScale * l), cy + yValXscale);
+                        g.drawLine(X + (int) Maths.round(xUnit * xScale * l), cy, X + (int) Maths.round(xUnit * xScale * l), cy + yValXscale);
                         String val = "";
                         if (curves[0].getXInType() == GraphConstants.IN_STRINGS) {
                             val = curves[0].getXLabels()[l - 1];
                         } else {
                             val = df.format(xUnit * l);
                         }
-                        int CY = (int) (cy + yValXscale + getMetrics().stringWidth(val) * Maths.sin2(Math.PI / 4) + 7);
-                        int CX = (int) (X + (int) Math.round(xUnit * xScale * l) - getMetrics().stringWidth(val) * Maths.cos2(Math.PI / 4));
-                        at.setToRotation(-Math.PI / 4, CX, CY);
+                        int CY = (int) (cy + yValXscale + getMetrics().stringWidth(val) * Maths.sin2(Maths.PI / 4) + 7);
+                        int CX = (int) (X + (int) Maths.round(xUnit * xScale * l) - getMetrics().stringWidth(val) * Maths.cos2(Maths.PI / 4));
+                        at.setToRotation(-Maths.PI / 4, CX, CY);
                         g.transform(at);
                         g.drawString(val, CX, CY);
-                        at.setToRotation(Math.PI / 4, CX, CY);
+                        at.setToRotation(Maths.PI / 4, CX, CY);
                         g.transform(at);
                     }
                 }
-                yValXscale = (int) Math.round(pyMaxValue * yScale) + 1;
+                yValXscale = (int) Maths.round(pyMaxValue * yScale) + 1;
                 for (int l = (0 - myNbr); l < pyNbr + 1; l++) {
                     if (l == 0) {
                         g.fillRect(cx, cy + yValXscale - 1, xValXscale, 3);
                         g.drawString("0", cx - getMetrics().stringWidth("0") - 5, cy + yValXscale);
                     } else {
-                        g.drawLine(cx, cy + yValXscale - ((int) Math.round(yUnit * yScale * l)), cx + xValXscale, cy + yValXscale - ((int) Math.round(yUnit * yScale * l)));
+                        g.drawLine(cx, cy + yValXscale - ((int) Maths.round(yUnit * yScale * l)), cx + xValXscale, cy + yValXscale - ((int) Maths.round(yUnit * yScale * l)));
                         String val = "";
                         if (curves[0].getYInType() == GraphConstants.IN_STRINGS) {
                             val = curves[0].getYLabels()[l - 1];
@@ -207,7 +207,7 @@ public class CurveStat extends Graph {
                             val = df.format(yUnit * l);
                         }
                         X = 2 + yLabsMaxLen - getMetrics().stringWidth(val);
-                        g.drawString(val, X, cy + yValXscale - ((int) Math.round(yUnit * yScale * l)));
+                        g.drawString(val, X, cy + yValXscale - ((int) Maths.round(yUnit * yScale * l)));
                     }
                 }
             }
@@ -219,7 +219,7 @@ public class CurveStat extends Graph {
                 int ylab = getHeight() - legendHeight - getFontMetrics(getTitleFont()).getHeight() + 20 * ((i / nbSupp) + 1);//pieBorderWidth+pieRadius+pieHight+20*((i/nbSupp)+1);
 
                 if (i % nbSupp == 0) {
-                    fstXLab = Math.max((getWidth() - Math.min(nbSupp, nbrCurves - i) * legendWidth) / 2, 0);
+                    fstXLab = Maths.max((getWidth() - Maths.min(nbSupp, nbrCurves - i) * legendWidth) / 2, 0);
                     xlab = fstXLab;
                 } else {
                     xlab = fstXLab + ((i % nbSupp) * legendWidth);
@@ -276,8 +276,8 @@ public class CurveStat extends Graph {
             });
         } else {
             String message = ("Graphics.Graph.TooTiny");
-            cx = Math.max((getWidth() - getMetrics().stringWidth(message)) / 2, 0);
-            cy = Math.max(getHeight() / 2 - getFontMetrics(getTitleFont()).getDescent(), 0);
+            cx = Maths.max((getWidth() - getMetrics().stringWidth(message)) / 2, 0);
+            cy = Maths.max(getHeight() / 2 - getFontMetrics(getTitleFont()).getDescent(), 0);
             g.drawString(message, cx, cy);
 
         }
@@ -298,15 +298,15 @@ public class CurveStat extends Graph {
 
         for (int i = 0; i < nbrPoints; i++) {
 
-            int widthOfItems = (int) Math.round((xMaxValue * xScale) + 1);
+            int widthOfItems = (int) Maths.round((xMaxValue * xScale) + 1);
 
             // Coordinates for this Point
-            int cx = Math.max(((getWidth() - widthOfItems) / 2), yLabsMaxLen + 5);
-            cx = cx - (int) Math.round(mxMaxValue * xScale);
-            cx = (int) Math.round(cx + (xValues[i] * xScale));
-            int cy = getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - (int) (xLabsMaxLen * Maths.sin2(Math.PI / 4)) - 5;
-            cy = cy + (int) Math.round(myMaxValue * yScale);
-            cy = cy - Math.round((float) (yValues[i] * yScale)) + 2;
+            int cx = Maths.max(((getWidth() - widthOfItems) / 2), yLabsMaxLen + 5);
+            cx = cx - (int) Maths.round(mxMaxValue * xScale);
+            cx = (int) Maths.round(cx + (xValues[i] * xScale));
+            int cy = getHeight() - getFontMetrics(getTitleFont()).getHeight() - legendHeight - (int) (xLabsMaxLen * Maths.sin2(Maths.PI / 4)) - 5;
+            cy = cy + (int) Maths.round(myMaxValue * yScale);
+            cy = cy - Maths.round((float) (yValues[i] * yScale)) + 2;
 
             // draw the Point
             pointsCoord[pointsDrawed + i] = new Point(cx - 3, cy - 3);
@@ -485,7 +485,7 @@ public class CurveStat extends Graph {
                 pxUserNbr = 0;
             }
             if (mxMaxValue != 0) {
-                mxUserNbr = (int) Math.abs(mxMaxValue / xUserUnit) + 1;
+                mxUserNbr = (int) Maths.abs(mxMaxValue / xUserUnit) + 1;
                 mxMaxValue = 0 - (mxUserNbr * xUserUnit);
             } else {
                 mxUserNbr = 0;
@@ -521,7 +521,7 @@ public class CurveStat extends Graph {
                 pyUserNbr = 0;
             }
             if (myMaxValue != 0) {
-                myUserNbr = (int) Math.abs(myMaxValue / yUserUnit) + 1;
+                myUserNbr = (int) Maths.abs(myMaxValue / yUserUnit) + 1;
                 myMaxValue = 0 - (myUserNbr * yUserUnit);
             } else {
                 myUserNbr = 0;

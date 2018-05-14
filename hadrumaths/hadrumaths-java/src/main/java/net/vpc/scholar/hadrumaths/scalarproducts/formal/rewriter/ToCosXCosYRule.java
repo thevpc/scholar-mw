@@ -52,11 +52,11 @@ public class ToCosXCosYRule implements ExpressionRewriterRule {
             Linear r=Linear.castOrConvert(t);
             if(r!=null){
                 if(r.getA()==0){
-                    return RewriteResult.newVal(new CosXCosY(1,0,0,r.getB(),r.getC()-Math.PI/2,(e).getDomain().intersect(( t).getDomain())));
+                    return RewriteResult.newVal(new CosXCosY(1,0,0,r.getB(),r.getC()-Maths.PI/2,(e).getDomain().intersect(( t).getDomain())));
                 }else if(r.getB()==0){
-                    return RewriteResult.newVal(new CosXCosY(1,r.getA(),r.getC()-Math.PI/2,0,0,(e).getDomain().intersect((t).getDomain())));
+                    return RewriteResult.newVal(new CosXCosY(1,r.getA(),r.getC()-Maths.PI/2,0,0,(e).getDomain().intersect((t).getDomain())));
                 }else{
-                    return RewriteResult.newVal(new CosXPlusY(1,r.getA(),r.getA(),r.getC()-Math.PI/2,(e).getDomain().intersect(( t).getDomain())));
+                    return RewriteResult.newVal(new CosXPlusY(1,r.getA(),r.getA(),r.getC()-Maths.PI/2,(e).getDomain().intersect(( t).getDomain())));
                 }
             }
             if(rw.isRewritten()) {

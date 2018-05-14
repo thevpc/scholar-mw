@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.meshalgo.rect;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
@@ -83,10 +84,10 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
             throw new IllegalArgumentException("gpMaxGridPrecisionY<gpMinGridPrecisionY : (" + mingy + " > " + maxgy + ")");
         }
 
-        setMinRelativeSizeX(1.0 / Math.pow(2, maxgx));
-        setMinRelativeSizeY(1.0 / Math.pow(2, maxgy < 0 ? maxgx : maxgy));
-        setMaxRelativeSizeX(1.0 / Math.pow(2, mingx));
-        setMaxRelativeSizeY(1.0 / Math.pow(2, mingy < 0 ? mingx : mingy));
+        setMinRelativeSizeX(1.0 / Maths.pow(2, maxgx));
+        setMinRelativeSizeY(1.0 / Maths.pow(2, maxgy < 0 ? maxgx : maxgy));
+        setMaxRelativeSizeX(1.0 / Maths.pow(2, mingx));
+        setMaxRelativeSizeY(1.0 / Maths.pow(2, mingy < 0 ? mingx : mingy));
     }
 
     public double getMinRelativeSizeY() {
@@ -212,8 +213,8 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         double dmx = d.getXMin();
         double dmy = d.getYMin();
 
-        int maxx = ((int) Math.round(dw / maxAbsoluteSizeX));
-        int maxy = ((int) Math.round(dh / maxAbsoluteSizeY));
+        int maxx = ((int) Maths.round(dw / maxAbsoluteSizeX));
+        int maxy = ((int) Maths.round(dh / maxAbsoluteSizeY));
         List<Geometry> areas = new ArrayList<Geometry>();
 
         if (maxAbsoluteSizeX < minAbsoluteSizeX && maxAbsoluteSizeY < minAbsoluteSizeY) {

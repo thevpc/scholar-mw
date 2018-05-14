@@ -31,7 +31,7 @@ public class PlotCanvasPolarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 
     protected double getDefaultXMultiplier() {
         //convert to degree from radian
-        return 180 / Math.PI;
+        return 180 / Maths.PI;
     }
 
 

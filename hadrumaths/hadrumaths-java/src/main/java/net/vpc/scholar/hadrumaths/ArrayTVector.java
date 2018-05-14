@@ -99,7 +99,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
     }
 
     public T scalarProduct(boolean hermitian, TVector<T> other) {
-        int max = Math.max(elements.length, other.size());
+        int max = Maths.max(elements.length, other.size());
         VectorSpace<T> space = getComponentVectorSpace();
         T d = space.zero();
         for (int i = 0; i < max; i++) {

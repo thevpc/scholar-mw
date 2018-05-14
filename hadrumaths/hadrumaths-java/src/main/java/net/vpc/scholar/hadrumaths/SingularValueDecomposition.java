@@ -54,8 +54,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
       double[][] A = Arg.getDoubleArrayCopy();
       m = Arg.getRowCount();
       n = Arg.getColumnCount();
-      int nu = Math.min(m,n);
-      s = new double [Math.min(m+1,n)];
+      int nu = Maths.min(m,n);
+      s = new double [Maths.min(m+1,n)];
       U = new double [m][nu];
       V = new double [n][n];
       double[] e = new double [n];
@@ -66,9 +66,9 @@ public class SingularValueDecomposition implements java.io.Serializable {
       // Reduce A to bidiagonal form, storing the diagonal elements
       // in s and the super-diagonal elements in e.
 
-      int nct = Math.min(m-1,n);
-      int nrt = Math.max(0,Math.min(n-2,m));
-      for (int k = 0; k < Math.max(nct,nrt); k++) {
+      int nct = Maths.min(m-1,n);
+      int nrt = Maths.max(0,Maths.min(n-2,m));
+      for (int k = 0; k < Maths.max(nct,nrt); k++) {
          if (k < nct) {
 
             // Compute the transformation for the k-th column and
@@ -170,7 +170,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
       // Set up the final bidiagonal matrix or order p.
 
-      int p = Math.min(n,m+1);
+      int p = Maths.min(n,m+1);
       if (nct < n) {
          s[nct] = A[nct][nct];
       }
@@ -246,7 +246,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
       int pp = p-1;
       int iter = 0;
-      double eps = Math.pow(2.0,-52.0);
+      double eps = Maths.pow(2.0,-52.0);
       while (p > 0) {
          int k,kase;
 
@@ -266,7 +266,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
             if (k == -1) {
                break;
             }
-            if (Math.abs(e[k]) <= eps*(Math.abs(s[k]) + Math.abs(s[k+1]))) {
+            if (Maths.abs(e[k]) <= eps*(Maths.abs(s[k]) + Maths.abs(s[k+1]))) {
                e[k] = 0.0;
                break;
             }
@@ -279,9 +279,9 @@ public class SingularValueDecomposition implements java.io.Serializable {
                if (ks == k) {
                   break;
                }
-               double t = (ks != p ? Math.abs(e[ks]) : 0.) + 
-                          (ks != k+1 ? Math.abs(e[ks-1]) : 0.);
-               if (Math.abs(s[ks]) <= eps*t)  {
+               double t = (ks != p ? Maths.abs(e[ks]) : 0.) +
+                          (ks != k+1 ? Maths.abs(e[ks-1]) : 0.);
+               if (Maths.abs(s[ks]) <= eps*t)  {
                   s[ks] = 0.0;
                   break;
                }
@@ -355,9 +355,9 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
                // Calculate the shift.
    
-               double scale = Math.max(Math.max(Math.max(Math.max(
-                       Math.abs(s[p-1]),Math.abs(s[p-2])),Math.abs(e[p-2])), 
-                       Math.abs(s[k])),Math.abs(e[k]));
+               double scale = Maths.max(Maths.max(Maths.max(Maths.max(
+                       Maths.abs(s[p-1]),Maths.abs(s[p-2])),Maths.abs(e[p-2])),
+                       Maths.abs(s[k])),Maths.abs(e[k]));
                double sp = s[p-1]/scale;
                double spm1 = s[p-2]/scale;
                double epm1 = e[p-2]/scale;
@@ -367,7 +367,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                double c = (sp*epm1)*(sp*epm1);
                double shift = 0.0;
                if ((b != 0.0) | (c != 0.0)) {
-                  shift = Math.sqrt(b*b + c);
+                  shift = Maths.sqrt(b*b + c);
                   if (b < 0.0) {
                      shift = -shift;
                   }
@@ -470,7 +470,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
    */
 
    public DMatrix getU () {
-      return new DMatrix(U,m,Math.min(m+1,n));
+      return new DMatrix(U,m,Maths.min(m+1,n));
    }
 
    /** Return the right singular vectors
@@ -518,7 +518,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
    */
 
    public double cond () {
-      return s[0]/s[Math.min(m,n)-1];
+      return s[0]/s[Maths.min(m,n)-1];
    }
 
    /** Effective numerical matrix rank
@@ -526,8 +526,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
    */
 
    public int rank () {
-      double eps = Math.pow(2.0,-52.0);
-      double tol = Math.max(m,n)*s[0]*eps;
+      double eps = Maths.pow(2.0,-52.0);
+      double tol = Maths.max(m,n)*s[0]*eps;
       int r = 0;
       for (int i = 0; i < s.length; i++) {
          if (s[i] > tol) {

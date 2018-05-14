@@ -206,7 +206,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         }
         if(appliedRulesCount==0){
             if(curr.getSubExpressions().size()>0) {
-                throw new NoSuchElementException("Not rule for " + curr.getClass().getSimpleName() + " in " + name);
+                throw new NoSuchElementException("No rule found for " + curr.getClass().getSimpleName() + " in " + name);
             }
         }
         if (!modified) {

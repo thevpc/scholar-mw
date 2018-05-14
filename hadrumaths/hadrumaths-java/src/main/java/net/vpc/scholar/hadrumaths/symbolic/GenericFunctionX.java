@@ -87,32 +87,26 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 
     @Override
     public Domain getDomainImpl() {
-        switch (this.functionType) {
-            case DOUBLE: {
-                if (computeDoubleArg(0, NoneOutBoolean.INSTANCE) == 0) {
-                    return getArgument().getDomain();
-                }
-            }
-            case COMPLEX: {
-                if (computeComplexArg(Complex.ZERO, NoneOutBoolean.INSTANCE).isZero()) {
-                    return getArgument().getDomain();
-                }
-            }
-            case MATRIX: {
-                if (evalMM(Complex.ZERO.toMatrix()).isZero()) {
-                    return getArgument().getDomain();
-                }
-            }
-        }
-        return Domain.FULL(getArgument().getDomainDimension());
-
-//        if(getArgument() instanceof ExprXY) {
-//            return ((ExprXY)getArgument()).getDomain();
+        //will always return arg domain
+        return getArgument().getDomain();
+//        switch (this.functionType) {
+//            case DOUBLE: {
+//                if (computeDoubleArg(0, NoneOutBoolean.INSTANCE) == 0) {
+//                    return getArgument().getDomain();
+//                }
+//            }
+//            case COMPLEX: {
+//                if (computeComplexArg(Complex.ZERO, NoneOutBoolean.INSTANCE).isZero()) {
+//                    return getArgument().getDomain();
+//                }
+//            }
+//            case MATRIX: {
+//                if (evalMM(Complex.ZERO.toMatrix()).isZero()) {
+//                    return getArgument().getDomain();
+//                }
+//            }
 //        }
-//        if(getArgument() instanceof ExprX) {
-//            return new DomainXY(((ExprX)getArgument()).getDomain());
-//        }
-//        return DomainXY.FULL;
+//        return Domain.FULL(getArgument().getDomainDimension());
     }
 
     @Override
@@ -242,8 +236,20 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return Maths.matrix(arrayCopy);
     }
 
+    /**
+     * Should call    defined.set();
+     * @param c
+     * @param defined
+     * @return
+     */
     public abstract Complex computeComplexArg(Complex c, OutBoolean defined);
 
+    /**
+     * should call defined.set();
+     * @param c
+     * @param defined
+     * @return
+     */
     protected abstract double computeDoubleArg(double c, OutBoolean defined);
 
     public double computeDouble(double x, double y, OutBoolean defined) {
@@ -340,10 +346,10 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return result;
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDDImpl() {

@@ -66,7 +66,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
             for (int r = 0; r < rows; r++) {
                 s += get(r, c).absdbl();
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -80,7 +80,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 f += get(r, c).absdblsqr();
             }
         }
-        return Math.sqrt(f);
+        return Maths.sqrt(f);
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         int rows = getRowCount();
         for (int j = 0; j < columnDimension; j++) {
             for (int r = 0; r < rows; r++) {
-                f = Math.max(f, get(r, j).absdbl());
+                f = Maths.max(f, get(r, j).absdbl());
             }
         }
         return f;
@@ -185,13 +185,13 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
             for (int j = 0; j < complexes.length; j++) {
                 Complex base = baseMatrix.get(i, j);
                 Complex val = complexes[j];
-                double baseR = Math.abs(base.getReal());
-                double baseI = Math.abs(base.getImag());
-                double valR = Math.abs(val.getReal());
-                double valI = Math.abs(val.getImag());
+                double baseR = Maths.abs(base.getReal());
+                double baseI = Maths.abs(base.getImag());
+                double valR = Maths.abs(val.getReal());
+                double valI = Maths.abs(val.getImag());
                 double ddR = baseR == 0 ? valR : (valR / baseR);
                 double ddI = baseI == 0 ? valI : (valI / baseI);
-                double dd = Math.max(ddR, ddI);
+                double dd = Maths.max(ddR, ddI);
                 if (!Double.isNaN(minErrorForZero) && dd < minErrorForZero) {
                     d[i][j] = 0;
                 } else {
@@ -216,7 +216,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
             for (int c = 0; c < columns; c++) {
                 s += get(r, c).absdbl();
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -1921,7 +1921,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                             c.add(Complex.valueOf(stRow.nextToken()));
                             someCols++;
                         }
-                        cols = Math.max(cols, someCols);
+                        cols = Maths.max(cols, someCols);
                         if (c.size() > 0) {
                             l.add(c);
                         }
@@ -2073,7 +2073,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
             for (int c = 0; c < cols; c++) {
                 alpha = alpha + get(r, c).absdblsqr();
             }
-            x *= Math.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
 
         return det.absdbl() / x;
@@ -2142,7 +2142,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = get(r, c).absdbl();
-                f = Math.max(f, f0);
+                f = Maths.max(f, f0);
             }
         }
         return f;
@@ -2156,7 +2156,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = get(r, c).absdbl();
-                f = Math.min(f, f0);
+                f = Maths.min(f, f0);
             }
         }
         return f;

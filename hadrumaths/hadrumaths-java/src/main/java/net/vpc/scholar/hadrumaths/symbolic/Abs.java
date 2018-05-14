@@ -18,10 +18,12 @@ public class Abs extends GenericFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.abs();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return Maths.abs(c);
     }
 

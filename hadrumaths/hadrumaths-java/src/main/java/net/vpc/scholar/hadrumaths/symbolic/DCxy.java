@@ -18,6 +18,11 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     protected DoubleToDouble real;
     protected DoubleToDouble imag;
     protected Domain domain;
+    protected int zStatus = 0;
+    private static final int Z_NONE = 0;
+    private static final int Z_R = 1;
+    private static final int Z_I = 2;
+    private static final int Z_RI = 3;
     //    public static final CFunctionXY ZERO =new CFunctionXY(DCstFunctionXY.ZERO,DCstFunctionXY.ZERO).setName("0");
 
 //    public DCxy(IDDx real) {
@@ -38,6 +43,12 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         this.domain = domain;
         this.real = real == null ? FunctionFactory.DZEROXY : real.toDD();
         this.imag = imag == null ? FunctionFactory.DZEROXY : imag.toDD();
+        if (!this.real.isZero()) {
+            zStatus |= 1;
+        }
+        if (!this.imag.isZero()) {
+            zStatus |= 2;
+        }
 //        name = (this.real.getName() + "+i." + this.imag.getName());
     }
 
@@ -109,37 +120,104 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         d0 = domain.intersect(d0);
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
         if (abcd != null) {
-            Out<Range> iranges = new Out<>();
-            Out<Range> rranges = new Out<>();
-            double[][] i = imag.computeDouble(x, y, d0, iranges);
-            double[][] r = real.computeDouble(x, y, d0, rranges);
-            BooleanArray2 idefined3 = iranges.get() == null ? null : iranges.get().getDefined2();
-            BooleanArray2 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined2();
-            BooleanArray2 def3 = abcd.setDefined2(x.length, y.length);
-
-            if(idefined3!=null) {
-                def3.addFrom(idefined3, iranges.get());
-            }
-            if(rdefined3!=null) {
-                def3.addFrom(rdefined3, rranges.get());
-            }
-            Complex[][] c = new Complex[y.length][x.length];
-            for (int j = abcd.ymin; j <= abcd.ymax; j++) {
-                for (int k = abcd.xmin; k <= abcd.xmax; k++) {
-                    if ((idefined3 == null || !idefined3.get(j, k)) && (rdefined3 == null || !rdefined3.get(j, k))) {
-                        c[j][k] = Complex.ZERO;
-                    } else {
-                        double vr = (rdefined3 == null || !rdefined3.get(j, k)) ? 0 : r[j][k];
-                        double vi = (idefined3 == null || !idefined3.get(j, k)) ? 0 : i[j][k];
-                        c[j][k] = Complex.valueOf(vr, vi);
+            switch (zStatus) {
+                case Z_NONE: {
+                    Complex[][] c = ArrayUtils.fillArray2Complex(x.length, y.length, Complex.ZERO);
+                    if (ranges != null) {
+                        abcd.setDefined2(x.length,y.length);
+                        abcd.getDefined2().setAll();
+                        ranges.set(abcd);
+                        ranges.set(null);
                     }
+                    return c;
+                }
+                case Z_R: {
+                    Out<Range> rranges = new Out<>();
+                    double[][] r = real.computeDouble(x, y, d0, rranges);
+                    BooleanArray2 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined2();
+                    BooleanArray2 def3 = abcd.setDefined2(x.length, y.length);
+
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[][] c = new Complex[y.length][x.length];
+                    for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                        for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                            if ((rdefined3 == null || !rdefined3.get(j, k))) {
+                                c[j][k] = Complex.ZERO;
+                            } else {
+                                double vr = (rdefined3 == null || !rdefined3.get(j, k)) ? 0 : r[j][k];
+                                c[j][k] = Complex.valueOf(vr);
+                            }
+                        }
+                    }
+                    ArrayUtils.fillArray2ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_I: {
+                    Out<Range> iranges = new Out<>();
+                    double[][] i = imag.computeDouble(x, y, d0, iranges);
+                    BooleanArray2 idefined3 = iranges.get() == null ? null : iranges.get().getDefined2();
+                    BooleanArray2 def3 = abcd.setDefined2(x.length, y.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    Complex[][] c = new Complex[y.length][x.length];
+                    for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                        for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                            if ((idefined3 == null || !idefined3.get(j, k))) {
+                                c[j][k] = Complex.ZERO;
+                            } else {
+                                double vi = (idefined3 == null || !idefined3.get(j, k)) ? 0 : i[j][k];
+                                c[j][k] = Complex.I(vi);
+                            }
+                        }
+                    }
+                    ArrayUtils.fillArray2ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_RI: {
+                    Out<Range> iranges = new Out<>();
+                    Out<Range> rranges = new Out<>();
+                    double[][] i = imag.computeDouble(x, y, d0, iranges);
+                    double[][] r = real.computeDouble(x, y, d0, rranges);
+                    BooleanArray2 idefined3 = iranges.get() == null ? null : iranges.get().getDefined2();
+                    BooleanArray2 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined2();
+                    BooleanArray2 def3 = abcd.setDefined2(x.length, y.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[][] c = new Complex[y.length][x.length];
+                    for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                        for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                            if ((idefined3 == null || !idefined3.get(j, k)) && (rdefined3 == null || !rdefined3.get(j, k))) {
+                                c[j][k] = Complex.ZERO;
+                            } else {
+                                double vr = (rdefined3 == null || !rdefined3.get(j, k)) ? 0 : r[j][k];
+                                double vi = (idefined3 == null || !idefined3.get(j, k)) ? 0 : i[j][k];
+                                c[j][k] = Complex.valueOf(vr, vi);
+                            }
+                        }
+                    }
+                    ArrayUtils.fillArray2ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
                 }
             }
-            ArrayUtils.fillArray2ZeroComplex(c, abcd);
-            if (ranges != null) {
-                ranges.set(abcd);
-            }
-            return c;
+            throw new IllegalArgumentException("Unsupported");
         } else {
             Complex[][] c = ArrayUtils.fillArray2Complex(x.length, y.length, Complex.ZERO);
             if (ranges != null) {
@@ -153,35 +231,97 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         d0 = domain.intersect(d0);
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x);
         if (abcd != null) {
-            Out<Range> iranges = new Out<>();
-            Out<Range> rranges = new Out<>();
-            double[] i = imag.computeDouble(x, d0, iranges);
-            double[] r = real.computeDouble(x, d0, rranges);
-            BooleanArray1 idefined3 = iranges.get() == null ? null : iranges.get().getDefined1();
-            BooleanArray1 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined1();
-            BooleanArray1 def3 = abcd.setDefined1(x.length);
+            switch (zStatus) {
+                case Z_NONE:{
+                    Complex[] c = ArrayUtils.fillArray1Complex(x.length, Complex.ZERO);
+                    if (ranges != null) {
+                        abcd.setDefined1(x.length);
+                        abcd.getDefined1().setAll();
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_R:{
+                    Out<Range> rranges = new Out<>();
+                    double[] r = real.computeDouble(x, d0, rranges);
+                    BooleanArray1 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined1();
+                    BooleanArray1 def3 = abcd.setDefined1(x.length);
 
-            if(idefined3!=null) {
-                def3.addFrom(idefined3, iranges.get());
-            }
-            if(rdefined3!=null) {
-                def3.addFrom(rdefined3, rranges.get());
-            }
-            Complex[] c = new Complex[x.length];
-            for (int k = abcd.xmin; k <= abcd.xmax; k++) {
-                if ((idefined3 == null || !idefined3.get(k)) && (rdefined3 == null || !rdefined3.get(k))) {
-                    c[k] = Complex.ZERO;
-                } else {
-                    double vr = (rdefined3 == null || !rdefined3.get(k)) ? 0 : r[k];
-                    double vi = (idefined3 == null || !idefined3.get(k)) ? 0 : i[k];
-                    c[k] = Complex.valueOf(vr, vi);
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[] c = new Complex[x.length];
+                    for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                        if ( (rdefined3 == null || !rdefined3.get(k))) {
+                            c[k] = Complex.ZERO;
+                        } else {
+                            double vr = (rdefined3 == null || !rdefined3.get(k)) ? 0 : r[k];
+                            c[k] = Complex.valueOf(vr);
+                        }
+                    }
+                    ArrayUtils.fillArray1ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_I:{
+                    Out<Range> iranges = new Out<>();
+                    double[] i = imag.computeDouble(x, d0, iranges);
+                    BooleanArray1 idefined3 = iranges.get() == null ? null : iranges.get().getDefined1();
+                    BooleanArray1 def3 = abcd.setDefined1(x.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    Complex[] c = new Complex[x.length];
+                    for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                        if ((idefined3 == null || !idefined3.get(k)) ) {
+                            c[k] = Complex.ZERO;
+                        } else {
+                            double vi = (idefined3 == null || !idefined3.get(k)) ? 0 : i[k];
+                            c[k] = Complex.I(vi);
+                        }
+                    }
+                    ArrayUtils.fillArray1ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_RI:{
+                    Out<Range> iranges = new Out<>();
+                    Out<Range> rranges = new Out<>();
+                    double[] i = imag.computeDouble(x, d0, iranges);
+                    double[] r = real.computeDouble(x, d0, rranges);
+                    BooleanArray1 idefined3 = iranges.get() == null ? null : iranges.get().getDefined1();
+                    BooleanArray1 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined1();
+                    BooleanArray1 def3 = abcd.setDefined1(x.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[] c = new Complex[x.length];
+                    for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                        if ((idefined3 == null || !idefined3.get(k)) && (rdefined3 == null || !rdefined3.get(k))) {
+                            c[k] = Complex.ZERO;
+                        } else {
+                            double vr = (rdefined3 == null || !rdefined3.get(k)) ? 0 : r[k];
+                            double vi = (idefined3 == null || !idefined3.get(k)) ? 0 : i[k];
+                            c[k] = Complex.valueOf(vr, vi);
+                        }
+                    }
+                    ArrayUtils.fillArray1ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
                 }
             }
-            ArrayUtils.fillArray1ZeroComplex(c, abcd);
-            if (ranges != null) {
-                ranges.set(abcd);
-            }
-            return c;
+            throw new IllegalArgumentException("Unsupported");
         } else {
             Complex[] c = ArrayUtils.fillArray1Complex(x.length, Complex.ZERO);
             if (ranges != null) {
@@ -195,39 +335,109 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         d0 = domain.intersect(d0);
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
         if (abcd != null) {
-            Out<Range> iranges = new Out<>();
-            Out<Range> rranges = new Out<>();
-            double[][][] i = imag.computeDouble(x, y, z, d0, iranges);
-            double[][][] r = real.computeDouble(x, y, z, d0, rranges);
-            BooleanArray3 idefined3 = iranges.get() == null ? null : iranges.get().getDefined3();
-            BooleanArray3 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined3();
-            BooleanArray3 def3 = abcd.setDefined3(x.length, y.length, z.length);
+            switch (zStatus) {
+                case Z_NONE: {
+                    Complex[][][] c = ArrayUtils.fillArray3Complex(x.length, y.length, z.length, Complex.ZERO);
+                    if (ranges != null) {
+                        abcd.setDefined3(x.length, y.length, z.length);
+                        abcd.getDefined3().setAll();
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_R: {
+                    Out<Range> rranges = new Out<>();
+                    double[][][] r = real.computeDouble(x, y, z, d0, rranges);
+                    BooleanArray3 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined3();
+                    BooleanArray3 def3 = abcd.setDefined3(x.length, y.length, z.length);
 
-            if(idefined3!=null) {
-                def3.addFrom(idefined3, iranges.get());
-            }
-            if(rdefined3!=null) {
-                def3.addFrom(rdefined3, rranges.get());
-            }
-            Complex[][][] c = new Complex[z.length][y.length][x.length];
-            for (int t = abcd.zmin; t <= abcd.zmax; t++) {
-                for (int j = abcd.ymin; j <= abcd.ymax; j++) {
-                    for (int k = abcd.xmin; k <= abcd.xmax; k++) {
-                        if ((idefined3 == null || !idefined3.get(t, j, k)) && (rdefined3 == null || !rdefined3.get(t, j, k))) {
-                            c[t][j][k] = Complex.ZERO;
-                        } else {
-                            double vr = (rdefined3 == null || !rdefined3.get(t, j, k)) ? 0 : r[t][j][k];
-                            double vi = (idefined3 == null || !idefined3.get(t, j, k)) ? 0 : i[t][j][k];
-                            c[t][j][k] = Complex.valueOf(vr, vi);
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[][][] c = new Complex[z.length][y.length][x.length];
+                    for (int t = abcd.zmin; t <= abcd.zmax; t++) {
+                        for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                            for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                                if ((rdefined3 == null || !rdefined3.get(t, j, k))) {
+                                    c[t][j][k] = Complex.ZERO;
+                                } else {
+                                    double vr = (rdefined3 == null || !rdefined3.get(t, j, k)) ? 0 : r[t][j][k];
+                                    c[t][j][k] = Complex.valueOf(vr);
+                                }
+                            }
                         }
                     }
+                    ArrayUtils.fillArray3ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_I: {
+                    Out<Range> iranges = new Out<>();
+                    double[][][] i = imag.computeDouble(x, y, z, d0, iranges);
+                    BooleanArray3 idefined3 = iranges.get() == null ? null : iranges.get().getDefined3();
+                    BooleanArray3 def3 = abcd.setDefined3(x.length, y.length, z.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    Complex[][][] c = new Complex[z.length][y.length][x.length];
+                    for (int t = abcd.zmin; t <= abcd.zmax; t++) {
+                        for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                            for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                                if ((idefined3 == null || !idefined3.get(t, j, k))) {
+                                    c[t][j][k] = Complex.ZERO;
+                                } else {
+                                    double vi = (idefined3 == null || !idefined3.get(t, j, k)) ? 0 : i[t][j][k];
+                                    c[t][j][k] = Complex.I(vi);
+                                }
+                            }
+                        }
+                    }
+                    ArrayUtils.fillArray3ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
+                }
+                case Z_RI: {
+                    Out<Range> iranges = new Out<>();
+                    Out<Range> rranges = new Out<>();
+                    double[][][] i = imag.computeDouble(x, y, z, d0, iranges);
+                    double[][][] r = real.computeDouble(x, y, z, d0, rranges);
+                    BooleanArray3 idefined3 = iranges.get() == null ? null : iranges.get().getDefined3();
+                    BooleanArray3 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined3();
+                    BooleanArray3 def3 = abcd.setDefined3(x.length, y.length, z.length);
+
+                    if (idefined3 != null) {
+                        def3.addFrom(idefined3, iranges.get());
+                    }
+                    if (rdefined3 != null) {
+                        def3.addFrom(rdefined3, rranges.get());
+                    }
+                    Complex[][][] c = new Complex[z.length][y.length][x.length];
+                    for (int t = abcd.zmin; t <= abcd.zmax; t++) {
+                        for (int j = abcd.ymin; j <= abcd.ymax; j++) {
+                            for (int k = abcd.xmin; k <= abcd.xmax; k++) {
+                                if ((idefined3 == null || !idefined3.get(t, j, k)) && (rdefined3 == null || !rdefined3.get(t, j, k))) {
+                                    c[t][j][k] = Complex.ZERO;
+                                } else {
+                                    double vr = (rdefined3 == null || !rdefined3.get(t, j, k)) ? 0 : r[t][j][k];
+                                    double vi = (idefined3 == null || !idefined3.get(t, j, k)) ? 0 : i[t][j][k];
+                                    c[t][j][k] = Complex.valueOf(vr, vi);
+                                }
+                            }
+                        }
+                    }
+                    ArrayUtils.fillArray3ZeroComplex(c, abcd);
+                    if (ranges != null) {
+                        ranges.set(abcd);
+                    }
+                    return c;
                 }
             }
-            ArrayUtils.fillArray3ZeroComplex(c, abcd);
-            if (ranges != null) {
-                ranges.set(abcd);
-            }
-            return c;
+            throw new IllegalArgumentException("Unsupported");
         } else {
             Complex[][][] c = ArrayUtils.fillArray3Complex(x.length, y.length, z.length, Complex.ZERO);
             if (ranges != null) {
@@ -281,14 +491,6 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
 //                new DDxyProduct(real, other.imag).add(new DDxyProduct(imag, other.real))
 //        );
 //    }
-    public Complex computeComplex(double x, double y, OutBoolean defined) {
-        if (contains(x, y)) {
-            Complex c = Complex.valueOf(real.computeDouble(x, y, defined), imag.computeDouble(x, y, defined));
-            defined.set();//not really necessary...
-            return c;
-        }
-        return Complex.ZERO;
-    }
 
     public Domain getDomainImpl() {
         return domain;
@@ -477,10 +679,10 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         return true;
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDoubleTyped() {
@@ -490,18 +692,115 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
         if (contains(x, y, z)) {
-            Complex c = Complex.valueOf(real.computeDouble(x, y, z), imag.computeDouble(x, y, z));
-            defined.set();
-            return c;
+            ReadableOutBoolean ro = OutBoolean.createReadable();
+            ReadableOutBoolean ri = OutBoolean.createReadable();
+            double r = 0;
+            double i = 0;
+            switch (zStatus) {
+                case Z_NONE: {
+                    defined.set();
+                    break;
+                }
+                case Z_R: {
+                    r = real.computeDouble(x, y, z, ro);
+                    if (ro.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r);
+                }
+                case Z_I: {
+                    i = imag.computeDouble(x, y, z, ri);
+                    if (ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.I(i);
+                }
+                case Z_RI: {
+                    r = real.computeDouble(x, y, z, ro);
+                    i = imag.computeDouble(x, y, z, ri);
+                    if (ri.isSet() || ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r, i);
+                }
+            }
         }
         return Complex.ZERO;
     }
+
+    public Complex computeComplex(double x, double y, OutBoolean defined) {
+        if (contains(x, y)) {
+            ReadableOutBoolean ro = OutBoolean.createReadable();
+            ReadableOutBoolean ri = OutBoolean.createReadable();
+            double r = 0;
+            double i = 0;
+            switch (zStatus) {
+                case Z_NONE: {
+                    defined.set();
+                    break;
+                }
+                case Z_R: {
+                    r = real.computeDouble(x, y, ro);
+                    if (ro.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r);
+                }
+                case Z_I: {
+                    i = imag.computeDouble(x, y, ri);
+                    if (ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.I(i);
+                }
+                case Z_RI: {
+                    r = real.computeDouble(x, y, ro);
+                    i = imag.computeDouble(x, y, ri);
+                    if (ri.isSet() || ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r, i);
+                }
+            }
+        }
+        return Complex.ZERO;
+    }
+
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
         if (contains(x)) {
-            Complex c = Complex.valueOf(real.computeDouble(x), imag.computeDouble(x));
-            defined.set();
-            return c;
+            ReadableOutBoolean ro = OutBoolean.createReadable();
+            ReadableOutBoolean ri = OutBoolean.createReadable();
+            double r = 0;
+            double i = 0;
+            switch (zStatus) {
+                case Z_NONE: {
+                    defined.set();
+                    break;
+                }
+                case Z_R: {
+                    r = real.computeDouble(x, ro);
+                    if (ro.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r);
+                }
+                case Z_I: {
+                    i = imag.computeDouble(x, ri);
+                    if (ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.I(i);
+                }
+                case Z_RI: {
+                    r = real.computeDouble(x, ro);
+                    i = imag.computeDouble(x, ri);
+                    if (ri.isSet() || ri.isSet()) {
+                        defined.set();
+                    }
+                    return Complex.valueOf(r, i);
+                }
+            }
         }
         return Complex.ZERO;
     }

@@ -114,7 +114,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);

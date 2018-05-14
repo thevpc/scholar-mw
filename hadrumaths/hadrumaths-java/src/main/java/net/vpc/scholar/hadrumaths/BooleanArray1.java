@@ -24,4 +24,6 @@ public interface BooleanArray1 {
     void addFrom(BooleanArray1 other,Range r0);
 
     boolean[] toArray();
+
+    void setAll();
 }

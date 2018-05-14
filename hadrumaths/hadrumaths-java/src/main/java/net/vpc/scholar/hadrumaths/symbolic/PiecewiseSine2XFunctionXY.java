@@ -23,21 +23,21 @@ public class PiecewiseSine2XFunctionXY extends PieceXFunction implements Cloneab
                     case X: {
                         if (oddX) {
                             double newWidth = (maxx - minx) * 2;
-                            return new CosXCosY(crestValue, Math.PI / newWidth, -minx * Math.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
+                            return new CosXCosY(crestValue, Maths.PI / newWidth, -minx * Maths.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
                         } else {
                             double newWidth = (maxx - minx) * 2;
                             double decalage = (maxx - minx);
-                            return new CosXCosY(crestValue, Math.PI / newWidth, -minx * Math.PI / newWidth + decalage * Math.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
+                            return new CosXCosY(crestValue, Maths.PI / newWidth, -minx * Maths.PI / newWidth + decalage * Maths.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
                         }
                     }
                     case Y: {
                         if (oddY) {
                             double newWidth = (maxy - miny) * 2;
-                            return new CosXCosY(crestValue, 0, 0, Math.PI / newWidth, -minx * Math.PI / newWidth - Maths.HALF_PI, Domain.forBounds(minx, maxx, miny, maxy));
+                            return new CosXCosY(crestValue, 0, 0, Maths.PI / newWidth, -minx * Maths.PI / newWidth - Maths.HALF_PI, Domain.forBounds(minx, maxx, miny, maxy));
                         } else {
                             double newWidth = (maxx - minx) * 2;
                             double decalage = (maxx - minx);
-                            return new CosXCosY(crestValue, 0, 0, Math.PI / newWidth, -minx * Math.PI / newWidth + decalage * Math.PI / newWidth - Maths.HALF_PI, Domain.forBounds(minx, maxx, miny, maxy));
+                            return new CosXCosY(crestValue, 0, 0, Maths.PI / newWidth, -minx * Maths.PI / newWidth + decalage * Maths.PI / newWidth - Maths.HALF_PI, Domain.forBounds(minx, maxx, miny, maxy));
                         }
                     }
                 }
@@ -50,7 +50,7 @@ public class PiecewiseSine2XFunctionXY extends PieceXFunction implements Cloneab
 
     public DoubleToDouble getOddFunction(double minx, double maxx) {
         double newWidth = (maxx - minx) * 2;
-        return new CosXCosY(this.crestValue, Math.PI / newWidth, -minx * Math.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, domain.ymin(), domain.ymax()));
+        return new CosXCosY(this.crestValue, Maths.PI / newWidth, -minx * Maths.PI / newWidth - Maths.HALF_PI, 0, 0, Domain.forBounds(minx, maxx, domain.ymin(), domain.ymax()));
     }
 
     @Override

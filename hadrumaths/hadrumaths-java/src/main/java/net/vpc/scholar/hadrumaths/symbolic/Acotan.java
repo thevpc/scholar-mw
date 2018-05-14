@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
@@ -25,7 +26,8 @@ public class Acotan extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, OutBoolean defined) {
         defined.set();
-        return c==0?(Math.PI/2) : Math.atan(1/c);
+        return Maths.acotan(c);
+        //return c==0?(Maths.PI/2) : Maths.atan(1/c);
     }
 
     @Override

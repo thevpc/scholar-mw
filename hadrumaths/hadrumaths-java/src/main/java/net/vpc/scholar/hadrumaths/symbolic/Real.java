@@ -125,10 +125,10 @@ public class Real extends DCxyToDDxy implements Cloneable{
         return getArg().isScalarExpr();
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {

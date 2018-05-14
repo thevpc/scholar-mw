@@ -1295,8 +1295,7 @@ public class Expressions {
         ComputeDefOptions o = new ComputeDefOptions();
         Complex zero = Complex.ZERO;
         if (r0 != null) {
-            BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
-            r0.setDefined(def0);
+            BooleanArray2 def0 = r0.setDefined2(x.length,y.length);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);

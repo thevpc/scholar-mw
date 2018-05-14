@@ -37,7 +37,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
 
     public Pow(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
 
@@ -56,7 +56,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         public double computeDouble(double a, double b, OutBoolean defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined && options.value2Defined;
             if (def) {
-                double d = Math.pow(a, b);
+                double d = Maths.pow(a, b);
                 defined.set();
                 return d;
             } else {
@@ -219,7 +219,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             return 0;
         }
         defined.set();
-        return Math.pow(a,b);
+        return Maths.pow(a,b);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             return 0;
         }
         defined.set();
-        return Math.pow(a,b);
+        return Maths.pow(a,b);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
             return 0;
         }
         defined.set();
-        return Math.pow(a,b);
+        return Maths.pow(a,b);
     }
 
     @Override

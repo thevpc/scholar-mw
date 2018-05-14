@@ -241,10 +241,10 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return true;//getDomainDimension()<=1;
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDoubleTyped() {
@@ -408,15 +408,19 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public final double computeDouble(double x, OutBoolean defined) {
-        switch (getDomainDimension()) {
-            case 1: {
-                if (contains(x)) {
-                    return computeDouble0(x, defined);
-                }
-                return 0;
-            }
+        if (contains(x)) {
+            return computeDouble0(x, defined);
         }
-        throw new IllegalArgumentException("Missing y");
+        return 0;
+//        switch (getDomainDimension()) {
+//            case 1: {
+//                if (contains(x)) {
+//                    return computeDouble0(x, defined);
+//                }
+//                return 0;
+//            }
+//        }
+//        throw new IllegalArgumentException("Missing y");
     }
 
 //    @Override
@@ -426,27 +430,31 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public final double computeDouble(double x, double y, double z, OutBoolean defined) {
-        switch (getDomainDimension()) {
-            case 1: {
-                if (contains(x)) {
-                    return computeDouble0(x, defined);
-                }
-                return 0;
-            }
-            case 2: {
-                if (contains(x, y)) {
-                    return computeDouble0(x, y, defined);
-                }
-                return 0;
-            }
-            case 3: {
-                if (contains(x, y, z)) {
-                    return computeDouble0(x, y, z, defined);
-                }
-                return 0;
-            }
+        if (contains(x,y,z)) {
+            return computeDouble0(x, y, z, defined);
         }
-        throw new IllegalArgumentException("Invalid domain " + getDomainDimension());
+//        switch (getDomainDimension()) {
+//            case 1: {
+//                if (contains(x)) {
+//                    return computeDouble0(x, defined);
+//                }
+//                return 0;
+//            }
+//            case 2: {
+//                if (contains(x, y)) {
+//                    return computeDouble0(x, y, defined);
+//                }
+//                return 0;
+//            }
+//            case 3: {
+//                if (contains(x, y, z)) {
+//                    return computeDouble0(x, y, z, defined);
+//                }
+//                return 0;
+//            }
+//        }
+//        throw new IllegalArgumentException("Invalid domain " + getDomainDimension());
+        return 0;
     }
 
 //    @Override
@@ -456,24 +464,28 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public double computeDouble(double x, double y,OutBoolean defined) {
-        switch (getDomainDimension()) {
-            case 1: {
-                if (contains(x)) {
-                    return computeDouble0(x, defined);
-                }
-                return 0;
-            }
-            case 2: {
-                if (contains(x, y)) {
-                    return computeDouble0(x, y, defined);
-                }
-                return 0;
-            }
-        }
-        if (contains(x, y)) {
+        if (contains(x,y)) {
             return computeDouble0(x, y, defined);
         }
         return 0;
+//        switch (getDomainDimension()) {
+//            case 1: {
+//                if (contains(x)) {
+//                    return computeDouble0(x, defined);
+//                }
+//                return 0;
+//            }
+//            case 2: {
+//                if (contains(x, y)) {
+//                    return computeDouble0(x, y, defined);
+//                }
+//                return 0;
+//            }
+//        }
+//        if (contains(x, y)) {
+//            return computeDouble0(x, y, defined);
+//        }
+//        return 0;
     }
 
     public boolean contains(double x) {

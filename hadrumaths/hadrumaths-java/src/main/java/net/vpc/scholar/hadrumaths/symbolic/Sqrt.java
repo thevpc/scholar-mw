@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
@@ -19,11 +20,13 @@ public class Sqrt extends GenericFunctionX implements Cloneable{
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.sqrt();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
-        return Math.sqrt(c);
+        defined.set();
+        return Maths.sqrt(c);
     }
 
     @Override

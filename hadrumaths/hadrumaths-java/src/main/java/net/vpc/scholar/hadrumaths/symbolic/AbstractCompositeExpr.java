@@ -29,25 +29,25 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
         return true;
     }
 
-    @Override
-    public boolean isComplexImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isComplex()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isComplexImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isComplex()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isDoubleExpr()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isDoubleExpr()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     @Override
     public boolean isMatrixImpl() {

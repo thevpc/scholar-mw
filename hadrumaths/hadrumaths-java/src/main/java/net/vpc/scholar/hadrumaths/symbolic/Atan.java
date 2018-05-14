@@ -23,7 +23,7 @@ public class Atan extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, OutBoolean defined) {
         defined.set();
-        return Math.atan(c);
+        return Maths.atan(c);
     }
 
     @Override

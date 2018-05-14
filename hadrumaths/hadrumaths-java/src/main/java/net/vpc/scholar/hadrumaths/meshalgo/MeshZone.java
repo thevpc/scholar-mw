@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.meshalgo;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
@@ -97,16 +98,16 @@ public class MeshZone {
             double y0 = rectangle2D.getYMin();
             double y1 = rectangle2D.getYMax();
             final double EPSILON = 1E-2;
-            if (Math.abs(x0 - domain0.getXMin()) < EPSILON) {
+            if (Maths.abs(x0 - domain0.getXMin()) < EPSILON) {
                 x0 = domain0.getXMin();
             }
-            if (Math.abs(x1 - domain0.getXMax()) < EPSILON) {
+            if (Maths.abs(x1 - domain0.getXMax()) < EPSILON) {
                 x1 = domain0.getXMax();
             }
-            if (Math.abs(y0 - domain0.getYMin()) < EPSILON) {
+            if (Maths.abs(y0 - domain0.getYMin()) < EPSILON) {
                 y0 = domain0.getYMin();
             }
-            if (Math.abs(y1 - domain0.getYMax()) < EPSILON) {
+            if (Maths.abs(y1 - domain0.getYMax()) < EPSILON) {
                 y1 = domain0.getYMax();
             }
             double dxmin = (x0 - domain0.getXMin()) / domain0.getXwidth() * globalDomain.xwidth() + globalDomain.xmin();

@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.OutBoolean;
 
 /**
@@ -26,7 +27,7 @@ public class Acos extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, OutBoolean defined) {
         defined.set();
-        return Math.acos(c);
+        return Maths.acos(c);
     }
 
     @Override

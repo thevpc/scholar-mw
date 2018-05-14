@@ -214,43 +214,46 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
 
     @Override
     public boolean isDoubleImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isDouble()) {
-                return false;
-            }
-        }
-        return true;
+        return false;
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isDouble()) {
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
-    @Override
-    public boolean isComplexImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isComplex()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isComplexImpl() {
+//        return false;
+////        for (Expr e : getSubExpressions()) {
+////            if (!e.isComplex()) {
+////                return false;
+////            }
+////        }
+////        return true;
+//    }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isDoubleExpr()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+////        for (Expr e : getSubExpressions()) {
+////            if (!e.isDoubleExpr()) {
+////                return false;
+////            }
+////        }
+////        return true;
+//    }
 
-    @Override
-    public boolean isMatrixImpl() {
-        for (Expr e : getSubExpressions()) {
-            if (!e.isMatrix()) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isMatrixImpl() {
+//        for (Expr e : getSubExpressions()) {
+//            if (!e.isMatrix()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 
     @Override

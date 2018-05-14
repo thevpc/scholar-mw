@@ -86,7 +86,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         if (radius < 0 || Double.isInfinite(radius) || Double.isNaN(radius)) {
             throw new IllegalArgumentException("invalid radius " + radius);
         }
-        int max = (int) Math.ceil(getValidArcRatio() * sides);
+        int max = (int) Maths.ceil(getValidArcRatio() * sides);
         if (max < 3) {
             throw new IllegalArgumentException("ratio too low " + arcRatio);
         }
@@ -94,7 +94,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
             max = sides - 1;
         }
         List<Point> all = new ArrayList<Point>();
-        double dblpi = 2 * Math.PI;
+        double dblpi = 2 * Maths.PI;
         for (int i = 0; i <= max; i++) {
             double x = center.x + radius * Maths.cos2(i * dblpi / sides + phase);
             double y = center.y + radius * Maths.sin2(i * dblpi / sides + phase);

@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
 
+import net.vpc.scholar.hadrumaths.Maths;
+
 import java.awt.*;
 
 class Mesh3DObject extends Mesh3DObjectTransformable {
@@ -24,9 +26,9 @@ class Mesh3DObject extends Mesh3DObjectTransformable {
             }
 
         int[] ai = new int[8];
-        int r = (int) (Math.random() * 256);
-        int g = (int) (Math.random() * 256);
-        int b = (int) (Math.random() * 256);
+        int r = (int) (Maths.random() * 256);
+        int g = (int) (Maths.random() * 256);
+        int b = (int) (Maths.random() * 256);
         for (int l = 0; l < fesurfaces.nsur; l++) {
             int j1 = 0;
             for (int j = fesurfaces.psurcon[l]; j < fesurfaces.psurcon[l + 1]; j++) {

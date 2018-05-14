@@ -72,7 +72,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int r = 0; r < rows; r++) {
                 s += getComponentVectorSpace().absdbl(get(r, c));
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -86,7 +86,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 f += Maths.sqr(getComponentVectorSpace().absdbl(get(r, c)));
             }
         }
-        return Math.sqrt(f);
+        return Maths.sqrt(f);
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         for (int j = 0; j < columnDimension; j++) {
             for (int r = 0; r < rows; r++) {
-                f = Math.max(f, getComponentVectorSpace().absdbl(get(r, j)));
+                f = Maths.max(f, getComponentVectorSpace().absdbl(get(r, j)));
             }
         }
         return f;
@@ -197,7 +197,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 double valI = getComponentVectorSpace().absdbl(getComponentVectorSpace().imag(val));
                 double ddR = baseR == 0 ? valR : (valR / baseR);
                 double ddI = baseI == 0 ? valI : (valI / baseI);
-                double dd = Math.max(ddR, ddI);
+                double dd = Maths.max(ddR, ddI);
                 if (!Double.isNaN(minErrorForZero) && dd < minErrorForZero) {
                     d[i][j] = 0;
                 } else {
@@ -222,7 +222,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int c = 0; c < columns; c++) {
                 s += getComponentVectorSpace().absdbl(get(r, c));
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -1940,7 +1940,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                             c.add(getComponentVectorSpace().parse(stRow.nextToken()));
                             someCols++;
                         }
-                        cols = Math.max(cols, someCols);
+                        cols = Maths.max(cols, someCols);
                         if (c.size() > 0) {
                             l.add(c);
                         }
@@ -2092,7 +2092,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int c = 0; c < cols; c++) {
                 alpha = alpha + Maths.sqr(getComponentVectorSpace().absdbl(get(r, c)));
             }
-            x *= Math.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
         return getComponentVectorSpace().absdbl(det) / x;
     }
@@ -2160,7 +2160,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Math.max(f, f0);
+                f = Maths.max(f, f0);
             }
         }
         return f;
@@ -2174,7 +2174,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Math.min(f, f0);
+                f = Maths.min(f, f0);
             }
         }
         return f;

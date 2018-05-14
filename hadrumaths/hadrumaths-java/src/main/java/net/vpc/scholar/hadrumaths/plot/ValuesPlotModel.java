@@ -126,13 +126,13 @@ public class ValuesPlotModel implements PlotModel {
     private int getValidYVisibleCount(){
         int s=0;
         if(ytitles!=null){
-            s=Math.max(s,ytitles.length);
+            s=Maths.max(s,ytitles.length);
         }
         if(y!=null){
-            s=Math.max(s,y.length);
+            s=Maths.max(s,y.length);
         }
         if(z!=null){
-            s=Math.max(s,z.length);
+            s=Maths.max(s,z.length);
         }
         return s;
     }
@@ -150,7 +150,7 @@ public class ValuesPlotModel implements PlotModel {
         }else {
             if(yvisible.length<size) {
                 boolean[] yvisible2 = new boolean[size];
-                int old = Math.min(size, yvisible.length);
+                int old = Maths.min(size, yvisible.length);
                 System.arraycopy(yvisible, 0, yvisible2, 0, old);
                 for (int i = old; i < yvisible2.length; i++) {
                     yvisible2[i] = true;
@@ -417,7 +417,7 @@ public class ValuesPlotModel implements PlotModel {
     }
 
     public boolean getYVisible(int index) {
-        ensureSize_yvisible(Math.max(index+1,getValidYVisibleCount()));
+        ensureSize_yvisible(Maths.max(index+1,getValidYVisibleCount()));
         return yvisible[index];
     }
 

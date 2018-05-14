@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import javax.swing.*;
 import java.awt.geom.Area;
@@ -71,7 +72,7 @@ public final class AreaComponent extends JComponent {
     };
 
     private Color createColor(int index){
-        return tr(COLORS[Math.abs(index)%COLORS.length]);
+        return tr(COLORS[Maths.abs(index)%COLORS.length]);
     }
 
     public void paint(Graphics g) {

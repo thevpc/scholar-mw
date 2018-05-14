@@ -54,7 +54,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             for (Complex[] element : elements) {
                 s += element[j].absdbl();
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -66,7 +66,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
                 f += element[j].absdblsqr();
             }
         }
-        return Math.sqrt(f);
+        return Maths.sqrt(f);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (Complex[] element : elements) {
-                f = Math.max(f, element[j].absdbl());
+                f = Maths.max(f, element[j].absdbl());
             }
         }
         return f;
@@ -97,7 +97,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             for (Complex anElement : element) {
                 s += anElement.absdbl();
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -925,7 +925,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             for (Complex complex : element) {
                 alpha = alpha + complex.absdblsqr();
             }
-            x *= Math.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
         return det.absdbl() / x;
     }
@@ -970,7 +970,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Math.max(f, f0);
+                f = Maths.max(f, f0);
             }
         }
         return f;
@@ -983,7 +983,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Math.min(f, f0);
+                f = Maths.min(f, f0);
             }
         }
         return f;

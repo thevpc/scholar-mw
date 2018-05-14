@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
@@ -42,7 +43,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         seenTitles.add("Selected");
         titles = orderedTitles.toArray(new String[orderedTitles.size()]);
         selected = new boolean[base.length];
-        int max = Math.min(50, base.length);
+        int max = Maths.min(50, base.length);
         for (int i = 0; i < max; i++) {
             selected[i] = true;
         }

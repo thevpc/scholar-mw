@@ -342,7 +342,7 @@ public class XX extends AxisFunction implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y, double z,OutBoolean defined) {
-        if (domain.contains(x, y, z)) {
+        if (contains(x, y, z)) {
             defined.set();
             return x;
         }
@@ -351,7 +351,7 @@ public class XX extends AxisFunction implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y,OutBoolean defined) {
-        if (domain.contains(x, y)) {
+        if (contains(x, y)) {
             defined.set();
             return x;
         }
@@ -360,7 +360,7 @@ public class XX extends AxisFunction implements Cloneable {
 
     @Override
     public double computeDouble(double x,OutBoolean defined) {
-        if (domain.contains(x)) {
+        if (contains(x)) {
             defined.set();
             return x;
         }
@@ -370,7 +370,7 @@ public class XX extends AxisFunction implements Cloneable {
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
+        if (contains(x, y, z)) {
             return Complex.valueOf(x).toMatrix();
         }
         return Maths.identityMatrix(1);

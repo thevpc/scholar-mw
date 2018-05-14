@@ -296,7 +296,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Math.random(),0.0);
+                A.set(i, j, Maths.random(),0.0);
             }
         }
         return A;
@@ -307,7 +307,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, (((int) (Math.random() * (max - min))) + min),0);
+                A.set(i, j, (((int) (Maths.random() * (max - min))) + min),0);
             }
         }
         return A;
@@ -318,7 +318,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, (Math.random() * (max - min) + min),0);
+                A.set(i, j, (Maths.random() * (max - min) + min),0);
             }
         }
         return A;
@@ -329,7 +329,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, 0,(Math.random() * (max - min) + min));
+                A.set(i, j, 0,(Maths.random() * (max - min) + min));
             }
         }
         return A;
@@ -340,7 +340,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, 0,(((int) (Math.random() * (max - min))) + min));
+                A.set(i, j, 0,(((int) (Maths.random() * (max - min))) + min));
             }
         }
         return A;
@@ -351,8 +351,8 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, ((int) (Math.random() * (maxReal - minReal))) + minReal,
-                        ((int) (Math.random() * (maxImag - minImag))) + minImag);
+                A.set(i, j, ((int) (Maths.random() * (maxReal - minReal))) + minReal,
+                        ((int) (Maths.random() * (maxImag - minImag))) + minImag);
             }
         }
         return A;
@@ -363,7 +363,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Math.random() * (maxReal - minReal) + minReal, Math.random() * (maxImag - minImag) + minImag);
+                A.set(i, j, Maths.random() * (maxReal - minReal) + minReal, Maths.random() * (maxImag - minImag) + minImag);
             }
         }
         return A;
@@ -374,7 +374,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Math.random() * (max - min) + min, Math.random() * (max - min) + min);
+                A.set(i, j, Maths.random() * (max - min) + min, Maths.random() * (max - min) + min);
             }
         }
         return A;
@@ -385,8 +385,8 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, ((int) (Math.random() * (max - min))) + min,
-                        ((int) (Math.random() * (max - min))) + min);
+                A.set(i, j, ((int) (Maths.random() * (max - min))) + min,
+                        ((int) (Maths.random() * (max - min))) + min);
             }
         }
         return A;
@@ -397,7 +397,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory{
         Matrix A = newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                A.set(i, j, Complex.I(Math.random()));
+                A.set(i, j, Complex.I(Maths.random()));
             }
         }
         return A;

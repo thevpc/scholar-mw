@@ -85,7 +85,7 @@ public class ArrayVector extends AbstractVector implements Serializable {
     }
 
     public Complex scalarProduct(Vector other) {
-        int max = Math.max(elements.length, other.size());
+        int max = Maths.max(elements.length, other.size());
         MutableComplex d = new MutableComplex();
         for (int i = 0; i < max; i++) {
             d.add(elements[i].mul(other.get(i)));

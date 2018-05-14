@@ -54,7 +54,7 @@ public class ValuesPlotXDoubleModelFace {
                         if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
                                 boolean ok = false;
-                                for (int j = Math.min(i - 1,xAxis.length-1); j >= 0; j--) {
+                                for (int j = Maths.min(i - 1,xAxis.length-1); j >= 0; j--) {
                                     if (xAxis[j] != null && yAxis[i].length == xAxis[j].length) {
                                         ok = true;
                                         xAxisList.add(PlotModelUtils.mul(xAxis[j], xmultiplier));

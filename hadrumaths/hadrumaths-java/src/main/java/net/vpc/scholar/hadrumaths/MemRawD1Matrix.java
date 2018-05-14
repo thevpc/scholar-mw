@@ -58,7 +58,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
                 double vv = Maths.dsqrt(vi * vi + vr * vr);
                 s += vv;
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -70,7 +70,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
             double rr = reals[i];
             f += rr * rr + ii * ii;
         }
-        return Math.sqrt(f);
+        return Maths.sqrt(f);
     }
 
     /**
@@ -83,9 +83,9 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
         for (int i = 0; i < reals.length; i++) {
             double ii = imags[i];
             double rr = reals[i];
-            f = Math.max(f, rr * rr + ii * ii);
+            f = Maths.max(f, rr * rr + ii * ii);
         }
-        return Math.sqrt(f);
+        return Maths.sqrt(f);
     }
 
     /**
@@ -104,7 +104,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
                 double vv = Maths.dsqrt(vi * vi + vr * vr);
                 s += vv;
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -610,7 +610,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
             for (int j = 0; j < d[i].length; j++) {
                 double rr = _getr(i, j);
                 double ii = _getr(i, j);
-                d[i][j] = Math.sqrt(rr * rr + ii * ii);
+                d[i][j] = Maths.sqrt(rr * rr + ii * ii);
             }
         }
         return d;
@@ -623,7 +623,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
             for (int j = 0; j < d[i].length; j++) {
                 double rr = _getr(i, j);
                 double ii = _getr(i, j);
-                double v = Math.sqrt(rr * rr + ii * ii);
+                double v = Maths.sqrt(rr * rr + ii * ii);
                 d[i][j] = Complex.valueOf(v);
             }
         }
@@ -644,7 +644,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
                 double ii = _getr(r, c);
                 alpha = alpha + ((rr * rr + ii * ii));
             }
-            x *= Math.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
 
         return det.absdbl() / x;
@@ -688,7 +688,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
         double f = f0;
         for (int i = 1; i < reals.length; i++) {
             f0 = reals[i] * reals[i] + imags[i] * imags[i];
-            f = Math.max(f, f0);
+            f = Maths.max(f, f0);
         }
         return f;
     }
@@ -699,7 +699,7 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
         double f = f0;
         for (int i = 1; i < reals.length; i++) {
             f0 = reals[i] * reals[i] + imags[i] * imags[i];
-            f = Math.min(f, f0);
+            f = Maths.min(f, f0);
         }
         return f;
     }
@@ -761,8 +761,8 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
         if (rows != rr || columns != cc) {
             double[] elements2_r = new double[rows * columns];
             double[] elements2_i = new double[rows * columns];
-            int rows0 = Math.min(rows, rr);
-            int columns0 = Math.min(columns, cc);
+            int rows0 = Maths.min(rows, rr);
+            int columns0 = Maths.min(columns, cc);
             for (int r = 0; r < rows0; r++) {
                 for (int c = 0; c < columns0; c++) {
                     if (r < rr && c < cc) {

@@ -94,7 +94,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     public Expr clone() {
         AbstractExprPropertyAware clone = (AbstractExprPropertyAware) super.clone();
 //        if (properties != null) {
-//            clone.properties = new HashMap<String, Object>(Math.max(1,properties.size()));
+//            clone.properties = new HashMap<String, Object>(Maths.max(1,properties.size()));
 //            for (Map.Entry<String, Object> e : properties.entrySet()) {
 //                Object v = null;
 ////                    if(e.getValue()!=null && e.getValue() instanceof Cloneable){
@@ -487,7 +487,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     protected abstract boolean isZeroImpl() ;
     protected abstract boolean isInfiniteImpl() ;
     protected abstract boolean isNaNImpl() ;
-    protected abstract boolean isDoubleExprImpl() ;
+
+    protected boolean isDoubleExprImpl() {
+        return false;
+    }
     protected abstract boolean isDDImpl() ;
     protected abstract boolean isDCImpl() ;
     protected abstract boolean isDVImpl() ;

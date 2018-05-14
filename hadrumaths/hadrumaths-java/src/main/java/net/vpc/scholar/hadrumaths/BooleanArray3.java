@@ -46,4 +46,6 @@ public interface BooleanArray3 {
     void addFrom(BooleanArray3 other, Range r0);
 
     boolean[][][] toArray();
+
+    void setAll();
 }

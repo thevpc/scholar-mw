@@ -64,10 +64,10 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
         return base.isInvariant(axis);
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDVImpl() {

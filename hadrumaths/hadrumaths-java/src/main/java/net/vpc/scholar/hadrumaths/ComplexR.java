@@ -115,6 +115,12 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex mul(Complex c) {
+        if(c.isReal()){
+            return Complex.valueOf(real * c.getReal());
+        }
+        if(c.isImag()){
+            return Complex.I(real * c.getImag());
+        }
         return Complex.valueOf(real * c.getReal(), real * c.getImag());
     }
 
@@ -143,6 +149,12 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex div(Complex other) {
+        if(other.isReal()){
+            return Complex.valueOf(real/other.getReal());
+        }
+        if(other.isImag()){
+            return Complex.I(-real/other.getImag());
+        }
         double a = real;
         double c = other.getReal();
         double d = other.getImag();
@@ -156,19 +168,19 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex exp() {
-        double e = Math.exp(real);
+        double e = Maths.exp(real);
         return Complex.valueOf(e);
     }
 
     public Complex abs() {
         if(real<0) {
-            return Complex.valueOf(Math.abs(real));
+            return Complex.valueOf(Maths.abs(real));
         }
         return this;
     }
 
     public double absdbl() {
-        return Math.abs(real);
+        return Maths.abs(real);
     }
 
     public double absdblsqr() {
@@ -180,6 +192,9 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public int compareTo(Complex c) {
+        if(c.getImag()==0){
+            return Double.compare(real,c.getReal());
+        }
         double a1 = absdbl();
         double a2 = c.absdbl();
         if (a1 > a2) {
@@ -237,15 +252,16 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex tan() {
-        return sin().div(cos());
+        return Complex.valueOf(Maths.tan(real));
+//        return sin().div(cos());
     }
 
     public Complex atan() {
-        return Complex.valueOf(Math.atan(real));
+        return Complex.valueOf(Maths.atan(real));
     }
 
     public Complex acos() {
-        return Complex.valueOf(Math.acos(real));
+        return Complex.valueOf(Maths.acos(real));
     }
 
     public Complex acosh() {
@@ -260,69 +276,63 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex arg() {
-        return ZERO;//Complex.valueOf(Math.atan2(0 , getReal()));
+        return ZERO;//Complex.valueOf(Maths.atan2(0 , getReal()));
     }
 
     public Complex asin() {
-        if (isReal()) {
-            return Complex.valueOf(Math.asin(real));
-        }
-        return Complex.MINUS_I.mul(
-
-                (
-                        (this.mul(I)
-                                .add(
-                                        (ONE.sub(this.sqr()))
-                                                .sqrt()
-                                )
-                        ).log()
-                )
-
-        );
+        return Complex.valueOf(Maths.asin(real));
     }
 
     public Complex acotan() {
-        if (isZero()) {
-            return HALF_PI;
+        return Complex.valueOf(Maths.acotan(real));
+//        if (isZero()) {
+//            return HALF_PI;
+//        }
+//        return inv().atan();
+    }
+
+    public Complex sincard() {
+        if (real==0) {
+            return ONE;
         }
-        return inv().atan();
+        return Complex.valueOf(Maths.sincard(real));
     }
 
     public Complex cotan() {
-        return cos().div(sin());
+        return Complex.valueOf(Maths.cotan(real));
     }
 
     public Complex sinh() {
-        return exp().sub(this.neg().exp()).div(2);
+        return Complex.valueOf(Maths.sinh(real));
     }
 
     public Complex cosh() {
-        return exp().add(this.neg().exp()).div(2);
+        return Complex.valueOf(Maths.cosh(real));
     }
 
     public Complex tanh() {
-        return Complex.valueOf(Math.tanh(real));
+        return Complex.valueOf(Maths.tanh(real));
     }
 
     public Complex cotanh() {
-        return Complex.valueOf(1 / Math.tanh(real));
+        return Complex.valueOf(Maths.cotanh(real));
     }
 
     public Complex log() {
-        return Complex.valueOf(Math.log(real));
+        return Complex.valueOf(Maths.log(real));
     }
 
     public Complex log10() {
-        return Complex.valueOf(Math.log10(real));
+        return Complex.valueOf(Maths.log10(real));
     }
 
     public Complex db() {
-        return Complex.valueOf(Math.log10(absdbl()) * (10));
+        return Complex.valueOf(Maths.log10(real) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.valueOf(Math.log10(absdbl()) * (20));
+        return Complex.valueOf(Maths.log10(real) * (20));
         //return log10().mul(10);
     }
 
@@ -341,14 +351,14 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 
     public double dsqrt() {
         if (real >= 0) {
-            return Math.sqrt(real);
+            return Maths.sqrt(real);
         } else {
             return Double.NaN;
         }
     }
 
     public Complex sqrt() {
-        return real >= 0 ? Complex.valueOf(Math.sqrt(real), 0) : Complex.valueOf(0, Math.sqrt(-real));
+        return real >= 0 ? Complex.valueOf(Maths.sqrt(real), 0) : Complex.valueOf(0, Maths.sqrt(-real));
     }
 
     public Complex sqrt(int n) {
@@ -364,28 +374,28 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex pow(double power) {
-        if (power == 0) {
-            return ONE;
-        } else if (power == 1) {
-            return this;
-        } else if (power == -1) {
-            return inv();
-        } else if (power == 2) {
-            return sqr();
-//        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
-        } else if (power >= 0) {
-            double r = Math.pow(absdbl(), power);
-            double angle = arg().toDouble();
-            double theta = angle * power;
-            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
-        } else { //n<0
-            power = -power;
-            double r = Math.pow(absdbl(), power);
-            double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
-            return c.inv();
-        }
+//        if (power == 0) {
+//            return ONE;
+//        } else if (power == 1) {
+//            return this;
+//        } else if (power == -1) {
+//            return inv();
+//        } else if (power == 2) {
+//            return sqr();
+//        } else {
+            return Complex.valueOf(Maths.pow(real, power));
+//        } else if (power >= 0) {
+//            double r = Maths.pow(absdbl(), power);
+//            double angle = arg().toDouble();
+//            double theta = angle * power;
+//            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+//        } else { //n<0
+//            power = -power;
+//            double r = Maths.pow(absdbl(), power);
+//            double theta = arg().toDouble() * power;
+//            Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+//            return c.inv();
+//        }
     }
 
     public boolean isNaN() {
@@ -564,5 +574,4 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     public boolean isDoubleTyped() {
         return true;
     }
-
 }

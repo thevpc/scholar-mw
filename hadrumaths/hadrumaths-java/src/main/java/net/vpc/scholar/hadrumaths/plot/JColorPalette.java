@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.scholar.hadrumaths.Maths;
+
 import java.awt.Color;
 import java.io.Serializable;
 
@@ -35,7 +37,7 @@ public abstract class JColorPalette implements Cloneable, Serializable {
     protected float getRatioTransform(float ratio){
         if(size>0){
             float step=1f/(size-1);
-            ratio=Math.round(ratio/step)*step;
+            ratio= Maths.round(ratio/step)*step;
         }
         if(reverse){
             ratio=1-ratio;

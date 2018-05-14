@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic.old.symop;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.old.*;
 
 /**
@@ -23,15 +24,15 @@ public class SymOpAdd extends SymOperator {
     public SymExpression eval(SymContext context) {
         SymExpression l = left.eval(context);
         SymExpression r = right.eval(context);
-        if(l instanceof SymComplex){
-            SymComplex ll=(SymComplex) l;
-            if(ll.getValue().equals(Complex.ZERO)){
+        if (l instanceof SymComplex) {
+            SymComplex ll = (SymComplex) l;
+            if (ll.getValue().equals(Complex.ZERO)) {
                 return r;
             }
         }
-        if(r instanceof SymComplex){
-            SymComplex rr=(SymComplex) r;
-            if(rr.getValue().equals(Complex.ZERO)){
+        if (r instanceof SymComplex) {
+            SymComplex rr = (SymComplex) r;
+            if (rr.getValue().equals(Complex.ZERO)) {
                 return l;
             }
         }
@@ -40,8 +41,8 @@ public class SymOpAdd extends SymOperator {
         } else if (l instanceof SymMatrix && r instanceof SymMatrix) {
             SymExpression[][] le = ((SymMatrix) l).getValue();
             SymExpression[][] re = ((SymMatrix) r).getValue();
-            int maxr = Math.max(((SymMatrix) l).getRows(), ((SymMatrix) r).getRows());
-            int maxc = Math.max(((SymMatrix) l).getColumns(), ((SymMatrix) r).getColumns());
+            int maxr = Maths.max(((SymMatrix) l).getRows(), ((SymMatrix) r).getRows());
+            int maxc = Maths.max(((SymMatrix) l).getColumns(), ((SymMatrix) r).getColumns());
             SymExpression[][] ee = new SymExpression[maxr][maxc];
             for (int i = 0; i < ee.length; i++) {
                 SymExpression[] symExpressions = ee[i];
@@ -61,9 +62,9 @@ public class SymOpAdd extends SymOperator {
         SymStringContext c = context.clone();
         c.setPreferParentheses(false);
         c.setOperatorPrecedence(SymStringContext.ADD_PRECEDENCE);
-        String s = SymUtils.formatRow(null,left.toString(c), "+", right.toString(c));
+        String s = SymUtils.formatRow(null, left.toString(c), "+", right.toString(c));
         boolean par = context.isPreferParentheses(SymStringContext.ADD_PRECEDENCE);
-        return par ? SymUtils.formatRow(null,"(",s,")") : s;
+        return par ? SymUtils.formatRow(null, "(", s, ")") : s;
     }
 
 }

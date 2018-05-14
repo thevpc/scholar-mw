@@ -5,6 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.scholar.hadrumaths.Maths;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -130,7 +132,7 @@ public class PanelPlotContainer extends AbstractPlotContainer {
                     setRows(0);
                 }
                 default:{
-                    double cols = Math.ceil(Math.sqrt(r));
+                    double cols = Maths.ceil(Maths.sqrt(r));
                     setColumns((int) cols);
                     setRows(0);
                 }

@@ -222,73 +222,73 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
 
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x, double y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
 //    @Override
@@ -303,78 +303,78 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix computeMatrix(double x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Complex[] computeComplex(double[] x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double[] x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[] computeDouble(double x, double[] y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x) {
-        throw new IllegalArgumentException("expr domain " + getTitle() + " could not be evaluated");
+        throw new IllegalArgumentException("expr domain " + toString() + " could not be evaluated");
     }
 
     public String dump() {

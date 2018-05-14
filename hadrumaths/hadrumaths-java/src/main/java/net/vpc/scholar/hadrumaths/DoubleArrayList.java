@@ -121,7 +121,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);

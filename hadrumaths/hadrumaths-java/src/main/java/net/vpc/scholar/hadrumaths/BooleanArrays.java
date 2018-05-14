@@ -94,6 +94,12 @@ public class BooleanArrays {
             }
         }
 
+        public void setAll() {
+            for (int j = 0; j < size(); j++) {
+                set(j);
+            }
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -164,6 +170,14 @@ public class BooleanArrays {
                     if(other.get(i, j)) {
                         set(i, j);
                     }
+                }
+            }
+        }
+
+        public void setAll() {
+            for (int i = 0; i < size1(); i++) {
+                for (int j = 0; j < size2(); j++) {
+                    set(i, j);
                 }
             }
         }
@@ -264,6 +278,15 @@ public class BooleanArrays {
                         if(other.get(i, j, k)) {
                             set(i, j, k);
                         }
+                    }
+                }
+            }
+        }
+        public void setAll() {
+            for (int i = 0; i < size1(); i++) {
+                for (int j = 0; j < size2(); j++) {
+                    for (int k = 0; k < size3(); k++) {
+                        set(i, j, k);
                     }
                 }
             }

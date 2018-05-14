@@ -20,6 +20,8 @@ public interface BooleanArray2 {
 
     void addFrom(BooleanArray2 other, Range r0);
 
+    void setAll();
+
     void clear(int i, int j);
 
     BooleanArray2 copy();

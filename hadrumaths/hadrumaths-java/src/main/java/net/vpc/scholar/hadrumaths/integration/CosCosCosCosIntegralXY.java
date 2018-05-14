@@ -2,6 +2,7 @@
 package net.vpc.scholar.hadrumaths.integration;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
@@ -59,7 +60,7 @@ final class CosCosCosCosIntegralXY {
         double diff = (a - b);
         return
                 diff == 0 ||
-                        (diff != 0 ? (Math.abs((diff) / a) < tolerance) : (Math.abs((diff) / b) < tolerance))
+                        (diff != 0 ? (Maths.abs((diff) / a) < tolerance) : (Maths.abs((diff) / b) < tolerance))
                 ;
     }
 

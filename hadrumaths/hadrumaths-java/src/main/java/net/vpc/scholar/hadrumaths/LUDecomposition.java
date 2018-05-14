@@ -80,7 +80,7 @@ public class LUDecomposition implements java.io.Serializable {
 
             // Most of the time is spent in the following dot product.
 
-            int kmax = Math.min(i,j);
+            int kmax = Maths.min(i,j);
             double s = 0.0;
             for (int k = 0; k < kmax; k++) {
                s += LUrowi[k]*LUcolj[k];
@@ -93,7 +93,7 @@ public class LUDecomposition implements java.io.Serializable {
 
          int p = j;
          for (int i = j+1; i < m; i++) {
-            if (Math.abs(LUcolj[i]) > Math.abs(LUcolj[p])) {
+            if (Maths.abs(LUcolj[i]) > Maths.abs(LUcolj[p])) {
                p = i;
             }
          }

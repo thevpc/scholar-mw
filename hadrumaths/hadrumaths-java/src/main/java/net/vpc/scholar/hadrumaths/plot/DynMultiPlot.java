@@ -108,7 +108,7 @@ public class DynMultiPlot  {
         Arrays.sort(all);
         int max = 0;
         for (int i = 0; i < all.length; i++) {
-            max = Math.max(max, valuesMap.get(all[i]).size());
+            max = Maths.max(max, valuesMap.get(all[i]).size());
         }
 
 

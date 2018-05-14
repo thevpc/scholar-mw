@@ -161,9 +161,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Domain getDomainImpl() {
-        if (isZero()) {
-            return Domain.ZERO(getDomainDimension());
-        }
+//        if (isZero()) {
+//            return Domain.ZERO(getDomainDimension());
+//        }
         Domain d = Domain.FULL(getDomainDimension());
         for (Expr expression : getSubExpressions()) {
             if (!expression.isZero()) {
@@ -391,8 +391,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
                 if (!rdefined.isSet()) {
                     return Complex.ZERO;
                 }
-                defined.set();
+                rdefined.reset();
             }
+            defined.set();
             return c.toComplex();
         }
         return Complex.ZERO;
@@ -408,8 +409,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
                 if (!rdefined.isSet()) {
                     return Complex.ZERO;
                 }
-                defined.set();
+                rdefined.reset();
             }
+            defined.set();
             return c.toComplex();
         }
         return Complex.ZERO;
@@ -425,8 +427,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
                 if (!rdefined.isSet()) {
                     return Complex.ZERO;
                 }
-                defined.set();
+                rdefined.reset();
             }
+            defined.set();
             return c.toComplex();
         }
         return Complex.ZERO;
@@ -441,6 +444,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if (!rdefined.isSet()) {
                 return 0;
             }
+            rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x, y, z,rdefined));
                 if (!rdefined.isSet()) {
@@ -462,6 +466,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if (!rdefined.isSet()) {
                 return 0;
             }
+            rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x, y,rdefined));
                 if (!rdefined.isSet()) {
@@ -483,6 +488,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             if (!rdefined.isSet()) {
                 return 0;
             }
+            rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
                 c *= (expressions[i].toDD().computeDouble(x,rdefined));
                 if (!rdefined.isSet()) {
@@ -500,7 +506,9 @@ public class Mul extends AbstractExprOperator implements Cloneable {
         Domain d = getDomain();
         if (d.contains(x, y, z)) {
             Matrix c = expressions[0].toDM().computeMatrix(x, y, z);
+            //rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
+                //rdefined.reset();
                 c = c.mul(expressions[i].toDM().computeMatrix(x, y, z));
             }
             return c;

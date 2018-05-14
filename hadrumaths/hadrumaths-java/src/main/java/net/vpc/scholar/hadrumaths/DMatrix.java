@@ -564,9 +564,9 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int j = 0; j < n; j++) {
             double s = 0;
             for (int i = 0; i < m; i++) {
-                s += Math.abs(A[i][j]);
+                s += Maths.abs(A[i][j]);
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -582,8 +582,8 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double f0 = 0;
         for (int j = 0; j < n; j++) {
             for (int i = 0; i < m; i++) {
-                f0 = Math.abs(A[i][j]);
-                f = Math.max(f, f0);
+                f0 = Maths.abs(A[i][j]);
+                f = Maths.max(f, f0);
             }
         }
         return f;
@@ -610,9 +610,9 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int i = 0; i < m; i++) {
             double s = 0;
             for (int j = 0; j < n; j++) {
-                s += Math.abs(A[i][j]);
+                s += Maths.abs(A[i][j]);
             }
-            f = Math.max(f, s);
+            f = Maths.max(f, s);
         }
         return f;
     }
@@ -1025,7 +1025,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
 
     public double trace() {
         double t = 0;
-        for (int i = 0; i < Math.min(m, n); i++) {
+        for (int i = 0; i < Maths.min(m, n); i++) {
             t += A[i][i];
         }
         return t;
@@ -1044,7 +1044,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] X = A.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                X[i][j] = Math.random();
+                X[i][j] = Maths.random();
             }
         }
         return A;
@@ -1140,7 +1140,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 String s = format.format(A[i][j]); // format the number
-                int padding = Math.max(1, width - s.length()); // At _least_ 1 componentVectorSpace
+                int padding = Maths.max(1, width - s.length()); // At _least_ 1 componentVectorSpace
                 for (int k = 0; k < padding; k++)
                     output.print(' ');
                 output.print(s);

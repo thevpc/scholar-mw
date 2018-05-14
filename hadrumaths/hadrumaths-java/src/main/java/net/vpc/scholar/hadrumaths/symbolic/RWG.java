@@ -141,7 +141,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
             }
             d2 = p.distance(i) / c.distance(i) * max;
         }
-        return Math.min(d1, d2) * max;
+        return Maths.min(d1, d2) * max;
 
     }
 

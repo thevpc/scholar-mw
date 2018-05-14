@@ -20,10 +20,12 @@ public class CustomDDFunctionXExpr extends GenericFunctionX implements Cloneable
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return Complex.valueOf(definition.getEval().evalDouble(c.toDouble()));
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return definition.getEval().evalDouble(c);
     }
 

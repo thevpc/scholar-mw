@@ -49,11 +49,11 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
                 );
             }else if(c.isImag()){
                 return RewriteResult.newVal(
-                            Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl()))
+                            Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl()))
                 );
             }else {
                 return RewriteResult.newVal(
-                            Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl()))
+                            Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())).mul(Maths.exp(c.realdbl()))
                 );
             }
         }else if(simplifiedArg.isComplexExpr()){
@@ -65,11 +65,11 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
                 );
             }else if(c.isImag()){
                 return RewriteResult.newVal(
-                        new ComplexValue(Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl())),simplifiedArg.getDomain())
+                        new ComplexValue(Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())),simplifiedArg.getDomain())
                 );
             }else {
                 return RewriteResult.newVal(
-                        new ComplexValue(Complex.valueOf(Math.cos(c.imagdbl()),Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl())),simplifiedArg.getDomain())
+                        new ComplexValue(Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())).mul(Maths.exp(c.realdbl())),simplifiedArg.getDomain())
                 );
             }
         }else if(simplifiedArg.isDD()){

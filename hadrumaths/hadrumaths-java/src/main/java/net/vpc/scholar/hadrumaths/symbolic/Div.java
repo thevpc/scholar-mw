@@ -86,7 +86,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     public Div(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
     public boolean isZeroImpl() {
@@ -116,9 +116,9 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Domain getDomainImpl() {
-        if (isZero()) {
-            return Domain.ZERO(getDomainDimension());
-        }
+//        if (isZero()) {
+//            return Domain.ZERO(getDomainDimension());
+//        }
         Domain d = Domain.FULL(getDomainDimension());
         for (Expr expression : getSubExpressions()) {
             if (!expression.isZero()) {
@@ -583,4 +583,5 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         return 0;
     }
+
 }

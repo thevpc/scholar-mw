@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.derivation.formal;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
@@ -16,10 +17,10 @@ public class CosXCosYDifferentiator implements FunctionDifferentiator {
         CosXCosY c = (CosXCosY) f;
         switch (varIndex) {
             case X: {
-                return new CosXCosY(c.amp * c.a, c.a, c.b - Math.PI / 2, c.c, c.d, c.getDomain());
+                return new CosXCosY(c.amp * c.a, c.a, c.b - Maths.PI / 2, c.c, c.d, c.getDomain());
             }
             case Y: {
-                return new CosXCosY(c.amp * c.c, c.a, c.b, c.c, c.d - Math.PI / 2, c.getDomain());
+                return new CosXCosY(c.amp * c.c, c.a, c.b, c.c, c.d - Maths.PI / 2, c.getDomain());
             }
         }
         return FunctionFactory.DZEROXY;

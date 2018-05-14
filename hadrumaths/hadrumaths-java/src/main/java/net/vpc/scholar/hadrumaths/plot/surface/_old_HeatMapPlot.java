@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 
 /**
@@ -157,15 +158,15 @@ class _old_HeatMapPlot extends JComponent {
                 float f = 1 - (float) matrix[line][column];
                 Color baseColor = new Color(Color.HSBtoRGB(H * (f), S, B));
                 g.setColor(baseColor);
-                int xx = (int) Math.round(column * x);
-                int yy = (int) Math.round(line * y);
+                int xx = (int) Maths.round(column * x);
+                int yy = (int) Maths.round(line * y);
                 int ixx = ix;
                 int iyy = iy;
-                if (column > 0 && (xx > ((int) Math.round((column - 1) * x)))) {
+                if (column > 0 && (xx > ((int) Maths.round((column - 1) * x)))) {
                     xx--;
                     ixx += 2;
                 }
-                if (line > 0 && (yy > ((int) Math.round((line - 1) * y)))) {
+                if (line > 0 && (yy > ((int) Maths.round((line - 1) * y)))) {
                     yy--;
                     iyy += 2;
                 }

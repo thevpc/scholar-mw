@@ -85,7 +85,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     public Sub(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
     public boolean isZeroImpl() {
@@ -381,13 +381,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined);
-        if (!rdefined.isSet()) {
-            return Complex.ZERO;
-        }
-        Complex c = getSecond().toDC().computeComplex(x, y, z, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined1);
+        Complex c = getSecond().toDC().computeComplex(x, y, z, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -396,13 +394,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        double a = getFirst().toDD().computeDouble(x, y, z, rdefined);
-        if (!rdefined.isSet()) {
-            return 0;
-        }
-        double b = getSecond().toDD().computeDouble(x, y, z, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, z, rdefined1);
+        double b = getSecond().toDD().computeDouble(x, y, z, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return 0;
         }
         defined.set();
@@ -411,13 +407,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        Complex a = getFirst().toDC().computeComplex(x, y, rdefined);
-        if (!rdefined.isSet()) {
-            return Complex.ZERO;
-        }
-        Complex c = getSecond().toDC().computeComplex(x, y, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, y, rdefined1);
+        Complex c = getSecond().toDC().computeComplex(x, y, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -426,13 +420,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        double a = getFirst().toDD().computeDouble(x, y, rdefined);
-        if (!rdefined.isSet()) {
-            return 0;
-        }
-        double b = getSecond().toDD().computeDouble(x, y, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, y, rdefined1);
+        double b = getSecond().toDD().computeDouble(x, y, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return 0;
         }
         defined.set();
@@ -441,13 +433,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        Complex a = getFirst().toDC().computeComplex(x, rdefined);
-        if (!rdefined.isSet()) {
-            return Complex.ZERO;
-        }
-        Complex c = getSecond().toDC().computeComplex(x, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        Complex a = getFirst().toDC().computeComplex(x, rdefined1);
+        Complex c = getSecond().toDC().computeComplex(x, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -456,13 +446,11 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, OutBoolean defined) {
-        ReadableOutBoolean rdefined=OutBoolean.createReadable();
-        double a = getFirst().toDD().computeDouble(x, rdefined);
-        if (!rdefined.isSet()) {
-            return 0;
-        }
-        double b = getSecond().toDD().computeDouble(x, rdefined);
-        if (!rdefined.isSet()) {
+        ReadableOutBoolean rdefined1=OutBoolean.createReadable();
+        ReadableOutBoolean rdefined2=OutBoolean.createReadable();
+        double a = getFirst().toDD().computeDouble(x, rdefined1);
+        double b = getSecond().toDD().computeDouble(x, rdefined2);
+        if (!rdefined1.isSet() && !rdefined2.isSet()) {
             return 0;
         }
         defined.set();

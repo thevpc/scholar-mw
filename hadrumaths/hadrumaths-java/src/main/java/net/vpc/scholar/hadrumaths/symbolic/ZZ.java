@@ -195,7 +195,22 @@ public class ZZ extends AxisFunction implements Cloneable {
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        if (domain.contains(x, y, z)) {
+        return computeMatrix(x,y,z,OutBoolean.none());
+    }
+
+    @Override
+    public double computeDouble(double x, double y, double z, OutBoolean defined) {
+        if (contains(x, y, z)) {
+            defined.set();
+            return z;
+        }
+        return 0;
+    }
+
+    //@Override
+    public Matrix computeMatrix(double x, double y, double z,OutBoolean defined) {
+        if (contains(x, y, z)) {
+            defined.set();
             return Complex.valueOf(z).toMatrix();
         }
         return Maths.identityMatrix(1);
@@ -252,10 +267,6 @@ public class ZZ extends AxisFunction implements Cloneable {
         throw new IllegalArgumentException("Missing Z");
     }
 
-    @Override
-    public double computeDouble(double x, double y, double z, OutBoolean defined) {
-        throw new IllegalArgumentException("Missing Z");
-    }
 
     @Override
     public boolean isInvariantImpl(Axis axis) {

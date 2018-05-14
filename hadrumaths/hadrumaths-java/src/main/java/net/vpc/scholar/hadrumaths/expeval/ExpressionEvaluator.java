@@ -5,6 +5,7 @@
 package net.vpc.scholar.hadrumaths.expeval;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.expeval.functions.*;
 import net.vpc.scholar.hadrumaths.expeval.operators.*;
 
@@ -56,10 +57,10 @@ public class ExpressionEvaluator {
     }
 
     public void addDefaults() {
-        declare("E",Math.E);
-        declare("e",Math.E);
-        declare("PI",Math.PI);
-        declare("pi",Math.PI);
+        declare("E", Maths.E);
+        declare("e",Maths.E);
+        declare("PI",Maths.PI);
+        declare("pi",Maths.PI);
         declare("infinity",Double.POSITIVE_INFINITY);
         declare("NaN",Complex.NaN);
         declare(new OpPlus());

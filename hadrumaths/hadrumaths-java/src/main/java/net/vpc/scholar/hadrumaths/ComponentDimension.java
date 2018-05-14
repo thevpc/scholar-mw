@@ -38,11 +38,11 @@ public class ComponentDimension implements Serializable{
     }
 
     public static ComponentDimension min(ComponentDimension a, ComponentDimension b) {
-        return create(Math.min(a.rows, b.rows), Math.min(a.columns, b.columns));
+        return create(Maths.min(a.rows, b.rows), Maths.min(a.columns, b.columns));
     }
 
     public static ComponentDimension max(ComponentDimension a, ComponentDimension b) {
-        return create(Math.max(a.rows, b.rows), Math.max(a.columns, b.columns));
+        return create(Maths.max(a.rows, b.rows), Maths.max(a.columns, b.columns));
     }
 
     @Override
@@ -89,8 +89,8 @@ public class ComponentDimension implements Serializable{
 
     public ComponentDimension expand(ComponentDimension other){
         return ComponentDimension.create(
-                Math.max(this.rows,other.rows),
-                Math.max(this.columns,other.columns)
+                Maths.max(this.rows,other.rows),
+                Maths.max(this.columns,other.columns)
         );
     }
 }

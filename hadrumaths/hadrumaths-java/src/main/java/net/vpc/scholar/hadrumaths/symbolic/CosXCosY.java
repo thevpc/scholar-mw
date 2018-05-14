@@ -53,9 +53,9 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     @Override
     public boolean isZeroImpl() {
         return amp == 0 ||
-                (a == 0 && (Maths.cos2(b) == 0 || ((Math.abs(b) * 2 / Math.PI) % 2 == 1)))
+                (a == 0 && (Maths.cos2(b) == 0 || ((Maths.abs(b) * 2 / Maths.PI) % 2 == 1)))
                 ||
-                (c == 0 && (Maths.cos2(d) == 0 || ((Math.abs(d) * 2 / Math.PI) % 2 == 1)));
+                (c == 0 && (Maths.cos2(d) == 0 || ((Maths.abs(d) * 2 / Maths.PI) % 2 == 1)));
     }
 
     @Override

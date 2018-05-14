@@ -455,15 +455,15 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
             for (int column = 0; column < matrix[line].length; column++) {
                 double dv = matrix[line][column];
                 float f = (float) dv;
-                int xx = (int) Math.round(column * x);
-                int yy = (int) Math.round(line * y);
+                int xx = (int) Maths.round(column * x);
+                int yy = (int) Maths.round(line * y);
                 int ixx = ix;
                 int iyy = iy;
-                if (column > 0 && (xx > ((int) Math.round((column - 1) * x)))) {
+                if (column > 0 && (xx > ((int) Maths.round((column - 1) * x)))) {
                     xx--;
                     ixx += 2;
                 }
-                if (line > 0 && (yy > ((int) Math.round((line - 1) * y)))) {
+                if (line > 0 && (yy > ((int) Maths.round((line - 1) * y)))) {
                     yy--;
                     iyy += 2;
                 }

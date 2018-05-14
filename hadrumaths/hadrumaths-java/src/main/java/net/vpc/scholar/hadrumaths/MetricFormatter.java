@@ -157,7 +157,7 @@ public class MetricFormatter implements DoubleFormatter {
 
 
     private String formatLeftPow(double number, int pow) {
-        return formatLeft(number * 1.0 / Math.pow(10, pow));
+        return formatLeft(number * 1.0 / Maths.pow(10, pow));
     }
 
     private String formatLeft(double number) {
@@ -234,15 +234,15 @@ public class MetricFormatter implements DoubleFormatter {
                 sb.append(formatLeft(0));
                 sb.append(strUnit(low));
             } else {
-                if (v < Math.pow(10, low)) {
+                if (v < Maths.pow(10, low)) {
                     sb.append(formatLeftPow(v * sign, low));
                     sb.append(strUnit(low));
-                } else if (v >= Math.pow(10, high)) {
+                } else if (v >= Maths.pow(10, high)) {
                     sb.append(formatLeftPow(v * sign, high)).append(strUnit(high));
                 } else {
                     boolean ok=false;
                     for (int i = pows.length - 1; i >= 0; i--) {
-                        double b = Math.pow(10, pows[i]);
+                        double b = Maths.pow(10, pows[i]);
                         if (v >= b) {
                             sb.append(formatLeftPow(v * sign ,pows[i])).append(strUnit(pows[i]));
                             ok=true;

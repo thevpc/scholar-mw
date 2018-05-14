@@ -82,8 +82,8 @@ class Mesh3DMatrix {
     }
 
     void rotateX(double value) {
-        double d1 = Maths.cos2((value * Math.PI) / 180D);
-        double d2 = Maths.sin2((value * Math.PI) / 180D);
+        double d1 = Maths.cos2((value * Maths.PI) / 180D);
+        double d2 = Maths.sin2((value * Maths.PI) / 180D);
         double newyx = yx * d1 + zx * d2;
         double newyy = yy * d1 + zy * d2;
         double newyz = yz * d1 + zz * d2;
@@ -103,8 +103,8 @@ class Mesh3DMatrix {
     }
 
     void rotateY(double value) {
-        double d1 = Maths.cos2((value * Math.PI) / 180D);
-        double d2 = Maths.sin2((value * Math.PI) / 180D);
+        double d1 = Maths.cos2((value * Maths.PI) / 180D);
+        double d2 = Maths.sin2((value * Maths.PI) / 180D);
         double d3 = xx * d1 + zx * d2;
         double d4 = xy * d1 + zy * d2;
         double d5 = xz * d1 + zz * d2;
@@ -124,8 +124,8 @@ class Mesh3DMatrix {
     }
 
     void rotateZ(double value) {
-        double d1 = Maths.cos2((value * Math.PI) / 180D);
-        double d2 = Maths.sin2((value * Math.PI) / 180D);
+        double d1 = Maths.cos2((value * Maths.PI) / 180D);
+        double d2 = Maths.sin2((value * Maths.PI) / 180D);
         double d3 = yx * d1 + xx * d2;
         double d4 = yy * d1 + xy * d2;
         double d5 = yz * d1 + xz * d2;

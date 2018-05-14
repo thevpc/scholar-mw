@@ -4,7 +4,7 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 
     public EfficientSparseArray(TypeReference<T> componentType, int length) {
-        int initialSize = Math.max(length, 10);
+        int initialSize = Maths.max(length, 10);
         if (initialSize > 10) {
             initialSize = 10;
         }

@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
+import net.vpc.scholar.hadrumaths.Maths;
+
 import java.awt.*;
 
 class DefaultMesh3DModel extends Mesh3DTransformable {
@@ -126,7 +128,7 @@ class DefaultMesh3DModel extends Mesh3DTransformable {
         Mesh3DVector vector3d = bb.getCenter();
         double d = (double) width / bb.getWidth();
         double d1 = (double) height / bb.getHeight();
-        double d2 = 0.70000000000000007D * Math.min(d, d1);
+        double d2 = 0.70000000000000007D * Maths.min(d, d1);
         mat = new Mesh3DMatrix();
         mat.translate(-vector3d.x, -vector3d.y, -vector3d.z);
         mat.scale(d2, d2, d2);

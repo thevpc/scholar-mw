@@ -56,7 +56,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     }
 
     public Complex scalarProduct(boolean hermitian, TVector<Complex> other) {
-        int max = Math.max(size(), other.size());
+        int max = Maths.max(size(), other.size());
         MutableComplex d = new MutableComplex();
         for (int i = 0; i < max; i++) {
             d.add(get(i).mul(other.get(i)));
@@ -113,7 +113,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     @Override
     public Vector dotmul(TVector<Complex> other) {
-        Complex[] all = new Complex[Math.max(size(), other.size())];
+        Complex[] all = new Complex[Maths.max(size(), other.size())];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).mul(other.get(i));
         }
@@ -130,7 +130,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     @Override
     public Vector dotdiv(TVector<Complex> other) {
-        Complex[] all = new Complex[Math.max(size(), other.size())];
+        Complex[] all = new Complex[Maths.max(size(), other.size())];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).div(other.get(i));
         }
@@ -139,7 +139,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     @Override
     public Vector dotpow(TVector<Complex> other) {
-        Complex[] all = new Complex[Math.max(size(), other.size())];
+        Complex[] all = new Complex[Maths.max(size(), other.size())];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).pow(other.get(i));
         }
@@ -158,7 +158,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     @Override
     public Vector add(TVector<Complex> other) {
-        Complex[] all = new Complex[Math.max(size(), other.size())];
+        Complex[] all = new Complex[Maths.max(size(), other.size())];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).add(other.get(i));
         }
@@ -245,7 +245,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         double c = get(0).absdbl();
         for (int i = 1; i < size; i++) {
             double d = get(i).absdbl();
-            c = Math.max(c, d);
+            c = Maths.max(c, d);
         }
         return c;
     }
@@ -259,7 +259,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         double c = get(0).absdbl();
         for (int i = 1; i < size; i++) {
             double d = get(i).absdbl();
-            c = Math.min(c, d);
+            c = Maths.min(c, d);
         }
         return c;
     }
@@ -280,7 +280,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
     @Override
     public Vector sub(TVector<Complex> other) {
-        Complex[] all = new Complex[Math.max(size(), other.size())];
+        Complex[] all = new Complex[Maths.max(size(), other.size())];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).sub(other.get(i));
         }

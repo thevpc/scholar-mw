@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
-
+import net.vpc.scholar.hadrumaths.Maths;
 
 class Mesh3DVector {
 
@@ -82,7 +82,7 @@ class Mesh3DVector {
     }
 
     double vabs() {
-        return Math.sqrt(x * x + y * y + z * z);
+        return Maths.sqrt(x * x + y * y + z * z);
     }
 
     void normalize() {

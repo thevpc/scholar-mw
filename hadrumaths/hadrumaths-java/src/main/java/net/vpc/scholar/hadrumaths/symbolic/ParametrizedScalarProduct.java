@@ -54,12 +54,23 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
             return Complex.ZERO;
         }
         defined.set();
-        Expr e = meSimplified.get();
-        if(e==null){
+        Expr e = getSimplifiedExpr();
+        return e.toComplex();
+    }
+
+    private Expr getSimplifiedExpr() {
+        Expr e;
+        if(meSimplified==null){
             e = this.simplify();
             meSimplified=new WeakReference<Expr>(e);
+        }else {
+            e = meSimplified.get();
+            if (e == null) {
+                e = this.simplify();
+                meSimplified = new WeakReference<Expr>(e);
+            }
         }
-        return e.toComplex();
+        return e;
     }
 
     @Override
@@ -68,11 +79,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
             return Complex.ZERO;
         }
         defined.set();
-        Expr e = meSimplified.get();
-        if(e==null){
-            e = this.simplify();
-            meSimplified=new WeakReference<Expr>(e);
-        }
+        Expr e = getSimplifiedExpr();
         return e.toComplex();
     }
 
@@ -82,11 +89,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
             return 0;
         }
         defined.set();
-        Expr e = meSimplified.get();
-        if(e==null){
-            e = this.simplify();
-            meSimplified=new WeakReference<Expr>(e);
-        }
+        Expr e = getSimplifiedExpr();
         return e.toComplex().toDouble();
     }
 

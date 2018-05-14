@@ -5,10 +5,9 @@ import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.CosXPlusY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.cos;
+import static net.vpc.scholar.hadrumaths.Maths.abs;
+import static net.vpc.scholar.hadrumaths.Maths.cos;
 import static net.vpc.scholar.hadrumaths.Maths.sin;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha

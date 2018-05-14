@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
+import net.vpc.scholar.hadrumaths.Maths;
+
 class BoundingBox {
 
     Mesh3DVector min;
@@ -76,14 +78,14 @@ class BoundingBox {
     }
 
     public double getMinSize() {
-        double d = Math.min(getWidth(), getHeight());
-        d = Math.min(d, getDepth());
+        double d = Maths.min(getWidth(), getHeight());
+        d = Maths.min(d, getDepth());
         return d;
     }
 
     public double getMaxSize() {
-        double d = Math.max(getWidth(), getHeight());
-        d = Math.max(d, getDepth());
+        double d = Maths.max(getWidth(), getHeight());
+        d = Maths.max(d, getDepth());
         return d;
     }
 }

@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.BooleanArray1;
-import net.vpc.scholar.hadrumaths.BooleanArray2;
-import net.vpc.scholar.hadrumaths.BooleanArray3;
-import net.vpc.scholar.hadrumaths.BooleanArrays;
+import net.vpc.scholar.hadrumaths.*;
 
 import java.io.Serializable;
 
@@ -110,13 +107,13 @@ public class Range implements Serializable{
         if (this.includes(other)) {
             return this;
         }
-        int x1 = Math.min(xmin, other.xmin);
-        int x2 = Math.max(xmax, other.xmax);
-        int y1 = Math.min(ymin, other.ymin);
-        int y2 = Math.max(ymax, other.ymax);
-        int z1 = Math.min(zmin, other.zmin);
-        int z2 = Math.max(zmax, other.zmax);
-        int dim = Math.max(dimension, other.dimension);
+        int x1 = Maths.min(xmin, other.xmin);
+        int x2 = Maths.max(xmax, other.xmax);
+        int y1 = Maths.min(ymin, other.ymin);
+        int y2 = Maths.max(ymax, other.ymax);
+        int z1 = Maths.min(zmin, other.zmin);
+        int z2 = Maths.max(zmax, other.zmax);
+        int dim = Maths.max(dimension, other.dimension);
         return new Range(x1, x2, y1, y2, z1, z2, dim);
     }
 
@@ -202,27 +199,27 @@ public class Range implements Serializable{
         if (this.includes(other)) {
             return this;
         }
-        int x1 = Math.max(xmin, other.xmin);
-        int x2 = Math.min(xmax, other.xmax);
+        int x1 = Maths.max(xmin, other.xmin);
+        int x2 = Maths.min(xmax, other.xmax);
         if(x2<x1){
             return null;
         }
-        int y1 = Math.max(ymin, other.ymin);
-        int y2 = Math.min(ymax, other.ymax);
+        int y1 = Maths.max(ymin, other.ymin);
+        int y2 = Maths.min(ymax, other.ymax);
         if(y2<y1){
             return null;
         }
-        int z1 = Math.max(zmin, other.zmin);
-        int z2 = Math.min(zmax, other.zmax);
+        int z1 = Maths.max(zmin, other.zmin);
+        int z2 = Maths.min(zmax, other.zmax);
         if(z2<z1){
             return null;
         }
-        int dim = Math.max(dimension, other.dimension);
+        int dim = Maths.max(dimension, other.dimension);
         return new Range(x1, x2, y1, y2, z1, z2, dim);
     }
 
     public boolean includes(Range other) {
-        int dim = Math.max(dimension, other.dimension);
+        int dim = Maths.max(dimension, other.dimension);
         switch (dim) {
             case 1: {
                 return other.isEmpty()

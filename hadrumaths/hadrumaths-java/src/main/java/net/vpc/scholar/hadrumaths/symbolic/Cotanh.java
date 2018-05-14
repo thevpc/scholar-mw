@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.FunctionFactory;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * Created by vpc on 4/30/14.
@@ -27,7 +24,7 @@ public class Cotanh extends TrigoFunctionX implements Cloneable{
 
     public double computeDoubleArg(double c, OutBoolean defined){
         defined.set();
-        return 1.0/Math.tanh(c);
+        return Maths.cotanh(c);
     }
 
     @Override

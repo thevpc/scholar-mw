@@ -231,4 +231,12 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
         }
         return new Mul(other,this);
     }
+
+    @Override
+    public double toDouble() {
+        if(isDoubleExpr()){
+            return c;
+        }
+        throw new ClassCastException("Not a Double " + getClass().getName());
+    }
 }

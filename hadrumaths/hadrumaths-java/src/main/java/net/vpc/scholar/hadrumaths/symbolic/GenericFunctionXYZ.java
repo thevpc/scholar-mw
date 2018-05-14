@@ -137,7 +137,7 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
 
     @Override
     public int getDomainDimension() {
-        return Math.max(getXArgument().getDomainDimension(), getYArgument().getDomainDimension());
+        return Maths.max(getXArgument().getDomainDimension(), getYArgument().getDomainDimension());
     }
 
     @Override

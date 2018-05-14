@@ -21,10 +21,12 @@ public class NotExpr extends GenericFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.isZero()?Complex.ONE:Complex.ZERO;
     }
 
     protected double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return c==0?1:0;
     }
 

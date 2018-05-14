@@ -342,7 +342,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (Double.isNaN(d2)) {
             return d1;
         }
-        return Math.min(d1, d2);
+        return Maths.min(d1, d2);
     }
 
     protected static double max(double d1, double d2) {
@@ -352,7 +352,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (Double.isNaN(d2)) {
             return d1;
         }
-        return Math.max(d1, d2);
+        return Maths.max(d1, d2);
     }
 
     private static double[] toAbsolute(double[] base, double min, double max) {
@@ -489,7 +489,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (other.isEmpty() || other.isNaN()) {
             return true;
         }
-        int d = Math.max(dimension(), other.dimension());
+        int d = Maths.max(dimension(), other.dimension());
         switch (d) {
             case 1: {
                 return (other.xmin() >= xmin()
@@ -544,13 +544,13 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (other == null) {
             return this;
         }
-//        double x1= Math.max(xmin,other.xmin);
-//        double x2=Math.min(xmax,other.xmax);
-//        double y1=Math.max(ymin,other.ymin);
-//        double y2=Math.min(ymax,other.ymax);
+//        double x1= Maths.max(xmin,other.xmin);
+//        double x2=Maths.min(xmax,other.xmax);
+//        double y1=Maths.max(ymin,other.ymin);
+//        double y2=Maths.min(ymax,other.ymax);
         int d_t = this.dimension();
         int d_o = other.dimension();
-        int dim = Math.max(d_t, d_o);
+        int dim = Maths.max(d_t, d_o);
         double x1_t = xmin();
         double x2_t = xmax();
         double x1_o = other.xmin();
@@ -878,7 +878,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         double x1 = xmin() + 2 * (x0 - xmin());
         double x2 = xmax() + 2 * (x0 - xmax());
         return Domain.forBounds(
-                Math.min(x1, x2), Math.max(x1, x2), ymin(),
+                Maths.min(x1, x2), Maths.max(x1, x2), ymin(),
                 ymax()
         );
     }
@@ -887,8 +887,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         double y1 = ymin() + 2 * (y0 - ymin());
         double y2 = ymax() + 2 * (y0 - ymax());
         return Domain.forBounds(
-                xmin(), xmax(), Math.min(y1, y2),
-                Math.max(y1, y2)
+                xmin(), xmax(), Maths.min(y1, y2),
+                Maths.max(y1, y2)
         );
     }
 

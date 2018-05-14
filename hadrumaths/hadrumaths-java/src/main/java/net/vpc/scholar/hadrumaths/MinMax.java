@@ -55,7 +55,7 @@ public class MinMax {
     }
 
     public void registerAbsValue(double d){
-        registerValue(Math.abs(d));
+        registerValue(Maths.abs(d));
     }
 
     public float getRatio(double d){

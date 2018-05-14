@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.integration;
 
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
 import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
@@ -8,8 +9,8 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 import java.io.Serializable;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
+import static net.vpc.scholar.hadrumaths.Maths.abs;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,8 +85,8 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
             y = f.computeDouble(x, y0, null, null);
         }
         int fcnt = 3;
-        double hmin = hminCoeff * Math.abs(xmax - xmin);
-        double hmax = hmaxCoeff * Math.abs(xmax - xmin);
+        double hmin = hminCoeff * abs(xmax - xmin);
+        double hmax = hmaxCoeff * abs(xmax - xmin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
             y[0] = f.computeDouble(xmin + hmin, y0);
@@ -126,8 +127,8 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
         double[] yy = new double[]{ymin, (ymin + ymax) / 2.0, ymax};
         double[] y = f.computeDouble(x0, yy, null, null);
         int fcnt = 3;
-        double hmin = hminCoeff * Math.abs(ymax - ymin);
-        double hmax = hmaxCoeff * Math.abs(ymax - ymin);
+        double hmin = hminCoeff * abs(ymax - ymin);
+        double hmax = hmaxCoeff * abs(ymax - ymin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
             y[0] = f.computeDouble(x0, ymin + hmin);
@@ -209,7 +210,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
             double[] o1 = quadstepX(f, y0, a, c, fa, fd, fc, fcnt, hmin, hmax);
             double[] o2 = quadstepX(f, y0, c, b, fc, fe, fb, fcnt, hmin, hmax);
             Q = o1[0] + o2[0];
-            int warn = max((int) o1[2], (int) o2[2]);
+            int warn = Maths.max((int) o1[2], (int) o2[2]);
             return new double[]{Q, fcnt, warn};
         }
     }
@@ -262,7 +263,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
             double[] o1 = quadstepY(f, x0, a, c, fa, fd, fc, fcnt, hmin, hmax);
             double[] o2 = quadstepY(f, x0, c, b, fc, fe, fb, fcnt, hmin, hmax);
             Q = o1[0] + o2[0];
-            int warn = max((int) o1[2], (int) o2[2]);
+            int warn = Maths.max((int) o1[2], (int) o2[2]);
             return new double[]{Q, fcnt, warn};
         }
     }

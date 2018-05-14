@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import static java.lang.Math.abs;
 import static net.vpc.scholar.hadrumaths.Maths.cos2;
 import static net.vpc.scholar.hadrumaths.Maths.sin2;
 

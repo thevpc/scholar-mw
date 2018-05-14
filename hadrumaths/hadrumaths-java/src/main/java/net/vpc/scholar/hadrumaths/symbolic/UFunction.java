@@ -72,18 +72,18 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
 
     public double computeDouble0(double x, OutBoolean defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
+        return amp * Maths.cos2(a * x + b) / Maths.sqrt(c * x * x + d * x + e);
     }
 
     public double computeDouble0(double x, double y, OutBoolean defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
+        return amp * Maths.cos2(a * x + b) / Maths.sqrt(c * x * x + d * x + e);
     }
 
     @Override
     public double computeDouble0(double x, double y, double z, OutBoolean defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b) / Math.sqrt(c * x * x + d * x + e);
+        return amp * Maths.cos2(a * x + b) / Maths.sqrt(c * x * x + d * x + e);
     }
 
 

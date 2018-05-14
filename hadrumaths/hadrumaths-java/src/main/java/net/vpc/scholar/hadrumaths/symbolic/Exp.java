@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.FunctionFactory;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.OutBoolean;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * Created by vpc on 4/30/14.
@@ -20,11 +17,13 @@ public class Exp extends GenericFunctionX implements Cloneable{
     }
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.exp();
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
-        return Math.exp(c);
+        defined.set();
+        return Maths.exp(c);
     }
 
     @Override

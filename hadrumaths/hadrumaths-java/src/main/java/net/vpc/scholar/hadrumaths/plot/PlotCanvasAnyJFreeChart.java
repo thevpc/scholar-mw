@@ -111,7 +111,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 }
             }
 
-            XYPointerAnnotation annotation = new XYPointerAnnotation(s, x, y, 2 * Math.PI / 32 * Maths.randomInt(32));
+            XYPointerAnnotation annotation = new XYPointerAnnotation(s, x, y, 2 * Maths.PI / 32 * Maths.randomInt(32));
             annotation.setTipRadius(0.0D);
             annotation.setBaseRadius(35.0D);
             annotation.setFont(new Font("SansSerif", 0, 9));
@@ -149,7 +149,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 }
             }
 
-            CategoryPointerAnnotation annotation = new CategoryPointerAnnotation(s, columnKey, y, 2 * Math.PI / 32 * Maths.randomInt(32));
+            CategoryPointerAnnotation annotation = new CategoryPointerAnnotation(s, columnKey, y, 2 * Maths.PI / 32 * Maths.randomInt(32));
             annotation.setTipRadius(0.0D);
             annotation.setBaseRadius(35.0D);
             annotation.setFont(new Font("SansSerif", 0, 9));

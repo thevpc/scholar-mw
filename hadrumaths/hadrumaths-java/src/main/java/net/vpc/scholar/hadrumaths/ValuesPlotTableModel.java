@@ -24,7 +24,7 @@ public class ValuesPlotTableModel extends AbstractTableModel {
         this.rows = model.getZ().length;
         this.cols = 0;
         for (int i = 0; i < rows; i++) {
-            cols=Math.max(model.getZ()[i].length,cols);
+            cols=Maths.max(model.getZ()[i].length,cols);
         }
     }
 

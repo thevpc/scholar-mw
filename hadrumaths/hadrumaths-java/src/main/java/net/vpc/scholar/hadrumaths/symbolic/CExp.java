@@ -262,10 +262,10 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         return a == 0 && b == 0 && getDomain().isFull();
     }
 
-    @Override
-    public boolean isMatrixImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isMatrixImpl() {
+//        return false;
+//    }
 
     @Override
     public Complex toComplex() {
@@ -334,10 +334,10 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         return true;
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDoubleTyped() {

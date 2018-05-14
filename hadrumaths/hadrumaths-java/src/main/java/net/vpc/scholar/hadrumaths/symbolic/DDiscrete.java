@@ -585,9 +585,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Math.min(this.dx, c.dx);
-            double dy = Math.min(this.dy, c.dy);
-            double dz = Math.min(this.dz, c.dz);
+            double dx = Maths.min(this.dx, c.dx);
+            double dy = Maths.min(this.dy, c.dy);
+            double dz = Maths.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -617,9 +617,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Math.min(this.dx, c.dx);
-            double dy = Math.min(this.dy, c.dy);
-            double dz = Math.min(this.dz, c.dz);
+            double dx = Maths.min(this.dx, c.dx);
+            double dy = Maths.min(this.dy, c.dy);
+            double dz = Maths.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -649,9 +649,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Math.min(this.dx, c.dx);
-            double dy = Math.min(this.dy, c.dy);
-            double dz = Math.min(this.dz, c.dz);
+            double dx = Maths.min(this.dx, c.dx);
+            double dy = Maths.min(this.dy, c.dy);
+            double dz = Maths.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -681,9 +681,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Math.min(this.dx, c.dx);
-            double dy = Math.min(this.dy, c.dy);
-            double dz = Math.min(this.dz, c.dz);
+            double dx = Maths.min(this.dx, c.dx);
+            double dy = Maths.min(this.dy, c.dy);
+            double dz = Maths.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -714,7 +714,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                    } else if (b.isNaN() || b.isInfinite() || b.equals(Math2.CZERO)) {
 //                        c[i][j] = (a.substract(b));
                     } else {
-                        c = Math.abs(((a - b) * 100 / (b)));
+                        c = Maths.abs(((a - b) * 100 / (b)));
                     }
 
                     d[i][j][k] = c;
@@ -1057,7 +1057,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     public double norm() {
         double f = 0;
         for (int j = 0; j < values.length; j++) {
-            f = Math.max(f, Maths.matrix(values[j]).norm1());
+            f = Maths.max(f, Maths.matrix(values[j]).norm1());
         }
         return f;
     }
@@ -1114,10 +1114,10 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return false;
     }
 
-    @Override
-    public boolean isDoubleExprImpl() {
-        return false;
-    }
+//    @Override
+//    public boolean isDoubleExprImpl() {
+//        return false;
+//    }
 
     @Override
     public boolean isDCImpl() {

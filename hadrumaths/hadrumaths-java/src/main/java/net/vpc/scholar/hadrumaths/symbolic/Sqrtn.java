@@ -23,10 +23,12 @@ public class Sqrtn extends GenericFunctionX implements Cloneable{
 
 
     public Complex computeComplexArg(Complex c, OutBoolean defined){
+        defined.set();
         return c.sqrt(n);
     }
 
     public double computeDoubleArg(double c, OutBoolean defined){
+        defined.set();
         return Maths.sqrt(c,n);
     }
 
