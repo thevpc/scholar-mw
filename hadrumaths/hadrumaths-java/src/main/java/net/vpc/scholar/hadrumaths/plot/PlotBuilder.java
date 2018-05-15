@@ -641,12 +641,18 @@ public class PlotBuilder {
                 return list;
             case "complex[][]": {
                 boolean matrix = "true".equals(typeAndValue.props.get("matrix"));
-                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
+                return _plotComplexArray2(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
+            }
+            case "complex[][][]": {
+                return _plotComplexArray3(PlotTypesHelper.toComplexArray3(o), null);
+            }
+            case "number[][][]": {
+                return _plotComplexArray3(PlotTypesHelper.toComplexArray3(o), null);
             }
             case "number[][]": {
                 asReal();
                 boolean matrix = "true".equals(typeAndValue.props.get("matrix"));
-                return _plotComplexArray(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
+                return _plotComplexArray2(PlotTypesHelper.toComplexArray2(o), matrix ? PlotType.MATRIX : PlotType.HEATMAP);
             }
             case "expr[]": {
                 return _plotExprArray(PlotTypesHelper.toExprArray(o));
@@ -655,9 +661,9 @@ public class PlotBuilder {
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
                 boolean col = "true".equals(typeAndValue.props.get("column"));
                 if (col) {
-                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
+                    return _plotComplexArray2((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
                 } else {
-                    return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                    return _plotComplexArray2((new Complex[][]{y}), PlotType.CURVE);
                 }
             }
             case "number[]": {
@@ -665,9 +671,9 @@ public class PlotBuilder {
                 Complex[] y = PlotTypesHelper.toComplexArray(o);
                 boolean col = "true".equals(typeAndValue.props.get("column"));
                 if (col) {
-                    return _plotComplexArray((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
+                    return _plotComplexArray2((Complex[][]) PlotTypesHelper.toColumn(y, Complex.class), PlotType.CURVE);
                 } else {
-                    return _plotComplexArray((new Complex[][]{y}), PlotType.CURVE);
+                    return _plotComplexArray2((new Complex[][]{y}), PlotType.CURVE);
                 }
             }
             case "point":
@@ -683,15 +689,15 @@ public class PlotBuilder {
             case "number": {
                 double[] y = {PlotTypesHelper.toDouble(o)};
                 asReal();
-                return _plotComplexArray((ArrayUtils.toComplex(new double[][]{y})), PlotType.CURVE);
+                return _plotComplexArray2((ArrayUtils.toComplex(new double[][]{y})), PlotType.CURVE);
             }
             case "expr[][]":
                 throw new IllegalArgumentException("Not Supported Plot " + s);
             case "null[][]":
-                return _plotComplexArray(new Complex[0][], plotType);
+                return _plotComplexArray2(new Complex[0][], plotType);
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             case "null[]": {
-                return _plotComplexArray(new Complex[0][], plotType);
+                return _plotComplexArray2(new Complex[0][], plotType);
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             }
             case "file": {
@@ -1096,7 +1102,25 @@ public class PlotBuilder {
 //        return createPlotComponent(_defaultPlotModelXY(null, null, new double[][]{x}, y, type, _getPlotType(PlotType.CURVE)));
 //    }
 
-    private PlotModel _plotComplexArray(Complex[][] z, PlotType preferredPlotType) {
+    private PlotModel _plotComplexArray3(Complex[][][] z, PlotType preferredPlotType) {
+        return new VDiscretePlotModel()
+                .setTitle(title)
+                .setPreferredLibraries(preferredLibraries)
+                .setVdiscretes(new VDiscrete(
+                        Discrete.create(z)
+                ));
+    }
+
+    private PlotModel _plotDoubleArray3(double[][][] z, PlotType preferredPlotType) {
+        return new VDiscretePlotModel()
+                .setTitle(title)
+                .setPreferredLibraries(preferredLibraries)
+                .setVdiscretes(new VDiscrete(
+                        Discrete.create(z)
+                ));
+    }
+
+    private PlotModel _plotComplexArray2(Complex[][] z, PlotType preferredPlotType) {
         //should i do differently?
 //        Complex[][] z=mm.getArray();
         AbsoluteSamples aa = null;

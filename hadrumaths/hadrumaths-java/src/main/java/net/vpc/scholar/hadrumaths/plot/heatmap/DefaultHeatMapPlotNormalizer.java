@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 import net.vpc.scholar.hadrumaths.MinMax;
 

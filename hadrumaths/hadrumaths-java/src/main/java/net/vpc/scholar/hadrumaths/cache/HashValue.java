@@ -1,11 +1,21 @@
 package net.vpc.scholar.hadrumaths.cache;
 
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
  */
 public class HashValue {
     private int hash;
     private String value;
+
+    public static HashValue valueOf(Object ... elements) {
+        Dumper dump = new Dumper();
+        for (Object arg : elements) {
+            dump.add(arg);
+        }
+        return new HashValue(dump.toString());
+    }
 
     public HashValue(String value) {
         this.value = value;

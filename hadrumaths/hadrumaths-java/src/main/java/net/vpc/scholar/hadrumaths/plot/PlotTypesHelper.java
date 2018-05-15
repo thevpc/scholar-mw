@@ -383,6 +383,24 @@ public class PlotTypesHelper {
         throw new IllegalArgumentException("Not an Complex[][]");
     }
 
+    public static Complex[][][] toComplexArray3(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj.getClass().isArray()) {
+            Complex[][][] arr = new Complex[Array.getLength(obj)][][];
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = toComplexArray2(Array.get(obj, i));
+            }
+            return arr;
+        } else if (obj instanceof Collection) {
+            return toComplexArray3(((Collection) obj).toArray());
+        } else if (obj instanceof TMatrix) {
+            return toComplexArray3(((TMatrix) obj).getArray());
+        }
+        throw new IllegalArgumentException("Not an Complex[][][]");
+    }
+
     public static Point[][] toPointArray2(Object obj) {
         if (obj == null) {
             return null;

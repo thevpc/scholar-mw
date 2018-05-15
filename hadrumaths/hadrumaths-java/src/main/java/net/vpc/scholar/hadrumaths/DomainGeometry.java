@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.geom.Triangle;
 
 import java.awt.geom.Path2D;
 
-class DomainGeometry extends AbstractGeometry {
+class DomainGeometry extends AbstractGeometry implements Cloneable{
     private Domain domain;
 
     public DomainGeometry(Domain domain) {

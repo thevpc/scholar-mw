@@ -26,13 +26,13 @@ public class CurvePlot extends JPanel implements PlotComponentPanel{
         updateChart();
     }
     private void updateChart(){
-        ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
-        String theTitle  = model.getTitle() == null ? "" : model.getTitle();
-        String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
-        String theYTitle = model.getZtitle() == null ? "Y" : model.getZtitle();
-        String[] ytitles = model.getYtitles();
-        double[][] xAxis = model.getX();
-        double[][] yAxis = model.getZd();
+//        ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
+//        String theTitle  = model.getTitle() == null ? "" : model.getTitle();
+//        String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
+//        String theYTitle = model.getZtitle() == null ? "Y" : model.getZtitle();
+//        String[] ytitles = model.getYtitles();
+//        double[][] xAxis = model.getX();
+//        double[][] yAxis = model.getZd();
         for (Component component : getComponents()) {
             remove(component);
         }

@@ -1,8 +1,10 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 import net.vpc.scholar.hadrumaths.*;
 
 import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.util.PercentDoubleFormatter;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
@@ -12,7 +14,6 @@ import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     private static final long serialVersionUID = 1L;
@@ -93,7 +94,14 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         super(new BorderLayout());
         area = new HeatMapPlotArea(model, reverseY,colorPalette, new Dimension(preferredDimension<=1?400:preferredDimension, preferredDimension<=1?400:preferredDimension));
         area.addPropertyChangeListener("colorPaletteContrasted", legendUpdater);
-        area.addPropertyChangeListener("colorPalette", legendUpdater);
+        area.addPropertyChangeListener("zMinMax", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                MinMax m=(MinMax) evt.getNewValue();
+                legendUnits.setMin(m.getMin());
+                legendUnits.setMax(m.getMax());
+            }
+        });
         legend = new HeatMapPlotArea(false, colorPalette, new Dimension(10, 400));
         legendUnits=new HeatMapPlotUnitsArea(false, area.getMinValue(),area.getMaxValue(),model.getZformat(), 5, new Dimension(50, 400));
         titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
@@ -117,7 +125,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
             }
 
             public void mouseMoved(MouseEvent e) {
-                SurfaceCell cc = area.getCurrentCell(e);
+                HeatMapCell cc = area.getCurrentCell(e);
                 if(cc==null){
                     statusbar.getiValueLabel().setAnyValue("");
                     statusbar.getjValueLabel().setAnyValue("");
@@ -210,17 +218,18 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         area.rotateRight();
     }
 
+    private class PercentStatusBarElement extends StatusBarElement {
+        public PercentStatusBarElement(String name) {
+            super(name);
+            doubleFormatter= PercentDoubleFormatter.INSTANCE;
+        }
+    }
     private class StatusBarElement extends JLabel {
-        DecimalFormat format;
-        DecimalFormat simpleFormat;
-
+        protected DoubleFormatter doubleFormatter= SimpleDoubleFormatter.INSTANCE;
         //        Dimension d=new Dimension(100, 10);
         public StatusBarElement(String name) {
             super("");
             setName(name);
-            format = new DecimalFormat("###0.000E0");
-            format.setMaximumIntegerDigits(1);
-            simpleFormat = new DecimalFormat("###0.000");
 //            setMinimumSize(d);
 //            setAllDimensions(d);
 //            setOpaque(true);
@@ -228,18 +237,18 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
 //            setBorder(BorderFactory.createEtchedBorder());
         }
 
-        public DecimalFormat getFormat() {
-            return format;
-        }
-
-        public void setFormat(DecimalFormat format) {
-            this.format = format;
-        }
-
-        public StatusBarElement setSimpleFormat(DecimalFormat simpleFormat) {
-            this.simpleFormat = simpleFormat;
-            return this;
-        }
+//        public DecimalFormat getFormat() {
+//            return format;
+//        }
+//
+//        public void setFormat(DecimalFormat format) {
+//            this.format = format;
+//        }
+//
+//        public StatusBarElement setSimpleFormat(DecimalFormat simpleFormat) {
+//            this.simpleFormat = simpleFormat;
+//            return this;
+//        }
 
         public void setAnyValue(Object d) {
             if(d ==null){
@@ -250,7 +259,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
             }else if(d instanceof Number){
                 if(d instanceof Complex){
                     if(((Complex)d).isReal()){
-                        setAnyValue(((Complex)d).getReal());
+                        setText(doubleFormatter.formatDouble(((Complex)d).getReal()));
                     }else{
                         setText(String.valueOf(d));
                     }
@@ -259,32 +268,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
                     return;
                 }else if(d instanceof BigDecimal){
                     double d0 = ((Double) d).doubleValue();
-                    DecimalFormat f=format;
-                    if(d0 >=1E-3 && d0<=1E4){
-                        f=simpleFormat;
-                    }
-                    String v = f == null ? String.valueOf(d) : f.format(d);
-                    if (v.endsWith("E0")) {
-                        v = v.substring(0, v.length() - 2);
-                    }
-                    setText(v);
+                    setText(doubleFormatter.formatDouble(d0));
                 }else if(d instanceof Double){
                     double d0 = ((Double) d).doubleValue();
-                    if(Double.isNaN(d0)){
-                        setText("NaN");
-                    }else {
-                        DecimalFormat f = format;
-                        if (d0 >= 1E-3 && d0 <= 1E4) {
-                            f = simpleFormat;
-                        }
-                        String v = f == null ? String.valueOf(d) : f.format(d);
-                        if (v.endsWith("E0")) {
-                            v = v.substring(0, v.length() - 2);
-                        }
-                        setText(v);
-                    }
+                    setText(doubleFormatter.formatDouble(d0));
                 }else if(d instanceof Float){
-                    setAnyValue(((Float)d).doubleValue());
+                    setText(doubleFormatter.formatDouble(((Float)d).doubleValue()));
                 }else{
                     setText(String.valueOf(d));
                 }
@@ -295,16 +284,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         }
 
         public void setDoubleValue(double d) {
-            if (!Double.isNaN(d)) {
-                String v = format == null ? String.valueOf(d) : format.format(d);
-                if (v.endsWith("E0")) {
-                    v = v.substring(0, v.length() - 2);
-                }
-                setText(v);
-            } else {
-                setText("");
-            }
-            setToolTipText(String.valueOf(d));
+            setAnyValue(d);
         }
 
         public void setIntValue(int d) {
@@ -327,14 +307,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         StatusBarElement xValueLabel = new StatusBarElement("xValueLabel");
         StatusBarElement yValueLabel = new StatusBarElement("yValueLabel");
         StatusBarElement zValueLabel = new StatusBarElement("zValueLabel");
-        StatusBarElement zPercentValueLabel = new StatusBarElement("zPercentValueLabel");
+        PercentStatusBarElement zPercentValueLabel = new PercentStatusBarElement("zPercentValueLabel");
         StatusBarElement iValueLabel = new StatusBarElement("iValueLabel");
         StatusBarElement jValueLabel = new StatusBarElement("jValueLabel");
 
         public StatusBar() {
             super();
-            zPercentValueLabel.setFormat(new DecimalFormat("00.00%"));
-            zPercentValueLabel.setSimpleFormat(new DecimalFormat("00.00%"));
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 //            setFloatable(false);
             setBorder(BorderFactory.createEtchedBorder());

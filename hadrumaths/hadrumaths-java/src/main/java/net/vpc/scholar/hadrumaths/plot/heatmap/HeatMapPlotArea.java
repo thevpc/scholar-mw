@@ -1,7 +1,8 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 import net.vpc.scholar.hadrumaths.DMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.HSBColorPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 
@@ -21,8 +22,8 @@ import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
  */
 public class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseListener {
     private static final long serialVersionUID = 1L;
-    int rowsCount=0;
-    int columnsCount=0;
+    int rowsCount = 0;
+    int columnsCount = 0;
     double minValue;
     double maxValue;
     double[][] matrix;
@@ -47,7 +48,7 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
 //    }
 
     public HeatMapPlotArea(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
-        init(model,reverseY, colorPalette, preferredDimension);
+        init(model, reverseY, colorPalette, preferredDimension);
     }
 
     public double getMinValue() {
@@ -70,13 +71,13 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         } else {
             x = Maths.dsteps(0.0, 0, 1.0);
             y = Maths.dsteps(max, 0.0, -1.0);
-            _matrix=new double[y.length][1];
+            _matrix = new double[y.length][1];
             for (int i = 0; i < y.length; i++) {
-                _matrix[i][0]=y[i];
+                _matrix[i][0] = y[i];
             }
             //_matrix = new DMatrix(new double[][]{x}).transpose().getDoubleArray();
         }
-        init(new ValuesPlotXYDoubleModelFace(x, y, _matrix,null,null), false, colorPalette, preferredDimension);
+        init(new ValuesPlotXYDoubleModelFace(x, y, _matrix, null, null), false, colorPalette, preferredDimension);
     }
 
     private void init(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
@@ -90,7 +91,7 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
             }
         });
         addMouseListener(this);
-        setModel(model, reverseY,colorPalette, preferredDimension);
+        setModel(model, reverseY, colorPalette, preferredDimension);
     }
 
     public void setModel(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
@@ -99,30 +100,30 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         }
         setPreferredDimension(preferredDimension);
         setColorPalette(colorPalette);
-        setModel(model,reverseY);
+        setModel(model, reverseY);
     }
 
     public void setModel(ValuesPlotXYDoubleModelFace model, boolean reverseY) {
         setxAxis(model.getX());
-        double[] y=model.getY();
-        double[][] matrix=model.getZ();
-        if(reverseY) {
+        double[] y = model.getY();
+        double[][] matrix = model.getZ();
+        if (reverseY) {
             double[][] matrix2 = new double[matrix.length][];
             for (int i = 0; i < matrix.length; i++) {
                 matrix2[i] = matrix[matrix.length - 1 - i];
             }
-            if(y!=null) {
+            if (y != null) {
                 double[] y2 = new double[y.length];
                 for (int i = 0; i < y.length; i++) {
                     y2[i] = y[y.length - 1 - i];
                 }
                 setData(matrix2);
                 setyAxis(y2);
-            }else{
+            } else {
                 setData(matrix2);
                 setyAxis(y);
             }
-        }else{
+        } else {
             setData(matrix);
             setyAxis(y);
         }
@@ -309,20 +310,24 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     }
 
     public void setData(double[][] matrix) {
-        minValue=Double.NaN;
-        maxValue=Double.NaN;
+        MinMax oldZMinMax = new MinMax();
+        oldZMinMax.registerValue(minValue);
+        oldZMinMax.registerValue(maxValue);
 
-        if(matrix!=null) {
+        minValue = Double.NaN;
+        maxValue = Double.NaN;
+
+        if (matrix != null) {
             for (int i = 0; i < matrix.length; i++) {
-                if(matrix[i]!=null) {
+                if (matrix[i] != null) {
                     for (int j = 0; j < matrix[i].length; j++) {
                         double vv = matrix[i][j];
-                        if(!Double.isNaN(vv)){
-                            if(Double.isNaN(minValue) || vv<minValue){
-                                minValue=vv;
+                        if (!Double.isNaN(vv)) {
+                            if (Double.isNaN(minValue) || vv < minValue) {
+                                minValue = vv;
                             }
-                            if(Double.isNaN(maxValue) || vv>maxValue){
-                                maxValue=vv;
+                            if (Double.isNaN(maxValue) || vv > maxValue) {
+                                maxValue = vv;
                             }
                         }
                     }
@@ -331,27 +336,30 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         }
 
         this.sourceMatrix = matrix;
-        rowsCount=sourceMatrix==null?0:sourceMatrix.length;
-        columnsCount=0;
-        if(rowsCount>0){
+        rowsCount = sourceMatrix == null ? 0 : sourceMatrix.length;
+        columnsCount = 0;
+        if (rowsCount > 0) {
             for (double[] doubles : sourceMatrix) {
-                if(columnsCount<doubles.length){
-                    columnsCount=doubles.length;
+                if (columnsCount < doubles.length) {
+                    columnsCount = doubles.length;
                 }
             }
         }
         for (int i = 0; i < rowsCount; i++) {
-            if(sourceMatrix[i].length<columnsCount){
-                double[] newRef=new double[columnsCount];
-                System.arraycopy(sourceMatrix[i],0,newRef,0,sourceMatrix[i].length);
+            if (sourceMatrix[i].length < columnsCount) {
+                double[] newRef = new double[columnsCount];
+                System.arraycopy(sourceMatrix[i], 0, newRef, 0, sourceMatrix[i].length);
                 for (int j = sourceMatrix[i].length; j < newRef.length; j++) {
-                    newRef[j]=Double.NaN;
+                    newRef[j] = Double.NaN;
                 }
-                sourceMatrix[i]=newRef;
+                sourceMatrix[i] = newRef;
             }
         }
         this.matrix = normalizer.normalize(sourceMatrix);
-
+        MinMax zMinMax = new MinMax();
+        zMinMax.registerValue(minValue);
+        zMinMax.registerValue(maxValue);
+        firePropertyChange("zMinMax", oldZMinMax, zMinMax);
     }
 
     public HeatMapPlotNormalizer getNormalizer() {
@@ -365,20 +373,20 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         }
     }
 
-    private double getSourceMatrixCell(int r,int c){
-        if(r>=0 && r<rowsCount && c>=0 && c<=columnsCount){
+    private double getSourceMatrixCell(int r, int c) {
+        if (r >= 0 && r < rowsCount && c >= 0 && c <= columnsCount) {
             double[] row = this.sourceMatrix[r];
-            if(c< row.length){
+            if (c < row.length) {
                 return row[c];
             }
         }
         return Double.NaN;
     }
 
-    private double getMatrixCell(int r,int c){
-        if(r>=0 && r<rowsCount && c>=0 && c<=columnsCount){
+    private double getMatrixCell(int r, int c) {
+        if (r >= 0 && r < rowsCount && c >= 0 && c <= columnsCount) {
             double[] row = this.matrix[r];
-            if(c< row.length){
+            if (c < row.length) {
                 return row[c];
             }
         }
@@ -386,7 +394,7 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     }
 
     private void onMouseMove(MouseEvent e) {
-        SurfaceCell currentCell = getCurrentCell(e);
+        HeatMapCell currentCell = getCurrentCell(e);
         if (currentCell == null) {
             return;
         }
@@ -395,7 +403,7 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         if (isUseTooltips()) {
             StringBuilder sb = new StringBuilder();
             sb.append("<html>");
-            sb.append("<B>value=</B>").append(getSourceMatrixCell(yi,xj));
+            sb.append("<B>value=</B>").append(getSourceMatrixCell(yi, xj));
             if (xAxis != null && xAxis.length > yi && xAxis[xj] != null) {
                 sb.append(" ;<BR><B>x=</B>").append(xAxis[xj]);
             } else {
@@ -415,22 +423,23 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         repaint();
     }
 
-    public SurfaceCell getCurrentCell(MouseEvent e) {
+    public HeatMapCell getCurrentCell(MouseEvent e) {
         Dimension d = getSize();
         int maxX = matrix.length == 0 ? 0 : matrix[0].length;
         int maxY = matrix.length;
         int y = (int) (maxY * ((double) e.getY() / d.height));
         int x = (int) (maxX * ((double) e.getX() / d.width));
-        if(maxX == 0 || maxY == 0){
+        if (maxX == 0 || maxY == 0) {
             return null;
         }
-        double zPercent=matrix[y][x];
-        double zVal=getSourceMatrixCell(y,x);
-        Object[] a=xAxis;
-        Object xVal= (a != null && a.length > x && a[x] != null) ? a[x] : (x + 1);;
-        a=yAxis;
-        Object yVal=(a != null && a.length > y && a[y] != null) ? a[y] : (y + 1);
-        return new SurfaceCell(x,y,xVal,yVal,zVal,zPercent);
+        double zPercent = matrix[y][x];
+        double zVal = getSourceMatrixCell(y, x);
+        Object[] a = xAxis;
+        Object xVal = (a != null && a.length > x && a[x] != null) ? a[x] : (x + 1);
+        ;
+        a = yAxis;
+        Object yVal = (a != null && a.length > y && a[y] != null) ? a[y] : (y + 1);
+        return new HeatMapCell(x, y, xVal, yVal, zVal, zPercent);
     }
 
     public void paint(Graphics g) {
@@ -468,37 +477,37 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
                     iyy += 2;
                 }
 
-                if(Double.isNaN(dv)){
+                if (Double.isNaN(dv)) {
                     if (current_yi == line && current_xj == column) {
                         g.setColor(Color.LIGHT_GRAY);
-                    }else{
+                    } else {
                         g.setColor(Color.WHITE);
                     }
                     g.fillRect(xx, yy, ixx, iyy);
                     g.setColor(Color.GREEN);
-                    g.drawLine(xx, yy, xx+ixx, yy+iyy);
-                    g.drawLine(xx, yy+iyy, xx+ixx, yy);
-                }else if(dv==Double.POSITIVE_INFINITY){
+                    g.drawLine(xx, yy, xx + ixx, yy + iyy);
+                    g.drawLine(xx, yy + iyy, xx + ixx, yy);
+                } else if (dv == Double.POSITIVE_INFINITY) {
                     if (current_yi == line && current_xj == column) {
                         g.setColor(Color.LIGHT_GRAY);
-                    }else{
+                    } else {
                         g.setColor(Color.WHITE);
                     }
                     g.fillRect(xx, yy, ixx, iyy);
                     g.setColor(Color.RED);
-                    g.drawLine(xx, yy, xx+ixx, yy+iyy);
-                    g.drawLine(xx, yy+iyy, xx+ixx, yy);
-                }else if(dv==Double.NEGATIVE_INFINITY){
+                    g.drawLine(xx, yy, xx + ixx, yy + iyy);
+                    g.drawLine(xx, yy + iyy, xx + ixx, yy);
+                } else if (dv == Double.NEGATIVE_INFINITY) {
                     if (current_yi == line && current_xj == column) {
                         g.setColor(Color.LIGHT_GRAY);
-                    }else{
+                    } else {
                         g.setColor(Color.WHITE);
                     }
                     g.fillRect(xx, yy, ixx, iyy);
                     g.setColor(Color.BLUE);
-                    g.drawLine(xx, yy, xx+ixx, yy+iyy);
-                    g.drawLine(xx, yy+iyy, xx+ixx, yy);
-                }else{
+                    g.drawLine(xx, yy, xx + ixx, yy + iyy);
+                    g.drawLine(xx, yy + iyy, xx + ixx, yy);
+                } else {
                     Color baseColor = colorPaletteContrasted.getColor(f);
                     g.setColor(baseColor);
                     g.fillRect(xx, yy, ixx, iyy);
@@ -608,8 +617,8 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     public void flipHorizontally() {
         sourceMatrix = new DMatrix(sourceMatrix).flipHorizontally().getDoubleArray();
         matrix = new DMatrix(matrix).flipHorizontally().getDoubleArray();
-        for (int i = 0; i < xAxis.length/2; i++) {
-            xAxis[i]=xAxis[xAxis.length-1-i];
+        for (int i = 0; i < xAxis.length / 2; i++) {
+            xAxis[i] = xAxis[xAxis.length - 1 - i];
         }
         if (isShowing()) {
             repaint();
@@ -619,8 +628,8 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     public void flipVertically() {
         sourceMatrix = new DMatrix(sourceMatrix).flipVertically().getDoubleArray();
         matrix = new DMatrix(matrix).flipVertically().getDoubleArray();
-        for (int i = 0; i < yAxis.length/2; i++) {
-            yAxis[i]=yAxis[yAxis.length-1-i];
+        for (int i = 0; i < yAxis.length / 2; i++) {
+            yAxis[i] = yAxis[yAxis.length - 1 - i];
         }
         if (isShowing()) {
             repaint();

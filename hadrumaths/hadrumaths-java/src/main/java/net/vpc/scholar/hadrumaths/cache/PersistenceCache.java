@@ -3,7 +3,6 @@ package net.vpc.scholar.hadrumaths.cache;
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,7 +165,7 @@ public class PersistenceCache implements PersistentCacheConfig {
             }
         }
 
-        return new ObjectCache(new DumpPath(sb.toString()), this);
+        return new DefaultObjectCache(new DumpPath(sb.toString()), this);
     }
 
     public HFile getFolder(String dump) {
@@ -206,7 +205,7 @@ public class PersistenceCache implements PersistentCacheConfig {
 //        DumpPath dp=new DumpPath(dump);
 //        File f = getDumpFolder(dump, createIfNotFound);
 //        return f == null ? null : new MomCache(new DumpPath(dump), this);
-        return new ObjectCache(new DumpPath(dump.getValue()), this);
+        return new DefaultObjectCache(new DumpPath(dump.getValue()), this);
     }
 
     public DumpCacheFile getFile(DumpPath dump, String path) {
@@ -480,12 +479,8 @@ public class PersistenceCache implements PersistentCacheConfig {
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
     public <T> T evaluate(final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
-        Dumper dump = new Dumper();
-        for (Object arg : args) {
-            dump.add(arg);
-        }
 
-        final ObjectCache objCache = getObjectCache(new HashValue(dump.toString()), true);
+        final ObjectCache objCache = getObjectCache(HashValue.valueOf(args), true);
         return evaluate(objCache, cacheItemName, monitor, evaluator, args);
     }
 
@@ -504,7 +499,7 @@ public class PersistenceCache implements PersistentCacheConfig {
         if(objCache==null){
             return (T) evaluator.evaluate(args);
         }
-        return objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
+        return objCache.invokeLocked(cacheItemName,
                 PersistenceCache.LOCK_TIMEOUT,
                 new Callable<T>() {
                     @Override
@@ -603,7 +598,7 @@ public class PersistenceCache implements PersistentCacheConfig {
             if(objCache==null){
                 return null;
             }
-            value = objCache.getObjectCacheFile(cacheItemName).getLock().invoke(
+            value = objCache.invokeLocked(cacheItemName,
                     PersistenceCache.LOCK_TIMEOUT,
                     new Callable<T>() {
                         @Override
@@ -653,7 +648,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                     if (objCache.exists(cacheItemName)) {
                         return true;
                     }
-                    return objCache.getObjectCacheFile(cacheItemName).getLock().isLocked();
+                    return objCache.isLocked(cacheItemName);
                 } catch (Exception e) {
                     System.err.println(e);
                     //

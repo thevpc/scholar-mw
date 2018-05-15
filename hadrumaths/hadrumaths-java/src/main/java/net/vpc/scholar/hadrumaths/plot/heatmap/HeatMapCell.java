@@ -1,9 +1,9 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 /**
  * Created by vpc on 8/10/14.
  */
-public class SurfaceCell {
+public class HeatMapCell {
     private int xIndex;
     private int yIndex;
     private Object xValue;
@@ -11,7 +11,7 @@ public class SurfaceCell {
     private double zValue;
     private double zPercent;
 
-    public SurfaceCell(int xIndex, int yIndex, Object xValue, Object yValue, double zValue, double zPercent) {
+    public HeatMapCell(int xIndex, int yIndex, Object xValue, Object yValue, double zValue, double zPercent) {
         this.xIndex = xIndex;
         this.yIndex = yIndex;
         this.xValue = xValue;

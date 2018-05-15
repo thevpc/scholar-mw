@@ -1,6 +1,6 @@
 //package net.vpc.scholar.hadrumaths.test;
 //
-//import net.vpc.scholar.hadrumaths.plot.surface.HeatMapPlotArea;
+//import net.vpc.scholar.hadrumaths.plot.heatmap.HeatMapPlotArea;
 //
 //import javax.swing.*;
 //import java.awt.*;

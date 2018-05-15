@@ -24,5 +24,5 @@ public abstract class JCardPanel extends JPanel {
         super(layout, isDoubleBuffered);
     }
 
-    public abstract void addPage(String id, String title, Icon icon, JComponent c);
+    public abstract String addPage(String id, String title, Icon icon, JComponent c);
 }

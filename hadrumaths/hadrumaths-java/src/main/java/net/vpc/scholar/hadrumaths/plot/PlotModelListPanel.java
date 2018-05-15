@@ -5,17 +5,12 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.plot.surface.HeatMapPlot;
-import net.vpc.scholar.hadrumaths.plot.table.TablePlotComponentPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

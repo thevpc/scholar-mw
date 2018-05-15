@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.curve.CurvePlot;
-import net.vpc.scholar.hadrumaths.plot.surface.DefaultHeatMapPlotNormalizer;
-import net.vpc.scholar.hadrumaths.plot.surface.HeatMapPlot;
+import net.vpc.scholar.hadrumaths.plot.heatmap.DefaultHeatMapPlotNormalizer;
+import net.vpc.scholar.hadrumaths.plot.heatmap.HeatMapPlot;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 

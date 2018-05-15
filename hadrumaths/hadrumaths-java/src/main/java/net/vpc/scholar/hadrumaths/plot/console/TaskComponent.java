@@ -26,18 +26,18 @@ public class TaskComponent extends JPanel implements ActionListener {
     private JLabel timeRemLabel;
     private JLabel timeRemValue;
     private JProgressBar yProgress;
-    private EnhancedProgressMonitor thread;
+    private EnhancedProgressMonitor monitor;
     private JToggleButton pause;
     private JButton detach;
     private JButton kill;
     private TaskMonitor taskMonitor;
 
-    public TaskComponent(TaskMonitor taskMonitor, EnhancedProgressMonitor thread, String windowTitleString, String descString) {
+    public TaskComponent(TaskMonitor taskMonitor, EnhancedProgressMonitor monitor, String windowTitleString, String descString) {
         setOpaque(true);
         setBackground(Color.WHITE);
-        thread.start("Task Starting...");
+        monitor.start("Task Starting...");
         this.taskMonitor = taskMonitor;
-        this.thread = thread;
+        this.monitor = monitor;
         yProgress = new JProgressBar(0, 100);
         yProgress.setStringPainted(true);
         windowTitle = new JLabel();
@@ -120,21 +120,21 @@ public class TaskComponent extends JPanel implements ActionListener {
             taskMonitor.unfreeze();
             detach.setEnabled(false);
         } else if (source == pause) {
-            if (thread != null) {
+            if (monitor != null) {
                 if (pause.isSelected()) {
                     setBackground(Color.LIGHT_GRAY);
                     yProgress.setBackground(Color.LIGHT_GRAY);
                     detach.setBackground(Color.LIGHT_GRAY);
                     kill.setBackground(Color.LIGHT_GRAY);
                     pause.setBackground(Color.LIGHT_GRAY);
-                    thread.suspend();
+                    monitor.suspend();
                 } else {
                     setBackground(Color.WHITE);
                     yProgress.setBackground(Color.WHITE);
                     detach.setBackground(Color.WHITE);
                     kill.setBackground(Color.WHITE);
                     pause.setBackground(Color.WHITE);
-                    thread.resume();
+                    monitor.resume();
                 }
             }
         } else if (source == kill) {
@@ -143,9 +143,9 @@ public class TaskComponent extends JPanel implements ActionListener {
     }
 
     public void kill() {
-        if (thread != null) {
+        if (monitor != null) {
             try {
-                thread.cancel();
+                monitor.cancel();
             } catch (ThreadDeath e) {
                 //e.printStackTrace();
             }
@@ -158,13 +158,13 @@ public class TaskComponent extends JPanel implements ActionListener {
     }
 
     public void ticMonitor(int index, int maxIndex) {
-        if (thread != null) {
-            double progressValue = thread.getProgressValue();
-            if(thread.getProgressMessage().getText().length()>0) {
-                descLabel.setText(thread.getProgressMessage().getText());
+        if (monitor != null) {
+            double progressValue = monitor.getProgressValue();
+            if(monitor.getProgressMessage().getText().length()>0) {
+                descLabel.setText(monitor.getProgressMessage().getText());
             }
-            if (!thread.isTerminated() && !pause.isSelected()) {
-                double d = thread.getProgressValue();
+            if (!monitor.isTerminated() && !pause.isSelected()) {
+                double d = monitor.getProgressValue();
                 if(d<0 || d>1.0){
                     System.err.println("%= "+d+"????????????");
                     d=d/100;
@@ -176,7 +176,7 @@ public class TaskComponent extends JPanel implements ActionListener {
                 }else{
                     d100=d*100;
                 }
-                Chronometer chrono = thread.getChronometer();
+                Chronometer chrono = monitor.getChronometer();
                 long spent = chrono.isStarted() ? chrono.getTime():0;
                 long remaining = spent == 0 ? -1 : (long) ((spent / d) * (1 - d));
                 long approx = spent == 0 ? -1 : (long) ((spent / d));
@@ -187,15 +187,15 @@ public class TaskComponent extends JPanel implements ActionListener {
                 timeRemLabel.setText("Remaining :");
                 timeRemValue.setText(Chronometer.formatPeriodNano(remaining, Chronometer.DatePart.s));
                 detach.setEnabled(index<maxIndex);
-                updateProgress(d100, thread.getProgressMessage().toString());
-            } else if(thread.isTerminated()){
+                updateProgress(d100, monitor.getProgressMessage().toString());
+            } else if(monitor.isTerminated()){
                 windowTitle.setForeground(Color.RED);
                 yLabel.setForeground(Color.RED);
                 descLabel.setForeground(Color.RED);
                 detach.setEnabled(false);
                 kill.setEnabled(false);
                 pause.setEnabled(false);
-                thread = null;
+                monitor = null;
             }
         } else {
             taskMonitor.removeTask(this);

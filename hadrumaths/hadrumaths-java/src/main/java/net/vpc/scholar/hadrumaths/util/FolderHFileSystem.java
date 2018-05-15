@@ -135,7 +135,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         if (d.delete()) {
             return true;
         }
-        switch (strategy) {
+        switch (strategy==null?FailStrategy.FAIL_FAST:strategy) {
             case FAIL_SAFE:
                 return false;
         }

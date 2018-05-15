@@ -34,7 +34,7 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
         }
         plotter.getPlotConsoleFrame().getWindow(preferredPath)
                 .addChild(
-                        plotTitle,
+                        "/"+plotTitle,
                         Plot.create(
                                 new VDiscretePlotModel()
                                 .setTitle(plotTitle)

@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.vpc.scholar.hadrumaths.util.StringShellFilter;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -68,12 +69,42 @@ public class JListCardPanel extends JCardPanel {
         });
     }
 
-    public void addPage(String id, String title, Icon icon, JComponent c) {
-        (getFilteredListModel()).addElement(new PanelPage(c, id, title, icon));
-        main.add(c, id);
+    private int indexOfId(String id) {
+        int size = list.getModel().getSize();
+        for (int i = 0; i < size; i++) {
+            PanelPage elementAt = (PanelPage) list.getModel().getElementAt(i);
+            if(id.equals(elementAt.id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    private String validateId(String id) {
+        if(StringUtils.isEmpty(id)){
+            id="#";
+        }
+        int i=0;
+        while(true){
+            String n=i==0?id:id+"("+(i+2)+")";
+            int index = indexOfId(n);
+            if(index<0){
+                return n;
+            }
+            i++;
+        }
+    }
+
+    public String addPage(String id, String title, Icon icon, JComponent c) {
+        String newId = validateId(id);
+        if (newId == null) {
+            return null;
+        }
+        (getFilteredListModel()).addElement(new PanelPage(c, newId, title, icon));
+        main.add(c, newId);
         if (list.getModel().getSize() == 1) {
             list.setSelectedIndex(list.getModel().getSize() - 1);
         }
+        return newId;
     }
 
     public void removePageAt(int index) {
@@ -91,6 +122,10 @@ public class JListCardPanel extends JCardPanel {
         if (index <= -1 || index >= model.getBaseSize()) {
             addPage(id, title, icon, c);
             return;
+        }
+        int oldIndex = indexOfId(id);
+        if(oldIndex!=index){
+            id=validateId(id);
         }
         model.setElementAt(index, new PanelPage(c, id, title, icon));
         main.add(c, id);

@@ -18,7 +18,22 @@ public class ValuesPlotXDoubleModelFace {
         this.title = model.getTitle();
 
         double[][] xAxis = model.getX();
-        double[][] yAxis = model.getZd();
+        double[][] x2Axis = model.getY();
+        double[][] yAxis=null;
+        boolean swappedXY=false;
+        if(xAxis!=null && x2Axis!=null && xAxis.length==1 && xAxis[0].length==1 && x2Axis.length>0 && x2Axis[0].length>0){
+            double[][] sw=xAxis;
+            xAxis=x2Axis;
+            x2Axis=sw;
+            double[][] zd0 = model.getZd();
+            yAxis = new double[1][zd0.length];
+            for (int i = 0; i < zd0.length; i++) {
+                yAxis[0][i]=zd0[i][0];
+            }
+            swappedXY=true;
+        }else {
+            yAxis = model.getZd();
+        }
 
         List<Integer> initialIndexesList = new ArrayList<>();
         List<double[]> xAxisList = new ArrayList<>();

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.scalarproducts;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializedForm;
 import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializerProvider;
+import net.vpc.scholar.hadrumaths.cache.DefaultObjectCache;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -294,7 +295,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
         private boolean hermitian;
 
         public SerMatrixScalarProductCache(boolean hermitian, boolean doubleValue, boolean scalarValue, Matrix cache, HFile file) throws IOException {
-            this.matrix = ObjectCache.toSerializedForm(cache, new HFile(file, "matrix"));
+            this.matrix = DefaultObjectCache.toSerializedForm(cache, new HFile(file, "matrix"));
             this.hermitian = hermitian;
             this.doubleValue = doubleValue;
             this.scalarValue = scalarValue;

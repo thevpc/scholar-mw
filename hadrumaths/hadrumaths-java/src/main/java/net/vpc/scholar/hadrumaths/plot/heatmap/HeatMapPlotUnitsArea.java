@@ -1,7 +1,8 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 
 import net.vpc.scholar.hadrumaths.DoubleFormatter;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +29,24 @@ public class HeatMapPlotUnitsArea extends JComponent {
         this.max = max;
         this.doubleFormatter = doubleFormatter;
         setPreferredDimension(preferredDimension);
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public HeatMapPlotUnitsArea setMin(double min) {
+        this.min = min;
+        return this;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public HeatMapPlotUnitsArea setMax(double max) {
+        this.max = max;
+        return this;
     }
 
     public void setPreferredDimension(Dimension preferredDimension) {
@@ -69,9 +88,9 @@ public class HeatMapPlotUnitsArea extends JComponent {
         if (Double.isNaN(min) || Double.isNaN(max) || min == max) {
             return df.format(v) + "%";
         } else {
-            double v2 = min + v * (max - min);
+            double v2 = min + (v/100.0) * (max - min);
             if (doubleFormatter == null) {
-                return String.valueOf(v2);
+                return SimpleDoubleFormatter.INSTANCE.formatDouble(v2);
             }
             return doubleFormatter.formatDouble(v2);
         }

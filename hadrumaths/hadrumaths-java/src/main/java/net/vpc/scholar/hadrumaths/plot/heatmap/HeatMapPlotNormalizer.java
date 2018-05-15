@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.plot.surface;
+package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

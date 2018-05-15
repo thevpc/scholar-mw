@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.plot.surface.HeatMapPlot;
+import net.vpc.scholar.hadrumaths.plot.heatmap.HeatMapPlot;
 import net.vpc.scholar.hadrumaths.plot.table.TablePlotComponentPanel;
 
 import javax.swing.*;
