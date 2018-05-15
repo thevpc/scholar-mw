@@ -126,7 +126,7 @@ public class DoubleParam extends ParamExpr implements Cloneable{
 
     @Override
     public boolean isDoubleExprImpl() {
-        return true;
+        return false;
     }
 
     @Override

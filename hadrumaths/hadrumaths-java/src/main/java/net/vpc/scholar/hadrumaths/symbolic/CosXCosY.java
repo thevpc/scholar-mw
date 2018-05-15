@@ -25,7 +25,7 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
                     @DoubleValidator(NaN = false) double b,
                     @DoubleValidator(NaN = false) double c,
                     @DoubleValidator(NaN = false) double d, Domain domain) {
-        super(domain);
+        super(detectDomain(amp,c,domain));
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("CosXCosY amp=NaN");
         }
@@ -49,6 +49,18 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
 //        name=(((a != 0 || b != 0) ? "cos(ax+b)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 
+    protected static Domain detectDomain(double amp,double c, Domain domain){
+        if(domain==null){
+            if(amp ==0 || c==0){
+                return Domain.FULLXY;
+            }
+            return Domain.FULLX;
+        }
+        if(domain.getDomainDimension()<=2){
+            return domain;
+        }
+        return domain.toDomain(2);
+    }
 
     @Override
     public boolean isZeroImpl() {

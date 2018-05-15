@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.util.DoubleValidator;
  * Date: 2 juil. 2003
  * Time: 11:51:13
  */
-public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable{
+public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
     public double amp;
     //    public static final int HASHCODE = 1;
@@ -18,11 +18,11 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
 
     public CosXPlusY(
             @DoubleValidator(NaN = false)
-            double amp,
+                    double amp,
             @DoubleValidator(NaN = false) double a,
             @DoubleValidator(NaN = false) double b,
             @DoubleValidator(NaN = false) double c, Domain domain) {
-        super(domain);
+        super(detectDomain(amp,b,domain));
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("DCosCosFunctionXY amp=NaN");
         }
@@ -42,11 +42,24 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         //name=(((a != 0 || b != 0) ? "cos(ax+by+c)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 
+    protected static Domain detectDomain(double amp,double b, Domain domain) {
+        if (domain == null) {
+            if (b == 0 || amp==0) {
+                return Domain.FULLXY;
+            }
+            return Domain.FULLX;
+        }
+        if (domain.getDomainDimension() <= 2) {
+            return domain;
+        }
+        return domain.toDomain(2);
+    }
+
 
     @Override
     public boolean isZeroImpl() {
         return amp == 0 ||
-                (a == 0 && b==0 && (Maths.cos2(c) == 0 || ((Maths.abs(c) * 2 / Maths.PI) % 2 == 1)));
+                (a == 0 && b == 0 && (Maths.cos2(c) == 0 || ((Maths.abs(c) * 2 / Maths.PI) % 2 == 1)));
 
     }
 
@@ -81,7 +94,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
                 return true;
             }
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
+        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "Not supported yet.");
     }
 
 
@@ -95,9 +108,8 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
      */
     @Override
     public CosXPlusY translate(double deltaX, double deltaY) {
-        return new CosXPlusY(amp, a, b,c - a * deltaX-b*deltaY, domain.translate(deltaX, deltaY));
+        return new CosXPlusY(amp, a, b, c - a * deltaX - b * deltaY, domain.translate(deltaX, deltaY));
     }
-
 
 
     @Override
@@ -121,7 +133,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
     public AbstractDoubleToDouble getSymmetricX() {
         double a2 = -a;
         double c2 = a * (domain.xmin() + domain.xmax()) + c;
-        return new CosXPlusY(amp,a2, b,c2, domain);
+        return new CosXPlusY(amp, a2, b, c2, domain);
     }
 
 //    public DFunctionXY toTranslation(double xDelta) {
@@ -132,7 +144,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
 
     @Override
     public CosXPlusY getSymmetricY() {
-        return new CosXPlusY(amp,a, -b,b * (domain.ymin ()+ domain.ymax()) + c, domain);
+        return new CosXPlusY(amp, a, -b, b * (domain.ymin() + domain.ymax()) + c, domain);
     }
 
     public boolean isSymmetric(AxisXY axis) {
@@ -170,8 +182,6 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
     public double getC() {
         return c;
     }
-
-
 
 
     @Override
@@ -212,7 +222,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
     }
 
     protected double computeDouble0(double x, BooleanMarker defined) {
-        if(b==0){
+        if (b == 0) {
             defined.set();
             return amp * Maths.cos2(a * x + c);
         }
@@ -221,22 +231,22 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
 
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b* y + c);
+        return amp * Maths.cos2(a * x + b * y + c);
     }
 
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b* y + c);
+        return amp * Maths.cos2(a * x + b * y + c);
     }
 
     @Override
     public Expr mul(Domain domain) {
-        return new CosXPlusY(amp,a,b,c,this.domain.intersect(domain));
+        return new CosXPlusY(amp, a, b, c, this.domain.intersect(domain));
     }
 
     @Override
     public Expr mul(double other) {
-        return new CosXPlusY(amp*other,a,b,c,this.domain.intersect(domain));
+        return new CosXPlusY(amp * other, a, b, c, this.domain.intersect(domain));
     }
 
 }

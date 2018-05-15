@@ -79,13 +79,26 @@ public final class Linear extends AbstractDoubleToDouble implements Cloneable{
     }
 
     public Linear(double a, double b, double c, Domain domain) {
-        super(domain==null?Domain.FULLXY:domain.toDomain(2));
+        super(detectDomain(a,b,c,domain));
         this.a = a;
         this.b = b;
         this.c = c;
 //        if(b!=0 && domain.getDimension()<=1){
 //            throw new IllegalArgumentException("Domain dimension mismatch");
 //        }
+    }
+
+    protected static Domain detectDomain(double a, double b, double c, Domain domain){
+        if(domain==null){
+            if(b==0){
+                return Domain.FULLXY;
+            }
+            return Domain.FULLX;
+        }
+        if(domain.getDomainDimension()<=2){
+            return domain;
+        }
+        return domain.toDomain(2);
     }
 
     public double computeDouble0(double x, double y, double z, BooleanMarker defined) {

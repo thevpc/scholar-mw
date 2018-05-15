@@ -200,6 +200,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax)) {
             return NaNXY;
         }
+        //domain(4.800000000000001->5, FULL)
         return new DomainXY(xmin, xmax, ymin, ymax);
     }
 
