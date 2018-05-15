@@ -36,11 +36,11 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         MomStructure str=(MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
         TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
-        PlotComponent aplot = Plot.nodisplay().asHeatMap().title("Matrix A")
+        PlotComponent aplot = Plot.nodisplay().asMatrix().title("Matrix A")
                 .plot(str.matrixA().computeMatrix());
-        PlotComponent bplot = Plot.nodisplay().asHeatMap().title("Matrix B")
+        PlotComponent bplot = Plot.nodisplay().asMatrix().title("Matrix B")
                 .plot(str.matrixB().computeMatrix());
-        PlotComponent gfplot = Plot.nodisplay().asHeatMap().title("<f,g>").plot(sp);
+        PlotComponent gfplot = Plot.nodisplay().asMatrix().title("<f,g>").plot(sp);
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()

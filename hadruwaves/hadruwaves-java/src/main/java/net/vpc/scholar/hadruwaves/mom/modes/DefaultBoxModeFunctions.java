@@ -1,10 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.cache.Evaluator2;
-import net.vpc.scholar.hadrumaths.cache.HashValue;
-import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadrumaths.cache.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
@@ -440,7 +437,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         if(best!=null){
             TVector<Complex> o = null;
             try {
-                o = (TVector<Complex>) ObjectCache.loadObject(best, null);
+                o = (TVector<Complex>) DefaultObjectCache.loadObject(best, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }

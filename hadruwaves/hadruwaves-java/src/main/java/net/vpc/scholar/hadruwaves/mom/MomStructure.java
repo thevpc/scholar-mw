@@ -1113,6 +1113,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return getModeFunctions().fn();
     }
 
+    public WallBorders getBorders() {
+        return this.modeFunctionsDelegate.getBorders();
+    }
     public ModeFunctions getModeFunctions() {
         build();
 //        if (build()) {

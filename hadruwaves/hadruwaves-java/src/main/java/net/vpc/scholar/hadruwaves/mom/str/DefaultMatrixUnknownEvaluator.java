@@ -22,10 +22,10 @@ public class DefaultMatrixUnknownEvaluator implements MatrixUnknownEvaluator {
         try {
             Testcoeff = A_.solve(B_);
         } catch (Exception e) {
-            str.getLog().error("Error PMethodDirect.Zin : " + e);
+            str.getLog().error("Error DefaultMatrixUnknownEvaluator : " + e);
 //            getLog().error("A=" + A_);
 //            getLog().error("B=" + B_);
-            str.wdebug("getTestcoeffImpl", e);
+            str.wdebug("DefaultMatrixUnknownEvaluator", e);
             return Maths.NaNMatrix(B_.getRowCount(), B_.getColumnCount());
 //                    new CMatrix(new Complex[][]{{Complex.CNaN}});
 //            throw new RuntimeException(e);

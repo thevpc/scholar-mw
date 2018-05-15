@@ -140,13 +140,11 @@ public final class BoxModesPattern implements RectangularGpPattern {
         boolean southReached = Math.abs(d.ymax() - globalDomain.ymax()) / globalDomain.xwidth() < EPS;
 
         CircuitType circuitType = CircuitType.SERIAL;
-        ModeFunctions fn = null;
         WallBorders b = WallBorders.EEEE;
 
         if (str != null) {
             circuitType = str.getCircuitType();
-            fn = str.getModeFunctions();
-            b = fn.getBorders();
+            b = str.getBorders();
         }
         Wall eastWall = eastReached ? b.getEast() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
         Wall westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
