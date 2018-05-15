@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
@@ -26,7 +27,7 @@ public class TestExprCompute {
         double mm=1;
         double[][] val1 = a.setParam("n",nn).setParam("m",mm).computeDouble(xtimes, ytimes, d, null);
         double[][] val2 = compute(xtimes, ytimes, mm, nn, d);
-//        Assert.assertArrayEquals(val1,val2);
+        Assert.assertArrayEquals(val1,val2);
 //        Plot.asMatrix().plot(val1);
 //        Plot.asMatrix().plot(val2);
 //        Object o=new Object();

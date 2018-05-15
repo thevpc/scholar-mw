@@ -19,9 +19,9 @@ public class TestToString {
         Complex c1 = Complex.valueOf(5.221429478319327E-20, -3.082759711126352E-19);
         System.out.println(c1.toString());
         Expr e= mul(c1,new ComplexValue(Complex.ZERO));
-        String str = e.toString();
+//        String str = e.toString();
         System.out.println(e);
-//        Assert.assertEquals(e.simplify(),Complex.ONE);
+        Assert.assertEquals(e.simplify(),Complex.ZERO);
     }
 
 

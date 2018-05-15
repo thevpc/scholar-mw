@@ -288,8 +288,8 @@ public class ExprChecker {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             System.out.println("Problem :: " + e);
-            Plot.title("DD_XYZ(Bulk) :" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesA));
-            Plot.title("DD_XYZ(Each):" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesB));
+            Plot.title("DD_XYZ(Bulk) :" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesA);
+            Plot.title("DD_XYZ(Each):" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesB);
 //            System.out.println(Arrays.deepToString(doublesA));
 //            System.out.println(Arrays.deepToString(doublesB));
             showDiff("DD_XYZ Diff", doublesA, doublesB, x, y, z);
@@ -297,7 +297,7 @@ public class ExprChecker {
             throw new IllegalArgumentException("Invalid");
         } else {
             if (showSuccess) {
-                Plot.title("(OK)DD_XYZ:" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesA));
+                Plot.title("(OK)DD_XYZ:" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesA);
             }
         }
         return doublesA;
@@ -336,8 +336,8 @@ public class ExprChecker {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             System.out.println("Problem :: " + e);
-            Plot.title("DC_XYZ(Bulk):" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesA));
-            Plot.title("DC_XYZ(Each):" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesB));
+            Plot.title("DC_XYZ(Bulk):" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesA);
+            Plot.title("DC_XYZ(Each):" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesB);
 //            System.out.println(Arrays.deepToString(doublesB));
 //            System.out.println(Arrays.deepToString(doublesA));
 //            JOptionPane.showConfirmDialog(null,null);
@@ -345,7 +345,7 @@ public class ExprChecker {
             throw new IllegalArgumentException("Invalid");
         } else {
             if (showSuccess) {
-                Plot.title("(OK)DC_XYZ:" + e).xsamples(x).ysamples(y).zsamples(z).plot(Discrete.create(doublesA));
+                Plot.title("(OK)DC_XYZ:" + e).xsamples(x).ysamples(y).zsamples(z).plot((Object)doublesA);
             }
         }
         return doublesA;

@@ -20,9 +20,9 @@ public class TestPlot {
             items[i]=cos(dtimes(step, PI/2+step,5));
         }
         Matrix m=matrix(items);
-        Plot.title("Une matrice").asMatrix().plot(m);
         PlotConsole c=Plot.console();
-        c.start();
+        c.plotter().title("Une matrice").asMatrix().plot(m);
+        c.plotter().title("Une matrice").asMatrix().plot(cos(X));
     }
 
 }

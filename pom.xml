@@ -4,7 +4,7 @@
     <groupId>net.vpc.scholar</groupId>
     <artifactId>scholar-mw</artifactId>
     <name>net.vpc.scholar</name>
-    <version>3.1.23</version>
+    <version>3.1.24</version>
     <packaging>pom</packaging>
     <modules>
         <module>hadrumaths/hadrumaths-java</module>

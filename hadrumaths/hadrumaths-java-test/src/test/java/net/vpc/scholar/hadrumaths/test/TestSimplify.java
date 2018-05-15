@@ -39,7 +39,7 @@ public class TestSimplify {
         Expr e1= cos(X.mul(3)).mul(xydomain(0,1,0,1));
         Expr e21 = e1.simplify();
         System.out.println(e21);
-        Assert.assertEquals(e21.toString(),("cos((3.0 * X * domain(0->1, 0->1)))"));
+        Assert.assertEquals(("cos(3 * domain(0->1, 0->1) * X)"),e21.toString());
     }
 
     @Test

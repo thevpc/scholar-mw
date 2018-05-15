@@ -9,9 +9,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="hadruwaves-scala" />
-    <orderEntry type="module" module-name="hadrumaths-scala" />
-    <orderEntry type="module" module-name="hadrumaths" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves-scala:3.1.23" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths-scala:3.1.23" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadrumaths:3.1.23" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />
@@ -83,7 +83,7 @@
     <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.3" level="project" />
     <orderEntry type="module" module-name="vpc-common-utils" />
     <orderEntry type="library" name="Maven: java-oo:javac8-oo-plugin:0.5" level="project" />
-    <orderEntry type="module" module-name="hadruwaves" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.23" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.12.4" level="project" />
   </component>
 </module>
