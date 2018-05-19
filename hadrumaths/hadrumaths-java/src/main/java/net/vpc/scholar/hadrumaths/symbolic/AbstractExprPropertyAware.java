@@ -1,60 +1,53 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.FormatFactory;
-//import net.vpc.scholar.math.functions.dfxy.DoubleX;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+//import net.vpc.scholar.math.functions.dfxy.DoubleX;
 
 /**
  * Created by vpc on 4/29/14.
  */
-public abstract class AbstractExprPropertyAware extends AbstractExpBase{
+public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     private static final long serialVersionUID = 1L;
-    public static final int CACHE_EVALUATED_hasPrams=1 << 0;
-    public static final int CACHE_VALUE_OF__hasPrams=1 << 1;
-    public static final int CACHE_EVALUATED_isComplex=1 << 2;
-    public static final int CACHE_VALUE_OF__isComplex=1 << 3;
-    public static final int CACHE_EVALUATED_isDC=1 << 4;
-    public static final int CACHE_VALUE_OF__isDC=1 << 5;
-    public static final int CACHE_EVALUATED_isDD=1 << 6;
-    public static final int CACHE_VALUE_OF__isDD=1 << 7;
-    public static final int CACHE_EVALUATED_isDV=1 << 8;
-    public static final int CACHE_VALUE_OF__isDV=1 << 9;
-    public static final int CACHE_EVALUATED_isDouble=1 << 10;
-    public static final int CACHE_VALUE_OF__isDouble=1 << 11;
-    public static final int CACHE_EVALUATED_isDoubleExpr=1 << 12;
-    public static final int CACHE_VALUE_OF__isDoubleExpr=1 << 13;
+    public static final int CACHE_EVALUATED_hasPrams = 1 << 0;
+    public static final int CACHE_VALUE_OF__hasPrams = 1 << 1;
+    public static final int CACHE_EVALUATED_isComplex = 1 << 2;
+    public static final int CACHE_VALUE_OF__isComplex = 1 << 3;
+    public static final int CACHE_EVALUATED_isDC = 1 << 4;
+    public static final int CACHE_VALUE_OF__isDC = 1 << 5;
+    public static final int CACHE_EVALUATED_isDD = 1 << 6;
+    public static final int CACHE_VALUE_OF__isDD = 1 << 7;
+    public static final int CACHE_EVALUATED_isDV = 1 << 8;
+    public static final int CACHE_VALUE_OF__isDV = 1 << 9;
+    public static final int CACHE_EVALUATED_isDouble = 1 << 10;
+    public static final int CACHE_VALUE_OF__isDouble = 1 << 11;
+    public static final int CACHE_EVALUATED_isDoubleExpr = 1 << 12;
+    public static final int CACHE_VALUE_OF__isDoubleExpr = 1 << 13;
 
-    public static final int CACHE_EVALUATED_isScalarExpr=1 << 14;
-    public static final int CACHE_VALUE_OF__isScalarExpr=1 << 15;
-    public static final int CACHE_EVALUATED_isInfinite=1 << 16;
-    public static final int CACHE_VALUE_OF__isInfinite=1 << 17;
-    public static final int CACHE_EVALUATED_isMatrix=1 << 18;
-    public static final int CACHE_VALUE_OF__isMatrix=1 << 19;
-    public static final int CACHE_EVALUATED_isNaN=1 << 20;
-    public static final int CACHE_VALUE_OF__isNaN=1 << 21;
-    public static final int CACHE_EVALUATED_isZero=1 << 22;
-    public static final int CACHE_VALUE_OF__isZero=1 << 23;
-    public static final int CACHE_EVALUATED_isInvariant_X=1 << 24;
-    public static final int CACHE_VALUE_OF__isInvariant_X=1 << 24;
-    public static final int CACHE_EVALUATED_isInvariant_Y=1 << 26;
-    public static final int CACHE_VALUE_OF__isInvariant_Y=1 << 27;
-//    public static final int CACHE_EVALUATED_isInvariant_Z=1 << 28;
+    public static final int CACHE_EVALUATED_isScalarExpr = 1 << 14;
+    public static final int CACHE_VALUE_OF__isScalarExpr = 1 << 15;
+    public static final int CACHE_EVALUATED_isInfinite = 1 << 16;
+    public static final int CACHE_VALUE_OF__isInfinite = 1 << 17;
+    public static final int CACHE_EVALUATED_isMatrix = 1 << 18;
+    public static final int CACHE_VALUE_OF__isMatrix = 1 << 19;
+    public static final int CACHE_EVALUATED_isNaN = 1 << 20;
+    public static final int CACHE_VALUE_OF__isNaN = 1 << 21;
+    public static final int CACHE_EVALUATED_isZero = 1 << 22;
+    public static final int CACHE_VALUE_OF__isZero = 1 << 23;
+    public static final int CACHE_EVALUATED_isInvariant_X = 1 << 24;
+    public static final int CACHE_VALUE_OF__isInvariant_X = 1 << 24;
+    public static final int CACHE_EVALUATED_isInvariant_Y = 1 << 26;
+    public static final int CACHE_VALUE_OF__isInvariant_Y = 1 << 27;
+    //    public static final int CACHE_EVALUATED_isInvariant_Z=1 << 28;
 //    public static final int CACHE_VALUE_OF__isInvariant_Z=1 << 29;
-    public static final int CACHE_EVALUATED_isDM=1 << 28;
-    public static final int CACHE_VALUE_OF__isDM=1 << 29;
+    public static final int CACHE_EVALUATED_isDM = 1 << 28;
+    public static final int CACHE_VALUE_OF__isDM = 1 << 29;
 
 
     protected transient int _cache_isProperties;//new BitSet(40);
 
     public AbstractExprPropertyAware() {
     }
-
-
 
 
     protected boolean hasParamsImpl() {
@@ -65,7 +58,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
         }
         return false;
     }
-
 
 
     protected boolean isDoubleImpl() {
@@ -82,12 +74,12 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 
     @Override
     public Complex toComplex() {
-        throw new ClassCastException(toString()+" of type "+getClass().getName()+" cannot be casted to Complex");
+        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
     }
 
     @Override
     public Matrix toMatrix() {
-        throw new ClassCastException(toString()+" of type "+getClass().getName()+" cannot be casted to Matrix");
+        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
     }
 
     @Override
@@ -207,10 +199,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 
 
     public synchronized final boolean isDD() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDDImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDD)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDD)) {
             boolean v = isDDImpl();
             _cache_set(CACHE_VALUE_OF__isDD, v);
             return v;
@@ -219,10 +211,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isDC() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDCImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDC)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDC)) {
             boolean v = isDCImpl();
             _cache_set(CACHE_VALUE_OF__isDC, v);
             return v;
@@ -231,10 +223,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isDV() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDVImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDV)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDV)) {
             boolean v = isDVImpl();
             _cache_set(CACHE_VALUE_OF__isDV, v);
             return v;
@@ -243,10 +235,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isDM() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDMImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDM)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDM)) {
             boolean v = isDMImpl();
             _cache_set(CACHE_VALUE_OF__isDM, v);
             return v;
@@ -255,10 +247,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isNaN() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isNaNImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isNaN)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isNaN)) {
             boolean v = isNaNImpl();
             _cache_set(CACHE_VALUE_OF__isNaN, v);
             return v;
@@ -267,10 +259,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isInfinite() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isInfiniteImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isInfinite)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isInfinite)) {
             boolean v = isInfiniteImpl();
             _cache_set(CACHE_VALUE_OF__isInfinite, v);
             return v;
@@ -279,10 +271,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isDoubleExpr() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDoubleExprImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDoubleExpr)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDoubleExpr)) {
             boolean v = isDoubleExprImpl();
             _cache_set(CACHE_VALUE_OF__isDoubleExpr, v);
             return v;
@@ -290,11 +282,11 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
         return _cache_get(CACHE_VALUE_OF__isDoubleExpr);
     }
 
-    public synchronized  boolean isDouble() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+    public synchronized boolean isDouble() {
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isDoubleImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isDouble)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isDouble)) {
             boolean v = isDoubleImpl();
             _cache_set(CACHE_VALUE_OF__isDouble, v);
             return v;
@@ -303,10 +295,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isComplex() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isComplexImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isComplex)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isComplex)) {
             boolean v = isComplexImpl();
             _cache_set(CACHE_VALUE_OF__isComplex, v);
             return v;
@@ -315,10 +307,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isZero() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isZeroImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isZero)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isZero)) {
             boolean v = isZeroImpl();
             _cache_set(CACHE_VALUE_OF__isZero, v);
             return v;
@@ -327,38 +319,38 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public synchronized final boolean isInvariant(Axis axis) {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
-            switch (axis){
-                case X:{
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+            switch (axis) {
+                case X: {
                     return isInvariantImpl(axis);
                 }
-                case Y:{
+                case Y: {
                     return isInvariantImpl(axis);
                 }
-                case Z:{
-                    return  isInvariantImpl(axis);
+                case Z: {
+                    return isInvariantImpl(axis);
                 }
             }
             throw new UnsupportedDomainDimensionException();
         }
-        switch (axis){
-            case X:{
-                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_X)){
+        switch (axis) {
+            case X: {
+                if (!_cache_is_evaluated(CACHE_EVALUATED_isInvariant_X)) {
                     boolean v = isInvariantImpl(axis);
                     _cache_set(CACHE_VALUE_OF__isInvariant_X, v);
                     return v;
                 }
                 return _cache_get(CACHE_VALUE_OF__isInvariant_X);
             }
-            case Y:{
-                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_Y)){
+            case Y: {
+                if (!_cache_is_evaluated(CACHE_EVALUATED_isInvariant_Y)) {
                     boolean v = isInvariantImpl(axis);
                     _cache_set(CACHE_VALUE_OF__isInvariant_Y, v);
                     return v;
                 }
                 return _cache_get(CACHE_VALUE_OF__isInvariant_Y);
             }
-            case Z:{
+            case Z: {
                 return isInvariantImpl(axis);
                 //TODO Z cache is not supported to help optimize memory usage (no more 'bits' in the int cache element)
 //                if( !_cache_is_evaluated(CACHE_EVALUATED_isInvariant_Z)){
@@ -373,10 +365,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public final boolean isMatrix() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isMatrixImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isMatrix)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isMatrix)) {
             boolean v = isMatrixImpl();
             _cache_set(CACHE_VALUE_OF__isMatrix, v);
             return v;
@@ -385,10 +377,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public final boolean isScalarExpr() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return isScalarExprImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_isScalarExpr)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_isScalarExpr)) {
             boolean v = isScalarExprImpl();
             _cache_set(CACHE_VALUE_OF__isScalarExpr, v);
             return v;
@@ -397,10 +389,10 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     }
 
     public final boolean hasParams() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return hasParamsImpl();
         }
-        if( !_cache_is_evaluated(CACHE_EVALUATED_hasPrams)){
+        if (!_cache_is_evaluated(CACHE_EVALUATED_hasPrams)) {
             boolean v = hasParamsImpl();
             _cache_set(CACHE_VALUE_OF__hasPrams, v);
             return v;
@@ -446,17 +438,19 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
     protected boolean _cache_get(int bitPower) {
         return ((_cache_isProperties & (bitPower)) != 0);
     }
-    protected void _cache_set(int bitPower,boolean value) {
+
+    protected void _cache_set(int bitPower, boolean value) {
         if (value) {
             _cache_isProperties |= (bitPower);
         } else {
             _cache_isProperties &= ~(bitPower);
         }
     }
+
     protected boolean _cache_is_evaluated(int bitPower) {
         boolean b = (_cache_isProperties & (bitPower)) != 0;
-        if(!b){
-            _cache_set_evaluated(bitPower,true);
+        if (!b) {
+            _cache_set_evaluated(bitPower, true);
         }
         return b;
     }
@@ -464,7 +458,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 //        _cache_set_evaluated(bitPower,true);
 //    }
 
-    protected void _cache_set_evaluated(int bitPower,boolean value) {
+    protected void _cache_set_evaluated(int bitPower, boolean value) {
         if (value) {
             _cache_isProperties |= (bitPower);
         } else {
@@ -482,17 +476,25 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase{
 //    }
 
 
-    protected abstract Domain getDomainImpl() ;
-    protected abstract boolean isInvariantImpl(Axis axis) ;
-    protected abstract boolean isZeroImpl() ;
-    protected abstract boolean isInfiniteImpl() ;
-    protected abstract boolean isNaNImpl() ;
+    protected abstract Domain getDomainImpl();
+
+    protected abstract boolean isInvariantImpl(Axis axis);
+
+    protected abstract boolean isZeroImpl();
+
+    protected abstract boolean isInfiniteImpl();
+
+    protected abstract boolean isNaNImpl();
 
     protected boolean isDoubleExprImpl() {
         return false;
     }
-    protected abstract boolean isDDImpl() ;
-    protected abstract boolean isDCImpl() ;
-    protected abstract boolean isDVImpl() ;
-    protected abstract boolean isDMImpl() ;
+
+    protected abstract boolean isDDImpl();
+
+    protected abstract boolean isDCImpl();
+
+    protected abstract boolean isDVImpl();
+
+    protected abstract boolean isDMImpl();
 }

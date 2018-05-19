@@ -60,7 +60,7 @@ public class MetricFormatter implements DoubleFormatter {
                             int r = 0;
                             if (i < charArray.length && Character.isDigit(charArray[i])) {
                                 r = r * 10 + (charArray[i] - '0');
-                                while (i + 1 < charArray.length && Character.isDigit(charArray[i+1])) {
+                                while (i + 1 < charArray.length && Character.isDigit(charArray[i + 1])) {
                                     i++;
                                     r = r * 10 + (charArray[i] - '0');
                                 }
@@ -71,14 +71,14 @@ public class MetricFormatter implements DoubleFormatter {
                         } else {
                             throw new IllegalArgumentException("Invalid");
                         }
-                        boolean validPow=false;
+                        boolean validPow = false;
                         for (int pow : pows) {
                             if (pow == cc) {
                                 validPow = true;
                                 break;
                             }
                         }
-                        if(!validPow){
+                        if (!validPow) {
                             throw new IllegalArgumentException("Invalid Dimension Power");
                         }
                         if (startInterval) {
@@ -136,7 +136,7 @@ public class MetricFormatter implements DoubleFormatter {
             this.high = t;
         }
         //force decimal
-        decimal=true;
+        decimal = true;
         if (fixedLength) {
             decimalFormat = new DecimalFormat("0." + StringUtils.fillString('0', integerDigits));
         } else {
@@ -240,17 +240,17 @@ public class MetricFormatter implements DoubleFormatter {
                 } else if (v >= Maths.pow(10, high)) {
                     sb.append(formatLeftPow(v * sign, high)).append(strUnit(high));
                 } else {
-                    boolean ok=false;
+                    boolean ok = false;
                     for (int i = pows.length - 1; i >= 0; i--) {
                         double b = Maths.pow(10, pows[i]);
                         if (v >= b) {
-                            sb.append(formatLeftPow(v * sign ,pows[i])).append(strUnit(pows[i]));
-                            ok=true;
+                            sb.append(formatLeftPow(v * sign, pows[i])).append(strUnit(pows[i]));
+                            ok = true;
                             break;
                         }
                     }
-                    if(!ok){
-                        sb.append(formatLeftPow(v*sign,pows[0])).append(strUnit(pows[0]));
+                    if (!ok) {
+                        sb.append(formatLeftPow(v * sign, pows[0])).append(strUnit(pows[0]));
                     }
                 }
             }

@@ -16,33 +16,33 @@ public class FormatParamArray implements Cloneable {
     public FormatParamArray(FormatParam[] array) {
         for (int i = 0; i < array.length; i++) {
             FormatParam pp = array[i];
-            if (paramsTable!=null && paramsTable.containsKey(pp.getClass())) {
+            if (paramsTable != null && paramsTable.containsKey(pp.getClass())) {
                 throw new IllegalArgumentException("Param " + pp.getClass().getSimpleName());
             }
-            if(paramsTable==null){
-                paramsTable=new HashMap<>(array.length);
+            if (paramsTable == null) {
+                paramsTable = new HashMap<>(array.length);
             }
             paramsTable.put(pp.getClass(), pp);
         }
     }
 
     public FormatParamArray remove(Class paramClass) {
-        if(paramsTable!=null){
+        if (paramsTable != null) {
             paramsTable.remove(paramClass);
         }
         return this;
     }
 
     public FormatParamArray remove(FormatParam param) {
-        if(paramsTable!=null) {
+        if (paramsTable != null) {
             paramsTable.remove(param.getClass());
         }
         return this;
     }
 
     public FormatParamArray set(FormatParam param) {
-        if(paramsTable==null){
-            paramsTable=new HashMap<>();
+        if (paramsTable == null) {
+            paramsTable = new HashMap<>();
         }
         paramsTable.put(param.getClass(), param);
         return this;
@@ -54,7 +54,7 @@ public class FormatParamArray implements Cloneable {
     }
 
     public <T extends FormatParam> T getParam(Class<T> paramClass, boolean required) {
-        FormatParam p = paramsTable==null?null:paramsTable.get(paramClass);
+        FormatParam p = paramsTable == null ? null : paramsTable.get(paramClass);
         if (p == null && required) {
             throw new NoSuchElementException(paramClass.getSimpleName() + " is requiered");
         }
@@ -62,7 +62,7 @@ public class FormatParamArray implements Cloneable {
     }
 
     public FormatParam[] toArray() {
-        return  ((paramsTable==null || paramsTable.size()==0)? EMPTY_AA : paramsTable.values().toArray(new FormatParam[paramsTable.size()]));
+        return ((paramsTable == null || paramsTable.size() == 0) ? EMPTY_AA : paramsTable.values().toArray(new FormatParam[paramsTable.size()]));
     }
 
     public FormatParamArray copy() {

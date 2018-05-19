@@ -8,5 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 @Repeatable(ClassProperties.class)
 public @interface ClassProperty {
     String name();
+
     String value() default "";
 }

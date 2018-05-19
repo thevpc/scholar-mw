@@ -35,12 +35,12 @@ public class AdaptiveEvent {
         return samples;
     }
 
-    public double getX(int index){
-        return samples.x.get(index+this.index);
+    public double getX(int index) {
+        return samples.x.get(index + this.index);
     }
 
-    public Object getValue(int index){
-        return samples.values.get(index+this.index);
+    public Object getValue(int index) {
+        return samples.values.get(index + this.index);
     }
 
 }

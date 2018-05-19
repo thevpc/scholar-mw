@@ -8,10 +8,9 @@ package net.vpc.scholar.hadrumaths.meshalgo;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
- *
  * @author vpc
  */
-final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter{
+final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
     public MeshZoneTypeFilterAll() {
     }
 
@@ -19,9 +18,9 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter{
     public boolean accept(MeshZoneType type) {
         return true;
     }
-    
-    public Dumper getDumpStringHelper(){
-        Dumper h=new Dumper(this);
+
+    public Dumper getDumpStringHelper() {
+        Dumper h = new Dumper(this);
         return h;
     }
 
@@ -51,6 +50,6 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter{
         final MeshZoneTypeFilterAll other = (MeshZoneTypeFilterAll) obj;
         return true;
     }
-    
-    
+
+
 }

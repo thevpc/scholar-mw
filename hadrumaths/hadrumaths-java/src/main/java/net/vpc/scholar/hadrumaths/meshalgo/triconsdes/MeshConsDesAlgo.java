@@ -95,7 +95,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                             Point w = pi;
                             Point x = pj;
                             Point q = point;
-                            if(!GeomUtils.getDomain(w,x,q).isEmpty()){
+                            if (!GeomUtils.getDomain(w, x, q).isEmpty()) {
                                 Triangle t = (new Triangle(w, x, q));
                                 if (!trianglesList.isEmpty()) {
                                     for (Triangle aListeTriangle1 : trianglesList) {
@@ -230,7 +230,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                             while ((j < n.size())) {
                                 Point mu_point = m.get(u);
                                 Point nj_point = n.get(j);
-                                if (!mu_point.equals (nj_point)) {
+                                if (!mu_point.equals(nj_point)) {
                                     j = j + 1;
                                 } else {
                                     n.remove(j);
@@ -261,7 +261,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                         ArrayList<Point> n = new ArrayList<Point>(selectedTriangle.getPoints());
                         ArrayList<Point> m = new ArrayList<Point>(tr.getPoints());
                         ArrayList<Point> pt = new ArrayList<Point>();
-                        GeomUtils.dispatch(selectedTriangle.getPoints(),tr.getPoints(),n,m,pt);
+                        GeomUtils.dispatch(selectedTriangle.getPoints(), tr.getPoints(), n, m, pt);
                         // System.out.println(pt.size());
                         info.triangles.add(new Triangle(m.get(0), pt.get(0), barycenter));
                         info.triangles.add(new Triangle(m.get(0), pt.get(1), barycenter));

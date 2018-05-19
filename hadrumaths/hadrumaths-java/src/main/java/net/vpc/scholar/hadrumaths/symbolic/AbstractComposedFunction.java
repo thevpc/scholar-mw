@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Expressions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +61,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     @Override
     public DoubleToDouble toDD() {
         if (!isDD()) {
-            throw new ClassCastException("Unable to Cast to DD :: "+getClass().getName()+" = "+toString());
+            throw new ClassCastException("Unable to Cast to DD :: " + getClass().getName() + " = " + toString());
         }
         return this;
     }

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.format;
 import java.util.*;
 
 public class FormatParamSet {
-    public static final FormatParamSet EMPTY=new FormatParamSet();
+    public static final FormatParamSet EMPTY = new FormatParamSet();
     private Map<Class, FormatParam> values = new HashMap<>();
 
     public FormatParamSet(FormatParam... values) {
@@ -21,7 +21,7 @@ public class FormatParamSet {
     private FormatParamSet(Set<FormatParam> values) {
         this.values = new HashMap<>();
         for (FormatParam value : values) {
-           add0(value);
+            add0(value);
         }
     }
 
@@ -37,11 +37,11 @@ public class FormatParamSet {
 
     public FormatParamSet add(FormatParam a) {
         if (a != null) {
-            if(!values.containsKey(a.getClass())) {
+            if (!values.containsKey(a.getClass())) {
                 FormatParamSet rr = new FormatParamSet(values.values());
                 rr.add0(a);
                 return rr;
-            }else if(!values.get(a.getClass()).equals(a)){
+            } else if (!values.get(a.getClass()).equals(a)) {
                 FormatParamSet rr = new FormatParamSet(values.values());
                 rr.add0(a);
                 return rr;
@@ -52,7 +52,7 @@ public class FormatParamSet {
 
     public FormatParamSet remove(Class a) {
         if (a != null) {
-            if(values.containsKey(a)) {
+            if (values.containsKey(a)) {
                 FormatParamSet rr = new FormatParamSet(values.values());
                 rr.values.remove(a);
                 return rr;
@@ -63,7 +63,7 @@ public class FormatParamSet {
 
     public FormatParamSet remove(FormatParam a) {
         if (a != null) {
-            if(values.containsKey(a.getClass())) {
+            if (values.containsKey(a.getClass())) {
                 FormatParamSet rr = new FormatParamSet(values.values());
                 rr.remove0(a);
                 return rr;
@@ -76,12 +76,12 @@ public class FormatParamSet {
         Set<FormatParam> values0 = null;
         for (FormatParam a : all) {
             if (a != null) {
-                if(values0!=null){
+                if (values0 != null) {
                     values0.add(a);
-                }else if(!values.containsKey(a.getClass())){
+                } else if (!values.containsKey(a.getClass())) {
                     values0 = new HashSet<>(values.values());
                     values0.add(a);
-                }else if(!values.get(a.getClass()).equals(a)){
+                } else if (!values.get(a.getClass()).equals(a)) {
                     values0 = new HashSet<>(values.values());
                     values0.add(a);
                 }
@@ -95,7 +95,7 @@ public class FormatParamSet {
 
     public boolean containsParam(FormatParam param) {
         Object pp = getParam(param.getClass(), false);
-        return pp !=null && pp.equals(param);
+        return pp != null && pp.equals(param);
     }
 
     public <T extends FormatParam> T getParam(T param) {

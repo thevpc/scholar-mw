@@ -16,7 +16,7 @@ public class ClassPairMap<V> {
     private HashMap<ClassPair, V[]> cachedValues = new HashMap<ClassPair, V[]>();
     private HashMap<ClassPair, ClassPair[]> cachedHierarchy = new HashMap<ClassPair, ClassPair[]>();
 
-    public ClassPairMap(Class baseKey1Type,Class baseKey2Type,Class<V> valueType, boolean symmetric) {
+    public ClassPairMap(Class baseKey1Type, Class baseKey2Type, Class<V> valueType, boolean symmetric) {
         this.baseKey1Type = baseKey1Type;
         this.baseKey2Type = baseKey2Type;
         this.valueType = valueType;
@@ -25,16 +25,16 @@ public class ClassPairMap<V> {
 
     public V put(Class classKey1, Class classKey2, V value) {
         cachedValues.clear();
-        return values.put(createKey(classKey1,classKey2), value);
+        return values.put(createKey(classKey1, classKey2), value);
     }
 
     public V remove(Class classKey1, Class classKey2) {
         cachedValues.clear();
-        return values.remove(createKey(classKey1,classKey2));
+        return values.remove(createKey(classKey1, classKey2));
     }
 
-    public ClassPair[] getKeis(Class classKey1,Class classKey2) {
-        return getKeis(createKey(classKey1,classKey2));
+    public ClassPair[] getKeis(Class classKey1, Class classKey2) {
+        return getKeis(createKey(classKey1, classKey2));
     }
 
     private ClassPair[] getKeis(ClassPair classKey) {
@@ -46,8 +46,8 @@ public class ClassPairMap<V> {
         return keis;
     }
 
-    public V getRequired(Class classKey1,Class classKey2) {
-        return getRequired(createKey(classKey1,classKey2));
+    public V getRequired(Class classKey1, Class classKey2) {
+        return getRequired(createKey(classKey1, classKey2));
     }
 
     private V getRequired(ClassPair key) {
@@ -55,12 +55,12 @@ public class ClassPairMap<V> {
         return found[0];
     }
 
-    public V getExact(Class classKey1,Class classKey2) {
-        return values.get(createKey(classKey1,classKey2));
+    public V getExact(Class classKey1, Class classKey2) {
+        return values.get(createKey(classKey1, classKey2));
     }
 
-    public V get(Class classKey1,Class classKey2) {
-        return get(createKey(classKey1,classKey2));
+    public V get(Class classKey1, Class classKey2) {
+        return get(createKey(classKey1, classKey2));
     }
 
     private V get(ClassPair key) {
@@ -71,8 +71,8 @@ public class ClassPairMap<V> {
         return null;
     }
 
-    public V[] getAllRequired(Class classKey1,Class classKey2) {
-        return getAllRequired(createKey(classKey1,classKey2));
+    public V[] getAllRequired(Class classKey1, Class classKey2) {
+        return getAllRequired(createKey(classKey1, classKey2));
     }
 
     private V[] getAllRequired(ClassPair classKey) {
@@ -83,8 +83,8 @@ public class ClassPairMap<V> {
         throw new NoSuchElementException(classKey.toString());
     }
 
-    public V[] getAll(Class classKey1,Class classKey2) {
-        return getAll(createKey(classKey1,classKey2));
+    public V[] getAll(Class classKey1, Class classKey2) {
+        return getAll(createKey(classKey1, classKey2));
     }
 
     private V[] getAll(ClassPair classKey) {
@@ -117,7 +117,7 @@ public class ClassPairMap<V> {
                 ClassPair i = createKey(aClass, bClass);
                 if (!seen.contains(i)) {
                     seen.add(i);
-                    result.add(new IndexComparable(i1+i2,i));
+                    result.add(new IndexComparable(i1 + i2, i));
                 }
             }
         }
@@ -129,13 +129,13 @@ public class ClassPairMap<V> {
         return result2.toArray(new ClassPair[result.size()]);
     }
 
-    private static class IndexComparable<T> implements Comparable<IndexComparable>{
+    private static class IndexComparable<T> implements Comparable<IndexComparable> {
         int i;
         T v;
 
         @Override
         public int compareTo(IndexComparable o) {
-            return i-o.i;
+            return i - o.i;
         }
 
         private IndexComparable(int i, T v) {
@@ -144,16 +144,16 @@ public class ClassPairMap<V> {
         }
     }
 
-    protected ClassPair createKey(Class first, Class second){
-        if(symmetric){
-            int c=first.getName().compareTo(second.getName());
-            if(c>0){
-                Class p=second;
-                second=first;
-                first=p;
+    protected ClassPair createKey(Class first, Class second) {
+        if (symmetric) {
+            int c = first.getName().compareTo(second.getName());
+            if (c > 0) {
+                Class p = second;
+                second = first;
+                first = p;
             }
         }
-        return new ClassPair(first,second);
+        return new ClassPair(first, second);
     }
 
     @Override

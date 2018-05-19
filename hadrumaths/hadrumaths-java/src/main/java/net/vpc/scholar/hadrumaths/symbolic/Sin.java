@@ -1,17 +1,18 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.BooleanMarker;
 
 /**
  * Created by vpc on 4/30/14.
  */
 public class Sin extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Sin(Expr arg) {
-        super("sin",arg, FunctionType.DOUBLE);
+        super("sin", arg, FunctionType.DOUBLE);
     }
 
     @Override

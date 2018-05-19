@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
 
-public class CustomCCFunctionXYDefinition implements CustomFunctionDefinition{
+public class CustomCCFunctionXYDefinition implements CustomFunctionDefinition {
     private static final long serialVersionUID = 1L;
     private String name;
     private CustomCCFunctionXY eval;
@@ -20,8 +20,8 @@ public class CustomCCFunctionXYDefinition implements CustomFunctionDefinition{
         return eval;
     }
 
-    public Expr apply(Expr xexpr,Expr yexpr){
-        return new CustomCCFunctionXYExpr(xexpr,yexpr,this);
+    public Expr apply(Expr xexpr, Expr yexpr) {
+        return new CustomCCFunctionXYExpr(xexpr, yexpr, this);
     }
 
     @Override

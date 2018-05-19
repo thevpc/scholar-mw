@@ -37,7 +37,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
 
     public Pow(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
 
@@ -166,11 +166,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -181,11 +181,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -196,11 +196,11 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     public Complex computeComplex(double x, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         Complex b = getSecond().toDC().computeComplex(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -211,54 +211,54 @@ public class Pow extends AbstractExprOperator implements Cloneable {
     public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();
-        return Maths.pow(a,b);
+        return Maths.pow(a, b);
     }
 
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();
-        return Maths.pow(a,b);
+        return Maths.pow(a, b);
     }
 
     @Override
     public double computeDouble(double x, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         double b = getSecond().toDD().computeDouble(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();
-        return Maths.pow(a,b);
+        return Maths.pow(a, b);
     }
 
     @Override
     public final Domain getDomain() {
-        if(!Maths.Config.isCacheExpressionPropertiesEnabled()){
+        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return getDomainImpl();
         }
-        if( _cache_domain==null){
-            _cache_domain=getDomainImpl();
+        if (_cache_domain == null) {
+            _cache_domain = getDomainImpl();
         }
         return _cache_domain;
     }
@@ -371,8 +371,8 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Pow(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -391,7 +391,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Pow(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -411,7 +411,7 @@ public class Pow extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Pow(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;

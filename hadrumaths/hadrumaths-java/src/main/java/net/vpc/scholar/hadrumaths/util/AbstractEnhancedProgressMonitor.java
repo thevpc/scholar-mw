@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 
 import java.util.logging.Level;
 
@@ -164,7 +164,7 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
     @Override
     public EnhancedProgressMonitor terminate(String message, Object... args) {
         if (!isCanceled()) {
-            setProgress(1, new FormattedProgressMessage(Level.INFO, message,args));
+            setProgress(1, new FormattedProgressMessage(Level.INFO, message, args));
         }
         return this;
     }
@@ -194,8 +194,8 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
 
     public final void setProgress(double progress, ProgressMessage message) {
         Chronometer c = getChronometer();//
-        if(!started){
-            started=true;
+        if (!started) {
+            started = true;
             c.start();
         }
         if (cancelled) {
@@ -222,7 +222,7 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
             }
         }
         if (Maths.Config.isStrictComputationMonitor()) {
-            if (!Double.isNaN(progress)  && progress < getProgressValue() && getProgressValue() >= 1) {
+            if (!Double.isNaN(progress) && progress < getProgressValue() && getProgressValue() >= 1) {
                 throw new RuntimeException("Invalid Progress value [0..1] : " + progress + "<" + getProgressValue());
             }
         }
@@ -247,8 +247,8 @@ public abstract class AbstractEnhancedProgressMonitor implements EnhancedProgres
 
     @Override
     public Chronometer getChronometer() {
-        if(chronometer==null){
-            chronometer=new Chronometer(false);
+        if (chronometer == null) {
+            chronometer = new Chronometer(false);
         }
         return chronometer;
     }

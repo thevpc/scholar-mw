@@ -1,22 +1,22 @@
 /**
  * ====================================================================
- *                        vpc-prs library
- *
+ * vpc-prs library
+ * <p>
  * Pluggable Resources Set is a small library for simplifying
  * plugin based applications
- * 
+ * <p>
  * Copyright (C) 2006-2008 Taha BEN SALAH
- *
+ * <p>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -27,7 +27,6 @@ package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 
-import java.awt.*;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,11 +75,10 @@ import java.util.logging.Level;
  * @author James Gosling
  * @version 1.20 11/17/05
  */
-public class ProgressMonitorInputStream2 extends FilterInputStream
-{
+public class ProgressMonitorInputStream2 extends FilterInputStream {
     private ProgressMonitor pmonitor;
-    private long             nread = 0;
-    private long             size = 0;
+    private long nread = 0;
+    private long size = 0;
 
 
     /**
@@ -88,13 +86,13 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      *
      * @param in The input stream to be monitored.
      */
-    public ProgressMonitorInputStream2(InputStream in, long size,ProgressMonitor pmonitor) {
+    public ProgressMonitorInputStream2(InputStream in, long size, ProgressMonitor pmonitor) {
         super(in);
-        this.size=size;
-        if(pmonitor==null){
-            pmonitor= ProgressMonitorFactory.logger(1000);
+        this.size = size;
+        if (pmonitor == null) {
+            pmonitor = ProgressMonitorFactory.logger(1000);
         }
-        this.pmonitor=pmonitor;
+        this.pmonitor = pmonitor;
     }
 
 
@@ -115,14 +113,14 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      */
     public int read() throws IOException {
         int c = in.read();
-        if(c>=0){
+        if (c >= 0) {
             nread++;
             int progress = (int) (((double) nread) * 100 / size);
-            pmonitor.setProgress(progress,null);
+            pmonitor.setProgress(progress, null);
         }
         if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
-                                    new InterruptedIOException("progress");
+                    new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
             throw exc;
         }
@@ -136,14 +134,14 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      */
     public int read(byte b[]) throws IOException {
         int nr = in.read(b);
-        if(nr>0){
-            nread+=nr;
+        if (nr > 0) {
+            nread += nr;
             int progress = (int) (((double) nread) * 100 / size);
-            pmonitor.setProgress(progress,null);
+            pmonitor.setProgress(progress, null);
         }
         if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
-                                    new InterruptedIOException("progress");
+                    new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
             throw exc;
         }
@@ -159,14 +157,14 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
                     int off,
                     int len) throws IOException {
         int nr = in.read(b, off, len);
-        if(nr>0){
-            nread+=nr;
+        if (nr > 0) {
+            nread += nr;
             double progress = (((double) nread) / size);
-            pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
+            pmonitor.setProgress(progress, new StringProgressMessage(Level.INFO, ""));
         }
         if (pmonitor.isCanceled()) {
             InterruptedIOException exc =
-                                    new InterruptedIOException("progress");
+                    new InterruptedIOException("progress");
             exc.bytesTransferred = (int) nread;
             throw exc;
         }
@@ -180,11 +178,11 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      */
     public long skip(long n) throws IOException {
         long nr = in.skip(n);
-        if(nr>0){
-            nread+=nr;
-            size=nread+in.available();
+        if (nr > 0) {
+            nread += nr;
+            size = nread + in.available();
             int progress = (int) (((double) nread) * 100 / size);
-            pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
+            pmonitor.setProgress(progress, new StringProgressMessage(Level.INFO, ""));
         }
         return nr;
     }
@@ -206,9 +204,9 @@ public class ProgressMonitorInputStream2 extends FilterInputStream
      */
     public synchronized void reset() throws IOException {
         in.reset();
-        size=nread+in.available();
+        size = nread + in.available();
         int progress = (int) (((double) nread) * 100 / size);
-        pmonitor.setProgress(progress,new StringProgressMessage(Level.INFO, ""));
+        pmonitor.setProgress(progress, new StringProgressMessage(Level.INFO, ""));
     }
 
 }

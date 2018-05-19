@@ -1,20 +1,16 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.AbstractTVector;
-import net.vpc.scholar.hadrumaths.AbstractVector;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.TVectorModel;
-
 public class ReadOnlyVector extends AbstractVector {
     private static final long serialVersionUID = 1L;
     private TVectorModel<Complex> model;
+
     public ReadOnlyVector(TVectorModel<Complex> model, boolean row) {
         super(row);
         this.model = model;
     }
 
     @Override
-    public TypeReference<Complex> getComponentType(){
+    public TypeReference<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 

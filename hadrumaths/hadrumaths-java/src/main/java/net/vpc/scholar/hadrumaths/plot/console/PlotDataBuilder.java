@@ -12,7 +12,7 @@ import java.util.Collections;
 /**
  * Created by vpc on 2/6/17.
  */
-public class PlotDataBuilder implements Serializable, Cloneable{
+public class PlotDataBuilder implements Serializable, Cloneable {
     private PlotConsole console;
     private String title = "Unknown";
     private ConsoleAxisList axisList = new ConsoleAxisList();
@@ -24,14 +24,14 @@ public class PlotDataBuilder implements Serializable, Cloneable{
         this.console = console;
     }
 
-    public PlotConsole plot(){
+    public PlotConsole plot() {
         console.run(
                 new PlotData()
-                .setWindowTitle(title)
-                .addAxis(axisList)
-                .setStructure(structure)
-                .setStructure2(structure2)
-                .setParams(params)
+                        .setWindowTitle(title)
+                        .addAxis(axisList)
+                        .setStructure(structure)
+                        .setStructure2(structure2)
+                        .setParams(params)
         );
         return console;
     }
@@ -134,7 +134,7 @@ public class PlotDataBuilder implements Serializable, Cloneable{
         try {
             PlotDataBuilder pd = (PlotDataBuilder) super.clone();
             pd.axisList = pd.axisList == null ? null : pd.axisList.clone();
-            pd.params = (pd.params == null) ? null : (ArrayList<ParamSet>)pd.params.clone();
+            pd.params = (pd.params == null) ? null : (ArrayList<ParamSet>) pd.params.clone();
             if (pd.structure2 != null) {
                 pd.structure2 = pd.structure2.clone();
             }

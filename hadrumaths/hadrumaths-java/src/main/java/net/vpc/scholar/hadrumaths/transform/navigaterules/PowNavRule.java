@@ -5,16 +5,15 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Pow;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class PowNavRule implements ExpressionRewriterRule {
@@ -31,11 +30,11 @@ public class PowNavRule implements ExpressionRewriterRule {
         Pow ee = (Pow) e;
         RewriteResult a = ruleset.rewrite(ee.getFirst());
         RewriteResult b = ruleset.rewrite(ee.getSecond());
-        if(a.isUnmodified() && b.isUnmodified()){
+        if (a.isUnmodified() && b.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
         Expr eee = Maths.pow(a.getValue(), b.getValue());
-        eee= Any.copyProperties(e, eee);
+        eee = Any.copyProperties(e, eee);
         return RewriteResult.bestEffort(eee);
     }
 
@@ -46,7 +45,7 @@ public class PowNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

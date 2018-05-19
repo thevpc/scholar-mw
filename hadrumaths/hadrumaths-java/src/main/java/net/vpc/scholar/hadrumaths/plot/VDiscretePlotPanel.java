@@ -32,18 +32,18 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
     private int typeSurface = TYPE_1D;
     private Axis[] xyzValue = Axis.values();
     private Axis surfaceValue = Axis.Z;
-//    private String title;
+    //    private String title;
     private NormalizerType normalizerType = NormalizerType.FULL;
     private int revalidatingPlot = 0;
     private VDiscretePlotModel model2;
 
-//    public VDiscretePlotPanel(PlotWindowManager windowManager, String title, Set<ExternalLibrary> preferredLibraries, VDiscrete... _model) {
+    //    public VDiscretePlotPanel(PlotWindowManager windowManager, String title, Set<ExternalLibrary> preferredLibraries, VDiscrete... _model) {
 //
 //    }
     public VDiscretePlotPanel(VDiscretePlotModel model, PlotWindowManager windowManager) {
         super(new BorderLayout());
-        if(model==null){
-            model=new VDiscretePlotModel();
+        if (model == null) {
+            model = new VDiscretePlotModel();
         }
         this.model2 = model;
         setPlotWindowManager(windowManager);
@@ -126,10 +126,10 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
 
     @Override
     public void setModel(PlotModel model) {
-        if(model==null){
-            model=new VDiscretePlotModel();
+        if (model == null) {
+            model = new VDiscretePlotModel();
         }
-        this.model2=(VDiscretePlotModel) model;
+        this.model2 = (VDiscretePlotModel) model;
     }
 
     public void revalidatePlot() {
@@ -155,7 +155,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                         //
                     }
                     if (discrete != null) {
-                        int max = discrete.getCount(surfaceValue)-1;
+                        int max = discrete.getCount(surfaceValue) - 1;
                         if (slider.getMaximum() != max) {
                             slider.setMaximum(max);
                         }
@@ -250,7 +250,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
 
     public String getPlotTitle() {
         String baseTitle = super.getPlotTitle();
-        if(baseTitle ==null){
+        if (baseTitle == null) {
             return this.model2.getTitle();
         }
         return baseTitle;

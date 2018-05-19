@@ -26,12 +26,12 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
     private JFrame frame;
     private ValuesPlotModel model;
     private PlotComponentPanel mainComponent;
-    private PropertyChangeListener plotListener =  new PropertyChangeListener() {
+    private PropertyChangeListener plotListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
 //            if ("plotType".equals(evt.getPropertyName())) {
-                setup();
-                firePlotPropertyEvent(PlotPropertyListener.COMPONENT_DISPLAY_TYPE, evt.getOldValue(), evt.getNewValue());
+            setup();
+            firePlotPropertyEvent(PlotPropertyListener.COMPONENT_DISPLAY_TYPE, evt.getOldValue(), evt.getNewValue());
 //            }
         }
     };
@@ -69,12 +69,12 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
 
     public void setModel(ValuesPlotModel model) {
         if (this.model != model) {
-            ValuesPlotModel oldmodel=this.model;
-            Map<String, Object> oldPops=null;
+            ValuesPlotModel oldmodel = this.model;
+            Map<String, Object> oldPops = null;
             if (oldmodel != null) {
                 oldmodel.removePropertyChangeListener(plotListener);
                 oldPops = new HashMap<>(this.model.getProperties());
-                if(model.getConverter()==null) {
+                if (model.getConverter() == null) {
                     model.setConverter(oldmodel.getConverter());
                 }
             }
@@ -154,7 +154,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
             }
         }
         JPopupMenu popupMenu = mainComponent.getPopupMenu();
-        if(popupMenu!=null) {
+        if (popupMenu != null) {
 //            getModel().addPropertyChangeListener(plotListener);
             Plot.buildJPopupMenu(popupMenu, this);
         }
@@ -294,7 +294,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
 
     public String getPlotTitle() {
         String baseTitle = super.getPlotTitle();
-        if(baseTitle ==null){
+        if (baseTitle == null) {
             return this.model.getTitle();
         }
         return baseTitle;

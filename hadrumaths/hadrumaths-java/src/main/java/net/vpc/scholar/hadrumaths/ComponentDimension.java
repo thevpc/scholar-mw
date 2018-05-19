@@ -10,8 +10,8 @@ import java.io.Serializable;
 /**
  * @author vpc
  */
-public class ComponentDimension implements Serializable{
-    private static final ComponentDimension[][] CACHE=new ComponentDimension[3][3];
+public class ComponentDimension implements Serializable {
+    private static final ComponentDimension[][] CACHE = new ComponentDimension[3][3];
     private static final int CACHE_SIZE = CACHE.length;
     public static final ComponentDimension SCALAR = create(1, 1);
     public static final ComponentDimension VECTOR2 = create(2, 1);
@@ -21,15 +21,15 @@ public class ComponentDimension implements Serializable{
     public final int columns;
 
     public static ComponentDimension create(int rows, int columns) {
-        if(rows<= CACHE_SIZE && columns<=CACHE.length){
+        if (rows <= CACHE_SIZE && columns <= CACHE.length) {
             ComponentDimension v = CACHE[rows - 1][columns - 1];
-            if(v==null){
-                v=new ComponentDimension(rows,columns);
-                CACHE[rows - 1][columns - 1]=v;
+            if (v == null) {
+                v = new ComponentDimension(rows, columns);
+                CACHE[rows - 1][columns - 1] = v;
             }
             return v;
         }
-        return new ComponentDimension(rows,columns);
+        return new ComponentDimension(rows, columns);
     }
 
     public ComponentDimension(int rows, int columns) {
@@ -38,11 +38,11 @@ public class ComponentDimension implements Serializable{
     }
 
     public static ComponentDimension min(ComponentDimension a, ComponentDimension b) {
-        return create(Maths.min(a.rows, b.rows), Maths.min(a.columns, b.columns));
+        return create(Math.min(a.rows, b.rows), Math.min(a.columns, b.columns));
     }
 
     public static ComponentDimension max(ComponentDimension a, ComponentDimension b) {
-        return create(Maths.max(a.rows, b.rows), Maths.max(a.columns, b.columns));
+        return create(Math.max(a.rows, b.rows), Math.max(a.columns, b.columns));
     }
 
     @Override
@@ -87,10 +87,10 @@ public class ComponentDimension implements Serializable{
                 ')';
     }
 
-    public ComponentDimension expand(ComponentDimension other){
+    public ComponentDimension expand(ComponentDimension other) {
         return ComponentDimension.create(
-                Maths.max(this.rows,other.rows),
-                Maths.max(this.columns,other.columns)
+                Math.max(this.rows, other.rows),
+                Math.max(this.columns, other.columns)
         );
     }
 }

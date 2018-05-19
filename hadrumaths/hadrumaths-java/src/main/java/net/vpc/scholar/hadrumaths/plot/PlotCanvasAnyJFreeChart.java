@@ -4,7 +4,6 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartMouseEvent;
@@ -29,17 +28,10 @@ import org.jfree.chart.renderer.xy.XYLine3DRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.CategoryToPieDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.data.xy.*;
 import org.jfree.ui.TextAnchor;
-import org.jfree.util.TableOrder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashSet;
 
 /**
  * @author vpc
@@ -65,7 +57,6 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
     }
 
 
-
 //    private ValuesPlotModel getModel() {
 //        return (ValuesPlotModel) plotModelProvider.getModel();
 //    }
@@ -78,6 +69,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
     }
 
     protected abstract int initialIndex(int index);
+
     protected abstract int dataSize();
 
     protected abstract void init();
@@ -105,7 +97,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         } else {
             String s = String.valueOf(y);
             if (custom) {
-                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx="+x+"\ny="+y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
+                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx=" + x + "\ny=" + y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
                 if (s == null) {
                     return;
                 }
@@ -143,7 +135,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         } else {
             String s = String.valueOf(y);
             if (custom) {
-                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx="+rowKey+"\ny="+y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
+                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx=" + rowKey + "\ny=" + y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
                 if (s == null) {
                     return;
                 }
@@ -273,7 +265,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         }
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
-            int i=initialIndex(ii);
+            int i = initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
             if (config.alternateColor) {
@@ -314,7 +306,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             if (nodeType == -1) {
                 //will alternate by default
             } else {
-                switch (Maths.abs(nodeType) % 3) {
+                switch (Math.abs(nodeType) % 3) {
                     case 0: {
                         if (lineConfig.shapesVisible == null) {
                             lineConfig.shapesVisible = false;
@@ -371,7 +363,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             }
 //            r.setSeriesLinesVisible(jfreeChartIndex, lineConfig.lineVisible);
 
-            switch (Maths.abs(lineType) % 11) {
+            switch (Math.abs(lineType) % 11) {
                 case 0: {
                     break;
                 }
@@ -488,7 +480,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         }
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
-            int i=initialIndex(ii);
+            int i = initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
             if (config.alternateColor) {
@@ -529,10 +521,10 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             if (nodeType == -1) {
                 //will alternate by default
             } else {
-                if(nodeType==0){
+                if (nodeType == 0) {
                     r.setSeriesShapesFilled(jfreeChartIndex, false);
                     r.setSeriesShapesVisible(jfreeChartIndex, false);
-                }else{
+                } else {
                     if (lineConfig.shapesVisible == null) {
                         lineConfig.shapesVisible = true;
                     }
@@ -541,7 +533,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                     }
                     r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
                     r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
-                    r.setSeriesShape(jfreeChartIndex,STANDARD_SERIES_SHAPES[(nodeType-1)%STANDARD_SERIES_SHAPES.length]);
+                    r.setSeriesShape(jfreeChartIndex, STANDARD_SERIES_SHAPES[(nodeType - 1) % STANDARD_SERIES_SHAPES.length]);
                 }
             }
             Integer lineType = null;
@@ -564,7 +556,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             }
             r.setSeriesLinesVisible(jfreeChartIndex, lineConfig.lineVisible);
 
-            switch (Maths.abs(lineType) % 11) {
+            switch (Math.abs(lineType) % 11) {
                 case 0: {
                     break;
                 }

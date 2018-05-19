@@ -1,10 +1,11 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -20,14 +21,15 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     public FunctionsXYTableModel(Expr[] base) {
         setExpressions(base);
     }
-    public void setExpressions(Expr[] base){
+
+    public void setExpressions(Expr[] base) {
         this.base = base;
         TreeSet<String> seenTitles = new TreeSet<String>();
         ArrayList<String> orderedTitles = new ArrayList<String>();
         orderedTitles.add("Name");
         seenTitles.add("Name");
         for (Expr f : base) {
-            if(f.hasProperties()) {
+            if (f.hasProperties()) {
                 Map<String, Object> values = f.getProperties();
                 if (values != null) {
                     for (String t : values.keySet()) {
@@ -43,7 +45,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         seenTitles.add("Selected");
         titles = orderedTitles.toArray(new String[orderedTitles.size()]);
         selected = new boolean[base.length];
-        int max = Maths.min(50, base.length);
+        int max = Math.min(50, base.length);
         for (int i = 0; i < max; i++) {
             selected[i] = true;
         }
@@ -63,39 +65,39 @@ public class FunctionsXYTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        String title=titles[columnIndex];
+        String title = titles[columnIndex];
         Expr expr = base[rowIndex];
-        Map<String, Object> values = expr.hasProperties()?expr.getProperties():null;
-        Object value=values == null ? null : values.get(title);
-        if(value==null){
-            if("Name".equals(title)){
+        Map<String, Object> values = expr.hasProperties() ? expr.getProperties() : null;
+        Object value = values == null ? null : values.get(title);
+        if (value == null) {
+            if ("Name".equals(title)) {
                 return expr.getTitle();
-            }else if("Selected".equals(title)){
+            } else if ("Selected".equals(title)) {
                 return selected[rowIndex];
             }
         }
-        return values==null?null:values.get(title);
+        return values == null ? null : values.get(title);
     }
 
     @Override
     public String getColumnName(int column) {
-        return titles == null ? super.getColumnName(column):titles[column];
+        return titles == null ? super.getColumnName(column) : titles[column];
     }
 
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        String title=titles[columnIndex];
+        String title = titles[columnIndex];
         return "Selected".equals(title);
     }
 
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        String title=titles[columnIndex];
-        if("Name".equals(title)){
+        String title = titles[columnIndex];
+        if ("Name".equals(title)) {
             return String.class;
-        }else if("Selected".equals(title)){
+        } else if ("Selected".equals(title)) {
             return Boolean.class;
         }
         return Object.class;
@@ -103,25 +105,25 @@ public class FunctionsXYTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        String title=titles[columnIndex];
-        if("Selected".equals(title)){
+        String title = titles[columnIndex];
+        if ("Selected".equals(title)) {
             selected[rowIndex] = (Boolean) aValue;
             fireTableCellUpdated(rowIndex, columnIndex);
         }
     }
 
-    public void setAllSelectedByCell(int c,int r,boolean value) {
-        String title=titles[c];
-        if("Name".equals(title)){
-            return ;
-        }else if("Selected".equals(title)){
-            return ;
+    public void setAllSelectedByCell(int c, int r, boolean value) {
+        String title = titles[c];
+        if ("Name".equals(title)) {
+            return;
+        } else if ("Selected".equals(title)) {
+            return;
         }
         Object v = base[r].getProperty(titles[c]);
         for (int i = 0; i < selected.length; i++) {
             Object v2 = base[i].getProperty(titles[c]);
-            if(v==v2 || (v!=null && v2!=null  && v.equals(v2))){
-                selected[i]=value;
+            if (v == v2 || (v != null && v2 != null && v.equals(v2))) {
+                selected[i] = value;
             }
         }
         fireTableDataChanged();
@@ -129,7 +131,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
 
     public void setAllSelected(boolean value) {
         for (int i = 0; i < selected.length; i++) {
-            selected[i]=value;
+            selected[i] = value;
         }
         fireTableDataChanged();
     }
@@ -151,9 +153,9 @@ public class FunctionsXYTableModel extends AbstractTableModel {
                 selectedFunctions.add(i);
             }
         }
-        int[] ret=new int[selectedFunctions.size()];
+        int[] ret = new int[selectedFunctions.size()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i]=selectedFunctions.get(i);
+            ret[i] = selectedFunctions.get(i);
         }
         return ret;
     }

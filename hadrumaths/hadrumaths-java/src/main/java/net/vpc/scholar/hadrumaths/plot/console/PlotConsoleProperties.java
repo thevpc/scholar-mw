@@ -1,9 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import javax.swing.*;
-import java.util.Date;
-import java.io.IOException;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
@@ -19,23 +20,23 @@ public class PlotConsoleProperties extends JPanel {
                 .addLine("[<startTimeL   ][<=startTime ]")
         );
         this.plotConsole = plotConsole;
-        add(new JLabel("File Pattern"),"filePL");
-        add(new JLabel("File"),"fileL");
-        add(new JLabel("Start Time"),"startTimeL");
+        add(new JLabel("File Pattern"), "filePL");
+        add(new JLabel("File"), "fileL");
+        add(new JLabel("Start Time"), "startTimeL");
         JTextField file;
         try {
-            file = new JTextField(String.valueOf(plotConsole.getCurrentAutoSavingFile().getCanonicalPath()),50);
+            file = new JTextField(String.valueOf(plotConsole.getCurrentAutoSavingFile().getCanonicalPath()), 50);
         } catch (IOException e) {
-            file = new JTextField(String.valueOf(plotConsole.getCurrentAutoSavingFile().getPath()),50);
+            file = new JTextField(String.valueOf(plotConsole.getCurrentAutoSavingFile().getPath()), 50);
         }
         file.setEditable(false);
-        add(file,"file");
-        JTextField fileP = new JTextField(plotConsole.getAutoSavingFilePattern(),50);
+        add(file, "file");
+        JTextField fileP = new JTextField(plotConsole.getAutoSavingFilePattern(), 50);
         fileP.setEditable(false);
-        add(fileP,"fileP");
+        add(fileP, "fileP");
         JTextField startTime = new JTextField(String.valueOf(new Date(plotConsole.getStartTime())));
         startTime.setEditable(false);
-        add(startTime,"startTime");
+        add(startTime, "startTime");
     }
 
 }

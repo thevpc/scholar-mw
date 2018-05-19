@@ -7,31 +7,26 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 /**
- *
  * @author vpc
  */
-public class DynMultiPlot  {
+public class DynMultiPlot {
 
     private String ytitle;
     private String xtitle;
     private Map<Object, ArrayList<Object>> valuesMap = new HashMap<Object, ArrayList<Object>>();
     private JPanel valuesPanel;
     private WindowManager windowManager;
-    private boolean added=false;
+    private boolean added = false;
 
     public static interface WindowManager {
 
@@ -50,7 +45,7 @@ public class DynMultiPlot  {
             this.title = title;
         }
 
-        
+
         @Override
         public void addComponent(String title, Component comp) {
             getFrame();
@@ -75,7 +70,7 @@ public class DynMultiPlot  {
         }
     }
 
-    public DynMultiPlot(String xtitle,String ytitle,WindowManager wm) {
+    public DynMultiPlot(String xtitle, String ytitle, WindowManager wm) {
         this.ytitle = ytitle;
         this.xtitle = xtitle;
         this.windowManager = wm;
@@ -90,10 +85,10 @@ public class DynMultiPlot  {
     }
 
     public void progress(Object type, Object value) {
-        if(!added){
-            added=true;
-            if(windowManager==null){
-                windowManager=new DefaultWindowManager(ytitle);
+        if (!added) {
+            added = true;
+            if (windowManager == null) {
+                windowManager = new DefaultWindowManager(ytitle);
             }
             windowManager.addComponent(ytitle, getComponent());
         }
@@ -108,7 +103,7 @@ public class DynMultiPlot  {
         Arrays.sort(all);
         int max = 0;
         for (int i = 0; i < all.length; i++) {
-            max = Maths.max(max, valuesMap.get(all[i]).size());
+            max = Math.max(max, valuesMap.get(all[i]).size());
         }
 
 
@@ -128,40 +123,41 @@ public class DynMultiPlot  {
         try {
             SwingUtils.invokeAndWait(new Runnable() {
 
-                        @Override
-            public void run() {
-                            Container p = (Container) getComponent();
-                            valuesPanel.removeAll();
-                            String[] titles=new String[all.length];
-                            for(int i=0;i<titles.length;i++){
-                                titles[i]=String.valueOf(all[i]);
-                            }
-                            valuesPanel.add(Plot.asCurve().title(ytitle).titles(titles).xname(xtitle).yname(ytitle).samples(Samples.absolute(x0)).plot(dblValues).toComponent());
-                            //valuesPanel.invalidate();
-                            //getFrame().getContentPane().invalidate();
-                            //valuesPanel.repaint();
-                            windowManager.dataChanged();
-                        }
-                    });
+                @Override
+                public void run() {
+                    Container p = (Container) getComponent();
+                    valuesPanel.removeAll();
+                    String[] titles = new String[all.length];
+                    for (int i = 0; i < titles.length; i++) {
+                        titles[i] = String.valueOf(all[i]);
+                    }
+                    valuesPanel.add(Plot.asCurve().title(ytitle).titles(titles).xname(xtitle).yname(ytitle).samples(Samples.absolute(x0)).plot(dblValues).toComponent());
+                    //valuesPanel.invalidate();
+                    //getFrame().getContentPane().invalidate();
+                    //valuesPanel.repaint();
+                    windowManager.dataChanged();
+                }
+            });
 
         } catch (Exception ex) {
             Logger.getLogger(DynMultiPlot.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
     }
-    public double toDouble(Object o){
-        double d=0;
-        if(o == null){
-            d=0;
-        }else if(o instanceof Complex){
-            d=((Complex) o).absdbl();
-        } else if(o instanceof Matrix){
-            d=((Matrix) o).norm1();
-        }else {
+
+    public double toDouble(Object o) {
+        double d = 0;
+        if (o == null) {
+            d = 0;
+        } else if (o instanceof Complex) {
+            d = ((Complex) o).absdbl();
+        } else if (o instanceof Matrix) {
+            d = ((Matrix) o).norm1();
+        } else {
             d = ((Number) o).doubleValue();
         }
-        if(Double.isNaN(d)){
-            d=0;
+        if (Double.isNaN(d)) {
+            d = 0;
         }
         return d;
     }
@@ -169,13 +165,15 @@ public class DynMultiPlot  {
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
-    private final static Object[] Z_ARR=new Object[0];
-    public Object[] getValues(String id){
-      ArrayList<Object> a=getValuesList(id);
-      return a==null?Z_ARR : a.toArray();
+
+    private final static Object[] Z_ARR = new Object[0];
+
+    public Object[] getValues(String id) {
+        ArrayList<Object> a = getValuesList(id);
+        return a == null ? Z_ARR : a.toArray();
     }
-    
-    public ArrayList<Object> getValuesList(String id){
+
+    public ArrayList<Object> getValuesList(String id) {
         ArrayList<Object> values = valuesMap.get(id);
         if (values == null) {
             values = new ArrayList<Object>();
@@ -183,5 +181,5 @@ public class DynMultiPlot  {
         }
         return values;
     }
-    
+
 }

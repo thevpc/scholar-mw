@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 
 public class SwingUtils {
-    public static void invokeAndWait(final Runnable doRun){
-        if(SwingUtilities.isEventDispatchThread()){
+    public static void invokeAndWait(final Runnable doRun) {
+        if (SwingUtilities.isEventDispatchThread()) {
             doRun.run();
-        }else{
+        } else {
             try {
                 SwingUtilities.invokeAndWait(doRun);
             } catch (InterruptedException e) {
@@ -17,11 +17,12 @@ public class SwingUtils {
             }
         }
     }
-    public static void invokeLater(final Runnable doRun){
+
+    public static void invokeLater(final Runnable doRun) {
 //        if(SwingUtilities.isEventDispatchThread()){
 //            doRun.run();
 //        }else{
-            SwingUtilities.invokeLater(doRun);
+        SwingUtilities.invokeLater(doRun);
 //        }
     }
 }

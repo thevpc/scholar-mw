@@ -18,7 +18,7 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(i0:i1, j0:j1)
+     * @return A(i0 : i1, j0 : j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     Matrix getMatrix(int i0, int i1, int j0, int j1);
@@ -28,7 +28,7 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
      *
      * @param r Array of row indices.
      * @param c Array of column indices.
-     * @return A(r(:), c(:))
+     * @return A(r ( :), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     Matrix getMatrix(int[] r, int[] c);
@@ -39,7 +39,7 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
      * @param r1 Initial row index
      * @param r2 Final row index
      * @param c  Array of column indices.
-     * @return A(i0:r2, c(:))
+     * @return A(i0 : r2, c ( :))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     Matrix getMatrix(int r1, int r2, int[] c);
@@ -50,7 +50,7 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
      * @param r  Array of row indices.
      * @param c1 Initial column index
      * @param c2 Final column index
-     * @return A(r(:), c1:c2)
+     * @return A(r ( :), c1:c2)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     Matrix getMatrix(int[] r, int c1, int c2);
@@ -405,7 +405,7 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
 
     void set(Complex[][] values);
 
-    void set(int row,int col, MutableComplex value);
+    void set(int row, int col, MutableComplex value);
 
     void set(MutableComplex[][] values);
 

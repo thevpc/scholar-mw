@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.ComponentDimension;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.io.Serializable;
 

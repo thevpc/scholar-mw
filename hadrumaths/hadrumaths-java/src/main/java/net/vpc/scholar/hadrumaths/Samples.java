@@ -11,7 +11,6 @@ package net.vpc.scholar.hadrumaths;
 public abstract class Samples {
 
 
-
     public static AbsoluteSamples absolute(double[] x, double[] y, double[] z) {
         return new AbsoluteSamples(true, x, y, z);
     }
@@ -51,17 +50,17 @@ public abstract class Samples {
     public abstract int getDimension();
 
 
-    public static AdaptiveSamples adaptive(){
+    public static AdaptiveSamples adaptive() {
         return new AdaptiveSamples();
     }
 
-    public static AdaptiveSamples adaptive(int min,int max){
+    public static AdaptiveSamples adaptive(int min, int max) {
         return new AdaptiveSamples().setMinimumXSamples(min).setMaximumXSamples(max);
     }
 
-    public static AbsoluteSamples toAbsoluteSamples(Samples samples,Domain domain){
-        if(samples instanceof RelativeSamples){
-            if(domain==null) {
+    public static AbsoluteSamples toAbsoluteSamples(Samples samples, Domain domain) {
+        if (samples instanceof RelativeSamples) {
+            if (domain == null) {
                 throw new IllegalArgumentException("Missing Domain to evaluate Relative Samples");
             }
             return ((RelativeSamples) samples).toAbsolute(domain);

@@ -9,14 +9,13 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class VDCxySimplifyRule implements ExpressionRewriterRule {
@@ -40,18 +39,18 @@ public class VDCxySimplifyRule implements ExpressionRewriterRule {
             RewriteResult s2 = ruleset.rewrite(s1);
             if (s2.isRewritten()) {
                 changed = true;
-                if(s2.isBestEffort()){
+                if (s2.isBestEffort()) {
                     bestEfforts++;
                 }
-            }else{
+            } else {
                 bestEfforts++;
             }
             updated[i] = s2.getValue();
         }
         if (changed) {
             Expr e2 = Maths.vector(updated[0].toDC(), updated[1].toDC());
-            e2= Any.copyProperties(e, e2);
-            return bestEfforts==length?RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
+            e2 = Any.copyProperties(e, e2);
+            return bestEfforts == length ? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
         }
         return RewriteResult.unmodified(e);
     }

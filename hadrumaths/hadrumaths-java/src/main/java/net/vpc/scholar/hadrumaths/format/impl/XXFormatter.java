@@ -17,8 +17,8 @@ public class XXFormatter implements Formatter<XX> {
 
     @Override
     public String format(XX o, FormatParamSet format) {
-        StringBuilder sb=new StringBuilder();
-        format(sb,o,format);
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
         return sb.toString();
     }
 

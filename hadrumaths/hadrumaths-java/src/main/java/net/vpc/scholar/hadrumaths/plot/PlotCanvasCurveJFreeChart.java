@@ -4,7 +4,6 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -12,7 +11,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
 import java.awt.*;
@@ -34,15 +32,14 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        if(chart.getPlot() instanceof XYPlot) {
+        if (chart.getPlot() instanceof XYPlot) {
             XYPlot localXYPlot = chart.getXYPlot();
             localXYPlot.setRenderer(0, prepareXYRenderer());
             localXYPlot.setBackgroundPaint(Color.WHITE);
@@ -93,18 +90,19 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
                     }
                 });
             }
-        }else if(chart.getPlot() instanceof CategoryPlot) {
+        } else if (chart.getPlot() instanceof CategoryPlot) {
             CategoryPlot categoryPlot = chart.getCategoryPlot();
-            categoryPlot.setRenderer(0,prepareAreaRenderer());
+            categoryPlot.setRenderer(0, prepareAreaRenderer());
             chart.getPlot().setBackgroundPaint(Color.WHITE);
             categoryPlot.setDomainGridlinePaint(Color.LIGHT_GRAY);
             categoryPlot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             categoryPlot.setDomainCrosshairVisible(true);
             categoryPlot.setRangeCrosshairVisible(true);
         }
-            //        plot.getRenderer().
+        //        plot.getRenderer().
 
     }
+
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
@@ -118,7 +116,7 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 //                    tooltips == null ? true : tooltips,
 //                    false);
 //        }
-        XYDataset data= createXYDataset();
+        XYDataset data = createXYDataset();
         return ChartFactory.createXYLineChart(theTitle, theXTitle, theYTitle,
                 data,
                 PlotOrientation.VERTICAL,

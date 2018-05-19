@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
 import java.util.List;
 
 public class EnhancedMeshPolygons implements Serializable, Dumpable {
@@ -20,9 +20,9 @@ public class EnhancedMeshPolygons implements Serializable, Dumpable {
     }
 
     public String dump() {
-        Dumper h=new Dumper(getClass().getSimpleName());
-        h.add("surface",surface);
-        h.add("polygons",polygon);
+        Dumper h = new Dumper(getClass().getSimpleName());
+        h.add("surface", surface);
+        h.add("polygons", polygon);
         return h.toString();
     }
 

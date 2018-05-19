@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 
 import java.io.Serializable;
 
-public class MemDoubleScalarProductCache extends AbstractScalarProductCache implements Serializable,DoubleScalarProductCache {
+public class MemDoubleScalarProductCache extends AbstractScalarProductCache implements Serializable, DoubleScalarProductCache {
     private double[/** p index **/][/** n index **/] cache = new double[0][0];
     private boolean scalarValue;
 
@@ -33,7 +33,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
     }
 
     public Matrix toMatrix() {
-        return (Matrix) new DMatrix(cache,true).to(Maths.$COMPLEX);
+        return (Matrix) new DMatrix(cache, true).to(Maths.$COMPLEX);
     }
 
     public TVector<Complex> getColumn(int column) {
@@ -71,7 +71,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
         return cache[p][n];
     }
 
-    public double fgDouble(int n,int p) {
+    public double fgDouble(int n, int p) {
         return cache[p][n];
     }
 

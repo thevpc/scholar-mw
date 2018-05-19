@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Out;
 
 

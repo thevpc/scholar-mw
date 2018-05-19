@@ -4,12 +4,15 @@ import java.util.List;
 
 public class DoubleArray2 extends ArrayTList<DoubleArray> {
     private static final long serialVersionUID = 1L;
+
     public DoubleArray2() {
         this(0);
     }
+
     public DoubleArray2(int initialSize) {
-        this(false,initialSize);
+        this(false, initialSize);
     }
+
     public DoubleArray2(boolean row, int initialSize) {
         super((TypeReference) Maths.$DLIST, row, initialSize);
     }

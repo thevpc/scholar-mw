@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlotConfig implements Cloneable{
+public class PlotConfig implements Cloneable {
     public PlotConfigLineStepType lineStepType;
     public Boolean showLegend;
     public Integer maxLegendCount;
@@ -30,10 +30,11 @@ public class PlotConfig implements Cloneable{
     public Number defaultXMultiplier;
 
     public List<PlotConfig> children = new ArrayList<>();
-    public PlotConfig copy(){
+
+    public PlotConfig copy() {
         try {
-            PlotConfig other=(PlotConfig) clone();
-            other.children=new ArrayList<>();
+            PlotConfig other = (PlotConfig) clone();
+            other.children = new ArrayList<>();
             for (PlotConfig child : children) {
                 other.children.add(child.copy());
             }
@@ -44,56 +45,56 @@ public class PlotConfig implements Cloneable{
     }
 
     public double getDefaultXMultiplier(double val) {
-        return defaultXMultiplier==null?val:defaultXMultiplier.doubleValue();
+        return defaultXMultiplier == null ? val : defaultXMultiplier.doubleValue();
     }
 
     public double getXMultiplier(double val) {
-        return xmultiplier==null?val:xmultiplier.doubleValue();
+        return xmultiplier == null ? val : xmultiplier.doubleValue();
     }
 
     public double getYMultiplier(double val) {
-        return ymultiplier==null?val:ymultiplier.doubleValue();
+        return ymultiplier == null ? val : ymultiplier.doubleValue();
     }
 
-    public double getXMultiplierAt(int index,double val) {
-        if(index<children.size()){
+    public double getXMultiplierAt(int index, double val) {
+        if (index < children.size()) {
             children.get(index).getXMultiplier(val);
         }
         return val;
     }
 
-    public double getYMultiplierAt(int index,double val) {
-        if(index<children.size()){
+    public double getYMultiplierAt(int index, double val) {
+        if (index < children.size()) {
             children.get(index).getYMultiplier(val);
         }
-        return ymultiplier==null?val:ymultiplier.doubleValue();
+        return ymultiplier == null ? val : ymultiplier.doubleValue();
     }
 
     public PlotConfig getOrCreate(int index) {
-        ensureChildrenSize(index+1);
+        ensureChildrenSize(index + 1);
         return children.get(index);
     }
 
     public void ensureChildrenSize(int length) {
-       while (children.size()<length){
-           children.add(new PlotConfig());
-       }
-       while (children.size()>length){
-           children.remove(children.size()-1);
-       }
+        while (children.size() < length) {
+            children.add(new PlotConfig());
+        }
+        while (children.size() > length) {
+            children.remove(children.size() - 1);
+        }
     }
 
-    public static PlotConfig copy(PlotConfig config){
-        if(config==null){
-            config=new PlotConfig();
-        }else{
-            config=config.copy();
+    public static PlotConfig copy(PlotConfig config) {
+        if (config == null) {
+            config = new PlotConfig();
+        } else {
+            config = config.copy();
         }
         return config;
     }
 
-    public PlotConfig validate(int size){
-        PlotConfig config=this;
+    public PlotConfig validate(int size) {
+        PlotConfig config = this;
 
         if (config.clockwise == null) {
             //config.clockwise = true;

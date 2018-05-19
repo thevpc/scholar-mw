@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Db2 extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Db2(Expr arg) {
         super("db2", arg, FunctionType.DOUBLE);
     }

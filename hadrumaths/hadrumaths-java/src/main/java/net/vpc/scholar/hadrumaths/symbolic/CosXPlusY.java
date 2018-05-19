@@ -22,7 +22,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
             @DoubleValidator(NaN = false) double a,
             @DoubleValidator(NaN = false) double b,
             @DoubleValidator(NaN = false) double c, Domain domain) {
-        super(detectDomain(amp,b,domain));
+        super(detectDomain(amp, b, domain));
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("DCosCosFunctionXY amp=NaN");
         }
@@ -42,9 +42,9 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
         //name=(((a != 0 || b != 0) ? "cos(ax+by+c)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 
-    protected static Domain detectDomain(double amp,double b, Domain domain) {
+    protected static Domain detectDomain(double amp, double b, Domain domain) {
         if (domain == null) {
-            if (b == 0 || amp==0) {
+            if (b == 0 || amp == 0) {
                 return Domain.FULLXY;
             }
             return Domain.FULLX;
@@ -59,7 +59,7 @@ public final class CosXPlusY extends AbstractDoubleToDouble implements Cloneable
     @Override
     public boolean isZeroImpl() {
         return amp == 0 ||
-                (a == 0 && b == 0 && (Maths.cos2(c) == 0 || ((Maths.abs(c) * 2 / Maths.PI) % 2 == 1)));
+                (a == 0 && b == 0 && (Maths.cos2(c) == 0 || ((Math.abs(c) * 2 / Maths.PI) % 2 == 1)));
 
     }
 

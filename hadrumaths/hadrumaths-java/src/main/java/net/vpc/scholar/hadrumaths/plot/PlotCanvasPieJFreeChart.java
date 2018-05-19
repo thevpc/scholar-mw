@@ -4,16 +4,12 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.MultiplePiePlot;
 import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.Plot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.PieDataset;
 import org.jfree.util.TableOrder;
 
 import java.awt.*;
@@ -32,17 +28,16 @@ public class PlotCanvasPieJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
         chart.getPlot().setBackgroundPaint(Color.WHITE);
-        if(chart.getPlot() instanceof PiePlot) {
+        if (chart.getPlot() instanceof PiePlot) {
             PiePlot plot = (PiePlot) chart.getPlot();
-        }else if(chart.getPlot() instanceof MultiplePiePlot){
+        } else if (chart.getPlot() instanceof MultiplePiePlot) {
             MultiplePiePlot plot = (MultiplePiePlot) chart.getPlot();
         }
 //        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
@@ -101,10 +96,10 @@ public class PlotCanvasPieJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
     }
 
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
-        CategoryDataset data= createCategoryDataset();
+        CategoryDataset data = createCategoryDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
-        if(config.threeD){
+        if (config.threeD) {
             return ChartFactory.createMultiplePieChart3D(theTitle,
                     data,
                     TableOrder.BY_ROW,

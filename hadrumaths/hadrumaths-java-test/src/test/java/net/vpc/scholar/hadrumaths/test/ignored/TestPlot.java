@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.test.ignored;
 
 
-import static net.vpc.scholar.hadrumaths.Maths.*;
-
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  *

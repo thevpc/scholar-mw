@@ -9,7 +9,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
 /**
  * Created by vpc on 5/7/14.
  */
-public class SinSeqXY extends Ref implements Cloneable{
+public class SinSeqXY extends Ref implements Cloneable {
     private static final long serialVersionUID = 1L;
     private boolean maxEast;
     private boolean maxSouth;
@@ -25,42 +25,38 @@ public class SinSeqXY extends Ref implements Cloneable{
 
     //@TestInfo("DisableRandomCalls")
     public SinSeqXY(String borders, DoubleParam m, DoubleParam n, Domain domain) {
-        boolean maxNorth=false;
-        boolean maxEast=false;
-        boolean maxSouth=false;
-        boolean maxWest=false;
-        if(borders!=null){
+        boolean maxNorth = false;
+        boolean maxEast = false;
+        boolean maxSouth = false;
+        boolean maxWest = false;
+        if (borders != null) {
             for (char c : borders.toCharArray()) {
-                switch (c){
+                switch (c) {
                     case 'N':
                     case 'n':
-                    case '^':
-                    {
-                        maxNorth=true;
+                    case '^': {
+                        maxNorth = true;
                         break;
                     }
                     case 'S':
                     case 's':
-                    case '_':
-                    {
-                        maxSouth=true;
+                    case '_': {
+                        maxSouth = true;
                         break;
                     }
                     case 'W':
                     case 'w':
-                    case '<':
-                    {
-                        maxWest=true;
+                    case '<': {
+                        maxWest = true;
                         break;
                     }
                     case 'E':
                     case 'e':
-                    case '>':
-                    {
-                        maxEast=true;
+                    case '>': {
+                        maxEast = true;
                         break;
                     }
-                    default:{
+                    default: {
                         throw new IllegalArgumentException("Expected N,n,^ for 'north max border' ; S,s,_ for 'south max border' ; W,w,< for 'west max border' ; E,e,> for 'east max border'");
                     }
                 }
@@ -69,7 +65,7 @@ public class SinSeqXY extends Ref implements Cloneable{
         init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
     }
 
-    private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain){
+    private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain) {
         this.maxEast = maxEast;
         this.maxSouth = maxSouth;
         this.maxWest = maxWest;

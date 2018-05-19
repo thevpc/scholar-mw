@@ -111,17 +111,14 @@ public class ExpressionRewriterFactory extends AbstractFactory {
     );
     public final static List<ExpressionRewriterRule> CANONICAL_RULES = new ArrayList<ExpressionRewriterRule>(
             Arrays.asList(
-//                    DDxCosSymbolRule.INSTANCE
                     CosXCosYSymbolRule.INSTANCE,
                     CosXPlusYSymbolRule.INSTANCE
-                    , DomainExprSimplifyRule.INSTANCE
-//                    , DDxLinearSymbolRule.INSTANCE
-//                    , DDxPolynomeSymbolRule.INSTANCE
-//                    , DDxUxSymbolRule.INSTANCE
                     , DDxyLinearSymbolRule.INSTANCE
-//                    , DoubleXSymbolRule.INSTANCE
                     , ReplaceDeprecatedRule.INSTANCE
+
+
                     , AnySimplifyRule.INSTANCE
+                    , DomainExprSimplifyRule.INSTANCE
             )
     );
 
@@ -133,19 +130,15 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 
     public static void rebuild() {
         OPTIMIZE_COMPUTE.clear();
-        ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
-        CANONICAL_RULE_SET.addAllRules(NAVIGATION_RULES);
-        CANONICAL_RULE_SET.addAllRules(CANONICAL_RULES);
-        OPTIMIZE_COMPUTE.add(CANONICAL_RULE_SET);
+
+//        ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
+//        CANONICAL_RULE_SET.addAllRules(NAVIGATION_RULES);
+//        CANONICAL_RULE_SET.addAllRules(CANONICAL_RULES);
+//        OPTIMIZE_COMPUTE.add(CANONICAL_RULE_SET);
 
 
         ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("EXPAND_SIMPLIFY");
-//        for (ExpressionRewriterRule r : NAVIGATION_RULES) {
-//            EXPAND_SIMPLIFY_RULE_SET.addRule(r);
-//        }
-        for (ExpressionRewriterRule r : SIMPLIFY_RULES) {
-            EXPAND_SIMPLIFY_RULE_SET.addRule(r);
-        }
+        EXPAND_SIMPLIFY_RULE_SET.addAllRules(SIMPLIFY_RULES);
         OPTIMIZE_COMPUTE.add(EXPAND_SIMPLIFY_RULE_SET);
     }
 

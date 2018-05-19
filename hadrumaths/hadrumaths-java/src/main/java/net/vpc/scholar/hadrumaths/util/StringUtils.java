@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Created by vpc on 1/15/17.
  */
 public class StringUtils {
-    public static final DecimalFormat PERCENT_FORMAT =new DecimalFormat("#00.00%");
+    public static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#00.00%");
 
     public static StringBuilder clear(StringBuilder c) {
         return c.delete(0, c.length());
@@ -30,10 +30,10 @@ public class StringUtils {
 //    }
 
     public static String toPath(String[] array1, String separator) {
-        if(array1==null||array1.length==0){
+        if (array1 == null || array1.length == 0) {
             return separator;
         }
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (String s : array1) {
             sb.append(separator).append(s);
         }
@@ -41,10 +41,10 @@ public class StringUtils {
     }
 
     public static String toPath(List<String> array1, String separator) {
-        if(array1==null||array1.size()==0){
+        if (array1 == null || array1.size() == 0) {
             return separator;
         }
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (String s : array1) {
             sb.append(separator).append(s);
         }
@@ -80,7 +80,7 @@ public class StringUtils {
 
     public static boolean isInt(String v1) {
         try {
-            if (v1==null || v1.length() == 0) {
+            if (v1 == null || v1.length() == 0) {
                 return false;
             }
             if (!Character.isDigit(v1.charAt(0))) {
@@ -316,12 +316,12 @@ public class StringUtils {
 
     private static Pattern pattern = Pattern.compile("\\$\\{(?<key>[^}]*)\\}");
 
-    public static String replaceVars(String format, Map<String,String> map) {
-        return replaceVars(format,new MapStringMapper(map));
+    public static String replaceVars(String format, Map<String, String> map) {
+        return replaceVars(format, new MapStringMapper(map));
     }
 
     public static String replaceVars(String format, Properties map) {
-        return replaceVars(format,new MapStringMapper((Map) map));
+        return replaceVars(format, new MapStringMapper((Map) map));
     }
 
     public static String replaceVars(String format, StringMapper map) {
@@ -386,9 +386,8 @@ public class StringUtils {
 //    }
 
     /**
-     *
      * @param text
-     * @param compact if true, quotes will not be used unless necessary
+     * @param compact         if true, quotes will not be used unless necessary
      * @param entrySeparators
      * @return
      */
@@ -413,25 +412,24 @@ public class StringUtils {
                     break;
                 }
                 case '\'':
-                case '\"':
-                    {
+                case '\"': {
                     q = true;
                     sb.append("\\").append(c);
                     break;
                 }
                 default: {
-                    if(entrySeparators.indexOf(c)>=0){
+                    if (entrySeparators.indexOf(c) >= 0) {
                         q = true;
                         sb.append("\\").append(c);
-                    }else{
+                    } else {
                         sb.append(c);
                     }
                     break;
                 }
             }
         }
-        if(q){
-            sb.insert(0,'\'');
+        if (q) {
+            sb.insert(0, '\'');
             sb.append('\'');
         }
         return sb.toString();
@@ -531,25 +529,28 @@ public class StringUtils {
             }
         }
     }
-    public static String formatLeft(Object number,int size){
-        StringBuilder sb=new StringBuilder(size);
+
+    public static String formatLeft(Object number, int size) {
+        StringBuilder sb = new StringBuilder(size);
         sb.append(number);
-        while (sb.length()<size){
+        while (sb.length() < size) {
             sb.append(' ');
         }
         return sb.toString();
     }
-    public static String formatRight(Object number,int size){
-        StringBuilder sb=new StringBuilder(size);
+
+    public static String formatRight(Object number, int size) {
+        StringBuilder sb = new StringBuilder(size);
         sb.append(number);
-        while (sb.length()<size){
-            sb.insert(0,' ');
+        while (sb.length() < size) {
+            sb.insert(0, ' ');
         }
         return sb.toString();
     }
-    public static String toCapitalized(String name){
+
+    public static String toCapitalized(String name) {
         char[] chars = name.toLowerCase().toCharArray();
-        chars[0]=Character.toUpperCase(chars[0]);
+        chars[0] = Character.toUpperCase(chars[0]);
         return new String(chars);
     }
 

@@ -21,19 +21,20 @@ public class FrameWindowManager extends AbstractComponentPlotWindowManager {
     public FrameWindowManager() {
         this(null);
     }
+
     public FrameWindowManager(PlotContainer rootContainer) {
-        if(rootContainer==null) {
+        if (rootContainer == null) {
             this.rootContainer = TabbedPlotWindowContainerFactory.INSTANCE.create();
         }
-        if(StringUtils.isEmpty(this.rootContainer.getPlotTitle())) {
+        if (StringUtils.isEmpty(this.rootContainer.getPlotTitle())) {
             this.rootContainer.setPlotTitle(Plot.Config.getDefaultWindowTitle());
         }
         this.rootContainer.setPlotWindowManager(this);
         this.rootContainer.addPlotPropertyListener(new PlotPropertyListener() {
             @Override
             public void onPropertyChange(PlotPropertyEvent event) {
-                if("title".equals(event.getProperty())){
-                    if(frame!=null){
+                if ("title".equals(event.getProperty())) {
+                    if (frame != null) {
                         frame.setTitle((String) event.getNewValue());
                     }
                 }
@@ -58,7 +59,7 @@ public class FrameWindowManager extends AbstractComponentPlotWindowManager {
     }
 
     public void addPlotComponentImpl(PlotComponent component, String[] path) {
-        super.addPlotComponentImpl(component,path);
+        super.addPlotComponentImpl(component, path);
         showFrame();
     }
 
@@ -72,7 +73,8 @@ public class FrameWindowManager extends AbstractComponentPlotWindowManager {
         }
         return frame;
     }
-    public void showFrame(){
+
+    public void showFrame() {
         JFrame frame = getOrCreateFrame();
         frame.pack();
         frame.setVisible(true);

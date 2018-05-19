@@ -4,25 +4,24 @@
  */
 package net.vpc.scholar.hadrumaths.convergence;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.Plot;
 
-import net.vpc.scholar.hadrumaths.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
- *
  * @author vpc
  */
 public class ConvergencePlotListener implements ConvergenceListener {
 
     private String title;
     private JFrame frame;
-    private ArrayList<Object> values=new ArrayList<Object>();
-    private ArrayList<Double> errors=new ArrayList<Double>();
+    private ArrayList<Object> values = new ArrayList<Object>();
+    private ArrayList<Double> errors = new ArrayList<Double>();
     private JPanel valuesPanel;
     private JPanel errorsPanel;
 
@@ -35,7 +34,7 @@ public class ConvergencePlotListener implements ConvergenceListener {
         System.out.println(result.getLabel() + ": err = " + result.getRelativeError()
                 + "; threshold=" + result.getStabilityThreshold() + "; val=" + result.getValue()
                 + "; pars=" + result.getParameters());
-        errors.add(result.getRelativeError()/ result.getConfig().getThreshold());
+        errors.add(result.getRelativeError() / result.getConfig().getThreshold());
         values.add(result.getValue());
         getFrame();
         valuesPanel.removeAll();
@@ -64,7 +63,7 @@ public class ConvergencePlotListener implements ConvergenceListener {
             jtp.addTab("Values", valuesPanel = new JPanel(new BorderLayout()));
             jtp.addTab("Error", errorsPanel = new JPanel(new BorderLayout()));
             frame.add(jtp);
-            frame.setMinimumSize(new Dimension(600,400));
+            frame.setMinimumSize(new Dimension(600, 400));
             frame.pack();
             frame.setVisible(true);
         }

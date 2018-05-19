@@ -1,8 +1,5 @@
 package net.vpc.scholar.hadrumaths.test;
 
-import net.vpc.scholar.hadrumaths.DoubleFormatter;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
 
@@ -16,7 +13,7 @@ public class PlotTest2 {
     public static void main(String[] args) {
         try {
             PlotConsole c = new PlotConsole();
-            double[] doubles = {1* GHZ, 15* GHZ, 13* GHZ, 3* GHZ, 4* GHZ, 1* GHZ};
+            double[] doubles = {1 * GHZ, 15 * GHZ, 13 * GHZ, 3 * GHZ, 4 * GHZ, 1 * GHZ};
             SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
             Date[] dates = new Date[]{
                     f.parse("2017-12-01"),

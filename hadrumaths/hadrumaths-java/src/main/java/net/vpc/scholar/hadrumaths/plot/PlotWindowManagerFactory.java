@@ -8,10 +8,9 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.AbstractFactory;
 
 /**
- *
  * @author vpc
  */
-public class PlotWindowManagerFactory extends AbstractFactory{
+public class PlotWindowManagerFactory extends AbstractFactory {
 
     public static PlotWindowManager create() {
         return createSingleFrame();
@@ -20,6 +19,7 @@ public class PlotWindowManagerFactory extends AbstractFactory{
     public static PlotWindowManager createScatteredFrames() {
         return new ScatteredFramesWindowManager();
     }
+
     public static PlotWindowManager createSingleFrame() {
         return new FrameWindowManager();
     }

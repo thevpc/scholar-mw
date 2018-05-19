@@ -5,7 +5,6 @@
 package net.vpc.scholar.hadrumaths.plot.console.params;
 
 /**
- *
  * @author vpc
  */
 public class CoupleValue<T> {
@@ -28,7 +27,7 @@ public class CoupleValue<T> {
 
     @Override
     public String toString() {
-        return "("+referenceValue+","+modelValue+")";
+        return "(" + referenceValue + "," + modelValue + ")";
     }
-    
+
 }

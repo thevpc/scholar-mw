@@ -22,7 +22,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
 //        return c == null ? none() : c;
 //    }
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        EnhancedProgressMonitor out = log(TLogNull.SILENT).temporize(100).translate(0.8, 0).translate(0.5,0).translate(0.8,0).translate(0.5,0);
 //        EnhancedProgressMonitor a = out.translate(0.8, 0);
 //        EnhancedProgressMonitor[] m = a.split(new double[]{50, 50}, new boolean[]{true, false});
@@ -30,9 +30,10 @@ public class ProgressMonitorFactory extends AbstractFactory {
 //        System.out.println(a.getProgressValue());
 //        System.out.println(out.getProgressValue());
 //    }
-    public static boolean isSilent(ProgressMonitor monitor){
+    public static boolean isSilent(ProgressMonitor monitor) {
         return monitor instanceof SilentEnhancedProgressMonitor;
     }
+
     /**
      * creates Monitors for each enabled Element or null if false
      *
@@ -107,8 +108,8 @@ public class ProgressMonitorFactory extends AbstractFactory {
             boolean enabledElement = enabledElements[i];
             if (enabledElement) {
                 all[i] = translate(baseMonitor, xweight[i], coeffsOffsets[i]);
-            }else{
-                all[i]= none();
+            } else {
+                all[i] = none();
             }
         }
         return all;
@@ -120,10 +121,10 @@ public class ProgressMonitorFactory extends AbstractFactory {
 
     public static EnhancedProgressMonitor translate(ProgressMonitor baseMonitor, double factor, double start) {
         EnhancedProgressMonitor enhanced = enhance(baseMonitor);
-        if(isSilent(enhanced)){
+        if (isSilent(enhanced)) {
             return enhanced;
         }
-        return new ProgressMonitorTranslator(baseMonitor, factor,start);
+        return new ProgressMonitorTranslator(baseMonitor, factor, start);
     }
 
     public static void setProgress(ProgressMonitor baseMonitor, int i, int max, String message) {
@@ -144,7 +145,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
 
     public static EnhancedProgressMonitor createIncrementalMonitor(ProgressMonitor baseMonitor, int iterations) {
         EnhancedProgressMonitor enhanced = enhance(baseMonitor);
-        if(isSilent(enhanced)){
+        if (isSilent(enhanced)) {
             return enhanced;
         }
         EnhancedProgressMonitor i = enhance(baseMonitor);
@@ -154,7 +155,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
 
     public static EnhancedProgressMonitor createIncrementalMonitor(ProgressMonitor baseMonitor, long iterations) {
         EnhancedProgressMonitor enhanced = enhance(baseMonitor);
-        if(isSilent(enhanced)){
+        if (isSilent(enhanced)) {
             return enhanced;
         }
         EnhancedProgressMonitor i = enhance(baseMonitor);
@@ -164,7 +165,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
 
     public static EnhancedProgressMonitor createIncrementalMonitor(ProgressMonitor baseMonitor, double delta) {
         EnhancedProgressMonitor enhanced = enhance(baseMonitor);
-        if(isSilent(enhanced)){
+        if (isSilent(enhanced)) {
             return enhanced;
         }
         EnhancedProgressMonitor i = enhance(baseMonitor);
@@ -198,7 +199,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
 
     public static EnhancedProgressMonitor temporize(ProgressMonitor baseMonitor, long freq) {
         EnhancedProgressMonitor enhanced = enhance(baseMonitor);
-        if(isSilent(enhanced)){
+        if (isSilent(enhanced)) {
             return enhanced;
         }
         return new FreqProgressMonitor(baseMonitor, freq);
@@ -227,6 +228,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
     public static EnhancedProgressMonitor logger(String messageFormat, TLog printStream) {
         return new TLogProgressMonitor(messageFormat, printStream);
     }
+
     public static EnhancedProgressMonitor logger(TLog printStream) {
         return new TLogProgressMonitor(null, printStream);
     }

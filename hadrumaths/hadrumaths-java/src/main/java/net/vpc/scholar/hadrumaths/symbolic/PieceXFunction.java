@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Axis;
 
 import java.util.ArrayList;
 
@@ -163,16 +163,16 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
                 }
             }
         }
-        if(segs.size()==0){
+        if (segs.size() == 0) {
             System.err.println("DPieceXFunctionXY : 0 segments");
         }
         segments = segs.toArray(new DoubleToDouble[segs.size()]);
     }
 
     @Override
-    public double computeDouble(double x, double y,BooleanMarker defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         DoubleToDouble f = getSegment(x);
-        return f != null ? f.computeDouble(x, y,defined) : 0;
+        return f != null ? f.computeDouble(x, y, defined) : 0;
     }
 
     public DoubleToDouble getSegment(double x) {
@@ -271,12 +271,12 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
 
     @Override
     public DoubleToDouble getSymmetricX(double x0) {
-        return ((AbstractDoubleToDouble)getSymmetricX()).translate(2 * (x0 - ((domain.xmin() + domain.xmax()) / 2)), 0);
+        return ((AbstractDoubleToDouble) getSymmetricX()).translate(2 * (x0 - ((domain.xmin() + domain.xmax()) / 2)), 0);
     }
 
     @Override
     public DoubleToDouble getSymmetricY(double y0) {
-        return ((AbstractDoubleToDouble)getSymmetricY()).translate(0, 2 * (y0 - ((domain.ymin() + domain.ymax()) / 2)));
+        return ((AbstractDoubleToDouble) getSymmetricY()).translate(0, 2 * (y0 - ((domain.ymin() + domain.ymax()) / 2)));
     }
 
     @Override
@@ -287,12 +287,12 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
     protected static interface SegmentFactory {
 
         public DoubleToDouble getFunction(PieceXFunction pieceXFunction,
-                                       double minx,
-                                       double maxx,
-                                       double miny,
-                                       double maxy,
-                                       boolean oddX,
-                                       boolean oddY);
+                                          double minx,
+                                          double maxx,
+                                          double miny,
+                                          double maxy,
+                                          boolean oddX,
+                                          boolean oddY);
     }
 
     @Override

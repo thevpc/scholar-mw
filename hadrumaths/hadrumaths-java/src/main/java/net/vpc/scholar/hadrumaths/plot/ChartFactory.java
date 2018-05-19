@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.plot.mesh.Jzy3dMeshPlot;
 import net.vpc.scholar.hadrumaths.plot.mesh.Mesh3DPlot;
 
-import javax.swing.*;
 import java.util.EnumSet;
 import java.util.Set;
 

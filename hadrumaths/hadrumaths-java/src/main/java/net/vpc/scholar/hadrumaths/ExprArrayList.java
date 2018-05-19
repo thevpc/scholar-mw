@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -12,38 +13,38 @@ import java.util.List;
 /**
  * Created by vpc on 5/7/14.
  */
-public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
+public class ExprArrayList extends ArrayTList<Expr> implements ExprList {
     private static final long serialVersionUID = 1L;
 
 
     public ExprArrayList(boolean row, int initialSize) {
-        super(Maths.$EXPR,row,initialSize);
+        super(Maths.$EXPR, row, initialSize);
     }
 
     public ExprArrayList(boolean row, Expr... elements) {
-        this(row,elements.length);
+        this(row, elements.length);
         appendAll(Arrays.asList(elements));
     }
 
     public ExprArrayList(boolean row, Complex... elements) {
-        this(row,elements.length);
+        this(row, elements.length);
         appendAll(Arrays.asList(elements));
     }
 
     public ExprArrayList(boolean row, double... elements) {
-        this(row,elements.length);
+        this(row, elements.length);
         for (double element : elements) {
             append(Complex.valueOf(element));
         }
     }
 
     public ExprArrayList(boolean row, Collection<? extends Expr> elements) {
-        this(row,elements.size());
+        this(row, elements.size());
         appendAll(elements);
     }
 
     public <P extends Expr> ExprArrayList(boolean row, TVector<P> elements) {
-        this(row,elements.size());
+        this(row, elements.size());
         appendAll(elements.toJList());
     }
 
@@ -53,7 +54,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
     }
 
     public List<Complex> toComplexList() {
-        if(!isComplex()){
+        if (!isComplex()) {
             throw new ClassCastException();
         }
         List<Complex> y = new ArrayList<>();
@@ -69,7 +70,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
     }
 
     public List<Double> toDoubleList() {
-        if(!isDouble()){
+        if (!isDouble()) {
             throw new ClassCastException();
         }
         List<Double> y = new ArrayList<>();
@@ -80,7 +81,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
     }
 
     private List<Expr> toExprJList() {
-        List<Expr> e=new ArrayList<>();
+        List<Expr> e = new ArrayList<>();
         for (Expr t : this) {
             e.add(t);
         }
@@ -88,7 +89,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
     }
 
     public double[] toDoubleArray() {
-        if(!isDouble()){
+        if (!isDouble()) {
             throw new ClassCastException();
         }
         return ArrayUtils.exprListToDoubleArray((List<Expr>) toExprJList());
@@ -101,7 +102,6 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList{
         }
         return next;
     }
-
 
 
     public Expr sum() {

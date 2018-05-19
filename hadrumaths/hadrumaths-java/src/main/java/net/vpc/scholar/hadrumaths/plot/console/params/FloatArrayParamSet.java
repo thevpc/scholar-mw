@@ -14,6 +14,7 @@ public class FloatArrayParamSet extends ParamSet implements Cloneable {
     public FloatArrayParamSet(Param configurator) {
         this(configurator, new float[0]);
     }
+
     public FloatArrayParamSet(Param configurator, float value) {
         this(configurator, new float[]{value});
     }

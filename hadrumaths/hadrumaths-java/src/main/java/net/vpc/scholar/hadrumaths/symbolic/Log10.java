@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Log10 extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Log10(Expr arg) {
         super("log10", arg, FunctionType.DOUBLE);
     }
@@ -26,7 +27,7 @@ public class Log10 extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.log10(c);
+        return Math.log10(c);
     }
 
     @Override

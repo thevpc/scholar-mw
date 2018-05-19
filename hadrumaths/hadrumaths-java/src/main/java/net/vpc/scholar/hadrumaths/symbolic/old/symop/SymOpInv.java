@@ -27,13 +27,14 @@ public class SymOpInv extends SymOperator {
         }
         return new SymOpInv(x);
     }
+
     public String toString(SymStringContext context) {
         SymStringContext c = context.clone();
         c.setPreferParentheses(false);
         c.setOperatorPrecedence(SymStringContext.MUL_PRECEDENCE);
-        String s = SymUtils.formatColumn(SymOpDiv.DIV_FORMAT,"1", value.toString(c));
+        String s = SymUtils.formatColumn(SymOpDiv.DIV_FORMAT, "1", value.toString(c));
         boolean par = context.isPreferParentheses(SymStringContext.ADD_PRECEDENCE);
-        return par ? SymUtils.formatRow(null,"(",s,")") : s;
+        return par ? SymUtils.formatRow(null, "(", s, ")") : s;
     }
 
 }

@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 20:33:56 To
  * change this template use File | Settings | File Templates.
  */
-public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
+public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     private DoubleToDouble base;
@@ -120,8 +120,8 @@ public class DDyIntegralX extends AbstractDoubleToDouble implements Cloneable{
         DoubleToDouble updated = (DoubleToDouble) last.setParam(name, value);
         if (updated != last) {
             Expr e = new DDyIntegralX(updated, integral, x0, x1);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }

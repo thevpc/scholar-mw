@@ -3,7 +3,9 @@ package net.vpc.scholar.hadrumaths.srv;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.HFileSystem;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
@@ -11,7 +13,7 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HadrumathsRMIServer extends HadrumathsAbstractServer{
+public class HadrumathsRMIServer extends HadrumathsAbstractServer {
     private Map<String, HadrumathsServlet> servlets = new HashMap<>();
     private int port = HadrumathsServices.DEFAULT_RMI_PORT;
     private boolean started;
@@ -63,9 +65,9 @@ public class HadrumathsRMIServer extends HadrumathsAbstractServer{
         try {
             Registry registry = LocateRegistry.createRegistry(getPort());
             for (Map.Entry<String, HadrumathsServlet> ss : servlets.entrySet()) {
-                registry.bind(ss.getKey(),ss.getValue().export());
+                registry.bind(ss.getKey(), ss.getValue().export());
             }
-            started=true;
+            started = true;
         } catch (Exception e) {
             throw new RuntimeException();
         }

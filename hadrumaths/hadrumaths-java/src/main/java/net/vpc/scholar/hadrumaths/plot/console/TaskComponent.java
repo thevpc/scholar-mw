@@ -1,20 +1,19 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-
-import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.*;
-import java.text.DecimalFormat;
-
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
-* @creationtime 6 janv. 2007 12:23:22
-*/
+ * @creationtime 6 janv. 2007 12:23:22
+ */
 public class TaskComponent extends JPanel implements ActionListener {
     private JLabel windowTitle;
     private JLabel descLabel;
@@ -89,17 +88,17 @@ public class TaskComponent extends JPanel implements ActionListener {
                         .setInsets(".*", new Insets(1, 1, 1, 1))
         );
         setBorder(BorderFactory.createEtchedBorder());
-        add(windowTitle,"windowTitle");
-        add(yLabel,"yLabel");
-        add(timeDurLabel,"timeDurLabel");
-        add(timeDurValue,"timeDurValue");
-        add(timeElapLabel,"timeElapLabel");
-        add(timeElapValue,"timeElapValue");
-        add(timeRemLabel,"timeRemLabel");
+        add(windowTitle, "windowTitle");
+        add(yLabel, "yLabel");
+        add(timeDurLabel, "timeDurLabel");
+        add(timeDurValue, "timeDurValue");
+        add(timeElapLabel, "timeElapLabel");
+        add(timeElapValue, "timeElapValue");
+        add(timeRemLabel, "timeRemLabel");
         add(timeRemValue, "timeRemValue");
         add(descLabel, "descLabel");
         add(yProgress, "yProgress");
-        JToolBar jToolBar=new JToolBar(JToolBar.HORIZONTAL);
+        JToolBar jToolBar = new JToolBar(JToolBar.HORIZONTAL);
         jToolBar.setBorderPainted(false);
         jToolBar.setRollover(true);
         jToolBar.setBackground(Color.WHITE);
@@ -160,24 +159,24 @@ public class TaskComponent extends JPanel implements ActionListener {
     public void ticMonitor(int index, int maxIndex) {
         if (monitor != null) {
             double progressValue = monitor.getProgressValue();
-            if(monitor.getProgressMessage().getText().length()>0) {
+            if (monitor.getProgressMessage().getText().length() > 0) {
                 descLabel.setText(monitor.getProgressMessage().getText());
             }
             if (!monitor.isTerminated() && !pause.isSelected()) {
                 double d = monitor.getProgressValue();
-                if(d<0 || d>1.0){
-                    System.err.println("%= "+d+"????????????");
-                    d=d/100;
+                if (d < 0 || d > 1.0) {
+                    System.err.println("%= " + d + "????????????");
+                    d = d / 100;
                 }
                 double d100;
                 if (Double.isNaN(d)) {
                     d = 100;
                     d100 = 100;
-                }else{
-                    d100=d*100;
+                } else {
+                    d100 = d * 100;
                 }
                 Chronometer chrono = monitor.getChronometer();
-                long spent = chrono.isStarted() ? chrono.getTime():0;
+                long spent = chrono.isStarted() ? chrono.getTime() : 0;
                 long remaining = spent == 0 ? -1 : (long) ((spent / d) * (1 - d));
                 long approx = spent == 0 ? -1 : (long) ((spent / d));
                 timeDurLabel.setText("Duration :");
@@ -186,9 +185,9 @@ public class TaskComponent extends JPanel implements ActionListener {
                 timeElapValue.setText(Chronometer.formatPeriodNano(spent, Chronometer.DatePart.s));
                 timeRemLabel.setText("Remaining :");
                 timeRemValue.setText(Chronometer.formatPeriodNano(remaining, Chronometer.DatePart.s));
-                detach.setEnabled(index<maxIndex);
+                detach.setEnabled(index < maxIndex);
                 updateProgress(d100, monitor.getProgressMessage().toString());
-            } else if(monitor.isTerminated()){
+            } else if (monitor.isTerminated()) {
                 windowTitle.setForeground(Color.RED);
                 yLabel.setForeground(Color.RED);
                 descLabel.setForeground(Color.RED);
@@ -201,7 +200,8 @@ public class TaskComponent extends JPanel implements ActionListener {
             taskMonitor.removeTask(this);
         }
     }
-    private static final DecimalFormat df=new DecimalFormat("00.00");
+
+    private static final DecimalFormat df = new DecimalFormat("00.00");
 
     public void updateProgress(double progress, String message) {
         yLabel.setText(message == null ? "" : message);

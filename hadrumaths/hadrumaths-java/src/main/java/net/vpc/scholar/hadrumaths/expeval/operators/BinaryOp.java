@@ -5,31 +5,31 @@
 
 package net.vpc.scholar.hadrumaths.expeval.operators;
 
-import net.vpc.scholar.hadrumaths.expeval.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.expeval.AbstractExpressionNode;
+
 import java.util.Map;
 import java.util.Stack;
-import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
-public abstract class BinaryOp extends AbstractExpressionNode{
-    
+public abstract class BinaryOp extends AbstractExpressionNode {
+
     public BinaryOp(String name) {
         super(name);
     }
 
     @Override
     public Object evaluate(Stack<Object> valuesStack, Map<String, Object> variables) {
-        Object b=valuesStack.pop();
-        Object a=valuesStack.pop();
-        Complex aa=(Complex)a;
-        Complex bb=(Complex)b;
+        Object b = valuesStack.pop();
+        Object a = valuesStack.pop();
+        Complex aa = (Complex) a;
+        Complex bb = (Complex) b;
         return evaluate(aa, bb);
     }
-    
-    public abstract Object evaluate(Complex a,Complex b);
-    
+
+    public abstract Object evaluate(Complex a, Complex b);
+
 
 }

@@ -1,12 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.ComponentDimension;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
 
 import java.util.*;
 
@@ -15,10 +9,10 @@ import static net.vpc.scholar.hadrumaths.Maths.CZERO;
 /**
  * User: taha Date: 2 juil. 2003 Time: 16:42:35
  */
-public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cloneable{
+public class DefaultDoubleToMatrix extends AbstractDoubleToVector implements Cloneable {
     private static final long serialVersionUID = 1L;
 
-//    public static final int X = Axis.X.ordinal();
+    //    public static final int X = Axis.X.ordinal();
 //    public static final int Y = Axis.Y.ordinal();
     private ComponentDimension componentDimension;
     private DoubleToComplex[] components;
@@ -49,26 +43,26 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
 //    }
 
     private DefaultDoubleToMatrix(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz, int dim) {
-        switch (dim){
-            case 1:{
+        switch (dim) {
+            case 1: {
                 components = new DoubleToComplex[]{fx};
-                componentDimension=ComponentDimension.SCALAR;
+                componentDimension = ComponentDimension.SCALAR;
                 domain = fx.getDomain();
                 break;
             }
-            case 2:{
+            case 2: {
                 components = new DoubleToComplex[]{fx, fy};
-                componentDimension=ComponentDimension.VECTOR2;
+                componentDimension = ComponentDimension.VECTOR2;
                 domain = fx.getDomain().expand(fy.getDomain());
                 break;
             }
-            case 3:{
+            case 3: {
                 components = new DoubleToComplex[]{fx, fy, fz};
-                componentDimension=ComponentDimension.VECTOR3;
+                componentDimension = ComponentDimension.VECTOR3;
                 domain = fx.getDomain().expand(fy.getDomain()).expand(fz.getDomain());
                 break;
             }
-            default:{
+            default: {
                 throw new UnsupportedComponentDimensionException(dim);
             }
         }
@@ -103,7 +97,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
                 map.put(s, a + "+" + b);
             }
         }
-        if(!map.isEmpty()) {
+        if (!map.isEmpty()) {
             vector2D.setProperties(map);
         }
         return vector2D;
@@ -198,7 +192,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
                 map.put(s, a + "+" + b);
             }
         }
-        if(map!=null && map.size()>0) {
+        if (map != null && map.size() > 0) {
             vector2D.setProperties(map);
         }
         return vector2D;
@@ -211,7 +205,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
 
     @Override
     public DoubleToMatrix clone() {
-        Map<String, Object> properties = hasProperties()?getProperties():null;
+        Map<String, Object> properties = hasProperties() ? getProperties() : null;
         switch (getComponentSize()) {
             case 1: {
                 return (DoubleToMatrix) new DefaultDoubleToMatrix((DoubleToComplex) getComponent(Axis.X).clone(), null, null, 1).setProperties(properties);
@@ -245,8 +239,8 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
         }
         if (changed) {
             Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -265,7 +259,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
         }
         if (changed) {
             Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -285,7 +279,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
         }
         if (changed) {
             Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -299,8 +293,9 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
         DefaultDoubleToMatrix vdCxy = (DefaultDoubleToMatrix) o;
 
         if (domain != null ? !domain.equals(vdCxy.domain) : vdCxy.domain != null) return false;
-        if (componentDimension != null ? !componentDimension.equals(vdCxy.componentDimension) : vdCxy.componentDimension != null) return false;
-        if(!Arrays.equals(components,vdCxy.components)) return false;
+        if (componentDimension != null ? !componentDimension.equals(vdCxy.componentDimension) : vdCxy.componentDimension != null)
+            return false;
+        if (!Arrays.equals(components, vdCxy.components)) return false;
 
         return true;
     }
@@ -312,9 +307,6 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector  implements Cl
         result = 31 * result + (componentDimension != null ? componentDimension.hashCode() : 0);
         return result;
     }
-
-
-
 
 
     @Override

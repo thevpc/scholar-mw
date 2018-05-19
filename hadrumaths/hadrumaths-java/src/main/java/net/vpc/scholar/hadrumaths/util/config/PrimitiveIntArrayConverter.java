@@ -30,7 +30,7 @@ public class PrimitiveIntArrayConverter extends ConfigConverter {
 
     public Object stringToObject(String s) throws ParseException {
         ArrayList arrayList = new ArrayList();
-        for (StringTokenizer st = new StringTokenizer(s, ";"); st.hasMoreTokens();) {
+        for (StringTokenizer st = new StringTokenizer(s, ";"); st.hasMoreTokens(); ) {
             arrayList.add(new Integer(st.nextToken().trim()));
         }
         int[] ints = new int[arrayList.size()];

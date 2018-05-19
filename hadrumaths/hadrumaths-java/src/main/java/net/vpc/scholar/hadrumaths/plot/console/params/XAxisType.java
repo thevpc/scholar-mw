@@ -5,8 +5,8 @@ import net.vpc.scholar.hadrumaths.util.Const;
 /**
  * Created by vpc on 3/15/15.
  */
-public class XAxisType extends Const<XAxisType>{
+public class XAxisType extends Const<XAxisType> {
     protected XAxisType(String name) {
-        super(name,XAxisType.class);
+        super(name, XAxisType.class);
     }
 }

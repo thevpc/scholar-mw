@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -79,10 +78,10 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         if (!e.isInvariant(Axis.Z)) {
             throw new IllegalArgumentException("Y not Allowed in Domain definition: " + e);
         }
-        if(e.getDomain().getDomainDimension()!=1){
+        if (e.getDomain().getDomainDimension() != 1) {
             throw new IllegalArgumentException("Domain Exp value should not be a domain it self " + e);
         }
-        if(!e.getDomain().isUnconstrained()){
+        if (!e.getDomain().isUnconstrained()) {
             throw new IllegalArgumentException("Domain Exp value should not be a domain it self " + e);
         }
     }

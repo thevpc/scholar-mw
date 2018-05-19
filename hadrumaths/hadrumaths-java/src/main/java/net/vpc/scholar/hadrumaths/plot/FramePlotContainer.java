@@ -101,7 +101,6 @@ public class FramePlotContainer extends AbstractPlotContainer {
     }
 
 
-
     private void showFrame(int i) {
         JFrame frame = getFrame(i);
         frame.pack();
@@ -128,13 +127,13 @@ public class FramePlotContainer extends AbstractPlotContainer {
     }
 
     private JFrame addFrame(int index) {
-        JFrame f=new JFrame();
+        JFrame f = new JFrame();
         f.getContentPane().setLayout(new BorderLayout());
         f.addWindowListener(windowMonitor);
         synchronized (frames) {
-            if(index<0){
+            if (index < 0) {
                 frames.add(f);
-            }else {
+            } else {
                 frames.add(index, f);
             }
         }
@@ -142,12 +141,12 @@ public class FramePlotContainer extends AbstractPlotContainer {
     }
 
     public void addComponentImpl(PlotComponent component, int index) {
-        JFrame frame=null;
-        if(index<frames.size()) {
+        JFrame frame = null;
+        if (index < frames.size()) {
             frame = addFrame(index);
             frame.setTitle(component.getPlotTitle());
-        }else{
-            frame =getFrame(index);
+        } else {
+            frame = getFrame(index);
         }
 
         frame.getContentPane().removeAll();

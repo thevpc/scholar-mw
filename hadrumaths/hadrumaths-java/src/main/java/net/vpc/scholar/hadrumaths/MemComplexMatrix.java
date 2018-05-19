@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
 public final class MemComplexMatrix extends AbstractMatrix implements Serializable {
-    private static final long serialVersionUID=1;
+    private static final long serialVersionUID = 1;
 
     private Complex[][] elements;
 
@@ -21,7 +21,6 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         }
         elements = new Complex[rows][cols];
     }
-
 
 
     private static MemComplexMatrix newMemMatrix(Complex[][] e) {
@@ -54,7 +53,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             for (Complex[] element : elements) {
                 s += element[j].absdbl();
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -66,7 +65,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
                 f += element[j].absdblsqr();
             }
         }
-        return Maths.sqrt(f);
+        return Math.sqrt(f);
     }
 
     /**
@@ -78,7 +77,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (Complex[] element : elements) {
-                f = Maths.max(f, element[j].absdbl());
+                f = Math.max(f, element[j].absdbl());
             }
         }
         return f;
@@ -97,7 +96,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             for (Complex anElement : element) {
                 s += anElement.absdbl();
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -123,7 +122,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(i0:i1, j0:j1)
+     * @return A(i0 : i1, j0 : j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -147,7 +146,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
      *
      * @param r Array of row indices.
      * @param c Array of column indices.
-     * @return A(r(:), c(:))
+     * @return A(r ( :), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -172,7 +171,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
      * @param r1 Initial row index
      * @param r2 Final row index
      * @param c  Array of column indices.
-     * @return A(i0:i1, c(:))
+     * @return A(i0 : i1, c ( :))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -197,7 +196,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
      * @param r  Array of row indices.
      * @param c1 Initial column index
      * @param c2 Final column index
-     * @return A(r(:), j0:j1)
+     * @return A(r ( :), j0:j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -302,19 +301,20 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
 
     @Override
     public Matrix mul(TMatrix<Complex> other) {
-        if(getColumnCount()!=other.getRowCount()){
-            throw new IllegalArgumentException("The column dimension "+getColumnCount()+" of the left matrix does not match the row dimension "+other.getRowCount()+" of the right matrix!");
+        if (getColumnCount() != other.getRowCount()) {
+            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
         }
         if (other instanceof MemComplexMatrix) {
             MemComplexMatrix mm = (MemComplexMatrix) other;
-            MutableComplex sum=MutableComplex.Zero();
+            MutableComplex sum = MutableComplex.Zero();
             int a_rows = elements.length;
             int b_cols = mm.elements[0].length;
             int b_rows = mm.elements.length;
             Complex[][] newElements = new Complex[a_rows][b_cols];
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < b_cols; j++) {
-                    sum.setZero();;
+                    sum.setZero();
+                    ;
                     for (int k = 0; k < b_rows; k++) {
                         sum.add(elements[i][k].mul(mm.elements[k][j]));
                     }
@@ -323,14 +323,15 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             }
             return newMemMatrix(newElements);
         } else {
-            MutableComplex sum=MutableComplex.Zero();
+            MutableComplex sum = MutableComplex.Zero();
             int a_rows = elements.length;
             int b_cols = other.getColumnCount();
             int b_rows = other.getRowCount();
             Complex[][] newElements = new Complex[a_rows][b_cols];
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < b_cols; j++) {
-                    sum.setZero();;
+                    sum.setZero();
+                    ;
                     for (int k = 0; k < b_rows; k++) {
                         sum.add(elements[i][k].mul(other.get(k, j)));
                     }
@@ -600,7 +601,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             default: {
                 int n2 = n / 2;
                 Matrix A = getMatrix(0, n2 - 1, 0, n2 - 1);
-                Matrix B = getMatrix(n2, n - 1, 0, n2-1);
+                Matrix B = getMatrix(n2, n - 1, 0, n2 - 1);
                 Matrix C = getMatrix(0, n2 - 1, n2, n - 1);
                 Matrix D = getMatrix(n2, n - 1, n2, n - 1);
                 Matrix Ai = A.invBlock(delegate, precision);
@@ -970,7 +971,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Maths.max(f, f0);
+                f = Math.max(f, f0);
             }
         }
         return f;
@@ -983,7 +984,7 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Maths.min(f, f0);
+                f = Math.min(f, f0);
             }
         }
         return f;
@@ -1107,7 +1108,6 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
             this.elements = elements2;
         }
     }
-
 
 
 //    private void writeObject(ObjectOutputStream oos)

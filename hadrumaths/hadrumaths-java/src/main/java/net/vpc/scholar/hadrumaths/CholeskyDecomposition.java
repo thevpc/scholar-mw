@@ -1,74 +1,83 @@
 package net.vpc.scholar.hadrumaths;
 
-   /** Cholesky Decomposition.
-   <P>
-   For a symmetric, positive definite matrix A, the Cholesky decomposition
-   is an lower triangular matrix L so that A = L*L'.
-   <P>
-   If the matrix is not symmetric or positive definite, the constructor
-   returns a partial decomposition and sets an internal flag that may
-   be queried by the isSPD() method.
-   */
+/**
+ * Cholesky Decomposition.
+ * <p>
+ * For a symmetric, positive definite matrix A, the Cholesky decomposition
+ * is an lower triangular matrix L so that A = L*L'.
+ * <p>
+ * If the matrix is not symmetric or positive definite, the constructor
+ * returns a partial decomposition and sets an internal flag that may
+ * be queried by the isSPD() method.
+ */
 
 public class CholeskyDecomposition implements java.io.Serializable {
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 /* ------------------------
    Class variables
  * ------------------------ */
 
-   /** Array for internal storage of decomposition.
-   @serial internal array storage.
-   */
-   private double[][] L;
+    /**
+     * Array for internal storage of decomposition.
+     *
+     * @serial internal array storage.
+     */
+    private double[][] L;
 
-   /** Row and column dimension (square matrix).
-   @serial matrix dimension.
-   */
-   private int n;
+    /**
+     * Row and column dimension (square matrix).
+     *
+     * @serial matrix dimension.
+     */
+    private int n;
 
-   /** Symmetric and positive definite flag.
-   @serial is symmetric and positive definite flag.
-   */
-   private boolean isspd;
+    /**
+     * Symmetric and positive definite flag.
+     *
+     * @serial is symmetric and positive definite flag.
+     */
+    private boolean isspd;
 
 /* ------------------------
    Constructor
  * ------------------------ */
 
-   /** Cholesky algorithm for symmetric and positive definite matrix.
-   @param  Arg   Square, symmetric matrix.
-   return     Structure to access L and isspd flag.
-   */
+    /**
+     * Cholesky algorithm for symmetric and positive definite matrix.
+     *
+     * @param Arg Square, symmetric matrix.
+     *            return     Structure to access L and isspd flag.
+     */
 
-   public CholeskyDecomposition (DMatrix Arg) {
-      // Initialize.
-      double[][] A = Arg.getDoubleArray();
-      n = Arg.getRowCount();
-      L = new double[n][n];
-      isspd = (Arg.getColumnCount() == n);
-      // Main loop.
-      for (int j = 0; j < n; j++) {
-         double[] Lrowj = L[j];
-         double d = 0.0;
-         for (int k = 0; k < j; k++) {
-            double[] Lrowk = L[k];
-            double s = 0.0;
-            for (int i = 0; i < k; i++) {
-               s += Lrowk[i]*Lrowj[i];
+    public CholeskyDecomposition(DMatrix Arg) {
+        // Initialize.
+        double[][] A = Arg.getDoubleArray();
+        n = Arg.getRowCount();
+        L = new double[n][n];
+        isspd = (Arg.getColumnCount() == n);
+        // Main loop.
+        for (int j = 0; j < n; j++) {
+            double[] Lrowj = L[j];
+            double d = 0.0;
+            for (int k = 0; k < j; k++) {
+                double[] Lrowk = L[k];
+                double s = 0.0;
+                for (int i = 0; i < k; i++) {
+                    s += Lrowk[i] * Lrowj[i];
+                }
+                Lrowj[k] = s = (A[j][k] - s) / L[k][k];
+                d = d + s * s;
+                isspd = isspd && (A[k][j] == A[j][k]);
             }
-            Lrowj[k] = s = (A[j][k] - s)/L[k][k];
-            d = d + s*s;
-            isspd = isspd && (A[k][j] == A[j][k]);
-         }
-         d = A[j][j] - d;
-         isspd = isspd && (d > 0.0);
-         L[j][j] = Maths.sqrt(Maths.max(d,0.0));
-         for (int k = j+1; k < n; k++) {
-            L[j][k] = 0.0;
-         }
-      }
-   }
+            d = A[j][j] - d;
+            isspd = isspd && (d > 0.0);
+            L[j][j] = Maths.sqrt(Math.max(d, 0.0));
+            for (int k = j + 1; k < n; k++) {
+                L[j][k] = 0.0;
+            }
+        }
+    }
 
 /* ------------------------
    Temporary, experimental code.
@@ -136,64 +145,70 @@ public class CholeskyDecomposition implements java.io.Serializable {
    Public Methods
  * ------------------------ */
 
-   /** Is the matrix symmetric and positive definite?
-   @return     true if A is symmetric and positive definite.
-   */
+    /**
+     * Is the matrix symmetric and positive definite?
+     *
+     * @return true if A is symmetric and positive definite.
+     */
 
-   public boolean isSPD () {
-      return isspd;
-   }
+    public boolean isSPD() {
+        return isspd;
+    }
 
-   /** Return triangular factor.
-   @return     L
-   */
+    /**
+     * Return triangular factor.
+     *
+     * @return L
+     */
 
-   public DMatrix getL () {
-      return new DMatrix(L,n,n);
-   }
+    public DMatrix getL() {
+        return new DMatrix(L, n, n);
+    }
 
-   /** Solve A*X = B
-   @param  B   A Matrix with as many rows as A and any number of columns.
-   @return     X so that L*L'*X = B
-   @exception  IllegalArgumentException  Matrix row dimensions must agree.
-   @exception  RuntimeException  Matrix is not symmetric positive definite.
-   */
+    /**
+     * Solve A*X = B
+     *
+     * @param B A Matrix with as many rows as A and any number of columns.
+     * @return X so that L*L'*X = B
+     * @throws IllegalArgumentException Matrix row dimensions must agree.
+     * @throws RuntimeException         Matrix is not symmetric positive definite.
+     */
 
-   public DMatrix solve (DMatrix B) {
-      if (B.getRowCount() != n) {
-         throw new IllegalArgumentException("Matrix row dimensions must agree.");
-      }
-      if (!isspd) {
-         throw new RuntimeException("Matrix is not symmetric positive definite.");
-      }
+    public DMatrix solve(DMatrix B) {
+        if (B.getRowCount() != n) {
+            throw new IllegalArgumentException("Matrix row dimensions must agree.");
+        }
+        if (!isspd) {
+            throw new RuntimeException("Matrix is not symmetric positive definite.");
+        }
 
-      // Copy right hand side.
-      double[][] X = B.getDoubleArrayCopy();
-      int nx = B.getColumnCount();
+        // Copy right hand side.
+        double[][] X = B.getDoubleArrayCopy();
+        int nx = B.getColumnCount();
 
-      // Solve L*Y = B;
-      for (int k = 0; k < n; k++) {
-         for (int i = k+1; i < n; i++) {
-            for (int j = 0; j < nx; j++) {
-               X[i][j] -= X[k][j]*L[i][k];
+        // Solve L*Y = B;
+        for (int k = 0; k < n; k++) {
+            for (int i = k + 1; i < n; i++) {
+                for (int j = 0; j < nx; j++) {
+                    X[i][j] -= X[k][j] * L[i][k];
+                }
             }
-         }
-         for (int j = 0; j < nx; j++) {
-            X[k][j] /= L[k][k];
-         }
-      }
-
-      // Solve L'*X = Y;
-      for (int k = n-1; k >= 0; k--) {
-         for (int j = 0; j < nx; j++) {
-            X[k][j] /= L[k][k];
-         }
-         for (int i = 0; i < k; i++) {
             for (int j = 0; j < nx; j++) {
-               X[i][j] -= X[k][j]*L[k][i];
+                X[k][j] /= L[k][k];
             }
-         }
-      }
-      return new DMatrix(X,n,nx);
-   }
+        }
+
+        // Solve L'*X = Y;
+        for (int k = n - 1; k >= 0; k--) {
+            for (int j = 0; j < nx; j++) {
+                X[k][j] /= L[k][k];
+            }
+            for (int i = 0; i < k; i++) {
+                for (int j = 0; j < nx; j++) {
+                    X[i][j] -= X[k][j] * L[k][i];
+                }
+            }
+        }
+        return new DMatrix(X, n, nx);
+    }
 }

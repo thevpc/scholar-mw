@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console.params;
 
-public class SimpleParamTitleProvider implements ParamTitleProvider{
+public class SimpleParamTitleProvider implements ParamTitleProvider {
     private String[] titles;
 
     public SimpleParamTitleProvider(String[] titles) {

@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Cos extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Cos(Expr arg) {
         super("cos", arg, FunctionType.DOUBLE);
     }

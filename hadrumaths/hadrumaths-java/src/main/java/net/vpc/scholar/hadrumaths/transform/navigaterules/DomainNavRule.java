@@ -13,7 +13,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class DomainNavRule implements ExpressionRewriterRule {
@@ -28,8 +27,9 @@ public class DomainNavRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        return RewriteResult.newVal(DoubleValue.valueOf(1,(Domain) e));
+        return RewriteResult.newVal(DoubleValue.valueOf(1, (Domain) e));
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -37,7 +37,7 @@ public class DomainNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

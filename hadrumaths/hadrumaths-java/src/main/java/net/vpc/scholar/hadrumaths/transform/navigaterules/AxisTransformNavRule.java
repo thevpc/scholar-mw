@@ -12,7 +12,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class AxisTransformNavRule implements ExpressionRewriterRule {
@@ -28,11 +27,12 @@ public class AxisTransformNavRule implements ExpressionRewriterRule {
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         AxisTransform f = (AxisTransform) e;
         RewriteResult ee = ruleset.rewrite(f.getExpression());
-        if(ee.isUnmodified()){
+        if (ee.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
-        return RewriteResult.bestEffort(new AxisTransform(ee.getValue(),f.getAxis(),f.getDomainDimension()));
+        return RewriteResult.bestEffort(new AxisTransform(ee.getValue(), f.getAxis(), f.getDomainDimension()));
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -40,7 +40,7 @@ public class AxisTransformNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

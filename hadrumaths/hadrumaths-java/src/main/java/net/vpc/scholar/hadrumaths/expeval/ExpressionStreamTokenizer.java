@@ -4,12 +4,12 @@
  */
 package net.vpc.scholar.hadrumaths.expeval;
 
-import java.io.IOException;
-import java.io.Reader;
 import net.vpc.scholar.hadrumaths.Complex;
 
+import java.io.IOException;
+import java.io.Reader;
+
 /**
- *
  * @author vpc
  */
 public class ExpressionStreamTokenizer {

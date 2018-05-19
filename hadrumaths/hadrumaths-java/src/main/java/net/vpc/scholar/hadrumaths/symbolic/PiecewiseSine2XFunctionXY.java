@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Out;
 
 
@@ -11,11 +11,11 @@ import net.vpc.scholar.hadrumaths.Out;
  * Date: 3 juil. 2003
  * Time: 17:17:27
  */
-public class PiecewiseSine2XFunctionXY extends PieceXFunction implements Cloneable{
+public class PiecewiseSine2XFunctionXY extends PieceXFunction implements Cloneable {
     private static final long serialVersionUID = 1L;
     private double crestValue;
 
-    public PiecewiseSine2XFunctionXY(final Domain domain, final Axis axis,final double crestValue, int nbrPeriods, final boolean odd) {
+    public PiecewiseSine2XFunctionXY(final Domain domain, final Axis axis, final double crestValue, int nbrPeriods, final boolean odd) {
         super(domain, axis, odd, false, axis == Axis.X ? nbrPeriods : 0, axis == Axis.Y ? nbrPeriods : 0, new SegmentFactory() {
 
             public DoubleToDouble getFunction(PieceXFunction pieceXFunction, double minx, double maxx, double miny, double maxy, boolean oddX, boolean oddY) {

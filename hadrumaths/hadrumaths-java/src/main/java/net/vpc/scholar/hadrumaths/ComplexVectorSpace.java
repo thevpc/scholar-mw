@@ -344,7 +344,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 
     @Override
     public Complex scalarProduct(boolean hermitian, Complex a, Complex b) {
-        return hermitian? a.mul(b) : a.conj().mul(b);
+        return hermitian ? a.mul(b) : a.conj().mul(b);
     }
 
     @Override
@@ -355,7 +355,8 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     @Override
     public RepeatableOp<Complex> addRepeatableOp() {
         return new RepeatableOp<Complex>() {
-            MutableComplex c=new MutableComplex();
+            MutableComplex c = new MutableComplex();
+
             @Override
             public void append(Complex item) {
                 c.add(item);
@@ -367,10 +368,12 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
             }
         };
     }
+
     @Override
     public RepeatableOp<Complex> mulRepeatableOp() {
         return new RepeatableOp<Complex>() {
-            MutableComplex c=new MutableComplex(1,0);
+            MutableComplex c = new MutableComplex(1, 0);
+
             @Override
             public void append(Complex item) {
                 c.mul(item);
@@ -384,18 +387,18 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public <R> boolean is(Complex value,TypeReference<R> type) {
-        if(Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)){
+    public <R> boolean is(Complex value, TypeReference<R> type) {
+        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)) {
             return true;
         }
-        if(Maths.$DOUBLE.equals(type)){
+        if (Maths.$DOUBLE.equals(type)) {
             return value.isDouble();
         }
-        if(Maths.$INTEGER.equals(type)){
-            return value.isDouble() && value.toDouble()==(int)value.toDouble();
+        if (Maths.$INTEGER.equals(type)) {
+            return value.isDouble() && value.toDouble() == (int) value.toDouble();
         }
-        if(Maths.$LONG.equals(type)){
-            return value.isDouble() && value.toDouble()==(long)value.toDouble();
+        if (Maths.$LONG.equals(type)) {
+            return value.isDouble() && value.toDouble() == (long) value.toDouble();
         }
         return false;
     }

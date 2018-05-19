@@ -33,15 +33,14 @@ public class PlotData implements Serializable, Cloneable {
     }
 
     public PlotData(PlotData other) {
-        if(other!=null){
-            this.title=other.title;
+        if (other != null) {
+            this.title = other.title;
             this.axisList.addAll(other.axisList);
-            this.structure=other.structure;
-            this.structure2=other.structure2;
+            this.structure = other.structure;
+            this.structure2 = other.structure2;
             this.params.addAll(other.params);
         }
     }
-
 
 
     public PlotData setWindowTitle(Object anyObj) {
@@ -141,7 +140,7 @@ public class PlotData implements Serializable, Cloneable {
         try {
             PlotData pd = (PlotData) super.clone();
             pd.axisList = pd.axisList == null ? null : pd.axisList.clone();
-            pd.params = (pd.params == null) ? null : (ArrayList<ParamSet>)pd.params.clone();
+            pd.params = (pd.params == null) ? null : (ArrayList<ParamSet>) pd.params.clone();
             if (pd.structure2 != null) {
                 pd.structure2 = pd.structure2.clone();
             }

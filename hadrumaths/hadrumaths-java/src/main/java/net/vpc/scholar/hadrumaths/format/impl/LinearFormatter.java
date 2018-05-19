@@ -7,7 +7,10 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.format.params.*;
+import net.vpc.scholar.hadrumaths.format.params.DoubleFormat;
+import net.vpc.scholar.hadrumaths.format.params.ProductFormat;
+import net.vpc.scholar.hadrumaths.format.params.XFormat;
+import net.vpc.scholar.hadrumaths.format.params.YFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
 
 /**
@@ -95,7 +98,7 @@ public class LinearFormatter implements Formatter<Linear> {
                 if (a != 0) {
                     sb.append(" ");
                 }
-                if (!(b < 0) && a!=0) {
+                if (!(b < 0) && a != 0) {
                     sb.append(" + ");
                 }
                 v = FormatFactory.toParamString(b, df, sb.length() > initialLength && b < 0, true, a != 0);

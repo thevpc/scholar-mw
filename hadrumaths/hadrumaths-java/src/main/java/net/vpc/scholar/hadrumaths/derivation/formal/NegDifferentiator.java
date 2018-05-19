@@ -13,6 +13,6 @@ import net.vpc.scholar.hadrumaths.symbolic.Neg;
 public class NegDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Neg c = (Neg) f;
-        return new Neg(d.derive(c.getExpression(),varIndex));
+        return new Neg(d.derive(c.getExpression(), varIndex));
     }
 }

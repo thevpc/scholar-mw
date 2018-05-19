@@ -5,32 +5,30 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
+import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 
 /**
- *
  * @author vpc
  */
-public class MatrixFormatter implements Formatter<Matrix>{
+public class MatrixFormatter implements Formatter<Matrix> {
     public MatrixFormatter() {
     }
 
     @Override
     public String format(Matrix o, FormatParamSet format) {
-        StringBuilder sb=new StringBuilder();
-        format(sb,o,format);
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
         return sb.toString();
 
     }
 
     @Override
     public void format(StringBuilder sb, Matrix o, FormatParamSet format) {
-        Complex[][] elements=o.getArray();
+        Complex[][] elements = o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {
             for (int j = 0; j < element.length; j++) {
@@ -54,9 +52,9 @@ public class MatrixFormatter implements Formatter<Matrix>{
                     sbl.append(' ');
                 }
                 int oldLen = sbl.length();
-                FormatFactory.format(sbl,elements[i][j],format);
-                int newLen=sbl.length();
-                int x = colsWidth[j] - (newLen-oldLen);
+                FormatFactory.format(sbl, elements[i][j], format);
+                int newLen = sbl.length();
+                int x = colsWidth[j] - (newLen - oldLen);
                 while (x > 0) {
                     sbl.append(' ');
                     x--;

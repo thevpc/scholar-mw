@@ -11,7 +11,7 @@ public class ObfuscatedValue {
     String val;
 
     ObfuscatedValue(Object o) {
-    	throw new RuntimeException("I dont know how to obfuscate");
+        throw new RuntimeException("I dont know how to obfuscate");
         //val = SecurityTools.obfuscate(String.valueOf(o));
     }
 

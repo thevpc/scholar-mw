@@ -6,10 +6,9 @@
 package net.vpc.scholar.hadrumaths.expeval;
 
 /**
- *
  * @author vpc
  */
-public class ExpressionEvaluatorException extends RuntimeException{
+public class ExpressionEvaluatorException extends RuntimeException {
 
     public ExpressionEvaluatorException(Throwable cause) {
         super(cause);

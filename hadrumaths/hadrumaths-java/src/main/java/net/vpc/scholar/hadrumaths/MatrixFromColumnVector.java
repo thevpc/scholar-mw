@@ -9,8 +9,8 @@ public class MatrixFromColumnVector extends AbstractMatrix {
 
     public MatrixFromColumnVector(Vector vector) {
         this.vector = vector;
-        if(!vector.isColumn()){
-           throw new IllegalArgumentException("Expected Column Vector");
+        if (!vector.isColumn()) {
+            throw new IllegalArgumentException("Expected Column Vector");
         }
     }
 
@@ -21,7 +21,7 @@ public class MatrixFromColumnVector extends AbstractMatrix {
 
     @Override
     public void set(int row, int col, Complex val) {
-        vector.set(row,val);
+        vector.set(row, val);
     }
 
     @Override

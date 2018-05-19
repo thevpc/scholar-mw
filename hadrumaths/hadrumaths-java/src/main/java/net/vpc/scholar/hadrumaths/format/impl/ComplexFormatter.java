@@ -78,47 +78,47 @@ public class ComplexFormatter implements Formatter<Complex> {
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         FormatParamSet subParams = format.remove(FormatFactory.REQUIRED_PARS);
         if (imag == 0) {
-            if(real>0){
-                par=false;
+            if (real > 0) {
+                par = false;
             }
-            if(par){
+            if (par) {
                 sb.append("(");
             }
             realToString(real, sb, subParams);
-            if(par){
+            if (par) {
                 sb.append(")");
             }
 
         } else if (real == 0) {
-            if(imag>0){
-                par=false;
+            if (imag > 0) {
+                par = false;
             }
-            if(par){
+            if (par) {
                 sb.append("(");
             }
             imagToString(imag, sb, subParams);
-            if(par){
+            if (par) {
                 sb.append(")");
             }
         } else {
             if (imag < 0) {
-                if(par){
+                if (par) {
                     sb.append("(");
                 }
                 realToString(real, sb, subParams);
                 sb.append("-");
                 imagToString(-imag, sb, subParams);
-                if(par){
+                if (par) {
                     sb.append(")");
                 }
             } else {
-                if(par){
+                if (par) {
                     sb.append("(");
                 }
                 realToString(real, sb, subParams);
                 sb.append("+");
                 imagToString(imag, sb, subParams);
-                if(par){
+                if (par) {
                     sb.append(")");
                 }
             }

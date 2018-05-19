@@ -19,7 +19,7 @@ public class SymRot extends SymFunction {
 
     public SymRot(SymExpression value, String x, String y, String z) {
         super("rot");
-        this.value=value;
+        this.value = value;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -59,6 +59,6 @@ public class SymRot extends SymFunction {
         SymStringContext c = context.clone();
         c.setPreferParentheses(false);
         c.setOperatorPrecedence(SymStringContext.NO_PRECEDENCE);
-        return "Rot("+value.toString(c)+")";
+        return "Rot(" + value.toString(c) + ")";
     }
 }

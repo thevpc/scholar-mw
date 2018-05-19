@@ -5,16 +5,15 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Sub;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class SubSimplifyRule implements ExpressionRewriterRule {
@@ -37,6 +36,7 @@ public class SubSimplifyRule implements ExpressionRewriterRule {
         RewriteResult rewrite = ruleset.rewrite(Maths.sum(a, Maths.mul(b, Complex.MINUS_ONE)));
         return RewriteResult.newVal(rewrite.getValue());
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -44,7 +44,7 @@ public class SubSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public abstract class PlotConsoleMenuItem {
     private String name;

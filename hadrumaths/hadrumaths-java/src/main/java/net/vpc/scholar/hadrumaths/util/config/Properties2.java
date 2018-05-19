@@ -34,7 +34,7 @@ public class Properties2 extends LinkedHashMap {
      * @param key   the key to be placed into this property list.
      * @param value the value corresponding to <tt>key</tt>.
      * @return the previous value of the specified key in this property
-     *         list, or <code>null</code> if it did not have one.
+     * list, or <code>null</code> if it did not have one.
      * @see #getProperty
      * @since 1.2
      */
@@ -212,10 +212,10 @@ public class Properties2 extends LinkedHashMap {
      * element is the empty string <code>""</code>.<p>
      *
      * @param inStream the input stream.
-     * @throws IOException if an error occurred when reading from the
-     *                     input stream.
+     * @throws IOException              if an error occurred when reading from the
+     *                                  input stream.
      * @throws IllegalArgumentException if the input stream contains a
-     * malformed Unicode escape sequence.
+     *                                  malformed Unicode escape sequence.
      */
     public synchronized void load(InputStream inStream) throws IOException {
 
@@ -348,7 +348,7 @@ public class Properties2 extends LinkedHashMap {
         int len = theString.length();
         StringBuilder outBuffer = new StringBuilder(len);
 
-        for (int x = 0; x < len;) {
+        for (int x = 0; x < len; ) {
             aChar = theString.charAt(x++);
             if (aChar == '\\') {
                 aChar = theString.charAt(x++);
@@ -472,9 +472,9 @@ public class Properties2 extends LinkedHashMap {
      * @throws ClassCastException if this <code>Properties</code> object
      *                            contains any keys or values that are not <code>Strings</code>.
      * @deprecated This method does not throw an IOException if an I/O error
-     *             occurs while saving the property list.  As of the Java 2 platform v1.2, the preferred
-     *             way to save a properties list is via the <code>store(OutputStream out,
-     *             String header)</code> method.
+     * occurs while saving the property list.  As of the Java 2 platform v1.2, the preferred
+     * way to save a properties list is via the <code>store(OutputStream out,
+     * String header)</code> method.
      */
     public synchronized void save(OutputStream out, String header) {
         try {
@@ -547,7 +547,7 @@ public class Properties2 extends LinkedHashMap {
                 writeln(awriter, "#meta " + metadata.get(i));
             }
         }
-        for (Iterator e = entrySet().iterator(); e.hasNext();) {
+        for (Iterator e = entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Map.Entry) e.next();
             String key = (String) entry.getKey();
             String val = (String) entry.getValue();
@@ -607,9 +607,9 @@ public class Properties2 extends LinkedHashMap {
      */
     public void list(PrintStream out) {
         out.println("-- listing properties --");
-        Map<String,String> h = new HashMap<String, String>();
+        Map<String, String> h = new HashMap<String, String>();
         enumerate(h);
-        for (Map.Entry<String,String> entry : h.entrySet()) {
+        for (Map.Entry<String, String> entry : h.entrySet()) {
             String key = entry.getKey();
             String val = entry.getValue();
             if (val.length() > 40) {
@@ -620,7 +620,7 @@ public class Properties2 extends LinkedHashMap {
     }
 
     private synchronized void enumerate(Map h) {
-        for (Iterator e = entrySet().iterator(); e.hasNext();) {
+        for (Iterator e = entrySet().iterator(); e.hasNext(); ) {
             Map.Entry entry = (Map.Entry) e.next();
             String key = (String) entry.getKey();
             String val = (String) entry.getValue();
@@ -646,7 +646,7 @@ public class Properties2 extends LinkedHashMap {
 
     public void list(PrintWriter out, int maxLineLenght) {
         out.println("-- listing properties --");
-        Map<String,String> h = new HashMap();
+        Map<String, String> h = new HashMap();
         enumerate(h);
         for (Map.Entry<String, String> entry : h.entrySet()) {
             String key = entry.getKey();

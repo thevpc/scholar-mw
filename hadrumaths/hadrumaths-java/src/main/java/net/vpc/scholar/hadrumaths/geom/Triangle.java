@@ -103,11 +103,11 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
-        if(p1.equals(p2) || p1.equals(p3) || p2.equals(p3)){
+        if (p1.equals(p2) || p1.equals(p3) || p2.equals(p3)) {
             throw new IllegalArgumentException("Invalid Triangle");
         }
-        domain=GeomUtils.getDomain(p1,p2,p3);
-        if(domain.isEmpty()){
+        domain = GeomUtils.getDomain(p1, p2, p3);
+        if (domain.isEmpty()) {
             throw new IllegalArgumentException("Invalid Triangle");
         }
     }
@@ -239,17 +239,17 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
     }
 
     public boolean equals(Triangle t) {
-        Point[] ps1=new Point[]{p1,p2,p3};
-        Point[] ps2=new Point[]{t.p1,t.p2,t.p3};
-        int eq=0;
+        Point[] ps1 = new Point[]{p1, p2, p3};
+        Point[] ps2 = new Point[]{t.p1, t.p2, t.p3};
+        int eq = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if(ps1[i].equals(ps2[j])){
+                if (ps1[i].equals(ps2[j])) {
                     eq++;
                 }
             }
         }
-        return eq>=3;
+        return eq >= 3;
     }
 
     public boolean equals0(Triangle t) {

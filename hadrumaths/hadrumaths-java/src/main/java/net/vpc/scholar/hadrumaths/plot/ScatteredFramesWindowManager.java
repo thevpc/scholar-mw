@@ -12,7 +12,7 @@ public class ScatteredFramesWindowManager extends AbstractComponentPlotWindowMan
     private PlotContainer rootContainer;
 
     public ScatteredFramesWindowManager() {
-        rootContainer=new FramePlotContainer();
+        rootContainer = new FramePlotContainer();
     }
 
     @Override

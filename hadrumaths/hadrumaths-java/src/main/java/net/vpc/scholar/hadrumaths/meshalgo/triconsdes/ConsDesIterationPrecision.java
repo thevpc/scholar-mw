@@ -15,7 +15,7 @@ public class ConsDesIterationPrecision implements ConsDesPrecision {
     }
 
     public boolean isMeshAllowed(List<Triangle> t, int iteration) {
-        return iteration<=this.iteration;
+        return iteration <= this.iteration;
     }
 
     public String dump() {

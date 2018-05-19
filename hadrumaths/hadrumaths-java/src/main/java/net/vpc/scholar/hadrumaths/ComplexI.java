@@ -1,21 +1,18 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
 /**
  * Created by vpc on 4/7/17.
  */
 public final class ComplexI extends Complex {
-    private static final long serialVersionUID=1;
+    private static final long serialVersionUID = 1;
     private double imag;
 
     ComplexI(double imag) {
         this.imag = imag;
-        if(imag==0){
+        if (imag == 0) {
             throw new IllegalArgumentException("Zero Imag is Real!");
         }
     }
@@ -112,13 +109,13 @@ public final class ComplexI extends Complex {
     }
 
     public Complex mul(Complex c) {
-        if(c.isReal()){
+        if (c.isReal()) {
             return mul(c.getReal());
         }
-        if(c.isImag()){
+        if (c.isImag()) {
             return Complex.valueOf(-imag * c.getImag());
         }
-        return Complex.valueOf( - imag * c.getImag(), imag * c.getReal());
+        return Complex.valueOf(-imag * c.getImag(), imag * c.getReal());
     }
 
     public CArray mul(CArray c) {
@@ -134,11 +131,11 @@ public final class ComplexI extends Complex {
     }
 
     public Complex sub(Complex c) {
-        return Complex.valueOf(- c.getReal(), imag - c.getImag());
+        return Complex.valueOf(-c.getReal(), imag - c.getImag());
     }
 
     public Complex sub(double c) {
-        return Complex.valueOf(- c, imag);
+        return Complex.valueOf(-c, imag);
     }
 
     public Complex div(double c) {
@@ -164,11 +161,11 @@ public final class ComplexI extends Complex {
     }
 
     public Complex abs() {
-        return Complex.valueOf(Maths.sqrt(imag * imag));
+        return Complex.valueOf(Math.sqrt(imag * imag));
     }
 
     public double absdbl() {
-        return Maths.sqrt(imag * imag);
+        return Math.sqrt(imag * imag);
     }
 
     public double absdblsqr() {
@@ -272,14 +269,14 @@ public final class ComplexI extends Complex {
     }
 
     public Complex sin() {
-        return Complex.I(Maths.sinh(imag));
+        return Complex.I(Math.sinh(imag));
     }
 
     public Complex cos() {
         if (imag == 0) {
             return Complex.ONE;
         }
-        return Complex.valueOf(Maths.cosh(imag));
+        return Complex.valueOf(Math.cosh(imag));
     }
 
     public Complex tan() {
@@ -294,7 +291,7 @@ public final class ComplexI extends Complex {
     }
 
     public Complex acos() {
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
 //        return Complex.MINUS_I.mul(
 //
@@ -318,11 +315,11 @@ public final class ComplexI extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(Maths.atan2(getImag() , 0));
+        return Complex.valueOf(Math.atan2(getImag(), 0));
     }
 
     public Complex asin() {
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
 //        return Complex.MINUS_I.mul(
 //
@@ -372,20 +369,20 @@ public final class ComplexI extends Complex {
     }
 
     public Complex log() {
-        return Complex.valueOf(Maths.log(absdbl()), Maths.atan2(imag, 0));
+        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, 0));
     }
 
     public Complex log10() {
-        return Complex.valueOf(Maths.log(absdbl()), Maths.atan2(imag, 0)).div(Maths.log(10));
+        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, 0)).div(Math.log(10));
     }
 
     public Complex db() {
-        return Complex.valueOf(Maths.log10(absdbl()) * (10));
+        return Complex.valueOf(Math.log10(absdbl()) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.valueOf(Maths.log10(absdbl()) * (20));
+        return Complex.valueOf(Math.log10(absdbl()) * (20));
         //return log10().mul(10);
     }
 
@@ -397,11 +394,11 @@ public final class ComplexI extends Complex {
 //    public Complex angle() {
 //        //workaround
 ////        if(real==0){
-////            return imag>=0?Maths.PI/2:-Maths.PI/2;
+////            return imag>=0?Math.PI/2:-Math.PI/2;
 ////        }else if(imag==0){
-////            return real>=0?0:Maths.PI;
+////            return real>=0?0:Math.PI;
 ////        }
-//        return Complex.valueOf(Maths.atan2(imag, 0));
+//        return Complex.valueOf(Math.atan2(imag, 0));
 //    }
 
     public Complex sqr() {
@@ -413,7 +410,7 @@ public final class ComplexI extends Complex {
     }
 
     public Complex sqrt() {
-        double r = Maths.sqrt(absdbl());
+        double r = Math.sqrt(absdbl());
         double theta = arg().toDouble() / 2;
         return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
     }
@@ -440,15 +437,15 @@ public final class ComplexI extends Complex {
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(Maths.pow(real, power), 0) : new Complex(0, Maths.pow(-real, power));
+//            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
-            double r = Maths.pow(absdbl(), power);
+            double r = Math.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
             return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
         } else { //n<0
             power = -power;
-            double r = Maths.pow(absdbl(), power);
+            double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
             Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
             return c.inv();
@@ -532,7 +529,7 @@ public final class ComplexI extends Complex {
         //never zero
 //        double imag = getImag();
 //        return imag==0?Maths.DDZERO : new DoubleValue(imag,Domain.FULLX);
-        return new DoubleValue(imag,Domain.FULLX);
+        return new DoubleValue(imag, Domain.FULLX);
     }
 
     @Override

@@ -8,7 +8,10 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.JTableHelper;
 import net.vpc.scholar.hadrumaths.util.SwingUtils;
-import net.vpc.scholar.hadrumaths.util.swingext.*;
+import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
+import net.vpc.scholar.hadrumaths.util.swingext.SerializableChangeListener;
+import net.vpc.scholar.hadrumaths.util.swingext.SerializableTableModelListener;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 
 import javax.swing.*;
@@ -942,7 +945,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     private void onXPrecisionChange() {
-        baseSamples=null;
+        baseSamples = null;
         int xx = getXPrecisionValue();
         xPrecisionSlider.setToolTipText(String.valueOf(xx));
         xPrecisionSliderText.setText(String.valueOf(xx));
@@ -953,7 +956,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     private void onYPrecisionChange() {
-        baseSamples=null;
+        baseSamples = null;
         int xx = getYPrecisionValue();
         yPrecisionSlider.setToolTipText(String.valueOf(xx));
         yPrecisionSliderText.setText(String.valueOf(xx));
@@ -1117,68 +1120,69 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     public double[] resolveX() {
         Domain d = getDomainOrNull();
-        if(baseSamples==null) {
+        if (baseSamples == null) {
             return d == null ? new double[0] : Maths.dtimes(d.xmin(), d.xmax(), getXPrecisionValue());
-        }else{
-            if(d==null){
-                if(baseSamples instanceof AbsoluteSamples){
+        } else {
+            if (d == null) {
+                if (baseSamples instanceof AbsoluteSamples) {
                     return ((AbsoluteSamples) baseSamples).getX();
                 }
-                if(baseSamples instanceof RelativeSamples){
+                if (baseSamples instanceof RelativeSamples) {
                     throw new IllegalArgumentException("Unable to resolve Domain for relative Samples");
                 }
-                if(baseSamples instanceof AdaptiveSamples){
+                if (baseSamples instanceof AdaptiveSamples) {
                     throw new IllegalArgumentException("Unsupported Adaptive Samples");
                 }
-                throw new IllegalArgumentException("Unsupported "+baseSamples.getClass().getName());
+                throw new IllegalArgumentException("Unsupported " + baseSamples.getClass().getName());
             }
-            double[] doubles=null;
-            if(baseSamples instanceof AbsoluteSamples){
-                doubles=((AbsoluteSamples) baseSamples).getX();
-            }else if(baseSamples instanceof RelativeSamples){
-                doubles=((RelativeSamples) baseSamples).toAbsolute(d).getX();
-            }else{
+            double[] doubles = null;
+            if (baseSamples instanceof AbsoluteSamples) {
+                doubles = ((AbsoluteSamples) baseSamples).getX();
+            } else if (baseSamples instanceof RelativeSamples) {
+                doubles = ((RelativeSamples) baseSamples).toAbsolute(d).getX();
+            } else {
                 throw new IllegalArgumentException("Unsupported Adaptive Samples");
             }
-            if(doubles!=null) {
+            if (doubles != null) {
                 doubles = d.intersect(doubles);
             }
-            if(doubles==null){
-                doubles=new double[]{0};
+            if (doubles == null) {
+                doubles = new double[]{0};
             }
             return doubles;
         }
     }
+
     public double[] resolveY() {
         Domain d = getDomainOrNull();
-        if(baseSamples==null) {
+        if (baseSamples == null) {
             return d == null ? new double[0] : Maths.dtimes(d.ymin(), d.ymax(), getYPrecisionValue());
-        }else{
-            if(d==null){
-                if(baseSamples instanceof AbsoluteSamples){
+        } else {
+            if (d == null) {
+                if (baseSamples instanceof AbsoluteSamples) {
                     return ((AbsoluteSamples) baseSamples).getY();
                 }
-                if(baseSamples instanceof RelativeSamples){
+                if (baseSamples instanceof RelativeSamples) {
                     throw new IllegalArgumentException("Unable to resolve Domain for relative Samples");
                 }
-                if(baseSamples instanceof AdaptiveSamples){
+                if (baseSamples instanceof AdaptiveSamples) {
                     throw new IllegalArgumentException("Unsupported Adaptive Samples");
                 }
-                throw new IllegalArgumentException("Unsupported "+baseSamples.getClass().getName());
+                throw new IllegalArgumentException("Unsupported " + baseSamples.getClass().getName());
             }
-            double[] doubles=null;
-            if(baseSamples instanceof AbsoluteSamples){
-                doubles=((AbsoluteSamples) baseSamples).getY();
-            }else if(baseSamples instanceof RelativeSamples){
-                doubles=((RelativeSamples) baseSamples).toAbsolute(d).getY();
-            }else{
+            double[] doubles = null;
+            if (baseSamples instanceof AbsoluteSamples) {
+                doubles = ((AbsoluteSamples) baseSamples).getY();
+            } else if (baseSamples instanceof RelativeSamples) {
+                doubles = ((RelativeSamples) baseSamples).toAbsolute(d).getY();
+            } else {
                 throw new IllegalArgumentException("Unsupported Adaptive Samples");
             }
-            if(doubles!=null) {
+            if (doubles != null) {
                 doubles = d.intersect(doubles);
             }
-            if(doubles==null){
-                doubles=new double[]{0};
+            if (doubles == null) {
+                doubles = new double[]{0};
             }
             return doubles;
         }
@@ -1428,7 +1432,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 }
             }
 
-            ValuesPlotModel model2=new ValuesPlotModel();
+            ValuesPlotModel model2 = new ValuesPlotModel();
             model2.setTitle(this.model.getTitle());
             model2.setPlotType(PlotType.MATRIX);
             model2.setXVector(x);
@@ -1465,7 +1469,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         mainPanel_invalidate();
     }
 
-//    private void mainPanel_add(PlotComponentPanel component,ValuesPlotModel model2) {
+    //    private void mainPanel_add(PlotComponentPanel component,ValuesPlotModel model2) {
 //        JComponent jComponent = component.toComponent();
 //        Plot.buildJPopupMenu((PlotComponentPanel) component,new SimplePlotModelProvider(model2, jComponent));
 //        model2.addPropertyChangeListener(modelUpdatesListener);
@@ -1537,7 +1541,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 model.setConverter(getComplexAsDouble());
                 model.setTitle(this.model.getTitle());
                 PlotComponentPanel mesh = ChartFactory.createMesh(model, null);
-                Plot.buildJPopupMenu(mesh,new SimplePlotModelProvider(model,mesh.toComponent()));
+                Plot.buildJPopupMenu(mesh, new SimplePlotModelProvider(model, mesh.toComponent()));
                 mainPanel_add(mesh.toComponent());
             }
         }
@@ -1549,7 +1553,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         ComponentDimension m = ComponentDimension.SCALAR;
         for (Expr selectedFunction : selectedFunctions) {
             ComponentDimension d = selectedFunction.getComponentDimension();
-            m = ComponentDimension.create(Maths.max(d.rows, m.rows), Maths.max(d.columns, m.columns));
+            m = ComponentDimension.create(Math.max(d.rows, m.rows), Math.max(d.columns, m.columns));
         }
 
         return m;
@@ -1606,7 +1610,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     public String getPlotTitle() {
         String baseTitle = super.getPlotTitle();
-        if(baseTitle ==null){
+        if (baseTitle == null) {
             return this.model.getTitle();
         }
         return baseTitle;
@@ -1679,7 +1683,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         setShowType(m.getShowType());
         functionsTableModel.setExpressions(functions);
         if (samples != null) {
-            setSamples(samples,true);
+            setSamples(samples, true);
         }
     }
 

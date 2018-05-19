@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 2/14/15.
  */
-public class DefaultExprCube extends AbstractExprCube{
+public class DefaultExprCube extends AbstractExprCube {
     private static final long serialVersionUID = 1L;
     private ExprCubeStore store;
 
@@ -14,13 +14,13 @@ public class DefaultExprCube extends AbstractExprCube{
     }
 
     @Override
-    public Expr get(int row, int column,int h) {
-        return store.get(row,column,h);
+    public Expr get(int row, int column, int h) {
+        return store.get(row, column, h);
     }
 
     @Override
-    public void set(Expr exp, int row, int col,int h) {
-        store.set(exp,row,col,h);
+    public void set(Expr exp, int row, int col, int h) {
+        store.set(exp, row, col, h);
     }
 
     @Override

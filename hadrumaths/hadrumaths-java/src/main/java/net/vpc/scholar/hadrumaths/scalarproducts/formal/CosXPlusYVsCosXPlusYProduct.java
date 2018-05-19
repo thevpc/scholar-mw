@@ -79,16 +79,15 @@ final class CosXPlusYVsCosXPlusYProduct implements FormalScalarProductHelper {
                         ((1.0 / 2.0) * (ymax - ymin) * (xmax - xmin) * cos(c1 - c2));
 
             } else {
-                if((b1+b2)==0){
-                    v=( ((xmax-xmin)/(4.0*b1)) * ( sin(2.0*b1*ymax +c1-c2) - sin(2.0*b1*ymin +c1-c2) ) )+
-                            ( ((ymax-ymin)/(4.0*a1)) * ( sin(2.0*a1*xmax +c1+c2) - sin(2.0*a1*xmin +c1+c2) ) );
-                }
-                else {
+                if ((b1 + b2) == 0) {
+                    v = (((xmax - xmin) / (4.0 * b1)) * (sin(2.0 * b1 * ymax + c1 - c2) - sin(2.0 * b1 * ymin + c1 - c2))) +
+                            (((ymax - ymin) / (4.0 * a1)) * (sin(2.0 * a1 * xmax + c1 + c2) - sin(2.0 * a1 * xmin + c1 + c2)));
+                } else {
                     v = (((xmax - xmin) / (2.0 * (b1 - b2))) * (sin((b1 - b2) * ymax + c1 - c2) - sin((b1 - b2) * ymin + c1 - c2))) +
-                            ((-1.0 / (4.0 * a1* (b1 + b2))) * (
+                            ((-1.0 / (4.0 * a1 * (b1 + b2))) * (
                                     cos((b1 + b2) * ymax + 2.0 * a1 * xmax + c1 + c2) -
                                             cos((b1 + b2) * ymin + 2.0 * a1 * xmax + c1 + c2))) +
-                            ((1.0 / (4.0 *a1* (b1 + b2))) * (
+                            ((1.0 / (4.0 * a1 * (b1 + b2))) * (
                                     cos((b1 + b2) * ymax + 2.0 * a1 * xmin + c1 + c2) -
                                             cos((b1 + b2) * ymin + 2.0 * a1 * xmin + c1 + c2)));
 
@@ -100,20 +99,20 @@ final class CosXPlusYVsCosXPlusYProduct implements FormalScalarProductHelper {
                 v = (((ymax - ymin) / (2.0 * (a1 - a2))) * (sin((a1 - a2) * xmax + c1 - c2) - sin((a1 - a2) * xmin + c1 - c2))) +
                         (((ymax - ymin) / (2.0 * (a1 + a2))) * (sin((a1 + a2) * xmax + c1 + c2) - sin((a1 + a2) * xmin + c1 + c2)));
             } else if (b1 == b2) {
-                if ((a1+a2)==0){
-                    v=( ((ymax-ymin)/(4.0*a1))*( sin(2.0*a1*xmax+c1-c2) - sin(2.0*a1*xmin+c1-c2))) +
-                            (((xmax-xmin)/(4.0*b1))*( sin(2.0*b1*ymax+c1+c2) - sin(2.0*b1*ymin+c1+c2)));
-                }else {
+                if ((a1 + a2) == 0) {
+                    v = (((ymax - ymin) / (4.0 * a1)) * (sin(2.0 * a1 * xmax + c1 - c2) - sin(2.0 * a1 * xmin + c1 - c2))) +
+                            (((xmax - xmin) / (4.0 * b1)) * (sin(2.0 * b1 * ymax + c1 + c2) - sin(2.0 * b1 * ymin + c1 + c2)));
+                } else {
                     v = (((ymax - ymin) / (2.0 * (a1 - a2))) * (sin((a1 - a2) * xmax + c1 - c2) - sin((a1 - a2) * xmin + c1 - c2))) +
                             ((-1.0 / (4.0 * b1 * (a1 + a2))) * (cos(2.0 * b1 * ymax + (a1 + a2) * xmax + c1 + c2) - cos(2.0 * b1 * ymin + (a1 + a2) * xmax + c1 + c2))) +
                             ((1.0 / (4.0 * b1 * (a1 + a2))) * (cos(2.0 * b1 * ymax + (a1 + a2) * xmin + c1 + c2) - cos(2.0 * b1 * ymin + (a1 + a2) * xmin + c1 + c2)));
 
                 }
             } else {
-                if((a1+a2)==0){
-                    v=((-1.0/(4.0*a1*(b1-b2)))*(cos((b1-b2)*ymax+2.0*a1*xmax+c1-c2) - cos((b1-b2)*ymin+2.0*a1*xmax+c1-c2)))+
-                            ((1.0/(4.0*a1*(b1-b2)))*(cos((b1-b2)*ymax+2.0*a1*xmin+c1-c2) - cos((b1-b2)*ymin+2.0*a1*xmin+c1-c2)))+
-                            (((xmax-xmin)/(2.0*(b1+b2)))*(sin((b1+b2)*ymax+c1+c2) - sin((b1+b2)*ymin+c1+c2)));
+                if ((a1 + a2) == 0) {
+                    v = ((-1.0 / (4.0 * a1 * (b1 - b2))) * (cos((b1 - b2) * ymax + 2.0 * a1 * xmax + c1 - c2) - cos((b1 - b2) * ymin + 2.0 * a1 * xmax + c1 - c2))) +
+                            ((1.0 / (4.0 * a1 * (b1 - b2))) * (cos((b1 - b2) * ymax + 2.0 * a1 * xmin + c1 - c2) - cos((b1 - b2) * ymin + 2.0 * a1 * xmin + c1 - c2))) +
+                            (((xmax - xmin) / (2.0 * (b1 + b2))) * (sin((b1 + b2) * ymax + c1 + c2) - sin((b1 + b2) * ymin + c1 + c2)));
                 } else {
                     v = ((-1.0 / (2.0 * (a1 - a2) * (b1 - b2))) * (cos((b1 - b2) * ymax + (a1 - a2) * xmax + c1 - c2) - cos((b1 - b2) * ymin + (a1 - a2) * xmax + c1 - c2))) +
                             ((1.0 / (2.0 * (a1 - a2) * (b1 - b2))) * (cos((b1 - b2) * ymax + (a1 - a2) * xmin + c1 - c2) - cos((b1 - b2) * ymin + (a1 - a2) * xmin + c1 - c2))) +

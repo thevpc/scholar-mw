@@ -28,8 +28,8 @@ public class GridBagLayout2 extends GridBagLayout {
         setPattern(pattern);
     }
 
-    public GridBagLayout2 addLine(String pattern){
-        append(pattern+"\n");
+    public GridBagLayout2 addLine(String pattern) {
+        append(pattern + "\n");
         return this;
     }
 
@@ -47,13 +47,13 @@ public class GridBagLayout2 extends GridBagLayout {
     }
 
 
-    public void reset(){
+    public void reset() {
         x = 0;
         y = 0;
         constraintsMap.clear();
         nonameAdded = false;
         nonameIndex = 1;
-        this.pattern=null;
+        this.pattern = null;
     }
 
     public GridBagLayout2 setPattern(String pattern) {
@@ -63,7 +63,7 @@ public class GridBagLayout2 extends GridBagLayout {
     }
 
     public GridBagLayout2 append(String pattern) {
-        this.pattern = (this.pattern==null?"":this.pattern)+(pattern==null?"":pattern);
+        this.pattern = (this.pattern == null ? "" : this.pattern) + (pattern == null ? "" : pattern);
         int i = 0;
         while (i < pattern.length()) {
             if (pattern.charAt(i) == '[') {
@@ -110,7 +110,7 @@ public class GridBagLayout2 extends GridBagLayout {
                         case ':': {
                             config = true;
                             lastConfig = true;
-                            constraints.gridwidth ++;
+                            constraints.gridwidth++;
                             x++;
                             break;
                         }
@@ -157,8 +157,7 @@ public class GridBagLayout2 extends GridBagLayout {
                             break;
                         }
                         case '~':
-                        case '^': 
-                        {
+                        case '^': {
                             config = true;
                             lastConfig = true;
                             if (constraints.anchor == GridBagConstraints.LINE_START) {
@@ -187,7 +186,7 @@ public class GridBagLayout2 extends GridBagLayout {
                             lastConfig = true;
                             break;
                         }
-                        default : {
+                        default: {
                             if (Character.isLetter(c) || Character.isDigit(c)) {
                                 if (name.length() > 0 && config && lastConfig) {
                                     throw new IllegalArgumentException("name is already specified : got '" + c + "' , name is '" + name.toString() + "'");
@@ -204,7 +203,7 @@ public class GridBagLayout2 extends GridBagLayout {
                 String key = name.toString();
                 if (name.length() == 0) {
                     name.append("$" + nonameIndex);
-                    key= name.toString();
+                    key = name.toString();
                     nonameIndex++;
                 }
                 GridBagConstraints oldConstraints = constraintsMap.get(key);
@@ -272,12 +271,12 @@ public class GridBagLayout2 extends GridBagLayout {
         }
     }
 
-    public void compileWhite(Container comp){
+    public void compileWhite(Container comp) {
         if (!nonameAdded) {
             nonameAdded = true;
             for (int i = 1; i < nonameIndex; i++) {
                 JLabel empty = new JLabel("");
-                if(Boolean.getBoolean("debug:GridBagLayout2")){
+                if (Boolean.getBoolean("debug:GridBagLayout2")) {
                     empty.setBorder(BorderFactory.createEtchedBorder());
                 }
                 comp.add(empty, "$" + i);

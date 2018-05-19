@@ -25,7 +25,7 @@ public class ArrayTList<T> extends AbstractTList<T> {
     }
 
     public ArrayTList(TypeReference<T> componentType, boolean row, T[] values) {
-        this(componentType,row,values.length);
+        this(componentType, row, values.length);
         appendAll(Arrays.asList(values));
     }
 

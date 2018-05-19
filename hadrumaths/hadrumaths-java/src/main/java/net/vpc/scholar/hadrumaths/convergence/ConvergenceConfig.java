@@ -9,13 +9,13 @@ import java.io.PrintStream;
 
 public class ConvergenceConfig implements Cloneable {
 
-    private double threshold =1E-2;
-    private int stabilityIterations=5;
+    private double threshold = 1E-2;
+    private int stabilityIterations = 5;
     private int maxIterations = -1;
     private ConvergenceListener listener;
 
     public ConvergenceConfig() {
-        this(1E-2,5,System.out);
+        this(1E-2, 5, System.out);
     }
 
     public ConvergenceConfig(double threshold, int stabilityIterations, PrintStream listener) {
@@ -78,7 +78,7 @@ public class ConvergenceConfig implements Cloneable {
     }
 
     public ConvergenceConfig setListener(PrintStream listener) {
-        this.listener = listener==null?null:new ConvergenceLogListener(listener);
+        this.listener = listener == null ? null : new ConvergenceLogListener(listener);
         return this;
     }
 }

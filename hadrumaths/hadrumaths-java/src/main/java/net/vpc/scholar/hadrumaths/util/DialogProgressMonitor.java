@@ -26,9 +26,9 @@ public class DialogProgressMonitor implements ProgressMonitor {
 
     @Override
     public void setProgress(double progress, ProgressMessage message) {
-        this.nv=progress;
-        msg=message;
-        monitor.setProgress((int)(100*nv));
+        this.nv = progress;
+        msg = message;
+        monitor.setProgress((int) (100 * nv));
     }
 
     @Override

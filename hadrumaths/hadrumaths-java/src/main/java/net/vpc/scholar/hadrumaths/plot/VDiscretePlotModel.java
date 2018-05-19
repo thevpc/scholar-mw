@@ -43,7 +43,7 @@ public class VDiscretePlotModel implements PlotModel {
         return setVdiscretes(vdiscretes.toArray(new VDiscrete[vdiscretes.size()]));
     }
 
-    public VDiscretePlotModel setVdiscretes(VDiscrete ... vdiscretes) {
+    public VDiscretePlotModel setVdiscretes(VDiscrete... vdiscretes) {
         this.vdiscretes = vdiscretes;
         return this;
     }

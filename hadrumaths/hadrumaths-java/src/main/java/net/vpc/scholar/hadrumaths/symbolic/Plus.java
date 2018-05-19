@@ -187,7 +187,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
         Domain d = Domain.NaNX;
         for (Expr expression : getSubExpressions()) {
 //            if (!expression.isZero()) {
-                d = d.expand(expression.getDomain());
+            d = d.expand(expression.getDomain());
 //            }
         }
 //        if(d.isNaN())

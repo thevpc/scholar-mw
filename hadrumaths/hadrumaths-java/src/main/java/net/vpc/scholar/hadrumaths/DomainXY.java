@@ -12,7 +12,7 @@ public final class DomainXY extends Domain implements Cloneable {
     public final double ymin;
     public final double ymax;
 
-    DomainXY(double xmin, double xmax,double ymin,double ymax) {
+    DomainXY(double xmin, double xmax, double ymin, double ymax) {
         this.xmin = xmin;
         this.xmax = xmax;
         if (xwidth() < 0) {
@@ -78,6 +78,7 @@ public final class DomainXY extends Domain implements Cloneable {
         hash = 43 * hash + (int) (ymaxl ^ (ymaxl >>> 32));
         return hash;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

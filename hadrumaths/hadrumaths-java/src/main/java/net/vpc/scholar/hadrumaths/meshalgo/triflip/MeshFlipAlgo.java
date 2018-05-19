@@ -58,7 +58,7 @@ public class MeshFlipAlgo implements MeshAlgo {
     }
 
     private void initPolygon(Geometry geom) {
-        Polygon pg=geom.toPolygon();
+        Polygon pg = geom.toPolygon();
         ArrayList<Triangle> listeTriangle1 = new ArrayList<Triangle>();
         ArrayList<Point> points = new ArrayList<Point>();
         for (int i = 0; i < pg.npoints; i++) {

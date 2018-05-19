@@ -7,9 +7,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.format.params.XFormat;
 import net.vpc.scholar.hadrumaths.format.params.ZFormat;
-import net.vpc.scholar.hadrumaths.symbolic.XX;
 import net.vpc.scholar.hadrumaths.symbolic.ZZ;
 
 /**
@@ -19,8 +17,8 @@ public class ZZFormatter implements Formatter<ZZ> {
 
     @Override
     public String format(ZZ o, FormatParamSet format) {
-        StringBuilder sb=new StringBuilder();
-        format(sb,o,format);
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
         return sb.toString();
     }
 

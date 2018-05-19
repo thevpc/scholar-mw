@@ -59,7 +59,7 @@ public class ToDeriveStringParamArray implements Cloneable {
 
     public ToDeriveStringParamArray clone() {
         try {
-            return (ToDeriveStringParamArray)super.clone();
+            return (ToDeriveStringParamArray) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }

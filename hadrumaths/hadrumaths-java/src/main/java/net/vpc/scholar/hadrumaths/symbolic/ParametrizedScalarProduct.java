@@ -11,34 +11,37 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
         FormatFactory.register(ParametrizedScalarProduct.class, new AbstractFormatter<ParametrizedScalarProduct>() {
             @Override
             public void format(StringBuilder sb, ParametrizedScalarProduct o, FormatParamSet format) {
-                boolean par=format.containsParam(FormatFactory.REQUIRED_PARS);
-                format=format.add(FormatFactory.REQUIRED_PARS);
-                if(par){
+                boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+                format = format.add(FormatFactory.REQUIRED_PARS);
+                if (par) {
                     sb.append("(");
                 }
-                FormatFactory.format(sb,o.getXArgument(), format);
+                FormatFactory.format(sb, o.getXArgument(), format);
                 sb.append(" ").append(o.getFunctionName()).append(" ");
-                FormatFactory.format(sb,o.getYArgument(), format);
-                if(par){
+                FormatFactory.format(sb, o.getYArgument(), format);
+                if (par) {
                     sb.append(")");
                 }
             }
         });
     }
+
     private static final long serialVersionUID = 1L;
     private boolean hermitian;
-    private transient WeakReference<Expr> meSimplified=new WeakReference<Expr>(null);
-    public ParametrizedScalarProduct(Expr xargument, Expr yargument,boolean hermitian) {
+    private transient WeakReference<Expr> meSimplified = new WeakReference<Expr>(null);
+
+    public ParametrizedScalarProduct(Expr xargument, Expr yargument, boolean hermitian) {
         super();
-        init(xargument, yargument, null,false);
-        this.hermitian=hermitian;
+        init(xargument, yargument, null, false);
+        this.hermitian = hermitian;
 //        if( xargument instanceof DoubleValue && yargument instanceof DoubleValue && !isDD()){
 //            init(xargument, yargument, null,false);
 //        }
     }
+
     @Override
     public String getFunctionName() {
-        return hermitian?"**":"***";
+        return hermitian ? "**" : "***";
     }
 
 
@@ -50,7 +53,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
@@ -60,10 +63,10 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     private Expr getSimplifiedExpr() {
         Expr e;
-        if(meSimplified==null){
+        if (meSimplified == null) {
             e = this.simplify();
-            meSimplified=new WeakReference<Expr>(e);
-        }else {
+            meSimplified = new WeakReference<Expr>(e);
+        } else {
             e = meSimplified.get();
             if (e == null) {
                 e = this.simplify();
@@ -75,7 +78,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
@@ -85,7 +88,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return 0;
         }
         defined.set();
@@ -95,7 +98,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Expr newInstance(Expr xargument, Expr yargument) {
-        return new ParametrizedScalarProduct(xargument,yargument,hermitian);
+        return new ParametrizedScalarProduct(xargument, yargument, hermitian);
     }
 
 //    @Override
@@ -127,16 +130,16 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Expr mul(double other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
     }
 
     @Override
     public Expr mul(Complex other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
     }
 
     @Override
     public Expr mul(Domain other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other),hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
     }
 }

@@ -1,20 +1,18 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
-import net.vpc.scholar.hadrumaths.Expr;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:29:58
  */
-public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
+public final class Shape2D extends AbstractDoubleToDouble implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     public static final Shape2D ZERO = new Shape2D(0, Domain.EMPTYXY);
 
-//    public static final int CODE = 1;
+    //    public static final int CODE = 1;
     public double value;
     private Geometry geometry;
 
@@ -35,7 +33,7 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
-        return axis==Axis.Z;
+        return axis == Axis.Z;
     }
 
     @Override
@@ -135,18 +133,18 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
     /**
      * redefined for performance issues
      *
-     * @param x all x values
-     * @param y all y values
+     * @param x  all x values
+     * @param y  all y values
      * @param d0 sub-domain
      * @return values for x,y
      */
     @Override
-    public double[][] computeDouble(double[] x, double[] y, Domain d0,Out<Range> ranges) {
+    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         double[][] r = new double[y.length][x.length];
         if (value != 0) {
             Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
             if (abcd != null) {
-                BooleanArray2 def0 = BooleanArrays.newArray(y.length,x.length);
+                BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
                 abcd.setDefined(def0);
                 int ax = abcd.xmin;
                 int bx = abcd.xmax;
@@ -155,7 +153,7 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
                 if (geometry.isRectangular()) {
                     for (int xIndex = ax; xIndex <= bx; xIndex++) {
                         for (int yIndex = cy; yIndex <= dy; yIndex++) {
-                            def0.set(yIndex,xIndex);//
+                            def0.set(yIndex, xIndex);//
                             r[yIndex][xIndex] = value;//
                         }
                     }
@@ -163,13 +161,13 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
                     for (int xIndex = ax; xIndex <= bx; xIndex++) {
                         for (int yIndex = cy; yIndex <= dy; yIndex++) {
                             if (geometry.contains(x[xIndex], y[yIndex])) {
-                                def0.set(yIndex,xIndex);//
+                                def0.set(yIndex, xIndex);//
                                 r[yIndex][xIndex] = value;//
                             }
                         }
                     }
                 }
-                if(ranges!=null){
+                if (ranges != null) {
                     ranges.set(abcd);
                 }
             }
@@ -235,22 +233,22 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public Expr mul(Geometry domain) {
-        return new Shape2D(value,getGeometry().intersectGeometry(domain));
+        return new Shape2D(value, getGeometry().intersectGeometry(domain));
     }
 
     @Override
     public Expr mul(Domain domain) {
-        return new Shape2D(value,getGeometry().intersectGeometry(domain.toGeometry()));
+        return new Shape2D(value, getGeometry().intersectGeometry(domain.toGeometry()));
     }
 
     @Override
     public Expr mul(double other) {
-        return new Shape2D(value*other,getGeometry());
+        return new Shape2D(value * other, getGeometry());
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.getReal());
         }
         return super.mul(other);

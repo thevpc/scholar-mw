@@ -4,7 +4,7 @@ package net.vpc.scholar.hadrumaths.plot.console;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 17 janv. 2007 12:24:34
  */
-public abstract class PlotChoice{
+public abstract class PlotChoice {
     private String id;
     private String title;
     private boolean enabled;
@@ -14,9 +14,10 @@ public abstract class PlotChoice{
     }
 
     protected PlotChoice(String id) {
-        this(id,id,true);
+        this(id, id, true);
     }
-    protected PlotChoice(String id, String title,boolean enabled) {
+
+    protected PlotChoice(String id, String title, boolean enabled) {
         this.id = id;
         this.title = title;
         this.enabled = enabled;

@@ -5,5 +5,5 @@ package net.vpc.scholar.hadrumaths.meshalgo;
  * @creationtime 22 mai 2007 08:43:24
  */
 public enum MeshZoneShape {
-    RECTANGLE,TRIANGLE,POLYGON
+    RECTANGLE, TRIANGLE, POLYGON
 }

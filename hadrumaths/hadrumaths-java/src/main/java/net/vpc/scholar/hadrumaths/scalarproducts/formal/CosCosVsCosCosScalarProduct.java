@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
-
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha
@@ -22,7 +21,7 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
@@ -31,7 +30,7 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         CosXCosY f1ok = (CosXCosY) f1;
         CosXCosY f2ok = (CosXCosY) f2;
-        double d=computeTolerant(domain, f1ok, f2ok, 1E-15);
+        double d = computeTolerant(domain, f1ok, f2ok, 1E-15);
 //        double d = compute(domain, f1ok, f2ok);
 //        if (Double.isNaN(d)) {
 ////            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -41,7 +40,7 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         if (Double.isNaN(d)) {
             System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             double d0 = compute(domain, f1ok, f2ok);
-            d=d0;
+            d = d0;
         }
         return d;
     }
@@ -75,22 +74,22 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);
-        if(diff==0)return true;
-        if(diff<0){
-            diff=-diff;
+        if (diff == 0) return true;
+        if (diff < 0) {
+            diff = -diff;
         }
-        if(a<0){
-            a=-a;
+        if (a < 0) {
+            a = -a;
         }
-        if(b<0){
-            b=-b;
+        if (b < 0) {
+            b = -b;
         }
-        double c=a<b?b:a;
+        double c = a < b ? b : a;
 
-        if(c==0){
+        if (c == 0) {
             return diff < tolerance;
         }
-        return diff/c < tolerance;
+        return diff / c < tolerance;
 //        return
 //                diff == 0 ||
 ////                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
@@ -120,7 +119,7 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         }
     }
 
-//STARTING---------------------------------------
+    //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(g_c*y+g_d)

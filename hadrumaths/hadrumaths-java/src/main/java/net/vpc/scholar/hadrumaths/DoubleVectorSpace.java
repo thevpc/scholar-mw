@@ -109,12 +109,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double abs(Double a) {
-        return (Maths.abs(a));
+        return (Math.abs(a));
     }
 
     @Override
     public double absdbl(Double a) {
-        return Maths.abs(a);
+        return Math.abs(a);
     }
 
     @Override
@@ -139,12 +139,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cos(Double a) {
-        return Maths.cos(a);
+        return Math.cos(a);
     }
 
     @Override
     public Double tan(Double a) {
-        return Maths.tan(a);
+        return Math.tan(a);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double sinh(Double a) {
-        return Maths.sinh(a);
+        return Math.sinh(a);
     }
 
     @Override
@@ -164,12 +164,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cosh(Double a) {
-        return Maths.cosh(a);
+        return Math.cosh(a);
     }
 
     @Override
     public Double tanh(Double a) {
-        return Maths.tanh(a);
+        return Math.tanh(a);
     }
 
     @Override
@@ -194,12 +194,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double acos(Double a) {
-        return Maths.acos(a);
+        return Math.acos(a);
     }
 
     @Override
     public Double atan(Double a) {
-        return Maths.atan(a);
+        return Math.atan(a);
     }
 
     @Override
@@ -229,17 +229,17 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double exp(Double a) {
-        return Maths.exp(a);
+        return Math.exp(a);
     }
 
     @Override
     public Double log(Double a) {
-        return Maths.log(a);
+        return Math.log(a);
     }
 
     @Override
     public Double log10(Double a) {
-        return Maths.log10(a);
+        return Math.log10(a);
     }
 
     @Override
@@ -355,10 +355,11 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     @Override
     public RepeatableOp<Double> addRepeatableOp() {
         return new RepeatableOp<Double>() {
-            double c=0;
+            double c = 0;
+
             @Override
             public void append(Double item) {
-                c+=item;
+                c += item;
             }
 
             @Override
@@ -367,13 +368,15 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
             }
         };
     }
+
     @Override
     public RepeatableOp<Double> mulRepeatableOp() {
         return new RepeatableOp<Double>() {
-            double c=1;
+            double c = 1;
+
             @Override
             public void append(Double item) {
-                c*=item;
+                c *= item;
             }
 
             @Override
@@ -384,15 +387,15 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public <R> boolean is(Double value,TypeReference<R> type) {
-        if(Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)){
+    public <R> boolean is(Double value, TypeReference<R> type) {
+        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)) {
             return true;
         }
-        if(Maths.$INTEGER.equals(type)){
-            return value==(int)value.doubleValue();
+        if (Maths.$INTEGER.equals(type)) {
+            return value == (int) value.doubleValue();
         }
-        if(Maths.$LONG.equals(type)){
-            return value==(long)value.doubleValue();
+        if (Maths.$LONG.equals(type)) {
+            return value == (long) value.doubleValue();
         }
         return false;
     }

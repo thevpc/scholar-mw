@@ -145,7 +145,7 @@ class CurveData {
     public CurveData(String[] labs, double[] vals) {
         values = vals;
         labels = labs;
-        length = (values.length == labels.length)?values.length:-1;
+        length = (values.length == labels.length) ? values.length : -1;
         inType = GraphConstants.IN_BOTH;
     }
 

@@ -5,16 +5,15 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Inv;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class InvNavRule implements ExpressionRewriterRule {
@@ -30,16 +29,17 @@ public class InvNavRule implements ExpressionRewriterRule {
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         Inv ee = (Inv) e;
         RewriteResult a = ruleset.rewrite(ee.getExpression());
-        if(a.isRewritten()){
+        if (a.isRewritten()) {
             Expr eee = Maths.inv(a.getValue());
-            eee= Any.copyProperties(e, eee);
-            if(a.isBestEffort()){
+            eee = Any.copyProperties(e, eee);
+            if (a.isBestEffort()) {
                 return RewriteResult.bestEffort(eee);
             }
             return RewriteResult.newVal(eee);
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -47,7 +47,7 @@ public class InvNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

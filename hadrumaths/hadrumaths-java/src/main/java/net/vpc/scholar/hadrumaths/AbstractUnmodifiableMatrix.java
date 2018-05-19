@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
-public abstract class AbstractUnmodifiableMatrix extends AbstractMatrix{
+public abstract class AbstractUnmodifiableMatrix extends AbstractMatrix {
     private static final long serialVersionUID = 1L;
     private int rowsCount;
     private int columnsCount;
 
-    public AbstractUnmodifiableMatrix(int rowsCount, int columnsCount,MatrixFactory factory) {
+    public AbstractUnmodifiableMatrix(int rowsCount, int columnsCount, MatrixFactory factory) {
         this.rowsCount = rowsCount;
         this.columnsCount = columnsCount;
         if (rowsCount == 0 || columnsCount == 0) {

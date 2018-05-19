@@ -61,11 +61,11 @@ public class HeatMapPlotUnitsArea extends JComponent {
 
 
     public void paint(Graphics g) {
-        if(font==null){
-            if(font0==null){
-                font0=getFont();
+        if (font == null) {
+            if (font0 == null) {
+                font0 = getFont();
             }
-            font=font0.deriveFont(9.0f);
+            font = font0.deriveFont(9.0f);
         }
         g.setFont(font);
         Dimension d = getSize();
@@ -88,7 +88,7 @@ public class HeatMapPlotUnitsArea extends JComponent {
         if (Double.isNaN(min) || Double.isNaN(max) || min == max) {
             return df.format(v) + "%";
         } else {
-            double v2 = min + (v/100.0) * (max - min);
+            double v2 = min + (v / 100.0) * (max - min);
             if (doubleFormatter == null) {
                 return SimpleDoubleFormatter.INSTANCE.formatDouble(v2);
             }

@@ -13,11 +13,11 @@ public class DBLargeMatrixId implements Serializable {
     private Complex defaultValue;
 
     public DBLargeMatrixId(String type, String login, String password, String driver, String url, boolean sparse, Complex defaultValue) {
-        this.type = type==null?"":type;
-        this.login = login==null?"":login;
-        this.password = password==null?"":password;
-        this.url = url==null?"":url;
-        this.driver = driver==null?"":driver;
+        this.type = type == null ? "" : type;
+        this.login = login == null ? "" : login;
+        this.password = password == null ? "" : password;
+        this.url = url == null ? "" : url;
+        this.driver = driver == null ? "" : driver;
         this.defaultValue = defaultValue;
         this.sparse = sparse;
     }
@@ -50,12 +50,12 @@ public class DBLargeMatrixId implements Serializable {
         return defaultValue;
     }
 
-    public String toString(){
-        return "largeMatrix"+ SEP+type+ SEP +login+SEP +password+SEP +driver+SEP +url+SEP +sparse+SEP +(defaultValue==null?"":defaultValue.toString())+SEP+".";
+    public String toString() {
+        return "largeMatrix" + SEP + type + SEP + login + SEP + password + SEP + driver + SEP + url + SEP + sparse + SEP + (defaultValue == null ? "" : defaultValue.toString()) + SEP + ".";
     }
 
-    public static DBLargeMatrixId parse(String s){
-        if(s==null){
+    public static DBLargeMatrixId parse(String s) {
+        if (s == null) {
             return null;
         }
         try {
@@ -71,8 +71,8 @@ public class DBLargeMatrixId implements Serializable {
             String url = split[5];
             String sparse = split[6];
             String defaultValue = split[7];
-            return new DBLargeMatrixId(type, login, password, driver, url,Boolean.valueOf(sparse),defaultValue.isEmpty()?null:Complex.valueOf(defaultValue));
-        }catch (Exception e){
+            return new DBLargeMatrixId(type, login, password, driver, url, Boolean.valueOf(sparse), defaultValue.isEmpty() ? null : Complex.valueOf(defaultValue));
+        } catch (Exception e) {
             return null;
         }
     }

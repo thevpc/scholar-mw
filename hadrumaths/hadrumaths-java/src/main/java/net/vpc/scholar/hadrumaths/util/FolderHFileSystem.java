@@ -87,7 +87,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         File file = resolveFile(path);
         boolean x = file.mkdirs();
         if (!x && (!file.isDirectory() || !file.exists())) {
-            throw new RuntimeIOException("Unable to mkdir " + path.getPath()+" as "+file.getPath());
+            throw new RuntimeIOException("Unable to mkdir " + path.getPath() + " as " + file.getPath());
         }
         return false;
     }
@@ -135,7 +135,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         if (d.delete()) {
             return true;
         }
-        switch (strategy==null?FailStrategy.FAIL_FAST:strategy) {
+        switch (strategy == null ? FailStrategy.FAIL_FAST : strategy) {
             case FAIL_SAFE:
                 return false;
         }

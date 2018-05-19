@@ -29,9 +29,9 @@ public class FormatFactory extends AbstractFactory {
     public static YFormat Y = new YFormat("Y");
     public static ZFormat Z = new ZFormat("Z");
     public static RequireParenthesesFormat REQUIRED_PARS = RequireParenthesesFormat.INSTANCE;
-    public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE,true);
-    public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE,false);
-    public static DomainFormat NON_FULL_GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE,true);
+    public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE, true);
+    public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, false);
+    public static DomainFormat NON_FULL_GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, true);
     public static ProductFormat PRODUCT_STAR = new ProductFormat("*");
     public static ProductFormat PRODUCT_NONE = new ProductFormat(null);
     public static ProductFormat PRODUCT_DOTSTAR = new ProductFormat(".*");
@@ -120,7 +120,7 @@ public class FormatFactory extends AbstractFactory {
             @Override
             public void format(StringBuilder sb, NotExpr o, FormatParamSet format) {
                 sb.append("not(");
-                FormatFactory.format(sb,o.getArgument(),format);
+                FormatFactory.format(sb, o.getArgument(), format);
                 sb.append(")");
             }
         });
@@ -330,13 +330,13 @@ public class FormatFactory extends AbstractFactory {
         best.format(sb, o, format);
     }
 
-    public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty,boolean prefixWithSpace) {
+    public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty, boolean prefixWithSpace) {
         StringBuilder sb = new StringBuilder();
         if (b == 0) {
             return zeroIsEmpty ? "" : ((prefixWithSign ? "+" : "") + "0.0");
         }
         if (prefixWithSign) {
-            if(prefixWithSpace){
+            if (prefixWithSpace) {
                 sb.append(" ");
             }
             double b0 = b;
@@ -352,7 +352,7 @@ public class FormatFactory extends AbstractFactory {
                 sb.append(b0);
             }
         } else {
-            if(prefixWithSpace){
+            if (prefixWithSpace) {
                 sb.append(" ");
             }
             if (df != null) {

@@ -88,7 +88,7 @@ public class BooleanArrays {
 
         public void addFrom(BooleanArray1 other, Range r0) {
             for (int j = r0.xmin; j <= r0.xmax; j++) {
-                if(other.get(j)) {
+                if (other.get(j)) {
                     set(j);
                 }
             }
@@ -167,7 +167,7 @@ public class BooleanArrays {
         public void addFrom(BooleanArray2 other, Range r0) {
             for (int i = r0.ymin; i <= r0.ymax; i++) {
                 for (int j = r0.xmin; j <= r0.xmax; j++) {
-                    if(other.get(i, j)) {
+                    if (other.get(i, j)) {
                         set(i, j);
                     }
                 }
@@ -267,6 +267,7 @@ public class BooleanArrays {
                 }
             }
         }
+
         public void addFrom(BooleanArray3 other, Range r0) {
             if (other == null) {
                 return;
@@ -275,13 +276,14 @@ public class BooleanArrays {
                 for (int j = r0.ymin; j <= r0.ymax; j++) {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
 //                        set(j, i, k, other.get(j, i, k));
-                        if(other.get(i, j, k)) {
+                        if (other.get(i, j, k)) {
                             set(i, j, k);
                         }
                     }
                 }
             }
         }
+
         public void setAll() {
             for (int i = 0; i < size1(); i++) {
                 for (int j = 0; j < size2(); j++) {

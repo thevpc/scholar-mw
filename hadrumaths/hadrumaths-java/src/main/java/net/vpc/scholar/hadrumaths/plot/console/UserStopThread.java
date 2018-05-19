@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
-* @creationtime 6 janv. 2007 12:12:53
-*/
+ * @creationtime 6 janv. 2007 12:12:53
+ */
 abstract class UserStopThread extends Thread {
     boolean stopped;
     long sleep;

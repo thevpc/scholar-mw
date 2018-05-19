@@ -1,17 +1,18 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Expr;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 20:33:56 To
-* change this template use File | Settings | File Templates.
-*/
-public class DDz extends AbstractDoubleToDouble implements Cloneable{
+ * Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 20:33:56 To
+ * change this template use File | Settings | File Templates.
+ */
+public class DDz extends AbstractDoubleToDouble implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     DoubleToDouble base;
@@ -38,17 +39,17 @@ public class DDz extends AbstractDoubleToDouble implements Cloneable{
     }
 
     public double computeDouble0(double x, BooleanMarker defined) {
-        return base.computeDouble(defaultX, defaultY,x,defined);
+        return base.computeDouble(defaultX, defaultY, x, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
-        return base.computeDouble(defaultX, defaultY,x,defined);
+        return base.computeDouble(defaultX, defaultY, x, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
-        return base.computeDouble(defaultX, defaultY,x,defined);
+        return base.computeDouble(defaultX, defaultY, x, defined);
     }
 
 
@@ -88,8 +89,8 @@ public class DDz extends AbstractDoubleToDouble implements Cloneable{
         Expr updated = base.setParam(name, value);
         if (updated != base) {
             Expr e = new DDz(updated.toDD(), defaultX, defaultY);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }

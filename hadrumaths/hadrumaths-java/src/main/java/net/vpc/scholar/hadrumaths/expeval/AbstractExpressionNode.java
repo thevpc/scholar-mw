@@ -6,10 +6,9 @@
 package net.vpc.scholar.hadrumaths.expeval;
 
 /**
- *
  * @author vpc
  */
-public abstract class AbstractExpressionNode implements ExpressionNode{
+public abstract class AbstractExpressionNode implements ExpressionNode {
     private String name;
 
     public AbstractExpressionNode(String name) {
@@ -20,5 +19,5 @@ public abstract class AbstractExpressionNode implements ExpressionNode{
     public String getName() {
         return name;
     }
-    
+
 }

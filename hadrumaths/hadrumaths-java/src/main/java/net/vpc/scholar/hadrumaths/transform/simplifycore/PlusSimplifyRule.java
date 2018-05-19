@@ -5,16 +5,12 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 import net.vpc.scholar.hadrumaths.util.ClassPairMapList;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.Maths;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,20 +25,21 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
     public static final Class<? extends Expr>[] TYPES = new Class[]{Plus.class};
     private static final ReverseSimplifier REVERSE = new ReverseSimplifier();
 
-    private ClassPairMapList<PlusPairSimplifier> simplifiers=new ClassPairMapList<PlusPairSimplifier>(Expr.class,Expr.class,PlusPairSimplifier.class,false);
+    private ClassPairMapList<PlusPairSimplifier> simplifiers = new ClassPairMapList<PlusPairSimplifier>(Expr.class, Expr.class, PlusPairSimplifier.class, false);
 
     public static final ExpressionRewriterRule INSTANCE = new PlusSimplifyRule();
+
     public PlusSimplifyRule() {
-        simplifiers.add(Expr.class,Expr.class,new PlusPairSimplifier() {
+        simplifiers.add(Expr.class, Expr.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
-                if(a.equals(b)){
-                    return Maths.mul(Complex.TWO,a);
+                if (a.equals(b)) {
+                    return Maths.mul(Complex.TWO, a);
                 }
                 return null;
             }
         });
-        simplifiers.add(DoubleValue.class,DoubleValue.class,new PlusPairSimplifier() {
+        simplifiers.add(DoubleValue.class, DoubleValue.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 DoubleValue aa = (DoubleValue) a;
@@ -50,29 +47,29 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return DoubleValue.valueOf(aa.value + bb.value, aa.getDomain());
             }
         });
-        simplifiers.add(DoubleValue.class,ComplexValue.class,new PlusPairSimplifier() {
+        simplifiers.add(DoubleValue.class, ComplexValue.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 DoubleValue aa = (DoubleValue) a;
                 ComplexValue bb = (ComplexValue) b;
-                if(bb.getValue().isReal()){
+                if (bb.getValue().isReal()) {
                     return DoubleValue.valueOf(aa.value + bb.getValue().getReal(), aa.getDomain());
                 }
                 return new ComplexValue(bb.getValue().add(aa.value), aa.getDomain());
             }
         });
-        simplifiers.add(DoubleValue.class,Complex.class,new PlusPairSimplifier() {
+        simplifiers.add(DoubleValue.class, Complex.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 DoubleValue aa = (DoubleValue) a;
                 Complex bb = (Complex) b;
-                if(bb.isReal()){
+                if (bb.isReal()) {
                     return DoubleValue.valueOf(aa.value + bb.getReal(), aa.getDomain());
                 }
                 return new ComplexValue(bb.add(aa.value), aa.getDomain());
             }
         });
-        simplifiers.add(Complex.class,Complex.class,new PlusPairSimplifier() {
+        simplifiers.add(Complex.class, Complex.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Complex aa = (Complex) a;
@@ -80,7 +77,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return aa.add(bb);
             }
         });
-        simplifiers.add(Complex.class,ComplexValue.class,new PlusPairSimplifier() {
+        simplifiers.add(Complex.class, ComplexValue.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Complex aa = (Complex) a;
@@ -89,7 +86,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return aa.add(bb.getValue());
             }
         });
-        simplifiers.add(ComplexValue.class,ComplexValue.class,new PlusPairSimplifier() {
+        simplifiers.add(ComplexValue.class, ComplexValue.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 ComplexValue aa = (ComplexValue) a;
@@ -98,7 +95,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return new ComplexValue(aa.getValue().add(bb.getValue()), aa.getDomain());
             }
         });
-        simplifiers.add(DoubleValue.class,Linear.class,new PlusPairSimplifier() {
+        simplifiers.add(DoubleValue.class, Linear.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 DoubleValue aa = (DoubleValue) a;
@@ -106,34 +103,34 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 return new Linear(bb.a, bb.b, aa.value + bb.c, aa.getDomain());
             }
         });
-        simplifiers.add(Complex.class,Linear.class,new PlusPairSimplifier() {
+        simplifiers.add(Complex.class, Linear.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Complex aa = (Complex) a;
                 Linear bb = (Linear) b;
-                if(aa.isReal()){
+                if (aa.isReal()) {
                     return new Linear(bb.a, bb.b, aa.getReal() + bb.c, bb.getDomain());
                 }
                 return null;
             }
         });
-        simplifiers.add(ComplexValue.class,Linear.class,new PlusPairSimplifier() {
+        simplifiers.add(ComplexValue.class, Linear.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 ComplexValue aa = (ComplexValue) a;
                 Linear bb = (Linear) b;
-                if(aa.getValue().isReal()){
+                if (aa.getValue().isReal()) {
                     return new Linear(bb.a, bb.b, aa.getValue().getReal() + bb.c, bb.getDomain());
                 }
                 return null;
             }
         });
-        simplifiers.add(Linear.class,Linear.class,new PlusPairSimplifier() {
+        simplifiers.add(Linear.class, Linear.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Linear aa = (Linear) a;
                 Linear bb = (Linear) b;
-                return new Linear(aa.a+bb.a, aa.b+bb.b, aa.c + bb.c, bb.getDomain());
+                return new Linear(aa.a + bb.a, aa.b + bb.b, aa.c + bb.c, bb.getDomain());
             }
         });
 //        simplifiers.add(DoubleXY.class,DDxyDiscrete.class,new PlusPairSimplifier() {
@@ -153,7 +150,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //                return new DDxyDiscrete(newValues, aa.getDomain());
 //            }
 //        });
-        simplifiers.add(DoubleValue.class,DDiscrete.class,new PlusPairSimplifier() {
+        simplifiers.add(DoubleValue.class, DDiscrete.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 DoubleValue aa = (DoubleValue) a;
@@ -163,91 +160,91 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
             }
         });
 
-        simplifiers.add(Expr.class,Mul.class,new PlusPairSimplifier() {
+        simplifiers.add(Expr.class, Mul.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Mul bb = (Mul) b;
                 List<Expr> bbs = bb.getSubExpressions();
-                if(bbs.size()==2){
+                if (bbs.size() == 2) {
                     IConstantValue b1 = Expressions.toComplexValue(bbs.get(0));
                     IConstantValue b2 = Expressions.toComplexValue(bbs.get(1));
-                    if(b1!=null && a.equals(bbs.get(1))){
-                        return Maths.mul(simplifyXY(Complex.ONE,b1,domain),a);
+                    if (b1 != null && a.equals(bbs.get(1))) {
+                        return Maths.mul(simplifyXY(Complex.ONE, b1, domain), a);
                     }
-                    if(b2!=null && a.equals(bbs.get(0))){
-                        return Maths.mul(simplifyXY(Complex.ONE,b2,domain),a);
+                    if (b2 != null && a.equals(bbs.get(0))) {
+                        return Maths.mul(simplifyXY(Complex.ONE, b2, domain), a);
                     }
                 }
                 return null;
             }
         });
-        simplifiers.add(Mul.class,Expr.class,new PlusPairSimplifier() {
+        simplifiers.add(Mul.class, Expr.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Mul aa = (Mul) a;
                 Expr bb = b;
                 List<Expr> aas = aa.getSubExpressions();
-                if(aas.size()==2){
+                if (aas.size() == 2) {
                     IConstantValue a1 = Expressions.toComplexValue(aas.get(0));
-                    if(a1!=null && b.equals(aas.get(1))){
-                        return Maths.mul(simplifyXY(Complex.ONE,a1,domain),b);
+                    if (a1 != null && b.equals(aas.get(1))) {
+                        return Maths.mul(simplifyXY(Complex.ONE, a1, domain), b);
                     }
                     IConstantValue a2 = Expressions.toComplexValue(aas.get(1));
-                    if(a2!=null && a.equals(aas.get(0))){
-                        return Maths.mul(simplifyXY(Complex.ONE,a2,domain),b);
+                    if (a2 != null && a.equals(aas.get(0))) {
+                        return Maths.mul(simplifyXY(Complex.ONE, a2, domain), b);
                     }
                 }
                 return null;
             }
         });
-        simplifiers.add(Mul.class,Mul.class,new PlusPairSimplifier() {
+        simplifiers.add(Mul.class, Mul.class, new PlusPairSimplifier() {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 Mul aa = (Mul) a;
                 Mul bb = (Mul) b;
                 List<Expr> aas = aa.getSubExpressions();
                 List<Expr> bbs = bb.getSubExpressions();
-                if(aas.size()==2 && bbs.size()==2){
+                if (aas.size() == 2 && bbs.size() == 2) {
                     IConstantValue a1 = Expressions.toComplexValue(aas.get(0));
                     IConstantValue a2 = Expressions.toComplexValue(aas.get(1));
                     IConstantValue b1 = Expressions.toComplexValue(bbs.get(0));
                     IConstantValue b2 = Expressions.toComplexValue(bbs.get(1));
 
-                    Expr an=null;
-                    Expr ax=null;
-                    if(a1!=null) {
-                        an=a1;
-                        ax=aas.get(1);
-                    }else if(a2!=null){
-                        an=a2;
-                        ax=aas.get(0);
+                    Expr an = null;
+                    Expr ax = null;
+                    if (a1 != null) {
+                        an = a1;
+                        ax = aas.get(1);
+                    } else if (a2 != null) {
+                        an = a2;
+                        ax = aas.get(0);
                     }
 
-                    Expr bn=null;
-                    Expr bx=null;
-                    if(b1!=null) {
-                        bn=b1;
-                        bx=bbs.get(1);
-                    }else if(b2!=null){
-                        bn=b2;
-                        bx=bbs.get(0);
+                    Expr bn = null;
+                    Expr bx = null;
+                    if (b1 != null) {
+                        bn = b1;
+                        bx = bbs.get(1);
+                    } else if (b2 != null) {
+                        bn = b2;
+                        bx = bbs.get(0);
                     }
 
-                    if(an!=null && bn!=null && ax.equals(bx)){
-                        return Maths.mul(simplifyXY(an,bn,domain),ax);
+                    if (an != null && bn != null && ax.equals(bx)) {
+                        return Maths.mul(simplifyXY(an, bn, domain), ax);
                     }
                 }
                 return null;
             }
         });
-        simplifiers.add(Linear.class,DoubleValue.class, REVERSE);
+        simplifiers.add(Linear.class, DoubleValue.class, REVERSE);
 //        simplifiers.add(DDxyDiscrete.class,DoubleXY.class, REVERSE);
-        simplifiers.add(DDiscrete.class,DoubleValue.class, REVERSE);
-        simplifiers.add(Complex.class,DoubleValue.class, REVERSE);
-        simplifiers.add(ComplexValue.class,DoubleValue.class, REVERSE);
-        simplifiers.add(ComplexValue.class,Complex.class, REVERSE);
-        simplifiers.add(Linear.class,Complex.class, REVERSE);
-        simplifiers.add(Linear.class,ComplexValue.class, REVERSE);
+        simplifiers.add(DDiscrete.class, DoubleValue.class, REVERSE);
+        simplifiers.add(Complex.class, DoubleValue.class, REVERSE);
+        simplifiers.add(ComplexValue.class, DoubleValue.class, REVERSE);
+        simplifiers.add(ComplexValue.class, Complex.class, REVERSE);
+        simplifiers.add(Linear.class, Complex.class, REVERSE);
+        simplifiers.add(Linear.class, ComplexValue.class, REVERSE);
     }
 
     @Override
@@ -257,22 +254,19 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         Plus ee = (Plus) e;
-//        if(ee.toString().equals("(1117.2093362694857 * Y) + 1.5707963267948968")){
-//            System.out.println("Why");
-//        }
         DomainGroupedList grouped = new DomainGroupedList();
-        boolean someModification=false;
+        boolean someModification = false;
         for (Expr expression : ee.getSubExpressions()) {
             RewriteResult rewrite = ruleset.rewrite(expression);
-            if(!rewrite.isUnmodified()){
-                someModification=true;
+            if (!rewrite.isUnmodified()) {
+                someModification = true;
             }
             expression = rewrite.getValue();
             if (expression instanceof Plus) {
                 for (Expr se : expression.getSubExpressions()) {
                     grouped.addxy(se);
                 }
-            } else if(!expression.isZero()){
+            } else if (!expression.isZero()) {
                 grouped.addxy(expression);
             }
         }
@@ -284,8 +278,8 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
             List<Expr> rewriteResults2 = new ArrayList<>();
             for (RewriteResult rewriteResult : rewriteResults) {
                 rewriteResults2.add(rewriteResult.getValue());
-                if(rewriteResult.isRewritten() || rewriteResult.isBestEffort()){
-                    someModification=true;
+                if (rewriteResult.isRewritten()) {
+                    someModification = true;
                 }
             }
             grouped.domainxy.put(domain, rewriteResults2);
@@ -325,24 +319,24 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
             if (all.size() == 1) {
                 //return RewriteResult.bestEffort(all.get(0));
                 RewriteResult rewriteResult = all.get(0);
-                return (rewriteResult.isUnmodified() && someModification)?RewriteResult.newVal(rewriteResult.getValue()) : rewriteResult;
+                return (rewriteResult.isUnmodified() && someModification) ? RewriteResult.newVal(rewriteResult.getValue()) : rewriteResult;
             }
-            int r=someModification?RewriteResult.NEW_VAL:RewriteResult.UNMODIFIED;
-            List<Expr> exprs=new ArrayList<>();
+            int r = someModification ? RewriteResult.NEW_VAL : RewriteResult.UNMODIFIED;
+            List<Expr> exprs = new ArrayList<>();
             for (int i = 0; i < all.size(); i++) {
-                if(r==-1 || r>all.get(i).getType()){
-                    r=all.get(i).getType();
+                if (r == -1 || r > all.get(i).getType()) {
+                    r = all.get(i).getType();
                 }
                 exprs.add(all.get(i).getValue());
             }
             Expr newVal = Maths.sum(exprs.toArray(new Expr[exprs.size()]));
-            if(newVal.equals(e)){
-               return RewriteResult.unmodified(e);
+            if (newVal.equals(e)) {
+                return RewriteResult.unmodified(e);
             }
-            if(r==RewriteResult.BEST_EFFORT) {
+            if (r == RewriteResult.BEST_EFFORT) {
                 return RewriteResult.bestEffort(newVal);
-            }else{
-                return RewriteResult.unmodified(newVal);
+            } else {
+                return RewriteResult.newVal(newVal);
             }
 //        } else if (grouped.domainx.size() > 0) {
 //            List<Expr> all = new ArrayList<Expr>();
@@ -495,7 +489,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //                DDxPolynome fb = (DDxPolynome) b;
 //                double[] coeffs1 = fa.getA();
 //                double[] coeffs2 = fb.getA();
-//                double[] coeffs3 = new double[Maths.max(coeffs1.length, coeffs2.length)];
+//                double[] coeffs3 = new double[Math.max(coeffs1.length, coeffs2.length)];
 //                for (int i = 0; i < coeffs1.length; i++) {
 //                    coeffs3[i] = coeffs1[i];
 //                }
@@ -547,17 +541,17 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
     private Expr simplifyXY(Expr a, Expr b, Domain fullDomain) {
         for (PlusPairSimplifier s : simplifiers.getAll(a.getClass(), b.getClass())) {
             Expr r = s.simplify(a, b, fullDomain, this);
-            if(r!=null){
-                return (r);
+            if (r != null) {
+                return r;
             }
         }
         return null;
     }
 
     private static class DomainGroupedList {
-        int domainDimension=1;
+        int domainDimension = 1;
         Map<Domain, List<Expr>> domainxy = new HashMap<Domain, List<Expr>>();
-//        Map<Domain, List<IDDx>> domainx = new HashMap<Domain, List<IDDx>>();
+        //        Map<Domain, List<IDDx>> domainx = new HashMap<Domain, List<IDDx>>();
         Complex complex = Complex.ZERO;
         Domain fullxy = Domain.EMPTYX;
 //        Domain fullx = Domain.EMPTYX;
@@ -625,11 +619,11 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //        }
 
         public List<Expr> get(Domain d) {
-            if(d.dimension()<domainDimension){
-                d=d.expandDimension(domainDimension);
-            }else if(d.dimension()>domainDimension){
-                domainDimension=d.dimension();
-                if(domainxy.size()>0) {
+            if (d.dimension() < domainDimension) {
+                d = d.expandDimension(domainDimension);
+            } else if (d.dimension() > domainDimension) {
+                domainDimension = d.dimension();
+                if (domainxy.size() > 0) {
                     Map<Domain, List<Expr>> domainxy2 = new HashMap<Domain, List<Expr>>();
                     for (Map.Entry<Domain, List<Expr>> domainListEntry : domainxy.entrySet()) {
                         domainxy2.put(
@@ -649,12 +643,12 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
         }
     }
 
-    protected interface PlusPairSimplifier{
-        Expr simplify(Expr a,Expr b,Domain domain,PlusSimplifyRule plusSimplifyRule);
+    protected interface PlusPairSimplifier {
+        Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule);
     }
 
-    protected static class ReverseSimplifier implements PlusPairSimplifier{
-        public Expr simplify(Expr a,Expr b,Domain domain,PlusSimplifyRule plusSimplifyRule){
+    protected static class ReverseSimplifier implements PlusPairSimplifier {
+        public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
             return plusSimplifyRule.simplifyXY(b, a, domain);
         }
     }
@@ -666,7 +660,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

@@ -12,7 +12,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class CosXPlusYSymbolRule implements ExpressionRewriterRule {
@@ -34,6 +33,7 @@ public class CosXPlusYSymbolRule implements ExpressionRewriterRule {
         CosXPlusY ee = (CosXPlusY) e;
         return RewriteResult.unmodified(ee);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -41,7 +41,7 @@ public class CosXPlusYSymbolRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

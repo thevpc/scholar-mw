@@ -27,7 +27,7 @@ public class ConvergenceResult {
     private Map<String, Object> parameters;
 
     public ConvergenceResult(
-            String label, Object source, Object value, int varIndex, Object varValue, Object oldValue,double relativeError, Map<String, Object> parameters, double epsilon, int stabilityThreshold, boolean finalValue, ConvergenceResult subResult) {
+            String label, Object source, Object value, int varIndex, Object varValue, Object oldValue, double relativeError, Map<String, Object> parameters, double epsilon, int stabilityThreshold, boolean finalValue, ConvergenceResult subResult) {
         this.parameters = parameters == null ? new HashMap<String, Object>() : new HashMap<String, Object>(parameters);
         this.relativeError = relativeError;
         this.source = source;

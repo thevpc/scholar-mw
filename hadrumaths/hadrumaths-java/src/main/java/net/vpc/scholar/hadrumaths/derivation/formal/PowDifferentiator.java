@@ -4,7 +4,10 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Div;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.Pow;
+import net.vpc.scholar.hadrumaths.symbolic.Sub;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -21,13 +24,13 @@ public class PowDifferentiator implements FunctionDifferentiator {
         return new Mul(
                 new Sub(
                         new Mul(
-                                new Div(ad,a),
+                                new Div(ad, a),
                                 b
                         )
                         ,
-                        new Pow(a,bd)
-                        ),
-                new Pow(a,b)
+                        new Pow(a, bd)
+                ),
+                new Pow(a, b)
         );
     }
 }

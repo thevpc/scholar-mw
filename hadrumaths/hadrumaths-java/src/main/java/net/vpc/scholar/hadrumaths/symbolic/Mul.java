@@ -446,7 +446,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
-                c *= (expressions[i].toDD().computeDouble(x, y, z,rdefined));
+                c *= (expressions[i].toDD().computeDouble(x, y, z, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }
@@ -468,7 +468,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
-                c *= (expressions[i].toDD().computeDouble(x, y,rdefined));
+                c *= (expressions[i].toDD().computeDouble(x, y, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }
@@ -490,7 +490,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
             }
             rdefined.reset();
             for (int i = 1; i < expressions.length; i++) {
-                c *= (expressions[i].toDD().computeDouble(x,rdefined));
+                c *= (expressions[i].toDD().computeDouble(x, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }

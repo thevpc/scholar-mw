@@ -1,6 +1,6 @@
 package net.vpc.scholar
-import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 /**
   * Created by vpc on 7/17/17.

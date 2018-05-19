@@ -6,11 +6,11 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.util.CacheEnabled;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
@@ -21,6 +21,9 @@ import java.util.*;
  * @author vpc
  */
 public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
+    public static int DEBUG_REWRITE_ONCE=0;
+    public static int DEBUG_REWRITE_SUCCESS=0;
+    public static int DEBUG_REWRITE_FAIL=0;
     public List<ExpressionRewriterRule> rules = new ArrayList<ExpressionRewriterRule>();
     public ClassMap<List<ExpressionRewriterRule>> mapRules = new ClassMap<List<ExpressionRewriterRule>>(Expr.class, (Class) List.class);
     public Map<Class, List<ExpressionRewriterRule>> cachedMapRules = new HashMap<Class, List<ExpressionRewriterRule>>();
@@ -32,13 +35,13 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     }
 
     public void addAllRules(ExpressionRewriterRule[] rules) {
-        if(rules!=null) {
+        if (rules != null) {
             addAllRules(Arrays.asList(rules));
         }
     }
 
     public void addAllRules(Collection<ExpressionRewriterRule> rules) {
-        if(rules!=null){
+        if (rules != null) {
             for (ExpressionRewriterRule rule : rules) {
                 addRule(rule);
             }
@@ -46,7 +49,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     }
 
     public void addRule(ExpressionRewriterRule rule) {
-        if(rule==null){
+        if (rule == null) {
             return;
         }
         for (Class<? extends Expr> c : rule.getTypes()) {
@@ -144,6 +147,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     }
 
     public RewriteResult rewriteOnce(Expr e) {
+        DEBUG_REWRITE_ONCE++;
         Expr curr = e;
         boolean modified = false;
         Class<? extends Expr> cls = e.getClass();
@@ -176,10 +180,12 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             if (nextResult != null) {
                 Expr next = nextResult.getValue();
                 if (nextResult.isUnmodified()) {//next next != null && !next.equals(curr)
+                    DEBUG_REWRITE_FAIL++;
                     for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
                         rewriteListener.onUnmodifiedExpr(this, e);
                     }
                 } else if (nextResult.isRewritten()) {//next next != null && !next.equals(curr)
+                    DEBUG_REWRITE_SUCCESS++;
                     for (ExprRewriteListener rewriteListener : rewriteListeners) {
                         rewriteListener.onRewriteExpr(this, e, next);
                     }
@@ -216,6 +222,10 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     break;
                 }
             } else {
+                DEBUG_REWRITE_FAIL++;
+                for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
+                    rewriteListener.onUnmodifiedExpr(this, e);
+                }
                 if (debugExpressionRewrite) {
                     if (_debug) {
                         System.out.println("<" + _debug_msg + " [RESULT] ==> NO CHANGE!!");

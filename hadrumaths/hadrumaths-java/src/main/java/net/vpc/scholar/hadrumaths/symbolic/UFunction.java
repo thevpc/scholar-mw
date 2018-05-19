@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.*;
  * Date: 2 juil. 2003
  * Time: 11:51:13
  */
-public final class UFunction extends AbstractDoubleToDouble implements Cloneable{
+public final class UFunction extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     private double amp;
@@ -176,7 +176,7 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
         double cc = aa * b0 * b0 + bb * b0 + c;
         Domain d = Domain.forBounds(
                 a0x * domain.xmin() + b0,
-                a0x * domain.xmax ()+ b0,
+                a0x * domain.xmax() + b0,
                 domain.ymin(),
                 domain.ymax()
         );
@@ -197,6 +197,6 @@ public final class UFunction extends AbstractDoubleToDouble implements Cloneable
 
     @Override
     public Expr mul(double other) {
-        return new UFunction(this.domain, amp*other, a, b, c, d, e);
+        return new UFunction(this.domain, amp * other, a, b, c, d, e);
     }
 }

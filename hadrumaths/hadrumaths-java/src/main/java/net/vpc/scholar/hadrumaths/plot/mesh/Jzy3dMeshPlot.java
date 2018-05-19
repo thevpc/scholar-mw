@@ -34,11 +34,11 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
     private Chart chart;
 
     public Jzy3dMeshPlot(ValuesPlotModel model, JColorPalette colorPalette) {
-        this(new ValuesPlotXYDoubleModelFace(model,null), colorPalette, null);
+        this(new ValuesPlotXYDoubleModelFace(model, null), colorPalette, null);
     }
 
     public Jzy3dMeshPlot(PlotModelProvider modelProvider, JColorPalette colorPalette) {
-        this(new ValuesPlotXYDoubleModelFace((ValuesPlotModel) modelProvider.getModel(),null),
+        this(new ValuesPlotXYDoubleModelFace((ValuesPlotModel) modelProvider.getModel(), null),
                 colorPalette, modelProvider);
     }
 
@@ -54,9 +54,9 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
 
     public Jzy3dMeshPlot(ValuesPlotXYDoubleModelFace model, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
         super(new BorderLayout());
-        double[] x=model.getX();
-        double[] y=model.getY();
-        double[][] z=model.getZ();
+        double[] x = model.getX();
+        double[] y = model.getY();
+        double[][] z = model.getZ();
 
         titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
 

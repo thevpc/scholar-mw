@@ -12,6 +12,6 @@ import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
  */
 public class VDiscreteDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
-        return ((VDiscrete)f).diff(varIndex);
+        return ((VDiscrete) f).diff(varIndex);
     }
 }

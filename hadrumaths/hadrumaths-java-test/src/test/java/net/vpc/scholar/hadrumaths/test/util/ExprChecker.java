@@ -2,7 +2,10 @@ package net.vpc.scholar.hadrumaths.test.util;
 
 import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DomainExpr;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;

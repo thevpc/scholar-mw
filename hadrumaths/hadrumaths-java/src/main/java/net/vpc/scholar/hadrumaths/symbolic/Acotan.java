@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Acotan extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Acotan(Expr arg) {
         super("acotan", arg, FunctionType.DOUBLE);
     }

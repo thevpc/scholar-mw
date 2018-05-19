@@ -9,6 +9,8 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
  */
 public interface ConsoleAwareObject extends Dumpable {
     public void setLog(TLog log);
+
     public ConsoleAwareObject clone();
+
     public void setTarget(ParamTarget target);
 }

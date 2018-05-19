@@ -14,12 +14,12 @@ public abstract class AbstractExprMatrix implements ExprMatrix2 {
 
     @Override
     public Expr get(int row, int column) {
-        return store.get(row,column);
+        return store.get(row, column);
     }
 
     @Override
     public void set(Expr exp, int row, int col) {
-        store.set(exp,row,col);
+        store.set(exp, row, col);
     }
 
     @Override
@@ -34,7 +34,7 @@ public abstract class AbstractExprMatrix implements ExprMatrix2 {
 
     @Override
     public Expr apply(int row, int column) {
-        return get(row,column);
+        return get(row, column);
     }
 
     @Override
@@ -63,7 +63,7 @@ public abstract class AbstractExprMatrix implements ExprMatrix2 {
                 new ExprCellIterator() {
                     @Override
                     public Expr get(int row, int col) {
-                        return AbstractExprMatrix.this.get(row,col).simplify();
+                        return AbstractExprMatrix.this.get(row, col).simplify();
                     }
                 }
         );

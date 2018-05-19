@@ -9,7 +9,7 @@ public class StringPrefixProgressMessage implements ProgressMessage {
     private String prefix;
     private ProgressMessage message;
 
-    public StringPrefixProgressMessage(String prefix,ProgressMessage message) {
+    public StringPrefixProgressMessage(String prefix, ProgressMessage message) {
 
         this.message = message;
         this.prefix = prefix;
@@ -30,10 +30,10 @@ public class StringPrefixProgressMessage implements ProgressMessage {
 
     @Override
     public String getText() {
-        return prefix+message.getText();
+        return prefix + message.getText();
     }
 
-    public String toString(){
+    public String toString() {
         return getText();
     }
 }

@@ -6,17 +6,16 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 import java.util.List;
 
 /**
- *
  * @author vpc
  */
 public class MulNavRule implements ExpressionRewriterRule {
@@ -33,37 +32,38 @@ public class MulNavRule implements ExpressionRewriterRule {
         Mul ee = (Mul) e;
         List<Expr> expressions = ee.getSubExpressions();
         int size = expressions.size();
-        Expr[] updated=new Expr[size];
-        boolean changed=false;
-        int bestEfforts=0;
+        Expr[] updated = new Expr[size];
+        boolean changed = false;
+        int bestEfforts = 0;
         for (int i = 0; i < updated.length; i++) {
             Expr s1 = expressions.get(i);
             RewriteResult s2 = ruleset.rewrite(s1);
-            if(s2!=null){
-                if(s2.isUnmodified()){
-                    updated[i]=s1;
-                }else {
+            if (s2 != null) {
+                if (s2.isUnmodified()) {
+                    updated[i] = s1;
+                } else {
                     changed = true;
                     updated[i] = s2.getValue();
                     if (s2.isBestEffort()) {
                         bestEfforts++;
                     }
                 }
-            }else{
-                updated[i]=s1;
+            } else {
+                updated[i] = s1;
                 bestEfforts++;
             }
         }
-        if(changed){
-            Expr e2= Maths.mul(updated);
-            e2= Any.copyProperties(e, e2);
-            if(bestEfforts==size) {
+        if (changed) {
+            Expr e2 = Maths.mul(updated);
+            e2 = Any.copyProperties(e, e2);
+            if (bestEfforts == size) {
                 return RewriteResult.bestEffort(e2);
             }
             return RewriteResult.newVal(e2);
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -71,7 +71,7 @@ public class MulNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

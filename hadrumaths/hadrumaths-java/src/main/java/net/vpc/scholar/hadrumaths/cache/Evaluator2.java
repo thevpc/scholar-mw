@@ -5,5 +5,6 @@ package net.vpc.scholar.hadrumaths.cache;
  */
 public interface Evaluator2 {
     void init();
+
     Object evaluate(Object[] args);
 }

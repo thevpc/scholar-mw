@@ -5,17 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- *
  * @author vpc
  */
 public class IndexedMap<K, V> {
@@ -61,7 +54,7 @@ public class IndexedMap<K, V> {
         }
         return es;
     }
-    
+
     public Collection<V> values() {
         List<V> es = new ArrayList<V>();
         for (K k : list) {

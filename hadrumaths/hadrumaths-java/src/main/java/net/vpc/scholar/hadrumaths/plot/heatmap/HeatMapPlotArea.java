@@ -5,6 +5,8 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.HSBColorPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
+import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
+import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
-import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

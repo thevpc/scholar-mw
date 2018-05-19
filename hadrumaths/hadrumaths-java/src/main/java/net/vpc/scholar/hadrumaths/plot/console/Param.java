@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
@@ -11,6 +12,6 @@ import static java.lang.annotation.ElementType.PARAMETER;
  */
 @Target({PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param{
+public @interface Param {
     String value();
 }

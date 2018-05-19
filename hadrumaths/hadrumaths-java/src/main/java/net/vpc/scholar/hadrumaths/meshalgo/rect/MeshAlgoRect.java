@@ -187,7 +187,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
     }
 
 
-
     public Collection<MeshZone> meshPolygon(Geometry polygon) {
         Domain domain = polygon.getDomain();
         double maxAbsoluteSizeX = maxRelativeSizeX * domain.xwidth();

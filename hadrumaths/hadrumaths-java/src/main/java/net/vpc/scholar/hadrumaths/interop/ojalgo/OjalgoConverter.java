@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import org.ojalgo.matrix.BasicMatrix;
-import org.ojalgo.matrix.ComplexMatrix;
 import org.ojalgo.matrix.MutableComplexMatrix;
 import org.ojalgo.scalar.ComplexNumber;
 
@@ -18,7 +17,7 @@ public class OjalgoConverter {
     }
 
     public static Matrix toVpcCMatrix(BasicMatrix complexDouble) {
-        if(complexDouble instanceof MutableComplexMatrix) {
+        if (complexDouble instanceof MutableComplexMatrix) {
             return new OjalgoMatrix((MutableComplexMatrix) complexDouble);
         }
         throw new IllegalArgumentException("Unsupported");

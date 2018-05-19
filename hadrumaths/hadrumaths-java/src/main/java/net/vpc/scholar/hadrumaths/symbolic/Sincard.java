@@ -10,8 +10,9 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Sincard extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Sincard(Expr arg) {
-        super("sincard",arg, FunctionType.DOUBLE);
+        super("sincard", arg, FunctionType.DOUBLE);
     }
 
     @Override

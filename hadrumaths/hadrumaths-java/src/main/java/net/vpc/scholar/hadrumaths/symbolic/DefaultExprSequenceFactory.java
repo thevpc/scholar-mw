@@ -5,28 +5,29 @@ import net.vpc.scholar.hadrumaths.*;
 /**
  * Created by vpc on 2/14/15.
  */
-public class DefaultExprSequenceFactory<T extends Expr> extends AbstractExprSequenceFactory<T>{
-    public static final ExprSequenceFactory INSTANCE=new DefaultExprSequenceFactory();
+public class DefaultExprSequenceFactory<T extends Expr> extends AbstractExprSequenceFactory<T> {
+    public static final ExprSequenceFactory INSTANCE = new DefaultExprSequenceFactory();
+
     @Override
     public TList<T> newSequence(final int size, final TVectorCell<T> it) {
-        return newPreloadedSequence(size,it);
+        return newPreloadedSequence(size, it);
     }
 
     @Override
     public TList<T> newPreloadedSequence(final int size, final TVectorCell<T> it) {
 
-        return new PreloadedList(getComponentType(), false,size, it);
+        return new PreloadedList(getComponentType(), false, size, it);
     }
 
     @Override
     public TList<T> newUnmodifiableSequence(final int size, final TVectorCell<T> it) {
-        return new UnmodifiableList(getComponentType(),false,size, it);
+        return new UnmodifiableList(getComponentType(), false, size, it);
     }
 
     @Override
     public TList<T> newCachedSequence(final int size, final TVectorCell<T> it) {
-        final Expr[] cache=new Expr[size];
-        return new CachedList(getComponentType(),false,size, cache, it);
+        final Expr[] cache = new Expr[size];
+        return new CachedList(getComponentType(), false, size, cache, it);
     }
 
 }

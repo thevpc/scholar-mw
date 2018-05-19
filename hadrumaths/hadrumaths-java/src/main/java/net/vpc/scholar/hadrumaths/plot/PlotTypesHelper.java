@@ -93,27 +93,27 @@ public class PlotTypesHelper {
     }
 
     public static TypeAndValue resolveComponentType(Object obj) {
-        List initial=new ArrayList();
-        boolean column=false;
+        List initial = new ArrayList();
+        boolean column = false;
         if (obj.getClass().isArray()) {
             int l = Array.getLength(obj);
             for (int i = 0; i < l; i++) {
-                initial.add(Array.get(obj,i));
+                initial.add(Array.get(obj, i));
             }
-        }else if(obj instanceof TVector){
+        } else if (obj instanceof TVector) {
             TVector vv = (TVector) obj;
-            if(vv.isColumn()){
-                column=true;
+            if (vv.isColumn()) {
+                column = true;
             }
             initial.addAll(Arrays.asList(vv.toArray()));
-        }else if(obj instanceof Collection){
+        } else if (obj instanceof Collection) {
             initial.addAll((Collection) obj);
-        }else if(obj instanceof Iterable){
+        } else if (obj instanceof Iterable) {
             for (Object o : (Iterable) obj) {
                 initial.add(o);
             }
-        }else{
-            return new TypeAndValue("object",obj);
+        } else {
+            return new TypeAndValue("object", obj);
         }
         String t = "null";
         int l = initial.size();
@@ -141,13 +141,14 @@ public class PlotTypesHelper {
             t = "object";
         }
         TypeAndValue t1 = new TypeAndValue(t, all);
-        if(column){
-            t1.props.put("column","true");
+        if (column) {
+            t1.props.put("column", "true");
         }
         return compress(t1);
     }
+
     //should compress to  double[] or Complex[] if applicable!!
-    protected static TypeAndValue compress(TypeAndValue t){
+    protected static TypeAndValue compress(TypeAndValue t) {
         return t;
     }
 
@@ -166,53 +167,53 @@ public class PlotTypesHelper {
             TMatrix m = (TMatrix) obj;
             int c = m.getColumnCount();
             int r = m.getRowCount();
-            if(c ==1){
-                if(r==1){
-                    return resolveType(m.get(0,0));
+            if (c == 1) {
+                if (r == 1) {
+                    return resolveType(m.get(0, 0));
                 }
                 return resolveComponentType(m.getColumn(0));
             }
             for (Object o : m.getRows()) {
                 TypeAndValue typeAndValue = resolveType(o);
-                if(typeAndValue.type.equals("complex[]")){
+                if (typeAndValue.type.equals("complex[]")) {
                     TypeAndValue typeAndValue1 = new TypeAndValue("complex[][]", obj);
-                    typeAndValue1.props.put("matrix","true");
+                    typeAndValue1.props.put("matrix", "true");
                     return typeAndValue1;
                 }
             }
             TypeAndValue typeAndValue = new TypeAndValue("number[][]", obj);
-            typeAndValue.props.put("matrix","true");
+            typeAndValue.props.put("matrix", "true");
             return typeAndValue;
         }
         if (obj instanceof TVector) {
             TVector vv = (TVector) obj;
-            if(vv.isConvertibleTo(Maths.$DOUBLE)) {
+            if (vv.isConvertibleTo(Maths.$DOUBLE)) {
                 vv = vv.to(Maths.$DOUBLE);
-            }else if(vv.isConvertibleTo(Maths.$COMPLEX)){
-                vv=vv.to(Maths.$COMPLEX);
-            }else if(vv.isConvertibleTo(Maths.$EXPR)){
-                vv=vv.to(Maths.$EXPR);
+            } else if (vv.isConvertibleTo(Maths.$COMPLEX)) {
+                vv = vv.to(Maths.$COMPLEX);
+            } else if (vv.isConvertibleTo(Maths.$EXPR)) {
+                vv = vv.to(Maths.$EXPR);
             }
-            String subType="object";
-            if(vv.getComponentType().equals(Maths.$COMPLEX)) {
+            String subType = "object";
+            if (vv.getComponentType().equals(Maths.$COMPLEX)) {
                 subType = "complex";
-            }else if(vv.getComponentType().equals(Maths.$EXPR)){
-                subType="expr";
-            }else if(vv.getComponentType().equals(Maths.$DOUBLE)){
-                subType="number";
-            }else if(vv.getComponentType().equals(Maths.$BOOLEAN)){
-                subType="boolean";
-            }else if(vv.getComponentType().equals(Maths.$POINT)){
-                subType="point";
-            }else if(vv.getComponentType().equals(Maths.$FILE)){
-                subType="file";
+            } else if (vv.getComponentType().equals(Maths.$EXPR)) {
+                subType = "expr";
+            } else if (vv.getComponentType().equals(Maths.$DOUBLE)) {
+                subType = "number";
+            } else if (vv.getComponentType().equals(Maths.$BOOLEAN)) {
+                subType = "boolean";
+            } else if (vv.getComponentType().equals(Maths.$POINT)) {
+                subType = "point";
+            } else if (vv.getComponentType().equals(Maths.$FILE)) {
+                subType = "file";
             }
-            TypeAndValue typeAndValue = new TypeAndValue(subType+"[]", obj);
-            typeAndValue.props.put("column",String.valueOf(vv.isColumn()));
+            TypeAndValue typeAndValue = new TypeAndValue(subType + "[]", obj);
+            typeAndValue.props.put("column", String.valueOf(vv.isColumn()));
             return typeAndValue;
         }
         if (obj instanceof ToDoubleArrayAware) {
-            return (new TypeAndValue("number[]",((ToDoubleArrayAware) obj).toDoubleArray()));
+            return (new TypeAndValue("number[]", ((ToDoubleArrayAware) obj).toDoubleArray()));
         }
         if (obj instanceof ComplexArray) {
             return (resolveType(((ComplexArray) obj).toComplexArray()));
@@ -258,10 +259,10 @@ public class PlotTypesHelper {
         throw new IllegalArgumentException("Not a Complex");
     }
 
-    public static Object[][] toColumn(Object[] obj,Class cls) {
-        Object[][] vals = (Object[][]) Array.newInstance(cls,obj.length,1);
+    public static Object[][] toColumn(Object[] obj, Class cls) {
+        Object[][] vals = (Object[][]) Array.newInstance(cls, obj.length, 1);
         for (int i = 0; i < obj.length; i++) {
-            vals[i][0]=obj[i];
+            vals[i][0] = obj[i];
         }
         return vals;
     }
@@ -271,9 +272,9 @@ public class PlotTypesHelper {
             return null;
         }
         Object[] objects = toObjectArray(obj);
-        Complex[] complexes=new Complex[objects.length];
+        Complex[] complexes = new Complex[objects.length];
         for (int i = 0; i < complexes.length; i++) {
-            complexes[i]=toComplex(objects[i]);
+            complexes[i] = toComplex(objects[i]);
         }
 //        if (obj.getClass().isArray()) {
 //            if (obj.getClass().getComponentType().equals(Complex.class)) {
@@ -345,7 +346,7 @@ public class PlotTypesHelper {
             return arr;
         } else if (obj instanceof Matrix) {
             Matrix m = (Matrix) obj;
-            if (m.isColumn() && m.getColumnCount()==1) {
+            if (m.isColumn() && m.getColumnCount() == 1) {
                 return m.getColumn(0).toArray();
             }
             throw new IllegalArgumentException("Not an Object Array");
@@ -356,9 +357,9 @@ public class PlotTypesHelper {
         } else if (obj instanceof Collection) {
             return (((Collection) obj).toArray());
         } else if (obj instanceof Iterable) {
-            return CollectionUtils.toList((Iterable)obj).toArray();
+            return CollectionUtils.toList((Iterable) obj).toArray();
         } else if (obj instanceof Iterator) {
-            return CollectionUtils.toList((Iterator)obj).toArray();
+            return CollectionUtils.toList((Iterator) obj).toArray();
         }
         throw new IllegalArgumentException("Not an Object Array");
     }
@@ -463,7 +464,7 @@ public class PlotTypesHelper {
     public static class TypeAndValue {
         public String type;
         public Object value;
-        public Map<String,String> props=new HashMap<>();
+        public Map<String, String> props = new HashMap<>();
 
         public TypeAndValue(String type, Object value) {
             this.type = type;

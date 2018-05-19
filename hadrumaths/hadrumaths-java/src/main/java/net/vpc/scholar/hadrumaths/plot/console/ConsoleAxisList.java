@@ -4,15 +4,15 @@ import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.xlabels.XLabel;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.Serializable;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 10 janv. 2007 14:48:17
  */
-public class ConsoleAxisList implements Iterable<ConsoleAxis> , Serializable,Cloneable {
+public class ConsoleAxisList implements Iterable<ConsoleAxis>, Serializable, Cloneable {
     private ArrayList<ConsoleAxis> consoleAxises = new ArrayList<ConsoleAxis>();
 
     public ConsoleAxisList() {
@@ -27,9 +27,9 @@ public class ConsoleAxisList implements Iterable<ConsoleAxis> , Serializable,Clo
     }
 
     public void addAll(ConsoleAxisList list) {
-       consoleAxises.addAll(list.consoleAxises);
+        consoleAxises.addAll(list.consoleAxises);
     }
-    
+
     public void addAxis() {
         addAxis(new ConsoleAxis());
     }
@@ -65,7 +65,7 @@ public class ConsoleAxisList implements Iterable<ConsoleAxis> , Serializable,Clo
         return this;
     }
 
-//    public ParamSet getX() {
+    //    public ParamSet getX() {
 //        return getAxis().getX();
 //    }
 //
@@ -77,20 +77,20 @@ public class ConsoleAxisList implements Iterable<ConsoleAxis> , Serializable,Clo
 //    public ArrayList<PlotAxis> getY() {
 //        return yAxises;
 //    }
-    public ConsoleAxis getAxis(){
-        if(consoleAxises.size()==0){
+    public ConsoleAxis getAxis() {
+        if (consoleAxises.size() == 0) {
             consoleAxises.add(new ConsoleAxis());
         }
-        return consoleAxises.get(consoleAxises.size()-1);
+        return consoleAxises.get(consoleAxises.size() - 1);
     }
-    
+
     public ConsoleAxisList clone() {
         try {
             ConsoleAxisList list = (ConsoleAxisList) super.clone();
             for (int i = 0; i < list.consoleAxises.size(); i++) {
                 ConsoleAxis param = list.consoleAxises.get(i);
-                if(param!=null){
-                    list.consoleAxises.set(i,param.clone());
+                if (param != null) {
+                    list.consoleAxises.set(i, param.clone());
                 }
             }
             return list;
@@ -98,8 +98,8 @@ public class ConsoleAxisList implements Iterable<ConsoleAxis> , Serializable,Clo
             throw new RuntimeException(e);
         }
     }
-    
-    public int size(){
+
+    public int size() {
         return consoleAxises.size();
     }
 

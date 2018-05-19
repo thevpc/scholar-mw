@@ -78,6 +78,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
             }
         });
     }
+
     @NonStateField
     protected transient Domain _cache_domain;
     private Expr[] expressions;
@@ -86,7 +87,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     public Div(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
     public boolean isZeroImpl() {
@@ -108,7 +109,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
             return getDomainImpl();
         }
-        if ( _cache_domain == null) {
+        if (_cache_domain == null) {
             _cache_domain = getDomainImpl();
         }
         return _cache_domain;
@@ -216,8 +217,8 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -236,7 +237,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -256,7 +257,7 @@ public class Div extends AbstractExprOperator implements Cloneable {
         }
         if (changed) {
             Expr e = new Div(updated[0], updated[1]);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -436,46 +437,46 @@ public class Div extends AbstractExprOperator implements Cloneable {
     public Expr mul(Domain domain) {
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
-            expr2[i]=expr2[i].mul(domain);
+            expr2[i] = expr2[i].mul(domain);
         }
-        return new Div(expr2[0],expr2[1]);
+        return new Div(expr2[0], expr2[1]);
     }
 
     @Override
     public Expr mul(double other) {
-        if(other==0){
+        if (other == 0) {
             return Maths.DDZERO;
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
-        expr2[0]=expr2[0].mul(other);
-        return new Mul(expr2[0],expr2[1]);
+        expr2[0] = expr2[0].mul(other);
+        return new Mul(expr2[0], expr2[1]);
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isZero()){
+        if (other.isZero()) {
             return Maths.DDZERO;
         }
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
-        expr2[0]=expr2[0].mul(other);
-        return new Mul(expr2[0],expr2[1]);
+        expr2[0] = expr2[0].mul(other);
+        return new Mul(expr2[0], expr2[1]);
     }
 
     @Override
     public Complex computeComplex(double x, BooleanMarker defined) {
-        if(contains(x)){
-            BooleanRef defined2= BooleanMarker.ref();
+        if (contains(x)) {
+            BooleanRef defined2 = BooleanMarker.ref();
             Complex a = getFirst().toDC().computeComplex(x, defined2);
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined2.reset();
             Complex b = getSecond().toDC().computeComplex(x, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined.set();
@@ -486,16 +487,16 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
-        if(contains(x,y)){
-            BooleanRef defined2= BooleanMarker.ref();
-            Complex a = getFirst().toDC().computeComplex(x,y, defined2);
-            if(!defined2.get()){
+        if (contains(x, y)) {
+            BooleanRef defined2 = BooleanMarker.ref();
+            Complex a = getFirst().toDC().computeComplex(x, y, defined2);
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined2.reset();
-            Complex b = getSecond().toDC().computeComplex(x,y, defined2);
+            Complex b = getSecond().toDC().computeComplex(x, y, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined.set();
@@ -506,16 +507,16 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
-        if(contains(x,y,z)){
-            BooleanRef defined2= BooleanMarker.ref();
-            Complex a = getFirst().toDC().computeComplex(x,y,z, defined2);
-            if(!defined2.get()){
+        if (contains(x, y, z)) {
+            BooleanRef defined2 = BooleanMarker.ref();
+            Complex a = getFirst().toDC().computeComplex(x, y, z, defined2);
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined2.reset();
-            Complex b = getSecond().toDC().computeComplex(x,y,z, defined2);
+            Complex b = getSecond().toDC().computeComplex(x, y, z, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return Complex.ZERO;
             }
             defined.set();
@@ -526,60 +527,60 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, BooleanMarker defined) {
-        if(contains(x)){
-            BooleanRef defined2= BooleanMarker.ref();
+        if (contains(x)) {
+            BooleanRef defined2 = BooleanMarker.ref();
             double a = getFirst().toDD().computeDouble(x, defined2);
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return 0;
             }
             defined2.reset();
             double b = getSecond().toDD().computeDouble(x, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return 0;
             }
             defined.set();
-            return a/b;
+            return a / b;
         }
         return 0;
     }
 
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
-        if(contains(x,y)){
-            BooleanRef defined2= BooleanMarker.ref();
-            double a = getFirst().toDD().computeDouble(x,y, defined2);
-            if(!defined2.get()){
+        if (contains(x, y)) {
+            BooleanRef defined2 = BooleanMarker.ref();
+            double a = getFirst().toDD().computeDouble(x, y, defined2);
+            if (!defined2.get()) {
                 return 0;
             }
             defined2.reset();
-            double b = getSecond().toDD().computeDouble(x,y, defined2);
+            double b = getSecond().toDD().computeDouble(x, y, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return 0;
             }
             defined.set();
-            return a/b;
+            return a / b;
         }
         return 0;
     }
 
     @Override
     public double computeDouble(double x, double y, double z, BooleanMarker defined) {
-        if(contains(x,y,z)){
-            BooleanRef defined2= BooleanMarker.ref();
-            double a = getFirst().toDD().computeDouble(x,y,z, defined2);
-            if(!defined2.get()){
+        if (contains(x, y, z)) {
+            BooleanRef defined2 = BooleanMarker.ref();
+            double a = getFirst().toDD().computeDouble(x, y, z, defined2);
+            if (!defined2.get()) {
                 return 0;
             }
             defined2.reset();
-            double b = getSecond().toDD().computeDouble(x,y,z, defined2);
+            double b = getSecond().toDD().computeDouble(x, y, z, defined2);
             defined2.set();
-            if(!defined2.get()){
+            if (!defined2.get()) {
                 return 0;
             }
             defined.set();
-            return a/b;
+            return a / b;
         }
         return 0;
     }

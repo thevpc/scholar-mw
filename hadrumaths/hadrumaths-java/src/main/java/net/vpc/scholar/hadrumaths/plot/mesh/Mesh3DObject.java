@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
-
 import net.vpc.scholar.hadrumaths.Maths;
 
 import java.awt.*;

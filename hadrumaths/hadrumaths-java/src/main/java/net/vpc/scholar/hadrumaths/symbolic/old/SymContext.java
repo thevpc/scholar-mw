@@ -11,8 +11,9 @@ import java.util.Map;
  */
 public class SymContext {
     private Map<String, SymExpression> vars = new HashMap<String, SymExpression>();
-    public static final SymContext NONE=new NONEContext();
-    private static class NONEContext extends SymContext implements Cloneable{
+    public static final SymContext NONE = new NONEContext();
+
+    private static class NONEContext extends SymContext implements Cloneable {
         public SymContext addVar(String name, SymExpression expression) {
             //
             return this;
@@ -27,7 +28,7 @@ public class SymContext {
             return this;
         }
 
-        public SymContext clone(){
+        public SymContext clone() {
             return new SymContext();
         }
     }
@@ -50,10 +51,10 @@ public class SymContext {
     }
 
     public SymContext addVar(String name, Complex value) {
-        return addVar(name,value==null?(SymExpression) null:new SymComplex(value));
+        return addVar(name, value == null ? (SymExpression) null : new SymComplex(value));
     }
 
-    public SymExpression getValue(String name){
+    public SymExpression getValue(String name) {
         return vars.get(name);
     }
 }

@@ -1,16 +1,13 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Matrix;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-
-import javax.swing.JComponent;
-
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,9 +23,9 @@ class _old_HeatMapPlot extends JComponent {
     private Object[] xAxis;
     private Object[] yAxis;
     private float H = 180f / 240f;
-//    private float H = 134f / 240f;
+    //    private float H = 134f / 240f;
     private float S = 210f / 240f;
-//    private float S = 203f / 240f;
+    //    private float S = 203f / 240f;
     private float B = (125f + 40) / 240f;
     private float D = 40f / 240f;
 
@@ -62,7 +59,7 @@ class _old_HeatMapPlot extends JComponent {
         });
     }
 
-    public void setPreferredDimension(int preferredDimension){
+    public void setPreferredDimension(int preferredDimension) {
         float factor = (matrix.length > 0 && matrix[0].length > 0) ? ((float) matrix.length / (float) matrix[0].length) : 1;
         Dimension dim = (factor <= 1) ?
                 new Dimension(preferredDimension, (int) (preferredDimension * factor))
@@ -72,7 +69,7 @@ class _old_HeatMapPlot extends JComponent {
         setSize(dim);
     }
 
-    public void setData(double[][] matrix){
+    public void setData(double[][] matrix) {
         this.matrix = new double[matrix.length][matrix.length == 0 ? 0 : matrix[0].length];
         this.sourceMatrix = new double[matrix.length][matrix.length == 0 ? 0 : matrix[0].length];
         double min;

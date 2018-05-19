@@ -16,7 +16,7 @@ public class DBLargeMatrix extends LargeMatrix {
     }
 
     protected static LargeMatrixFactory createLargeMatrixFactory(boolean sparse, String file, Complex defaultValue) {
-        return (LargeMatrixFactory) Maths.Config.getTMatrixFactory(DBLargeMatrixFactory.createLocalId(file,sparse, defaultValue));
+        return (LargeMatrixFactory) Maths.Config.getTMatrixFactory(DBLargeMatrixFactory.createLocalId(file, sparse, defaultValue));
     }
 
     @Override

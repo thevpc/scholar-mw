@@ -84,7 +84,7 @@ public class TimePeriodFormatter {
         }
 
         if (max > 0) {
-            if (minutes != 0 || (empty && max == 1)|| (!empty && !skipZeros)) {
+            if (minutes != 0 || (empty && max == 1) || (!empty && !skipZeros)) {
                 if (!empty) {
                     sb.append(' ');
                 }

@@ -31,21 +31,21 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         Mul ee = (Mul) e;
-        Expr r=null;
+        Expr r = null;
         for (Expr expression : ee.getSubExpressions()) {
             expression = ruleset.rewriteOrSame(expression);
-            r=(r==null)?expression:mul(r,expression,ruleset);
+            r = (r == null) ? expression : mul(r, expression, ruleset);
         }
-        if(r==null){
+        if (r == null) {
             throw new IllegalArgumentException("Unexpected");
         }
-        if(r.equals(e)){
+        if (r.equals(e)) {
             return RewriteResult.unmodified(e);
         }
         return RewriteResult.newVal(r);
     }
 
-    private Expr mul(Expr a, Expr b,ExpressionRewriter ruleset) {
+    private Expr mul(Expr a, Expr b, ExpressionRewriter ruleset) {
         if (a instanceof Plus && b instanceof Plus) {
             Plus ap = ((Plus) a);
             Plus bp = ((Plus) b);
@@ -54,35 +54,36 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
             for (Expr ee : ap.getSubExpressions()) {
                 apSimpl.add(ruleset.rewriteOrSame(ee));
             }
-                List<Expr> bpSimpl = new ArrayList<Expr>();
+            List<Expr> bpSimpl = new ArrayList<Expr>();
             for (Expr ee : bp.getSubExpressions()) {
                 bpSimpl.add(ruleset.rewriteOrSame(ee));
             }
 
             for (Expr ta : apSimpl) {
                 for (Expr tb : bpSimpl) {
-                    n.add(new Mul(ta,tb));
+                    n.add(new Mul(ta, tb));
                 }
             }
             return new Plus(n.toArray(new Expr[n.size()]));
-        }else if (a instanceof Plus) {
+        } else if (a instanceof Plus) {
             Plus ap = ((Plus) a);
             List<Expr> n = new ArrayList<Expr>();
             for (Expr ta : ap.getSubExpressions()) {
-                ta=ruleset.rewriteOrSame(ta);
+                ta = ruleset.rewriteOrSame(ta);
                 n.add(new Mul(ta, b));
             }
             return new Plus(n.toArray(new Expr[n.size()]));
-        }else if(b instanceof Plus){
+        } else if (b instanceof Plus) {
             Plus bp = ((Plus) b);
             List<Expr> n = new ArrayList<Expr>();
             for (Expr tb : bp.getSubExpressions()) {
-                tb=ruleset.rewriteOrSame(tb);
-                n.add(new Mul(a,tb));
+                tb = ruleset.rewriteOrSame(tb);
+                n.add(new Mul(a, tb));
             }
             return new Plus(n.toArray(new Expr[n.size()]));
         }
-        return Maths.mul(a,b);
+//        return new Mul(a, b);
+        return Maths.mul(a, b);
     }
 
     @Override

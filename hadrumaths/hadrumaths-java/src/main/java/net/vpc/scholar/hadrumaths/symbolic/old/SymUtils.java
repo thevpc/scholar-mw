@@ -292,14 +292,14 @@ public class SymUtils {
         return "";
     }
 
-    public static String formatRow(BoxFormat format,String ... values) {
+    public static String formatRow(BoxFormat format, String... values) {
         return format(format, new String[][]{values});
     }
 
-    public static String formatColumn(BoxFormat format,String ... values) {
-        String[][] r=new String[values.length][1];
+    public static String formatColumn(BoxFormat format, String... values) {
+        String[][] r = new String[values.length][1];
         for (int i = 0; i < values.length; i++) {
-            r[i][0]=values[i];
+            r[i][0] = values[i];
 
         }
         return format(format, r);

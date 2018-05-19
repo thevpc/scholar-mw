@@ -7,8 +7,8 @@ import net.vpc.scholar.hadrumaths.plot.console.ComputeTitle;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.WindowPath;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
 
 import java.awt.*;
@@ -43,7 +43,7 @@ public abstract class PlotAxis implements Serializable, Cloneable, ProgressMonit
         this.plotType = plotType;
     }
 
-    protected PlotAxis(String name, YType[] type, PlotType plotType,Set<ExternalLibrary> preferredLibraries) {
+    protected PlotAxis(String name, YType[] type, PlotType plotType, Set<ExternalLibrary> preferredLibraries) {
         this.types = (type == null || type.length == 0) ? YType.values() : type;
         this.name = name;
         this.plotType = plotType;

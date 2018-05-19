@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
-
-
 class Mesh3DData {
 
     int dimension;

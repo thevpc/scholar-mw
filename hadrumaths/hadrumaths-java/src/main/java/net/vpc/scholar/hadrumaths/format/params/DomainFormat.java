@@ -11,11 +11,13 @@ public class DomainFormat implements FormatParam {
     public enum Type {
 
         NONE, GATE
-    };
+    }
+
+    ;
     private Type type;
     private boolean ignoreFull;
 
-    public DomainFormat(Type type,boolean ignoreFull) {
+    public DomainFormat(Type type, boolean ignoreFull) {
         this.type = type;
         this.ignoreFull = ignoreFull;
     }

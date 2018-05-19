@@ -155,11 +155,9 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
 
-
     public boolean isMatrix() {
         return isDouble();
     }
-
 
 
     @Override
@@ -217,8 +215,8 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 //    }
 
     @Override
-    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
-        if((contains(x, y, z))){
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        if ((contains(x, y, z))) {
             defined.set();
             return value;
         }
@@ -231,8 +229,8 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 //    }
 
     @Override
-    public double computeDouble(double x,BooleanMarker defined) {
-        if(contains(x)) {
+    public double computeDouble(double x, BooleanMarker defined) {
+        if (contains(x)) {
             defined.set();
             return value;
         }
@@ -396,7 +394,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] r = new double[z.length][y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y,z);
+        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
         if (currRange != null) {
             int ax = currRange.xmin;
             int bx = currRange.xmax;
@@ -499,7 +497,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public double computeDouble(double x, double y,BooleanMarker defined) {//
+    public double computeDouble(double x, double y, BooleanMarker defined) {//
         switch (getDomainDimension()) {
             case 1: {
                 if (contains(x)) {
@@ -586,6 +584,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     public boolean isDouble() {
         return getDomain().isUnconstrained();
     }
+
     @Override
     public double toDouble() {
 //        if (!isDoubleValue()) {
@@ -605,19 +604,19 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     @Override
     public Expr mul(Domain domain) {
-        return new DoubleValue(value,getDomain().intersect(domain));
+        return new DoubleValue(value, getDomain().intersect(domain));
     }
 
     @Override
     public Expr mul(double other) {
-        return new DoubleValue(value*other,getDomain().intersect(domain));
+        return new DoubleValue(value * other, getDomain().intersect(domain));
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
-        return new ComplexValue(other.mul(value),getDomain().intersect(domain));
+        return new ComplexValue(other.mul(value), getDomain().intersect(domain));
     }
 }

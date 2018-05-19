@@ -10,7 +10,6 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.format.params.DoubleFormat;
-import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 
 /**
  * @author vpc
@@ -38,9 +37,9 @@ public class DoubleFormatter implements Formatter<Double> {
         }
         if (df != null) {
             sb.append(df.getFormat().format(o));
-        }else if (Maths.isInt(o)) {
+        } else if (Maths.isInt(o)) {
             sb.append(String.valueOf(o.intValue()));
-        }else{
+        } else {
             sb.append(String.valueOf(o.doubleValue()));
         }
         if (par) {

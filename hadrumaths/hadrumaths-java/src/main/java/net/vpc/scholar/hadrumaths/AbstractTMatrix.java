@@ -72,7 +72,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int r = 0; r < rows; r++) {
                 s += getComponentVectorSpace().absdbl(get(r, c));
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -100,7 +100,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         for (int j = 0; j < columnDimension; j++) {
             for (int r = 0; r < rows; r++) {
-                f = Maths.max(f, getComponentVectorSpace().absdbl(get(r, j)));
+                f = Math.max(f, getComponentVectorSpace().absdbl(get(r, j)));
             }
         }
         return f;
@@ -197,7 +197,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 double valI = getComponentVectorSpace().absdbl(getComponentVectorSpace().imag(val));
                 double ddR = baseR == 0 ? valR : (valR / baseR);
                 double ddI = baseI == 0 ? valI : (valI / baseI);
-                double dd = Maths.max(ddR, ddI);
+                double dd = Math.max(ddR, ddI);
                 if (!Double.isNaN(minErrorForZero) && dd < minErrorForZero) {
                     d[i][j] = 0;
                 } else {
@@ -222,7 +222,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int c = 0; c < columns; c++) {
                 s += getComponentVectorSpace().absdbl(get(r, c));
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -301,7 +301,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(i0:i1, j0:j1)
+     * @return A(i0 : i1, j0 : j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     public TMatrix<T> getMatrix(int i0, int i1, int j0, int j1) {
@@ -325,7 +325,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
      *
      * @param r Array of row indices.
      * @param c Array of column indices.
-     * @return A(r(:), c(:))
+     * @return A(r ( :), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     public TMatrix<T> getMatrix(int[] r, int[] c) {
@@ -348,7 +348,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
      * @param r1 Initial row index
      * @param r2 Final row index
      * @param c  Array of column indices.
-     * @return A(i0:i1, c(:))
+     * @return A(i0 : i1, c ( :))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     public TMatrix<T> getMatrix(int r1, int r2, int[] c) {
@@ -371,7 +371,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
      * @param r  Array of row indices.
      * @param c1 Initial column index
      * @param c2 Final column index
-     * @return A(r(:), j0:j1)
+     * @return A(r ( :), j0:j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     public TMatrix<T> getMatrix(int[] r, int c1, int c2) {
@@ -477,8 +477,8 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     public TMatrix<T> mul(TMatrix<T> other) {
-        if(getColumnCount()!=other.getRowCount()){
-            throw new IllegalArgumentException("The column dimension "+getColumnCount()+" of the left matrix does not match the row dimension "+other.getRowCount()+" of the right matrix!");
+        if (getColumnCount() != other.getRowCount()) {
+            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
         }
         int a_rows = getRowCount();
         int b_cols = other.getColumnCount();
@@ -1220,7 +1220,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 ////                return OjalgoHelper.INSTANCE.inv(this);
 //            }
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"strategy " + st.toString());
+        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "strategy " + st.toString());
     }
 
     public TMatrix<T> invSolve() {
@@ -1940,7 +1940,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                             c.add(getComponentVectorSpace().parse(stRow.nextToken()));
                             someCols++;
                         }
-                        cols = Maths.max(cols, someCols);
+                        cols = Math.max(cols, someCols);
                         if (c.size() > 0) {
                             l.add(c);
                         }
@@ -2160,7 +2160,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Maths.max(f, f0);
+                f = Math.max(f, f0);
             }
         }
         return f;
@@ -2174,7 +2174,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Maths.min(f, f0);
+                f = Math.min(f, f0);
             }
         }
         return f;
@@ -2301,7 +2301,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             return factory;
         }
         if (factoryId != null) {
-            return factory=Maths.Config.getTMatrixFactory(factoryId);
+            return factory = Maths.Config.getTMatrixFactory(factoryId);
         }
 
         TMatrixFactory<T> t = createDefaultFactory();
@@ -2412,7 +2412,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         }
         VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
         for (TVector<T> ts : getRows()) {
-            if(!ts.isConvertibleTo(other)){
+            if (!ts.isConvertibleTo(other)) {
                 return false;
             }
         }
@@ -2475,7 +2475,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     @Override
     public Complex toComplex() {
         if (isComplex()) {
-            return getComponentVectorSpace().convertTo(get(0, 0),Complex.class);
+            return getComponentVectorSpace().convertTo(get(0, 0), Complex.class);
         }
         throw new ClassCastException();
     }

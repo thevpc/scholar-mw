@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class IntArrayList extends AbstractTList<Integer> implements IntList{
+public class IntArrayList extends AbstractTList<Integer> implements IntList {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final int[] ZERO_ELEMENTS = new int[0];
@@ -18,7 +18,7 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList{
     }
 
     public IntArrayList(int initialSize) {
-        this(false,initialSize);
+        this(false, initialSize);
     }
 
     public IntArrayList(boolean row, int initialSize) {
@@ -28,37 +28,37 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList{
         } else if (initialSize == 0) {
             this.elementData = ZERO_ELEMENTS;
         } else {
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialSize);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
     }
 
     public int[] toIntArray() {
-        if(size==0){
+        if (size == 0) {
             return ZERO_ELEMENTS;
         }
-        int[] ret=new int[size];
-        System.arraycopy(elementData,0,ret,0,size);
+        int[] ret = new int[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
         return ret;
     }
 
     public Integer sum() {
-        if(size==0){
+        if (size == 0) {
             return 0;
         }
-        int d=elementData[0];
+        int d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d+=elementData[i];
+            d += elementData[i];
         }
         return d;
     }
 
     public Integer prod() {
-        if(size==0){
+        if (size == 0) {
             return 0;
         }
-        int d=elementData[0];
+        int d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d*=elementData[i];
+            d *= elementData[i];
         }
         return d;
     }
@@ -91,12 +91,12 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList{
     @Override
     public void appendAll(TVector<Integer> e) {
         int esize = e.size();
-        if(e instanceof IntArrayList){
+        if (e instanceof IntArrayList) {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             IntArrayList e0 = (IntArrayList) e;
-            System.arraycopy(e0.elementData,0,elementData, this.size, esize);
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
             this.size += esize;
-        }else{
+        } else {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             for (Integer a : e) {
                 elementData[this.size++] = a;
@@ -114,7 +114,7 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList{
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);
@@ -172,16 +172,16 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList{
         }
     }
 
-    public static class IntReadOnlyList extends ReadOnlyTList<Integer> implements IntList{
+    public static class IntReadOnlyList extends ReadOnlyTList<Integer> implements IntList {
         public IntReadOnlyList(boolean row, TVectorModel<Integer> model) {
             super(Maths.$INTEGER, row, model);
         }
 
         @Override
         public int[] toIntArray() {
-            int[] d=new int[size()];
+            int[] d = new int[size()];
             for (int i = 0; i < d.length; i++) {
-                d[i]=get(i);
+                d[i] = get(i);
             }
             return d;
         }

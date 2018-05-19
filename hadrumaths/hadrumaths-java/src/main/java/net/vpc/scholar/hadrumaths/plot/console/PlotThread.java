@@ -1,19 +1,17 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMessage;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
 import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
-
-import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 /**
@@ -52,12 +50,12 @@ public class PlotThread extends Thread implements ProgressMonitor {
         chronometer.start();
         try {
             try {
-                if(currentY.containsType(YType.REFERENCE) || currentY.containsType(YType.ABSOLUTE_ERROR) || currentY.containsType(YType.RELATIVE_ERROR)){
+                if (currentY.containsType(YType.REFERENCE) || currentY.containsType(YType.ABSOLUTE_ERROR) || currentY.containsType(YType.RELATIVE_ERROR)) {
                     if (direct == null) {
                         throw new IllegalArgumentException("Y Type is " + Arrays.asList(currentY.getTypes()) + " but direct is null");
                     }
                 }
-                if(currentY.containsType(YType.MODELED) || currentY.containsType(YType.ABSOLUTE_ERROR) || currentY.containsType(YType.RELATIVE_ERROR)){
+                if (currentY.containsType(YType.MODELED) || currentY.containsType(YType.ABSOLUTE_ERROR) || currentY.containsType(YType.RELATIVE_ERROR)) {
                     if (direct == null) {
                         throw new IllegalArgumentException("Y Type is " + Arrays.asList(currentY.getTypes()) + " but modele is null");
                     }
@@ -75,7 +73,7 @@ public class PlotThread extends Thread implements ProgressMonitor {
                     all.add("");//default
                 }
                 WindowPath path = new WindowPath(all.toArray(new String[all.size()]));
-                for (Iterator<ConsoleAction> action =currentY.createConsoleActionIterator(new ConsoleActionParams(serieTitle, direct, modele, axis, plotter, path));action.hasNext();) {
+                for (Iterator<ConsoleAction> action = currentY.createConsoleActionIterator(new ConsoleActionParams(serieTitle, direct, modele, axis, plotter, path)); action.hasNext(); ) {
                     plotter.run(action.next());
                 }
             } catch (IllegalArgumentException e) {
@@ -120,7 +118,7 @@ public class PlotThread extends Thread implements ProgressMonitor {
         return serieTitle;
     }
 
-    public void cancel(){
+    public void cancel() {
         stop();
     }
 
@@ -133,7 +131,7 @@ public class PlotThread extends Thread implements ProgressMonitor {
     @Override
     public ProgressMessage getProgressMessage() {
         PlotAxis currentY = getCurrentY();
-        return new StringProgressMessage(Level.FINE, currentY.getName()+"-"+currentY.getProgressMessage());
+        return new StringProgressMessage(Level.FINE, currentY.getName() + "-" + currentY.getProgressMessage());
     }
 
     @Override

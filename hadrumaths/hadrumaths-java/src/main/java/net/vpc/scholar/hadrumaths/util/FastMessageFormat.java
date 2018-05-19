@@ -10,34 +10,34 @@ public class FastMessageFormat {
     private List<Evaluator> items = new ArrayList<>();
 
     public static void main(String[] args) {
-        FastMessageFormat f=new FastMessageFormat();
+        FastMessageFormat f = new FastMessageFormat();
         f.parse("${world}me HEllo ")
-        .addVar("world", new Evaluator() {
-            @Override
-            public String eval(Map<String, Object> context) {
-                return "Key";
-            }
-        });
+                .addVar("world", new Evaluator() {
+                    @Override
+                    public String eval(Map<String, Object> context) {
+                        return "Key";
+                    }
+                });
         System.out.println(f.format(null));
     }
 
-    public FastMessageFormat parse(String message){
+    public FastMessageFormat parse(String message) {
         char[] chars = message.toCharArray();
         int i = 0;
-        StringBuilder val=new StringBuilder();
+        StringBuilder val = new StringBuilder();
 
         while (i < chars.length) {
-            switch (chars[i]){
-                case '$':{
-                    if(i+1<chars.length && chars[i+1]=='{'){
-                        if(val.length()>0){
+            switch (chars[i]) {
+                case '$': {
+                    if (i + 1 < chars.length && chars[i + 1] == '{') {
+                        if (val.length() > 0) {
                             items.add(new ConstItem(val.toString()));
-                            val.delete(0,val.length());
+                            val.delete(0, val.length());
                         }
-                        i+=2;
-                        StringBuilder name=new StringBuilder();
-                        while(i<chars.length){
-                            if(chars[i]=='}'){
+                        i += 2;
+                        StringBuilder name = new StringBuilder();
+                        while (i < chars.length) {
+                            if (chars[i] == '}') {
                                 i++;
                                 break;
                             }
@@ -46,30 +46,30 @@ public class FastMessageFormat {
                         }
                         String sname = name.toString();
                         items.add(new VarItem(
-                                sname,vars.get(sname)
+                                sname, vars.get(sname)
                         ));
                     }
                     break;
                 }
-                default:{
+                default: {
                     val.append(chars[i]);
                     i++;
                     break;
                 }
             }
         }
-        if(val.length()>0){
+        if (val.length() > 0) {
             items.add(new ConstItem(val.toString()));
-            val.delete(0,val.length());
+            val.delete(0, val.length());
         }
         return this;
     }
 
     public String format(Map<String, Object> context) {
-        if(context==null) {
+        if (context == null) {
             context = new HashMap<>();
         }
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (Evaluator item : items) {
             sb.append(item.eval(context));
         }
@@ -80,8 +80,8 @@ public class FastMessageFormat {
         vars.put(varName, varExpr);
 
         for (Evaluator item : items) {
-            if(item instanceof VarItem){
-                ((VarItem) item).evaluator =varExpr;
+            if (item instanceof VarItem) {
+                ((VarItem) item).evaluator = varExpr;
             }
         }
         return this;
@@ -117,8 +117,8 @@ public class FastMessageFormat {
         public String eval(Map<String, Object> context) {
             Object v = context.get(name);
             if (v == null) {
-                if(evaluator==null){
-                    throw new IllegalArgumentException("Missing evaluator for "+ name);
+                if (evaluator == null) {
+                    throw new IllegalArgumentException("Missing evaluator for " + name);
                 }
                 context.put(name, v = evaluator.eval(context));
             }

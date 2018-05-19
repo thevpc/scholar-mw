@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.util.config;
 import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +37,7 @@ public class TimeConverter extends ConfigConverter {
             return hms.format(parts[3]) + ":" + hms.format(parts[4]) + ":" + hms.format(parts[5]) + ":" + S.format(parts[6]);
         }
     }
-    
+
     private static int[] getDateTimeParts(Date date) {
         int[] parts = new int[7];
         Calendar calendar = Calendar.getInstance();

@@ -30,7 +30,7 @@ public class NamedMatrix implements Serializable, Cloneable {
     public NamedMatrix(Complex[][] matrix, double[] columns, double[] rows) {
         this.matrix = matrix;
         this.rows = rows != null ? rows : Maths.dtimes(0.0, matrix.length == 0 ? 0 : matrix.length - 1, matrix.length);
-        this.columns = columns != null ? columns : Maths.dtimes(0.0, matrix.length==0?0:(matrix[0].length - 1), matrix.length==0?0:(matrix[0].length));
+        this.columns = columns != null ? columns : Maths.dtimes(0.0, matrix.length == 0 ? 0 : (matrix[0].length - 1), matrix.length == 0 ? 0 : (matrix[0].length));
     }
 
     public double[] getColumns() {
@@ -122,52 +122,52 @@ public class NamedMatrix implements Serializable, Cloneable {
         }
     }
 
-    public NamedMatrix appendRows(NamedMatrix other,String firstTitlePrefix,String seconTitlePrefix) {
+    public NamedMatrix appendRows(NamedMatrix other, String firstTitlePrefix, String seconTitlePrefix) {
         Complex[][] matrix = new Complex[this.matrix.length + other.matrix.length][];
-        String[][] cellTitles = new String[(this.cellTitles == null ? 0 : this.cellTitles.length) + (other.cellTitles==null?0:other.cellTitles.length)][];
-        String[] rowTitles = new String[(this.rowTitles==null?0:this.rowTitles.length) + (other.rowTitles==null?0:other.rowTitles.length)];
+        String[][] cellTitles = new String[(this.cellTitles == null ? 0 : this.cellTitles.length) + (other.cellTitles == null ? 0 : other.cellTitles.length)][];
+        String[] rowTitles = new String[(this.rowTitles == null ? 0 : this.rowTitles.length) + (other.rowTitles == null ? 0 : other.rowTitles.length)];
         double[] rows = this.rows;
-        double[] columns = new double[(this.columns==null?0:this.columns.length) + (other.columns==null?0:other.columns.length)];
+        double[] columns = new double[(this.columns == null ? 0 : this.columns.length) + (other.columns == null ? 0 : other.columns.length)];
         String name = this.name + ", " + other.name;
-        if(this.matrix[0].length==other.matrix[0].length){
-            append(this.matrix,this.matrix.length,other.matrix,other.matrix.length,matrix);
-        }else{
-            int mm=Maths.max(this.matrix[0].length,other.matrix[0].length);
-            append(this.matrix,this.matrix.length,other.matrix,other.matrix.length,matrix);
-            for(int i=0;i<matrix.length;i++){
-                Complex[] cc=matrix[i];
-                if(cc.length<mm){
-                    Complex[] cc2=new Complex[mm];
-                    System.arraycopy(cc,0,cc2,0,cc.length);
-                    for(int j=cc.length;j<cc2.length;j++){
-                        cc2[j]=Complex.NaN;
+        if (this.matrix[0].length == other.matrix[0].length) {
+            append(this.matrix, this.matrix.length, other.matrix, other.matrix.length, matrix);
+        } else {
+            int mm = Math.max(this.matrix[0].length, other.matrix[0].length);
+            append(this.matrix, this.matrix.length, other.matrix, other.matrix.length, matrix);
+            for (int i = 0; i < matrix.length; i++) {
+                Complex[] cc = matrix[i];
+                if (cc.length < mm) {
+                    Complex[] cc2 = new Complex[mm];
+                    System.arraycopy(cc, 0, cc2, 0, cc.length);
+                    for (int j = cc.length; j < cc2.length; j++) {
+                        cc2[j] = Complex.NaN;
                     }
-                    matrix[i]=cc2;
+                    matrix[i] = cc2;
                 }
             }
         }
-        append(this.cellTitles,this.cellTitles==null?0:this.cellTitles.length,other.cellTitles,other.cellTitles==null?0:other.cellTitles.length,cellTitles);
-        if(firstTitlePrefix==null && seconTitlePrefix==null){
-            append(this.rowTitles,this.rowTitles==null?0:this.rowTitles.length,other.rowTitles,other.rowTitles==null?0:other.rowTitles.length,rowTitles);
-        }else{
+        append(this.cellTitles, this.cellTitles == null ? 0 : this.cellTitles.length, other.cellTitles, other.cellTitles == null ? 0 : other.cellTitles.length, cellTitles);
+        if (firstTitlePrefix == null && seconTitlePrefix == null) {
+            append(this.rowTitles, this.rowTitles == null ? 0 : this.rowTitles.length, other.rowTitles, other.rowTitles == null ? 0 : other.rowTitles.length, rowTitles);
+        } else {
             for (int i = 0; i < rowTitles.length; i++) {
                 int threshold = this.rowTitles == null ? 0 : this.rowTitles.length;
-                if(i< threshold){
-                    rowTitles[i]=(firstTitlePrefix==null?"":firstTitlePrefix)+ (this.rowTitles[i]==null?"":this.rowTitles[i]);
-                }else{
-                    rowTitles[i]=(seconTitlePrefix==null?"":seconTitlePrefix)+ (other.rowTitles[i-threshold]==null?"":other.rowTitles[i-threshold]);
+                if (i < threshold) {
+                    rowTitles[i] = (firstTitlePrefix == null ? "" : firstTitlePrefix) + (this.rowTitles[i] == null ? "" : this.rowTitles[i]);
+                } else {
+                    rowTitles[i] = (seconTitlePrefix == null ? "" : seconTitlePrefix) + (other.rowTitles[i - threshold] == null ? "" : other.rowTitles[i - threshold]);
                 }
             }
         }
-        append(this.columns,this.columns==null?0:this.columns.length,other.columns,other.columns==null?0:other.columns.length,columns);
+        append(this.columns, this.columns == null ? 0 : this.columns.length, other.columns, other.columns == null ? 0 : other.columns.length, columns);
         return new NamedMatrix(matrix, columns, rows).setCellTitles(cellTitles).setName(name).setRowTitles(rowTitles);
     }
 
     private static void append(Object src1, int len1, Object src2, int len2, Object dest) {
         if (src1 != null) {
             System.arraycopy(src1, 0, dest, 0, len1);
-        }else{
-            len1=0;
+        } else {
+            len1 = 0;
         }
         if (src2 != null) {
             System.arraycopy(src2, 0, dest, len1, len2);

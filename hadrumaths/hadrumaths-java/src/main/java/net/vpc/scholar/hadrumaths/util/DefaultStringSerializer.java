@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class DefaultStringSerializer implements StringSerializer {
 
-    public static final StringSerializer[] BASE_SERIALIZERS = {IdStringSerializer.INSTANCE, SimpleStringSerializer.INSTANCE,Base64StringSerializer.INSTANCE};
+    public static final StringSerializer[] BASE_SERIALIZERS = {IdStringSerializer.INSTANCE, SimpleStringSerializer.INSTANCE, Base64StringSerializer.INSTANCE};
 
     @Override
     public boolean acceptDeserialize(String value) {

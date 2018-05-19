@@ -3,13 +3,13 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
 
 import java.util.*;
 
 public abstract class AbstractExpBase implements Expr {
     private static final long serialVersionUID = 1L;
+
     @Override
     public Integer getIntProperty(String name) {
         Number property = (Number) getProperty(name);
@@ -45,27 +45,27 @@ public abstract class AbstractExpBase implements Expr {
 
     @Override
     public Expr setProperties(Map<String, Object> map) {
-        return setProperties(map,false);
+        return setProperties(map, false);
     }
 
     @Override
     public Expr setMergedProperties(Map<String, Object> map) {
-        return setProperties(map,true);
+        return setProperties(map, true);
     }
 
     @Override
-    public Expr setProperties(Map<String, Object> map,boolean merge) {
-        if(map==null||map.isEmpty()){
+    public Expr setProperties(Map<String, Object> map, boolean merge) {
+        if (map == null || map.isEmpty()) {
             return this;
         }
-        return new Any(this,null,map);
+        return new Any(this, null, map);
     }
 
     @Override
     public Expr setProperty(String name, Object value) {
         HashMap<String, Object> m = new HashMap<>(1);
         m.put(name, value);
-        return setProperties(m,true);
+        return setProperties(m, true);
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractExpBase implements Expr {
     @Override
     public Expr setTitle(String name) {
         if (name != null) {
-            return new Any(this,name,null);
+            return new Any(this, name, null);
         } else {
             return this;
         }
@@ -167,7 +167,7 @@ public abstract class AbstractExpBase implements Expr {
     }
 
     public final Expr mul(int other) {
-        return mul((double)other);
+        return mul((double) other);
     }
 
 //    public Expr mul(double other) {
@@ -175,19 +175,19 @@ public abstract class AbstractExpBase implements Expr {
 //    }
 
     public Expr mul(Expr other) {
-        if(other instanceof Domain) {
+        if (other instanceof Domain) {
             return mul((Domain) other);
         }
-        if(other.isDouble()) {
+        if (other.isDouble()) {
             return mul(other.toDouble());
         }
-        if(other.isDoubleExpr()) {
+        if (other.isDoubleExpr()) {
             return mul(other.toDouble()).mul(other.getDomain());
         }
-        if(other.isComplex()) {
+        if (other.isComplex()) {
             return mul(other.toComplex());
         }
-        if(other.isComplexExpr()) {
+        if (other.isComplexExpr()) {
             return mul(other.toComplex()).mul(other.getDomain());
         }
         return Maths.mul(this, other);
@@ -261,38 +261,38 @@ public abstract class AbstractExpBase implements Expr {
 
     @Override
     public Expr mul(Domain domain) {
-        if(domain.isUnconstrained()){
+        if (domain.isUnconstrained()) {
             return this;
         }
-        return Maths.mul(domain,this);
+        return Maths.mul(domain, this);
     }
 
     @Override
     public Expr mul(double other) {
-        return Maths.mul(DoubleValue.valueOf(other),this);
+        return Maths.mul(DoubleValue.valueOf(other), this);
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isDouble()) {
+        if (other.isDouble()) {
             return mul(other.getReal());
         }
-        return Maths.mul(other,this);
+        return Maths.mul(other, this);
     }
 
     @Override
     public Set<ParamExpr> getParams() {
-        Set<ParamExpr> s=null;
+        Set<ParamExpr> s = null;
         for (Expr expr : getSubExpressions()) {
             Set<ParamExpr> p = expr.getParams();
-            if(!p.isEmpty()){
-                if(s==null){
-                    s=new HashSet<>();
+            if (!p.isEmpty()) {
+                if (s == null) {
+                    s = new HashSet<>();
                 }
                 s.addAll(p);
             }
         }
-        return s==null?Collections.EMPTY_SET:s;
+        return s == null ? Collections.EMPTY_SET : s;
     }
 
 }

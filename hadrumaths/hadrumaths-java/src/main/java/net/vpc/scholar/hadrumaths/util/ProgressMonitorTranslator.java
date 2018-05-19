@@ -29,7 +29,7 @@ public class ProgressMonitorTranslator extends AbstractEnhancedProgressMonitor {
     @Override
     public void setProgressImpl(double progress, ProgressMessage message) {
         this.message = message;
-        double translatedProgress = Double.isNaN(progress)?progress:(progress * factor + start);
+        double translatedProgress = Double.isNaN(progress) ? progress : (progress * factor + start);
 //        double translatedProgress = (progress-start)/factor;
         if (!Double.isNaN(progress) && (translatedProgress < 0 || translatedProgress > 1)) {
             if (translatedProgress > 1 && translatedProgress < 1.1) {

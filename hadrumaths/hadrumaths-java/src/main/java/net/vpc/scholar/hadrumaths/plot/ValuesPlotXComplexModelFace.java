@@ -16,7 +16,7 @@ public class ValuesPlotXComplexModelFace {
     private String[] ytitles;
 
     public ValuesPlotXComplexModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
-        this.title=model.getTitle();
+        this.title = model.getTitle();
 
         double[][] xAxis = model.getX();
         Complex[][] yAxis = model.getZ();
@@ -25,37 +25,37 @@ public class ValuesPlotXComplexModelFace {
         List<double[]> xAxisList = new ArrayList<>();
         List<Complex[]> yAxisList = new ArrayList<>();
         List<String> yTitleList = new ArrayList<>();
-        if(plotConfig==null){
+        if (plotConfig == null) {
             plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig=PlotConfig.copy(plotConfig).validate(model.getZ().length);
+            plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
         }
-        if(yAxis==null){
+        if (yAxis == null) {
             //do nothing
-        }else{
-            double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
-            if(xAxis==null){
+        } else {
+            double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+            if (xAxis == null) {
                 for (int i = 0; i < yAxis.length; i++) {
-                    if(model.getYVisible(i)){
+                    if (model.getYVisible(i)) {
                         initialIndexesList.add(i);
-                        double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
-                        double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1,yAxis[i].length),xmultiplier));
-                        yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
+                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length), xmultiplier));
+                        yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                     }
                 }
-            }else {
+            } else {
                 for (int i = 0; i < yAxis.length; i++) {
-                    if(model.getYVisible(i)) {
+                    if (model.getYVisible(i)) {
                         initialIndexesList.add(i);
-                        double xmultiplier=plotConfig.getXMultiplierAt(i,1)*defaultXMultiplier;
-                        double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-                        yAxisList.add(PlotModelUtils.mul(yAxis[i],ymultiplier));
+                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
-                        if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length<yAxis[i].length) {
+                        if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
                                 boolean ok = false;
-                                for (int j = Maths.min(i - 1,xAxis.length-1); j >= 0; j--) {
+                                for (int j = Math.min(i - 1, xAxis.length - 1); j >= 0; j--) {
                                     if (xAxis[j] != null && yAxis[i].length == xAxis[j].length) {
                                         ok = true;
                                         xAxisList.add(PlotModelUtils.mul(xAxis[j], xmultiplier));
@@ -64,11 +64,12 @@ public class ValuesPlotXComplexModelFace {
                                 }
                                 if (!ok) {
                                     xAxisList.add(PlotModelUtils.mul(Maths.dsteps(1, yAxis[i].length), xmultiplier));
-                                }                            } else {
+                                }
+                            } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
                             }
-                        }else{
-                            xAxisList.add(PlotModelUtils.mul(xAxis[i],xmultiplier));
+                        } else {
+                            xAxisList.add(PlotModelUtils.mul(xAxis[i], xmultiplier));
                         }
                     }
                 }
@@ -79,12 +80,12 @@ public class ValuesPlotXComplexModelFace {
         initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
 
         //rename titles with the same name
-        HashSet<String> visited=new HashSet<>();
+        HashSet<String> visited = new HashSet<>();
         for (int i = 0; i < yTitleList.size(); i++) {
-            String key=yTitleList.get(i);
+            String key = yTitleList.get(i);
             int keyIndex = 1;
             while (true) {
-                String kk = keyIndex==1 ? key : (key+" "+keyIndex);
+                String kk = keyIndex == 1 ? key : (key + " " + keyIndex);
                 if (!visited.contains(kk)) {
                     visited.add(kk);
                     key = kk;
@@ -93,9 +94,9 @@ public class ValuesPlotXComplexModelFace {
                 visited.add(kk);
                 keyIndex++;
             }
-            yTitleList.set(i,key);
+            yTitleList.set(i, key);
         }
-        ytitles =yTitleList.toArray(new String[yTitleList.size()]);
+        ytitles = yTitleList.toArray(new String[yTitleList.size()]);
     }
 
     //    public ValuesPlotXDoubleModelFace(double[] x, double[] y, double[][] z, String title) {
@@ -114,9 +115,10 @@ public class ValuesPlotXComplexModelFace {
         return x[series];
     }
 
-    public String getYTitle(int series){
+    public String getYTitle(int series) {
         return ytitles[series];
     }
+
     public Complex[] getY(int series) {
         return y[series];
     }
@@ -126,10 +128,10 @@ public class ValuesPlotXComplexModelFace {
     }
 
     public int getSeriesLength() {
-        int len=0;
+        int len = 0;
         for (Complex[] doubles : y) {
-            if(doubles.length>len){
-                len=doubles.length;
+            if (doubles.length > len) {
+                len = doubles.length;
             }
         }
         return len;

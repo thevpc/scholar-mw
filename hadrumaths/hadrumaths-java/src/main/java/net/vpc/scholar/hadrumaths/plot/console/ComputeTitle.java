@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import java.util.Formatter;
-import java.io.Serializable;
-
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
+
+import java.io.Serializable;
+import java.util.Formatter;
 
 public class ComputeTitle implements Serializable {
     StringBuilder sb = new StringBuilder();
     private boolean forStatic;
-    Formatter formatter=new Formatter(sb);
+    Formatter formatter = new Formatter(sb);
 
     public ComputeTitle(boolean forStatic) {
         this.forStatic = forStatic;
@@ -30,8 +30,8 @@ public class ComputeTitle implements Serializable {
                 }
                 sb.append(param.getTitle());
             }
-        }else{
-            if (param.getSize()>1) {
+        } else {
+            if (param.getSize() > 1) {
                 if (sb.length() > 0) {
                     sb.append(";");
                 }
@@ -62,30 +62,30 @@ public class ComputeTitle implements Serializable {
         }
     }
 
-    public void addFormatted(String format, double[] values, int index,Object ...otherValues) {
+    public void addFormatted(String format, double[] values, int index, Object... otherValues) {
         if (!forStatic) {
             if (values.length > 1) {
                 if (sb.length() > 0) {
                     sb.append(";");
                 }
-                Object[] all=new Object[otherValues.length+1];
-                all[0]=values[index];
-                System.arraycopy(otherValues,0,all,1,otherValues.length);
-                formatter.format(format,all);
+                Object[] all = new Object[otherValues.length + 1];
+                all[0] = values[index];
+                System.arraycopy(otherValues, 0, all, 1, otherValues.length);
+                formatter.format(format, all);
             }
         }
     }
 
-    public void addFormatted(String format, int[] values, int index,Object ...otherValues) {
+    public void addFormatted(String format, int[] values, int index, Object... otherValues) {
         if (!forStatic) {
             if (values.length > 1) {
                 if (sb.length() > 0) {
                     sb.append(";");
                 }
-                Object[] all=new Object[otherValues.length+1];
-                all[0]=values[index];
-                System.arraycopy(otherValues,0,all,1,otherValues.length);
-                formatter.format(format,all);
+                Object[] all = new Object[otherValues.length + 1];
+                all[0] = values[index];
+                System.arraycopy(otherValues, 0, all, 1, otherValues.length);
+                formatter.format(format, all);
             }
         }
     }
@@ -114,6 +114,6 @@ public class ComputeTitle implements Serializable {
 
     public String toString() {
 
-        return sb.length()==0?"":"(" + sb.toString() + ")";
+        return sb.length() == 0 ? "" : "(" + sb.toString() + ")";
     }
 }

@@ -24,8 +24,8 @@ public class ComplexArray {
         values.add(d);
     }
 
-    public void add(int pos,Complex d) {
-        values.add(pos,d);
+    public void add(int pos, Complex d) {
+        values.add(pos, d);
     }
 
     public Complex get(int index) {

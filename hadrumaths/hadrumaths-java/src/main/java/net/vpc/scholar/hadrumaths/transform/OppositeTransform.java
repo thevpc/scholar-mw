@@ -8,7 +8,6 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.scholar.hadrumaths.Axis;
 
 /**
- *
  * @author vpc
  */
 public final class OppositeTransform implements ExpressionTransform {

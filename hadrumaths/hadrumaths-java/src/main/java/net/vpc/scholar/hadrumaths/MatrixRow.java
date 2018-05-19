@@ -16,7 +16,7 @@ public class MatrixRow extends AbstractVector {
 
     @Override
     public Complex get(int i) {
-        return matrix.get(row,i);
+        return matrix.get(row, i);
     }
 
     @Override

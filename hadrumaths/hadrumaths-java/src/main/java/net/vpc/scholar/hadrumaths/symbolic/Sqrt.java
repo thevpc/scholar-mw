@@ -8,10 +8,11 @@ import net.vpc.scholar.hadrumaths.Maths;
 /**
  * Created by vpc on 4/30/14.
  */
-public class Sqrt extends GenericFunctionX implements Cloneable{
+public class Sqrt extends GenericFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Sqrt(Expr arg) {
-        super("sqrt",arg,FunctionType.COMPLEX);
+        super("sqrt", arg, FunctionType.COMPLEX);
     }
 
     @Override
@@ -19,12 +20,12 @@ public class Sqrt extends GenericFunctionX implements Cloneable{
         return "sqrt";
     }
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.sqrt();
     }
 
-    public double computeDoubleArg(double c, BooleanMarker defined){
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Maths.sqrt(c);
     }

@@ -4,19 +4,13 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.VectorRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.VectorXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleInsets;
 
 import java.awt.*;
@@ -35,13 +29,12 @@ public class PlotCanvasVectorJFreeChart extends PlotCanvasAnyComplexJFreeChart {
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
 //        ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         XYPlot categoryPlot = chart.getXYPlot();
 //        categoryPlot.setRenderer(0,prepareXYRenderer());
@@ -96,8 +89,9 @@ public class PlotCanvasVectorJFreeChart extends PlotCanvasAnyComplexJFreeChart {
         //        plot.getRenderer().
 
     }
+
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
-        VectorXYDataset data= createVectorXYDataset();
+        VectorXYDataset data = createVectorXYDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();

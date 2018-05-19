@@ -5,29 +5,29 @@
 
 package net.vpc.scholar.hadrumaths.expeval.operators;
 
-import net.vpc.scholar.hadrumaths.expeval.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.expeval.AbstractExpressionNode;
+
 import java.util.Map;
 import java.util.Stack;
-import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
-public abstract class UnaryOp extends AbstractExpressionNode{
-    
+public abstract class UnaryOp extends AbstractExpressionNode {
+
     public UnaryOp(String name) {
         super(name);
     }
 
     @Override
     public Object evaluate(Stack<Object> valuesStack, Map<String, Object> variables) {
-        Object a=valuesStack.pop();
-        Complex aa=(Complex)a;
+        Object a = valuesStack.pop();
+        Complex aa = (Complex) a;
         return evaluate(aa);
     }
-    
+
     public abstract Object evaluate(Complex a);
-    
+
 
 }

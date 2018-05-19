@@ -411,14 +411,15 @@ public final class IOUtils {
 
     public static void saveObject2(String physicalName, Object object) {
         try {
-            saveObject(physicalName,object);
+            saveObject(physicalName, object);
         } catch (IOException e) {
             e.printStackTrace();
             //ignore
         }
     }
+
     public static void saveObject(String physicalName, Object object) throws IOException {
-        physicalName=expandPath(physicalName);
+        physicalName = expandPath(physicalName);
         ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(new FileOutputStream(physicalName));
@@ -430,20 +431,20 @@ public final class IOUtils {
     }
 
     public static Object loadObject2(String physicalName) {
-        physicalName=expandPath(physicalName);
-        try{
-            File f=new File(physicalName);
-            if(f.isFile()){
+        physicalName = expandPath(physicalName);
+        try {
+            File f = new File(physicalName);
+            if (f.isFile()) {
                 return loadObject(physicalName);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
     public static Object loadObject(String physicalName) throws IOException, ClassNotFoundException {
-        physicalName=expandPath(physicalName);
+        physicalName = expandPath(physicalName);
         ObjectInputStream ois = null;
         try {
             ois = new ObjectInputStream(new FileInputStream(physicalName));
@@ -481,7 +482,7 @@ public final class IOUtils {
     }
 
     public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws IOException {
-        physicalName=expandPath(physicalName);
+        physicalName = expandPath(physicalName);
         String physicalNameTemp = physicalName + WRITE_TEMP_EXT;
         if (monitor == null) {
             ObjectOutputStream oos = null;
@@ -618,8 +619,8 @@ public final class IOUtils {
 
     public static String getArtifactVersion(String groupId, String artifactId) throws IOException {
         URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties");
-        if(url==null){
-            throw new IOException("Not Such artifact : "+groupId + ":" + artifactId);
+        if (url == null) {
+            throw new IOException("Not Such artifact : " + groupId + ":" + artifactId);
         }
         Properties p = new Properties();
         p.load(url.openStream());
@@ -637,7 +638,7 @@ public final class IOUtils {
                 //
             }
             String version = p.getProperty("version");
-            if(!StringUtils.isEmpty(version)) {
+            if (!StringUtils.isEmpty(version)) {
                 return version;
             }
         }

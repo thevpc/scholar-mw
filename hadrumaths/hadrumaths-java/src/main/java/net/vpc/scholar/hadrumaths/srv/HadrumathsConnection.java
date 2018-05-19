@@ -2,7 +2,10 @@ package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.RuntimeIOException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 

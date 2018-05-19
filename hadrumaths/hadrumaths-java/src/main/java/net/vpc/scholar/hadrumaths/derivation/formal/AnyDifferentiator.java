@@ -13,6 +13,6 @@ import net.vpc.scholar.hadrumaths.symbolic.Any;
 public class AnyDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Any c = (Any) f;
-        return d.derive(c.getObject(),varIndex);
+        return d.derive(c.getObject(), varIndex);
     }
 }

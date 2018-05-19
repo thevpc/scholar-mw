@@ -1,15 +1,10 @@
 package net.vpc.scholar.hadrumaths.interop.matlab;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.interop.matlab.impl.*;
+import net.vpc.scholar.hadrumaths.interop.matlab.params.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
-import net.vpc.scholar.hadrumaths.AbstractFactory;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.interop.matlab.impl.PlusExprToMatlabString;
-import net.vpc.scholar.hadrumaths.interop.matlab.params.*;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -30,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class MatlabFactory extends AbstractFactory {
 
-    private static final ClassMap<ToMatlabString> map = new ClassMap<ToMatlabString>(Object.class, ToMatlabString.class,12);
+    private static final ClassMap<ToMatlabString> map = new ClassMap<ToMatlabString>(Object.class, ToMatlabString.class, 12);
 
     static {
         register(Matrix.class, new MatrixToMatlabString());

@@ -5,14 +5,13 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class DiscreteNavRule implements ExpressionRewriterRule {
@@ -28,6 +27,7 @@ public class DiscreteNavRule implements ExpressionRewriterRule {
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -35,7 +35,7 @@ public class DiscreteNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

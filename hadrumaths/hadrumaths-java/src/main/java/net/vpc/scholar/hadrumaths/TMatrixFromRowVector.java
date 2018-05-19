@@ -9,8 +9,8 @@ public class TMatrixFromRowVector<T> extends AbstractTMatrix<T> {
 
     public TMatrixFromRowVector(TVector<T> vector) {
         this.vector = vector;
-        if(!vector.isRow()){
-           throw new IllegalArgumentException("Expected Row Vector");
+        if (!vector.isRow()) {
+            throw new IllegalArgumentException("Expected Row Vector");
         }
     }
 
@@ -21,7 +21,7 @@ public class TMatrixFromRowVector<T> extends AbstractTMatrix<T> {
 
     @Override
     public void set(int row, int col, T val) {
-        vector.set(col,val);
+        vector.set(col, val);
     }
 
     @Override

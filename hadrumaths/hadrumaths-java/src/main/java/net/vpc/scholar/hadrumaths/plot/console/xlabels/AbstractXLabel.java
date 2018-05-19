@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.plot.console.xlabels;
  * Time: 15:52:33
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractXLabel implements XLabel{
+public abstract class AbstractXLabel implements XLabel {
 
     public AbstractXLabel() {
     }

@@ -9,8 +9,10 @@ import net.vpc.scholar.hadrumaths.format.FormatParam;
  * Time: 12:26:42
  * To change this template use File | Settings | File Templates.
  */
-public class ScalarProductFormat implements FormatParam{
-    public static enum Type{DBLQUAD,INT};
+public class ScalarProductFormat implements FormatParam {
+    public static enum Type {DBLQUAD, INT}
+
+    ;
     private Type type;
 
     public ScalarProductFormat(Type type) {

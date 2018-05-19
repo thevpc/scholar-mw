@@ -2,12 +2,14 @@ package net.vpc.scholar.hadrumaths.integration.formal;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToCosXCosYRule;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToDDxyLinearRule;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
@@ -27,8 +29,9 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
 
     private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("OPTIMIZE_SP");
     private FormalScalarProductOperator formalOperator;
+
     public FormalIntegrationOperator(FormalScalarProductOperator formalOperator) {
-        this.formalOperator=formalOperator;
+        this.formalOperator = formalOperator;
         expressionRewriter.clear();
         ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
         for (ExpressionRewriterRule r : ExpressionRewriterFactory.NAVIGATION_RULES) {

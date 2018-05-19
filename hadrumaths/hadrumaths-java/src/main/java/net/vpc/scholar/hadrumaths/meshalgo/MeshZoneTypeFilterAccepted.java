@@ -5,17 +5,17 @@
 
 package net.vpc.scholar.hadrumaths.meshalgo;
 
-import java.util.Arrays;
-import java.util.TreeSet;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
+import java.util.Arrays;
+import java.util.TreeSet;
+
 /**
- *
  * @author vpc
  */
-public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter{
-    private TreeSet<MeshZoneType> accepted=new TreeSet<MeshZoneType>();
-    
+public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter {
+    private TreeSet<MeshZoneType> accepted = new TreeSet<MeshZoneType>();
+
     public MeshZoneTypeFilterAccepted(MeshZoneType... all) {
         accepted.addAll(Arrays.asList(all));
     }
@@ -24,9 +24,9 @@ public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter{
     public boolean accept(MeshZoneType type) {
         return accepted.contains(type);
     }
-    
-    public Dumper getDumpStringHelper(){
-        Dumper h=new Dumper(this);
+
+    public Dumper getDumpStringHelper() {
+        Dumper h = new Dumper(this);
         h.add("accepted", accepted);
         return h;
     }
@@ -62,7 +62,6 @@ public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter{
     public String toString() {
         return dump();
     }
-    
-    
-    
+
+
 }

@@ -8,10 +8,9 @@ package net.vpc.scholar.hadrumaths.expeval.operators;
 import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
-public class OpDivide extends BinaryOp{
+public class OpDivide extends BinaryOp {
 
     public OpDivide() {
         super("/");
@@ -22,6 +21,5 @@ public class OpDivide extends BinaryOp{
         return aa.div(bb);
     }
 
-    
 
 }

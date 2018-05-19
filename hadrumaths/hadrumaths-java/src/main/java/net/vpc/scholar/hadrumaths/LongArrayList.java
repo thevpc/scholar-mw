@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class LongArrayList extends AbstractTList<Long> implements LongList{
+public class LongArrayList extends AbstractTList<Long> implements LongList {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final long[] ZERO_ELEMENTS = new long[0];
@@ -18,7 +18,7 @@ public class LongArrayList extends AbstractTList<Long> implements LongList{
     }
 
     public LongArrayList(int initialSize) {
-        this(false,initialSize);
+        this(false, initialSize);
     }
 
     public LongArrayList(boolean row, int initialSize) {
@@ -28,37 +28,37 @@ public class LongArrayList extends AbstractTList<Long> implements LongList{
         } else if (initialSize == 0) {
             this.elementData = ZERO_ELEMENTS;
         } else {
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialSize);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
     }
 
     public long[] toLongArray() {
-        if(size==0){
+        if (size == 0) {
             return ZERO_ELEMENTS;
         }
-        long[] ret=new long[size];
-        System.arraycopy(elementData,0,ret,0,size);
+        long[] ret = new long[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
         return ret;
     }
 
     public Long sum() {
-        if(size==0){
+        if (size == 0) {
             return 0L;
         }
-        long d=elementData[0];
+        long d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d+=elementData[i];
+            d += elementData[i];
         }
         return d;
     }
 
     public Long prod() {
-        if(size==0){
+        if (size == 0) {
             return 0L;
         }
-        long d=elementData[0];
+        long d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d*=elementData[i];
+            d *= elementData[i];
         }
         return d;
     }
@@ -91,12 +91,12 @@ public class LongArrayList extends AbstractTList<Long> implements LongList{
     @Override
     public void appendAll(TVector<Long> e) {
         int esize = e.size();
-        if(e instanceof LongArrayList){
+        if (e instanceof LongArrayList) {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             LongArrayList e0 = (LongArrayList) e;
-            System.arraycopy(e0.elementData,0,elementData, this.size, esize);
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
             this.size += esize;
-        }else{
+        } else {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             for (Long a : e) {
                 elementData[this.size++] = a;
@@ -114,7 +114,7 @@ public class LongArrayList extends AbstractTList<Long> implements LongList{
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);
@@ -172,16 +172,16 @@ public class LongArrayList extends AbstractTList<Long> implements LongList{
         }
     }
 
-    public static class LongReadOnlyList extends ReadOnlyTList<Long> implements LongList{
+    public static class LongReadOnlyList extends ReadOnlyTList<Long> implements LongList {
         public LongReadOnlyList(boolean row, TVectorModel<Long> model) {
             super(Maths.$LONG, row, model);
         }
 
         @Override
         public long[] toLongArray() {
-            long[] d=new long[size()];
+            long[] d = new long[size()];
             for (int i = 0; i < d.length; i++) {
-                d[i]=get(i);
+                d[i] = get(i);
             }
             return d;
         }

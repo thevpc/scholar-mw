@@ -1,26 +1,27 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Expr;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA.
-* User: vpc
-* Date: 29 juil. 2005
-* Time: 20:33:56
-* To change this template use File | Settings | File Templates.
-*/
-public class DDy extends AbstractDoubleToDouble implements Cloneable{
+ * Created by IntelliJ IDEA.
+ * User: vpc
+ * Date: 29 juil. 2005
+ * Time: 20:33:56
+ * To change this template use File | Settings | File Templates.
+ */
+public class DDy extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
     DoubleToDouble base;
     double defaultX;
     double defaultZ;
 
-    public DDy(DoubleToDouble base, double defaultX,double defaultZ) {
+    public DDy(DoubleToDouble base, double defaultX, double defaultZ) {
         super(Domain.forBounds(base.getDomain().ymin(), base.getDomain().ymax()));
         this.base = base;
         this.defaultZ = defaultZ;
@@ -42,17 +43,17 @@ public class DDy extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, BooleanMarker defined) {
-        return base.computeDouble(defaultX,x,defaultZ,defined);
+        return base.computeDouble(defaultX, x, defaultZ, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
-        return base.computeDouble(defaultX,x,defaultZ,defined);
+        return base.computeDouble(defaultX, x, defaultZ, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
-        return base.computeDouble(defaultX,x,defaultZ,defined);
+        return base.computeDouble(defaultX, x, defaultZ, defined);
     }
 
     public boolean isInvariantImpl(Axis axis) {
@@ -121,9 +122,9 @@ public class DDy extends AbstractDoubleToDouble implements Cloneable{
     public Expr setParam(String name, Expr value) {
         DoubleToDouble base = (DoubleToDouble) this.base.setParam(name, value);
         if (base != this.base) {
-            Expr e = new DDy(base, defaultX,defaultZ);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            Expr e = new DDy(base, defaultX, defaultZ);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }

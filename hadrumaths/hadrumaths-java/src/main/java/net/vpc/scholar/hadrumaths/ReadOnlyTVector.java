@@ -4,6 +4,7 @@ public class ReadOnlyTVector<T> extends AbstractTVector<T> {
     private static final long serialVersionUID = 1L;
     private TVectorModel<T> model;
     private TypeReference<T> componentType;
+
     public ReadOnlyTVector(TypeReference<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.model = model;
@@ -11,7 +12,7 @@ public class ReadOnlyTVector<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType(){
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 

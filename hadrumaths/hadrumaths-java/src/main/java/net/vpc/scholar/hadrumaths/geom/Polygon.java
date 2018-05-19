@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.geom.Path2D;
 import java.util.*;
@@ -306,7 +305,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
 
     @Override
     public Geometry translateGeometry(double x, double y) {
-        return translate(Point.create(x,y));
+        return translate(Point.create(x, y));
     }
 
     public Polygon translate(Point v) {

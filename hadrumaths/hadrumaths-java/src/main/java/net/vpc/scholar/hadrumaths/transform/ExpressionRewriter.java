@@ -8,20 +8,25 @@ package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
 
-import java.util.List;
-
 /**
- *
  * @author vpc
  */
 public interface ExpressionRewriter {
     RewriteResult rewrite(Expr e);
+
     Expr rewriteOrSame(Expr e);
+
     Expr rewriteOrNull(Expr e);
-    ExprRewriteListener[] getRewriteListeners() ;
-    ExpressionRewriter addRewriteListener(ExprRewriteListener listener) ;
+
+    ExprRewriteListener[] getRewriteListeners();
+
+    ExpressionRewriter addRewriteListener(ExprRewriteListener listener);
+
     ExpressionRewriter removeRewriteListener(ExprRewriteListener listener);
-    ExprRewriteFailListener[] getRewriteFailListeners() ;
-    ExpressionRewriter addRewriteFailListener(ExprRewriteFailListener listener) ;
+
+    ExprRewriteFailListener[] getRewriteFailListeners();
+
+    ExpressionRewriter addRewriteFailListener(ExprRewriteFailListener listener);
+
     ExpressionRewriter removeRewriteFailListener(ExprRewriteFailListener listener);
 }

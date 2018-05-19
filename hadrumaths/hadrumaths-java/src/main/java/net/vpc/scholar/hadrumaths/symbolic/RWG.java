@@ -2,9 +2,6 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.*;
-import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
-import net.vpc.scholar.hadrumaths.geom.Triangle;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ import java.util.List;
  * Date: 2 juil. 2003
  * Time: 14:29:58
  */
-public final class RWG extends AbstractDoubleToDouble implements Cloneable{
+public final class RWG extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
 //    public static final DCstFunctionXY ZERO = new DCstFunctionXY(0, DomainXY.EMPTY);
 
@@ -34,10 +31,10 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
             System.out.println(GeomUtils.toString(polygon.getPath()));
             List<Point> points = polygon.getPoints();
             GeomUtils.is4Edges(polygon);
-            AreaComponent.showDialog("Not an RWG polygon", DomainScaleTool.rescale(polygon,400,400));
+            AreaComponent.showDialog("Not an RWG polygon", DomainScaleTool.rescale(polygon, 400, 400));
             throw new IllegalArgumentException("Not an RWG polygon");
         }
-        FinalInfo i=init(max,
+        FinalInfo i = init(max,
                 new Polygon(
                         new double[]{polygon.xpoints[0], polygon.xpoints[1], polygon.xpoints[3]},
                         new double[]{polygon.ypoints[0], polygon.ypoints[1], polygon.ypoints[3]}
@@ -46,40 +43,40 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
                         new double[]{polygon.xpoints[2], polygon.xpoints[1], polygon.xpoints[3]},
                         new double[]{polygon.ypoints[2], polygon.ypoints[1], polygon.ypoints[3]}
                 ));
-        this.max=i.max;
-        this.tr1=i.tr1;
-        this.tr2=i.tr2;
-        this.polygon1=i.polygon1;
-        this.polygon2=i.polygon2;
-        this.domain=i.domain;
+        this.max = i.max;
+        this.tr1 = i.tr1;
+        this.tr2 = i.tr2;
+        this.polygon1 = i.polygon1;
+        this.polygon2 = i.polygon2;
+        this.domain = i.domain;
     }
 
     public RWG(double max, Polygon triange1, Polygon triange2) {
         super(null);
-        FinalInfo i=init(max, triange1, triange2);
-        this.domain=i.domain;
-        this.max=i.max;
-        this.tr1=i.tr1;
-        this.tr2=i.tr2;
-        this.polygon1=i.polygon1;
-        this.polygon2=i.polygon2;
+        FinalInfo i = init(max, triange1, triange2);
+        this.domain = i.domain;
+        this.max = i.max;
+        this.tr1 = i.tr1;
+        this.tr2 = i.tr2;
+        this.polygon1 = i.polygon1;
+        this.polygon2 = i.polygon2;
     }
 
-    private RWG(double max,Domain domain,
-            Polygon polygon1,
-            Polygon polygon2,
-            Triangle tr1,
-            Triangle tr2) {
+    private RWG(double max, Domain domain,
+                Polygon polygon1,
+                Polygon polygon2,
+                Triangle tr1,
+                Triangle tr2) {
         super(null);
-        this.domain=domain;
-        this.max=max;
-        this.tr1=tr1;
-        this.tr2=tr2;
-        this.polygon1=polygon1;
-        this.polygon2=polygon2;
+        this.domain = domain;
+        this.max = max;
+        this.tr1 = tr1;
+        this.tr2 = tr2;
+        this.polygon1 = polygon1;
+        this.polygon2 = polygon2;
     }
-    
-    private class FinalInfo{
+
+    private class FinalInfo {
         Triangle tr1;
         Triangle tr2;
         Polygon polygon1;
@@ -89,13 +86,13 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
     }
 
     private FinalInfo init(double max, Polygon triangle1, Polygon triangle2) {
-        FinalInfo i=new FinalInfo();
+        FinalInfo i = new FinalInfo();
         i.max = max;
         i.domain = max == 0 ? Domain.EMPTYXY : triangle1.getDomain().expand(triangle2.getDomain());
 //        name=("RWGFunctionXY");
         if (triangle1.isTriangular() && triangle2.isTriangular()) {
-            i.polygon1=triangle1;
-            i.polygon2=triangle2;
+            i.polygon1 = triangle1;
+            i.polygon2 = triangle2;
             Triangle t1 = triangle1.toTriangle();
             Triangle t2 = triangle1.toTriangle();
             int x, y;
@@ -141,13 +138,13 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
             }
             d2 = p.distance(i) / c.distance(i) * max;
         }
-        return Maths.min(d1, d2) * max;
+        return Math.min(d1, d2) * max;
 
     }
 
     @Override
     public boolean contains(double x) {
-       throw new IllegalArgumentException("Missing Y");
+        throw new IllegalArgumentException("Missing Y");
     }
 
     @Override
@@ -232,7 +229,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
-        return max==0;
+        return max == 0;
     }
 
     @Override
@@ -289,7 +286,7 @@ public final class RWG extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public Expr mul(double other) {
-        return new RWG(max*other,domain,polygon1,polygon2,tr1,tr2);
+        return new RWG(max * other, domain, polygon1, polygon2, tr1, tr2);
     }
 
 //    @Override

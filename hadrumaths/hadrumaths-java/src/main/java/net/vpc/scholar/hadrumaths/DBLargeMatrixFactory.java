@@ -82,10 +82,10 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
     public DBLargeMatrixFactory(String id) {
         super();
         DBLargeMatrixId d = DBLargeMatrixId.parse(id);
-        if(d==null){
+        if (d == null) {
             throw new IllegalArgumentException("Invalid Id");
         }
-        init(id,d.isSparse(),d.getDefaultValue());
+        init(id, d.isSparse(), d.getDefaultValue());
         this.connection = createConnection(d);
         prepare();
         log.log(Level.FINE, "Create " + (d.isSparse() ? " Sparse (" + d.getDefaultValue() + ") " : "") + " Large Matrix Factory to " + d);
@@ -115,43 +115,44 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
 //        }
 //    }
 
-    public static String createId(String id){
+    public static String createId(String id) {
         DBLargeMatrixId id2 = DBLargeMatrixId.parse(id);
-        if(id2==null){
+        if (id2 == null) {
             return null;
         }
         return id2.toString();
     }
 
-    public static String createLocalId(String storeFolder, boolean sparse, Complex defaultValue){
-        return createLocalId(storeFolder,"hadrumaths","hadrumaths",sparse,defaultValue);
+    public static String createLocalId(String storeFolder, boolean sparse, Complex defaultValue) {
+        return createLocalId(storeFolder, "hadrumaths", "hadrumaths", sparse, defaultValue);
     }
 
-    public static String createLocalId(String storeFolder, String login, String password, boolean sparse, Complex defaultValue){
+    public static String createLocalId(String storeFolder, String login, String password, boolean sparse, Complex defaultValue) {
         return new DBLargeMatrixId(
                 "derby",
-                login,password,
+                login, password,
                 "org.apache.derby.jdbc.ClientDriver",
-                "jdbc:derby:" + storeFolder + ";create=true;user="+login+";password="+password,
-                sparse,defaultValue
-        ).toString();
-    }
-    public static String createRemoteId(String server, String name, String login, String password,boolean sparse,Complex defaultValue){
-        return new DBLargeMatrixId(
-                "derbynet",
-                login,password,"org.apache.derby.jdbc.ClientDriver",
-                "jdbc:derby://" + server + "/" + name,
-                sparse,defaultValue
+                "jdbc:derby:" + storeFolder + ";create=true;user=" + login + ";password=" + password,
+                sparse, defaultValue
         ).toString();
     }
 
-    private static Connection createConnection(DBLargeMatrixId id){
+    public static String createRemoteId(String server, String name, String login, String password, boolean sparse, Complex defaultValue) {
+        return new DBLargeMatrixId(
+                "derbynet",
+                login, password, "org.apache.derby.jdbc.ClientDriver",
+                "jdbc:derby://" + server + "/" + name,
+                sparse, defaultValue
+        ).toString();
+    }
+
+    private static Connection createConnection(DBLargeMatrixId id) {
         try {
-            if(id.getDriver().length()>0) {
+            if (id.getDriver().length() > 0) {
                 Class.forName(id.getDriver());
-            }else if(id.getType().equals("derbynet")){
+            } else if (id.getType().equals("derbynet")) {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
-            }else if(id.getType().equals("derby")){
+            } else if (id.getType().equals("derby")) {
                 Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             }
             String url = Maths.Config.replaceVars(id.getUrl());
@@ -281,7 +282,7 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
             }
             rs.close();
             ps.close();
-            if(cachedPreparedStatements!=null) {
+            if (cachedPreparedStatements != null) {
                 cachedPreparedStatements.clear();
             }
         } catch (SQLException e) {
@@ -480,8 +481,8 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
     }
 
     private PreparedStatement preparedStatement(String sql) throws SQLException {
-        if(cachedPreparedStatements==null){
-            cachedPreparedStatements=new HashMap<String, PreparedStatement>();
+        if (cachedPreparedStatements == null) {
+            cachedPreparedStatements = new HashMap<String, PreparedStatement>();
         }
         PreparedStatement preparedStatement = cachedPreparedStatements.get(sql);
         if (preparedStatement == null) {

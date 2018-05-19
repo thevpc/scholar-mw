@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.geom;
 
 import java.io.Serializable;
 
-public class IntPoint implements Serializable,Cloneable {
+public class IntPoint implements Serializable, Cloneable {
     private static final long serialVersionUID = -1010101010101001002L;
     /**
      * Created by IntelliJ IDEA.
@@ -11,8 +11,9 @@ public class IntPoint implements Serializable,Cloneable {
      * Time: 01:52:38
      * To change this template use File | Settings | File Templates.
      */
-        public final int x,y,z;
-        public final int dimension;
+    public final int x, y, z;
+    public final int dimension;
+
     public IntPoint(int x, int y) {
         this.x = x;
         this.y = y;
@@ -41,7 +42,7 @@ public class IntPoint implements Serializable,Cloneable {
         this.dimension = dim;
     }
 
-    public IntPoint clone(){
+    public IntPoint clone() {
         try {
             return (IntPoint) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -50,34 +51,34 @@ public class IntPoint implements Serializable,Cloneable {
     }
 
     public boolean equals(Object obj) {
-        if(obj ==null || !(obj instanceof IntPoint)){
+        if (obj == null || !(obj instanceof IntPoint)) {
             return false;
         }
-        IntPoint p=(IntPoint) obj;
-        return x==p.x && y==p.y && z==p.z && dimension==p.dimension;
+        IntPoint p = (IntPoint) obj;
+        return x == p.x && y == p.y && z == p.z && dimension == p.dimension;
     }
 
     public String toString() {
-        switch (dimension){
-            case 1:{
-                return "("+x+")";
+        switch (dimension) {
+            case 1: {
+                return "(" + x + ")";
             }
-            case 2:{
-                return "("+x+","+y+")";
+            case 2: {
+                return "(" + x + "," + y + ")";
             }
         }
-        return "("+x+","+y+","+z+")";
+        return "(" + x + "," + y + "," + z + ")";
     }
 
-    public static IntPoint create(int x){
-        return new IntPoint(x,0,0,1);
+    public static IntPoint create(int x) {
+        return new IntPoint(x, 0, 0, 1);
     }
 
-    public static IntPoint create(int x,int y){
-        return new IntPoint(x,y,0,2);
+    public static IntPoint create(int x, int y) {
+        return new IntPoint(x, y, 0, 2);
     }
 
-    public static IntPoint create(int x,int y,int z){
-        return new IntPoint(x,y,z,3);
+    public static IntPoint create(int x, int y, int z) {
+        return new IntPoint(x, y, z, 3);
     }
 }

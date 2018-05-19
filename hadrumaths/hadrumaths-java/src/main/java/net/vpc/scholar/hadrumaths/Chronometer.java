@@ -33,13 +33,13 @@ public class Chronometer {
     }
 
     public Chronometer(boolean start) {
-        if(start){
+        if (start) {
             start();
         }
     }
 
-    public Chronometer copy(){
-        Chronometer c=new Chronometer();
+    public Chronometer copy() {
+        Chronometer c = new Chronometer();
         c.name = name;
         c.endDate = endDate;
         c.startDate = startDate;
@@ -48,9 +48,10 @@ public class Chronometer {
 
     /**
      * restart chronometer and returns a stopped snapshot/copy of the current
+     *
      * @return
      */
-    public Chronometer restart(){
+    public Chronometer restart() {
         stop();
         Chronometer c = copy();
         start();
@@ -59,10 +60,11 @@ public class Chronometer {
 
     /**
      * restart chronometer with new name and returns a stopped snapshot/copy of the current (with old name)
+     *
      * @param newName
      * @return
      */
-    public Chronometer restart(String newName){
+    public Chronometer restart(String newName) {
         stop();
         Chronometer c = copy();
         setName(newName);
@@ -79,6 +81,7 @@ public class Chronometer {
         this.name = desc;
         return this;
     }
+
     public Chronometer updateDescription(String desc) {
         setName(desc);
         return this;
@@ -116,26 +119,26 @@ public class Chronometer {
     }
 
     public long getTime() {
-        return startDate==0?0:((endDate <= 0) ? System.nanoTime() : endDate) - startDate;
+        return startDate == 0 ? 0 : ((endDate <= 0) ? System.nanoTime() : endDate) - startDate;
     }
 
     public int getMilliSeconds() {
-        long period=getTime()/1000000;
+        long period = getTime() / 1000000;
         return (int) (getTime() % 1000L);
     }
 
     public int getSeconds() {
-        long period=getTime()/1000000;
+        long period = getTime() / 1000000;
         return (int) ((period % 60000L) / 1000L);
     }
 
     public int getMinutes() {
-        long period=getTime()/1000000;
+        long period = getTime() / 1000000;
         return (int) ((period % (1000L * 60L * 60L)) / 60000L);
     }
 
     public int getHours() {
-        long period=getTime()/1000000;
+        long period = getTime() / 1000000;
         return (int) (period / (1000L * 60L * 60L));
     }
 
@@ -167,7 +170,7 @@ public class Chronometer {
     public static String formatPeriodNano(long periodNano) {
         StringBuilder sb = new StringBuilder();
         int nano = (int) (periodNano % 1000000);
-        long period=periodNano/1000000;
+        long period = periodNano / 1000000;
         boolean started = false;
         int h = (int) (period / (1000L * 60L * 60L));
         int mn = (int) ((period % (1000L * 60L * 60L)) / 60000L);
@@ -188,7 +191,7 @@ public class Chronometer {
         }
         sb.append(ms).append(" ms");
 
-        if(ms<10){
+        if (ms < 10) {
             sb.append(" ").append(nano).append(" nanos");
         }
         return sb.toString();
@@ -196,7 +199,7 @@ public class Chronometer {
 
     public static String formatPeriodNano(long period, DatePart precision) {
         StringBuilder sb = new StringBuilder();
-        period=period/1000000;
+        period = period / 1000000;
         boolean started = false;
         int h = (int) (period / (1000L * 60L * 60L));
         int mn = (int) ((period % (1000L * 60L * 60L)) / 60000L);
@@ -225,6 +228,7 @@ public class Chronometer {
         }
         return sb.toString();
     }
+
     public static String formatPeriodMilli(long period, DatePart precision) {
         StringBuilder sb = new StringBuilder();
         boolean started = false;
@@ -257,12 +261,12 @@ public class Chronometer {
     }
 
     public String toString() {
-        String s= name ==null?"": name +"=";
-        return s+formatPeriodNano(getTime());
+        String s = name == null ? "" : name + "=";
+        return s + formatPeriodNano(getTime());
     }
 
     public String toString(DatePart precision) {
-        String s= name ==null?"": name +"=";
-        return s+formatPeriodNano(getTime(),precision);
+        String s = name == null ? "" : name + "=";
+        return s + formatPeriodNano(getTime(), precision);
     }
 }

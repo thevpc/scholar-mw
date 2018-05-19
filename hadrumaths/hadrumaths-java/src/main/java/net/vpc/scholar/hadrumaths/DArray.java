@@ -15,5 +15,5 @@ public class DArray {
     public double[] getArray() {
         return array;
     }
-    
+
 }

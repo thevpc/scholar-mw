@@ -26,7 +26,7 @@ public abstract class FSClient {
                     for (int i = 0; i < 100; i++) {
                         for (String s : cli.list("/structure.dump/1k/te/5l")) {
                             FileStat stat = cli.stat(s);
-                            System.out.println(s+" : "+stat);
+                            System.out.println(s + " : " + stat);
                         }
                     }
                 }
@@ -51,8 +51,8 @@ public abstract class FSClient {
         public FSRMIClient(String fsId, String address, int port) throws RemoteException, NotBoundException {
             this.fsId = fsId;
             this.address = address;
-            if(port<0){
-                port=HadrumathsServices.DEFAULT_RMI_PORT;
+            if (port < 0) {
+                port = HadrumathsServices.DEFAULT_RMI_PORT;
             }
             this.port = port;
             remote = (FSServlet.FSRemote) LocateRegistry.getRegistry(address, port).lookup(fsId);
@@ -103,8 +103,8 @@ public abstract class FSClient {
 
         public FSSocketClient(String fsId, String address, int port) throws UnknownHostException {
             this.fsId = fsId;
-            if(port<0){
-                port=HadrumathsServices.DEFAULT_SOCKET_PORT;
+            if (port < 0) {
+                port = HadrumathsServices.DEFAULT_SOCKET_PORT;
             }
             this.port = port;
             this.address = address;

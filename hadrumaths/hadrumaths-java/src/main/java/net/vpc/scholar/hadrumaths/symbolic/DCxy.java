@@ -124,7 +124,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                 case Z_NONE: {
                     Complex[][] c = ArrayUtils.fillArray2Complex(x.length, y.length, Complex.ZERO);
                     if (ranges != null) {
-                        abcd.setDefined2(x.length,y.length);
+                        abcd.setDefined2(x.length, y.length);
                         abcd.getDefined2().setAll();
                         ranges.set(abcd);
                         ranges.set(null);
@@ -232,7 +232,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
         Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x);
         if (abcd != null) {
             switch (zStatus) {
-                case Z_NONE:{
+                case Z_NONE: {
                     Complex[] c = ArrayUtils.fillArray1Complex(x.length, Complex.ZERO);
                     if (ranges != null) {
                         abcd.setDefined1(x.length);
@@ -241,7 +241,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                     }
                     return c;
                 }
-                case Z_R:{
+                case Z_R: {
                     Out<Range> rranges = new Out<>();
                     double[] r = real.computeDouble(x, d0, rranges);
                     BooleanArray1 rdefined3 = rranges.get() == null ? null : rranges.get().getDefined1();
@@ -252,7 +252,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                     }
                     Complex[] c = new Complex[x.length];
                     for (int k = abcd.xmin; k <= abcd.xmax; k++) {
-                        if ( (rdefined3 == null || !rdefined3.get(k))) {
+                        if ((rdefined3 == null || !rdefined3.get(k))) {
                             c[k] = Complex.ZERO;
                         } else {
                             double vr = (rdefined3 == null || !rdefined3.get(k)) ? 0 : r[k];
@@ -265,7 +265,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                     }
                     return c;
                 }
-                case Z_I:{
+                case Z_I: {
                     Out<Range> iranges = new Out<>();
                     double[] i = imag.computeDouble(x, d0, iranges);
                     BooleanArray1 idefined3 = iranges.get() == null ? null : iranges.get().getDefined1();
@@ -276,7 +276,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                     }
                     Complex[] c = new Complex[x.length];
                     for (int k = abcd.xmin; k <= abcd.xmax; k++) {
-                        if ((idefined3 == null || !idefined3.get(k)) ) {
+                        if ((idefined3 == null || !idefined3.get(k))) {
                             c[k] = Complex.ZERO;
                         } else {
                             double vi = (idefined3 == null || !idefined3.get(k)) ? 0 : i[k];
@@ -289,7 +289,7 @@ public class DCxy extends AbstractDoubleToComplex implements Cloneable {
                     }
                     return c;
                 }
-                case Z_RI:{
+                case Z_RI: {
                     Out<Range> iranges = new Out<>();
                     Out<Range> rranges = new Out<>();
                     double[] i = imag.computeDouble(x, d0, iranges);

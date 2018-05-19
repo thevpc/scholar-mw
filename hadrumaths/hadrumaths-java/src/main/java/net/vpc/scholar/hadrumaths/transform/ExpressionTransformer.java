@@ -8,7 +8,6 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.scholar.hadrumaths.Expr;
 
 /**
- *
  * @author vpc
  */
 public interface ExpressionTransformer {

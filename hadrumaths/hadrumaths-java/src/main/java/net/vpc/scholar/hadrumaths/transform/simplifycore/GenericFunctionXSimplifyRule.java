@@ -8,7 +8,10 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
 import net.vpc.scholar.hadrumaths.NoneOutBoolean;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.GenericFunctionX;
+import net.vpc.scholar.hadrumaths.symbolic.IConstantValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -30,7 +33,7 @@ public class GenericFunctionXSimplifyRule implements ExpressionRewriterRule {
         GenericFunctionX ee = (GenericFunctionX) e;
         Expr arg = ee.getArgument();
         RewriteResult arg2 = ruleset.rewrite(arg);
-        if(arg2 .isUnmodified()) {
+        if (arg2.isUnmodified()) {
             IConstantValue argc = Expressions.toComplexValue(arg2.getValue());
             if (argc != null) {
                 //cos(0) is not zero!
@@ -40,9 +43,10 @@ public class GenericFunctionXSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.unmodified(e);
         }
         Expr a = ee.newInstance(arg2.getValue());
-        a= Any.copyProperties(e, a);
+        a = Any.copyProperties(e, a);
         return arg2.newVal(a);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -50,7 +54,7 @@ public class GenericFunctionXSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

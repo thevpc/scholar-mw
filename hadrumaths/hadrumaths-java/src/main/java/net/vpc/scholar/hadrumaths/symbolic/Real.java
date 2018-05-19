@@ -5,17 +5,13 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
 
 /**
- *
  * @author vpc
  */
-public class Real extends DCxyToDDxy implements Cloneable{
+public class Real extends DCxyToDDxy implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     public Real(DoubleToComplex base) {
@@ -40,18 +36,18 @@ public class Real extends DCxyToDDxy implements Cloneable{
 
     @Override
     protected double computeDouble0(double x, BooleanMarker defined) {
-        return getArg().computeComplex(x,defined).getReal();
+        return getArg().computeComplex(x, defined).getReal();
     }
 
 
     @Override
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
-        return getArg().computeComplex(x,y,defined).getReal();
+        return getArg().computeComplex(x, y, defined).getReal();
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
-        return getArg().computeComplex(x,y,z,defined).getReal();
+        return getArg().computeComplex(x, y, z, defined).getReal();
     }
 
 //    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
@@ -106,11 +102,11 @@ public class Real extends DCxyToDDxy implements Cloneable{
     @Override
     public Expr setParam(String name, Expr value) {
         DoubleToComplex old = getArg();
-        DoubleToComplex updated = old.setParam(name,value).toDC();
-        if(updated!=old){
+        DoubleToComplex updated = old.setParam(name, value).toDC();
+        if (updated != old) {
             Expr e = new Real(updated);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }

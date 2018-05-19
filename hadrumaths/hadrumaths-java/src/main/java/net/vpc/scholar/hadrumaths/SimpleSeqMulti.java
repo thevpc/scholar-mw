@@ -11,6 +11,7 @@ class SimpleSeqMulti implements TVectorCell<Expr> {
     private final Expr pattern;
     private final DoubleParam[] m;
     private final double[][] values;
+
     public SimpleSeqMulti(Expr pattern, DoubleParam[] m, double[][] values) {
         this.values = values;
         this.m = m;

@@ -33,6 +33,7 @@ public interface BooleanArray3 {
 
     /**
      * copy all values
+     *
      * @param other
      * @param r0
      */
@@ -40,6 +41,7 @@ public interface BooleanArray3 {
 
     /**
      * copy true values
+     *
      * @param other
      * @param r0
      */

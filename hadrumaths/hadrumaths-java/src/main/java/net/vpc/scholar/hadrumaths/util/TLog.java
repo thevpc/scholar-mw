@@ -6,7 +6,10 @@ package net.vpc.scholar.hadrumaths.util;
  */
 public interface TLog {
     public void trace(Object msg);
+
     public void error(Object msg);
+
     public void warning(Object msg);
+
     public void debug(Object msg);
 }

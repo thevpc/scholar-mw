@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths;
 
 public class AdaptiveConfig {
-    private double error=0.1;
-    private int minimumXSamples=10;
-    private int maximumXSamples=1000;
+    private double error = 0.1;
+    private int minimumXSamples = 10;
+    private int maximumXSamples = 1000;
     private SamplifyListener listener;
 
     public double getError() {

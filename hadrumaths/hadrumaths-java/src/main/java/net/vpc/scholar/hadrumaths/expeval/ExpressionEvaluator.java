@@ -24,9 +24,10 @@ import java.util.Stack;
  * m.declare("x", 15.1d);
  * System.out.println( m.evaluate("-5-6/(-2) + sqr(15+x)") );
  * </pre>
- * @version 1.0
+ *
  * @author Taha BEN SALAH
- * @date     April 2008
+ * @version 1.0
+ * @date April 2008
  */
 public class ExpressionEvaluator {
 
@@ -42,11 +43,12 @@ public class ExpressionEvaluator {
             m.declare("y", 4);
             //System.out.println(m.evaluate("-x-y+4i+(-x)"));
             System.out.println(m.evaluate("-4i+1/4i"));
-        //System.out.println(m.evaluate("(1+2()*3"));
+            //System.out.println(m.evaluate("(1+2()*3"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private Map<String, Object> variables = new HashMap<String, Object>();
     private Map<String, ExpressionNode> functions = new HashMap<String, ExpressionNode>();
 
@@ -58,11 +60,11 @@ public class ExpressionEvaluator {
 
     public void addDefaults() {
         declare("E", Maths.E);
-        declare("e",Maths.E);
-        declare("PI",Maths.PI);
-        declare("pi",Maths.PI);
-        declare("infinity",Double.POSITIVE_INFINITY);
-        declare("NaN",Complex.NaN);
+        declare("e", Maths.E);
+        declare("PI", Maths.PI);
+        declare("pi", Maths.PI);
+        declare("infinity", Double.POSITIVE_INFINITY);
+        declare("NaN", Complex.NaN);
         declare(new OpPlus());
         declare(new OpDivide());
         declare(new OpMinus());
@@ -76,13 +78,13 @@ public class ExpressionEvaluator {
     }
 
     public void declare(String name, Number value) {
-        variables.put(name, (value instanceof Complex)?(Complex)value: Complex.valueOf(value.doubleValue()));
+        variables.put(name, (value instanceof Complex) ? (Complex) value : Complex.valueOf(value.doubleValue()));
     }
 
     public void declare(String name, Complex value) {
         variables.put(name, value);
     }
-    
+
     public void declare(String name, String value) {
         variables.put(name, value);
     }
@@ -174,7 +176,7 @@ public class ExpressionEvaluator {
                             String s = (String) valStack.pop();
                             valStack.push(getVariableValue(s));
                         } else if (old != ')' && old != ExpressionStreamTokenizer.TT_WORD && old != ExpressionStreamTokenizer.TT_NUMBER && old != ExpressionStreamTokenizer.TT_COMPLEX) {
-                            meOp = meOp+"U";
+                            meOp = meOp + "U";
                         }
                         int me = computeOp(meOp);
                         while (!opStack.empty()) {

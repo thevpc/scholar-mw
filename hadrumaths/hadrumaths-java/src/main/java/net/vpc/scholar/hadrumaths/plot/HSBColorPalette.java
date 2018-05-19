@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import java.awt.Color;
+import java.awt.*;
 
-public class HSBColorPalette extends JColorPalette implements Cloneable{
+public class HSBColorPalette extends JColorPalette implements Cloneable {
     private static final long serialVersionUID = 1L;
     public static final JColorPalette GRAY_PALETTE = new HSBColorPalette(-1, 0, 0, 0, 0, 0, 100);
     public static final JColorPalette DEFAULT_PALETTE = new HSBColorPalette(-1, 260, 0, 100, 100, 20, 95);
@@ -16,7 +16,7 @@ public class HSBColorPalette extends JColorPalette implements Cloneable{
 
 
     public HSBColorPalette(int size, int minH, int maxH, int minS, int maxS, int minB, int maxB) {
-        super(size,false);
+        super(size, false);
         this.minH = minH;
         this.maxH = maxH;
         this.minS = minS;
@@ -27,21 +27,21 @@ public class HSBColorPalette extends JColorPalette implements Cloneable{
 
     public Color getColor(int index) {
         Color[] colors = getColors();
-        if(colors!=null){
+        if (colors != null) {
             return colors[index];
-        }else{
+        } else {
             return createColor((index % getSize()) / ((float) getSize()));
         }
     }
 
     public Color[] getColors() {
-        if(getSize()>0){
-            if(cache==null){
-                Color[] all=new Color[getSize()];
+        if (getSize() > 0) {
+            if (cache == null) {
+                Color[] all = new Color[getSize()];
                 for (int i = 0; i < all.length; i++) {
-                    all[i]=createColor(((float)i)/all.length);
+                    all[i] = createColor(((float) i) / all.length);
                 }
-                cache=all;
+                cache = all;
             }
         }
         return cache;
@@ -49,12 +49,12 @@ public class HSBColorPalette extends JColorPalette implements Cloneable{
 
     public Color getColor(float ratio) {
         Color[] colors = getColors();
-        if(colors!=null){
-            ratio=getRatioTransform(ratio);
-            int s=colors.length;// getSize();
-            int x=(int) (ratio*s);
-            return colors[x<0?0:(x>=s)?(s-1):x];
-        }else{
+        if (colors != null) {
+            ratio = getRatioTransform(ratio);
+            int s = colors.length;// getSize();
+            int x = (int) (ratio * s);
+            return colors[x < 0 ? 0 : (x >= s) ? (s - 1) : x];
+        } else {
             return createColor(ratio);
         }
     }
@@ -68,6 +68,6 @@ public class HSBColorPalette extends JColorPalette implements Cloneable{
 
     protected void setSize(int size) {
         super.setSize(size);
-        cache=null;
+        cache = null;
     }
 }

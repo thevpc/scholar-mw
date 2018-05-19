@@ -7,14 +7,19 @@ package net.vpc.scholar.hadrumaths.symbolic.old;
 public interface SymExpression {
     /**
      * differentiate (derivation)
+     *
      * @param varName var name
      * @return differentiated expression
      */
     public SymExpression diff(String varName);
-    public SymExpression eval(SymContext context);
-    public SymExpression simplify();
-    public String toString(SymStringContext context);
-    public SymExpression diff(String varName,int depth);
 
-    SymExpression diff(String ... varNames);
+    public SymExpression eval(SymContext context);
+
+    public SymExpression simplify();
+
+    public String toString(SymStringContext context);
+
+    public SymExpression diff(String varName, int depth);
+
+    SymExpression diff(String... varNames);
 }

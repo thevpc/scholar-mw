@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- *
  * @author vpc
  */
 public interface ExpressionNode {
     public String getName();
-    public Object evaluate(Stack<Object> valuesStack,Map<String,Object> variables);
+
+    public Object evaluate(Stack<Object> valuesStack, Map<String, Object> variables);
 }

@@ -13,7 +13,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class GenericFunctionNavRule implements ExpressionRewriterRule {
@@ -31,34 +30,35 @@ public class GenericFunctionNavRule implements ExpressionRewriterRule {
 //            return null;
 //        }
         AbstractComposedFunction ee = (AbstractComposedFunction) e;
-        Expr[] args=ee.getArguments();
+        Expr[] args = ee.getArguments();
         int size = args.length;
-        Expr[] args2=new Expr[size];
-        boolean updated=false;
-        int bestEfforts=0;
+        Expr[] args2 = new Expr[size];
+        boolean updated = false;
+        int bestEfforts = 0;
         for (int i = 0; i < size; i++) {
             RewriteResult v = ruleset.rewrite(args[i]);
-            if(v.isRewritten()){
-                updated=true;
-                if(v.isBestEffort()){
+            if (v.isRewritten()) {
+                updated = true;
+                if (v.isBestEffort()) {
                     bestEfforts++;
                 }
-            }else{
+            } else {
                 bestEfforts++;
             }
-            args2[i]=v.getValue();
+            args2[i] = v.getValue();
         }
-        if(updated){
+        if (updated) {
             Expr a = ee.newInstance(args2);
-            a= Any.copyProperties(e, a);
-            if(bestEfforts==size){
+            a = Any.copyProperties(e, a);
+            if (bestEfforts == size) {
                 return RewriteResult.bestEffort(a);
             }
             return RewriteResult.newVal(a);
-        }else{
+        } else {
             return RewriteResult.unmodified(e);
         }
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -66,7 +66,7 @@ public class GenericFunctionNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 
 import java.util.Collections;
@@ -304,7 +303,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                             defined.reset();
                             double v = computeDouble0(x[k], y[j], z[i], defined);
                             r[i][j][k] = v;
-                            if(defined.get()) {
+                            if (defined.get()) {
                                 d.set(i, j, k);
                             }
                         }
@@ -334,7 +333,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                         defined.reset();
                         double v = computeDouble0(x[k], y[j], defined);
                         r[j][k] = v;
-                        if(defined.get()) {
+                        if (defined.get()) {
                             d.set(j, k);
                         }
                     }
@@ -360,7 +359,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
                 if (contains(x[xIndex])) {
                     defined.reset();
                     r[xIndex] = computeDouble0(x[xIndex], defined);
-                    if(defined.get()){
+                    if (defined.get()) {
                         d.set(xIndex);
                     }
                 } else {
@@ -430,7 +429,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     @Override
     public final double computeDouble(double x, double y, double z, BooleanMarker defined) {
-        if (contains(x,y,z)) {
+        if (contains(x, y, z)) {
             return computeDouble0(x, y, z, defined);
         }
 //        switch (getDomainDimension()) {
@@ -463,8 +462,8 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 //    }
 
     @Override
-    public double computeDouble(double x, double y,BooleanMarker defined) {
-        if (contains(x,y)) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        if (contains(x, y)) {
             return computeDouble0(x, y, defined);
         }
         return 0;

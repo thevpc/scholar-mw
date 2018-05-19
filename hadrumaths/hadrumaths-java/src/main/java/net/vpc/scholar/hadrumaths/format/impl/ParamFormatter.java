@@ -6,9 +6,8 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
 
 /**
  * @author vpc

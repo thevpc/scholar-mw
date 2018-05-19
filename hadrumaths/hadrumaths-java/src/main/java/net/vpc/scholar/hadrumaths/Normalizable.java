@@ -5,5 +5,6 @@ package net.vpc.scholar.hadrumaths;
  */
 public interface Normalizable {
     double getDistance(Normalizable other);
+
     double norm();
 }

@@ -3,8 +3,6 @@ package net.vpc.scholar.hadrumaths.plot.console;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
 import net.vpc.scholar.hadrumaths.plot.SimplePlotComponent;
-import net.vpc.scholar.hadrumaths.util.swingext.JCardPanel;
-import net.vpc.scholar.hadrumaths.util.swingext.JListCardPanel;
 
 import javax.swing.*;
 
@@ -12,7 +10,7 @@ import javax.swing.*;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 10 janv. 2007 21:07:34
  */
-public class PlotContainerConsoleWindow implements ConsoleWindow{
+public class PlotContainerConsoleWindow implements ConsoleWindow {
     private WindowPath windowPath;
     private PlotContainer pane;
 //    private int index;
@@ -47,7 +45,7 @@ public class PlotContainerConsoleWindow implements ConsoleWindow{
 
     public void addChild(String title, JComponent component2) {
         PlotComponent pc = getPlotComponent(component2);
-        pane.add(pc,title);
+        pane.add(pc, title);
 //        JComponent component = getComponent();
 //        if(component==null){
 //            component = new JListCardPanel();
@@ -59,12 +57,12 @@ public class PlotContainerConsoleWindow implements ConsoleWindow{
     }
 
     private PlotComponent getPlotComponent(JComponent component2) {
-        if(component2 instanceof PlotComponent){
+        if (component2 instanceof PlotComponent) {
             return (PlotComponent) component2;
         }
         PlotComponent pc = (PlotComponent) component2.getClientProperty(PlotComponent.class);
-        if(pc==null){
-            pc=new SimplePlotComponent(component2);
+        if (pc == null) {
+            pc = new SimplePlotComponent(component2);
         }
         return pc;
     }

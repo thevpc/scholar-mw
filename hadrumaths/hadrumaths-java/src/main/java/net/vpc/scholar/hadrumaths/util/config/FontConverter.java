@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.config;
 
 import net.vpc.scholar.hadrumaths.util.Configuration;
+
 import java.awt.*;
 import java.text.ParseException;
 

@@ -5,10 +5,11 @@ import net.vpc.scholar.hadrumaths.*;
 /**
  * Created by vpc on 4/30/14.
  */
-public class Exp extends GenericFunctionX implements Cloneable{
+public class Exp extends GenericFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Exp(Expr arg) {
-        super("exp",arg);
+        super("exp", arg);
     }
 
     @Override
@@ -16,12 +17,12 @@ public class Exp extends GenericFunctionX implements Cloneable{
         return "exp";
     }
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.exp();
     }
 
-    public double computeDoubleArg(double c, BooleanMarker defined){
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Maths.exp(c);
     }
@@ -29,7 +30,7 @@ public class Exp extends GenericFunctionX implements Cloneable{
     @Override
     public DoubleToDouble getRealDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return this;
         }
         return super.getRealDD();
@@ -38,7 +39,7 @@ public class Exp extends GenericFunctionX implements Cloneable{
     @Override
     public DoubleToDouble getImagDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return FunctionFactory.DZEROXY;
         }
         return super.getImagDD();

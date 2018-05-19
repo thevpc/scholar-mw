@@ -6,9 +6,8 @@
 package net.vpc.scholar.hadrumaths.interop.derive;
 
 /**
- *
  * @author vpc
  */
 public interface ToDeriveString<T> {
-    public String toDeriveString(T o,ToDeriveStringParam... format);
+    public String toDeriveString(T o, ToDeriveStringParam... format);
 }

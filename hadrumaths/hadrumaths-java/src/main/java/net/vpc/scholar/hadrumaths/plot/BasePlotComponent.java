@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class BasePlotComponent extends JPanel implements PlotComponent{
+public abstract class BasePlotComponent extends JPanel implements PlotComponent {
     private List<PlotPropertyListener> listeners;
     private PlotContainer parentPlotContainer;
     private PlotWindowManager plotWindowManager;
@@ -44,7 +44,7 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
     }
 
     public void setParentPlotContainer(PlotContainer parentPlotContainer) {
-        if(this.parentPlotContainer!=parentPlotContainer) {
+        if (this.parentPlotContainer != parentPlotContainer) {
             this.parentPlotContainer = parentPlotContainer;
 //            if (!parentPlotContainer.containsPlotComponent(this)) {
 //                parentPlotContainer.add(this);
@@ -54,24 +54,25 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent{
 
     @Override
     public void addPlotPropertyListener(PlotPropertyListener listener) {
-        if(listeners==null){
-            listeners=new ArrayList<>();
+        if (listeners == null) {
+            listeners = new ArrayList<>();
         }
         listeners.add(listener);
     }
+
     @Override
     public void removePlotPropertyListener(PlotPropertyListener listener) {
-        if(listeners!=null){
+        if (listeners != null) {
             listeners.remove(listener);
         }
     }
 
-    protected void firePlotPropertyEvent(String propertyName,Object oldValue,Object newValue){
-        if(!Objects.equals(oldValue,newValue)){
-            if(listeners!=null){
-                PlotPropertyEvent event=null;
+    protected void firePlotPropertyEvent(String propertyName, Object oldValue, Object newValue) {
+        if (!Objects.equals(oldValue, newValue)) {
+            if (listeners != null) {
+                PlotPropertyEvent event = null;
                 for (PlotPropertyListener listener : listeners) {
-                    if (event == null){
+                    if (event == null) {
                         event = new PlotPropertyEvent(this, propertyName, oldValue, newValue);
                     }
                     listener.onPropertyChange(event);

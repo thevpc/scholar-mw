@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadrumaths.util.swingext;
 
+import net.vpc.scholar.hadrumaths.util.StringShellFilter;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -10,9 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.vpc.scholar.hadrumaths.util.StringShellFilter;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -73,21 +73,22 @@ public class JListCardPanel extends JCardPanel {
         int size = list.getModel().getSize();
         for (int i = 0; i < size; i++) {
             PanelPage elementAt = (PanelPage) list.getModel().getElementAt(i);
-            if(id.equals(elementAt.id)){
+            if (id.equals(elementAt.id)) {
                 return i;
             }
         }
         return -1;
     }
+
     private String validateId(String id) {
-        if(StringUtils.isEmpty(id)){
-            id="#";
+        if (StringUtils.isEmpty(id)) {
+            id = "#";
         }
-        int i=0;
-        while(true){
-            String n=i==0?id:id+"("+(i+2)+")";
+        int i = 0;
+        while (true) {
+            String n = i == 0 ? id : id + "(" + (i + 2) + ")";
             int index = indexOfId(n);
-            if(index<0){
+            if (index < 0) {
                 return n;
             }
             i++;
@@ -124,8 +125,8 @@ public class JListCardPanel extends JCardPanel {
             return;
         }
         int oldIndex = indexOfId(id);
-        if(oldIndex!=index){
-            id=validateId(id);
+        if (oldIndex != index) {
+            id = validateId(id);
         }
         model.setElementAt(index, new PanelPage(c, id, title, icon));
         main.add(c, id);

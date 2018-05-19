@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.lang.reflect.Method;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
@@ -11,8 +11,9 @@ import java.lang.reflect.Method;
 public class PlotChoiceList implements Iterable<PlotChoice> {
     private LinkedHashMap<String, PlotChoice> map = new LinkedHashMap<String, PlotChoice>();
     private PlotConsoleProjectTemplate template;
+
     public PlotChoiceList(PlotConsoleProjectTemplate template) {
-        this.template=template;
+        this.template = template;
         java.lang.reflect.Method[] methods = template.getClass().getMethods();
         for (Method method : methods) {
             StudyMethod annotation = method.getAnnotation(StudyMethod.class);
@@ -25,8 +26,8 @@ public class PlotChoiceList implements Iterable<PlotChoice> {
         }
     }
 
-    public void add(String method, Object ... params) {
-        add(new PlotChoiceMethod(template,method,params));
+    public void add(String method, Object... params) {
+        add(new PlotChoiceMethod(template, method, params));
     }
 
     public PlotConsoleProjectTemplate getTemplate() {
@@ -44,8 +45,8 @@ public class PlotChoiceList implements Iterable<PlotChoice> {
     public Iterator<PlotChoice> iterator() {
         return map.values().iterator();
     }
-    
-    public int size(){
+
+    public int size() {
         return map.size();
     }
 }

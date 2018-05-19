@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class Acosh extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Acosh(Expr arg) {
         super("acosh", arg, FunctionType.COMPLEX);
     }

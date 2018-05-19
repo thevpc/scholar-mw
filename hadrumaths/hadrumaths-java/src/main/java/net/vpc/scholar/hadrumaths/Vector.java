@@ -1,11 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 
 
-public interface Vector extends Normalizable, Iterable<Complex>,TVector<Complex> {
+public interface Vector extends Normalizable, Iterable<Complex>, TVector<Complex> {
 
     boolean isRow();
 
@@ -110,6 +109,7 @@ public interface Vector extends Normalizable, Iterable<Complex>,TVector<Complex>
     Vector imag();
 
     Vector db();
+
     Vector db2();
 
     Vector abs();

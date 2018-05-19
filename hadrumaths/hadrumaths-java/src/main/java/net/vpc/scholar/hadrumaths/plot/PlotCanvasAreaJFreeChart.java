@@ -4,7 +4,6 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -28,16 +27,15 @@ public class PlotCanvasAreaJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
 //        ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         CategoryPlot categoryPlot = chart.getCategoryPlot();
-        categoryPlot.setRenderer(0,prepareAreaRenderer());
+        categoryPlot.setRenderer(0, prepareAreaRenderer());
         chart.getPlot().setBackgroundPaint(Color.WHITE);
         categoryPlot.setDomainGridlinePaint(Color.LIGHT_GRAY);
         categoryPlot.setRangeGridlinePaint(Color.LIGHT_GRAY);
@@ -89,8 +87,9 @@ public class PlotCanvasAreaJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
         //        plot.getRenderer().
 
     }
+
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
-        CategoryDataset data= createCategoryDataset();
+        CategoryDataset data = createCategoryDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();

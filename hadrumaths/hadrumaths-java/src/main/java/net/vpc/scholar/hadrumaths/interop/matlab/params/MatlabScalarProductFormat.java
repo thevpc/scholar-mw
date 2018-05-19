@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.params;
 
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,8 +9,10 @@ import net.vpc.scholar.hadrumaths.interop.matlab.*;
  * Time: 12:26:42
  * To change this template use File | Settings | File Templates.
  */
-public class MatlabScalarProductFormat implements ToMatlabStringParam{
-    public static enum Type{DBLQUAD,INT};
+public class MatlabScalarProductFormat implements ToMatlabStringParam {
+    public static enum Type {DBLQUAD, INT}
+
+    ;
     private Type type;
 
     public MatlabScalarProductFormat(Type type) {

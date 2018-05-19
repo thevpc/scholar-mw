@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadrumaths.util.config;
 
 import net.vpc.scholar.hadrumaths.util.Configuration;
-import java.util.Date;
+
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.

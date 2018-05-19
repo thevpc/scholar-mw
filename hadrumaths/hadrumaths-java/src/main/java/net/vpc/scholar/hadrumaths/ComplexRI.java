@@ -1,16 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
 /**
  * Created by vpc on 4/7/17.
  */
 public final class ComplexRI extends Complex {
-    private static final long serialVersionUID=1;
+    private static final long serialVersionUID = 1;
     private double real;
     private double imag;
 
@@ -287,14 +284,14 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex sin() {
-        return Complex.valueOf(Maths.sin2(real) * Maths.cosh(imag), Maths.cos2(real) * Maths.sinh(imag));
+        return Complex.valueOf(Maths.sin2(real) * Math.cosh(imag), Maths.cos2(real) * Math.sinh(imag));
     }
 
     public Complex cos() {
         if (imag == 0) {
             return Complex.valueOf(Maths.cos2(real));
         }
-        return Complex.valueOf(Maths.cos2(real) * Maths.cosh(imag), -Maths.sin2(real) * Maths.sinh(imag));
+        return Complex.valueOf(Maths.cos2(real) * Math.cosh(imag), -Maths.sin2(real) * Math.sinh(imag));
     }
 
     public Complex tan() {
@@ -303,7 +300,7 @@ public final class ComplexRI extends Complex {
 
     public Complex atan() {
         if (isReal()) {
-            return Complex.valueOf(Maths.atan(real));
+            return Complex.valueOf(Math.atan(real));
         }
         return Complex.MINUS_HALF_I.mul(
 
@@ -313,11 +310,11 @@ public final class ComplexRI extends Complex {
 
     public Complex acos() {
         if (isReal()) {
-            return Complex.valueOf(Maths.acos(real));
+            return Complex.valueOf(Math.acos(real));
         }
         //wolfram : http://mathworld.wolfram.com/InverseCosine.html
         // PI/2 + i ln (i *z + sqrt( 1-z2)
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
 
 //        return Complex.MINUS_I.mul(
@@ -342,14 +339,14 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(Maths.atan2(getImag() , getReal()));
+        return Complex.valueOf(Maths.atan2(getImag(), getReal()));
     }
 
     public Complex asin() {
         if (isReal()) {
-            return Complex.valueOf(Maths.asin(real));
+            return Complex.valueOf(Math.asin(real));
         }
-        Complex z=this;
+        Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
 //        return Complex.MINUS_I.mul(
 //
@@ -386,7 +383,7 @@ public final class ComplexRI extends Complex {
 
     public Complex tanh() {
         if (imag == 0) {
-            return Complex.valueOf(Maths.tanh(real));
+            return Complex.valueOf(Math.tanh(real));
         }
         Complex eplus = exp();
         Complex eminus = this.neg().exp();
@@ -396,7 +393,7 @@ public final class ComplexRI extends Complex {
 
     public Complex cotanh() {
         if (imag == 0) {
-            return Complex.valueOf(1 / Maths.tanh(real));
+            return Complex.valueOf(1 / Math.tanh(real));
         }
         Complex eplus = exp();
         Complex eminus = this.neg().exp();
@@ -405,35 +402,35 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex log() {
-        return Complex.valueOf(Maths.log(absdbl()), Maths.atan2(imag, real));
+        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real));
     }
 
     public Complex log10() {
-        return Complex.valueOf(Maths.log(absdbl()), Maths.atan2(imag, real)).div(Maths.log(10));
+        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
     }
 
     public Complex db() {
-        return Complex.valueOf(Maths.log10(absdbl()) * (10));
+        return Complex.valueOf(Math.log10(absdbl()) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.valueOf(Maths.log10(absdbl()) * (20));
+        return Complex.valueOf(Math.log10(absdbl()) * (20));
         //return log10().mul(10);
     }
 
 
     @Override
     public String toString() {
-        if(imag==0){
+        if (imag == 0) {
             return realToString(real);
-        }else if(real==0){
+        } else if (real == 0) {
             return imagToString(imag);
-        }else {
-            if(imag<0){
-                return realToString(real)+imagToString(imag);
+        } else {
+            if (imag < 0) {
+                return realToString(real) + imagToString(imag);
             }
-            return realToString(real)+"+"+imagToString(imag);
+            return realToString(real) + "+" + imagToString(imag);
         }
     }
 
@@ -579,6 +576,6 @@ public final class ComplexRI extends Complex {
 
     @Override
     public boolean isDoubleTyped() {
-        return imag==0;
+        return imag == 0;
     }
 }

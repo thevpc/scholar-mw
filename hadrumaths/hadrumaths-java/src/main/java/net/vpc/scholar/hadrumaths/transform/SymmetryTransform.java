@@ -9,7 +9,6 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 
 /**
- *
  * @author vpc
  */
 public final class SymmetryTransform implements ExpressionTransform {

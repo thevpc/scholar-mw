@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 import net.vpc.scholar.hadrumaths.*;
-
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.util.PercentDoubleFormatter;
 import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
@@ -15,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 
-public class HeatMapPlot extends JPanel implements PlotComponentPanel{
+public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     private static final long serialVersionUID = 1L;
     private HeatMapPlotArea area;
     private PlotModelProvider plotModelProvider;
@@ -40,29 +39,30 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
 
     public HeatMapPlot(PlotModelProvider plotModelProvider) {
         this((ValuesPlotModel) plotModelProvider.getModel());
-        this.plotModelProvider=plotModelProvider;
+        this.plotModelProvider = plotModelProvider;
 //        popupMenu = Plot.buildJPopupMenu(area, plotModelProvider);
     }
 
     public HeatMapPlot(ValuesPlotModel model) {
-        this(new ValuesPlotXYDoubleModelFace(model,null),model.getPlotType()== PlotType.HEATMAP);
+        this(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() == PlotType.HEATMAP);
         setModel(model);
     }
 
     public HeatMapPlot(PlotModelProvider plotModelProvider, JColorPalette palette, int preferredDim) {
-        this((ValuesPlotModel) plotModelProvider.getModel(),palette,preferredDim);
-        this.plotModelProvider=plotModelProvider;
+        this((ValuesPlotModel) plotModelProvider.getModel(), palette, preferredDim);
+        this.plotModelProvider = plotModelProvider;
 //        Plot.buildJPopupMenu(area, plotModelProvider);
     }
+
     public HeatMapPlot(ValuesPlotModel model, JColorPalette palette, int preferredDim) {
-        this(new ValuesPlotXYDoubleModelFace(model,null),
-                model.getPlotType()== PlotType.HEATMAP,
-                palette,preferredDim);
+        this(new ValuesPlotXYDoubleModelFace(model, null),
+                model.getPlotType() == PlotType.HEATMAP,
+                palette, preferredDim);
         setModel(model);
     }
 
     public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY) {
-        this(model, reverseY,null, 400);
+        this(model, reverseY, null, 400);
     }
 
     @Override
@@ -92,18 +92,18 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
 
     public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, int preferredDimension) {
         super(new BorderLayout());
-        area = new HeatMapPlotArea(model, reverseY,colorPalette, new Dimension(preferredDimension<=1?400:preferredDimension, preferredDimension<=1?400:preferredDimension));
+        area = new HeatMapPlotArea(model, reverseY, colorPalette, new Dimension(preferredDimension <= 1 ? 400 : preferredDimension, preferredDimension <= 1 ? 400 : preferredDimension));
         area.addPropertyChangeListener("colorPaletteContrasted", legendUpdater);
         area.addPropertyChangeListener("zMinMax", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                MinMax m=(MinMax) evt.getNewValue();
+                MinMax m = (MinMax) evt.getNewValue();
                 legendUnits.setMin(m.getMin());
                 legendUnits.setMax(m.getMax());
             }
         });
         legend = new HeatMapPlotArea(false, colorPalette, new Dimension(10, 400));
-        legendUnits=new HeatMapPlotUnitsArea(false, area.getMinValue(),area.getMaxValue(),model.getZformat(), 5, new Dimension(50, 400));
+        legendUnits = new HeatMapPlotUnitsArea(false, area.getMinValue(), area.getMaxValue(), model.getZformat(), 5, new Dimension(50, 400));
         titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
         if (titleLabel.getText().length() == 0) {
             titleLabel.setVisible(false);
@@ -112,10 +112,10 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         add(titleLabel, BorderLayout.NORTH);
 
         JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
+        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBorder(BorderFactory.createTitledBorder(""));
-        p.add(legendUnits,BorderLayout.PAGE_START);
-        p.add(legend,BorderLayout.CENTER);
+        p.add(legendUnits, BorderLayout.PAGE_START);
+        p.add(legend, BorderLayout.CENTER);
 
         add(area, BorderLayout.CENTER);
         add(p, BorderLayout.LINE_START);
@@ -126,14 +126,14 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
 
             public void mouseMoved(MouseEvent e) {
                 HeatMapCell cc = area.getCurrentCell(e);
-                if(cc==null){
+                if (cc == null) {
                     statusbar.getiValueLabel().setAnyValue("");
                     statusbar.getjValueLabel().setAnyValue("");
                     statusbar.getxValueLabel().setAnyValue("");
                     statusbar.getyValueLabel().setAnyValue("");
                     statusbar.getzValueLabel().setAnyValue("");
                     statusbar.getzPercentValueLabel().setAnyValue("");
-                }else{
+                } else {
                     statusbar.getiValueLabel().setAnyValue(cc.getxIndex() + 1);
                     statusbar.getjValueLabel().setAnyValue(cc.getyIndex() + 1);
                     statusbar.getxValueLabel().setAnyValue(cc.getxValue());
@@ -145,22 +145,22 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         });
     }
 
-    public void setModel(ValuesPlotModel model){
-        if(this.model!=null){
+    public void setModel(ValuesPlotModel model) {
+        if (this.model != null) {
             this.model.removePropertyChangeListener(modelUpdatesListener);
         }
-        PlotType oldPlotType=null;
-        if(this.model!=null){
-            oldPlotType= this.model.getPlotType();
+        PlotType oldPlotType = null;
+        if (this.model != null) {
+            oldPlotType = this.model.getPlotType();
         }
-        this.model=model;
+        this.model = model;
         this.model.addPropertyChangeListener(modelUpdatesListener);
-        PlotType plotType= this.model.getPlotType();
+        PlotType plotType = this.model.getPlotType();
         updateAreaByModel();
     }
 
-    private void updateAreaByModel(){
-        area.setModel(new ValuesPlotXYDoubleModelFace(model,null), model.getPlotType()== PlotType.HEATMAP);
+    private void updateAreaByModel() {
+        area.setModel(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() == PlotType.HEATMAP);
         repaint();
     }
 
@@ -207,9 +207,11 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     public void flipHorizontally() {
         area.flipHorizontally();
     }
+
     public void flipVertically() {
         area.flipVertically();
     }
+
     public void rotateLeft() {
         area.rotateLeft();
     }
@@ -221,11 +223,13 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
     private class PercentStatusBarElement extends StatusBarElement {
         public PercentStatusBarElement(String name) {
             super(name);
-            doubleFormatter= PercentDoubleFormatter.INSTANCE;
+            doubleFormatter = PercentDoubleFormatter.INSTANCE;
         }
     }
+
     private class StatusBarElement extends JLabel {
-        protected DoubleFormatter doubleFormatter= SimpleDoubleFormatter.INSTANCE;
+        protected DoubleFormatter doubleFormatter = SimpleDoubleFormatter.INSTANCE;
+
         //        Dimension d=new Dimension(100, 10);
         public StatusBarElement(String name) {
             super("");
@@ -251,33 +255,33 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
 //        }
 
         public void setAnyValue(Object d) {
-            if(d ==null){
+            if (d == null) {
                 setText("");
-                d="";
-            }else if(d instanceof DMatrix){
-                setText(String.valueOf(((DMatrix)d).normInf()));
-            }else if(d instanceof Number){
-                if(d instanceof Complex){
-                    if(((Complex)d).isReal()){
-                        setText(doubleFormatter.formatDouble(((Complex)d).getReal()));
-                    }else{
+                d = "";
+            } else if (d instanceof DMatrix) {
+                setText(String.valueOf(((DMatrix) d).normInf()));
+            } else if (d instanceof Number) {
+                if (d instanceof Complex) {
+                    if (((Complex) d).isReal()) {
+                        setText(doubleFormatter.formatDouble(((Complex) d).getReal()));
+                    } else {
                         setText(String.valueOf(d));
                     }
-                }else if(d instanceof Matrix){
+                } else if (d instanceof Matrix) {
                     setText(String.valueOf(((Matrix) d).normInf()));
                     return;
-                }else if(d instanceof BigDecimal){
+                } else if (d instanceof BigDecimal) {
                     double d0 = ((Double) d).doubleValue();
                     setText(doubleFormatter.formatDouble(d0));
-                }else if(d instanceof Double){
+                } else if (d instanceof Double) {
                     double d0 = ((Double) d).doubleValue();
                     setText(doubleFormatter.formatDouble(d0));
-                }else if(d instanceof Float){
-                    setText(doubleFormatter.formatDouble(((Float)d).doubleValue()));
-                }else{
+                } else if (d instanceof Float) {
+                    setText(doubleFormatter.formatDouble(((Float) d).doubleValue()));
+                } else {
                     setText(String.valueOf(d));
                 }
-            }else{
+            } else {
                 setText(String.valueOf(d));
             }
             setToolTipText(String.valueOf(d));
@@ -397,11 +401,11 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel{
         area.setComponentPopupMenu(popup);
     }
 
-    public void setVisibleStatusBar(boolean value){
+    public void setVisibleStatusBar(boolean value) {
         statusbar.setVisible(value);
     }
 
-    public void setVisibleLegend(boolean value){
+    public void setVisibleLegend(boolean value) {
         legend.setVisible(value);
     }
 

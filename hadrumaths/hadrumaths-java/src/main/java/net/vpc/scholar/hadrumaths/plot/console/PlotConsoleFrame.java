@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.plot.CardPlotContainer;
+import net.vpc.scholar.hadrumaths.plot.PlotComponent;
+import net.vpc.scholar.hadrumaths.plot.PlotContainer;
+import net.vpc.scholar.hadrumaths.plot.TabbedPlotContainer;
 import net.vpc.scholar.hadrumaths.util.FileDrop;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 import net.vpc.scholar.hadrumaths.util.swingext.*;
@@ -39,7 +42,7 @@ public class PlotConsoleFrame extends JFrame {
         init();
     }
 
-    public void prepare(){
+    public void prepare() {
         try {
             console.getTaskMonitor().getFrame().setClosed(true);
             console.getLockMonitor().getFrame().setClosed(true);
@@ -71,7 +74,7 @@ public class PlotConsoleFrame extends JFrame {
         return jmi;
     }
 
-    protected void prepareFileMenu(JMenu fileMenu){
+    protected void prepareFileMenu(JMenu fileMenu) {
         fileMenu.add(createMenuItem("Properties", new PlotConsolePropertiesAction()));
 
         fileMenu.add(createMenuItem("Load", new LoadAction()));
@@ -96,7 +99,7 @@ public class PlotConsoleFrame extends JFrame {
         fileMenu.add(createMenuItem("Exit", new ExitAction()));
     }
 
-    protected void prepareToolsMenu(JMenu toolsWindowsMenu){
+    protected void prepareToolsMenu(JMenu toolsWindowsMenu) {
 
     }
 
@@ -117,24 +120,23 @@ public class PlotConsoleFrame extends JFrame {
         menubar.add(windowsMenu);
 
 
-
         List<PlotConsoleMenuItem> menus = new ArrayList<>(Arrays.asList(console.getMenus()));
-        Set<String> visitedMenuPos=new HashSet<>();
-        Map<String,Integer> expectedMenuPos=new HashMap<>();
+        Set<String> visitedMenuPos = new HashSet<>();
+        Map<String, Integer> expectedMenuPos = new HashMap<>();
         for (int i = 0; i < menus.size(); i++) {
             PlotConsoleMenuItem mi = menus.get(i);
             visitedMenuPos.add(mi.getFullPath());
-            if(!mi.getPath().equals("") && mi.getPath().equals("/")) {
+            if (!mi.getPath().equals("") && mi.getPath().equals("/")) {
                 expectedMenuPos.put(mi.getPath(), i);
             }
         }
         List<PlotConsoleMenuItem> menusToCreate = new ArrayList<>();
 
         for (Map.Entry<String, Integer> ee : expectedMenuPos.entrySet()) {
-            if(!visitedMenuPos.contains(ee.getKey())){
-                if(ee.getKey().equals("/")){
+            if (!visitedMenuPos.contains(ee.getKey())) {
+                if (ee.getKey().equals("/")) {
 
-                }else {
+                } else {
                     List<String> split = StringUtils.split(ee.getKey(), "/");
                     String nn = split.get(split.size() - 1);
                     split.remove(split.size() - 1);
@@ -149,61 +151,61 @@ public class PlotConsoleFrame extends JFrame {
         Collections.sort(menusToCreate, new Comparator<PlotConsoleMenuItem>() {
             @Override
             public int compare(PlotConsoleMenuItem o1, PlotConsoleMenuItem o2) {
-                return Integer.compare(o2.getInitialIndex(),o1.getInitialIndex());
+                return Integer.compare(o2.getInitialIndex(), o1.getInitialIndex());
             }
         });
         for (PlotConsoleMenuItem plotConsoleMenuItem : menusToCreate) {
-            menus.add(plotConsoleMenuItem.getInitialIndex(),plotConsoleMenuItem);
+            menus.add(plotConsoleMenuItem.getInitialIndex(), plotConsoleMenuItem);
         }
-        Map<String,PlotConsoleMenuItem> menuMap=new HashMap<>();
-        Map<String,JMenuItem> menuMapToJ=new HashMap<>();
+        Map<String, PlotConsoleMenuItem> menuMap = new HashMap<>();
+        Map<String, JMenuItem> menuMapToJ = new HashMap<>();
         for (int i = 0; i < menus.size(); i++) {
             PlotConsoleMenuItem mi = menus.get(i);
             mi.setInitialIndex(i);
-            menuMap.put(mi.getFullPath(),mi);
+            menuMap.put(mi.getFullPath(), mi);
         }
         Collections.sort(menus, new Comparator<PlotConsoleMenuItem>() {
             @Override
             public int compare(PlotConsoleMenuItem o1, PlotConsoleMenuItem o2) {
                 String p1 = o1.getPath();
                 String p2 = o2.getPath();
-                if(p1.equals(p2)){
-                    int x=Integer.compare(o1.getOrder(),o2.getOrder());
-                    if(x!=0){
+                if (p1.equals(p2)) {
+                    int x = Integer.compare(o1.getOrder(), o2.getOrder());
+                    if (x != 0) {
                         return x;
                     }
-                    return Integer.compare(o1.getInitialIndex(),o2.getInitialIndex());
-                }else{
-                    if(p1.equals("/")){
+                    return Integer.compare(o1.getInitialIndex(), o2.getInitialIndex());
+                } else {
+                    if (p1.equals("/")) {
                         return -1;
                     }
-                    if(p2.equals("/")){
+                    if (p2.equals("/")) {
                         return 1;
                     }
                     PlotConsoleMenuItem m1 = menuMap.get(p1);
                     PlotConsoleMenuItem m2 = menuMap.get(p2);
-                    return compare(m1,m2);
+                    return compare(m1, m2);
                 }
             }
         });
         for (PlotConsoleMenuItem menu : menus) {
             JMenuItem jMenuItem = menuMapToJ.get(menu.getFullPath());
-            if(jMenuItem==null){
-                if(menu.getPath().equals("/")) {
-                    jMenuItem=new JMenu(menu.getName());
+            if (jMenuItem == null) {
+                if (menu.getPath().equals("/")) {
+                    jMenuItem = new JMenu(menu.getName());
                     menubar.add(jMenuItem);
-                }else{
+                } else {
                     JMenu jmenu = (JMenu) menuMapToJ.get(menu.getPath());
-                    jMenuItem=new JMenuItem(menu.getName());
+                    jMenuItem = new JMenuItem(menu.getName());
                     jMenuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            menu.actionPerformed(console,e);
+                            menu.actionPerformed(console, e);
                         }
                     });
                     jmenu.add(jMenuItem);
                 }
-                menuMapToJ.put(menu.getFullPath(),jMenuItem);
+                menuMapToJ.put(menu.getFullPath(), jMenuItem);
             }
         }
         return menubar;
@@ -218,7 +220,7 @@ public class PlotConsoleFrame extends JFrame {
                 try {
                     console.loadFiles(files);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,e.toString());
+                    JOptionPane.showMessageDialog(null, e.toString());
                 }
 
                 // end for: through each dropped file
@@ -273,12 +275,12 @@ public class PlotConsoleFrame extends JFrame {
     public JInternalFrame addFrame(FrameInfo frame) {
         JInternalFrame f = new JInternalFrame(frame.getTitle(), frame.isResizable(), frame.isClosable(), frame.isMaximizable(), frame.isIconifiable());
         Component c = frame.getComponent();
-        if(c==null){
-            c=new JLabel("...");
+        if (c == null) {
+            c = new JLabel("...");
         }
         f.add(c);
         Dimension ps = frame.getPreferredSize();
-        if(ps!=null) {
+        if (ps != null) {
             f.setPreferredSize(ps);
         }
         f.pack();
@@ -320,10 +322,10 @@ public class PlotConsoleFrame extends JFrame {
                 JComponent component1 = ((JComponent) e.getSource());
                 JInternalFrame inf = (JInternalFrame) (component1.getClientProperty("JInternalFrame"));
                 try {
-                    if(inf.getParent()==null){
+                    if (inf.getParent() == null) {
                         onAddJInternalFrame(inf);
                     }
-                    if(inf.isIcon()) {
+                    if (inf.isIcon()) {
                         inf.setIcon(false);
                     }
                 } catch (Exception e1) {
@@ -335,7 +337,7 @@ public class PlotConsoleFrame extends JFrame {
         return i;
     }
 
-    private void onAddJInternalFrame(JInternalFrame inf){
+    private void onAddJInternalFrame(JInternalFrame inf) {
         //was closed!
         desktop.add(inf);
         inf.setVisible(true);
@@ -377,7 +379,7 @@ public class PlotConsoleFrame extends JFrame {
         String[] pp = path.toArray();
         String windowTitle = "";
 //        String windowSupTitle = "";
-        java.util.List<String> subTitles=new ArrayList<>();
+        java.util.List<String> subTitles = new ArrayList<>();
         switch (pp.length) {
             case 0: {
                 windowTitle = "DefaultProject";
@@ -399,28 +401,28 @@ public class PlotConsoleFrame extends JFrame {
         }
         JInternalFrame internalFrame = userWindows.get(windowTitle);
         if (internalFrame == null) {
-            internalFrame =  addFrame(new FrameInfo()
-                .setClosable(true)
-                .setIcon(false)
-                .setIconifiable(true)
-                .setResizable(true)
-                .setMaximizable(true)
-                .setTitle(windowTitle)
-                .setComponent(new DummyLabel())
+            internalFrame = addFrame(new FrameInfo()
+                    .setClosable(true)
+                    .setIcon(false)
+                    .setIconifiable(true)
+                    .setResizable(true)
+                    .setMaximizable(true)
+                    .setTitle(windowTitle)
+                    .setComponent(new DummyLabel())
             );
         }
         Component[] components = internalFrame.getContentPane().getComponents();
         //JTabbedPane pane;
-        PlotContainer tcontainer=null;
+        PlotContainer tcontainer = null;
         if (components.length == 0) {
             tcontainer = new TabbedPlotContainer();
             internalFrame.getContentPane().add(tcontainer.toComponent());
         } else {
             Component old = components[0];
-            if(old instanceof JComponent){
-                tcontainer=(PlotContainer) ((JComponent) old).getClientProperty(PlotComponent.class.getName());
+            if (old instanceof JComponent) {
+                tcontainer = (PlotContainer) ((JComponent) old).getClientProperty(PlotComponent.class.getName());
             }
-            if(tcontainer==null) {
+            if (tcontainer == null) {
                 internalFrame.getContentPane().remove(old);
                 tcontainer = new CardPlotContainer();// PanelPlotWindowContainerFactory.INSTANCE.create();
                 internalFrame.getContentPane().add(tcontainer.toComponent());

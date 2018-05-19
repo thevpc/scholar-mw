@@ -45,14 +45,14 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         switch (getFunctionType()) {
-            case DOUBLE:{
+            case DOUBLE: {
                 return Expressions.computeDouble(this, exprHelper, x, y, d0, ranges);
             }
-            case COMPLEX:{
+            case COMPLEX: {
                 Complex[][] complexes = Expressions.computeComplex(this, exprHelper, x, y, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
-            case MATRIX:{
+            case MATRIX: {
                 Matrix[][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
@@ -63,31 +63,32 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         switch (getFunctionType()) {
-            case DOUBLE:{
+            case DOUBLE: {
                 return Expressions.computeDouble(this, exprHelper, x, y, z, d0, ranges);
             }
-            case COMPLEX:{
+            case COMPLEX: {
                 Complex[][][] complexes = Expressions.computeComplex(this, exprHelper, x, y, z, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
-            case MATRIX:{
+            case MATRIX: {
                 Matrix[][][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
         }
         return new double[z.length][y.length][x.length];
     }
+
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
         switch (getFunctionType()) {
-            case DOUBLE:{
+            case DOUBLE: {
                 return Expressions.computeDouble(this, exprHelper, x, d0, ranges);
             }
-            case COMPLEX:{
+            case COMPLEX: {
                 Complex[] complexes = Expressions.computeComplex(this, exprHelper, x, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
-            case MATRIX:{
+            case MATRIX: {
                 Matrix[] complexes = Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
@@ -166,8 +167,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x,y,z/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x,y,z/*, xdefined*/);
+                    Matrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    Matrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? 0 : 1;
                 }
@@ -212,8 +213,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined);
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x,y/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x,y/*, xdefined*/);
+                    Matrix a = getXArgument().toDM().computeMatrix(x, y/*, xdefined*/);
+                    Matrix b = getYArgument().toDM().computeMatrix(x, y/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? Complex.ZERO : Complex.ONE;
                 }
@@ -235,8 +236,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined);
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x,y,z/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x,y,z/*, xdefined*/);
+                    Matrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    Matrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? Complex.ZERO : Complex.ONE;
                 }

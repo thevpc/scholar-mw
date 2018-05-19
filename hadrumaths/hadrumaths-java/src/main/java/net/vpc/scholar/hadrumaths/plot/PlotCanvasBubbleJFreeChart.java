@@ -4,16 +4,13 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.MultiplePiePlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYZDataset;
-import org.jfree.util.TableOrder;
 
 import java.awt.*;
 
@@ -31,17 +28,16 @@ public class PlotCanvasBubbleJFreeChart extends PlotCanvasAnyXYDoubleJFreeChart 
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
         chart.getPlot().setBackgroundPaint(Color.WHITE);
-        if(chart.getPlot() instanceof PiePlot) {
+        if (chart.getPlot() instanceof PiePlot) {
             PiePlot plot = (PiePlot) chart.getPlot();
-        }else if(chart.getPlot() instanceof MultiplePiePlot){
+        } else if (chart.getPlot() instanceof MultiplePiePlot) {
             MultiplePiePlot plot = (MultiplePiePlot) chart.getPlot();
         }
 //        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
@@ -100,10 +96,10 @@ public class PlotCanvasBubbleJFreeChart extends PlotCanvasAnyXYDoubleJFreeChart 
     }
 
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
-        XYZDataset data= createXYZDataset();
+        XYZDataset data = createXYZDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
-        return ChartFactory.createBubbleChart(theTitle,theYTitle,theYTitle,
+        return ChartFactory.createBubbleChart(theTitle, theYTitle, theYTitle,
                 data, PlotOrientation.VERTICAL,
                 legend == null ? true : legend,
                 tooltips == null ? true : tooltips,

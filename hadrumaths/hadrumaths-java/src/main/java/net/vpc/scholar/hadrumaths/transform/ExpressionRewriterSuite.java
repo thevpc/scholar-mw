@@ -21,22 +21,22 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
     public RewriteResult rewriteImpl(Expr e) {
         Expr curr = e;
         boolean modified = false;
-        int bestEffort=0;
+        int bestEffort = 0;
         for (ExpressionRewriter set : sets) {
             RewriteResult rr = set.rewrite(curr);
-            if(rr.isUnmodified()){
+            if (rr.isUnmodified()) {
                 bestEffort++;
-            }else if(rr.isBestEffort()) {
+            } else if (rr.isBestEffort()) {
                 modified = true;
                 curr = rr.getValue();
                 bestEffort++;
-            }else{
-                modified=true;
+            } else {
+                modified = true;
                 curr = rr.getValue();
             }
         }
-        if(modified){
-            if(bestEffort==sets.size()){
+        if (modified) {
+            if (bestEffort == sets.size()) {
                 return RewriteResult.bestEffort(curr);
             }
             return RewriteResult.newVal(curr);
@@ -69,7 +69,7 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
 
     @Override
     public String toString() {
-        return "Suite("+String.valueOf(name)+")";
+        return "Suite(" + String.valueOf(name) + ")";
     }
 
     @Override

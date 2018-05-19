@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by vpc on 2/5/15.
  */
-public interface MatrixFactory extends TMatrixFactory<Complex>{
+public interface MatrixFactory extends TMatrixFactory<Complex> {
     Matrix newMatrix(TMatrix<Complex> other);
 
     Matrix newMatrix(int rows, int columns);
@@ -60,6 +59,7 @@ public interface MatrixFactory extends TMatrixFactory<Complex>{
     Matrix newColumnMatrix(int rows, VectorCell cellFactory);
 
     Matrix newRowMatrix(int columns, VectorCell cellFactory);
+
     Matrix newImmutableRowMatrix(int columns, VectorCell cellFactory);
 
     Matrix newSymmetric(int rows, int cols, MatrixCell cellFactory);

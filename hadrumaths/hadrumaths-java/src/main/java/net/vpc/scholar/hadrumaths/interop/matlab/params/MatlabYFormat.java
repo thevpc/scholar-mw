@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.params;
 
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,8 +9,9 @@ import net.vpc.scholar.hadrumaths.interop.matlab.*;
  * Time: 11:21:16
  * To change this template use File | Settings | File Templates.
  */
-public class MatlabYFormat implements ToMatlabStringParam{
+public class MatlabYFormat implements ToMatlabStringParam {
     private String name;
+
     public MatlabYFormat(String name) {
         this.name = name;
     }

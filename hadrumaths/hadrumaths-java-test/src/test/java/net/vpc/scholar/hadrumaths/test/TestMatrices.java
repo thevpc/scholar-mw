@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
-import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

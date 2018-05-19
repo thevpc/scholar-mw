@@ -52,7 +52,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     private CloseOption closeOption = CloseOption.EXIT;
     private TaskMonitor taskMonitor;
     private JInternalFrame taskMonitorFrame;
-//    private PlotAxis currentY = null;
+    //    private PlotAxis currentY = null;
     private LockMonitor lockMonitor;
     private JInternalFrame lockMonitorFrame;
     private boolean readOnly = false;
@@ -477,7 +477,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 e.printStackTrace();
             }
             taskMonitor.setFrame(f);
-            getPlotConsoleFrame().addToolsFrame(taskMonitorFrame=f);
+            getPlotConsoleFrame().addToolsFrame(taskMonitorFrame = f);
         }
         return taskMonitor;
     }
@@ -496,7 +496,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 e.printStackTrace();
             }
             lockMonitor.setFrame(f);
-            getPlotConsoleFrame().addToolsFrame(lockMonitorFrame=f);
+            getPlotConsoleFrame().addToolsFrame(lockMonitorFrame = f);
         }
         return lockMonitor;
     }
@@ -527,27 +527,27 @@ public class PlotConsole implements PlotComponentDisplayer {
     }
 
     public PlotConsole loadFiles(File[] files) throws IOException {
-        boolean first=true;
-        String ext=null;
+        boolean first = true;
+        String ext = null;
         for (File file : files) {
             String e = IOUtils.getFileExtension(file).toLowerCase();
-            if(first){
-                first=false;
-                ext=e;
-            }else{
-                if(e!=null && e.length()>0  && e.equals(ext)){
+            if (first) {
+                first = false;
+                ext = e;
+            } else {
+                if (e != null && e.length() > 0 && e.equals(ext)) {
                     //ok
-                }else{
-                    ext=null;
+                } else {
+                    ext = null;
                     break;
                 }
             }
         }
-        if(ext==null){
+        if (ext == null) {
             for (File file : files) {
                 loadFile(file);
             }
-        }else{
+        } else {
             if (ext.equals(PLOT_CONSOLE_FILE_EXTENSION)) {
                 for (File file : files) {
                     loadFile(file);
@@ -558,7 +558,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 }
             } else {
                 for (PlotConsoleFileSupport plotConsoleFileSupport : fileSupportList) {
-                    if(ext.equals(plotConsoleFileSupport.getFileExtension())){
+                    if (ext.equals(plotConsoleFileSupport.getFileExtension())) {
                         return run(plotConsoleFileSupport.createLoadAction(files));
                     }
                 }
@@ -576,7 +576,7 @@ public class PlotConsole implements PlotComponentDisplayer {
             run(new ConsoleActionPlotFile(file));
         } else {
             for (PlotConsoleFileSupport plotConsoleFileSupport : fileSupportList) {
-                if(e.equals(plotConsoleFileSupport.getFileExtension())){
+                if (e.equals(plotConsoleFileSupport.getFileExtension())) {
                     return run(plotConsoleFileSupport.createLoadAction(file));
                 }
             }
@@ -718,10 +718,11 @@ public class PlotConsole implements PlotComponentDisplayer {
             } catch (PropertyVetoException e) {
                 e.printStackTrace();
             }
-            getPlotConsoleFrame().addToolsFrame(logFrame=f);
+            getPlotConsoleFrame().addToolsFrame(logFrame = f);
         }
         return logger;
     }
+
     public void silentLogLn(final String msg) {
 
         SwingUtils.invokeLater(new Runnable() {
@@ -805,20 +806,20 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     @Override
     public void display(PlotComponent plotComponent) {
-        run(new ConsoleActionPlotComponent(plotComponent,plotComponent==null?null:plotComponent.getLayoutConstraints()));
+        run(new ConsoleActionPlotComponent(plotComponent, plotComponent == null ? null : plotComponent.getLayoutConstraints()));
     }
 
-    public void display(PlotComponent plotComponent,String path) {
-        run(new ConsoleActionPlotComponent(plotComponent,path));
+    public void display(PlotComponent plotComponent, String path) {
+        run(new ConsoleActionPlotComponent(plotComponent, path));
     }
 
-    protected void displayImpl(PlotComponent component,String path) {
+    protected void displayImpl(PlotComponent component, String path) {
         JComponent plotComponent = component.toComponent();
         if (plotComponent != null) {
 
-            List<String> pathList = StringUtils.split(path,"/");
-            WindowPath preferredPath = new WindowPath(pathList.size()==0?"NoName":pathList.get(0));
-            if(pathList.size()>0){
+            List<String> pathList = StringUtils.split(path, "/");
+            WindowPath preferredPath = new WindowPath(pathList.size() == 0 ? "NoName" : pathList.get(0));
+            if (pathList.size() > 0) {
                 pathList.remove(0);
             }
             String plotGroup = component.getPlotTitle();
@@ -829,7 +830,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 plotGroup = "Plot";
             }
             ConsoleWindow window = getPlotConsoleFrame().getWindow(preferredPath);
-            window.addChild(StringUtils.toPath(pathList,"/"),component.toComponent());
+            window.addChild(StringUtils.toPath(pathList, "/"), component.toComponent());
 //            JComponent jcomponent = window.getComponent();
 //            if (jcomponent == null) {
 //                jcomponent = new JListCardPanel();
@@ -844,30 +845,30 @@ public class PlotConsole implements PlotComponentDisplayer {
         }
     }
 
-    public PlotConsoleFileSupport[] getPlotConsoleFileSupports(){
+    public PlotConsoleFileSupport[] getPlotConsoleFileSupports() {
         return fileSupportList.toArray(new PlotConsoleFileSupport[fileSupportList.size()]);
     }
 
-    public PlotConsole addFileSupport(PlotConsoleFileSupport fileSupport){
+    public PlotConsole addFileSupport(PlotConsoleFileSupport fileSupport) {
         fileSupportList.add(fileSupport);
         return this;
     }
 
-    public PlotConsole removeFileSupport(PlotConsoleFileSupport fileSupport){
+    public PlotConsole removeFileSupport(PlotConsoleFileSupport fileSupport) {
         fileSupportList.remove(fileSupport);
         return this;
     }
 
-    public PlotConsoleMenuItem[] getMenus(){
+    public PlotConsoleMenuItem[] getMenus() {
         return menus.toArray(new PlotConsoleMenuItem[menus.size()]);
     }
 
-    public PlotConsole addMenu(PlotConsoleMenuItem fileSupport){
+    public PlotConsole addMenu(PlotConsoleMenuItem fileSupport) {
         menus.add(fileSupport);
         return this;
     }
 
-    public PlotConsole removeMenu(PlotConsoleMenuItem fileSupport){
+    public PlotConsole removeMenu(PlotConsoleMenuItem fileSupport) {
         menus.remove(fileSupport);
         return this;
     }

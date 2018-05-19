@@ -20,7 +20,7 @@ public class TestFormat2 {
                 add(
                         transformAxis(add(cos(X), mul(X, complex(2 / 4.0)), neg(any(Y.mul(î)))), Axis.Y, Axis.X, Axis.Z)
 
-                        , DomainExpr.forBounds(k, add(k ,1))
+                        , DomainExpr.forBounds(k, add(k, 1))
                         ,
                         mul(
                                 xdomain(1, 9)

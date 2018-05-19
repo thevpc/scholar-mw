@@ -235,6 +235,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 
     /**
      * Should call    defined.set();
+     *
      * @param c
      * @param defined
      * @return
@@ -243,6 +244,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 
     /**
      * should call defined.set();
+     *
      * @param c
      * @param defined
      * @return
@@ -289,9 +291,9 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return Complex.ZERO;
     }
 
-    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
-        Complex d = getArgument().toDC().computeComplex(x, y, z,rdefined);
+        Complex d = getArgument().toDC().computeComplex(x, y, z, rdefined);
         if (rdefined.get()) {
             defined.set();
             return computeComplexArg(d, defined);

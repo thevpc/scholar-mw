@@ -57,7 +57,7 @@ public class LogUtils {
         if (StringUtils.trimToNull(pattern) == null) {
             pattern = "net-vpc-scholar-math-%g.log";
         }
-        pattern= Maths.Config.expandPath(pattern);
+        pattern = Maths.Config.expandPath(pattern);
         if (maxSize <= 0) {
             maxSize = 5;
         }

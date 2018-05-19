@@ -6,15 +6,15 @@
 package net.vpc.scholar.hadrumaths.interop.derive;
 
 import net.vpc.scholar.hadrumaths.AbstractFactory;
-import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 /**
  * @author vpc
  */
 public class DeriveFactory extends AbstractFactory {
-    private static final ClassMap<ToDeriveString> map = new ClassMap<ToDeriveString>(Object.class, ToDeriveString.class,3);
+    private static final ClassMap<ToDeriveString> map = new ClassMap<ToDeriveString>(Object.class, ToDeriveString.class, 3);
 
     static {
         register(Matrix.class, new MatrixToDeriveString());

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.console.params;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.IndexSelectionStrategy;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Param;
 
 /**
@@ -15,6 +15,7 @@ public class IntArrayParamSet<T extends IntArrayParamSet> extends ParamSet imple
     public IntArrayParamSet(Param configurator, int value) {
         this(configurator, new int[]{value});
     }
+
     public IntArrayParamSet(Param configurator) {
         this(configurator, new int[0]);
     }
@@ -48,7 +49,7 @@ public class IntArrayParamSet<T extends IntArrayParamSet> extends ParamSet imple
         return (T) this;
     }
 
-    public T itimes(int min, int max, int times,int maxTimes, IndexSelectionStrategy strategy) {
+    public T itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
         values = Maths.itimes(min, max, times, maxTimes, strategy);
         return (T) this;
     }

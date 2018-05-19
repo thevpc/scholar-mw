@@ -5,6 +5,12 @@ package net.vpc.scholar.hadrumaths;
  */
 public class Out<T> {
     private T value;
-    public T get(){return value;}
-    public void set(T t){value=t;}
+
+    public T get() {
+        return value;
+    }
+
+    public void set(T t) {
+        value = t;
+    }
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T>{
+public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;
     private TypeReference<T> componentType;
     private TMatrixModel<T> f;
@@ -13,7 +13,7 @@ public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T>{
 
     @Override
     public T get(int row, int col) {
-        return f.get(row,col);
+        return f.get(row, col);
     }
 
     @Override

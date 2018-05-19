@@ -115,21 +115,22 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     public static Discrete create(Complex[][][] model) {
-        double[] x=Maths.dsteps(0,model[0][0].length-1,1);
-        double[] y=Maths.dsteps(0,model[0].length-1,1);
-        double[] z=Maths.dsteps(0,model.length-1,1);
+        double[] x = Maths.dsteps(0, model[0][0].length - 1, 1);
+        double[] y = Maths.dsteps(0, model[0].length - 1, 1);
+        double[] z = Maths.dsteps(0, model.length - 1, 1);
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, model, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
+
     public static Discrete create(double[][][] model, double[] x, double[] y, double[] z) {
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, ArrayUtils.toComplex(model), x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
 
     public static Discrete create(double[][][] model) {
-        double[] x=Maths.dsteps(0,model[0][0].length-1,1);
-        double[] y=Maths.dsteps(0,model[0].length-1,1);
-        double[] z=Maths.dsteps(0,model.length-1,1);
+        double[] x = Maths.dsteps(0, model[0][0].length - 1, 1);
+        double[] y = Maths.dsteps(0, model[0].length - 1, 1);
+        double[] z = Maths.dsteps(0, model.length - 1, 1);
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, ArrayUtils.toComplex(model), x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
@@ -194,13 +195,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.x = xvalues != null ? xvalues : domain.steps(dx).getX();
                 this.y = new double[]{0};
                 this.z = new double[]{0};
-                if(z.length!=model.length){
+                if (z.length != model.length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(y.length!=model[0].length){
+                if (y.length != model[0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(x.length!=model[0][0].length){
+                if (x.length != model[0][0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
                 break;
@@ -237,13 +238,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.x = xvalues != null ? xvalues : steps.getX();
                 this.y = yvalues != null ? yvalues : steps.getY();
                 this.z = new double[]{0};
-                if(z.length!=model.length){
+                if (z.length != model.length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(y.length!=model[0].length){
+                if (y.length != model[0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(x.length!=model[0][0].length){
+                if (x.length != model[0][0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
                 break;
@@ -288,13 +289,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.x = xvalues != null ? xvalues : steps.getX();
                 this.y = yvalues != null ? yvalues : steps.getY();
                 this.z = zvalues != null ? zvalues : steps.getZ();
-                if(z.length!=model.length){
+                if (z.length != model.length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(y.length!=model[0].length){
+                if (y.length != model[0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
-                if(x.length!=model[0][0].length){
+                if (x.length != model[0][0].length) {
                     throw new IllegalArgumentException("Problem");
                 }
                 break;
@@ -465,9 +466,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             Complex[][][] a1 = computeComplex(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             Complex[][][] a2 = c.computeComplex(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -497,9 +498,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             Complex[][][] a1 = computeComplex(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             Complex[][][] a2 = c.computeComplex(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -892,7 +893,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     public double norm() {
         double f = 0;
         for (int j = 0; j < values.length; j++) {
-            f = Maths.max(f, Maths.matrix(values[j]).norm1());
+            f = Math.max(f, Maths.matrix(values[j]).norm1());
         }
         return f;
     }
@@ -951,10 +952,10 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 return false;
             }
             case Y: {
-                return dimension<2;
+                return dimension < 2;
             }
             case Z: {
-                return dimension<3;
+                return dimension < 3;
             }
         }
         return false;

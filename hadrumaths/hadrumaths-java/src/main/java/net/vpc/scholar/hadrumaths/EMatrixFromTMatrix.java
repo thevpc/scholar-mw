@@ -8,17 +8,17 @@ public class EMatrixFromTMatrix<T extends Expr> extends AbstractTMatrix<Expr> {
     private TMatrix<T> matrix;
 
     public EMatrixFromTMatrix(TMatrix<T> matrix) {
-        this.matrix= matrix;
+        this.matrix = matrix;
     }
 
     @Override
     public Expr get(int row, int col) {
-        return matrix.get(row,col).toComplex();
+        return matrix.get(row, col).toComplex();
     }
 
     @Override
     public void set(int row, int col, Expr val) {
-        matrix.set(row,col,(T)val);
+        matrix.set(row, col, (T) val);
     }
 
     @Override
@@ -33,15 +33,15 @@ public class EMatrixFromTMatrix<T extends Expr> extends AbstractTMatrix<Expr> {
 
     @Override
     public void resize(int rows, int columns) {
-        matrix.resize(rows,columns);
+        matrix.resize(rows, columns);
     }
 
     @Override
     public Complex toComplex() {
-        if(!isComplex()){
+        if (!isComplex()) {
             throw new ClassCastException();
         }
-        return get(0,0).toComplex();
+        return get(0, 0).toComplex();
     }
 
     @Override

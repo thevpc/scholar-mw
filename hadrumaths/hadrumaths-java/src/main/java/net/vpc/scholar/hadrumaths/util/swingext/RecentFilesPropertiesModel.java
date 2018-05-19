@@ -92,7 +92,7 @@ public class RecentFilesPropertiesModel implements RecentFilesModel {
                 sb.append(file1.getCanonicalPath());
             }
             properties.put(key, sb.toString());
-            if(file.getParentFile()!=null){
+            if (file.getParentFile() != null) {
                 file.getParentFile().mkdirs();
             }
             try {
@@ -124,7 +124,7 @@ public class RecentFilesPropertiesModel implements RecentFilesModel {
                     } else {
                         properties.load(fis);
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     //any exception dont worry
                 } finally {

@@ -7,9 +7,8 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 /**
- *
  * @author vpc
  */
 public interface ExpressionTransform {
-    
+
 }

@@ -90,6 +90,7 @@ public final class DomainXYZ extends Domain implements Cloneable {
         hash = 43 * hash + (int) (zmaxl ^ (zmaxl >>> 32));
         return hash;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

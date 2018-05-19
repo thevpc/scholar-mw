@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 /**
  * sample implementation of array with deep hashcode and deep equals
+ *
  * @param <T>
  */
-public class TObjectArray<T> implements TArray<T>{
+public class TObjectArray<T> implements TArray<T> {
     private T[] values;
 
     @Override
@@ -18,12 +19,12 @@ public class TObjectArray<T> implements TArray<T>{
         this.values = values;
     }
 
-    public T get(int index){
+    public T get(int index) {
         return values[index];
     }
 
-    public void set(int index,T object){
-        values[index]=object;
+    public void set(int index, T object) {
+        values[index] = object;
     }
 
     @Override

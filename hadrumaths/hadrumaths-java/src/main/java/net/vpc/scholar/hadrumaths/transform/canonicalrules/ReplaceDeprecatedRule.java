@@ -32,6 +32,7 @@ public class ReplaceDeprecatedRule implements ExpressionRewriterRule {
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -39,7 +40,7 @@ public class ReplaceDeprecatedRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

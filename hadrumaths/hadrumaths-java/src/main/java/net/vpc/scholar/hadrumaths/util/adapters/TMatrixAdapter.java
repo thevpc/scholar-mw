@@ -1,9 +1,12 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.AbstractTMatrix;
+import net.vpc.scholar.hadrumaths.TMatrix;
+import net.vpc.scholar.hadrumaths.TypeReference;
+import net.vpc.scholar.hadrumaths.VectorSpace;
 import net.vpc.scholar.hadrumaths.util.Converter;
 
-public class TMatrixAdapter<R,T> extends AbstractTMatrix<T>{
+public class TMatrixAdapter<R, T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;
     protected TMatrix<R> base;
     private TypeReference<T> componentType;
@@ -20,12 +23,12 @@ public class TMatrixAdapter<R,T> extends AbstractTMatrix<T>{
 
     @Override
     public T get(int row, int col) {
-        return converterTo.convert(base.get(row,col));
+        return converterTo.convert(base.get(row, col));
     }
 
     @Override
     public void set(int row, int col, T val) {
-        base.set(row,col,converterFrom.convert(val));
+        base.set(row, col, converterFrom.convert(val));
     }
 
     @Override

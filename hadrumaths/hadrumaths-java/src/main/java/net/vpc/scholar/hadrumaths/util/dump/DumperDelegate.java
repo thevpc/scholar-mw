@@ -5,7 +5,8 @@ package net.vpc.scholar.hadrumaths.util.dump;
  * @creationtime 1 juin 2007 16:24:38
  */
 public class DumperDelegate implements DumpDelegate {
-    public static final DumperDelegate INSTANCE=new DumperDelegate();
+    public static final DumperDelegate INSTANCE = new DumperDelegate();
+
     public DumperDelegate() {
     }
 

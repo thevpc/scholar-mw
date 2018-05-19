@@ -1,17 +1,18 @@
 package net.vpc.scholar.hadrumaths.integration;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.scalarproducts.formal.*;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductHelper;
+import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
-import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
  */
 final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
     private static final long serialVersionUID = 1L;
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -19,11 +20,12 @@ final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
     }
+
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         return primi_linearcst(domain, (Linear) f1, (DoubleValue) f2);
 //        double b1 = domain.xmin;
@@ -45,7 +47,7 @@ final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
 //                - _ps_ls_x(b2, b3, f1ok, f2ok);
     }
 
-//    private static double _ps_ls_x(double x, double y, DLinearFunction f1, DCstFunction f2) {
+    //    private static double _ps_ls_x(double x, double y, DLinearFunction f1, DCstFunction f2) {
 //        return f2.cst * x * y * (0.5 * f1.a * x + f1.b);
 //    }
 //STARTING---------------------------------------

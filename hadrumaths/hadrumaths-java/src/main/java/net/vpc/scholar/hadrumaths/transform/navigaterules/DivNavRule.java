@@ -5,16 +5,15 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Div;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class DivNavRule implements ExpressionRewriterRule {
@@ -31,13 +30,13 @@ public class DivNavRule implements ExpressionRewriterRule {
         Div ee = (Div) e;
         RewriteResult a = ruleset.rewrite(ee.getFirst());
         RewriteResult b = ruleset.rewrite(ee.getSecond());
-        if(a.isUnmodified() && b.isUnmodified()){
+        if (a.isUnmodified() && b.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
 
         Expr e2 = Maths.div(a.getValue(), b.getValue());
-        e2= Any.copyProperties(e, e2);
-        return (a.isBestEffort()&& b.isBestEffort())?RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
+        e2 = Any.copyProperties(e, e2);
+        return (a.isBestEffort() && b.isBestEffort()) ? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class DivNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

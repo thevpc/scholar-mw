@@ -7,5 +7,5 @@ import net.vpc.scholar.hadrumaths.symbolic.old.SymAbstractExpression;
  * @creationtime 18 juil. 2007 21:50:08
  */
 public abstract class SymOperator extends SymAbstractExpression {
-    
+
 }

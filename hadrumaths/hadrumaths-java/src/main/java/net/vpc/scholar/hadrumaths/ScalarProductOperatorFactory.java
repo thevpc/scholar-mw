@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.numeric.SimpleNumericScalarProd
 /**
  * Created by vpc on 6/1/14.
  */
-public class ScalarProductOperatorFactory extends AbstractFactory{
+public class ScalarProductOperatorFactory extends AbstractFactory {
     public static final ScalarProductOperator NUMERIC_SCALAR_PRODUCT_OPERATOR = new NumericScalarProductOperator();
     public static final ScalarProductOperator SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalScalarProductOperator(new SimpleNumericScalarProductOperator());
     public static final ScalarProductOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalScalarProductOperator(null);
@@ -47,6 +47,7 @@ public class ScalarProductOperatorFactory extends AbstractFactory{
      * hminCoeff = 1E-52 / 1024.0;
      * hmaxCoeff = 1.0 / 32.0;
      * maxfcnt = 10000;
+     *
      * @return new NumericScalarProductOperator(new DQuadIntegralXY())
      */
     public static ScalarProductOperator quad() {
@@ -58,23 +59,26 @@ public class ScalarProductOperatorFactory extends AbstractFactory{
     }
 
     public static ScalarProductOperator rectmid() {
-        return rectmid(0,0,0);
+        return rectmid(0, 0, 0);
     }
+
     public static ScalarProductOperator rectmid(int precision) {
-        return rectmid(precision,precision,precision);
+        return rectmid(precision, precision, precision);
     }
+
     public static ScalarProductOperator rectmid(int xprecision, int yprecision, int zprecision) {
-        return new NumericScalarProductOperator(new DRectMidIntegralXY(xprecision, yprecision,zprecision));
+        return new NumericScalarProductOperator(new DRectMidIntegralXY(xprecision, yprecision, zprecision));
     }
 
     public static ScalarProductOperator rectlow() {
-        return rectlow(0,0,0);
+        return rectlow(0, 0, 0);
     }
 
     public static ScalarProductOperator rectlow(int precision) {
-        return rectlow(precision,precision,precision);
+        return rectlow(precision, precision, precision);
     }
-    public static ScalarProductOperator rectlow(int xprecision, int yprecision,int zprecision) {
-        return new NumericScalarProductOperator(new DRectLowIntegralXY(xprecision, yprecision,zprecision));
+
+    public static ScalarProductOperator rectlow(int xprecision, int yprecision, int zprecision) {
+        return new NumericScalarProductOperator(new DRectLowIntegralXY(xprecision, yprecision, zprecision));
     }
 }

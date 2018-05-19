@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.symbolic.old.SymExpression;
  */
 public class SymSin extends SymAbstractFct1Param {
     public SymSin(SymExpression value) {
-        super("sin",value);
+        super("sin", value);
     }
 
     protected Complex eval(Complex value) {

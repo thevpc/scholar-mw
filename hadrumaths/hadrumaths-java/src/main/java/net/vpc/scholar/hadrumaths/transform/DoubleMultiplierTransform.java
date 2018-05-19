@@ -6,7 +6,6 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 /**
- *
  * @author vpc
  */
 public final class DoubleMultiplierTransform implements ExpressionTransform {

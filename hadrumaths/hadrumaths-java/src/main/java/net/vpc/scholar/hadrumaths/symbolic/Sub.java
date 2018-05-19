@@ -85,7 +85,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     public Sub(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        domainDim = Maths.max(first.getDomainDimension(), second.getDomainDimension());
+        domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
     }
 
     public boolean isZeroImpl() {
@@ -140,7 +140,7 @@ public class Sub extends AbstractExprOperator implements Cloneable {
         Domain d = Domain.NaNX;
         for (Expr expression : getSubExpressions()) {
             //if (!expression.isZero()) {
-                d = d.expand(expression.getDomain());
+            d = d.expand(expression.getDomain());
             //}
         }
         return d.toDomain(getDomainDimension());
@@ -381,8 +381,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, z, rdefined1);
         Complex c = getSecond().toDC().computeComplex(x, y, z, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {
@@ -394,8 +394,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y, double z, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, z, rdefined1);
         double b = getSecond().toDD().computeDouble(x, y, z, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {
@@ -407,8 +407,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, y, rdefined1);
         Complex c = getSecond().toDC().computeComplex(x, y, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {
@@ -420,8 +420,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, y, rdefined1);
         double b = getSecond().toDD().computeDouble(x, y, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {
@@ -433,8 +433,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Complex computeComplex(double x, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         Complex a = getFirst().toDC().computeComplex(x, rdefined1);
         Complex c = getSecond().toDC().computeComplex(x, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {
@@ -446,8 +446,8 @@ public class Sub extends AbstractExprOperator implements Cloneable {
 
     @Override
     public double computeDouble(double x, BooleanMarker defined) {
-        BooleanRef rdefined1= BooleanMarker.ref();
-        BooleanRef rdefined2= BooleanMarker.ref();
+        BooleanRef rdefined1 = BooleanMarker.ref();
+        BooleanRef rdefined2 = BooleanMarker.ref();
         double a = getFirst().toDD().computeDouble(x, rdefined1);
         double b = getSecond().toDD().computeDouble(x, rdefined2);
         if (!rdefined1.get() && !rdefined2.get()) {

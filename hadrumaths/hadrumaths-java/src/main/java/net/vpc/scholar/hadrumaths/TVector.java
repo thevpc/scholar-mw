@@ -7,7 +7,7 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.List;
 
-public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>,Serializable {
+public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, Serializable {
 
     TypeReference<T> getComponentType();
 

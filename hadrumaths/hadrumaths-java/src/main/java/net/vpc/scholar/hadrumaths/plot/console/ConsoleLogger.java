@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.scholar.hadrumaths.util.TLog;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import net.vpc.scholar.hadrumaths.util.TLog;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)

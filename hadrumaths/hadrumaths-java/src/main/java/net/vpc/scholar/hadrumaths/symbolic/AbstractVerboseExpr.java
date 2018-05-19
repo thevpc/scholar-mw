@@ -10,27 +10,27 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
@@ -174,12 +174,12 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
@@ -204,11 +204,11 @@ public abstract class AbstractVerboseExpr extends AbstractExprPropertyAware impl
 
     @Override
     public boolean contains(double x, double y) {
-        return getDomain().contains(x,y);
+        return getDomain().contains(x, y);
     }
 
     @Override
     public boolean contains(double x, double y, double z) {
-        return getDomain().contains(x,y,z);
+        return getDomain().contains(x, y, z);
     }
 }

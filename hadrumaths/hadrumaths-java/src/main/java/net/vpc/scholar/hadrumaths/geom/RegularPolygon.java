@@ -26,6 +26,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         poly.setPhase(phase);
         return poly;
     }
+
     public Point getCenter() {
         return center;
     }

@@ -9,14 +9,14 @@ import java.io.Serializable;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 16 juil. 2005 11:04:59
  */
-public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<ParamSet> {
+public abstract class ParamSet<T> implements Serializable, Cloneable, Comparable<ParamSet> {
 
-    private ParamTarget target=ParamTarget.BOTH;
+    private ParamTarget target = ParamTarget.BOTH;
     private ParamSet<T> alias;
-//    private ParamTarget alias;
+    //    private ParamTarget alias;
     private boolean aliasRead = false;
-    private int priority=0;
-    private int index=0;
+    private int priority = 0;
+    private int index = 0;
     private XValueProvider xValueProvider;
     private ParamTitleProvider titlesProvider;
     private double multiplier = Double.NaN;
@@ -111,6 +111,7 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
     }
 
     protected abstract T getValueImpl(int index);
+
     protected abstract T getValueImpl();
 
     protected abstract boolean hasNextImpl();
@@ -136,7 +137,7 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
     }
 
     public final String getTitle() {
-        if(titlesProvider!=null){
+        if (titlesProvider != null) {
             return titlesProvider.getTitle(this);
         }
         return getDefaultTitle();
@@ -156,10 +157,11 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
 
     /**
      * sets the current value of the parameter for the given stucture
+     *
      * @param source
      */
-    public void setParameter(Object source){
-        param.configure(source,getValue());
+    public void setParameter(Object source) {
+        param.configure(source, getValue());
     }
 
     public ParamSet getAlias() {
@@ -175,7 +177,7 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
         return priority;
     }
 
-    public ParamSet resetPriority(){
+    public ParamSet resetPriority() {
         setPriority(0);
         return this;
     }
@@ -194,39 +196,39 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
         this.target = target;
     }
 
-//    public int compareTo(Object o) {
+    //    public int compareTo(Object o) {
 //    	return compareTo((ParamSet)o);
 //    }
     public int compareTo(ParamSet o) {
-        if(o==null){
+        if (o == null) {
             return 1;
         }
-        if(o==this){
+        if (o == this) {
             return 0;
         }
-        int i =  o.getPriority()-getPriority();//param with highest priority is first!!
-        if(i!=0){
+        int i = o.getPriority() - getPriority();//param with highest priority is first!!
+        if (i != 0) {
             return i;
         }
-        i =  getIndex()-o.getIndex();
-        if(i!=0){
+        i = getIndex() - o.getIndex();
+        if (i != 0) {
             return i;
         }
-        i =  getSize()-o.getSize();
-        if(i!=0){
+        i = getSize() - o.getSize();
+        if (i != 0) {
             return i;
         }
-        i =  getClass().getName().compareTo(o.getClass().getName());
-        if(i!=0){
+        i = getClass().getName().compareTo(o.getClass().getName());
+        if (i != 0) {
             return i;
         }
-        i =  getTarget().compareTo(o.getTarget());
-        if(i!=0){
+        i = getTarget().compareTo(o.getTarget());
+        if (i != 0) {
             return i;
         }
         return 0;
     }
-    
+
     public double getMultiplier() {
         return multiplier;
     }
@@ -237,28 +239,28 @@ public abstract class ParamSet<T> implements Serializable, Cloneable,Comparable<
     }
 
     public ParamSet<T> setTitlesProvider(ParamTitleProvider titlesProvider) {
-        this.titlesProvider=titlesProvider;
+        this.titlesProvider = titlesProvider;
         return this;
     }
 
     public ParamSet<T> setXValueProvider(XValueProvider xValueProvider) {
-        this.xValueProvider=xValueProvider;
+        this.xValueProvider = xValueProvider;
         return this;
     }
 
-    public ParamSet<T> setTitles(String ... titles) {
+    public ParamSet<T> setTitles(String... titles) {
         return setTitlesProvider(new SimpleParamTitleProvider(titles));
     }
 
     public Number getXValue() {
         T value = getValue();
-        if(xValueProvider!=null){
+        if (xValueProvider != null) {
             return xValueProvider.getXValue(this);
         }
-        if(value instanceof Number){
-            return ((Number)value);
+        if (value instanceof Number) {
+            return ((Number) value);
         }
-        return getIndex()+1;
+        return getIndex() + 1;
     }
 
 

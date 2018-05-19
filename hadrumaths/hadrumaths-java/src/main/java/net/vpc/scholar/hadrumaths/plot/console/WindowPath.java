@@ -12,22 +12,22 @@ public class WindowPath implements Serializable {
     private ArrayList<String> path = new ArrayList<String>();
 
     public WindowPath(String path) {
-        if(path==null){
-            path="";
+        if (path == null) {
+            path = "";
         }
         for (String s : path.split("/")) {
-            s=s.trim();
-            if(s.length()>0){
+            s = s.trim();
+            if (s.length() > 0) {
                 add(s);
             }
         }
     }
 
     public WindowPath(WindowPath parent, String preferredName) {
-        if(parent==null){
+        if (parent == null) {
             add("MyProject");
             add(preferredName);
-        }else{
+        } else {
             for (String element : parent.path) {
                 if (element == null || element.length() == 0) {
                     add(preferredName);

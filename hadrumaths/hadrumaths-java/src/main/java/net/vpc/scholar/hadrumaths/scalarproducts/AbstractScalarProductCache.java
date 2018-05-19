@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.TVector;
 
 /**
  * implements CacheObjectSerializerProvider because the inner matrix is not necessary serializable

@@ -1,15 +1,12 @@
 package net.vpc.scholar.hadrumaths.integration;
 
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
 import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
-
-import static net.vpc.scholar.hadrumaths.Maths.abs;
 
 
 /**
@@ -19,7 +16,7 @@ import static net.vpc.scholar.hadrumaths.Maths.abs;
  * Time: 18:55:20
  * To change this template use File | Settings | File Templates.
  */
-public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
+public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
     private static final long serialVersionUID = 1L;
     private static final int ERR_MAX_STEP_REACHED = 1;
     private static final int ERR_MAX_FCT_COUNT = 2;
@@ -36,7 +33,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 
     @Override
     public double integrateX(DoubleToDouble f, double xmin, double xmax) {
-        return integrateX(f,0,xmin,xmax);
+        return integrateX(f, 0, xmin, xmax);
     }
 
     public DQuadIntegralXY(double tolerance, double minWindow, double maxWindow, int maxfcnt) {
@@ -62,7 +59,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 //            System.out.println("simplification");
 //        }
         //g(z)= intx_(z)
-        DDzIntegralXY f2 = new DDzIntegralXY(f, this, xmin, xmax,ymin, ymax);
+        DDzIntegralXY f2 = new DDzIntegralXY(f, this, xmin, xmax, ymin, ymax);
         return integrateX(f2, 0, zmin, zmax);
     }
 
@@ -80,16 +77,16 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 
     public double integrateX(DoubleToDouble f, double y0, double xmin, double xmax) {
         double[] x = new double[]{xmin, (xmin + xmax) / 2.0, xmax};
-        if(f.isZero()){
+        if (f.isZero()) {
             return 0;
         }
-        double[] y = f.computeDouble(x, y0,null, null);
-        if(Double.isInfinite(y[2])){
+        double[] y = f.computeDouble(x, y0, null, null);
+        if (Double.isInfinite(y[2])) {
             y = f.computeDouble(x, y0, null, null);
         }
         int fcnt = 3;
-        double hmin = hminCoeff * abs(xmax - xmin);
-        double hmax = hmaxCoeff * abs(xmax - xmin);
+        double hmin = hminCoeff * Math.abs(xmax - xmin);
+        double hmax = hmaxCoeff * Math.abs(xmax - xmin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
             y[0] = f.computeDouble(xmin + hmin, y0);
@@ -124,17 +121,16 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
     }
 
 
-
     public double integrateY(DoubleToDouble f, double x0, double ymin, double ymax) {
 
         double[] yy = new double[]{ymin, (ymin + ymax) / 2.0, ymax};
-        if(f.isZero()){
+        if (f.isZero()) {
             return 0;
         }
         double[] y = f.computeDouble(x0, yy, null, null);
         int fcnt = 3;
-        double hmin = hminCoeff * abs(ymax - ymin);
-        double hmax = hmaxCoeff * abs(ymax - ymin);
+        double hmin = hminCoeff * Math.abs(ymax - ymin);
+        double hmax = hmaxCoeff * Math.abs(ymax - ymin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
             y[0] = f.computeDouble(x0, ymin + hmin);
@@ -175,7 +171,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 //% Evaluate integrand twice in interior of subinterval [a,b].
         double h = b - a;
         double c = (a + b) / 2;
-        if (abs(h) < hmin || c == a || c == b) {
+        if (Math.abs(h) < hmin || c == a || c == b) {
             //% Minimum step size reached; singularity possible.
             double Q = h * fc;
             double warn = ERR_MAX_STEP_REACHED;
@@ -209,14 +205,14 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
         }
         //disp(sprintf('%8.0f %16.10f %18.8e %16.10f', fcnt, a, h, Q))
         //% Check accuracy of integral over this subinterval.
-        if (abs(h) <= hmax && abs(Q2 - Q) <= tolerance) {
+        if (Math.abs(h) <= hmax && Math.abs(Q2 - Q) <= tolerance) {
             double warn = 0;
             return new double[]{Q, fcnt, warn};
         } else {//% Subdivide into two subintervals.
             double[] o1 = quadstepX(f, y0, a, c, fa, fd, fc, fcnt, hmin, hmax);
             double[] o2 = quadstepX(f, y0, c, b, fc, fe, fb, fcnt, hmin, hmax);
             Q = o1[0] + o2[0];
-            int warn = Maths.max((int) o1[2], (int) o2[2]);
+            int warn = Math.max((int) o1[2], (int) o2[2]);
             return new double[]{Q, fcnt, warn};
         }
     }
@@ -228,7 +224,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
 //% Evaluate integrand twice in interior of subinterval [a,b].
         double h = b - a;
         double c = (a + b) / 2;
-        if (abs(h) < hmin || c == a || c == b) {
+        if (Math.abs(h) < hmin || c == a || c == b) {
             //% Minimum step size reached; singularity possible.
             double Q = h * fc;
             double warn = ERR_MAX_STEP_REACHED;
@@ -262,14 +258,14 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable,Serializable {
         }
         //disp(sprintf('%8.0f %16.10f %18.8e %16.10f', fcnt, a, h, Q))
         //% Check accuracy of integral over this subinterval.
-        if (abs(h) <= hmax && abs(Q2 - Q) <= tolerance) {
+        if (Math.abs(h) <= hmax && Math.abs(Q2 - Q) <= tolerance) {
             double warn = 0;
             return new double[]{Q, fcnt, warn};
         } else {//% Subdivide into two subintervals.
             double[] o1 = quadstepY(f, x0, a, c, fa, fd, fc, fcnt, hmin, hmax);
             double[] o2 = quadstepY(f, x0, c, b, fc, fe, fb, fcnt, hmin, hmax);
             Q = o1[0] + o2[0];
-            int warn = Maths.max((int) o1[2], (int) o2[2]);
+            int warn = Math.max((int) o1[2], (int) o2[2]);
             return new double[]{Q, fcnt, warn};
         }
     }

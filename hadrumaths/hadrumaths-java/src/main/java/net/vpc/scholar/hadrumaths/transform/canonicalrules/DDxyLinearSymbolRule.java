@@ -19,7 +19,6 @@ import java.util.List;
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
- *
  * @author vpc
  */
 public class DDxyLinearSymbolRule implements ExpressionRewriterRule {
@@ -39,17 +38,17 @@ public class DDxyLinearSymbolRule implements ExpressionRewriterRule {
         }
 
         Linear ee = (Linear) e;
-        List<Expr> p=new ArrayList<Expr>();
-        if(ee.getA()!=0){
-            p.add(mul(Maths.expr(ee.getA(), ee.getDomain()),X));
+        List<Expr> p = new ArrayList<Expr>();
+        if (ee.getA() != 0) {
+            p.add(mul(Maths.expr(ee.getA(), ee.getDomain()), X));
         }
-        if(ee.getB()!=0){
+        if (ee.getB() != 0) {
             p.add(mul(Maths.expr(ee.getB(), ee.getDomain()), Y));
         }
-        if(ee.getC()!=0){
+        if (ee.getC() != 0) {
             p.add(Maths.expr(ee.getC(), ee.getDomain()));
         }
-        if(p.isEmpty()){
+        if (p.isEmpty()) {
             return RewriteResult.bestEffort(FunctionFactory.CZEROXY);
         }
         return RewriteResult.newVal(Maths.sum(p.toArray(new Expr[p.size()])));
@@ -62,7 +61,7 @@ public class DDxyLinearSymbolRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

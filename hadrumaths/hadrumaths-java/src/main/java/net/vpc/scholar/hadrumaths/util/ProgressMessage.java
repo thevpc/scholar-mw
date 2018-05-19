@@ -7,5 +7,6 @@ import java.util.logging.Level;
  */
 public interface ProgressMessage {
     Level getLevel();
+
     String getText();
 }

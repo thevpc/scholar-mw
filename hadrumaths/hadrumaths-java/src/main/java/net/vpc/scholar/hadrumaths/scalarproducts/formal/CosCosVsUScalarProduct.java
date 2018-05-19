@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.UFunction;
 
 
@@ -19,7 +19,7 @@ final class CosCosVsUScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
@@ -29,7 +29,7 @@ final class CosCosVsUScalarProduct implements FormalScalarProductHelper {
         CosXCosY f1ok = (CosXCosY) f1;
         UFunction u = (UFunction) f2;
         // je suppose que cela ne dépend pas de y!!!!!
-        double delta=u.getB()*u.getB() - 4 * u.getA() * u.getC();
+        double delta = u.getB() * u.getB() - 4 * u.getA() * u.getC();
 //        double delta=u.getB()*u.getB() - 4 * u.getA() * u.getC();
         return 0;
 //        double alpha=

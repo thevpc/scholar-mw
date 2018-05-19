@@ -1,20 +1,20 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
-* @creationtime 6 janv. 2007 12:13:07
-*/
+ * @creationtime 6 janv. 2007 12:13:07
+ */
 public class TaskMonitor extends JPanel implements ActionListener {
     Box list;
     JButton incrementButton;
@@ -33,7 +33,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
         this.setLayout(new BorderLayout());
 
         this.add(list, BorderLayout.NORTH);
-        
+
         JToolBar south = new JToolBar(JToolBar.HORIZONTAL);
         south.setFloatable(false);
         this.add(south, BorderLayout.SOUTH);
@@ -83,22 +83,22 @@ public class TaskMonitor extends JPanel implements ActionListener {
 
     public void addTask(PlotThread task) {
         plotConsole.start();
-        String windowTitle=(task.getWindowTitle());
-        String descLabel=(task.getSerieTitle().toString());
-        list.add(new TaskComponent(this, ProgressMonitorFactory.enhance(task),windowTitle,descLabel));
+        String windowTitle = (task.getWindowTitle());
+        String descLabel = (task.getSerieTitle().toString());
+        list.add(new TaskComponent(this, ProgressMonitorFactory.enhance(task), windowTitle, descLabel));
         task.start();
     }
 
     public ProgressMonitor addTask(ProgressMonitor task, String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedProgressMonitor m= ProgressMonitorFactory.enhance(task);
+        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(task);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }
 
-    public ProgressMonitor addTask(String windowTitle, String descLabel,ConsoleTask task) {
+    public ProgressMonitor addTask(String windowTitle, String descLabel, ConsoleTask task) {
         plotConsole.start();
-        EnhancedProgressMonitor m= ProgressMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
+        EnhancedProgressMonitor m = ProgressMonitorFactory.logger(null, plotConsole.getLog()).temporize(5000);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         new Thread(new Runnable() {
             @Override
@@ -108,9 +108,10 @@ public class TaskMonitor extends JPanel implements ActionListener {
         }).start();
         return m;
     }
+
     public ProgressMonitor addTask(String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedProgressMonitor m= ProgressMonitorFactory.logger(null,plotConsole.getLog()).temporize(5000);
+        EnhancedProgressMonitor m = ProgressMonitorFactory.logger(null, plotConsole.getLog()).temporize(5000);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }
@@ -156,7 +157,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
         }
     }
 
-    public void unfreeze(){
+    public void unfreeze() {
         if (serializerThread != null) {
             serializerThread.softStop();
             serializerThread = null;
@@ -170,7 +171,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
             int finalI = i;
             SwingUtils.invokeLater(new Runnable() {
                 public void run() {
-                    t.ticMonitor(finalI,tasks.length-1);
+                    t.ticMonitor(finalI, tasks.length - 1);
                 }
             });
         }

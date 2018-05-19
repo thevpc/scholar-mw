@@ -3,14 +3,14 @@ package net.vpc.scholar.hadrumaths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoubleArray implements ToDoubleArrayAware{
+public class DoubleArray implements ToDoubleArrayAware {
     private List<Double> values = new ArrayList<>();
 
     public DoubleArray() {
     }
 
     public DoubleArray(int initialSize) {
-        values=new ArrayList<>(initialSize);
+        values = new ArrayList<>(initialSize);
     }
 
     public DoubleArray(List<Double> values) {
@@ -48,8 +48,8 @@ public class DoubleArray implements ToDoubleArrayAware{
         values.add(d);
     }
 
-    public void add(int pos,double d) {
-        values.add(pos,d);
+    public void add(int pos, double d) {
+        values.add(pos, d);
     }
 
     public double get(int index) {

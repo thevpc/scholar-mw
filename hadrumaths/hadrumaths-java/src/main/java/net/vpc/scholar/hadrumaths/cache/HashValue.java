@@ -9,7 +9,7 @@ public class HashValue {
     private int hash;
     private String value;
 
-    public static HashValue valueOf(Object ... elements) {
+    public static HashValue valueOf(Object... elements) {
         Dumper dump = new Dumper();
         for (Object arg : elements) {
             dump.add(arg);
@@ -19,7 +19,7 @@ public class HashValue {
 
     public HashValue(String value) {
         this.value = value;
-        hash=value.hashCode();
+        hash = value.hashCode();
     }
 
     @Override

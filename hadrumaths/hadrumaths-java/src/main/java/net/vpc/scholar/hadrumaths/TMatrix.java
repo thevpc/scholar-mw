@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public interface TMatrix<T> extends Normalizable,Serializable {
+public interface TMatrix<T> extends Normalizable, Serializable {
 
 
     double norm(NormStrategy ns);
@@ -73,7 +73,7 @@ public interface TMatrix<T> extends Normalizable,Serializable {
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(i0:i1, j0:j1)
+     * @return A(i0 : i1, j0 : j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     TMatrix<T> getMatrix(int i0, int i1, int j0, int j1);
@@ -83,7 +83,7 @@ public interface TMatrix<T> extends Normalizable,Serializable {
      *
      * @param r Array of row indices.
      * @param c Array of column indices.
-     * @return A(r(:), c(:))
+     * @return A(r ( :), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     TMatrix<T> getMatrix(int[] r, int[] c);
@@ -94,7 +94,7 @@ public interface TMatrix<T> extends Normalizable,Serializable {
      * @param r1 Initial row index
      * @param r2 Final row index
      * @param c  Array of column indices.
-     * @return A(i0:r2, c(:))
+     * @return A(i0 : r2, c ( :))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     TMatrix<T> getMatrix(int r1, int r2, int[] c);
@@ -105,7 +105,7 @@ public interface TMatrix<T> extends Normalizable,Serializable {
      * @param r  Array of row indices.
      * @param c1 Initial column index
      * @param c2 Final column index
-     * @return A(r(:), c1:c2)
+     * @return A(r ( :), c1:c2)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
     TMatrix<T> getMatrix(int[] r, int c1, int c2);

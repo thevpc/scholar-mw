@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.ValuesPlotTableModel;
 import net.vpc.scholar.hadrumaths.plot.PlotComponentPanel;
 import net.vpc.scholar.hadrumaths.plot.PlotModelProvider;
 import net.vpc.scholar.hadrumaths.util.JTableHelper;
-import net.vpc.scholar.hadrumaths.util.swingext.SimpleRowHeaderRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +15,7 @@ public class TablePlotComponentPanel extends JPanel implements PlotComponentPane
     public TablePlotComponentPanel(PlotModelProvider modelProvider) {
         super(new BorderLayout());
         this.modelProvider = modelProvider;
-        jTableHelper= JTableHelper.prepareIndexedTable(new ValuesPlotTableModel(modelProvider));
+        jTableHelper = JTableHelper.prepareIndexedTable(new ValuesPlotTableModel(modelProvider));
         add(jTableHelper.getPane());
     }
 
@@ -28,8 +27,8 @@ public class TablePlotComponentPanel extends JPanel implements PlotComponentPane
     @Override
     public JPopupMenu getPopupMenu() {
         JPopupMenu componentPopupMenu = jTableHelper.getTable().getComponentPopupMenu();
-        if(componentPopupMenu==null){
-            componentPopupMenu=new JPopupMenu();
+        if (componentPopupMenu == null) {
+            componentPopupMenu = new JPopupMenu();
             jTableHelper.getTable().setComponentPopupMenu(componentPopupMenu);
         }
         return componentPopupMenu;

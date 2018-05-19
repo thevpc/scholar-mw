@@ -14,42 +14,42 @@ import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 /**
  * User: taha Date: 2 juil. 2003 Time: 11:58:07
  */
-public abstract class AbstractIntegrationOperator implements IntegrationOperator{
+public abstract class AbstractIntegrationOperator implements IntegrationOperator {
 
     public abstract double evalDD(Domain domain, DoubleToDouble f1);
 
     @Override
     public double[] evalDD(Domain domain, DoubleToDouble[] f2) {
-        double[] d=new double[f2.length];
+        double[] d = new double[f2.length];
         for (int i = 0; i < d.length; i++) {
-            d[i]=evalDD(domain,f2[i]);
+            d[i] = evalDD(domain, f2[i]);
         }
         return d;
     }
 
     @Override
     public Complex[] evalDC(Domain domain, DoubleToComplex[] f2) {
-        Complex[] d=new Complex[f2.length];
+        Complex[] d = new Complex[f2.length];
         for (int i = 0; i < d.length; i++) {
-            d[i]=evalDC(domain,f2[i]);
+            d[i] = evalDC(domain, f2[i]);
         }
         return d;
     }
 
     @Override
     public Complex[] evalVDC(Domain domain, DoubleToVector[] f1) {
-        Complex[] d=new Complex[f1.length];
+        Complex[] d = new Complex[f1.length];
         for (int i = 0; i < d.length; i++) {
-            d[i]=evalVDC(domain,f1[i]);
+            d[i] = evalVDC(domain, f1[i]);
         }
         return d;
     }
 
     @Override
     public double[] evalVDD(Domain domain, DoubleToVector[] f2) {
-        double[] d=new double[f2.length];
+        double[] d = new double[f2.length];
         for (int i = 0; i < d.length; i++) {
-            d[i]= evalVDD(domain, f2[i]);
+            d[i] = evalVDD(domain, f2[i]);
         }
         return d;
     }
@@ -61,7 +61,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
         if (f1.isDC()) {
             return evalDC(domain, f1.toDC());
         }
-        return evalDM( domain, f1.toDM());
+        return evalDM(domain, f1.toDM());
     }
 
     public Complex eval(Expr f1) {
@@ -78,13 +78,13 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     @Override
     public Complex evalVDC(Domain domain, DoubleToVector f1) {
-        return eval(domain,f1.getComponent(Axis.X)).add(eval(domain,f1.getComponent(Axis.Y)));
+        return eval(domain, f1.getComponent(Axis.X)).add(eval(domain, f1.getComponent(Axis.Y)));
     }
 
     @Override
     public double evalVDD(Domain domain, DoubleToVector f1) {
-        return evalDD(domain,f1.getComponent(Axis.X).toDD())
-                +(evalDD(domain,f1.getComponent(Axis.Y).toDD())
+        return evalDD(domain, f1.getComponent(Axis.X).toDD())
+                + (evalDD(domain, f1.getComponent(Axis.Y).toDD())
         );
     }
 
@@ -107,10 +107,10 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     public Complex[] eval(Expr[] g, ProgressMonitor monitor) {
         EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
         m.start(null);
-        Complex[] r=new Complex[g.length];
+        Complex[] r = new Complex[g.length];
         for (int i = 0; i < g.length; i++) {
-            m.setProgress(i,g.length,null);
-            r[i]=eval(g[i]);
+            m.setProgress(i, g.length, null);
+            r[i] = eval(g[i]);
         }
         m.terminate(null);
         return r;
@@ -118,7 +118,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     @Override
     public Complex[] eval(TVector<Expr> g, ProgressMonitor monitor) {
-        return eval(g.toArray(),monitor);
+        return eval(g.toArray(), monitor);
     }
 
 //    public TMatrix<Complex> eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
@@ -140,7 +140,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     public Complex evalDC(Domain domain, DoubleToComplex f1) {
         DoubleToDouble r1 = f1.getRealDD();
         DoubleToDouble i1 = f1.getImagDD();
-        return Complex.valueOf(evalDD(domain, r1) ,evalDD(domain, i1));
+        return Complex.valueOf(evalDD(domain, r1), evalDD(domain, i1));
     }
 
     @Override
@@ -149,7 +149,6 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     }
 
     public abstract ExpressionRewriter getExpressionRewriter();
-
 
 
     public Complex evalVDC(DoubleToVector f1) {

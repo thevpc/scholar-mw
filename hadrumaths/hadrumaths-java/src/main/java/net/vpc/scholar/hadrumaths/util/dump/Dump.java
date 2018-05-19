@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
  * Created by vpc on 8/31/14.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD,ElementType.TYPE})
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface Dump {
 }

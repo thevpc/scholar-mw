@@ -8,14 +8,14 @@ public class FreqProgressMonitor extends AbstractEnhancedProgressMonitor {
     private double progress;
     private ProgressMessage message;
     private ProgressMonitor base;
-    private Level level=Level.INFO;
+    private Level level = Level.INFO;
 
     public FreqProgressMonitor(ProgressMonitor base, long freq) {
-        this.base=base;
-        if(freq<0){
-            freq=0;
+        this.base = base;
+        if (freq < 0) {
+            freq = 0;
         }
-        this.freq=freq;
+        this.freq = freq;
     }
 
     @Override
@@ -29,14 +29,15 @@ public class FreqProgressMonitor extends AbstractEnhancedProgressMonitor {
     }
 
     public void setProgressImpl(double progress, ProgressMessage message) {
-        this.progress=progress;
-        this.message=message;
-        long newd=System.currentTimeMillis();
-        if(message.getLevel().intValue()>=level.intValue() || newd>lastDate+freq){
+        this.progress = progress;
+        this.message = message;
+        long newd = System.currentTimeMillis();
+        if (message.getLevel().intValue() >= level.intValue() || newd > lastDate + freq) {
             base.setProgress(progress, message);
-            lastDate=newd;
+            lastDate = newd;
         }
     }
+
     @Override
     public String toString() {
         return "Freq(" +

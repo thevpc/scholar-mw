@@ -17,7 +17,6 @@ import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.Shape2D;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
@@ -1289,10 +1288,10 @@ public final class Maths {
     }
 
     public static double acotan(double c) {
-        if(c==0){
+        if (c == 0) {
             return HALF_PI;
         }
-        return Math.atan(1/c);
+        return Math.atan(1 / c);
     }
 
     public static double exp(double c) {
@@ -1768,7 +1767,7 @@ public final class Maths {
     public static Complex randomComplex() {
         double r = Math.random();
         double p = Math.random() * 2 * PI;
-        return Complex.valueOf(r * cos(r), r * sin(p));
+        return Complex.valueOf(r * Math.cos(r), r * sin(p));
     }
 
     public static boolean randomBoolean() {
@@ -3271,8 +3270,8 @@ public final class Maths {
         double min = Double.MIN_VALUE;
         double max = Double.MAX_VALUE;
         for (double value : a) {
-            min = Maths.min(min, value);
-            max = Maths.max(max, value);
+            min = Math.min(min, value);
+            max = Math.max(max, value);
         }
         return new double[]{min, max};
     }
@@ -3282,8 +3281,8 @@ public final class Maths {
         double max = Double.MIN_VALUE;
         for (double anA : a) {
             double abs = Math.abs(anA);
-            min = Maths.min(min, abs);
-            max = Maths.max(max, abs);
+            min = Math.min(min, abs);
+            max = Math.max(max, abs);
         }
         return new double[]{min, max};
     }
@@ -3295,8 +3294,8 @@ public final class Maths {
         for (double anA : a) {
             if (!Double.isNaN(anA) && !Double.isInfinite(anA)) {
                 double abs = Math.abs(anA);
-                min = Maths.min(min, abs);
-                max = Maths.max(max, abs);
+                min = Math.min(min, abs);
+                max = Math.max(max, abs);
                 b = true;
             }
         }
@@ -3324,7 +3323,7 @@ public final class Maths {
     }
 
     public static double[] div(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] / b[i];
@@ -3333,7 +3332,7 @@ public final class Maths {
     }
 
     public static double[] mul(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] * b[i];
@@ -3342,7 +3341,7 @@ public final class Maths {
     }
 
     public static double[] sub(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] - b[i];
@@ -3360,7 +3359,7 @@ public final class Maths {
     }
 
     public static double[] add(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] + b[i];
@@ -3439,7 +3438,7 @@ public final class Maths {
     }
 
     public static double cotanh(double x) {
-        return 1 / tanh(x);
+        return 1 / Math.tanh(x);
     }
 
     public static double acos(double x) {
@@ -3579,8 +3578,8 @@ public final class Maths {
     }
 
     public static double[][] add(double[][] a, double[][] b) {
-        int maxi = Maths.max(a.length, b.length);
-        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Math.max(a.length, b.length);
+        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3591,8 +3590,8 @@ public final class Maths {
     }
 
     public static double[][] sub(double[][] a, double[][] b) {
-        int maxi = Maths.max(a.length, b.length);
-        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Math.max(a.length, b.length);
+        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3603,8 +3602,8 @@ public final class Maths {
     }
 
     public static double[][] div(double[][] a, double[][] b) {
-        int maxi = Maths.max(a.length, b.length);
-        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Math.max(a.length, b.length);
+        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -3615,8 +3614,8 @@ public final class Maths {
     }
 
     public static double[][] mul(double[][] a, double[][] b) {
-        int maxi = Maths.max(a.length, b.length);
-        int maxj = Maths.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
+        int maxi = Math.max(a.length, b.length);
+        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
         double[][] ret = new double[maxi][maxj];
         for (int i = 0; i < maxi; i++) {
             for (int j = 0; j < maxj; j++) {
@@ -5439,7 +5438,7 @@ public final class Maths {
         if (Double.isInfinite(a) || Double.isInfinite(b)) {
             return Double.POSITIVE_INFINITY;
         }
-        return Maths.abs(b - a) / abs(a);
+        return Math.abs(b - a) / Math.abs(a);
     }
 
     public static double rerr(Complex a, Complex b) {
@@ -6252,8 +6251,8 @@ public final class Maths {
 
     public static ComponentDimension expandComponentDimension(ComponentDimension d1, ComponentDimension d2) {
         return ComponentDimension.create(
-                Maths.max(d1.rows, d2.rows),
-                Maths.max(d1.columns, d2.columns)
+                Math.max(d1.rows, d2.rows),
+                Math.max(d1.columns, d2.columns)
         );
     }
 
@@ -6295,7 +6294,7 @@ public final class Maths {
         return Math.round(a);
     }
 
-    public static double random(){
+    public static double random() {
         return Math.random();
     }
 }

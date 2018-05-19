@@ -24,7 +24,7 @@ public class Shape2DFormatter implements Formatter<Shape2D> {
     @Override
     public void format(StringBuilder sb, Shape2D o, FormatParamSet format) {
         sb.append("(");
-        FormatFactory.format(sb,o.getValue(),format);
+        FormatFactory.format(sb, o.getValue(), format);
         sb.append(" * ");
         sb.append(o.getGeometry());
         sb.append(")");

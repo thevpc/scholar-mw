@@ -50,7 +50,7 @@ public class PlotLines {
     }
 
     public void addValue(String name, double x, double y) {
-        addValue(name,x,Complex.valueOf(y));
+        addValue(name, x, Complex.valueOf(y));
     }
 
     public void addValue(String name, double x, Complex y) {
@@ -114,10 +114,10 @@ public class PlotLines {
         for (String entry : values.keySet()) {
             PlotPoint[] newLine = getLine(entry).toArray();
             for (int i = 1; i < newLine.length; i++) {
-                newLine[i]=new PlotPoint(
+                newLine[i] = new PlotPoint(
                         newLine[i].getTitle(),
                         newLine[i].getX(),
-                        newLine[i].getY().add(newLine[i-1].getY())
+                        newLine[i].getY().add(newLine[i - 1].getY())
                 );
             }
             for (PlotPoint plotPoint : newLine) {
@@ -131,11 +131,11 @@ public class PlotLines {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             PlotPoint[] newLine = getLine(entry).toArray();
-            for (int i = newLine.length-2; i >=0 ; i--) {
-                newLine[i]=new PlotPoint(
+            for (int i = newLine.length - 2; i >= 0; i--) {
+                newLine[i] = new PlotPoint(
                         newLine[i].getTitle(),
                         newLine[i].getX(),
-                        newLine[i].getY().add(newLine[i+1].getY())
+                        newLine[i].getY().add(newLine[i + 1].getY())
                 );
             }
             for (PlotPoint plotPoint : newLine) {
@@ -266,7 +266,7 @@ public class PlotLines {
     public PlotLines stretchDomain() {
         double max = 0;
         for (String t : this.titles()) {
-            max = Maths.max(max, this.getLine(t).length());
+            max = Math.max(max, this.getLine(t).length());
         }
 
         PlotLines newLines = new PlotLines();
@@ -367,11 +367,11 @@ public class PlotLines {
                         }
                         break;
                     }
-                    case ZERO:{
+                    case ZERO: {
                         //do nothing let it zero
                         break;
                     }
-                    case NAN:{
+                    case NAN: {
                         //do nothing let it NAN
                         for (Integer zeroIndex : indefinedValues) {
                             if (zeroIndex > 0 && zeroIndex + 1 < t.size() && !indefinedValues.contains(zeroIndex - 1) && !indefinedValues.contains(zeroIndex + 1)) {

@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.symbolic.old.symop.SymOpMul;
 public abstract class SymAbstractFct1Param extends SymFunction {
     private SymExpression value;
 
-    public SymAbstractFct1Param(String name,SymExpression value) {
+    public SymAbstractFct1Param(String name, SymExpression value) {
         super(name);
         this.value = value;
     }
@@ -61,7 +61,7 @@ public abstract class SymAbstractFct1Param extends SymFunction {
         c.setPreferParentheses(false);
         c.setOperatorPrecedence(SymStringContext.NO_PRECEDENCE);
         String s = getValue().toString(c);
-        return (SymUtils.formatRow(null,getName()+"(",s,")"));
+        return (SymUtils.formatRow(null, getName() + "(", s, ")"));
     }
 
 }

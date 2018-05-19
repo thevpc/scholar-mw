@@ -52,7 +52,7 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
     @Override
     public boolean isMatrixImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isMatrix()){
+            if (!e.isMatrix()) {
                 return false;
             }
         }
@@ -63,7 +63,7 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
     @Override
     public boolean isDCImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isDC()){
+            if (!e.isDC()) {
                 return false;
             }
         }
@@ -73,7 +73,7 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
     @Override
     public boolean isDDImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isDD()){
+            if (!e.isDD()) {
                 return false;
             }
         }
@@ -93,7 +93,7 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
     @Override
     public boolean isDMImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isDM()){
+            if (!e.isDM()) {
                 return false;
             }
         }
@@ -103,7 +103,7 @@ public abstract class AbstractCompositeExpr extends AbstractExprPropertyAware {
     @Override
     public boolean isDVImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isDV()){
+            if (!e.isDV()) {
                 return false;
             }
         }

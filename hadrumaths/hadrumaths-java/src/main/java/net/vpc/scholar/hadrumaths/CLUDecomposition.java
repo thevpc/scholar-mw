@@ -43,6 +43,7 @@ public class CLUDecomposition implements java.io.Serializable {
     /*
      * ------------------------ Constructor ------------------------
      */
+
     /**
      * LU Decomposition
      *
@@ -153,6 +154,7 @@ public class CLUDecomposition implements java.io.Serializable {
     /*
      * ------------------------ Public Methods ------------------------
      */
+
     /**
      * Is the matrix nonsingular?
      *
@@ -256,7 +258,7 @@ public class CLUDecomposition implements java.io.Serializable {
      * @param B A Matrix with as many rows as A and any number of columns.
      * @return X so that L*U*X = B(piv,:)
      * @throws IllegalArgumentException Matrix row dimensions must agree.
-     * @throws RuntimeException Matrix is singular.
+     * @throws RuntimeException         Matrix is singular.
      */
     public Matrix solve(Matrix B) {
         if (B.getRowCount() != m) {

@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 10 juin 2007 13:48:04
  */
-public class ReverseFormalScalarProductHelper implements FormalScalarProductHelper{
+public class ReverseFormalScalarProductHelper implements FormalScalarProductHelper {
     private FormalScalarProductHelper reversed;
 
     public ReverseFormalScalarProductHelper(FormalScalarProductHelper reversed) {

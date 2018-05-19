@@ -9,9 +9,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Expr;
 
 /**
- *
  * @author vpc
  */
-public interface ExprOperator extends Expr,DoubleToComplex, DoubleToMatrix, DoubleToDouble, /*IDDx,*/ DoubleToVector {
-    
+public interface ExprOperator extends Expr, DoubleToComplex, DoubleToMatrix, DoubleToDouble, /*IDDx,*/ DoubleToVector {
+
 }

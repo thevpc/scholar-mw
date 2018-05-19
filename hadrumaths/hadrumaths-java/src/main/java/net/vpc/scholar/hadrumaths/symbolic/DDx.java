@@ -1,21 +1,18 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
-* Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 20:33:56 To
-* change this template use File | Settings | File Templates.
-*/
-public class DDx extends AbstractDoubleToDouble implements Cloneable{
+ * Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 20:33:56 To
+ * change this template use File | Settings | File Templates.
+ */
+public class DDx extends AbstractDoubleToDouble implements Cloneable {
 
     private static final long serialVersionUID = 1L;
-//    static {
+    //    static {
 //        FormatFactory.register(DDx.class, new AbstractFormatter<DDx>() {
 //            @Override
 //            public void format(StringBuilder sb, DDx o, FormatParamSet format) {
@@ -33,7 +30,7 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
     double defaultY;
     double defaultZ;
 
-    public DDx(DoubleToDouble base, double defaultY,double defaultZ) {
+    public DDx(DoubleToDouble base, double defaultY, double defaultZ) {
         super(Domain.forBounds(base.getDomain().xmin(), base.getDomain().xmax()));
         this.base = base;
         this.defaultY = defaultY;
@@ -53,17 +50,17 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
     }
 
     public double computeDouble0(double x, BooleanMarker defined) {
-        return base.computeDouble(x, defaultY,defaultZ,defined);
+        return base.computeDouble(x, defaultY, defaultZ, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
-        return base.computeDouble(x, defaultY,defaultZ,defined);
+        return base.computeDouble(x, defaultY, defaultZ, defined);
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
-        return base.computeDouble(x, defaultY,defaultZ,defined);
+        return base.computeDouble(x, defaultY, defaultZ, defined);
     }
 
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
@@ -133,9 +130,9 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable{
     public Expr setParam(String name, Expr value) {
         Expr updated = base.setParam(name, value);
         if (updated != base) {
-            Expr e = new DDx(updated.toDD(), defaultY,defaultZ);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            Expr e = new DDx(updated.toDD(), defaultY, defaultZ);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }

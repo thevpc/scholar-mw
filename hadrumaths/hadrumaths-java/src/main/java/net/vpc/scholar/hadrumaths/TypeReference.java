@@ -5,7 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * This is super type token implementation as described in
@@ -14,7 +14,7 @@ import java.util.*;
  *
  * @author crazybob@google.com (Bob Lee)
  */
-public abstract class TypeReference<T> implements Serializable{
+public abstract class TypeReference<T> implements Serializable {
 
     private final Type type;
     private volatile Constructor<?> constructor;
@@ -33,7 +33,7 @@ public abstract class TypeReference<T> implements Serializable{
 
     @Override
     public String toString() {
-        return "TypeReference<"+type+">";
+        return "TypeReference<" + type + ">";
     }
 
     public static TypeReference of(Type type, Type... args) {
@@ -69,12 +69,12 @@ public abstract class TypeReference<T> implements Serializable{
      */
     public Class getTypeClass() {
         try {
-            Type tt=type;
-            while(tt instanceof ParameterizedType) {
-                tt=((ParameterizedType) tt).getRawType();
+            Type tt = type;
+            while (tt instanceof ParameterizedType) {
+                tt = ((ParameterizedType) tt).getRawType();
             }
             return (Class) tt;
-        }catch (ClassCastException ex){
+        } catch (ClassCastException ex) {
             throw ex;
         }
     }
@@ -110,14 +110,14 @@ public abstract class TypeReference<T> implements Serializable{
         Class[] interfaces = getTypeClass().getInterfaces();
         TypeReference[] typeReferences = new TypeReference[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
-            typeReferences[i]=of(interfaces[i]);//TODO params?
+            typeReferences[i] = of(interfaces[i]);//TODO params?
         }
         return typeReferences;
     }
 
     public TypeReference getSuperclass() {
         Class superclass = getTypeClass().getSuperclass();
-        if(superclass==null){
+        if (superclass == null) {
             return null;
         }
         return of(superclass);

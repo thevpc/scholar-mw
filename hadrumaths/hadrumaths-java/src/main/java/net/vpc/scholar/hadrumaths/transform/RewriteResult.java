@@ -30,7 +30,7 @@ public final class RewriteResult {
         return new RewriteResult(value, BEST_EFFORT);
     }
 
-//    private RewriteResult(Expr value) {
+    //    private RewriteResult(Expr value) {
 //        this.value = value;
 //        this.rewritten = true;
 //        this.bestEffort = false;
@@ -90,7 +90,7 @@ public final class RewriteResult {
     public String toString() {
         return "RewriteResult{" +
                 "value=" + value +
-                ", " + (isUnmodified()?"Unmodified":isBestEffort()?"BestEffort":isNewVal()?"NewVal":"Unknown") +
+                ", " + (isUnmodified() ? "Unmodified" : isBestEffort() ? "BestEffort" : isNewVal() ? "NewVal" : "Unknown") +
                 '}';
     }
 }

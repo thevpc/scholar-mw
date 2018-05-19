@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by vpc on 2/27/17.
  */
-public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
+public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
     private Domain domain;
     private double precision = 1.0 / 100000;
     private Domain uniformDomain = Domain.forBounds(0, 100000, 0, 100000);
@@ -243,7 +243,7 @@ public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
 
     @Override
     public Geometry translateGeometry(double x, double y) {
-        return new Surface(GeomUtils.translate(getPath().getPathIterator(null),x,y));
+        return new Surface(GeomUtils.translate(getPath().getPathIterator(null), x, y));
     }
 
     public Surface subtractGeometry(Geometry geometry) {
@@ -276,11 +276,11 @@ public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
         Area a2 = new Area(GeomUtils.round(t1.rescale(other.path), precision, precision));
         a1.add(a2);
 
-        Path2D.Double path2 ;
-        if(a1.isSingular()){
-            path2= t2.rescale(GeomUtils.simplifySingular(a1.getPathIterator(null)));
-        }else{
-            path2= t2.rescale(a1.getPathIterator(null));
+        Path2D.Double path2;
+        if (a1.isSingular()) {
+            path2 = t2.rescale(GeomUtils.simplifySingular(a1.getPathIterator(null)));
+        } else {
+            path2 = t2.rescale(a1.getPathIterator(null));
         }
 
 
@@ -305,9 +305,9 @@ public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
         Path2D.Double a3 = GeomUtils.round(a1.getPathIterator(null), 0.001, 0.001);
 
 
-        Path2D.Double path2 ;
+        Path2D.Double path2;
         PathIterator pathIterator = a3.getPathIterator(null);
-        if(a1.isSingular()){
+        if (a1.isSingular()) {
 //            if(new Surface(a3).getPoints().size()>4){
 //                Geometry s1 = new Surface(a3).scale(400, 400);
 //                Geometry s2 = new Surface(GeomUtils.simplifySingular(a3.getPathIterator(null))).scale(400, 400);
@@ -315,12 +315,12 @@ public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
 //                System.out.println(s2.toSurface().getPoints());
 //                AreaComponent.showDialog("-----", s1, s2);
 //            }
-            path2= (GeomUtils.simplifySingular(pathIterator));
-        }else{
-            path2= GeomUtils.pathIteratorToPath(pathIterator);
+            path2 = (GeomUtils.simplifySingular(pathIterator));
+        } else {
+            path2 = GeomUtils.pathIteratorToPath(pathIterator);
         }
 
-        path2=t2.rescale(path2);
+        path2 = t2.rescale(path2);
 
 //        Path2D.Double path2 = t2.rescale(a3.getPathIterator(null));
         return new Surface(path2);
@@ -377,7 +377,7 @@ public class Surface extends AbstractGeometry implements Cloneable,Dumpable {
         return new Dumper(this)
                 .add("domain", domain)
                 .add("points", points)
-        .toString();
+                .toString();
     }
 
     @Override

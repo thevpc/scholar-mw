@@ -8,10 +8,9 @@ package net.vpc.scholar.hadrumaths.expeval.operators;
 import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
-public class OpPlus extends BinaryOp{
+public class OpPlus extends BinaryOp {
 
     public OpPlus() {
         super("+");
@@ -22,6 +21,5 @@ public class OpPlus extends BinaryOp{
         return aa.add(bb);
     }
 
-    
 
 }

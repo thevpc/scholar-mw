@@ -52,7 +52,7 @@ public class ValuesPlotXYDoubleModelFace {
             if (model.getYVisible(i)) {
                 initialIndexesList.add(i);
                 yl.append(v);
-                zl.appendRow(i<this.z.length?this.z[i]:new double[]{0});
+                zl.appendRow(i < this.z.length ? this.z[i] : new double[]{0});
                 ys.add(PlotModelUtils.resolveYTitle(model, i));
             }
         }

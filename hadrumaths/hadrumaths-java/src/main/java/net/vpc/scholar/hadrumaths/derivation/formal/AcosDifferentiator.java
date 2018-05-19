@@ -17,15 +17,15 @@ public class AcosDifferentiator implements FunctionDifferentiator {
         Expr a = c.getArgument();
         return
                 new Neg(new Mul(
-                        d.derive(a,varIndex)
+                        d.derive(a, varIndex)
                         ,
                         new Sqrt(
-                        new Sub(
-                                Complex.ONE,
-                                new Sqr(a)
-                        )
+                                new Sub(
+                                        Complex.ONE,
+                                        new Sqr(a)
+                                )
                         )
                 ))
-        ;
+                ;
     }
 }

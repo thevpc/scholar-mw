@@ -14,7 +14,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     @NonStateField
     protected transient Domain _cache_domain;
     @NonStateField
-    protected Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper=new GenericFunctionXYBinaryExprHelperAnd();
+    protected Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper = new GenericFunctionXYBinaryExprHelperAnd();
     private Expr xargument;
     private Expr yargument;
 
@@ -46,7 +46,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 //        }
     }
 
-    public void resetFunctionType(FunctionType lowerFunctionType){
+    public void resetFunctionType(FunctionType lowerFunctionType) {
         FunctionType functionType0 = null;
         if (xargument.isDD()) {
             functionType0 = FunctionType.DOUBLE;
@@ -58,11 +58,11 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         } else {
             throw new IllegalArgumentException("Unknown functionType");
         }
-        if (yargument.isDD() && functionType0.ordinal()<=FunctionType.DOUBLE.ordinal()) {
+        if (yargument.isDD() && functionType0.ordinal() <= FunctionType.DOUBLE.ordinal()) {
             functionType0 = FunctionType.DOUBLE;
-        } else if (yargument.isDC() && functionType0.ordinal()<=FunctionType.COMPLEX.ordinal()) {
+        } else if (yargument.isDC() && functionType0.ordinal() <= FunctionType.COMPLEX.ordinal()) {
             functionType0 = FunctionType.COMPLEX;
-        } else if (yargument.isDM() && functionType0.ordinal()<=FunctionType.MATRIX.ordinal()) {
+        } else if (yargument.isDM() && functionType0.ordinal() <= FunctionType.MATRIX.ordinal()) {
 //            yargument.isDC();
             functionType0 = FunctionType.MATRIX;
         } else {
@@ -144,7 +144,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 
     @Override
     public int getDomainDimension() {
-        return Maths.max(getXArgument().getDomainDimension(), getYArgument().getDomainDimension());
+        return Math.max(getXArgument().getDomainDimension(), getYArgument().getDomainDimension());
     }
 
     @Override
@@ -291,7 +291,6 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     public abstract Expr newInstance(Expr xargument, Expr yargument);
 
 
-
     @Override
     public double computeDouble(double x, BooleanMarker defined) {
         if (contains(x)) {
@@ -303,6 +302,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         }
         return 0;
     }
+
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
@@ -362,7 +362,6 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         }
         return Complex.ZERO;
     }
-
 
 
     //    @Override
@@ -499,13 +498,13 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
 
         @Override
         public double computeDouble(double a, double b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
-            double d = GenericFunctionXY.this.computeDoubleArg(a, b,options.value1Defined,options.value2Defined, defined);
+            double d = GenericFunctionXY.this.computeDoubleArg(a, b, options.value1Defined, options.value2Defined, defined);
             return d;
         }
 
         @Override
         public Complex computeComplex(Complex a, Complex b, BooleanMarker defined, Expressions.ComputeDefOptions options) {
-            Complex d = GenericFunctionXY.this.computeComplexArg(a, b,options.value1Defined,options.value2Defined, defined);
+            Complex d = GenericFunctionXY.this.computeComplexArg(a, b, options.value1Defined, options.value2Defined, defined);
             return d;
         }
 

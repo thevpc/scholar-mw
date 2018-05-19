@@ -8,6 +8,7 @@ import java.io.File;
  */
 public interface RecentFilesModel {
     public File[] getFiles();
+
     public void setFiles(File[] files);
 
     void removeFile(File file);

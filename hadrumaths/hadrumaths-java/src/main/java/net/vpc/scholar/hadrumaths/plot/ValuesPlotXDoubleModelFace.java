@@ -19,19 +19,19 @@ public class ValuesPlotXDoubleModelFace {
 
         double[][] xAxis = model.getX();
         double[][] x2Axis = model.getY();
-        double[][] yAxis=null;
-        boolean swappedXY=false;
-        if(xAxis!=null && x2Axis!=null && xAxis.length==1 && xAxis[0].length==1 && x2Axis.length>0 && x2Axis[0].length>0){
-            double[][] sw=xAxis;
-            xAxis=x2Axis;
-            x2Axis=sw;
+        double[][] yAxis = null;
+        boolean swappedXY = false;
+        if (xAxis != null && x2Axis != null && xAxis.length == 1 && xAxis[0].length == 1 && x2Axis.length > 0 && x2Axis[0].length > 0) {
+            double[][] sw = xAxis;
+            xAxis = x2Axis;
+            x2Axis = sw;
             double[][] zd0 = model.getZd();
             yAxis = new double[1][zd0.length];
             for (int i = 0; i < zd0.length; i++) {
-                yAxis[0][i]=zd0[i][0];
+                yAxis[0][i] = zd0[i][0];
             }
-            swappedXY=true;
-        }else {
+            swappedXY = true;
+        } else {
             yAxis = model.getZd();
         }
 
@@ -69,7 +69,7 @@ public class ValuesPlotXDoubleModelFace {
                         if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxis[i].length) {
                             if (xAxisList.isEmpty() || yAxis[i].length != xAxisList.get(xAxisList.size() - 1).length) {
                                 boolean ok = false;
-                                for (int j = Maths.min(i - 1,xAxis.length-1); j >= 0; j--) {
+                                for (int j = Math.min(i - 1, xAxis.length - 1); j >= 0; j--) {
                                     if (xAxis[j] != null && yAxis[i].length == xAxis[j].length) {
                                         ok = true;
                                         xAxisList.add(PlotModelUtils.mul(xAxis[j], xmultiplier));

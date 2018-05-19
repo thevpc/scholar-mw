@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.meshalgo;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
@@ -25,7 +24,7 @@ public class MeshZone {
     private Domain globalDomain;
     private Domain domain0;
     private Map<String, Object> userProperties;
-    private boolean scale=true;
+    private boolean scale = true;
 
     public MeshZone(Domain domain) {
         this(domain.toGeometry(), MeshZoneShape.RECTANGLE, MeshZoneType.MAIN);
@@ -98,16 +97,16 @@ public class MeshZone {
             double y0 = rectangle2D.getYMin();
             double y1 = rectangle2D.getYMax();
             final double EPSILON = 1E-2;
-            if (Maths.abs(x0 - domain0.getXMin()) < EPSILON) {
+            if (Math.abs(x0 - domain0.getXMin()) < EPSILON) {
                 x0 = domain0.getXMin();
             }
-            if (Maths.abs(x1 - domain0.getXMax()) < EPSILON) {
+            if (Math.abs(x1 - domain0.getXMax()) < EPSILON) {
                 x1 = domain0.getXMax();
             }
-            if (Maths.abs(y0 - domain0.getYMin()) < EPSILON) {
+            if (Math.abs(y0 - domain0.getYMin()) < EPSILON) {
                 y0 = domain0.getYMin();
             }
-            if (Maths.abs(y1 - domain0.getYMax()) < EPSILON) {
+            if (Math.abs(y1 - domain0.getYMax()) < EPSILON) {
                 y1 = domain0.getYMax();
             }
             double dxmin = (x0 - domain0.getXMin()) / domain0.getXwidth() * globalDomain.xwidth() + globalDomain.xmin();
@@ -129,28 +128,28 @@ public class MeshZone {
             }
             setDomain(intersect);
         }
-        scale=!this.globalDomain.equals(domain0);
-        if(scale){
+        scale = !this.globalDomain.equals(domain0);
+        if (scale) {
             System.out.println("Why Scale!!!");
         }
     }
 
     public double toEffectiveX(double x) {
-        if(!scale){
+        if (!scale) {
             return x;
         }
         return (x - domain0.getXMin()) / domain0.getXwidth() * globalDomain.xwidth() + globalDomain.xmin();
     }
 
     public double toEffectiveY(double y) {
-        if(!scale){
+        if (!scale) {
             return y;
         }
         return (y - domain0.getYMin()) / domain0.getYwidth() * globalDomain.ywidth() + globalDomain.ymin();
     }
 
     public Point toEffectivePoint(Point p) {
-        if(!scale){
+        if (!scale) {
             return p;
         }
         return Point.create(toEffectiveX(p.x), toEffectiveY(p.y));

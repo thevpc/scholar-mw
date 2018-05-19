@@ -10,9 +10,9 @@ import java.util.Arrays;
  * Class Description
  *
  * @author Taha BEN SALAH (taha@ant-inter.com)
- *         User: taha
- *         Date: 14-aout-2004
- *         Time: 22:01:08
+ * User: taha
+ * Date: 14-aout-2004
+ * Time: 22:01:08
  */
 @Deprecated
 public class DxySum extends DDxyAbstractSum implements Cloneable {
@@ -147,8 +147,6 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
 //        }
 //        return true;
 //    }
-
-
 
 
     @Override

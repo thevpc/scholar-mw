@@ -5,11 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -58,26 +55,26 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     public Range convertBackRange(Range r) {
-        if(r==null){
+        if (r == null) {
             return null;
         }
         int xindex = axis[0].equals(Axis.X) ? 0 : axis[1].equals(Axis.X) ? 1 : 2;
         int yindex = axis[0].equals(Axis.Y) ? 0 : axis[1].equals(Axis.Y) ? 1 : 2;
         int zindex = axis[0].equals(Axis.Z) ? 0 : axis[1].equals(Axis.Z) ? 1 : 2;
-        int xmin=xindex==0?r.xmin: xindex==1?r.ymin:r.zmin;
-        int xmax=xindex==0?r.xmax: xindex==1?r.ymax:r.zmax;
+        int xmin = xindex == 0 ? r.xmin : xindex == 1 ? r.ymin : r.zmin;
+        int xmax = xindex == 0 ? r.xmax : xindex == 1 ? r.ymax : r.zmax;
 
-        int ymin=yindex==0?r.xmin: yindex==1?r.ymin:r.zmin;
-        int ymax=yindex==0?r.xmax: yindex==1?r.ymax:r.zmax;
+        int ymin = yindex == 0 ? r.xmin : yindex == 1 ? r.ymin : r.zmin;
+        int ymax = yindex == 0 ? r.xmax : yindex == 1 ? r.ymax : r.zmax;
 
-        int zmin=zindex==0?r.xmin: zindex==1?r.ymin:r.zmin;
-        int zmax=zindex==0?r.xmax: zindex==1?r.ymax:r.zmax;
-        if(r.dimension==2){
-            if((axis[0]==Axis.X && axis[1]==Axis.Y) || (axis[1]==Axis.X && axis[0]==Axis.Y)){
-                return Range.forBounds(xmin,xmax,ymin,ymax);
+        int zmin = zindex == 0 ? r.xmin : zindex == 1 ? r.ymin : r.zmin;
+        int zmax = zindex == 0 ? r.xmax : zindex == 1 ? r.ymax : r.zmax;
+        if (r.dimension == 2) {
+            if ((axis[0] == Axis.X && axis[1] == Axis.Y) || (axis[1] == Axis.X && axis[0] == Axis.Y)) {
+                return Range.forBounds(xmin, xmax, ymin, ymax);
             }
         }
-        return Range.forBounds(xmin,xmax,ymin,ymax,zmin,zmax);
+        return Range.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
     public double[][][] convertBackXYZValues(double[][][] xyz) {
@@ -89,8 +86,8 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
-                    int[] t={x,y,z};
-                    ret[z][y][x]=xyz[t[zindex]][t[yindex]][t[xindex]];
+                    int[] t = {x, y, z};
+                    ret[z][y][x] = xyz[t[zindex]][t[yindex]][t[xindex]];
                 }
             }
         }
@@ -106,13 +103,14 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
-                    int[] t={x,y,z};
-                    ret[z][y][x]=xyz[t[zindex]][t[yindex]][t[xindex]];
+                    int[] t = {x, y, z};
+                    ret[z][y][x] = xyz[t[zindex]][t[yindex]][t[xindex]];
                 }
             }
         }
         return ret;
     }
+
     public Matrix[][][] convertBackXYZValues(Matrix[][][] xyz) {
         int[] count = {xyz[0][0].length, xyz[0].length, xyz.length};
         int xindex = axis[0].equals(Axis.X) ? 0 : axis[1].equals(Axis.X) ? 1 : 2;
@@ -122,8 +120,8 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
-                    int[] t={x,y,z};
-                    ret[z][y][x]=xyz[t[zindex]][t[yindex]][t[xindex]];
+                    int[] t = {x, y, z};
+                    ret[z][y][x] = xyz[t[zindex]][t[yindex]][t[xindex]];
                 }
             }
         }
@@ -276,7 +274,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Complex[][] ret = expression.toDC().computeComplex(x, y, d0, r2);
-            ret=convertBackXYZValues(new Complex[][][]{ret})[0];
+            ret = convertBackXYZValues(new Complex[][][]{ret})[0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -301,7 +299,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Complex[] ret = expression.toDC().computeComplex(x, d0, r2);
-            ret=convertBackXYZValues(new Complex[][][]{{ret}})[0][0];
+            ret = convertBackXYZValues(new Complex[][][]{{ret}})[0][0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -319,7 +317,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     public Complex[][][] computeComplex(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, y0, z0);
         double[] x = xyz[0];
-        double[]y = xyz[1];
+        double[] y = xyz[1];
         double[] z = xyz[2];
         Domain d0 = convertDomain(d00);
         Domain domainXY = getDomain();
@@ -328,7 +326,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Complex[][][] ret = expression.toDC().computeComplex(x, y, z, d0, r2);
-            ret=convertBackXYZValues(ret);
+            ret = convertBackXYZValues(ret);
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -353,7 +351,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             double[][] ret = expression.toDD().computeDouble(x, y, d0, r2);
-            ret=convertBackXYZValues(new double[][][]{ret})[0];
+            ret = convertBackXYZValues(new double[][][]{ret})[0];
             if (ranges != null) {
                 //eval r
                 ranges.set(convertBackRange(r));
@@ -380,7 +378,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             double[][][] ret = expression.toDD().computeDouble(x, y, z, d0, r2);
-            ret=convertBackXYZValues(ret);
+            ret = convertBackXYZValues(ret);
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -405,7 +403,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Matrix[][] ret = expression.toDM().computeMatrix(x, y, d0, r2);
-            ret=convertBackXYZValues(new Matrix[][][]{ret})[0];
+            ret = convertBackXYZValues(new Matrix[][][]{ret})[0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -430,7 +428,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Matrix[] ret = expression.toDM().computeMatrix(x, d0, r2);
-            ret=convertBackXYZValues(new Matrix[][][]{{ret}})[0][0];
+            ret = convertBackXYZValues(new Matrix[][][]{{ret}})[0][0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -457,7 +455,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Matrix[][][] ret = expression.toDM().computeMatrix(x, y, z, d0, r2);
-            ret=convertBackXYZValues(ret);
+            ret = convertBackXYZValues(ret);
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
@@ -482,7 +480,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             double[] ret = expression.toDD().computeDouble(x, d0, r2);
-            ret=convertBackXYZValues(new double[][][]{{ret}})[0][0];
+            ret = convertBackXYZValues(new double[][][]{{ret}})[0][0];
             if (range != null) {
                 range.set(r);
             }
@@ -529,8 +527,8 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y,BooleanMarker defined) {
-        return Expressions.computeDouble(this, x, y,defined);
+    public double computeDouble(double x, double y, BooleanMarker defined) {
+        return Expressions.computeDouble(this, x, y, defined);
     }
 
 //    public double computeDouble(double x) {
@@ -586,8 +584,8 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         Expr updated = expression.setParam(name, value);
         if (updated != expression) {
             Expr e = new AxisTransform(updated, axis, dim);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -597,7 +595,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         Expr updated = expression.composeX(xreplacement);
         if (updated != expression) {
             Expr e = new AxisTransform(updated, axis, dim);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -608,7 +606,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         Expr updated = expression.composeY(yreplacement);
         if (updated != expression) {
             Expr e = new AxisTransform(updated, axis, dim);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -656,9 +654,9 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x,BooleanMarker defined) {
-        if(contains(x)) {
-            if(true){
+    public Complex computeComplex(double x, BooleanMarker defined) {
+        if (contains(x)) {
+            if (true) {
                 throw new IllegalArgumentException("Missing  Y and Y");
             }
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{0}, new double[]{0});
@@ -669,9 +667,9 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y,BooleanMarker defined) {
-        if(contains(x,y)) {
-            if(true){
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
+        if (contains(x, y)) {
+            if (true) {
                 throw new IllegalArgumentException("Missing  Y and Y");
             }
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{0});
@@ -683,25 +681,25 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
-    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
-        if(contains(x,y,z)) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
+        if (contains(x, y, z)) {
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
             x = xyz[0][0];
             y = xyz[1][0];
             z = xyz[2][0];
-            return expression.toDC().computeComplex(x, y, z,defined);
+            return expression.toDC().computeComplex(x, y, z, defined);
         }
         return Complex.ZERO;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
-        if(contains(x,y,z)) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
+        if (contains(x, y, z)) {
             double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
             x = xyz[0][0];
             y = xyz[1][0];
             z = xyz[2][0];
-            return expression.toDD().computeDouble(x, y, z,defined);
+            return expression.toDD().computeDouble(x, y, z, defined);
         }
         return 0;
     }
@@ -728,7 +726,6 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     public Axis[] getAxis() {
         return axis;
     }
-
 
 
     @Override
@@ -764,13 +761,12 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     @Override
     public boolean isMatrixImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isMatrix()){
+            if (!e.isMatrix()) {
                 return false;
             }
         }
         return true;
     }
-
 
 
 //    @Override
@@ -787,7 +783,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     @Override
     public boolean isDVImpl() {
         for (Expr e : getSubExpressions()) {
-            if(!e.isDV()){
+            if (!e.isDV()) {
                 return false;
             }
         }

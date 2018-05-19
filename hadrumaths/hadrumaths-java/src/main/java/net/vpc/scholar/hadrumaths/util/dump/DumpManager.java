@@ -70,12 +70,12 @@ public class DumpManager {
         }
     }
 
-    public DumpDelegate getDumpDelegate(Object o,boolean simple) {
+    public DumpDelegate getDumpDelegate(Object o, boolean simple) {
         if (o == null) {
             return nullHandler;
         }
         if (o.getClass().isArray()) {
-            if(simple){
+            if (simple) {
                 return simpleArrayHandler;
             }
             return arrayHandler;
@@ -83,9 +83,9 @@ public class DumpManager {
         DumpDelegate h = registered.get(o.getClass());
         if (h == null) {
             Dump d = o.getClass().getAnnotation(Dump.class);
-            if(d!=null){
-                h= DumperDelegate.INSTANCE;
-            }else {
+            if (d != null) {
+                h = DumperDelegate.INSTANCE;
+            } else {
                 h = defaultHandler;
             }
         }

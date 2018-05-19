@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.AbstractMatrix;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.TMatrix;
 import org.ojalgo.matrix.MutableComplexMatrix;
 
 import static net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoConverter.*;

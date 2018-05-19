@@ -54,7 +54,7 @@ public class SaveJFigAction extends AbstractPlotAction implements Serializable {
                 }
             }
             try {
-                Plot.savePlot(selectedFile, null,plot);
+                Plot.savePlot(selectedFile, null, plot);
             } catch (IOException e1) {
                 e1.printStackTrace();
                 JOptionPane.showMessageDialog(plot.getComponent(), e1.getMessage() == null ? e1.toString() : e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

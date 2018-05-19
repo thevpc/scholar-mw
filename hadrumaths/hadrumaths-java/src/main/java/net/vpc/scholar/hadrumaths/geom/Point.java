@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.Maths;
 
 import java.io.Serializable;
 
-public class Point implements Serializable,Cloneable {
+public class Point implements Serializable, Cloneable {
     private static final long serialVersionUID = -1010101010101001002L;
     /**
      * Created by IntelliJ IDEA.
@@ -45,32 +45,33 @@ public class Point implements Serializable,Cloneable {
     }
 
     public double distance(Point q) {
-        int d = Maths.max(dimension, q.dimension);
+        int d = Math.max(dimension, q.dimension);
         switch (d) {
             case 1: {
-                return Maths.sqrt((x - q.x) * (x - q.x));
+                return Math.sqrt((x - q.x) * (x - q.x));
             }
             case 2: {
-                return (Maths.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y)));
+                return (Math.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y)));
             }
         }
-        return (Maths.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y) + (z - q.z) * (z - q.z)));
+        return (Math.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y) + (z - q.z) * (z - q.z)));
     }
-    public Point translate(double dx,double dy){
-        switch (dimension){
-            case 1:{
-                if(y==0){
-                    return new Point(x+dx);
 
-                }else {
+    public Point translate(double dx, double dy) {
+        switch (dimension) {
+            case 1: {
+                if (y == 0) {
+                    return new Point(x + dx);
+
+                } else {
                     throw new IllegalArgumentException("Unsupported");
                 }
             }
-            case 2:{
-                return new Point(x+dx,y+dy);
+            case 2: {
+                return new Point(x + dx, y + dy);
             }
-            case 3:{
-                return new Point(x+dx,y+dy,z+0);
+            case 3: {
+                return new Point(x + dx, y + dy, z + 0);
             }
         }
         throw new IllegalArgumentException("Unsupported dimension");

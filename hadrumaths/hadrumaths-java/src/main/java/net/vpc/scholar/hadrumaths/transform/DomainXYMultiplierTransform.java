@@ -8,7 +8,6 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.scholar.hadrumaths.Domain;
 
 /**
- *
  * @author vpc
  */
 public final class DomainXYMultiplierTransform implements ExpressionTransform {

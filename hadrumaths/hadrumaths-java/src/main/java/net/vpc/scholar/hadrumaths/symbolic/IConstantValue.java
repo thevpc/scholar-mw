@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 1/25/15.
  */
-public interface IConstantValue extends Expr{
+public interface IConstantValue extends Expr {
     /**
      * return ComplexValue or null
      *

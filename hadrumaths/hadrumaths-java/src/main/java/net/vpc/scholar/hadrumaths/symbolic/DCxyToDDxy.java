@@ -162,9 +162,9 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
         return Expressions.computeDouble(this, x, y, d0, ranges);
     }
 
-    public double computeDouble(double x, double y,BooleanMarker defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
-            return convertDouble(base.computeComplex(x, y,defined));
+            return convertDouble(base.computeComplex(x, y, defined));
         }
         return 0;
     }

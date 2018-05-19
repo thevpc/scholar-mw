@@ -8,7 +8,6 @@ import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.format.params.ProductFormat;
 import net.vpc.scholar.hadrumaths.format.params.XFormat;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
@@ -64,11 +63,11 @@ public class CosCosFormatter extends AbstractFormatter<CosXCosY> {
                 lastAction = "cos";
             }
             if (lastAction.equals("amp") || lastAction.equals("cos")) {
-                if(!FormatFactory.appendStarredDomain(sb, domain, format)){
+                if (!FormatFactory.appendStarredDomain(sb, domain, format)) {
 
                 }
-            }else{
-                if(!FormatFactory.appendNonStarredDomain(sb, domain, format)){
+            } else {
+                if (!FormatFactory.appendNonStarredDomain(sb, domain, format)) {
                     sb.append("1");
                 }
             }

@@ -7,16 +7,17 @@ package net.vpc.scholar.hadrumaths.util;
 public class DefaultProgressMonitor implements ProgressMonitor {
     double progress;
     ProgressMessage progressMessage;
+
     public double getProgressValue() {
         return progress;
     }
 
     public void setProgress(double progress, ProgressMessage message) {
-        if(progress<0 || progress>1){
-            System.err.println("%= "+progress+"????????????");
+        if (progress < 0 || progress > 1) {
+            System.err.println("%= " + progress + "????????????");
         }
-        this.progress=progress;
-        this.progressMessage=message;
+        this.progress = progress;
+        this.progressMessage = message;
     }
 
     @Override

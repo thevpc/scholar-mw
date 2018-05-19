@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/30/14.
  */
-public interface TList<T> extends Iterable<T>, TVector<T>{
+public interface TList<T> extends Iterable<T>, TVector<T> {
 
 
     int length();

@@ -10,10 +10,11 @@ public class BooleanArrayParamSet<T> extends ParamSet implements Cloneable {
     private boolean[] values;
     private int index = -1;
 
-    public T init(boolean ... values) {
+    public T init(boolean... values) {
         this.values = values;
         return (T) this;
     }
+
     public BooleanArrayParamSet(Param configurator, boolean... values) {
         super(configurator);
         this.values = values;
@@ -43,6 +44,7 @@ public class BooleanArrayParamSet<T> extends ParamSet implements Cloneable {
         index++;
         return getValueImpl();
     }
+
     //TODO what if alias?
     public boolean[] getValues() {
         return values;

@@ -39,9 +39,9 @@ public class SimpleRowHeaderRenderer extends JLabel implements ListCellRenderer 
     }
 
     /**
-     * should be called in JTable.configureEnclosingScrollPane() 
+     * should be called in JTable.configureEnclosingScrollPane()
      */
-    public void install(){
+    public void install() {
         Container p = table.getParent();
         if (p instanceof JViewport) {
             Container gp = p.getParent();

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
 public class AdaptiveSamples extends Samples {
-    private double error=0.1;
-    private int minimumXSamples=10;
-    private int maximumXSamples=1000;
-    int dimension=1;
+    private double error = 0.1;
+    private int minimumXSamples = 10;
+    private int maximumXSamples = 1000;
+    int dimension = 1;
 
     @Override
     public int getDimension() {

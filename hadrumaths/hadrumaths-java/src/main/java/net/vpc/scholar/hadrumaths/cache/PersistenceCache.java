@@ -23,7 +23,7 @@ public class PersistenceCache implements PersistentCacheConfig {
     public static final int LOCK_TIMEOUT = 1000 * 3600 * 24 * 7;
     private static Logger log = Logger.getLogger(PersistenceCache.class.getName());
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        final PersistenceCache c = new PersistenceCache();
 //        for (int i = 0; i < 3; i++) {
 //            new Thread() {
@@ -496,7 +496,7 @@ public class PersistenceCache implements PersistentCacheConfig {
      * @return oldValue if not null, or loaded cached if already evaluated or reevaluate it at call time
      */
     public <T> T evaluate(final ObjectCache objCache, final String cacheItemName, ProgressMonitor monitor, final Evaluator2 evaluator, final Object... args) {
-        if(objCache==null){
+        if (objCache == null) {
             return (T) evaluator.evaluate(args);
         }
         return objCache.invokeLocked(cacheItemName,
@@ -513,7 +513,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                             c.start();
                             try {
                                 oldValue = (T) objCache.load(cacheItemName, null);
-                                if(oldValue!=null) {
+                                if (oldValue != null) {
                                     c.stop();
                                     log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c);
                                 }
@@ -521,10 +521,10 @@ public class PersistenceCache implements PersistentCacheConfig {
                                 log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")");
                                 //
                             }
-                            if(!c.isStopped()) {
+                            if (!c.isStopped()) {
                                 c.stop();
                             }
-                            if(oldValue!=null) {
+                            if (oldValue != null) {
                                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
                                     log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
                                 }
@@ -595,7 +595,7 @@ public class PersistenceCache implements PersistentCacheConfig {
         T value = null;
         if (isEnabled()) {
             ObjectCache objCache = getObjectCache(dump, true);
-            if(objCache==null){
+            if (objCache == null) {
                 return null;
             }
             value = objCache.invokeLocked(cacheItemName,
@@ -610,7 +610,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                             CacheMode cacheMode = getEffectiveMode();
                             if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
                                 momCache = getObjectCache(dump, true);
-                                if(momCache!=null){
+                                if (momCache != null) {
                                     return null;
                                 }
                                 Chronometer c = new Chronometer();
@@ -641,7 +641,7 @@ public class PersistenceCache implements PersistentCacheConfig {
             CacheMode cacheMode = getEffectiveMode();
             if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
                 objCache = getObjectCache(dump, true);
-                if(objCache!=null){
+                if (objCache != null) {
                     return false;
                 }
                 try {

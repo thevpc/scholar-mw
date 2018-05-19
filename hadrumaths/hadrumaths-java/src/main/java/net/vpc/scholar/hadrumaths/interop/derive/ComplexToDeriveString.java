@@ -5,20 +5,19 @@
 
 package net.vpc.scholar.hadrumaths.interop.derive;
 
-import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
 
 /**
- *
  * @author vpc
  */
-public class ComplexToDeriveString implements ToDeriveString<Matrix>{
+public class ComplexToDeriveString implements ToDeriveString<Matrix> {
     public ComplexToDeriveString() {
     }
 
     @Override
     public String toDeriveString(Matrix o, ToDeriveStringParam... format) {
-        Complex[][] elements=o.getArray();
+        Complex[][] elements = o.getArray();
         StringBuilder sb = new StringBuilder();
 //        String lineSep=System.getProperty("line.separator");
         sb.append('[');
@@ -32,7 +31,7 @@ public class ComplexToDeriveString implements ToDeriveString<Matrix>{
                 if (j > 0) {
                     sb.append(',');
                 }
-                String disp = DeriveFactory.toDeriveString(elements[i][j],format);
+                String disp = DeriveFactory.toDeriveString(elements[i][j], format);
                 sb.append(disp);
             }
             sb.append(']');
@@ -40,5 +39,5 @@ public class ComplexToDeriveString implements ToDeriveString<Matrix>{
         sb.append(']');
         return sb.toString();
     }
-    
+
 }

@@ -22,7 +22,7 @@ public class EnhancedProgressMonitorAdapter extends AbstractEnhancedProgressMoni
 
     @Override
     public void setProgressImpl(double progress, ProgressMessage message) {
-        base.setProgress(progress,message);
+        base.setProgress(progress, message);
     }
 
     public ProgressMonitor getBase() {

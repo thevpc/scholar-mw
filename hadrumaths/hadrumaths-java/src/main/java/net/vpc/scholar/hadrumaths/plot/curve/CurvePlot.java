@@ -3,19 +3,19 @@ package net.vpc.scholar.hadrumaths.plot.curve;
 import net.vpc.scholar.hadrumaths.plot.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.awt.*;
 
-public class CurvePlot extends JPanel implements PlotComponentPanel{
+public class CurvePlot extends JPanel implements PlotComponentPanel {
     private PlotModelProvider modelProvider;
     private boolean USER_JFREECHART;
     private PlotComponentPanel subPanel;
 
-    public CurvePlot(PlotModelProvider modelProvider,boolean USER_JFREECHART) {
+    public CurvePlot(PlotModelProvider modelProvider, boolean USER_JFREECHART) {
         super(new BorderLayout());
-        this.modelProvider=modelProvider;
-        this.USER_JFREECHART=USER_JFREECHART;
+        this.modelProvider = modelProvider;
+        this.USER_JFREECHART = USER_JFREECHART;
         ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
         model.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -25,7 +25,8 @@ public class CurvePlot extends JPanel implements PlotComponentPanel{
         });
         updateChart();
     }
-    private void updateChart(){
+
+    private void updateChart() {
 //        ValuesPlotModel model = (ValuesPlotModel) this.modelProvider.getModel();
 //        String theTitle  = model.getTitle() == null ? "" : model.getTitle();
 //        String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
@@ -37,9 +38,9 @@ public class CurvePlot extends JPanel implements PlotComponentPanel{
             remove(component);
         }
         if (USER_JFREECHART) {
-            add((subPanel=new PlotCanvasCurveJFreeChart(this.modelProvider)).toComponent());
+            add((subPanel = new PlotCanvasCurveJFreeChart(this.modelProvider)).toComponent());
         } else {
-            add((subPanel=new PlotCanvasCurveSimple(this.modelProvider)).toComponent());
+            add((subPanel = new PlotCanvasCurveSimple(this.modelProvider)).toComponent());
 //            ArrayList<Curve> cc = new ArrayList<Curve>();
 //            MinMax x_minmax = new MinMax();
 //            MinMax y_minmax = new MinMax();

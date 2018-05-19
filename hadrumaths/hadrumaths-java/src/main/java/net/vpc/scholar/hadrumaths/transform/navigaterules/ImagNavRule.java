@@ -14,7 +14,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class ImagNavRule implements ExpressionRewriterRule {
@@ -31,10 +30,10 @@ public class ImagNavRule implements ExpressionRewriterRule {
         Imag ee = (Imag) e;
         DoubleToComplex base = ee.getArg();
         RewriteResult a = ruleset.rewrite(base);
-        if(a.isRewritten()){
+        if (a.isRewritten()) {
             Expr eee = new Imag(a.getValue().toDC());
-            eee= Any.copyProperties(e, eee);
-            return a.isBestEffort()?RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
+            eee = Any.copyProperties(e, eee);
+            return a.isBestEffort() ? RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
         }
         return RewriteResult.unmodified(e);
     }
@@ -46,7 +45,7 @@ public class ImagNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

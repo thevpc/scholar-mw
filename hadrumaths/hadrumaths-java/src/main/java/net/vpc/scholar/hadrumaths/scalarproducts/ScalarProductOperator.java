@@ -59,6 +59,6 @@ public interface ScalarProductOperator extends Dumpable {
     TMatrix<Complex> eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor);
 
 
-//    ExpressionRewriter getExpressionRewriter();
+    //    ExpressionRewriter getExpressionRewriter();
     ExpressionRewriter getExpressionRewriter();
 }

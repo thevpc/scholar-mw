@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import org.junit.Assert;
 import org.junit.Test;

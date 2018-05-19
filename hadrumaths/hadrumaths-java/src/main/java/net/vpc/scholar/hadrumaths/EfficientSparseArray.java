@@ -4,7 +4,7 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 
     public EfficientSparseArray(TypeReference<T> componentType, int length) {
-        int initialSize = Maths.max(length, 10);
+        int initialSize = Math.max(length, 10);
         if (initialSize > 10) {
             initialSize = 10;
         }
@@ -24,11 +24,11 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     @Override
     public void set(int i, T value) {
         base.set(i, value);
-        if(base instanceof MapSparseArray) {
+        if (base instanceof MapSparseArray) {
             double d = base.getEffectiveSize();
             d /= base.length();
             if (d > 0.75) {
-                base=new FixedSparseArray<T>(base,base.length());
+                base = new FixedSparseArray<T>(base, base.length());
             }
         }
     }

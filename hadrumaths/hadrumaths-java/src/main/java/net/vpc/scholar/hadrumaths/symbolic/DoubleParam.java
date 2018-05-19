@@ -1,16 +1,13 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.ComponentDimension;
-import net.vpc.scholar.hadrumaths.Expr;
 
 /**
  * Created by vpc on 4/29/14.
  */
-public class DoubleParam extends ParamExpr implements Cloneable{
+public class DoubleParam extends ParamExpr implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public DoubleParam(String name) {
         super(name);
     }

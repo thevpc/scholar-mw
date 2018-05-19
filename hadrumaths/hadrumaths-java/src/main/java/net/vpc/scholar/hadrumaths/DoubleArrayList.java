@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class DoubleArrayList extends AbstractTList<Double> implements DoubleList{
+public class DoubleArrayList extends AbstractTList<Double> implements DoubleList {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final double[] ZERO_ELEMENTS = new double[0];
@@ -18,7 +18,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     }
 
     public DoubleArrayList(int initialSize) {
-        this(false,initialSize);
+        this(false, initialSize);
     }
 
     public DoubleArrayList(boolean row, int initialSize) {
@@ -28,37 +28,37 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         } else if (initialSize == 0) {
             this.elementData = ZERO_ELEMENTS;
         } else {
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialSize);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
     }
 
     public double[] toDoubleArray() {
-        if(size==0){
+        if (size == 0) {
             return ZERO_ELEMENTS;
         }
-        double[] ret=new double[size];
-        System.arraycopy(elementData,0,ret,0,size);
+        double[] ret = new double[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
         return ret;
     }
 
     public Double sum() {
-        if(size==0){
+        if (size == 0) {
             return 0.0;
         }
-        double d=elementData[0];
+        double d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d+=elementData[i];
+            d += elementData[i];
         }
         return d;
     }
 
     public Double prod() {
-        if(size==0){
+        if (size == 0) {
             return 0.0;
         }
-        double d=elementData[0];
+        double d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d*=elementData[i];
+            d *= elementData[i];
         }
         return d;
     }
@@ -91,19 +91,19 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     public void appendAll(double[] e) {
         int increment = e.length;
         ensureCapacityInternal(size + increment);  // Increments modCount!!
-        System.arraycopy(e,0,elementData, this.size, increment);
+        System.arraycopy(e, 0, elementData, this.size, increment);
         this.size += increment;
     }
 
     @Override
     public void appendAll(TVector<Double> e) {
         int esize = e.size();
-        if(e instanceof DoubleArrayList){
+        if (e instanceof DoubleArrayList) {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             DoubleArrayList e0 = (DoubleArrayList) e;
-            System.arraycopy(e0.elementData,0,elementData, this.size, esize);
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
             this.size += esize;
-        }else{
+        } else {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             for (Double a : e) {
                 elementData[this.size++] = a;
@@ -121,7 +121,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);
@@ -179,23 +179,23 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         }
     }
 
-    public static class DoubleReadOnlyList extends ReadOnlyTList<Double> implements DoubleList{
+    public static class DoubleReadOnlyList extends ReadOnlyTList<Double> implements DoubleList {
         public DoubleReadOnlyList(boolean row, TVectorModel<Double> model) {
             super(Maths.$DOUBLE, row, model);
         }
 
         @Override
         public double[] toDoubleArray() {
-            double[] d=new double[size()];
+            double[] d = new double[size()];
             for (int i = 0; i < d.length; i++) {
-                d[i]=get(i);
+                d[i] = get(i);
             }
             return d;
         }
 
         @Override
         public void append(double value) {
-            append((Double)value);
+            append((Double) value);
         }
 
         @Override
@@ -208,7 +208,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
 
     @Override
     public <R> TList<R> to(TypeReference<R> other) {
-        if(other.equals(Maths.$COMPLEX)){
+        if (other.equals(Maths.$COMPLEX)) {
             return (TList<R>) new DoubleToComplexList(this);
         }
         return super.to(other);
@@ -218,8 +218,8 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         private DoubleList list;
 
         public DoubleToComplexList(DoubleList list) {
-            super(Maths.$COMPLEX,list.isRow(), list.size(), null);
-            this.list=list;
+            super(Maths.$COMPLEX, list.isRow(), list.size(), null);
+            this.list = list;
         }
 
         @Override
@@ -229,7 +229,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
 
         @Override
         public <R> TList<R> to(TypeReference<R> other) {
-            if(other.equals(Maths.$DOUBLE)){
+            if (other.equals(Maths.$DOUBLE)) {
                 return (TList<R>) list;
             }
             return super.to(other);

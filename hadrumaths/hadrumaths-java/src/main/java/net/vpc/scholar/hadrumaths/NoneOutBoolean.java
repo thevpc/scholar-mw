@@ -1,7 +1,8 @@
 package net.vpc.scholar.hadrumaths;
 
 public class NoneOutBoolean implements BooleanMarker {
-    public static final BooleanMarker INSTANCE=new NoneOutBoolean();
+    public static final BooleanMarker INSTANCE = new NoneOutBoolean();
+
     public void set(boolean t) {
 
     }

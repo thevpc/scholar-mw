@@ -6,14 +6,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.Polyhedron;
 
-import java.util.List;
-
 /**
- *
  * @author vpc
  */
 public class PolyhedronFormatter extends AbstractFormatter<Polyhedron> {
@@ -21,9 +16,9 @@ public class PolyhedronFormatter extends AbstractFormatter<Polyhedron> {
     @Override
     public void format(StringBuilder sb, Polyhedron o, FormatParamSet format) {
         sb.append("Polyhedron(");
-        FormatFactory.format(sb,o.getMax(),format);
+        FormatFactory.format(sb, o.getMax(), format);
         sb.append(",");
-        FormatFactory.format(sb,o.getPolygon(),format);
+        FormatFactory.format(sb, o.getPolygon(), format);
         sb.append(")");
     }
 

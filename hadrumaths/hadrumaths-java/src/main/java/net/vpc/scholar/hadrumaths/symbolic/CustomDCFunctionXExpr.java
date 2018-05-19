@@ -7,24 +7,26 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 4/30/14.
  */
-public class CustomDCFunctionXExpr extends GenericFunctionX implements Cloneable{
+public class CustomDCFunctionXExpr extends GenericFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
     private CustomDCFunctionXDefinition definition;
+
     public CustomDCFunctionXExpr(Expr arg, CustomDCFunctionXDefinition definition) {
-        super(definition.getName(),arg,FunctionType.COMPLEX);
-        this.definition=definition;
+        super(definition.getName(), arg, FunctionType.COMPLEX);
+        this.definition = definition;
     }
+
     @Override
     public String getFunctionName() {
         return definition.getName();
     }
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return definition.getEval().evalComplex(c.toDouble());
     }
 
-    public double computeDoubleArg(double c, BooleanMarker defined){
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         return computeComplexArg(Complex.valueOf(c), defined).toDouble();
     }
 
@@ -36,7 +38,7 @@ public class CustomDCFunctionXExpr extends GenericFunctionX implements Cloneable
 
     @Override
     public Expr newInstance(Expr argument) {
-        return new CustomDCFunctionXExpr(argument,definition);
+        return new CustomDCFunctionXExpr(argument, definition);
     }
 
     @Override

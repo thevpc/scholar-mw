@@ -5,7 +5,10 @@ import net.vpc.scholar.hadrumaths.util.HFile;
 import net.vpc.scholar.hadrumaths.util.HFileSystem;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -55,7 +58,7 @@ public abstract class FSServlet extends AbstractHadrumathsServlet {
                     if (file.isFile()) {
                         success(out);
                         out.writeLong(file.length());
-                        try(InputStream is=file.getInputStream()) {
+                        try (InputStream is = file.getInputStream()) {
                             IOUtils.copy(is, out, 1024 * 1024);
                         }
                     } else {

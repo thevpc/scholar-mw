@@ -8,7 +8,6 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
 /**
@@ -53,7 +52,7 @@ public class DoubleValueFormatter implements Formatter<DoubleValue> {
             }
         } else {
             FormatFactory.format(sb, o.getValue(), format);
-            FormatFactory.appendStarredDomain(sb,o,format);
+            FormatFactory.appendStarredDomain(sb, o, format);
         }
     }
 }

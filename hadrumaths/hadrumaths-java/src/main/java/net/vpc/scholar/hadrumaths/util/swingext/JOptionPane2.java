@@ -1,26 +1,10 @@
 package net.vpc.scholar.hadrumaths.util.swingext;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.Window;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.Icon;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 public class JOptionPane2 extends JOptionPane {
 
@@ -32,7 +16,8 @@ public class JOptionPane2 extends JOptionPane {
                     gotFocus = true;
                 }
             }
-            private boolean gotFocus= false;
+
+            private boolean gotFocus = false;
         });
     }
 
@@ -129,8 +114,8 @@ public class JOptionPane2 extends JOptionPane {
     private JDialog createDialog(Component parentComponent, String title, int style)
             throws HeadlessException {
         Window window = getWindowForComponent(parentComponent);
-        final JDialog2 dialog = JDialog2.createDialog2(parentComponent,title, true);
-        dialog.putClientProperty("optionPane",this);
+        final JDialog2 dialog = JDialog2.createDialog2(parentComponent, title, true);
+        dialog.putClientProperty("optionPane", this);
         Container contentPane = dialog.getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.add(this, BorderLayout.CENTER);
@@ -169,10 +154,10 @@ public class JOptionPane2 extends JOptionPane {
         return dialog;
     }
 
-    public void pressActionOnDoubleClick(Component component,final int option){
+    public void pressActionOnDoubleClick(Component component, final int option) {
         component.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount()==2 && SwingUtilities.isLeftMouseButton(e)){
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
                     setValue(new Integer(option));
                 }
             }

@@ -17,7 +17,7 @@ public class CotanDifferentiator implements FunctionDifferentiator {
         Expr a = c.getArgument();
         return
                 new Neg(new Mul(
-                        d.derive(a,varIndex)
+                        d.derive(a, varIndex)
                         ,
                         new Plus(
                                 Complex.ONE,

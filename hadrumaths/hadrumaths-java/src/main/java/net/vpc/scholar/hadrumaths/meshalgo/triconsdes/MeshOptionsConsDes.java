@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triconsdes;
 
-import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.geom.GeomUtils;
+import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.meshalgo.DefaultOption;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -20,15 +20,15 @@ public class MeshOptionsConsDes extends DefaultOption {
 
     @Override
     public Dumper getDumpStringHelper() {
-        Dumper h=super.getDumpStringHelper();
-        h.add("precision",precision);
+        Dumper h = super.getDumpStringHelper();
+        h.add("precision", precision);
         return h;
     }
 
 
     @Override
     public boolean isMeshAllowed(List<Triangle> t, int iteration) {
-        return precision.isMeshAllowed(t, iteration) && (enhancedMeshZone==null || enhancedMeshZone.isZoneValide(t));
+        return precision.isMeshAllowed(t, iteration) && (enhancedMeshZone == null || enhancedMeshZone.isZoneValide(t));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MeshOptionsConsDes extends DefaultOption {
             if (precision.isMeshAllowed(t, iteration)) {
                 return GeomUtils.biggest(t);//TODO buggest??
             } else {
-                return enhancedMeshZone!=null?enhancedMeshZone.firstTriangleInZoneValide(t):null;
+                return enhancedMeshZone != null ? enhancedMeshZone.firstTriangleInZoneValide(t) : null;
             }
         } else {
             return null;

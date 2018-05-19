@@ -2,27 +2,24 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FixedSparseArray<T> implements SparseArray<T> {
     private T[] values;
     private int maxIndex = -1;
     private int length = -1;
     private TypeReference<T> componentType;
 
-    public FixedSparseArray(TypeReference<T> componentType,int length) {
-        this.componentType=componentType;
-        values = ArrayUtils.newArray(componentType,length);
+    public FixedSparseArray(TypeReference<T> componentType, int length) {
+        this.componentType = componentType;
+        values = ArrayUtils.newArray(componentType, length);
         this.length = length;
     }
 
-    public FixedSparseArray(SparseArray<T> arr,int length) {
-        this.componentType=arr.getComponentType();
-        values = ArrayUtils.newArray(componentType,length);
+    public FixedSparseArray(SparseArray<T> arr, int length) {
+        this.componentType = arr.getComponentType();
+        values = ArrayUtils.newArray(componentType, length);
         this.length = length;
         for (int i = 0; i < values.length; i++) {
-            values[i]=arr.get(i);
+            values[i] = arr.get(i);
         }
     }
 
@@ -31,7 +28,7 @@ public class FixedSparseArray<T> implements SparseArray<T> {
     }
 
     public void set(int i, T value) {
-        values[i]=value;
+        values[i] = value;
         if (i < maxIndex) {
             maxIndex = i;
         }

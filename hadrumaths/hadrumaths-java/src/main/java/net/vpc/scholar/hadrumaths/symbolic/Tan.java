@@ -10,9 +10,11 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Tan extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Tan(Expr arg) {
         super("tan", arg, FunctionType.DOUBLE);
     }
+
     @Override
     public String getFunctionName() {
         return "tan";
@@ -26,7 +28,7 @@ public class Tan extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.tan(c);
+        return Math.tan(c);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class DumpPath {
             sb.append(hh.charAt(i));
             j++;
         }
-        this.path= sb.toString();
+        this.path = sb.toString();
     }
 
     public String getDump() {

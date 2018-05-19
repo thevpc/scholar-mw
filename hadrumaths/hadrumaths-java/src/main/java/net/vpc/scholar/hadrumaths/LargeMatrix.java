@@ -38,8 +38,8 @@ public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectS
     }
 
     public LargeMatrixFactory getLargeFactory() {
-        if(largeFactory==null){
-            return largeFactory=(LargeMatrixFactory) Maths.Config.getTMatrixFactory(largeFactoryId);
+        if (largeFactory == null) {
+            return largeFactory = (LargeMatrixFactory) Maths.Config.getTMatrixFactory(largeFactoryId);
         }
         return largeFactory;
     }
@@ -89,8 +89,8 @@ public abstract class LargeMatrix extends AbstractMatrix implements CacheObjectS
     @Override
     public void resize(int rows, int columns) {
         getLargeFactory().resizeMatrix(largeMatrixId, rows, columns);
-        this.rows=rows;
-        this.columns=columns;
+        this.rows = rows;
+        this.columns = columns;
     }
 
     @Override

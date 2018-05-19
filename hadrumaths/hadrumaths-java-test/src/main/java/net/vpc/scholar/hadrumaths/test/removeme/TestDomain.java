@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
 import java.util.HashMap;
 
-import static net.vpc.scholar.hadrumaths.GeometryFactory.*;
+import static net.vpc.scholar.hadrumaths.GeometryFactory.createPolygon;
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**

@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.util.config;
 
-import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.io.File;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.NumberFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,6 +89,6 @@ public class ConfigOptions implements Serializable, Cloneable {
             throw new RuntimeException(ex);
         }
     }
-    
-    
+
+
 }

@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.MatrixFactory;
 
 public class JBlasMatrixFactory extends AbstractMatrixFactory {
-    public static final MatrixFactory INSTANCE =new JBlasMatrixFactory();
+    public static final MatrixFactory INSTANCE = new JBlasMatrixFactory();
 
     private JBlasMatrixFactory() {
     }

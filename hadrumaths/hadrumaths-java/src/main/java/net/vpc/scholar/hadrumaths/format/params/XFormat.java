@@ -9,8 +9,9 @@ import net.vpc.scholar.hadrumaths.format.FormatParam;
  * Time: 11:21:16
  * To change this template use File | Settings | File Templates.
  */
-public class XFormat implements FormatParam{
+public class XFormat implements FormatParam {
     private String name;
+
     public XFormat(String name) {
         this.name = name;
     }

@@ -15,24 +15,24 @@ public class HFile {
         if (!path.startsWith("/")) {
             throw new IllegalArgumentException("Invalid path " + path);
         }
-        this.fs=fs;
-        this.path=validatePath(path);
+        this.fs = fs;
+        this.path = validatePath(path);
     }
 
     public HFile(HFile parent, String path) {
         String spath = validatePath(path);
-        if(spath.equals("/")){
+        if (spath.equals("/")) {
             throw new IllegalArgumentException("Invalid path " + path);
         }
         String ppath = parent.getPath();
-        if(ppath.equals("/")){
-            spath=spath.substring(1);
+        if (ppath.equals("/")) {
+            spath = spath.substring(1);
         }
-        this.path = ppath+spath;
+        this.path = ppath + spath;
         this.fs = parent.getFs();
     }
 
-    protected String validatePath(String path){
+    protected String validatePath(String path) {
         List<String> s = new ArrayList<String>(Arrays.asList(path.split("/")));
         for (int i = s.size() - 1; i >= 0; i--) {
             if (s.get(i).equals(".")) {
@@ -46,7 +46,7 @@ public class HFile {
             }
         }
         if (s.isEmpty()) {
-            return  "/";
+            return "/";
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < s.size(); i++) {
@@ -59,8 +59,8 @@ public class HFile {
     public String getLongName() {
         String n = getName();
         int i = n.lastIndexOf('.');
-        if(i>=0){
-            return n.substring(0,i);
+        if (i >= 0) {
+            return n.substring(0, i);
         }
         return n;
     }
@@ -68,8 +68,8 @@ public class HFile {
     public String getSimpleName() {
         String n = getName();
         int i = n.indexOf('.');
-        if(i>=0){
-            return n.substring(0,i);
+        if (i >= 0) {
+            return n.substring(0, i);
         }
         return n;
     }
@@ -77,8 +77,8 @@ public class HFile {
     public String getExt() {
         String n = getName();
         int i = n.lastIndexOf('.');
-        if(i>=0){
-            return n.substring(i+1);
+        if (i >= 0) {
+            return n.substring(i + 1);
         }
         return n;
     }
@@ -86,8 +86,8 @@ public class HFile {
     public String getLongExt() {
         String n = getName();
         int i = n.indexOf('.');
-        if(i>=0){
-            return n.substring(i+1);
+        if (i >= 0) {
+            return n.substring(i + 1);
         }
         return n;
     }
@@ -193,11 +193,11 @@ public class HFile {
         return fs.deleteFolderTree(this, fileFilter, strategy);
     }
 
-    public boolean isNativeLocalFile(){
+    public boolean isNativeLocalFile() {
         return fs.isNativeLocalFile(this);
     }
 
-    public String getNativeLocalFile(){
+    public String getNativeLocalFile() {
         return fs.getNativeLocalFile(this);
     }
 }

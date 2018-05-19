@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.DoubleValidator;
 
 /**
@@ -11,7 +8,7 @@ import net.vpc.scholar.hadrumaths.util.DoubleValidator;
  * Date: 2 juil. 2003
  * Time: 11:51:13
  */
-public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
+public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
     public double amp;
     //    public static final int HASHCODE = 1;
@@ -20,12 +17,12 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     public double c;
     public double d;
 
-    public CosXCosY(@DoubleValidator(NaN = false)  double amp,
+    public CosXCosY(@DoubleValidator(NaN = false) double amp,
                     @DoubleValidator(NaN = false) double a,
                     @DoubleValidator(NaN = false) double b,
                     @DoubleValidator(NaN = false) double c,
                     @DoubleValidator(NaN = false) double d, Domain domain) {
-        super(detectDomain(amp,c,domain));
+        super(detectDomain(amp, c, domain));
         if (Double.isNaN(amp)) {
             throw new IllegalArgumentException("CosXCosY amp=NaN");
         }
@@ -49,14 +46,14 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
 //        name=(((a != 0 || b != 0) ? "cos(ax+b)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
 
-    protected static Domain detectDomain(double amp,double c, Domain domain){
-        if(domain==null){
-            if(amp ==0 || c==0){
+    protected static Domain detectDomain(double amp, double c, Domain domain) {
+        if (domain == null) {
+            if (amp == 0 || c == 0) {
                 return Domain.FULLXY;
             }
             return Domain.FULLX;
         }
-        if(domain.getDomainDimension()<=2){
+        if (domain.getDomainDimension() <= 2) {
             return domain;
         }
         return domain.toDomain(2);
@@ -65,9 +62,9 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     @Override
     public boolean isZeroImpl() {
         return amp == 0 ||
-                (a == 0 && (Maths.cos2(b) == 0 || ((Maths.abs(b) * 2 / Maths.PI) % 2 == 1)))
+                (a == 0 && (Maths.cos2(b) == 0 || ((Math.abs(b) * 2 / Maths.PI) % 2 == 1)))
                 ||
-                (c == 0 && (Maths.cos2(d) == 0 || ((Maths.abs(d) * 2 / Maths.PI) % 2 == 1)));
+                (c == 0 && (Maths.cos2(d) == 0 || ((Math.abs(d) * 2 / Maths.PI) % 2 == 1)));
     }
 
     @Override
@@ -103,7 +100,7 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
                 return true;
             }
         }
-        throw new UnsupportedOperationException("["+getClass().getName()+"]"+"Not supported yet.");
+        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "Not supported yet.");
     }
 
 
@@ -119,7 +116,6 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     public CosXCosY translate(double deltaX, double deltaY) {
         return new CosXCosY(amp, a, -a * deltaX + b, c, -c * deltaY + d, domain.translate(deltaX, deltaY));
     }
-
 
 
     @Override
@@ -142,7 +138,7 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
     @Override
     public AbstractDoubleToDouble getSymmetricX() {
         //return new DCosCosFunctionXY(amp, -a, b + a * (domain.xmax + domain.xmin), c, d, domain);
-        return new CosXCosY(amp, -a, b + a * (domain.xmin ()+ domain.xmax()), c, d, domain);
+        return new CosXCosY(amp, -a, b + a * (domain.xmin() + domain.xmax()), c, d, domain);
     }
 
 //    public DFunctionXY toTranslation(double xDelta) {
@@ -156,7 +152,7 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
 //        return new DCosCosFunctionXY(amp,-a,b+a*(domain.xmax +domain.xmin),c,d,domain);
 //        return new DCosCosFunctionXY(amp, a, b, -c, d + c * (domain.ymax + domain.ymin), domain);
         //return new DCosCosFunctionXY(amp, a, b, -c, d + c * (domain.height), domain);
-        return new CosXCosY(amp, a, b, -c, d + c * (domain.ymax ()+ domain.ymin()), domain);
+        return new CosXCosY(amp, a, b, -c, d + c * (domain.ymax() + domain.ymin()), domain);
     }
 
     public boolean isSymmetric(AxisXY axis) {
@@ -310,19 +306,19 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable{
 
     @Override
     public Expr mul(Domain domain) {
-        return new CosXCosY(amp,a,b,c,d,this.domain.intersect(domain));
+        return new CosXCosY(amp, a, b, c, d, this.domain.intersect(domain));
     }
 
     @Override
     public Expr mul(double other) {
-        return new CosXCosY(amp*other,a,b,c,d,this.domain);
+        return new CosXCosY(amp * other, a, b, c, d, this.domain);
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
-        return new Mul(other,this);
+        return new Mul(other, this);
     }
 }

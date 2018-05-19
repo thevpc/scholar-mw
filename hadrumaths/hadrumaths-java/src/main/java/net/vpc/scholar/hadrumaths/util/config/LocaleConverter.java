@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.util.config;
 
+import java.text.ParseException;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.text.ParseException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +23,7 @@ public class LocaleConverter extends ConfigConverter {
     public Object stringToObject(String s) throws ParseException {
         return getLocaleFromString(s);
     }
+
     public Locale getLocaleFromString(String locale) {
         StringTokenizer st = new StringTokenizer(locale, "_ ,;:/");
         int tcount = st.countTokens();

@@ -14,6 +14,6 @@ public class IntIterationComputationMonitorInc implements ComputationMonitorInc 
     @Override
     public double inc(double last) {
         index++;
-        return index/max;
+        return index / max;
     }
 }

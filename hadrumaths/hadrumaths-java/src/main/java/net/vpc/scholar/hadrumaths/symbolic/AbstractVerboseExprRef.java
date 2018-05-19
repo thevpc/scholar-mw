@@ -10,27 +10,27 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
@@ -159,12 +159,12 @@ public abstract class AbstractVerboseExprRef extends AbstractExpBase implements 
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override

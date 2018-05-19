@@ -8,10 +8,11 @@ import net.vpc.scholar.hadrumaths.FunctionFactory;
 /**
  * Created by vpc on 4/30/14.
  */
-public class NotExpr extends GenericFunctionX implements Cloneable{
+public class NotExpr extends GenericFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public NotExpr(Expr arg) {
-        super("not",arg);
+        super("not", arg);
     }
 
     @Override
@@ -20,28 +21,29 @@ public class NotExpr extends GenericFunctionX implements Cloneable{
     }
 
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
-        return c.isZero()?Complex.ONE:Complex.ZERO;
+        return c.isZero() ? Complex.ONE : Complex.ZERO;
     }
 
-    protected double computeDoubleArg(double c, BooleanMarker defined){
+    protected double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return c==0?1:0;
+        return c == 0 ? 1 : 0;
     }
 
     @Override
     public DoubleToDouble getRealDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return this;
         }
         return super.getRealDD();
     }
+
     @Override
     public DoubleToDouble getImagDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return FunctionFactory.DZEROXY;
         }
         return super.getImagDD();

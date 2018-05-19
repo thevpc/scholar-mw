@@ -4,6 +4,7 @@ public class UpdatableTVector<T> extends AbstractTVector<T> {
     private static final long serialVersionUID = 1L;
     private TVectorUpdatableModel<T> model;
     private TypeReference<T> componentType;
+
     public UpdatableTVector(TypeReference<T> componentType, TVectorUpdatableModel<T> model, boolean row) {
         super(row);
         this.model = model;
@@ -11,7 +12,7 @@ public class UpdatableTVector<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType(){
+    public TypeReference<T> getComponentType() {
         return componentType;
     }
 
@@ -22,7 +23,7 @@ public class UpdatableTVector<T> extends AbstractTVector<T> {
 
     @Override
     public void set(int i, T value) {
-        model.set(i,value);
+        model.set(i, value);
     }
 
     @Override

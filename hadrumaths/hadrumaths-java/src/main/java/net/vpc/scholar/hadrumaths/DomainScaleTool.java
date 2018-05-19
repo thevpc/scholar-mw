@@ -18,13 +18,13 @@ public abstract class DomainScaleTool {
         Domain b = Domain.forPoints(3, 1, 5, 2);
         Domain c = a.expand(b);
         Domain u = Domain.forPoints(100, 100, 200, 200);
-        System.out.println("a        ="+a);
-        System.out.println("b        ="+b);
-        System.out.println("a+b      ="+c);
-        System.out.println("u        ="+u);
-        DomainScaleTool t=DomainScaleTool.create(c, u);
-        System.out.println("a scaled ="+t.rescale(a));
-        System.out.println("b scaled ="+t.rescale(b));
+        System.out.println("a        =" + a);
+        System.out.println("b        =" + b);
+        System.out.println("a+b      =" + c);
+        System.out.println("u        =" + u);
+        DomainScaleTool t = DomainScaleTool.create(c, u);
+        System.out.println("a scaled =" + t.rescale(a));
+        System.out.println("b scaled =" + t.rescale(b));
     }
 
     public static DomainScaleTool createIdentity() {
@@ -32,11 +32,11 @@ public abstract class DomainScaleTool {
     }
 
     public static Geometry rescale(Geometry g, Domain to) {
-        return DomainScaleTool.create(g.getDomain(),to).rescale(g);
+        return DomainScaleTool.create(g.getDomain(), to).rescale(g);
     }
 
-    public static Geometry rescale(Geometry g, int x,int y) {
-        return DomainScaleTool.create(g.getDomain(),Domain.forBounds(0,x,0,y)).rescale(g);
+    public static Geometry rescale(Geometry g, int x, int y) {
+        return DomainScaleTool.create(g.getDomain(), Domain.forBounds(0, x, 0, y)).rescale(g);
     }
 
     public static DomainScaleTool create(Domain from, Domain to) {
@@ -143,9 +143,10 @@ public abstract class DomainScaleTool {
         public double rescaleZ(double z) {
             return z;
         }
+
         public double rescaleY(double y) {
-            if(from.ywidth()==0){
-                return (y - from.ymin())  * to.ywidth() + to.ymin();
+            if (from.ywidth() == 0) {
+                return (y - from.ymin()) * to.ywidth() + to.ymin();
             }
             return (y - from.ymin()) / from.ywidth() * to.ywidth() + to.ymin();
         }
@@ -183,7 +184,7 @@ public abstract class DomainScaleTool {
                     case PathIterator.SEG_CLOSE:
                         d.closePath();
                         break;
-                    default:{
+                    default: {
                         throw new RuntimeException("Error");
                     }
                 }

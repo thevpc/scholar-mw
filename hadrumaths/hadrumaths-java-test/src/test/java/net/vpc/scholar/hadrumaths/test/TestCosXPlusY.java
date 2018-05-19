@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.test;
 
+import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
 import net.vpc.scholar.hadrumaths.util.IOUtils;
@@ -8,8 +9,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 

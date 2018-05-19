@@ -34,7 +34,7 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
     Mesh3DObject feObject;
     PlotModelProvider plotModelProvider;
 
-//    public Mesh3DPlot(String title, double[] x, double[] y, double[][] z) {
+    //    public Mesh3DPlot(String title, double[] x, double[] y, double[][] z) {
 //        this(title, x, y, z, null, null);
 //    }
 //
@@ -47,7 +47,7 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
     }
 
     public Mesh3DPlot(ValuesPlotModel model, JColorPalette colorPalette) {
-        this(new ValuesPlotXYDoubleModelFace(model,null), colorPalette, null);
+        this(new ValuesPlotXYDoubleModelFace(model, null), colorPalette, null);
     }
 
     public Mesh3DPlot(ValuesPlotXYDoubleModelFace model, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {

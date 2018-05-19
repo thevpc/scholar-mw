@@ -10,7 +10,7 @@ public interface ExprCubeFactory {
 
     public ExprCube newPreloadedCube(final int rows, final int columns, final int height, ExprCubeCellIterator item);
 
-    public ExprCube newPreloadedCube(final int rows, final int columns, final int height,CubeCellIteratorType it, ExprCubeCellIterator item);
+    public ExprCube newPreloadedCube(final int rows, final int columns, final int height, CubeCellIteratorType it, ExprCubeCellIterator item);
 
     public ExprCube newCube(final int rows, final int columns, final int height, ExprCubeCellIterator item);
 

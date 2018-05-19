@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
-
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha
@@ -21,16 +20,17 @@ final class CosCosVsCosCosScalarProductOld1 implements FormalScalarProductHelper
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
     }
+
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         CosXCosY f1ok = (CosXCosY) f1;
         CosXCosY f2ok = (CosXCosY) f2;
-        double d=compute(domain, f1ok, f2ok);
-        if(Double.isNaN(d)){
+        double d = compute(domain, f1ok, f2ok);
+        if (Double.isNaN(d)) {
             System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         }
         return d;
@@ -61,7 +61,7 @@ final class CosCosVsCosCosScalarProductOld1 implements FormalScalarProductHelper
 
     }
 
-//STARTING---------------------------------------
+    //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(g_c*y+g_d)
@@ -2095,73 +2095,137 @@ final class CosCosVsCosCosScalarProductOld1 implements FormalScalarProductHelper
     }
 
 
- // THIS FILE WAS GENERATED AUTOMATICALLY.
- // DO NOT EDIT MANUALLY.
- // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(f_c*y-g_d)
-private static double primi_cos4_fga_cf(Domain domain,CosXCosY f,CosXCosY g){
-  double x;
-  double y;
-  double value;
-  double b1 = domain.xmin();
-  double b2 = domain.xmax();
-  double b3 = domain.ymin();
-  double b4 = domain.ymax();
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(f_c*y-g_d)
+    private static double primi_cos4_fga_cf(Domain domain, CosXCosY f, CosXCosY g) {
+        double x;
+        double y;
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
 
-  if (f.a == 0 && f.c == 0 && g.a == 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y);
-    x=b2;y=b4;value+=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y);
-    x=b1;y=b4;value-=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y);
-    x=b2;y=b3;value-=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y);
-    return value;
+        if (f.a == 0 && f.c == 0 && g.a == 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * x * y);
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * x * y);
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * x * y);
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * x * y);
+            return value;
 
-  }else if (f.a != 0 && f.c == 0 && g.a == 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y);
-    x=b2;y=b4;value+=(f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y);
-    x=b1;y=b4;value-=(f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y);
-    x=b2;y=b3;value-=(f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y);
-    return value;
+        } else if (f.a != 0 && f.c == 0 && g.a == 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * x + f.b) * y);
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * x + f.b) * y);
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * x + f.b) * y);
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * x + f.b) * y);
+            return value;
 
-  }else if (f.a == 0 && f.c != 0 && g.a == 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b4;value+=(f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b1;y=b4;value-=(f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b3;value-=(f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    return value;
+        } else if (f.a == 0 && f.c != 0 && g.a == 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.b) * g.amp * cos2(g.b) * x * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.b) * g.amp * cos2(g.b) * x * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.b) * g.amp * cos2(g.b) * x * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.b) * g.amp * cos2(g.b) * x * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            return value;
 
-  }else if (f.a != 0 && f.c != 0 && g.a == 0){
-    x=b1;y=b3;value =(f.amp*g.amp*cos2(g.b)/f.a*sin2(f.a*x+f.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b4;value+=(f.amp*g.amp*cos2(g.b)/f.a*sin2(f.a*x+f.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b1;y=b4;value-=(f.amp*g.amp*cos2(g.b)/f.a*sin2(f.a*x+f.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b3;value-=(f.amp*g.amp*cos2(g.b)/f.a*sin2(f.a*x+f.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    return value;
+        } else if (f.a != 0 && f.c != 0 && g.a == 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * g.amp * cos2(g.b) / f.a * sin2(f.a * x + f.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b4;
+            value += (f.amp * g.amp * cos2(g.b) / f.a * sin2(f.a * x + f.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b1;
+            y = b4;
+            value -= (f.amp * g.amp * cos2(g.b) / f.a * sin2(f.a * x + f.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b3;
+            value -= (f.amp * g.amp * cos2(g.b) / f.a * sin2(f.a * x + f.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            return value;
 
-  }else if (f.a == 0 && f.c == 0 && g.a != 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y);
-    x=b2;y=b4;value+=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y);
-    x=b1;y=b4;value-=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y);
-    x=b2;y=b3;value-=(f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y);
-    return value;
+        } else if (f.a == 0 && f.c == 0 && g.a != 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * x + g.b) * y);
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * x + g.b) * y);
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * x + g.b) * y);
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * x + g.b) * y);
+            return value;
 
-  }else if (f.a != 0 && f.c == 0 && g.a != 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.d)*g.amp*cos2(g.d)*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*y);
-    x=b2;y=b4;value+=(f.amp*cos2(f.d)*g.amp*cos2(g.d)*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*y);
-    x=b1;y=b4;value-=(f.amp*cos2(f.d)*g.amp*cos2(g.d)*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*y);
-    x=b2;y=b3;value-=(f.amp*cos2(f.d)*g.amp*cos2(g.d)*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*y);
-    return value;
+        } else if (f.a != 0 && f.c == 0 && g.a != 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.d) * g.amp * cos2(g.d) * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * y);
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.d) * g.amp * cos2(g.d) * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * y);
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.d) * g.amp * cos2(g.d) * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * y);
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.d) * g.amp * cos2(g.d) * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * y);
+            return value;
 
-  }else if (f.a == 0 && f.c != 0 && g.a != 0){
-    x=b1;y=b3;value =(f.amp*cos2(f.b)*g.amp/g.a*sin2(g.a*x+g.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b4;value+=(f.amp*cos2(f.b)*g.amp/g.a*sin2(g.a*x+g.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b1;y=b4;value-=(f.amp*cos2(f.b)*g.amp/g.a*sin2(g.a*x+g.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b3;value-=(f.amp*cos2(f.b)*g.amp/g.a*sin2(g.a*x+g.b)*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    return value;
+        } else if (f.a == 0 && f.c != 0 && g.a != 0) {
+            x = b1;
+            y = b3;
+            value = (f.amp * cos2(f.b) * g.amp / g.a * sin2(g.a * x + g.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b4;
+            value += (f.amp * cos2(f.b) * g.amp / g.a * sin2(g.a * x + g.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b1;
+            y = b4;
+            value -= (f.amp * cos2(f.b) * g.amp / g.a * sin2(g.a * x + g.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b3;
+            value -= (f.amp * cos2(f.b) * g.amp / g.a * sin2(g.a * x + g.b) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            return value;
 
-  }else{ //none is null
-    x=b1;y=b3;value =(f.amp*g.amp*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b4;value+=(f.amp*g.amp*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b1;y=b4;value-=(f.amp*g.amp*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    x=b2;y=b3;value-=(f.amp*g.amp*(0.5/(-f.a+g.a)*sin2((-f.a+g.a)*x-f.b+g.b)+0.5/(f.a+g.a)*sin2((f.a+g.a)*x+f.b+g.b))*(0.5*cos2(f.d+g.d)*y+0.25/f.c*sin2(2*f.c*y+f.d-g.d)));
-    return value;
-  }
-}//ENDING---------------------------------------
+        } else { //none is null
+            x = b1;
+            y = b3;
+            value = (f.amp * g.amp * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b4;
+            value += (f.amp * g.amp * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b1;
+            y = b4;
+            value -= (f.amp * g.amp * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            x = b2;
+            y = b3;
+            value -= (f.amp * g.amp * (0.5 / (-f.a + g.a) * sin2((-f.a + g.a) * x - f.b + g.b) + 0.5 / (f.a + g.a) * sin2((f.a + g.a) * x + f.b + g.b)) * (0.5 * cos2(f.d + g.d) * y + 0.25 / f.c * sin2(2 * f.c * y + f.d - g.d)));
+            return value;
+        }
+    }//ENDING---------------------------------------
 }

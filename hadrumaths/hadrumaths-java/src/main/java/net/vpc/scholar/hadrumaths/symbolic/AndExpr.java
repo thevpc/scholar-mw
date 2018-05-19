@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class AndExpr extends ComparatorExpr implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public AndExpr(Expr xarg, Expr yarg) {
         super(xarg, yarg, FunctionType.DOUBLE);
     }
@@ -19,7 +20,7 @@ public class AndExpr extends ComparatorExpr implements Cloneable {
     }
 
     public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
@@ -27,7 +28,7 @@ public class AndExpr extends ComparatorExpr implements Cloneable {
     }
 
     public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
@@ -35,7 +36,7 @@ public class AndExpr extends ComparatorExpr implements Cloneable {
     }
 
     public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
-        if(!xdef && !ydef){
+        if (!xdef && !ydef) {
             return 0;
         }
         defined.set();

@@ -5,10 +5,8 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.symbolic.DDx;
 
 /**
@@ -21,11 +19,11 @@ public class DDxFormatter extends AbstractFormatter<DDx> {
     @Override
     public void format(StringBuilder sb, DDx o, FormatParamSet format) {
         sb.append("DDx(");
-        FormatFactory.format(sb,o.getArg(),format);
+        FormatFactory.format(sb, o.getArg(), format);
         sb.append(",");
-        FormatFactory.format(sb,o.getDefaultY(),format);
+        FormatFactory.format(sb, o.getDefaultY(), format);
         sb.append(",");
-        FormatFactory.format(sb,o.getDefaultZ(),format);
+        FormatFactory.format(sb, o.getDefaultZ(), format);
         sb.append(")");
     }
 }

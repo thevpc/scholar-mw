@@ -5,13 +5,8 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
-
-import java.util.List;
 
 /**
- *
  * @author vpc
  */
 public class StringFormatter extends AbstractFormatter<String> {

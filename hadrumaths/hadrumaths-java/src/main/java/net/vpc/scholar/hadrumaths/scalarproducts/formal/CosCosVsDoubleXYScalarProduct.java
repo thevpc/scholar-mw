@@ -1,13 +1,12 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
-
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 
 /**
@@ -23,11 +22,12 @@ final class CosCosVsDoubleXYScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
     }
+
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         CosXCosY f = (CosXCosY) f1;
         DoubleValue g = (DoubleValue) f2;
@@ -36,9 +36,9 @@ final class CosCosVsDoubleXYScalarProduct implements FormalScalarProductHelper {
 
 
 //STARTING---------------------------------------
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_cst
+        // THIS FILE WAS GENERATED AUTOMATICALLY.
+        // DO NOT EDIT MANUALLY.
+        // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_cst
 //    public static double primi_coscst(DomainXY domain, DCosCosFunctionXY f, DCstFunctionXY g) {
         double x;
         double y;

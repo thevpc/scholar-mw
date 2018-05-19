@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class Asinh extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Asinh(Expr arg) {
         super("asinh", arg, FunctionType.COMPLEX);
     }

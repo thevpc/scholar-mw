@@ -16,6 +16,7 @@ public class Base64StringSerializer implements StringSerializer {
             e1.printStackTrace();
         }
     }
+
     @Override
     public int acceptSerialize(Object value) {
         return (value instanceof Serializable) ? 1 : 0;

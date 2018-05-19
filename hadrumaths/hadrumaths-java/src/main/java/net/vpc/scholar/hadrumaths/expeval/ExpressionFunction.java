@@ -5,11 +5,11 @@
 package net.vpc.scholar.hadrumaths.expeval;
 
 import net.vpc.scholar.hadrumaths.expeval.operators.OpListComma;
+
 import java.util.Map;
 import java.util.Stack;
 
 /**
- *
  * @author vpc
  */
 public abstract class ExpressionFunction extends AbstractExpressionNode {

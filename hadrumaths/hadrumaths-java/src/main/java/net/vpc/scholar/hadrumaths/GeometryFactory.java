@@ -1,24 +1,25 @@
 package net.vpc.scholar.hadrumaths;
 
 
+import net.vpc.scholar.hadrumaths.geom.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import net.vpc.scholar.hadrumaths.geom.*;
-import net.vpc.scholar.hadrumaths.geom.GeometryList;
 
 /**
  * Created by vpc on 1/23/14.
  */
-public class GeometryFactory extends AbstractFactory{
-    public static Point point(double x){
+public class GeometryFactory extends AbstractFactory {
+    public static Point point(double x) {
         return Point.create(x);
     }
-    public static Point point(double x,double y){
-        return Point.create(x,y);
+
+    public static Point point(double x, double y) {
+        return Point.create(x, y);
     }
-    public static Point point(double x,double y,double z){
-        return Point.create(x,y,z);
+
+    public static Point point(double x, double y, double z) {
+        return Point.create(x, y, z);
     }
 
     public static GeometryList createPolygonList(Geometry... list) {

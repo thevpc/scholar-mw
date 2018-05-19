@@ -1,10 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.ComponentDimension;
-import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 /**
@@ -13,7 +9,8 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 public abstract class AxisFunction extends AbstractComposedFunction {
     private static final long serialVersionUID = 1L;
     protected Domain domain;
-    protected AxisFunction(Domain domain,String functionName) {
+
+    protected AxisFunction(Domain domain, String functionName) {
         super();
         this.domain = domain;
     }
@@ -43,6 +40,7 @@ public abstract class AxisFunction extends AbstractComposedFunction {
         }
         return this;
     }
+
     @Override
     public boolean isDDImpl() {
         return true;
@@ -128,7 +126,6 @@ public abstract class AxisFunction extends AbstractComposedFunction {
 //    public boolean isDoubleExprImpl() {
 //        return false;
 //    }
-
 
 
     @Override

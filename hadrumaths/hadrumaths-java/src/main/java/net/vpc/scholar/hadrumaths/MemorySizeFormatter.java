@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.util.StringUtils;
 /**
  * Created by vpc on 3/20/17.
  */
-public class MemorySizeFormatter implements DoubleFormatter{
+public class MemorySizeFormatter implements DoubleFormatter {
 
     boolean leadingZeros = false;
     boolean intermediateZeros = true;
@@ -28,8 +28,8 @@ public class MemorySizeFormatter implements DoubleFormatter{
     }
 
     public MemorySizeFormatter(String format) {
-        leadingZeros=false;
-        intermediateZeros=false;
+        leadingZeros = false;
+        intermediateZeros = false;
         char low = '\0';
         char high = '\0';
         if (format != null) {
@@ -82,9 +82,9 @@ public class MemorySizeFormatter implements DoubleFormatter{
         this.low = eval(low);
         this.high = eval(high);
         if (this.high < this.low) {
-            long t=this.low;
-            this.low=this.high;
-            this.high=t;
+            long t = this.low;
+            this.low = this.high;
+            this.high = t;
         }
     }
 
@@ -119,7 +119,7 @@ public class MemorySizeFormatter implements DoubleFormatter{
 
     @Override
     public String formatDouble(double value) {
-        return format((long)value);
+        return format((long) value);
     }
 
     public String format(long bytes) {

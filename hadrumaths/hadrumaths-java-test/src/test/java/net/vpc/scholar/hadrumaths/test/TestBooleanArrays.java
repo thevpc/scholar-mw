@@ -7,8 +7,6 @@ import net.vpc.scholar.hadrumaths.BooleanArray3;
 import net.vpc.scholar.hadrumaths.BooleanArrays;
 import org.junit.Test;
 
-import static net.vpc.scholar.hadrumaths.BooleanArrays.newArray;
-
 /**
  * Created by vpc on 4/8/17.
  */

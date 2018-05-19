@@ -5,10 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.transform.canonicalrules;
 
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -16,7 +16,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class CosXCosYSymbolRule implements ExpressionRewriterRule {
@@ -43,6 +42,7 @@ public class CosXCosYSymbolRule implements ExpressionRewriterRule {
                 Maths.expr(ee.getAmp(), domainxy)
         ));
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -50,7 +50,7 @@ public class CosXCosYSymbolRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

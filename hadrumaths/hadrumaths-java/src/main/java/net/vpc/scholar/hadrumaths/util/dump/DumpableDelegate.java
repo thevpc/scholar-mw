@@ -10,6 +10,6 @@ public class DumpableDelegate implements DumpDelegate {
     }
 
     public String getDumpString(Object object) {
-        return ((Dumpable)object).dump();
+        return ((Dumpable) object).dump();
     }
 }

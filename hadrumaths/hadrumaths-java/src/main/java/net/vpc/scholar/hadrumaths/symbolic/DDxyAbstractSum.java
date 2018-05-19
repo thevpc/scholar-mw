@@ -136,12 +136,12 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
 //        }
 //        return r;
 //    }
-    public double computeDouble(double x, double y,BooleanMarker defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         double r = 0;
         if (contains(x, y)) {
             for (DoubleToDouble f : segments) {
                 //            if (f.contains(x, y)) {
-                r += f.computeDouble(x, y,defined);
+                r += f.computeDouble(x, y, defined);
 //            }
             }
         }
@@ -152,7 +152,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     protected double computeDouble0(double x, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
-            r += f.computeDouble(x,defined);
+            r += f.computeDouble(x, defined);
         }
         return r;
     }
@@ -161,7 +161,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
-            r += f.computeDouble(x, y,defined);
+            r += f.computeDouble(x, y, defined);
         }
         return r;
     }
@@ -170,7 +170,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         double r = 0;
         for (DoubleToDouble f : segments) {
-            r += f.computeDouble(x, y, z,defined);
+            r += f.computeDouble(x, y, z, defined);
         }
         return r;
     }

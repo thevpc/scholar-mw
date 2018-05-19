@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import java.io.File;
-import java.io.Serializable;
-
-public abstract class AbstractPlotConsoleFileSupport implements PlotConsoleFileSupport{
+public abstract class AbstractPlotConsoleFileSupport implements PlotConsoleFileSupport {
     private String extension;
     private String description;
 

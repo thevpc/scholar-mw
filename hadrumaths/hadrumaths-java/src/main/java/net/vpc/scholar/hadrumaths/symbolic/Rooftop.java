@@ -7,7 +7,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
 /**
  * Created by vpc on 5/7/14.
  */
-public class Rooftop extends Ref implements Cloneable{
+public class Rooftop extends Ref implements Cloneable {
     private static final long serialVersionUID = 1L;
     private boolean maxEast;
     private boolean maxSouth;
@@ -20,7 +20,7 @@ public class Rooftop extends Ref implements Cloneable{
     private boolean maxNorth;
 
     public Rooftop(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, boolean xside, boolean yside, int nx, int ny, Domain domain) {
-        init(maxEast, maxEast, maxSouth, maxWest, xside,yside,nx, ny, domain);
+        init(maxEast, maxEast, maxSouth, maxWest, xside, yside, nx, ny, domain);
     }
 
     @TestInfo("DisableRandomCalls")
@@ -80,14 +80,14 @@ public class Rooftop extends Ref implements Cloneable{
 
     private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, boolean xside, boolean yside, int nx, int ny, Domain d) {
         //  def rooftopSequence(pattern: String, d: DomainXY, nx: Int, ny: Int): ExprArrayList = {
-        this.maxNorth=maxNorth;
-        this.maxSouth=maxSouth;
-        this.maxWest=maxWest;
-        this.maxEast=maxEast;
-        this.xside=xside;
-        this.nx=nx;
-        this.ny=ny;
-        this.d=d;
+        this.maxNorth = maxNorth;
+        this.maxSouth = maxSouth;
+        this.maxWest = maxWest;
+        this.maxEast = maxEast;
+        this.xside = xside;
+        this.nx = nx;
+        this.ny = ny;
+        this.d = d;
         TList<Expr> list = Maths.elist();
         if (xside && yside) {
             throw new Error("Not yet supported");
@@ -98,7 +98,7 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = (-1);
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(false, d1).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size()),
                                 "SequencePattern", "E"
@@ -110,9 +110,9 @@ public class Rooftop extends Ref implements Cloneable{
             while (m0 < nx) {
                 Domain d0 = Domain.forBounds(m0 / 2.0 * w + d.xmin(), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftop(true, false, d0).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
-                                "SequenceIndex", "" + (list.size()+1),
+                                "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "X"
                         )
                 );
@@ -123,9 +123,9 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = nx;
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(true, d1).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
-                                "SequenceIndex", "" + (list.size()+1),
+                                "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "E"
                         )
                 );
@@ -138,9 +138,9 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = (-1);
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(false, d1).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
-                                "SequenceIndex", "" + (list.size()+1),
+                                "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "N"
                         )
                 );
@@ -150,9 +150,9 @@ public class Rooftop extends Ref implements Cloneable{
             while (m0 < ny) {
                 Domain d0 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftop(false, true, d0).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
-                                "SequenceIndex", "" + (list.size()+1),
+                                "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "Y"
                         )
                 );
@@ -163,9 +163,9 @@ public class Rooftop extends Ref implements Cloneable{
                 m0 = ny;
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(true, d1).setProperties(
-                        MapUtils.<String,Object>linkedMap(
+                        MapUtils.<String, Object>linkedMap(
                                 "SequenceType", "Rooftop",
-                                "SequenceIndex", "" + (list.size()+1),
+                                "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "S"
                         )
                 );

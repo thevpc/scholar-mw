@@ -1,17 +1,9 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.util.HFile;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
-import java.io.*;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

@@ -297,16 +297,16 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         if (path == null || !path.startsWith("/")) {
             throw new IllegalArgumentException("Invalid path " + path);
         }
-        List<String> pathList = StringUtils.split(path,"/");
-        if(pathList.size()==0) {
+        List<String> pathList = StringUtils.split(path, "/");
+        if (pathList.size() == 0) {
             add(component);
-        }else{
-            String name=pathList.get(0);
+        } else {
+            String name = pathList.get(0);
             int childIndex = indexOfPlotComponent(name);
-            PlotContainer pp=null;
-            if(childIndex<0){
-                pp=add(name);
-            }else {
+            PlotContainer pp = null;
+            if (childIndex < 0) {
+                pp = add(name);
+            } else {
                 PlotComponent child = getPlotComponent(name);
                 if (child instanceof PlotContainer) {
                     pp = (PlotContainer) child;
@@ -315,7 +315,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
             pathList.remove(0);
-            pp.add(component,StringUtils.toPath(pathList,"/"));
+            pp.add(component, StringUtils.toPath(pathList, "/"));
         }
     }
 }

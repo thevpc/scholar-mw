@@ -6,10 +6,9 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 /**
- *
  * @author vpc
  */
-public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWindowManager{
+public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWindowManager {
 
     public AbstractComponentPlotWindowManager() {
     }
@@ -17,8 +16,8 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
     public AbstractComponentPlotWindowManager(String globalTitle) {
         super(globalTitle);
     }
-    
-        public abstract PlotContainer getRootContainer();
+
+    public abstract PlotContainer getRootContainer();
 
     public PlotContainer getContainer(String[] path) {
         if (path.length == 0) {
@@ -30,10 +29,10 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
     private PlotContainer findOrCreateContainer(String[] path, int index, PlotContainer parent) {
         String name = path[index];
         int childIndex = parent.indexOfPlotComponent(name);
-        PlotContainer p=null;
-        if(childIndex<0){
-            p=parent.add(name);
-        }else {
+        PlotContainer p = null;
+        if (childIndex < 0) {
+            p = parent.add(name);
+        } else {
             PlotComponent child = parent.getPlotComponent(name);
             if (child instanceof PlotContainer) {
                 p = (PlotContainer) child;
@@ -44,7 +43,7 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
         if (index == path.length - 1) {
             return p;
         }
-        return findOrCreateContainer(path,index+1,p);
+        return findOrCreateContainer(path, index + 1, p);
 //
 //        if (StringUtils.isInt(name)) {
 //
@@ -72,5 +71,5 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
         getContainer(path).add(component);
     }
 
-    
+
 }

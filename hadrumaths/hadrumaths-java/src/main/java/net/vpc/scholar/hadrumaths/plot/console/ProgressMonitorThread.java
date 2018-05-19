@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
-* @creationtime 6 janv. 2007 12:23:10
-*/
+ * @creationtime 6 janv. 2007 12:23:10
+ */
 class ProgressMonitorThread extends UserStopThread {
     private PlotConsole plotConsole;
 

@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 /**
  * Created by vpc on 3/20/17.
  */
-public class FrequencyFormatter implements DoubleFormatter{
+public class FrequencyFormatter implements DoubleFormatter {
 
     boolean leadingZeros = false;
     boolean intermediateZeros = true;
@@ -21,9 +21,10 @@ public class FrequencyFormatter implements DoubleFormatter{
     private DecimalFormat decimalFormat = null;
 
     public static void main(String[] args) {
-        System.out.println(String.valueOf(3.29985*Maths.GHZ));
-        System.out.println(new FrequencyFormatter().format(3.29985*Maths.GHZ));
+        System.out.println(String.valueOf(3.29985 * Maths.GHZ));
+        System.out.println(new FrequencyFormatter().format(3.29985 * Maths.GHZ));
     }
+
     public FrequencyFormatter(boolean leadingZeros, boolean intermediateZeros, boolean fixedLength, long high, long low, boolean decimal) {
         this.leadingZeros = leadingZeros;
         this.intermediateZeros = intermediateZeros;
@@ -122,10 +123,10 @@ public class FrequencyFormatter implements DoubleFormatter{
 //                }
 //            }
 //        }
-        if(fixedLength){
-            decimalFormat = new DecimalFormat("0."+StringUtils.fillString('0',integerDigits));
-        }else{
-            decimalFormat = new DecimalFormat("0."+StringUtils.fillString('#',fractionDigits));
+        if (fixedLength) {
+            decimalFormat = new DecimalFormat("0." + StringUtils.fillString('0', integerDigits));
+        } else {
+            decimalFormat = new DecimalFormat("0." + StringUtils.fillString('#', fractionDigits));
         }
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
 //        decimalFormat.setMinimumIntegerDigits(fixedLength ? integerDigits : 0);
@@ -223,7 +224,7 @@ public class FrequencyFormatter implements DoubleFormatter{
     public String format(long bytes) {
         StringBuilder sb = new StringBuilder();
         boolean neg = bytes < 0;
-        int sign = neg?-1:1;
+        int sign = neg ? -1 : 1;
         long v = bytes < 0 ? -bytes : bytes;
         long r = v;
         if (decimal) {
@@ -232,20 +233,20 @@ public class FrequencyFormatter implements DoubleFormatter{
                 sb.append(strUnit(low));
             } else {
                 if (v < low) {
-                    sb.append(formatLeft(v * 1.0 / low*sign));
+                    sb.append(formatLeft(v * 1.0 / low * sign));
                     sb.append(strUnit(low));
                 } else if (v >= high) {
-                    sb.append(formatLeft(v * 1.0 / high*sign)).append(strUnit(high));
+                    sb.append(formatLeft(v * 1.0 / high * sign)).append(strUnit(high));
                 } else if (v >= Maths.TERA) {
-                    sb.append(formatLeft(v * 1.0 / Maths.TERA*sign)).append(strUnit(Maths.TERA));
+                    sb.append(formatLeft(v * 1.0 / Maths.TERA * sign)).append(strUnit(Maths.TERA));
                 } else if (v >= Maths.GIGA) {
-                    sb.append(formatLeft(v * 1.0 / Maths.GIGA*sign)).append(strUnit(Maths.GIGA));
+                    sb.append(formatLeft(v * 1.0 / Maths.GIGA * sign)).append(strUnit(Maths.GIGA));
                 } else if (v >= Maths.MEGA) {
-                    sb.append(formatLeft(v * 1.0 / Maths.MEGA*sign)).append(strUnit(Maths.MEGA));
+                    sb.append(formatLeft(v * 1.0 / Maths.MEGA * sign)).append(strUnit(Maths.MEGA));
                 } else if (v >= Maths.KILO) {
-                    sb.append(formatLeft(v * 1.0 / Maths.KILO*sign)).append(strUnit(Maths.KILO));
+                    sb.append(formatLeft(v * 1.0 / Maths.KILO * sign)).append(strUnit(Maths.KILO));
                 } else if (v >= Maths.HZ) {
-                    sb.append(formatLeft(v * 1.0 *sign)).append(strUnit(1));
+                    sb.append(formatLeft(v * 1.0 * sign)).append(strUnit(1));
                 }
             }
             return sb.toString();

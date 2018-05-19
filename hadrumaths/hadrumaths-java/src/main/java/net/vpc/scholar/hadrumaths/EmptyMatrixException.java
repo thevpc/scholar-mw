@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths;
  * Time: 10:47:54
  * To change this template use Options | File Templates.
  */
-public class EmptyMatrixException extends RuntimeException{
+public class EmptyMatrixException extends RuntimeException {
     public EmptyMatrixException() {
     }
 

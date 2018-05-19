@@ -4,26 +4,22 @@
  */
 package net.vpc.scholar.hadrumaths.convergence;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.util.SwingUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author vpc
  */
 public class ConvergenceMultiPlotListener implements ConvergenceListener {
@@ -32,7 +28,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
     private Map<String, ArrayList<Object>> valuesMap = new HashMap<String, ArrayList<Object>>();
     private JPanel valuesPanel;
     private WindowManager windowManager;
-    private boolean added=false;
+    private boolean added = false;
 
     public static interface WindowManager {
 
@@ -51,7 +47,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
             this.title = title;
         }
 
-        
+
         @Override
         public void addComponent(String title, Component comp) {
             getFrame();
@@ -89,10 +85,10 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
 
     @Override
     public void progress(ConvergenceResult result) {
-        if(!added){
-            added=true;
-            if(windowManager==null){
-                windowManager=new DefaultWindowManager(title);
+        if (!added) {
+            added = true;
+            if (windowManager == null) {
+                windowManager = new DefaultWindowManager(title);
             }
             windowManager.addComponent(title, getComponent());
         }
@@ -107,7 +103,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         Arrays.sort(all);
         int max = 0;
         for (int i = 0; i < all.length; i++) {
-            max = Maths.max(max, valuesMap.get(all[i]).size());
+            max = Math.max(max, valuesMap.get(all[i]).size());
         }
 
 
@@ -127,42 +123,45 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         try {
             SwingUtils.invokeAndWait(new Runnable() {
 
-                        @Override
-            public void run() {
-                            Container p = (Container) getComponent();
-                            valuesPanel.removeAll();
-                            valuesPanel.add(Plot.title(title)
-                                    .xname("iteration")
-                                    .yname(title)
-                                    .titles(all)
-                                    .nodisplay()
-                                    .plot(x, dblValues).toComponent());
-                            //valuesPanel.invalidate();
-                            //getFrame().getContentPane().invalidate();
-                            //valuesPanel.repaint();
-                            windowManager.dataChanged();
-                        }
-                    });
+                @Override
+                public void run() {
+                    Container p = (Container) getComponent();
+                    valuesPanel.removeAll();
+                    valuesPanel.add(Plot.title(title)
+                            .xname("iteration")
+                            .yname(title)
+                            .titles(all)
+                            .nodisplay()
+                            .plot(x, dblValues).toComponent());
+                    //valuesPanel.invalidate();
+                    //getFrame().getContentPane().invalidate();
+                    //valuesPanel.repaint();
+                    windowManager.dataChanged();
+                }
+            });
 
         } catch (Exception ex) {
             Logger.getLogger(ConvergenceMultiPlotListener.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
     }
-    public double toDouble(Object o){
+
+    public double toDouble(Object o) {
         return (o == null) ? 0 : (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof Matrix) ? ((Matrix) o).norm1() : ((Number) o).doubleValue();
     }
 
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
-    private final static Object[] Z_ARR=new Object[0];
-    public Object[] getValues(String id){
-      ArrayList<Object> a=getValuesList(id);
-      return a==null?Z_ARR : a.toArray();
+
+    private final static Object[] Z_ARR = new Object[0];
+
+    public Object[] getValues(String id) {
+        ArrayList<Object> a = getValuesList(id);
+        return a == null ? Z_ARR : a.toArray();
     }
-    
-    public ArrayList<Object> getValuesList(String id){
+
+    public ArrayList<Object> getValuesList(String id) {
         ArrayList<Object> values = valuesMap.get(id);
         if (values == null) {
             values = new ArrayList<Object>();
@@ -170,5 +169,5 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         }
         return values;
     }
-    
+
 }

@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
-
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha
@@ -21,7 +20,7 @@ final class CosCosVsCosCosScalarProductOld2 implements FormalScalarProductHelper
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
@@ -62,7 +61,7 @@ final class CosCosVsCosCosScalarProductOld2 implements FormalScalarProductHelper
 
     }
 
-//STARTING---------------------------------------
+    //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(g_c*y+g_d)

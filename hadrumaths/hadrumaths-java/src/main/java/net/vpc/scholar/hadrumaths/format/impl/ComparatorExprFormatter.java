@@ -6,10 +6,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.format.params.ZFormat;
 import net.vpc.scholar.hadrumaths.symbolic.ComparatorExpr;
-import net.vpc.scholar.hadrumaths.symbolic.ZZ;
 
 /**
  * @author vpc
@@ -18,16 +15,16 @@ public class ComparatorExprFormatter extends AbstractFormatter<ComparatorExpr> {
 
     @Override
     public void format(StringBuilder sb, ComparatorExpr o, FormatParamSet format) {
-        boolean pars=format.containsParam(FormatFactory.REQUIRED_PARS);
-        if(pars){
+        boolean pars = format.containsParam(FormatFactory.REQUIRED_PARS);
+        if (pars) {
             sb.append("(");
         }
-        FormatFactory.format(sb,o.getXArgument(),format);
+        FormatFactory.format(sb, o.getXArgument(), format);
         sb.append(" ");
         sb.append(o.getFunctionName());
         sb.append(" ");
-        FormatFactory.format(sb,o.getYArgument(),format);
-        if(pars){
+        FormatFactory.format(sb, o.getYArgument(), format);
+        if (pars) {
             sb.append(")");
         }
     }

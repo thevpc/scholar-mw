@@ -7,6 +7,8 @@ import java.rmi.Remote;
 
 public interface HadrumathsServlet {
     String getId();
+
     void service(DataInputStream in, DataOutputStream out) throws IOException;
+
     Remote export();
 }

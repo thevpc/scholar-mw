@@ -17,14 +17,14 @@ public class ValuesPlotXYComplexModelFace {
     private Complex[][] z;
 
     public ValuesPlotXYComplexModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
-        if(plotConfig==null){
+        if (plotConfig == null) {
             plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig=PlotConfig.copy(plotConfig).validate(model.getZ().length);
+            plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
         }
         List<Integer> initialIndexesList = new ArrayList<>();
-        double defaultXMultiplier=plotConfig.getDefaultXMultiplier(1);
+        double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
 
-        x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(model.getX(),(z==null||z.length==0)?-1:z[0].length),defaultXMultiplier);
+        x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(model.getX(), (z == null || z.length == 0) ? -1 : z[0].length), defaultXMultiplier);
         z = ArrayUtils.toValidTwoDimArray(model.getZ());
         y = ArrayUtils.toValidOneDimArray(model.getY(), z.length);
 
@@ -37,16 +37,16 @@ public class ValuesPlotXYComplexModelFace {
 
         title = model.getTitle();
         DoubleList yl = (DoubleList) Maths.dlist(y.length);
-        List<String> ys=new ArrayList<>(y.length);
+        List<String> ys = new ArrayList<>(y.length);
         List<Complex[]> zl = new ArrayList<>(y.length);
         for (int i = 0; i < y.length; i++) {
-            double ymultiplier=plotConfig.getYMultiplierAt(i,1);
-            double v = y[i]*ymultiplier;
+            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+            double v = y[i] * ymultiplier;
             if (model.getYVisible(i)) {
                 initialIndexesList.add(i);
                 yl.append(v);
                 zl.add(z[i]);
-                ys.add(PlotModelUtils.resolveYTitle(model,i));
+                ys.add(PlotModelUtils.resolveYTitle(model, i));
             }
         }
         initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
@@ -74,7 +74,7 @@ public class ValuesPlotXYComplexModelFace {
         return y;
     }
 
-    public Complex getZ(int xi,int yi) {
+    public Complex getZ(int xi, int yi) {
         return z[yi][xi];
     }
 

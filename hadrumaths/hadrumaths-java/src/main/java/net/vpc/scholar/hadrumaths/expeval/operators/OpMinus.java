@@ -7,7 +7,6 @@ package net.vpc.scholar.hadrumaths.expeval.operators;
 import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
 public class OpMinus extends BinaryOp {

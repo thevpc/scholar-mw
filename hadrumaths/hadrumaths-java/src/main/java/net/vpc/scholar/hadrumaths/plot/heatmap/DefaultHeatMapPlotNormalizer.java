@@ -12,17 +12,17 @@ public class DefaultHeatMapPlotNormalizer implements HeatMapPlotNormalizer {
     }
 
     public double[][] normalize(double[][] baseValues) {
-        MinMax minMax=new MinMax();
+        MinMax minMax = new MinMax();
         minMax.registerValues(baseValues);
-        double min=minMax.getMin();
-        double max=minMax.getMax();
-        return normalize(baseValues,min,max);
+        double min = minMax.getMin();
+        double max = minMax.getMax();
+        return normalize(baseValues, min, max);
     }
 
-    public double[][] normalize(double[][] baseValues,double min,double max) {
-        double[][] matrix=new double[baseValues.length][baseValues.length==0?0:baseValues[0].length];
-        double base=(max - min);
-        if(base==0){
+    public double[][] normalize(double[][] baseValues, double min, double max) {
+        double[][] matrix = new double[baseValues.length][baseValues.length == 0 ? 0 : baseValues[0].length];
+        double base = (max - min);
+        if (base == 0) {
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
                     double d = baseValues[i][j];
@@ -37,7 +37,7 @@ public class DefaultHeatMapPlotNormalizer implements HeatMapPlotNormalizer {
                     }
                 }
             }
-        }else{
+        } else {
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
                     double d = baseValues[i][j];

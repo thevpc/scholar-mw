@@ -6,9 +6,9 @@ import java.util.List;
 /**
  * Created by vpc on 8/15/14.
  */
-public class ImmutableConvertedList<A,B> extends AbstractList<B> {
+public class ImmutableConvertedList<A, B> extends AbstractList<B> {
     private List<A> base;
-    private Converter<A,B> converter;
+    private Converter<A, B> converter;
 
     public ImmutableConvertedList(List<A> base, Converter<A, B> converter) {
         this.base = base;

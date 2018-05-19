@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.plot.heatmap;
 public interface HeatMapPlotNormalizer {
     /**
      * return normalized values in [0..1]
+     *
      * @param baseValues initial value
      * @return normalized values in [0..1]
      */

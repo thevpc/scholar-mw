@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
 
@@ -19,7 +19,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;
@@ -31,8 +31,8 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
 
     public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         DDiscrete n = (DDiscrete) f1;
-        switch (domain.getDimension()){
-            case 1:{
+        switch (domain.getDimension()) {
+            case 1: {
                 double d = 0;
 
 //        ArrayList<IDDxy> sum = new ArrayList<IDDxy>();
@@ -49,7 +49,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                 }
                 return d;
             }
-            case 2:{
+            case 2: {
                 double d = 0;
 
 //        ArrayList<IDDxy> sum = new ArrayList<IDDxy>();
@@ -70,7 +70,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                 }
                 return d;
             }
-            case 3:{
+            case 3: {
                 double d = 0;
                 Domain dom;
                 double[] x = n.getX();
@@ -94,6 +94,6 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                 return d;
             }
         }
-        throw new IllegalArgumentException("Unsupported Dimension "+domain.getDimension());
+        throw new IllegalArgumentException("Unsupported Dimension " + domain.getDimension());
     }
 }

@@ -14,7 +14,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
@@ -34,21 +33,22 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
 //        }
 
         CosXCosY ee = (CosXCosY) e;
-        if(ee.getAmp()==0){
-            return RewriteResult.bestEffort(DoubleValue.valueOf(0,e.getDomain()));
+        if (ee.getAmp() == 0) {
+            return RewriteResult.bestEffort(DoubleValue.valueOf(0, e.getDomain()));
         }
-        if(ee.getA()==0 && ee.getC()==0){
-            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getB())*Maths.cos2(ee.getD()),e.getDomain()));
+        if (ee.getA() == 0 && ee.getC() == 0) {
+            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getB()) * Maths.cos2(ee.getD()), e.getDomain()));
         }
 
-        if(ee.getA()==0  && ee.getB()!=0){
-            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp()* Maths.cos2(ee.getB()),0,0,ee.getC(),ee.getD(),ee.getDomain()));
+        if (ee.getA() == 0 && ee.getB() != 0) {
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * Maths.cos2(ee.getB()), 0, 0, ee.getC(), ee.getD(), ee.getDomain()));
         }
-        if(ee.getC()==0 && ee.getD()!=0){
-            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp()*Maths.cos2(ee.getD()),ee.getA(),ee.getB(),0,0,ee.getDomain()));
+        if (ee.getC() == 0 && ee.getD() != 0) {
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * Maths.cos2(ee.getD()), ee.getA(), ee.getB(), 0, 0, ee.getDomain()));
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -56,7 +56,7 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.util.HFile;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

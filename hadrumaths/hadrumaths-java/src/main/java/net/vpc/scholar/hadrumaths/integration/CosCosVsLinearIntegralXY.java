@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.integration;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
-
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
+
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
@@ -17,7 +17,7 @@ final class CosCosVsLinearIntegralXY {
         return primi_coslinear(domain, famp, fa, fb, fc, fd, ga, gb, gc);
     }
 
-//STARTING---------------------------------------
+    //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*(g_a*x+g_b*y+g_c)
@@ -239,7 +239,7 @@ final class CosCosVsLinearIntegralXY {
     }
 //ENDING---------------------------------------
 
-//STARTING---------------------------------------
+    //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*(g_a*x+g_b)

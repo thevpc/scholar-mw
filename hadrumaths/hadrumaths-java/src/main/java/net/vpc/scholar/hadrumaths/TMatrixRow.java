@@ -16,7 +16,7 @@ public class TMatrixRow<T> extends AbstractTVector<T> {
 
     @Override
     public T get(int i) {
-        return matrix.get(row,i);
+        return matrix.get(row, i);
     }
 
     @Override

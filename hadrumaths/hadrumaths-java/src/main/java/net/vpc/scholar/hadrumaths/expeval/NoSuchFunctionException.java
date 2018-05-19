@@ -6,19 +6,19 @@
 package net.vpc.scholar.hadrumaths.expeval;
 
 /**
- *
  * @author vpc
  */
-public class NoSuchFunctionException extends ExpressionEvaluatorException{
+public class NoSuchFunctionException extends ExpressionEvaluatorException {
     private String functionName;
+
     public NoSuchFunctionException(String functionName) {
-        super("Function "+functionName+" not found");
-        this.functionName=functionName;
+        super("Function " + functionName + " not found");
+        this.functionName = functionName;
     }
 
     public String getVarName() {
         return functionName;
     }
-    
+
 
 }

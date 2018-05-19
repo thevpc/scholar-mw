@@ -1,7 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
@@ -22,8 +20,9 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 14 mai 2007 22:18:44
  */
-public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, DoubleToComplex,Cloneable {
+public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, DoubleToComplex, Cloneable {
     private static final long serialVersionUID = 1L;
+
     static {
         FormatFactory.register(DDiscrete.class, new AbstractFormatter<DDiscrete>() {
             @Override
@@ -34,6 +33,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             }
         });
     }
+
     private Axis[] axis;
     private double[/*Z*/][/*Y*/][/*X*/] values;
     private double[] x;
@@ -47,7 +47,6 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     private double dz;
     private int dimension;
     private Domain domain;
-
 
 
 //    public Cube(Complex value, int x, int y, int z) {
@@ -94,7 +93,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return new DDiscrete(domain, model, null, null, null, dx, dy, dz, axis1, axis2, axis3, 3);
     }
 
-    public static DDiscrete create(Domain domain, double[][][] model, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3,int dim) {
+    public static DDiscrete create(Domain domain, double[][][] model, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         return new DDiscrete(domain, model, x, y, z, dx, dy, dz, axis1, axis2, axis3, dim);
     }
 
@@ -119,7 +118,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return new DDiscrete(domain, model, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
 
-    public static DDiscrete create(Domain domain,double[][] model, double[] x, double[] y) {
+    public static DDiscrete create(Domain domain, double[][] model, double[] x, double[] y) {
         double[] z = {0};
         return new DDiscrete(domain, new double[][][]{model}, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 2);
     }
@@ -137,51 +136,52 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return new DDiscrete(domain, new double[][][]{{model}}, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 1);
     }
 
-    public static DDiscrete create(Domain domain ,double[] model, double[] x) {
+    public static DDiscrete create(Domain domain, double[] model, double[] x) {
         double[] z = {0};
         double[] y = {0};
         return new DDiscrete(domain, new double[][][]{{model}}, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 1);
     }
 
-    public static DDiscrete discretize(Expr expr,Domain domain,int xSamples,int ySamples,int zSamples) {
-        return discretize(expr,domain,xSamples,ySamples,zSamples,3);
+    public static DDiscrete discretize(Expr expr, Domain domain, int xSamples, int ySamples, int zSamples) {
+        return discretize(expr, domain, xSamples, ySamples, zSamples, 3);
     }
 
-    public static DDiscrete discretize(Expr expr,Domain domain,int xSamples,int ySamples) {
-        return discretize(expr,domain,xSamples,ySamples,1,2);
+    public static DDiscrete discretize(Expr expr, Domain domain, int xSamples, int ySamples) {
+        return discretize(expr, domain, xSamples, ySamples, 1, 2);
     }
 
-    public static DDiscrete discretize(Expr expr,Domain domain,int xSamples) {
-        return discretize(expr,domain,xSamples,1,1,1);
-    }
-    public static DDiscrete discretize(Expr expr,int xSamples,int ySamples,int zSamples) {
-        return discretize(expr,null,xSamples,ySamples,zSamples,3);
+    public static DDiscrete discretize(Expr expr, Domain domain, int xSamples) {
+        return discretize(expr, domain, xSamples, 1, 1, 1);
     }
 
-    public static DDiscrete discretize(Expr expr,int xSamples,int ySamples) {
-        return discretize(expr,null,xSamples,ySamples,1,2);
+    public static DDiscrete discretize(Expr expr, int xSamples, int ySamples, int zSamples) {
+        return discretize(expr, null, xSamples, ySamples, zSamples, 3);
     }
 
-    public static DDiscrete discretize(Expr expr,int xSamples) {
-        return discretize(expr,null,xSamples,1,1,1);
+    public static DDiscrete discretize(Expr expr, int xSamples, int ySamples) {
+        return discretize(expr, null, xSamples, ySamples, 1, 2);
     }
 
-    public static DDiscrete discretize(Expr expr,Domain domain,int xSamples,int ySamples,int zSamples,int dim) {
-        if(expr==null){
+    public static DDiscrete discretize(Expr expr, int xSamples) {
+        return discretize(expr, null, xSamples, 1, 1, 1);
+    }
+
+    public static DDiscrete discretize(Expr expr, Domain domain, int xSamples, int ySamples, int zSamples, int dim) {
+        if (expr == null) {
             throw new NullPointerException("Null Expression");
         }
-        if(domain==null){
-            domain=expr.getDomain();
+        if (domain == null) {
+            domain = expr.getDomain();
         }
-        if(domain==null){
+        if (domain == null) {
             throw new NullPointerException("Null Domain");
         }
-        if(expr.isScalarExpr() && expr.isDD()){
-            switch (dim){
-                case 1:{
-                    if(expr.isDouble() && domain.isInfinite()){
+        if (expr.isScalarExpr() && expr.isDD()) {
+            switch (dim) {
+                case 1: {
+                    if (expr.isDouble() && domain.isInfinite()) {
                         double[] vv = new double[xSamples];
-                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
+                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples], domain.xmin()) : domain.xtimes(xSamples);
                         return DDiscrete.create(
                                 domain,
                                 vv,
@@ -189,13 +189,13 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     }
                     AbsoluteSamples samples = domain.times(xSamples);
                     double[] model = expr.toDD().computeDouble(samples.getX(), (Domain) null, null);
-                    return DDiscrete.create(domain,model, samples.getX());
+                    return DDiscrete.create(domain, model, samples.getX());
                 }
-                case 2:{
-                    if(expr.isDouble() && domain.isInfinite()){
+                case 2: {
+                    if (expr.isDouble() && domain.isInfinite()) {
                         double[][] vv = new double[ySamples][xSamples];
-                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
-                        double[] yy = domain.isInfiniteY() ? ArrayUtils.fill(new double[ySamples],domain.ymin()) : domain.xtimes(ySamples);
+                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples], domain.xmin()) : domain.xtimes(xSamples);
+                        double[] yy = domain.isInfiniteY() ? ArrayUtils.fill(new double[ySamples], domain.ymin()) : domain.xtimes(ySamples);
                         return DDiscrete.create(
                                 domain,
                                 vv,
@@ -204,14 +204,14 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     }
                     AbsoluteSamples samples = domain.times(xSamples, ySamples);
                     double[][] model = expr.toDD().computeDouble(samples.getX(), samples.getY(), null, null);
-                    return DDiscrete.create(domain,model, samples.getX(), samples.getY());
+                    return DDiscrete.create(domain, model, samples.getX(), samples.getY());
                 }
-                case 3:{
-                    if(expr.isDouble() && domain.isInfinite()){
+                case 3: {
+                    if (expr.isDouble() && domain.isInfinite()) {
                         double[][][] vv = new double[zSamples][ySamples][xSamples];
-                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
-                        double[] yy = domain.isInfiniteY() ? ArrayUtils.fill(new double[ySamples],domain.ymin()) : domain.ytimes(ySamples);
-                        double[] zz = domain.isInfiniteZ() ? ArrayUtils.fill(new double[zSamples],domain.zmin()) : domain.ztimes(zSamples);
+                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples], domain.xmin()) : domain.xtimes(xSamples);
+                        double[] yy = domain.isInfiniteY() ? ArrayUtils.fill(new double[ySamples], domain.ymin()) : domain.ytimes(ySamples);
+                        double[] zz = domain.isInfiniteZ() ? ArrayUtils.fill(new double[zSamples], domain.zmin()) : domain.ztimes(zSamples);
                         return DDiscrete.create(
                                 domain,
                                 vv,
@@ -221,33 +221,33 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     }
                     AbsoluteSamples samples = domain.times(xSamples, ySamples, zSamples);
                     double[][][] model = expr.toDD().computeDouble(samples.getX(), samples.getY(), samples.getZ(), null, null);
-                    return DDiscrete.create(domain,model, samples.getX(), samples.getY(), samples.getZ());
+                    return DDiscrete.create(domain, model, samples.getX(), samples.getY(), samples.getZ());
                 }
             }
-            throw new IllegalArgumentException("Unsupported dimension "+dim);
-        }else{
+            throw new IllegalArgumentException("Unsupported dimension " + dim);
+        } else {
             throw new IllegalArgumentException("Expression is either not double or not scalar");
         }
     }
 
-    public static DDiscrete discretize(Expr expr,Domain domain,Samples samples) {
-        if(expr==null){
+    public static DDiscrete discretize(Expr expr, Domain domain, Samples samples) {
+        if (expr == null) {
             throw new NullPointerException("Null Expression");
         }
-        if(domain==null){
-            domain=expr.getDomain();
+        if (domain == null) {
+            domain = expr.getDomain();
         }
-        if(domain==null){
+        if (domain == null) {
             throw new NullPointerException("Null Domain");
         }
-        if(samples==null){
+        if (samples == null) {
             throw new NullPointerException("Null Samples");
         }
-        int dim=samples.getDimension();
-        AbsoluteSamples absoluteSamples=Samples.toAbsoluteSamples(samples,domain);
-        if(expr.isScalarExpr() && expr.isDD()){
-            switch (dim){
-                case 1:{
+        int dim = samples.getDimension();
+        AbsoluteSamples absoluteSamples = Samples.toAbsoluteSamples(samples, domain);
+        if (expr.isScalarExpr() && expr.isDD()) {
+            switch (dim) {
+                case 1: {
 //                    if(expr.isDouble() && domain.isInfinite()){
 //                        double[] vv = new double[xSamples];
 //                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
@@ -257,9 +257,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                                xx);
 //                    }
                     double[] model = expr.toDD().computeDouble(absoluteSamples.getX(), (Domain) null, null);
-                    return DDiscrete.create(domain,model, absoluteSamples.getX());
+                    return DDiscrete.create(domain, model, absoluteSamples.getX());
                 }
-                case 2:{
+                case 2: {
 //                    if(expr.isDouble() && domain.isInfinite()){
 //                        double[][] vv = new double[ySamples][xSamples];
 //                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
@@ -271,9 +271,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                                yy);
 //                    }
                     double[][] model = expr.toDD().computeDouble(absoluteSamples.getX(), absoluteSamples.getY(), null, null);
-                    return DDiscrete.create(domain,model, absoluteSamples.getX(), absoluteSamples.getY());
+                    return DDiscrete.create(domain, model, absoluteSamples.getX(), absoluteSamples.getY());
                 }
-                case 3:{
+                case 3: {
 //                    if(expr.isDouble() && domain.isInfinite()){
 //                        double[][][] vv = new double[zSamples][ySamples][xSamples];
 //                        double[] xx = domain.isInfiniteX() ? ArrayUtils.fill(new double[xSamples],domain.xmin()) : domain.xtimes(xSamples);
@@ -287,11 +287,11 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                                zz);
 //                    }
                     double[][][] model = expr.toDD().computeDouble(absoluteSamples.getX(), absoluteSamples.getY(), absoluteSamples.getZ(), null, null);
-                    return DDiscrete.create(domain,model, absoluteSamples.getX(), absoluteSamples.getY(), absoluteSamples.getZ());
+                    return DDiscrete.create(domain, model, absoluteSamples.getX(), absoluteSamples.getY(), absoluteSamples.getZ());
                 }
             }
-            throw new IllegalArgumentException("Unsupported dimension "+dim);
-        }else{
+            throw new IllegalArgumentException("Unsupported dimension " + dim);
+        } else {
             throw new IllegalArgumentException("Expression si either not double or not scalar");
         }
     }
@@ -459,7 +459,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
                 for (int k = 0; k < xcount; k++) {
-                    d[i][j][k] = this.values[i][j][k] * domain.computeDouble(x[k],y[j],z[i]);
+                    d[i][j][k] = this.values[i][j][k] * domain.computeDouble(x[k], y[j], z[i]);
                 }
             }
         }
@@ -468,7 +468,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.getReal());
         }
         Complex[][][] d = new Complex[zcount][ycount][xcount];
@@ -479,7 +479,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 }
             }
         }
-        return new Discrete(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2],dimension);
+        return new Discrete(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
     }
 
     public DDiscrete mul(DDiscrete other) {
@@ -498,33 +498,33 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         switch (dimension) {
             case 1: {
                 int i = (int) ((x - domain.xmin()) / dx);
-                if(i<0 || i>=xcount){
+                if (i < 0 || i >= xcount) {
                     return null;
                 }
                 return IntPoint.create(i);
             }
             case 2: {
                 int i = (int) ((x - domain.xmin()) / dx);
-                if(i<0 || i>=xcount){
+                if (i < 0 || i >= xcount) {
                     return null;
                 }
                 int j = (int) ((y - domain.ymin()) / dy);
-                if(j<0 || j>=ycount){
+                if (j < 0 || j >= ycount) {
                     return null;
                 }
                 return IntPoint.create(i, j);
             }
         }
         int i = (int) ((x - domain.xmin()) / dx);
-        if(i<0 || i>=xcount){
+        if (i < 0 || i >= xcount) {
             return null;
         }
         int j = (int) ((y - domain.ymin()) / dy);
-        if(j<0 || j>=ycount){
+        if (j < 0 || j >= ycount) {
             return null;
         }
         int k = (int) ((z - domain.zmin()) / dz);
-        if(k<0 || k>=zcount){
+        if (k < 0 || k >= zcount) {
             return null;
         }
         return IntPoint.create(i, j, k);
@@ -540,33 +540,33 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 if (xi < 0 || xi >= x.length) {
                     return null;
                 }
-                double x = domain.xmin ()+ dx * xi;
+                double x = domain.xmin() + dx * xi;
                 return Point.create(x);
             }
             case 2: {
                 if (xi < 0 || xi >= x.length) {
                     return null;
                 }
-                double x = domain.xmin ()+ dx * xi;
+                double x = domain.xmin() + dx * xi;
                 if (yi < 0 || yi >= y.length) {
                     return null;
                 }
-                double y = domain.ymin ()+ dy * yi;
+                double y = domain.ymin() + dy * yi;
                 return Point.create(x, y);
             }
         }
         if (xi < 0 || xi >= x.length) {
             return null;
         }
-        double x = domain.xmin ()+ dx * xi;
+        double x = domain.xmin() + dx * xi;
         if (yi < 0 || yi >= y.length) {
             return null;
         }
-        double y = domain.ymin ()+ dy * yi;
+        double y = domain.ymin() + dy * yi;
         if (zi < 0 || zi >= z.length) {
             return null;
         }
-        double z = domain.zmin ()+ dz * zi;
+        double z = domain.zmin() + dz * zi;
         return Point.create(x, y, z);
     }
 
@@ -585,9 +585,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -617,9 +617,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -649,9 +649,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -681,9 +681,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                 return create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
             }
             Domain d2 = getDomain().expand(other.getDomain());
-            double dx = Maths.min(this.dx, c.dx);
-            double dy = Maths.min(this.dy, c.dy);
-            double dz = Maths.min(this.dz, c.dz);
+            double dx = Math.min(this.dx, c.dx);
+            double dy = Math.min(this.dy, c.dy);
+            double dz = Math.min(this.dz, c.dz);
             AbsoluteSamples xyz = d2.steps(dx, dy, dz);
             double[][][] a1 = computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
             double[][][] a2 = c.computeDouble(xyz.getX(), xyz.getY(), xyz.getZ(), null, null);
@@ -714,7 +714,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                    } else if (b.isNaN() || b.isInfinite() || b.equals(Math2.CZERO)) {
 //                        c[i][j] = (a.substract(b));
                     } else {
-                        c = Maths.abs(((a - b) * 100 / (b)));
+                        c = Math.abs(((a - b) * 100 / (b)));
                     }
 
                     d[i][j][k] = c;
@@ -997,8 +997,8 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         return values;
     }
 
-    public Discrete toDDiscrete(){
-        return Discrete.create(domain,ArrayUtils.toComplex(values),x,y,z,dx,dy,dz,axis[0],axis[1],axis[2],dimension);
+    public Discrete toDDiscrete() {
+        return Discrete.create(domain, ArrayUtils.toComplex(values), x, y, z, dx, dy, dz, axis[0], axis[1], axis[2], dimension);
     }
 
     public Axis[] getAxis() {
@@ -1057,7 +1057,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     public double norm() {
         double f = 0;
         for (int j = 0; j < values.length; j++) {
-            f = Maths.max(f, Maths.matrix(values[j]).norm1());
+            f = Math.max(f, Maths.matrix(values[j]).norm1());
         }
         return f;
     }
@@ -1198,7 +1198,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //        return computeComplex(x,y,z,new BooleanMarker());
 //    }
 
-    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
@@ -1320,6 +1320,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         }
         throw new IllegalArgumentException("Missing z");
     }
+
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         switch (dimension) {
@@ -1439,7 +1440,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
                     for (int zIndex = zmin; zIndex <= zmax; zIndex++) {
                         double zz = z[zIndex];//zmin + zIndex * dz;
                         IntPoint indices = getIndices(xx, yy, zz);
-                        if(indices!=null) {
+                        if (indices != null) {
                             r[zIndex][yIndex][xIndex] = values[indices.z][indices.y][indices.x];
                         }
                     }
@@ -1471,12 +1472,12 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x, double y,BooleanMarker defined) {
+    public Complex computeComplex(double x, double y, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
                     IntPoint ii = getIndices(x, 0, 0);
-                    if(ii!=null) {
+                    if (ii != null) {
                         return Complex.valueOf(values[0][0][ii.x]);
                     }
                     defined.set();
@@ -1486,7 +1487,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             case 2: {
                 if (contains(x, y)) {
                     IntPoint ii = getIndices(x, y, 0);
-                    if(ii!=null) {
+                    if (ii != null) {
                         return Complex.valueOf(values[0][ii.y][ii.x]);
                     }
                     defined.set();
@@ -1498,12 +1499,12 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     @Override
-    public Complex computeComplex(double x,BooleanMarker defined) {
+    public Complex computeComplex(double x, BooleanMarker defined) {
         switch (dimension) {
             case 1: {
                 if (contains(x)) {
                     IntPoint ii = getIndices(x, 0, 0);
-                    if(ii!=null) {
+                    if (ii != null) {
                         return Complex.valueOf(values[0][0][ii.x]);
                     }
                     defined.set();
@@ -1517,7 +1518,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     @Override
     public double computeDouble0(double x, double y, BooleanMarker defined) {
         IntPoint ii = getIndices(x, y, domain.zmin());
-        if(ii!=null) {
+        if (ii != null) {
             defined.set();
             return (values[0][ii.y][ii.x]);
         }
@@ -1538,7 +1539,6 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     public Domain getDomainImpl() {
         return domain;
     }
-
 
 
     public double getDx() {
@@ -1613,11 +1613,11 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
                 for (int k = 0; k < xcount; k++) {
-                    d[i][j][k] = 1/this.values[i][j][k];
+                    d[i][j][k] = 1 / this.values[i][j][k];
                 }
             }
         }
-        return DDiscrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2],dimension);
+        return DDiscrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2], dimension);
     }
 
     @Override
@@ -1660,52 +1660,52 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        return computeComplex(x,y,z,(Domain) null,null);
+        return computeComplex(x, y, z, (Domain) null, null);
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y) {
-        return computeComplex(x,y,(Domain) null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x) {
-        return computeComplex(x,(Domain) null,null);
+        return computeComplex(x, (Domain) null, null);
     }
 
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 }

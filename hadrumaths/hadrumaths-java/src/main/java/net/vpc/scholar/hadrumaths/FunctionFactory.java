@@ -1,16 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.CExp;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
-import net.vpc.scholar.hadrumaths.symbolic.PiecewiseSineXFunctionXY;
-import net.vpc.scholar.hadrumaths.symbolic.RooftopXFunctionXY;
-import net.vpc.scholar.hadrumaths.symbolic.UFunction;
+import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import static net.vpc.scholar.hadrumaths.Maths.CZERO;
 import static net.vpc.scholar.hadrumaths.Maths.HALF_PI;
@@ -19,9 +9,9 @@ import static net.vpc.scholar.hadrumaths.Maths.HALF_PI;
  * Class Description
  *
  * @author Taha BEN SALAH (taha@ant-inter.com) User: taha Date: 25-aout-2004
- *         Time: 20:04:38
+ * Time: 20:04:38
  */
-public final class FunctionFactory extends AbstractFactory{
+public final class FunctionFactory extends AbstractFactory {
 
 
     //    public static void main(String[] args) {
@@ -218,7 +208,7 @@ public final class FunctionFactory extends AbstractFactory{
     /**
      * @param p the p
      * @param d the d
-     * @return cos(2(p-1)x/w) / sqrt(w2/4 - x2)
+     * @return cos(2 ( p - 1)x/w) / sqrt(w2/4 - x2)
      */
 //    public static DDxUx uX(int p, Domain d) {
 //        Domain d0 = Domain.forBounds(-d.xwidth / 2, d.xwidth / 2);

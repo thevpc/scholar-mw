@@ -5,13 +5,13 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
+import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
         RewriteResult e2 = rewrite0(e, ruleset);
         return e2;
     }
+
     public RewriteResult rewrite0(Expr e, ExpressionRewriter ruleset) {
 //        RewriteResult rewriteResult = rewrite00(e, ruleset);
 //        return rewriteResult;
@@ -47,24 +48,24 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
         Complex complexeVal = Complex.ONE;
         List<Expr> all = new ArrayList<Expr>();
         Domain fullDomain = Domain.FULL(ee.getDomainDimension());
-        boolean updated=false;
+        boolean updated = false;
         List<Expr> linearized = new ArrayList<Expr>();
         for (Expr expression : ee.getSubExpressions()) {
             RewriteResult rewrite = ruleset.rewrite(expression);
             expression = rewrite.getValue();
-            if(rewrite.isRewritten()){
-                updated=true;
+            if (rewrite.isRewritten()) {
+                updated = true;
             }
             fullDomain = fullDomain.intersect(expression.getDomain());
             if (expression instanceof Mul) {
-                updated=true;
+                updated = true;
                 linearized.addAll(expression.getSubExpressions());
             } else {
                 linearized.add(expression);
             }
         }
         for (Expr expression : linearized) {
-            if(expression.isZero()){
+            if (expression.isZero()) {
                 return RewriteResult.bestEffort(Complex.ZERO);
             }
             if (expression instanceof Complex) {
@@ -105,11 +106,15 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(Complex.ONE);
         }
         if (all.size() == 1) {
-            Expr value = all.get(0);if(e.equals(value)){return RewriteResult.unmodified(e);}return RewriteResult.newVal(value);
+            Expr value = all.get(0);
+            if (e.equals(value)) {
+                return RewriteResult.unmodified(e);
+            }
+            return RewriteResult.newVal(value);
         }
         Expr m2 = Maths.mul(all.toArray(new Expr[all.size()]));
-        if(!updated && m2.equals(e)){
-         return RewriteResult.unmodified(e);
+        if (!updated && m2.equals(e)) {
+            return RewriteResult.unmodified(e);
         }
         //TODO should we return bestEffort? test me please
         return RewriteResult.newVal(m2);
@@ -160,10 +165,10 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
     }
 
     protected Expr simplify(Expr a, Expr b, Domain fullDomain) {
-        if(a.isComplexExpr()){
+        if (a.isComplexExpr()) {
             return b.mul(a.toComplex()).mul(a.getDomain());
         }
-        if(b.isComplexExpr()){
+        if (b.isComplexExpr()) {
             return a.mul(b.toComplex()).mul(b.getDomain());
         }
         //process cross
@@ -176,20 +181,20 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             double cst = a.toDouble();
             //UPDATED
             Domain theDomain = fullDomain.intersect(b.getDomain());
-            boolean domainChanged=!theDomain.equals(b.getDomain());
+            boolean domainChanged = !theDomain.equals(b.getDomain());
             if (!domainChanged) {
                 if (cst == 1) {
                     return b;
                 }
             }
-            boolean expSimplifiableIfMulDomain= isExpSimplifiableIfMulDomain(b);
-            boolean expSimplifiableIfMulDouble=isExpSimplifiableIfMulDouble(b);
-            if(domainChanged){
-                if(expSimplifiableIfMulDomain && expSimplifiableIfMulDouble){
+            boolean expSimplifiableIfMulDomain = isExpSimplifiableIfMulDomain(b);
+            boolean expSimplifiableIfMulDouble = isExpSimplifiableIfMulDouble(b);
+            if (domainChanged) {
+                if (expSimplifiableIfMulDomain && expSimplifiableIfMulDouble) {
                     return b.mul(fullDomain).mul(cst);
                 }
-            }else{
-                if(expSimplifiableIfMulDouble){
+            } else {
+                if (expSimplifiableIfMulDouble) {
                     return b.mul(cst);
                 }
             }
@@ -198,20 +203,20 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             Complex cst = a.toComplex();
             //UPDATED
             Domain theDomain = fullDomain.intersect(b.getDomain());
-            boolean domainChanged=!theDomain.equals(b.getDomain());
+            boolean domainChanged = !theDomain.equals(b.getDomain());
             if (!domainChanged) {
                 if (cst.equals(Maths.CONE)) {
                     return b;
                 }
             }
-            boolean expSimplifiableIfMulDomain= isExpSimplifiableIfMulDomain(b);
-            boolean expSimplifiableIfMulDouble=isExpSimplifiableIfMulComplex(b);
-            if(domainChanged){
-                if(expSimplifiableIfMulDomain && expSimplifiableIfMulDouble){
+            boolean expSimplifiableIfMulDomain = isExpSimplifiableIfMulDomain(b);
+            boolean expSimplifiableIfMulDouble = isExpSimplifiableIfMulComplex(b);
+            if (domainChanged) {
+                if (expSimplifiableIfMulDomain && expSimplifiableIfMulDouble) {
                     return b.mul(fullDomain).mul(cst);
                 }
-            }else{
-                if(expSimplifiableIfMulDouble){
+            } else {
+                if (expSimplifiableIfMulDouble) {
                     return b.mul(cst);
                 }
             }
@@ -276,16 +281,18 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
                 || b instanceof Plus || b instanceof Sub || b instanceof Neg
                 || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }
+
     private boolean isExpSimplifiableIfMulComplex(Expr b) {
-        if(true)return true;
+        if (true) return true;
         return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
                 || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
                 || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
                 || b instanceof Plus || b instanceof Sub || b instanceof Neg
                 || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
     }
+
     private boolean isExpSimplifiableIfMulDomain(Expr b) {
-        if(true)return true;
+        if (true) return true;
         return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
                 || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
                 || b instanceof Linear || b instanceof Shape2D || b instanceof RWG

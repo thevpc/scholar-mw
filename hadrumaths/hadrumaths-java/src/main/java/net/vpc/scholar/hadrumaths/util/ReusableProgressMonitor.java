@@ -1,9 +1,5 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMessage;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-
 public class ReusableProgressMonitor implements ProgressMonitor {
     private final EnhancedProgressMonitor base;
 
@@ -23,10 +19,10 @@ public class ReusableProgressMonitor implements ProgressMonitor {
 
     @Override
     public void setProgress(double progress, ProgressMessage message) {
-        if(progress==1.0){
-            progress=Double.NaN;
+        if (progress == 1.0) {
+            progress = Double.NaN;
         }
-        base.setProgress(progress,message);
+        base.setProgress(progress, message);
     }
 
     @Override
@@ -39,7 +35,7 @@ public class ReusableProgressMonitor implements ProgressMonitor {
         base.stop();
     }
 
-    public void terminateAll(){
+    public void terminateAll() {
         base.terminate("");
     }
 }

@@ -6,14 +6,14 @@ import java.io.PrintStream;
  * Created by vpc on 5/30/14.
  */
 public class PathFS {
-    private PathItem root=new PathItem();
+    private PathItem root = new PathItem();
 
     public PathItem getRoot() {
         return root;
     }
 
     public boolean contains(String path) {
-        return get(path)!=null;
+        return get(path) != null;
     }
 
     public PathItem get(String path) {
@@ -21,23 +21,23 @@ public class PathFS {
     }
 
     public PathItem mkdirs(String path) {
-        return root.addPath(path,true,true,true);
+        return root.addPath(path, true, true, true);
     }
 
     public PathItem touch(String path) {
         return root.addPath(path, false, true, true);
     }
 
-    public void print(PrintStream out){
+    public void print(PrintStream out) {
         for (PathItem t : root.get()) {
-            print(t,out);
+            print(t, out);
         }
     }
 
-    public void print(PathItem t,PrintStream out){
+    public void print(PathItem t, PrintStream out) {
         out.print(t.getPath());
         for (PathItem tt : t.get()) {
-            print(tt,out);
+            print(tt, out);
         }
     }
 

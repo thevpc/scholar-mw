@@ -6,15 +6,12 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.DDz;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.SinSeqYZ;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class SinSeqYZNavRule implements ExpressionRewriterRule {
@@ -40,7 +37,7 @@ public class SinSeqYZNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

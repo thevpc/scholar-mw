@@ -5,7 +5,7 @@ public class LogConsoleAction implements ConsoleAction {
     private String msg;
 
     public LogConsoleAction(String msg) {
-        this.msg=msg;
+        this.msg = msg;
     }
 
     public void execute(PlotConsole plotter) {

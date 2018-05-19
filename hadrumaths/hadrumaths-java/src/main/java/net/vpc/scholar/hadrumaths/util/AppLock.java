@@ -4,8 +4,11 @@ import java.util.concurrent.Callable;
 
 public interface AppLock {
     void release();
+
     void forceRelease();
+
     String getName();
+
     boolean isLocked();
 
     boolean invokeIfAcquired(long waitTime, Runnable runnable);
@@ -27,7 +30,7 @@ public interface AppLock {
      *
      * @param lockTimeout if able to acquire the lock, the file is locked for maximum <code>lockTimeout</code> millisecond
      */
-    boolean tryAcquire(long lockTimeout) ;
+    boolean tryAcquire(long lockTimeout);
 
     /**
      * try to release an already locked file

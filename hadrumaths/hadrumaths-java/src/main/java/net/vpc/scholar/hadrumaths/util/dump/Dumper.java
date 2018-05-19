@@ -16,28 +16,31 @@ public class Dumper {
     private Object baseRef;
     private StringBuilder sb = new StringBuilder();
     private String name;
-    private Type type =Type.OBJECT;
-    public enum Type{
+    private Type type = Type.OBJECT;
+
+    public enum Type {
         SIMPLE,
         OBJECT,
         ARRAY
-    };
+    }
+
+    ;
 
     public Dumper(Object c) {
-        this(c,Type.OBJECT);
+        this(c, Type.OBJECT);
     }
 
     public Dumper(Object c, Type type) {
         this(c.getClass().getSimpleName(), type);
         this.baseRef = c;
         Dump d = this.baseRef.getClass().getAnnotation(Dump.class);
-        if(d!=null){
-            addFields(c,false);
+        if (d != null) {
+            addFields(c, false);
         }
     }
 
     public Dumper() {
-        this("",Type.OBJECT);
+        this("", Type.OBJECT);
     }
 
     public Dumper(String name) {
@@ -69,7 +72,7 @@ public class Dumper {
             Class cls = stack.pop();
             for (Field field : cls.getDeclaredFields()) {
                 Dump d = field.getAnnotation(Dump.class);
-                if (d!=null) {
+                if (d != null) {
                     String n0 = field.getName();
                     String n = n0;
                     int i = 1;
@@ -116,7 +119,7 @@ public class Dumper {
     public Dumper add(String varName, Object value) {
         boolean first = sb.length() == 0;
         String p = null;
-        if (type==Type.SIMPLE) {
+        if (type == Type.SIMPLE) {
             p = varName == null ? "" : (varName + "=");
         } else {
             p = varName == null ? "  " : ("  " + varName + " = ");
@@ -126,12 +129,12 @@ public class Dumper {
 //              prefix.append(' ');
 //        }
         if (!first) {
-            if (type==Type.SIMPLE) {
+            if (type == Type.SIMPLE) {
                 sb.append(";");
             }
         }
         sb.append(p);
-        String str = (type==Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
+        String str = (type == Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
         if (str.indexOf('\n') >= 0 || str.indexOf('\r') >= 0) {
             boolean firstLine = true;
             for (StringTokenizer stok = new StringTokenizer(str, "\r\n"); stok.hasMoreTokens(); ) {
@@ -144,7 +147,7 @@ public class Dumper {
             }
         } else {
             sb.append(str);
-            if (!(type==Type.SIMPLE)) {
+            if (!(type == Type.SIMPLE)) {
                 sb.append("\n");
             }
         }
@@ -153,18 +156,18 @@ public class Dumper {
 
     public String toString() {
         String s = sb.toString();
-        switch (type){
-            case SIMPLE:{
+        switch (type) {
+            case SIMPLE: {
                 return name + "(" + s + ")";
             }
-            case ARRAY:{
+            case ARRAY: {
                 if (s.indexOf('\n') >= 0) {
                     return name + "[\n" + s + "]";
                 } else {
                     return name + "[" + s + "]";
                 }
             }
-            case OBJECT:{
+            case OBJECT: {
                 if (s.indexOf('\n') >= 0) {
                     return name + "{\n" + s + "}";
                 } else {

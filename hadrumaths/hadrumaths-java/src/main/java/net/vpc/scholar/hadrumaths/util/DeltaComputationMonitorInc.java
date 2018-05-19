@@ -12,6 +12,6 @@ public class DeltaComputationMonitorInc implements ComputationMonitorInc {
 
     @Override
     public double inc(double last) {
-        return last+delta;
+        return last + delta;
     }
 }

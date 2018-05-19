@@ -10,10 +10,10 @@ public abstract class SimpleFractalGeometryList extends DefaultFractalGeometryLi
     }
 
     public static Polygon domainToPolygon(Domain domain) {
-        return domainToPolygon(domain,1);
+        return domainToPolygon(domain, 1);
     }
 
-    public static Polygon domainToPolygon(Domain domain,int color) {
+    public static Polygon domainToPolygon(Domain domain, int color) {
         return new Polygon(
                 new double[]{domain.xmin(), domain.xmax(), domain.xmax(), domain.xmin()},
                 new double[]{domain.ymin(), domain.ymin(), domain.ymax(), domain.ymax()},

@@ -2,8 +2,9 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadrumaths.plot.PlotType;
+import net.vpc.scholar.hadrumaths.plot.VDiscretePlotModel;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.plot.*;
 
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
     private Set<ExternalLibrary> preferredLibraries;
 
 
-    public ConsoleActionCubesPlot(VDiscrete yvalues, String plotTitle, String plotGroup, double infiniteValue, PlotType plotType, WindowPath preferredPath,Set<ExternalLibrary> preferredLibraries) {
+    public ConsoleActionCubesPlot(VDiscrete yvalues, String plotTitle, String plotGroup, double infiniteValue, PlotType plotType, WindowPath preferredPath, Set<ExternalLibrary> preferredLibraries) {
         this.yvalues = yvalues;
         this.plotTitle = plotTitle;
         this.infiniteValue = infiniteValue;
@@ -34,12 +35,12 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
         }
         plotter.getPlotConsoleFrame().getWindow(preferredPath)
                 .addChild(
-                        "/"+plotTitle,
+                        "/" + plotTitle,
                         Plot.create(
                                 new VDiscretePlotModel()
-                                .setTitle(plotTitle)
-                                .setPreferredLibraries(preferredLibraries)
-                                .setVdiscretes(yvalues)
+                                        .setTitle(plotTitle)
+                                        .setPreferredLibraries(preferredLibraries)
+                                        .setVdiscretes(yvalues)
                                 ,
                                 Plot.getDefaultWindowManager()
                         ).toComponent()

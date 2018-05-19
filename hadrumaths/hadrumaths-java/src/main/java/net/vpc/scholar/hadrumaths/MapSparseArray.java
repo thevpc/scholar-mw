@@ -10,13 +10,13 @@ public class MapSparseArray<T> implements SparseArray<T> {
     private int initialSize = 0;
     private TypeReference<T> componentType;
 
-    public MapSparseArray(TypeReference<T> componentType,int length) {
+    public MapSparseArray(TypeReference<T> componentType, int length) {
         this.length = length;
         this.componentType = componentType;
     }
 
-    public MapSparseArray(TypeReference<T> componentType,int length, int initialSize) {
-        this.initialSize=initialSize;
+    public MapSparseArray(TypeReference<T> componentType, int length, int initialSize) {
+        this.initialSize = initialSize;
         this.length = length;
         this.componentType = componentType;
     }
@@ -25,15 +25,15 @@ public class MapSparseArray<T> implements SparseArray<T> {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
-        return values==null?null:values.get(i);
+        return values == null ? null : values.get(i);
     }
 
     public void set(int i, T value) {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(i);
         }
-        if(values==null){
-            values=new HashMap<>(initialSize);
+        if (values == null) {
+            values = new HashMap<>(initialSize);
         }
         values.put(i, value);
         if (i < maxIndex) {
@@ -46,7 +46,7 @@ public class MapSparseArray<T> implements SparseArray<T> {
     }
 
     public int getEffectiveSize() {
-        return values==null?0:values.size();
+        return values == null ? 0 : values.size();
     }
 
     public int getCurrentLength() {

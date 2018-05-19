@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Asin extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Asin(Expr arg) {
         super("asin", arg, FunctionType.DOUBLE);
     }
@@ -26,7 +27,7 @@ public class Asin extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.asin(c);
+        return Math.asin(c);
     }
 
     @Override

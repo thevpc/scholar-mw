@@ -6,9 +6,9 @@ import java.util.List;
 /**
  * Created by vpc on 11/22/16.
  */
-public class ClassMapList<T> extends ClassMap<List<T>>{
+public class ClassMapList<T> extends ClassMap<List<T>> {
     public ClassMapList(int initialCapacity) {
-        this(Object.class,initialCapacity);
+        this(Object.class, initialCapacity);
     }
 
     public ClassMapList() {
@@ -19,8 +19,8 @@ public class ClassMapList<T> extends ClassMap<List<T>>{
         super(keyType, (Class) List.class);
     }
 
-    public ClassMapList(Class keyType,int initialCapacity) {
-        super(keyType, (Class) List.class,initialCapacity);
+    public ClassMapList(Class keyType, int initialCapacity) {
+        super(keyType, (Class) List.class, initialCapacity);
     }
 
     public List<T> add(Class classKey, T value) {
@@ -31,9 +31,9 @@ public class ClassMapList<T> extends ClassMap<List<T>>{
 
     public List<T> getOrCreate(Class classKey) {
         List<T> list = super.get(classKey);
-        if(list==null){
-            list=new ArrayList<T>();
-            put(classKey,list);
+        if (list == null) {
+            list = new ArrayList<T>();
+            put(classKey, list);
         }
         return list;
     }

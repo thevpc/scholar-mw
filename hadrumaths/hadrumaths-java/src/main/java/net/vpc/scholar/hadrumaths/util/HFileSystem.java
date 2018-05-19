@@ -37,9 +37,9 @@ public interface HFileSystem {
 
     HFile[] listFiles(HFile file, HFileFilter fileFilter);
 
-    boolean delete(HFile file,FailStrategy strategy);
+    boolean delete(HFile file, FailStrategy strategy);
 
-    boolean deleteFolderTree(HFile folder, HFileFilter fileFilter, FailStrategy strategy) ;
+    boolean deleteFolderTree(HFile folder, HFileFilter fileFilter, FailStrategy strategy);
 
     boolean isNativeLocalFile(HFile file);
 

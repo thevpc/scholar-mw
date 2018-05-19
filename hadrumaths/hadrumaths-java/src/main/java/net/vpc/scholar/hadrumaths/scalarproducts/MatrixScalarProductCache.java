@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializedForm;
 import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializerProvider;
 import net.vpc.scholar.hadrumaths.cache.DefaultObjectCache;
-import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;

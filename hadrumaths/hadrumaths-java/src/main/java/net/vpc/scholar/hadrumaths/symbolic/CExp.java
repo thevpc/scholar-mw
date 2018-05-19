@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 

@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.TypeReference;
 
 import java.lang.reflect.Field;
@@ -243,22 +241,22 @@ public class PlatformUtils {
     public static long gc2() {
         long before = Maths.inUseMemory();
         Runtime rt = Runtime.getRuntime();
-        long lastFreed=0;
-        int iterations=0;
+        long lastFreed = 0;
+        int iterations = 0;
         for (int i = 0; i < 10; i++) {
             long before1 = Maths.inUseMemory();
             rt.gc();
             long after1 = Maths.inUseMemory();
-            long freed1 = before1-after1;
-            long freed = before-after1;
+            long freed1 = before1 - after1;
+            long freed = before - after1;
             iterations++;
-            long deltaFreed = (freed1>lastFreed) ? (freed1-lastFreed):(lastFreed-freed1);
-            lastFreed=freed1;
+            long deltaFreed = (freed1 > lastFreed) ? (freed1 - lastFreed) : (lastFreed - freed1);
+            lastFreed = freed1;
 //            System.out.println("\tfreed : "+Maths.formatMemory(freed1) +" : "+Maths.formatMemory(freed));
-            if(deltaFreed <1024) break;
+            if (deltaFreed < 1024) break;
         }
         long after = Maths.inUseMemory();
-        long freed = before-after;
+        long freed = before - after;
 //        System.out.println("freed in "+iterations+" iterations : "+Maths.formatMemory(freed));
         return freed;
     }
@@ -282,13 +280,13 @@ public class PlatformUtils {
 //    }
 
 
-    public static <K,V> Map<K,V> merge(Map<K,V> destination,Map<K,V> ... sources){
-        if(destination==null){
-            destination=new HashMap<K,V>();
+    public static <K, V> Map<K, V> merge(Map<K, V> destination, Map<K, V>... sources) {
+        if (destination == null) {
+            destination = new HashMap<K, V>();
         }
-        if(sources!=null){
+        if (sources != null) {
             for (Map<K, V> source : sources) {
-                if(source!=null) {
+                if (source != null) {
                     destination.putAll(source);
                 }
             }

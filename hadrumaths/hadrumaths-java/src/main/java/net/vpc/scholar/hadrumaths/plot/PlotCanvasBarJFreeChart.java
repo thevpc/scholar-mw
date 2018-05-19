@@ -4,7 +4,6 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -27,24 +26,23 @@ public class PlotCanvasBarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 //        return Maths.dtimes(1.0, yAxis[0].length, yAxis[0].length);
 //    }
 
-    protected double getDefaultXMultiplier(){
+    protected double getDefaultXMultiplier() {
         return 1;
     }
 
 
-
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax){
+    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
         chart.getPlot().setBackgroundPaint(Color.WHITE);
         chart.getCategoryPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
         chart.getCategoryPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
     }
 
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
-        CategoryDataset data= createCategoryDataset();
+        CategoryDataset data = createCategoryDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
-        if(config.threeD){
+        if (config.threeD) {
             return ChartFactory.createBarChart3D(theTitle, theXTitle, theYTitle,
                     data,
                     PlotOrientation.VERTICAL,

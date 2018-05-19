@@ -133,11 +133,11 @@ public class Bessel {
     };
 
     /*
-      * Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
-      * in the inverted interval [8,infinity].
-      *
-      * lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
-      */
+     * Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
+     * in the inverted interval [8,infinity].
+     *
+     * lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
+     */
     protected static final double[] B_i1 = {
             7.51729631084210481353E-18,
             4.41434832307170791151E-18,
@@ -173,11 +173,11 @@ public class Bessel {
      * **************************************
      */
     /* Chebyshev coefficients for K0(x) + log(x/2) I0(x)
-      * in the interval [0,2].  The odd order coefficients are all
-      * zero; only the even order coefficients are listed.
-      *
-      * lim(x->0){ K0(x) + log(x/2) I0(x) } = -EUL.
-      */
+     * in the interval [0,2].  The odd order coefficients are all
+     * zero; only the even order coefficients are listed.
+     *
+     * lim(x->0){ K0(x) + log(x/2) I0(x) } = -EUL.
+     */
     protected static final double[] A_k0 = {
             1.37446543561352307156E-16,
             4.25981614279661018399E-14,
@@ -192,10 +192,10 @@ public class Bessel {
     };
 
     /* Chebyshev coefficients for exp(x) sqrt(x) K0(x)
-      * in the inverted interval [2,infinity].
-      *
-      * lim(x->inf){ exp(x) sqrt(x) K0(x) } = sqrt(pi/2).
-      */
+     * in the inverted interval [2,infinity].
+     *
+     * lim(x->inf){ exp(x) sqrt(x) K0(x) } = sqrt(pi/2).
+     */
     protected static final double[] B_k0 = {
             5.30043377268626276149E-18,
             -1.64758043015242134646E-17,
@@ -231,10 +231,10 @@ public class Bessel {
      * **************************************
      */
     /* Chebyshev coefficients for x(K1(x) - log(x/2) I1(x))
-      * in the interval [0,2].
-      *
-      * lim(x->0){ x(K1(x) - log(x/2) I1(x)) } = 1.
-      */
+     * in the interval [0,2].
+     *
+     * lim(x->0){ x(K1(x) - log(x/2) I1(x)) } = 1.
+     */
     protected static final double[] A_k1 = {
             -7.02386347938628759343E-18,
             -2.42744985051936593393E-15,
@@ -250,10 +250,10 @@ public class Bessel {
     };
 
     /* Chebyshev coefficients for exp(x) sqrt(x) K1(x)
-      * in the interval [2,infinity].
-      *
-      * lim(x->inf){ exp(x) sqrt(x) K1(x) } = sqrt(pi/2).
-      */
+     * in the interval [2,infinity].
+     *
+     * lim(x->inf){ exp(x) sqrt(x) K1(x) } = sqrt(pi/2).
+     */
     protected static final double[] B_k1 = {
             -5.75674448366501715755E-18,
             1.79405087314755922667E-17,
@@ -305,10 +305,10 @@ public class Bessel {
         if (x < 0) x = -x;
         if (x <= 8.0) {
             y = (x / 2.0) - 2.0;
-            return (Maths.exp(x) * Maths.chbevl(y, A_i0, 30));
+            return (Math.exp(x) * Maths.chbevl(y, A_i0, 30));
         }
 
-        return (Maths.exp(x) * Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Maths.sqrt(x));
+        return (Math.exp(x) * Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -328,7 +328,7 @@ public class Bessel {
             return (Maths.chbevl(y, A_i0, 30));
         }
 
-        return (Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Maths.sqrt(x));
+        return (Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -346,12 +346,12 @@ public class Bessel {
     static public double i1(double x) throws ArithmeticException {
         double y, z;
 
-        z = Maths.abs(x);
+        z = Math.abs(x);
         if (z <= 8.0) {
             y = (z / 2.0) - 2.0;
-            z = Maths.chbevl(y, A_i1, 29) * z * Maths.exp(z);
+            z = Maths.chbevl(y, A_i1, 29) * z * Math.exp(z);
         } else {
-            z = Maths.exp(z) * Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Maths.sqrt(z);
+            z = Math.exp(z) * Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
         }
         if (x < 0.0)
             z = -z;
@@ -369,12 +369,12 @@ public class Bessel {
     static public double i1e(double x) throws ArithmeticException {
         double y, z;
 
-        z = Maths.abs(x);
+        z = Math.abs(x);
         if (z <= 8.0) {
             y = (z / 2.0) - 2.0;
             z = Maths.chbevl(y, A_i1, 29) * z;
         } else {
-            z = Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Maths.sqrt(z);
+            z = Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
         }
         if (x < 0.0)
             z = -z;
@@ -389,7 +389,7 @@ public class Bessel {
     static public double j0(double x) throws ArithmeticException {
         double ax;
 
-        if ((ax = Maths.abs(x)) < 8.0) {
+        if ((ax = Math.abs(x)) < 8.0) {
             double y = x * x;
             double ans1 = 57568490574.0 + y * (-13362590354.0 + y * (651619640.7
                     + y * (-11214424.18 + y * (77392.33017 + y * (-184.9052456)))));
@@ -408,8 +408,8 @@ public class Bessel {
                     + y * (-0.6911147651e-5 + y * (0.7621095161e-6
                     - y * 0.934935152e-7)));
 
-            return Maths.sqrt(0.636619772 / ax) *
-                    (Maths.cos(xx) * ans1 - z * Maths.sin(xx) * ans2);
+            return Math.sqrt(0.636619772 / ax) *
+                    (Math.cos(xx) * ans1 - z * Math.sin(xx) * ans2);
         }
     }
 
@@ -423,7 +423,7 @@ public class Bessel {
         double y;
         double ans1, ans2;
 
-        if ((ax = Maths.abs(x)) < 8.0) {
+        if ((ax = Math.abs(x)) < 8.0) {
             y = x * x;
             ans1 = x * (72362614232.0 + y * (-7895059235.0 + y * (242396853.1
                     + y * (-2972611.439 + y * (15704.48260 + y * (-30.16036606))))));
@@ -440,8 +440,8 @@ public class Bessel {
             ans2 = 0.04687499995 + y * (-0.2002690873e-3
                     + y * (0.8449199096e-5 + y * (-0.88228987e-6
                     + y * 0.105787412e-6)));
-            double ans = Maths.sqrt(0.636619772 / ax) *
-                    (Maths.cos(xx) * ans1 - z * Maths.sin(xx) * ans2);
+            double ans = Math.sqrt(0.636619772 / ax) *
+                    (Math.cos(xx) * ans1 - z * Math.sin(xx) * ans2);
             if (x < 0.0) ans = -ans;
             return ans;
         }
@@ -465,7 +465,7 @@ public class Bessel {
         if (n == 0) return j0(x);
         if (n == 1) return j1(x);
 
-        ax = Maths.abs(x);
+        ax = Math.abs(x);
         if (ax == 0.0) return 0.0;
 
         if (ax > (double) n) {
@@ -480,7 +480,7 @@ public class Bessel {
             ans = bj;
         } else {
             tox = 2.0 / ax;
-            m = 2 * ((n + (int) Maths.sqrt(ACC * n)) / 2);
+            m = 2 * ((n + (int) Math.sqrt(ACC * n)) / 2);
             jsum = false;
             bjp = ans = sum = 0.0;
             bj = 1.0;
@@ -488,7 +488,7 @@ public class Bessel {
                 bjm = j * tox * bj - bjp;
                 bjp = bj;
                 bj = bjm;
-                if (Maths.abs(bj) > BIGNO) {
+                if (Math.abs(bj) > BIGNO) {
                     bj *= BIGNI;
                     bjp *= BIGNI;
                     ans *= BIGNI;
@@ -520,12 +520,12 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.chbevl(y, A_k0, 10) - Maths.log(0.5 * x) * i0(x);
+            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
             return (y);
         }
 
         z = 8.0 / x - 2.0;
-        y = Maths.exp(-x) * Maths.chbevl(z, B_k0, 25) / Maths.sqrt(x);
+        y = Math.exp(-x) * Maths.chbevl(z, B_k0, 25) / Math.sqrt(x);
         return (y);
     }
 
@@ -541,11 +541,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.chbevl(y, A_k0, 10) - Maths.log(0.5 * x) * i0(x);
-            return (y * Maths.exp(x));
+            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
+            return (y * Math.exp(x));
         }
 
-        y = Maths.chbevl(8.0 / x - 2.0, B_k0, 25) / Maths.sqrt(x);
+        y = Maths.chbevl(8.0 / x - 2.0, B_k0, 25) / Math.sqrt(x);
         return (y);
     }
 
@@ -566,11 +566,11 @@ public class Bessel {
         if (z <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.log(z) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
+            y = Math.log(z) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
             return (y);
         }
 
-        return (Maths.exp(-x) * Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Maths.sqrt(x));
+        return (Math.exp(-x) * Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
     }
 
     /**
@@ -587,11 +587,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.log(0.5 * x) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
-            return (y * Maths.exp(x));
+            y = Math.log(0.5 * x) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
+            return (y * Math.exp(x));
         }
 
-        return (Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Maths.sqrt(x));
+        return (Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
     }
 
     /**
@@ -691,12 +691,12 @@ asymptotically, where
                         zn *= z;
                         t = nk1f * zn / kf;
                         s += t;
-                        if ((MAXNUM - Maths.abs(t)) < Maths.abs(s)) throw new ArithmeticException("Overflow");
+                        if ((MAXNUM - Math.abs(t)) < Math.abs(s)) throw new ArithmeticException("Overflow");
                         if ((tox > 1.0) && ((MAXNUM / tox) < zmn)) throw new ArithmeticException("Overflow");
                         zmn *= tox;
                     }
                     s *= 0.5;
-                    t = Maths.abs(s);
+                    t = Math.abs(s);
                     if ((zmn > 1.0) && ((MAXNUM / zmn) < t)) throw new ArithmeticException("Overflow");
                     if ((t > 1.0) && ((MAXNUM / t) < zmn)) throw new ArithmeticException("Overflow");
                     ans = s * zmn;
@@ -704,7 +704,7 @@ asymptotically, where
             }
 
 
-            tlg = 2.0 * Maths.log(0.5 * x);
+            tlg = 2.0 * Math.log(0.5 * x);
             pk = -EUL;
             if (n == 0) {
                 pn = pk;
@@ -722,7 +722,7 @@ asymptotically, where
                 s += (pk + pn - tlg) * t;
                 k += 1.0;
             }
-            while (Maths.abs(t / s) > EPSILON);
+            while (Math.abs(t / s) > EPSILON);
 
             s = 0.5 * s / zmn;
             if ((n & 1) > 0)
@@ -747,9 +747,9 @@ asymptotically, where
         do {
             z = pn - pk * pk;
             t = t * z / (fn * z0);
-            nk1f = Maths.abs(t);
+            nk1f = Math.abs(t);
             if ((i >= n) && (nk1f > nkf)) {
-                ans = Maths.exp(-x) * Maths.sqrt(Maths.PI / (2.0 * x)) * s;
+                ans = Math.exp(-x) * Math.sqrt(Math.PI / (2.0 * x)) * s;
                 return (ans);
             }
             nkf = nk1f;
@@ -757,10 +757,10 @@ asymptotically, where
             fn += 1.0;
             pk += 2.0;
             i += 1;
-        } while (Maths.abs(t / s) > EPSILON);
+        } while (Math.abs(t / s) > EPSILON);
 
 
-        ans = Maths.exp(-x) * Maths.sqrt(Maths.PI / (2.0 * x)) * s;
+        ans = Math.exp(-x) * Math.sqrt(Math.PI / (2.0 * x)) * s;
         return (ans);
     }
 
@@ -777,7 +777,7 @@ asymptotically, where
             double ans2 = 40076544269.0 + y * (745249964.8 + y * (7189466.438
                     + y * (47447.26470 + y * (226.1030244 + y * 1.0))));
 
-            return (ans1 / ans2) + 0.636619772 * j0(x) * Maths.log(x);
+            return (ans1 / ans2) + 0.636619772 * j0(x) * Math.log(x);
         } else {
             double z = 8.0 / x;
             double y = z * z;
@@ -788,8 +788,8 @@ asymptotically, where
             double ans2 = -0.1562499995e-1 + y * (0.1430488765e-3
                     + y * (-0.6911147651e-5 + y * (0.7621095161e-6
                     + y * (-0.934945152e-7))));
-            return Maths.sqrt(0.636619772 / x) *
-                    (Maths.sin(xx) * ans1 + z * Maths.cos(xx) * ans2);
+            return Math.sqrt(0.636619772 / x) *
+                    (Math.sin(xx) * ans1 + z * Math.cos(xx) * ans2);
         }
     }
 
@@ -807,7 +807,7 @@ asymptotically, where
             double ans2 = 0.2499580570e14 + y * (0.4244419664e12
                     + y * (0.3733650367e10 + y * (0.2245904002e8
                     + y * (0.1020426050e6 + y * (0.3549632885e3 + y)))));
-            return (ans1 / ans2) + 0.636619772 * (j1(x) * Maths.log(x) - 1.0 / x);
+            return (ans1 / ans2) + 0.636619772 * (j1(x) * Math.log(x) - 1.0 / x);
         } else {
             double z = 8.0 / x;
             double y = z * z;
@@ -817,8 +817,8 @@ asymptotically, where
             double ans2 = 0.04687499995 + y * (-0.2002690873e-3
                     + y * (0.8449199096e-5 + y * (-0.88228987e-6
                     + y * 0.105787412e-6)));
-            return Maths.sqrt(0.636619772 / x) *
-                    (Maths.sin(xx) * ans1 + z * Maths.cos(xx) * ans2);
+            return Math.sqrt(0.636619772 / x) *
+                    (Math.sin(xx) * ans1 + z * Math.cos(xx) * ans2);
         }
     }
 
@@ -837,11 +837,11 @@ asymptotically, where
         tox = 2.0 / x;
         by = y1(x);
         bym = y0(x);
-        for (int j = 1; j<n;j++) {
-		byp=j*tox*by-bym;
-		bym=by;
-		by=byp;
-	}
-	return by;
-}
+        for (int j = 1; j < n; j++) {
+            byp = j * tox * by - bym;
+            bym = by;
+            by = byp;
+        }
+        return by;
+    }
 }

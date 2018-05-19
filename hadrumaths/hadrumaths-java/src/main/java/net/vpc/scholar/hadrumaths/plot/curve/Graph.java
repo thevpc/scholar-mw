@@ -6,15 +6,13 @@ package net.vpc.scholar.hadrumaths.plot.curve;
 
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotAction;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.print.*;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaPrintableArea;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,31 +22,32 @@ import java.awt.print.Printable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import javax.imageio.ImageIO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Graph extends JPanel implements Printable {
 
-    private String title;					// Graphic title
+    private String title;                    // Graphic title
 
-    private Font font;						// Graphic font
+    private Font font;                        // Graphic font
 
-    private Font titleFont;					// Title font
+    private Font titleFont;                    // Title font
 
-    private FontMetrics metrics;			// Font metrics
+    private FontMetrics metrics;            // Font metrics
 
-    private Color paperColor = Color.white;	// Background color
+    private Color paperColor = Color.white;    // Background color
 
-    private Color txtColor = Color.black;	// Graph text color
+    private Color txtColor = Color.black;    // Graph text color
 
-    private int graphWidth = 0;			// Graph Width
+    private int graphWidth = 0;            // Graph Width
 
-    private int graphHeight = 0;			// Graph Height
+    private int graphHeight = 0;            // Graph Height
 
     private static Color[] preDefColors = new Color[]{
-        Color.blue, Color.magenta, Color.cyan, Color.orange, Color.green,
-        Color.pink, Color.yellow, Color.red, new Color(0, 102, 204), new Color(102, 0, 204),
-        new Color(204, 0, 204), new Color(204, 0, 0), new Color(0, 51, 204),
-        new Color(153, 0, 204), new Color(204, 0, 153), new Color(204, 51, 0), new Color(204, 204, 0)
+            Color.blue, Color.magenta, Color.cyan, Color.orange, Color.green,
+            Color.pink, Color.yellow, Color.red, new Color(0, 102, 204), new Color(102, 0, 204),
+            new Color(204, 0, 204), new Color(204, 0, 0), new Color(0, 51, 204),
+            new Color(153, 0, 204), new Color(204, 0, 153), new Color(204, 51, 0), new Color(204, 204, 0)
     };
 
     public Graph() {
@@ -98,11 +97,11 @@ public abstract class Graph extends JPanel implements Printable {
     }
 
     public FontMetrics getMetrics() {
-        return metrics==null?getFontMetrics(getFont()):metrics;
+        return metrics == null ? getFontMetrics(getFont()) : metrics;
     }
 
     public Font getTitleFont() {
-        return titleFont==null?getFont():titleFont;
+        return titleFont == null ? getFont() : titleFont;
     }
 
     public void setTitleFont(Font font) {
@@ -174,7 +173,7 @@ public abstract class Graph extends JPanel implements Printable {
                     javax.print.Doc doc = new SimpleDoc(Graph.this, flavor, null);
                     try {
                         printerJob.print(doc, aset);
-                    //Log.trace(Swings.getResources().get("Graphics.Graph.PrintSucceeded", Graph.this.getTitle()));
+                        //Log.trace(Swings.getResources().get("Graphics.Graph.PrintSucceeded", Graph.this.getTitle()));
                     } catch (Exception ee) {
                         //Log.error(Swings.getResources().get("Graphics.Graph.PrintError"));
                         //Log.error(ee);
@@ -215,7 +214,7 @@ public abstract class Graph extends JPanel implements Printable {
                             File file = chooser.getSelectedFile();
                             FileOutputStream out = new FileOutputStream(file);
                             ImageIO.write(img, "jpeg", file);
-                        //Log.trace(Swings.getResources().get("Graphics.Graph.SaveSucceeded", Graph.this.getTitle(), file.getCanonicalPath()));
+                            //Log.trace(Swings.getResources().get("Graphics.Graph.SaveSucceeded", Graph.this.getTitle(), file.getCanonicalPath()));
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Graphics.Graph.NullImage");
@@ -276,7 +275,7 @@ public abstract class Graph extends JPanel implements Printable {
             super("SaveImageAction");
             this.putValue(AbstractAction.NAME, "");
             this.putValue(AbstractAction.SHORT_DESCRIPTION, "Graphics.Graph.ExportGraph");
-        //this.putValue(AbstractAction.SMALL_ICON,"/images/net/vpc/swing/Save.gif");
+            //this.putValue(AbstractAction.SMALL_ICON,"/images/net/vpc/swing/Save.gif");
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -323,7 +322,7 @@ public abstract class Graph extends JPanel implements Printable {
             super("PrintImageAction");
             this.putValue(AbstractAction.NAME, "");
             this.putValue(AbstractAction.SHORT_DESCRIPTION, ("Graphics.Graph.PrintGraph"));
-        //this.putValue(AbstractAction.SMALL_ICON,Resources.loadImageIcon("/images/net/vpc/report/Print.gif"));
+            //this.putValue(AbstractAction.SMALL_ICON,Resources.loadImageIcon("/images/net/vpc/report/Print.gif"));
         }
 
         public void actionPerformed(ActionEvent event) {

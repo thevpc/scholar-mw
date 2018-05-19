@@ -10,7 +10,7 @@ public class FrameInfo {
     private boolean maximizable;
     private boolean iconifiable;
     private boolean icon;
-    private Dimension preferredSize=new Dimension(600,400);
+    private Dimension preferredSize = new Dimension(600, 400);
 
     public Component getComponent() {
         return component;

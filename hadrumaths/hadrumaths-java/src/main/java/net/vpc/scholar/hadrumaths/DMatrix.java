@@ -10,7 +10,7 @@ import java.util.Locale;
 
 /**
  * Jama = Java Matrix class.
- * <P>
+ * <p>
  * The Java Matrix Class provides the fundamental operations of numerical
  * linear algebra.  Various constructors create Matrices from two dimensional
  * arrays of double precision floating point numbers.  Various "gets" and
@@ -20,7 +20,7 @@ import java.util.Locale;
  * Methods for reading and printing matrices are also included.  All the
  * operations in this version of the Matrix Class involve real matrices.
  * Complex matrices may be handled in a future version.
- * <P>
+ * <p>
  * Five fundamental matrix decompositions, which consist of pairs or triples
  * of matrices, permutation vectors, and the like, produce results in five
  * decomposition classes.  These decompositions are accessed by the Matrix
@@ -35,7 +35,7 @@ import java.util.Locale;
  * </UL>
  * <DL>
  * <DT><B>Example of use:</B></DT>
- * <P>
+ * <p>
  * <DD>Solve a linear system A x = b and compute the residual norm, ||b - A x||.
  * <P><PRE>
  * double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}};
@@ -128,12 +128,12 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         this.A = A;
     }
 
-    public DMatrix(double[][] A,boolean safe) {
-        if(safe){
+    public DMatrix(double[][] A, boolean safe) {
+        if (safe) {
             m = A.length;
             n = A[0].length;
             this.A = A;
-        }else {
+        } else {
             m = A.length;
             n = A[0].length;
             for (int i = 0; i < m; i++) {
@@ -319,7 +319,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      *
      * @param i Row index.
      * @param j Column index.
-     * @return A(i,j)
+     * @return A(i, j)
      * @throws ArrayIndexOutOfBoundsException
      */
 
@@ -338,7 +338,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(i0:i1,j0:j1)
+     * @return A(i0 : i1, j0 : j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
 
@@ -362,7 +362,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      *
      * @param r Array of row indices.
      * @param c Array of column indices.
-     * @return A(r(:),c(:))
+     * @return A(r ( :), c(:))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
 
@@ -387,7 +387,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @param i0 Initial row index
      * @param i1 Final row index
      * @param c  Array of column indices.
-     * @return A(i0:i1,c(:))
+     * @return A(i0 : i1, c ( :))
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
 
@@ -412,7 +412,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @param r  Array of row indices.
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @return A(r(:),j0:j1)
+     * @return A(r ( :), j0:j1)
      * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
 
@@ -440,11 +440,11 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @throws ArrayIndexOutOfBoundsException
      */
 
-    public void set(int i, int j,double s) {
+    public void set(int i, int j, double s) {
         A[i][j] = s;
     }
 
-    public void set(int i, int j,Double s) {
+    public void set(int i, int j, Double s) {
         A[i][j] = s;
     }
 
@@ -564,9 +564,9 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int j = 0; j < n; j++) {
             double s = 0;
             for (int i = 0; i < m; i++) {
-                s += Maths.abs(A[i][j]);
+                s += Math.abs(A[i][j]);
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -582,8 +582,8 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double f0 = 0;
         for (int j = 0; j < n; j++) {
             for (int i = 0; i < m; i++) {
-                f0 = Maths.abs(A[i][j]);
-                f = Maths.max(f, f0);
+                f0 = Math.abs(A[i][j]);
+                f = Math.max(f, f0);
             }
         }
         return f;
@@ -610,9 +610,9 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int i = 0; i < m; i++) {
             double s = 0;
             for (int j = 0; j < n; j++) {
-                s += Maths.abs(A[i][j]);
+                s += Math.abs(A[i][j]);
             }
-            f = Maths.max(f, s);
+            f = Math.max(f, s);
         }
         return f;
     }
@@ -1025,7 +1025,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
 
     public double trace() {
         double t = 0;
-        for (int i = 0; i < Maths.min(m, n); i++) {
+        for (int i = 0; i < Math.min(m, n); i++) {
             t += A[i][i];
         }
         return t;
@@ -1140,7 +1140,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 String s = format.format(A[i][j]); // format the number
-                int padding = Maths.max(1, width - s.length()); // At _least_ 1 componentVectorSpace
+                int padding = Math.max(1, width - s.length()); // At _least_ 1 componentVectorSpace
                 for (int k = 0; k < padding; k++)
                     output.print(' ');
                 output.print(s);
@@ -1252,7 +1252,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             sb.append(varName).append(" = ");
         }
         sb.append("[");
-        if (disp.length>1) {
+        if (disp.length > 1) {
             sb.append(lineSep);
         }
 
@@ -1276,7 +1276,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
                 sb.append(sbl.toString());
             }
         }
-        if (disp.length>1) {
+        if (disp.length > 1) {
             sb.append(lineSep);
         }
         sb.append("]");
@@ -1287,7 +1287,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] newVals = new double[A[0].length][A.length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
-                newVals[j][A.length-1-i]=A[i][j];
+                newVals[j][A.length - 1 - i] = A[i][j];
             }
         }
         return new DMatrix(newVals);
@@ -1297,7 +1297,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] newVals = new double[A[0].length][A.length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
-                newVals[A[i].length-1-j][i]=A[i][j];
+                newVals[A[i].length - 1 - j][i] = A[i][j];
             }
         }
         return new DMatrix(newVals);
@@ -1307,7 +1307,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] newVals = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
-                newVals[A.length-1-i][j]=A[i][j];
+                newVals[A.length - 1 - i][j] = A[i][j];
             }
         }
         return new DMatrix(newVals);
@@ -1317,7 +1317,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] newVals = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[i].length; j++) {
-                newVals[i][A[i].length-1-j]=A[i][j];
+                newVals[i][A[i].length - 1 - j] = A[i][j];
             }
         }
         return new DMatrix(newVals);
@@ -1327,11 +1327,12 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     public double[] getRowDouble(int row) {
         return A[row];
     }
+
     @Override
     public double[] getColumnDouble(int column) {
-        double[] all=new double[A.length];
+        double[] all = new double[A.length];
         for (int i = 0; i < all.length; i++) {
-            all[i]=A[i][column];
+            all[i] = A[i][column];
         }
         return all;
     }

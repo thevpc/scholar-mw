@@ -14,7 +14,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class CosXPlusYSimplifyRule implements ExpressionRewriterRule {
@@ -34,17 +33,18 @@ public class CosXPlusYSimplifyRule implements ExpressionRewriterRule {
 //        }
 
         CosXPlusY ee = (CosXPlusY) e;
-        if(ee.getAmp()==0){
-            return RewriteResult.bestEffort(DoubleValue.valueOf(0,e.getDomain()));
+        if (ee.getAmp() == 0) {
+            return RewriteResult.bestEffort(DoubleValue.valueOf(0, e.getDomain()));
         }
-        if(ee.getA()==0){
-            return RewriteResult.newVal(new CosXCosY(ee.getAmp(),0,0,ee.getB(),ee.getC(),ee.getDomain()));
+        if (ee.getA() == 0) {
+            return RewriteResult.newVal(new CosXCosY(ee.getAmp(), 0, 0, ee.getB(), ee.getC(), ee.getDomain()));
         }
-        if(ee.getB()==0){
-            return RewriteResult.newVal(new CosXCosY(ee.getAmp(),ee.getA(),ee.getC(),0,0,ee.getDomain()));
+        if (ee.getB() == 0) {
+            return RewriteResult.newVal(new CosXCosY(ee.getAmp(), ee.getA(), ee.getC(), 0, 0, ee.getDomain()));
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -52,7 +52,7 @@ public class CosXPlusYSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +29,6 @@ public class ConsoleActionPlotFile implements ConsoleAction {
         if (plot == null) {
             return;
         }
-        plotter.displayImpl(plot,null);
+        plotter.displayImpl(plot, null);
     }
 }

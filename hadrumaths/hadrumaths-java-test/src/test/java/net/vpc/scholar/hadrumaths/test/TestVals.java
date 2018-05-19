@@ -1,7 +1,8 @@
 package net.vpc.scholar.hadrumaths.test;
 
-import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.test.util.ExprChecker;
 import net.vpc.scholar.hadrumaths.test.util.ExprGenerator;
 import net.vpc.scholar.hadrumaths.util.IOUtils;

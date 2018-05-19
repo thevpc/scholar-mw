@@ -9,8 +9,8 @@ public class MatrixFromRowVector extends AbstractMatrix {
 
     public MatrixFromRowVector(Vector vector) {
         this.vector = vector;
-        if(!vector.isRow()){
-           throw new IllegalArgumentException("Expected Row Vector");
+        if (!vector.isRow()) {
+            throw new IllegalArgumentException("Expected Row Vector");
         }
     }
 
@@ -21,7 +21,7 @@ public class MatrixFromRowVector extends AbstractMatrix {
 
     @Override
     public void set(int row, int col, Complex val) {
-        vector.set(col,val);
+        vector.set(col, val);
     }
 
     @Override
@@ -38,7 +38,6 @@ public class MatrixFromRowVector extends AbstractMatrix {
     public void resize(int rows, int columns) {
         throw new IllegalArgumentException("Unsupported Resize");
     }
-
 
 
 }

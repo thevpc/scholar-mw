@@ -8,10 +8,9 @@ package net.vpc.scholar.hadrumaths.expeval.operators;
 import net.vpc.scholar.hadrumaths.Complex;
 
 /**
- *
  * @author vpc
  */
-public class OpPlusUnary extends UnaryOp{
+public class OpPlusUnary extends UnaryOp {
 
     public OpPlusUnary() {
         super("+U");
@@ -22,6 +21,5 @@ public class OpPlusUnary extends UnaryOp{
         return aa;
     }
 
-    
 
 }

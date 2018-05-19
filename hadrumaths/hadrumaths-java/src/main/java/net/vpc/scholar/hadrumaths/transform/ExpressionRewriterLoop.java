@@ -6,13 +6,13 @@ import net.vpc.scholar.hadrumaths.util.CacheEnabled;
 /**
  * Created by vpc on 5/5/14.
  */
-public class ExpressionRewriterLoop extends AbstractExpressionRewriter{
+public class ExpressionRewriterLoop extends AbstractExpressionRewriter {
     private ExpressionRewriter loopAction;
     private String name;
     private int maxIterations;
 
 
-    public ExpressionRewriterLoop(ExpressionRewriter loopAction,String name,int maxIterations) {
+    public ExpressionRewriterLoop(ExpressionRewriter loopAction, String name, int maxIterations) {
         this.name = name;
         this.loopAction = loopAction;
         this.maxIterations = maxIterations;
@@ -20,27 +20,27 @@ public class ExpressionRewriterLoop extends AbstractExpressionRewriter{
 
     @Override
     public RewriteResult rewriteImpl(Expr e) {
-        int max=maxIterations;
-        Expr curr=e;
-        boolean modified=false;
-        boolean bestEffort=false;
-        while(max>0){
+        int max = maxIterations;
+        Expr curr = e;
+        boolean modified = false;
+        boolean bestEffort = false;
+        while (max > 0) {
             RewriteResult rr = loopAction.rewrite(curr);
-            if(rr.isBestEffort()){
-                curr=rr.getValue();
-                bestEffort=true;
+            if (rr.isBestEffort()) {
+                curr = rr.getValue();
+                bestEffort = true;
                 break;
             }
-            if(rr.isUnmodified()){
-                bestEffort=true;
+            if (rr.isUnmodified()) {
+                bestEffort = true;
                 break;
             }
-            modified=true;
-            curr=rr.getValue();
+            modified = true;
+            curr = rr.getValue();
             max--;
         }
-        if(modified){
-            if(bestEffort){
+        if (modified) {
+            if (bestEffort) {
                 return RewriteResult.bestEffort(curr);
             }
             return RewriteResult.newVal(curr);
@@ -78,8 +78,8 @@ public class ExpressionRewriterLoop extends AbstractExpressionRewriter{
     @Override
     public void setCacheEnabled(boolean enabled) {
         super.setCacheEnabled(enabled);
-        if(loopAction instanceof CacheEnabled){
-            ((CacheEnabled)loopAction).setCacheEnabled(enabled);
+        if (loopAction instanceof CacheEnabled) {
+            ((CacheEnabled) loopAction).setCacheEnabled(enabled);
         }
     }
 
@@ -87,8 +87,8 @@ public class ExpressionRewriterLoop extends AbstractExpressionRewriter{
     @Override
     public void clearCache() {
         super.clearCache();
-        if(loopAction instanceof CacheEnabled){
-            ((CacheEnabled)loopAction).clearCache();
+        if (loopAction instanceof CacheEnabled) {
+            ((CacheEnabled) loopAction).clearCache();
         }
     }
 }

@@ -1,10 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Out;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -155,7 +151,7 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         throw new IllegalArgumentException("Param " + getParamName() + " could not be evaluated");
     }
 

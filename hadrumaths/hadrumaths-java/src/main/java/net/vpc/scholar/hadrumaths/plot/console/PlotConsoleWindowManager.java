@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.scholar.hadrumaths.plot.AbstractComponentPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
-import net.vpc.scholar.hadrumaths.plot.AbstractComponentPlotWindowManager;
 
 /**
  * @author taha.bensalah@gmail.com on 7/22/16.
@@ -54,31 +54,32 @@ public class PlotConsoleWindowManager extends AbstractComponentPlotWindowManager
             return null;
         }
     };
+
     public PlotConsoleWindowManager(PlotConsole plotConsole) {
         this.plotConsole = plotConsole;
     }
 
-    private WindowPath createWindowPath(String plotTitle){
-        if(plotTitle==null){
-            plotTitle="";
+    private WindowPath createWindowPath(String plotTitle) {
+        if (plotTitle == null) {
+            plotTitle = "";
         }
-        plotTitle=plotTitle.trim();
-        if(plotTitle.length()==0){
-            return new WindowPath("Plot","Default");
+        plotTitle = plotTitle.trim();
+        if (plotTitle.length() == 0) {
+            return new WindowPath("Plot", "Default");
         }
         int slash = plotTitle.indexOf("/");
-        if(slash <0){
-            return new WindowPath("Plot",plotTitle);
-        }else{
+        if (slash < 0) {
+            return new WindowPath("Plot", plotTitle);
+        } else {
             String p = plotTitle.substring(0, slash);
-            String q = plotTitle.substring(slash+1);
-            if(p.length()==0){
-                p="Plot";
+            String q = plotTitle.substring(slash + 1);
+            if (p.length() == 0) {
+                p = "Plot";
             }
-            if(q.length()==0){
-                q="Default";
+            if (q.length() == 0) {
+                q = "Default";
             }
-            return new WindowPath(p,q);
+            return new WindowPath(p, q);
         }
     }
 
@@ -88,6 +89,6 @@ public class PlotConsoleWindowManager extends AbstractComponentPlotWindowManager
     }
 
     public void addPlotComponentImpl(PlotComponent component, String[] path) {
-        plotConsole.display(component, StringUtils.toPath(path,"/"));
+        plotConsole.display(component, StringUtils.toPath(path, "/"));
     }
 }

@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.geom.Triangle;
  * Date: 2 juil. 2003
  * Time: 14:29:58
  */
-public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
+public class Polyhedron extends AbstractDoubleToDouble implements Cloneable {
     private static final long serialVersionUID = 1L;
 //    public static final DCstFunctionXY ZERO = new DCstFunctionXY(0, DomainXY.EMPTY);
 
@@ -34,8 +34,7 @@ public class Polyhedron extends AbstractDoubleToDouble implements Cloneable{
 //        name=("Polyedre");
         if (polygon.isRectangular()) {
             isRectangle = true;
-        } else
-        if (polygon.npoints == 3 || (polygon.npoints == 4 && polygon.xpoints[0] == polygon.xpoints[3] && polygon.ypoints[0] == polygon.ypoints[3])) {
+        } else if (polygon.npoints == 3 || (polygon.npoints == 4 && polygon.xpoints[0] == polygon.xpoints[3] && polygon.ypoints[0] == polygon.ypoints[3])) {
             isTriangle = true;
             triangle = new Triangle(polygon);
             baricenter = triangle.getBarycenter();

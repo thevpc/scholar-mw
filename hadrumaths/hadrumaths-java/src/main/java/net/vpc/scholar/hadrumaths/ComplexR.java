@@ -1,14 +1,16 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Range;
 
 import java.util.Arrays;
 
 /**
  * Created by vpc on 4/7/17.
  */
-public final class ComplexR extends Complex implements DoubleToDouble{
-    private static final long serialVersionUID=1;
+public final class ComplexR extends Complex implements DoubleToDouble {
+    private static final long serialVersionUID = 1;
     private double real;
 //    private double imag;
 
@@ -73,7 +75,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 
     public Complex inv() {
         if (real == 0) {
-            return Complex.valueOf(1/real);
+            return Complex.valueOf(1 / real);
         } else {
             return Complex.valueOf(1 / real, 0);
         }
@@ -112,10 +114,10 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex mul(Complex c) {
-        if(c.isReal()){
+        if (c.isReal()) {
             return Complex.valueOf(real * c.getReal());
         }
-        if(c.isImag()){
+        if (c.isImag()) {
             return Complex.I(real * c.getImag());
         }
         return Complex.valueOf(real * c.getReal(), real * c.getImag());
@@ -134,7 +136,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex sub(Complex c) {
-        return Complex.valueOf(real - c.getReal(), - c.getImag());
+        return Complex.valueOf(real - c.getReal(), -c.getImag());
     }
 
     public Complex sub(double c) {
@@ -146,11 +148,11 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex div(Complex other) {
-        if(other.isReal()){
-            return Complex.valueOf(real/other.getReal());
+        if (other.isReal()) {
+            return Complex.valueOf(real / other.getReal());
         }
-        if(other.isImag()){
-            return Complex.I(-real/other.getImag());
+        if (other.isImag()) {
+            return Complex.I(-real / other.getImag());
         }
         double a = real;
         double c = other.getReal();
@@ -158,26 +160,26 @@ public final class ComplexR extends Complex implements DoubleToDouble{
         double c2d2 = c * c + d * d;
 
         return Complex.valueOf(
-                (a * c ) / c2d2,
-                (- a * d) / c2d2
+                (a * c) / c2d2,
+                (-a * d) / c2d2
         );
         //return mul(c.inv());
     }
 
     public Complex exp() {
-        double e = Maths.exp(real);
+        double e = Math.exp(real);
         return Complex.valueOf(e);
     }
 
     public Complex abs() {
-        if(real<0) {
-            return Complex.valueOf(Maths.abs(real));
+        if (real < 0) {
+            return Complex.valueOf(Math.abs(real));
         }
         return this;
     }
 
     public double absdbl() {
-        return Maths.abs(real);
+        return Math.abs(real);
     }
 
     public double absdblsqr() {
@@ -189,8 +191,8 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public int compareTo(Complex c) {
-        if(c.getImag()==0){
-            return Double.compare(real,c.getReal());
+        if (c.getImag() == 0) {
+            return Double.compare(real, c.getReal());
         }
         double a1 = absdbl();
         double a2 = c.absdbl();
@@ -249,16 +251,15 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex tan() {
-        return Complex.valueOf(Maths.tan(real));
-//        return sin().div(cos());
+        return Complex.valueOf(Math.tan(real));
     }
 
     public Complex atan() {
-        return Complex.valueOf(Maths.atan(real));
+        return Complex.valueOf(Math.atan(real));
     }
 
     public Complex acos() {
-        return Complex.valueOf(Maths.acos(real));
+        return Complex.valueOf(Math.acos(real));
     }
 
     public Complex acosh() {
@@ -273,23 +274,19 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex arg() {
-        return ZERO;//Complex.valueOf(Maths.atan2(0 , getReal()));
+        return ZERO;//Complex.valueOf(Math.atan2(0 , getReal()));
     }
 
     public Complex asin() {
-        return Complex.valueOf(Maths.asin(real));
+        return Complex.valueOf(Math.asin(real));
     }
 
     public Complex acotan() {
         return Complex.valueOf(Maths.acotan(real));
-//        if (isZero()) {
-//            return HALF_PI;
-//        }
-//        return inv().atan();
     }
 
     public Complex sincard() {
-        if (real==0) {
+        if (real == 0) {
             return ONE;
         }
         return Complex.valueOf(Maths.sincard(real));
@@ -300,15 +297,15 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex sinh() {
-        return Complex.valueOf(Maths.sinh(real));
+        return Complex.valueOf(Math.sinh(real));
     }
 
     public Complex cosh() {
-        return Complex.valueOf(Maths.cosh(real));
+        return Complex.valueOf(Math.cosh(real));
     }
 
     public Complex tanh() {
-        return Complex.valueOf(Maths.tanh(real));
+        return Complex.valueOf(Math.tanh(real));
     }
 
     public Complex cotanh() {
@@ -316,20 +313,20 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public Complex log() {
-        return Complex.valueOf(Maths.log(real));
+        return Complex.valueOf(Math.log(real));
     }
 
     public Complex log10() {
-        return Complex.valueOf(Maths.log10(real));
+        return Complex.valueOf(Math.log10(real));
     }
 
     public Complex db() {
-        return Complex.valueOf(Maths.log10(real) * (10));
+        return Complex.valueOf(Math.log10(real) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.valueOf(Maths.log10(real) * (20));
+        return Complex.valueOf(Math.log10(real) * (20));
         //return log10().mul(10);
     }
 
@@ -343,7 +340,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 //    }
 
     public Complex sqr() {
-        return Complex.valueOf(real*real);
+        return Complex.valueOf(real * real);
     }
 
     public double dsqrt() {
@@ -380,7 +377,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
 //        } else if (power == 2) {
 //            return sqr();
 //        } else {
-            return Complex.valueOf(Maths.pow(real, power));
+        return Complex.valueOf(Maths.pow(real, power));
 //        } else if (power >= 0) {
 //            double r = Maths.pow(absdbl(), power);
 //            double angle = arg().toDouble();
@@ -396,7 +393,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public boolean isNaN() {
-        return Double.isNaN(real) ;
+        return Double.isNaN(real);
     }
 
     public boolean isZero() {
@@ -404,7 +401,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     public boolean isInfinite() {
-        return Double.isInfinite(real) ;
+        return Double.isInfinite(real);
     }
 
     //    public static Complex sin(Complex c){
@@ -449,7 +446,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public DoubleToDouble getRealDD() {
         double real = getReal();
-        return real==0?Maths.DDZERO : new DoubleValue(real,Domain.FULLX);
+        return real == 0 ? Maths.DDZERO : new DoubleValue(real, Domain.FULLX);
     }
 
     @Override
@@ -460,10 +457,10 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] complexes = new double[z.length][y.length][x.length];
-        Arrays.fill(complexes,real);
-        if(ranges!=null){
+        Arrays.fill(complexes, real);
+        if (ranges != null) {
             Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1);
-            t.setDefined3(x.length,y.length,z.length);
+            t.setDefined3(x.length, y.length, z.length);
             ranges.set(t);
         }
         return complexes;
@@ -472,10 +469,10 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         double[][] complexes = new double[y.length][x.length];
-        Arrays.fill(complexes,real);
-        if(ranges!=null){
+        Arrays.fill(complexes, real);
+        if (ranges != null) {
             Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1);
-            t.setDefined2(x.length,y.length);
+            t.setDefined2(x.length, y.length);
             ranges.set(t);
         }
         return complexes;
@@ -484,8 +481,8 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
         double[] complexes = new double[x.length];
-        Arrays.fill(complexes,real);
-        if(ranges!=null){
+        Arrays.fill(complexes, real);
+        if (ranges != null) {
             Range t = Range.forBounds(0, x.length - 1);
             t.setDefined1(x.length);
             ranges.set(t);
@@ -496,8 +493,8 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
         double[] complexes = new double[y.length];
-        Arrays.fill(complexes,real);
-        if(ranges!=null){
+        Arrays.fill(complexes, real);
+        if (ranges != null) {
             Range t = Range.forBounds(0, y.length - 1);
             t.setDefined1(y.length);
             ranges.set(t);
@@ -506,13 +503,13 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     @Override
-    public double computeDouble(double x, double y,BooleanMarker defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         defined.set();
         return real;
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         defined.set();
         return real;
     }
@@ -520,8 +517,8 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
         double[] complexes = new double[x.length];
-        Arrays.fill(complexes,real);
-        if(range!=null){
+        Arrays.fill(complexes, real);
+        if (range != null) {
             Range t = Range.forBounds(0, x.length - 1);
             t.setDefined1(x.length);
             range.set(t);
@@ -530,7 +527,7 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     }
 
     @Override
-    public double computeDouble(double x,BooleanMarker defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         defined.set();
         return real;
     }
@@ -538,32 +535,32 @@ public final class ComplexR extends Complex implements DoubleToDouble{
     @Override
     public double[] computeDouble(double[] x) {
         double[] complexes = new double[x.length];
-        Arrays.fill(complexes,real);
+        Arrays.fill(complexes, real);
         return complexes;
     }
 
     @Override
     public double[][] computeDouble(double[] x, double[] y) {
         double[][] complexes = new double[y.length][x.length];
-        Arrays.fill(complexes,real);
+        Arrays.fill(complexes, real);
         return complexes;
     }
 
     @Override
     public double[] computeDouble(double x, double[] y) {
         double[] complexes = new double[y.length];
-        Arrays.fill(complexes,real);
+        Arrays.fill(complexes, real);
         return complexes;
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z) {
         double[][][] complexes = new double[z.length][y.length][x.length];
-        Arrays.fill(complexes,real);
+        Arrays.fill(complexes, real);
         return complexes;
     }
 
-    public double toDouble(){
+    public double toDouble() {
         return real;
     }
 

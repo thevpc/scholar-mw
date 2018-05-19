@@ -7,13 +7,12 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.ParametrizedScalarProduct;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriterRule {
@@ -28,20 +27,20 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        if(e instanceof ParametrizedScalarProduct){
-            ParametrizedScalarProduct c=(ParametrizedScalarProduct)e;
-            RewriteResult rxa=ruleset.rewrite(c.getXArgument());
-            RewriteResult rya=ruleset.rewrite(c.getYArgument());
-            if(!rxa.getValue().hasParams() && !rya.getValue().hasParams()){
-                return RewriteResult.bestEffort(Maths.scalarProduct(c.isHermitian(), rxa.getValue(),rya.getValue()));
+        if (e instanceof ParametrizedScalarProduct) {
+            ParametrizedScalarProduct c = (ParametrizedScalarProduct) e;
+            RewriteResult rxa = ruleset.rewrite(c.getXArgument());
+            RewriteResult rya = ruleset.rewrite(c.getYArgument());
+            if (!rxa.getValue().hasParams() && !rya.getValue().hasParams()) {
+                return RewriteResult.bestEffort(Maths.scalarProduct(c.isHermitian(), rxa.getValue(), rya.getValue()));
             }
-            Expr xa=rxa.getValue();
-            Expr ya=rya.getValue();
-            if(rxa.isUnmodified() && rya.isUnmodified()){
+            Expr xa = rxa.getValue();
+            Expr ya = rya.getValue();
+            if (rxa.isUnmodified() && rya.isUnmodified()) {
                 return RewriteResult.unmodified(e);
-            }else if(rxa.isBestEffort() && rya.isBestEffort()){
+            } else if (rxa.isBestEffort() && rya.isBestEffort()) {
                 return RewriteResult.bestEffort(e);
-            }else{
+            } else {
                 Expr c2 = c.newInstance(xa, ya);
                 return RewriteResult.newVal(c2);
             }
@@ -56,7 +55,7 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

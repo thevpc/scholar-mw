@@ -9,7 +9,7 @@ public class StringProgressMessage implements ProgressMessage {
     private Level level;
     private String message;
 
-    public StringProgressMessage(Level level,String message) {
+    public StringProgressMessage(Level level, String message) {
 
         this.message = message;
         this.level = level;
@@ -25,7 +25,7 @@ public class StringProgressMessage implements ProgressMessage {
         return message;
     }
 
-    public String toString(){
+    public String toString() {
         return message;
     }
 }

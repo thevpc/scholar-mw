@@ -100,8 +100,8 @@ public class MutableComplexMatrix extends org.ojalgo.matrix.AbstractMatrix<Compl
         return SingularValueDecomposition.makeComplex();
     }
 
-    public void put(int r,int c,ComplexNumber value){
-        ((ComplexDenseStore)getStore()).set(r,c,value);
+    public void put(int r, int c, ComplexNumber value) {
+        ((ComplexDenseStore) getStore()).set(r, c, value);
     }
 
 }

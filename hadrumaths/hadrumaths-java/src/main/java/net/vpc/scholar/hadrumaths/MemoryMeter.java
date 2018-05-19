@@ -15,13 +15,13 @@ public class MemoryMeter {
     }
 
     public MemoryMeter(boolean start) {
-        if(start){
+        if (start) {
             start();
         }
     }
 
-    public MemoryMeter copy(){
-        MemoryMeter c=new MemoryMeter();
+    public MemoryMeter copy() {
+        MemoryMeter c = new MemoryMeter();
         c.name = name;
         c.endMemory = endMemory;
         c.startMemory = startMemory;
@@ -30,9 +30,10 @@ public class MemoryMeter {
 
     /**
      * restart chronometer and returns a stopped snapshot/copy of the current
+     *
      * @return
      */
-    public MemoryMeter restart(){
+    public MemoryMeter restart() {
         stop();
         MemoryMeter c = copy();
         start();
@@ -41,10 +42,11 @@ public class MemoryMeter {
 
     /**
      * restart chronometer with new name and returns a stopped snapshot/copy of the current (with old name)
+     *
      * @param newName
      * @return
      */
-    public MemoryMeter restart(String newName){
+    public MemoryMeter restart(String newName) {
         stop();
         MemoryMeter c = copy();
         setName(newName);
@@ -60,6 +62,7 @@ public class MemoryMeter {
         this.name = desc;
         return this;
     }
+
     public MemoryMeter updateDescription(String desc) {
         setName(desc);
         return this;
@@ -99,7 +102,6 @@ public class MemoryMeter {
     public MemoryUsage getMemoryUsage() {
         return ((endMemory == null) ? new MemoryInfo() : endMemory).diff(startMemory);
     }
-
 
 
 //    public static String formatPeriod(long period) {
@@ -158,7 +160,7 @@ public class MemoryMeter {
 //    }
 
     public String toString() {
-        String s= name ==null?"": name +"=";
-        return s+ getMemoryUsage().toString();
+        String s = name == null ? "" : name + "=";
+        return s + getMemoryUsage().toString();
     }
 }

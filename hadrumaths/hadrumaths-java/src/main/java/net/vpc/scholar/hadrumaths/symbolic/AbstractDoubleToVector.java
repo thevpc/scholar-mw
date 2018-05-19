@@ -1,10 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Out;
-import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
 
 /**
  * Created by vpc on 8/24/14.
@@ -27,39 +23,40 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
         if (isDC()) {
             return getComponent(Axis.X).toDC();
         }
-        throw new IllegalArgumentException("Unsupported toDC in "+getClass().getName()+" :: "+toString());
+        throw new IllegalArgumentException("Unsupported toDC in " + getClass().getName() + " :: " + toString());
     }
 
     @Override
     public Matrix computeMatrix(double x, double y) {
-        return computeMatrix(x,y, BooleanMarker.none());
+        return computeMatrix(x, y, BooleanMarker.none());
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y,BooleanMarker defined) {
+    public Matrix computeMatrix(double x, double y, BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y,defined)
+                        getComponent(Axis.X).toDC().computeComplex(x, y, defined)
                 );
             }
             case 2: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y,defined),
-                        getComponent(Axis.Y).toDC().computeComplex(x, y,defined)
+                        getComponent(Axis.X).toDC().computeComplex(x, y, defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, y, defined)
                 );
             }
             case 3: {
                 return Maths.columnMatrix(
-                        getComponent(Axis.X).toDC().computeComplex(x, y,defined),
-                        getComponent(Axis.Y).toDC().computeComplex(x, y,defined),
-                        getComponent(Axis.Z).toDC().computeComplex(x, y,defined)
+                        getComponent(Axis.X).toDC().computeComplex(x, y, defined),
+                        getComponent(Axis.Y).toDC().computeComplex(x, y, defined),
+                        getComponent(Axis.Z).toDC().computeComplex(x, y, defined)
                 );
             }
         }
         throw new UnsupportedComponentDimensionException(getComponentDimension());
     }
- //@Override
+
+    //@Override
     public Matrix computeMatrix(double x, BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
@@ -91,11 +88,11 @@ public abstract class AbstractDoubleToVector extends AbstractDoubleToMatrix impl
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return computeMatrix(x,y,z, BooleanMarker.none());
+        return computeMatrix(x, y, z, BooleanMarker.none());
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y, double z,BooleanMarker defined) {
+    public Matrix computeMatrix(double x, double y, double z, BooleanMarker defined) {
 
         switch (getComponentSize()) {
             case 1: {

@@ -5,17 +5,16 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class VDiscreteNavRule implements ExpressionRewriterRule {
@@ -29,10 +28,10 @@ public class VDiscreteNavRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        VDiscrete ee=(VDiscrete)e;
+        VDiscrete ee = (VDiscrete) e;
         int length = ee.getComponentDimension().rows;
         Expr[] updated = new Expr[length];
-        int bestEfforts=0;
+        int bestEfforts = 0;
         boolean changed = false;
         for (int i = 0; i < updated.length; i++) {
             Expr s1 = ee.getComponent(Axis.values()[i]);
@@ -40,35 +39,36 @@ public class VDiscreteNavRule implements ExpressionRewriterRule {
             if (!s2.isUnmodified()) {
                 changed = true;
                 updated[i] = s2.getValue();
-                if(s2.isBestEffort()){
+                if (s2.isBestEffort()) {
                     bestEfforts++;
                 }
-            }else{
+            } else {
                 bestEfforts++;
                 updated[i] = s1;
             }
         }
         if (changed) {
-            Expr e2=null;
-            switch (length){
-                case 1:{
+            Expr e2 = null;
+            switch (length) {
+                case 1: {
                     e2 = new VDiscrete((Discrete) updated[0]);
                     break;
                 }
-                case 2:{
+                case 2: {
                     e2 = new VDiscrete((Discrete) updated[0], (Discrete) updated[1]);
                     break;
                 }
-                case 3:{
-                    e2 = new VDiscrete((Discrete) updated[0], (Discrete) updated[1],(Discrete) updated[2]);
+                case 3: {
+                    e2 = new VDiscrete((Discrete) updated[0], (Discrete) updated[1], (Discrete) updated[2]);
                     break;
                 }
             }
-            e2= Any.copyProperties(e, e2);
-            return bestEfforts==length? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
+            e2 = Any.copyProperties(e, e2);
+            return bestEfforts == length ? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -76,7 +76,7 @@ public class VDiscreteNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

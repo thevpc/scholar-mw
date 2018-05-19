@@ -9,17 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *
  * @author vpc
  */
-public class ConvergenceListenerCollection implements ConvergenceListener{
-    private ArrayList<ConvergenceListener> others=new ArrayList<ConvergenceListener>();
+public class ConvergenceListenerCollection implements ConvergenceListener {
+    private ArrayList<ConvergenceListener> others = new ArrayList<ConvergenceListener>();
 
-    public ConvergenceListenerCollection(ConvergenceListener ... others) {
+    public ConvergenceListenerCollection(ConvergenceListener... others) {
         this.others.addAll(Arrays.asList(others));
     }
-    
-    public void add(ConvergenceListener ... others){
+
+    public void add(ConvergenceListener... others) {
         this.others.addAll(Arrays.asList(others));
     }
 
@@ -29,6 +28,6 @@ public class ConvergenceListenerCollection implements ConvergenceListener{
             other.progress(result);
         }
     }
-    
-    
+
+
 }

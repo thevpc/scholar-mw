@@ -138,6 +138,6 @@ public abstract class AbstractHFileSystem implements HFileSystem {
 
     @Override
     public String getNativeLocalFile(HFile file) {
-        throw new IllegalArgumentException("Not a Native File "+file);
+        throw new IllegalArgumentException("Not a Native File " + file);
     }
 }

@@ -22,9 +22,9 @@ public class PanelPlotContainer extends AbstractPlotContainer {
     }
 
     public PanelPlotContainer(JPanel panel) {
-        if(panel!=null) {
+        if (panel != null) {
             this.panel = panel;
-        }else{
+        } else {
             this.panel = new JPanel(new MyGrid());
         }
         panel.putClientProperty(PlotComponent.class.getName(), this);
@@ -74,10 +74,10 @@ public class PanelPlotContainer extends AbstractPlotContainer {
     public void addComponentImpl(PlotComponent component, int index) {
         JComponent jcomp = toComponent(component);
         String title = validateTitle(component.getPlotTitle());//how to use this?
-        if(index<0) {
+        if (index < 0) {
             panel.add(jcomp);
-        }else {
-            panel.add(jcomp,index);
+        } else {
+            panel.add(jcomp, index);
         }
     }
 
@@ -115,29 +115,31 @@ public class PanelPlotContainer extends AbstractPlotContainer {
         return panel;
     }
 
-    private static class MyGrid extends GridLayout{
+    private static class MyGrid extends GridLayout {
         public MyGrid() {
         }
-        protected void reevel(Container parent){
+
+        protected void reevel(Container parent) {
             int r = parent.getComponentCount();
-            switch (r){
+            switch (r) {
                 case 0:
-                case 1:{
+                case 1: {
                     setColumns(0);
                     setRows(1);
                     break;
                 }
-                case 2:{
+                case 2: {
                     setColumns(2);
                     setRows(0);
                 }
-                default:{
+                default: {
                     double cols = Maths.ceil(Maths.sqrt(r));
                     setColumns((int) cols);
                     setRows(0);
                 }
             }
         }
+
         @Override
         public Dimension preferredLayoutSize(Container parent) {
             reevel(parent);

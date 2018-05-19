@@ -5,16 +5,13 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Out;
 
 /**
  * @author vpc
  */
-public class Imag extends DCxyToDDxy implements Cloneable{
+public class Imag extends DCxyToDDxy implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     public Imag(DoubleToComplex base) {
@@ -92,25 +89,25 @@ public class Imag extends DCxyToDDxy implements Cloneable{
         DoubleToComplex updated = old.setParam(name, value).toDC();
         if (updated != old) {
             Expr e = new Imag(updated);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
 
     @Override
     protected double computeDouble0(double x, BooleanMarker defined) {
-        return getArg().computeComplex(x,defined).getImag();
+        return getArg().computeComplex(x, defined).getImag();
     }
 
     @Override
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
-        return getArg().computeComplex(x, y,defined).getImag();
+        return getArg().computeComplex(x, y, defined).getImag();
     }
 
     @Override
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
-        return getArg().computeComplex(x, y, z,defined).getImag();
+        return getArg().computeComplex(x, y, z, defined).getImag();
     }
 
 //    @Override

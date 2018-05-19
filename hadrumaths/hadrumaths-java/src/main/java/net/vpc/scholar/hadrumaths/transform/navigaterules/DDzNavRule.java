@@ -5,7 +5,6 @@
  */
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
-import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DDz;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -14,7 +13,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class DDzNavRule implements ExpressionRewriterRule {
@@ -29,14 +27,14 @@ public class DDzNavRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        DDz x=(DDz) e;
+        DDz x = (DDz) e;
         DoubleToDouble a = x.getArg();
         RewriteResult newArg = ruleset.rewrite(a);
-        if(newArg.isUnmodified()){
+        if (newArg.isUnmodified()) {
             return RewriteResult.unmodified(e);
-        }else {
-            Expr x2=new DDz(newArg.getValue().toDD(),x.getDefaultX(),x.getDefaultY());
-            if(newArg.isBestEffort()){
+        } else {
+            Expr x2 = new DDz(newArg.getValue().toDD(), x.getDefaultX(), x.getDefaultY());
+            if (newArg.isBestEffort()) {
                 return RewriteResult.bestEffort(x2);
             }
             return RewriteResult.newVal(x2);
@@ -50,7 +48,7 @@ public class DDzNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

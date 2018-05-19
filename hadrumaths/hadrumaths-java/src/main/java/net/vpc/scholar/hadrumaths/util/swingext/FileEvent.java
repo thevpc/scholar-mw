@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.swingext;
 
-import java.util.EventObject;
 import java.io.File;
+import java.util.EventObject;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)

@@ -5,7 +5,6 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.util.swingext.JCardPanel;
 import net.vpc.scholar.hadrumaths.util.swingext.JListCardPanel;
 
 import javax.swing.*;
@@ -64,10 +63,10 @@ public class CardPlotContainer extends AbstractPlotContainer {
 
     public void addComponentImpl(PlotComponent component, int index) {
         JComponent component1 = toComponent(component);
-        if(index<0) {
-            jTabbedPane.addPage(validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()),null,component1);
-        }else{
-            jTabbedPane.setPageAt(index,validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()),null,component1);
+        if (index < 0) {
+            jTabbedPane.addPage(validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
+        } else {
+            jTabbedPane.setPageAt(index, validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
         }
     }
 

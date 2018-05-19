@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author vpc
  */
 public abstract class AbstractUnaryExpOperator extends AbstractExprOperator implements Cloneable {
@@ -110,10 +109,10 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
     @Override
     public Expr setParam(String name, Expr value) {
         Expr updated = expression.setParam(name, value);
-        if(updated!=expression) {
+        if (updated != expression) {
             Expr e = newInstance(updated);
-            e= Any.copyProperties(this, e);
-            return Any.updateTitleVars(e,name,value);
+            e = Any.copyProperties(this, e);
+            return Any.updateTitleVars(e, name, value);
         }
         return this;
     }
@@ -121,9 +120,9 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
     @Override
     public Expr composeX(Expr xreplacement) {
         Expr updated = expression.composeX(xreplacement);
-        if(updated!=expression) {
+        if (updated != expression) {
             Expr e = newInstance(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -132,9 +131,9 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
     @Override
     public Expr composeY(Expr yreplacement) {
         Expr updated = expression.composeY(yreplacement);
-        if(updated!=expression) {
+        if (updated != expression) {
             Expr e = newInstance(updated);
-            e= Any.copyProperties(this, e);
+            e = Any.copyProperties(this, e);
             return e;
         }
         return this;
@@ -165,14 +164,14 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public DoubleToComplex getComponent(Axis a) {
-        switch (a){
-            case X:{
+        switch (a) {
+            case X: {
                 return getComponent(0, 0).toDC();
             }
-            case Y:{
+            case Y: {
                 return getComponent(1, 0).toDC();
             }
-            case Z:{
+            case Z: {
                 return getComponent(2, 0).toDC();
             }
         }
@@ -196,7 +195,7 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return expression.toDM().computeMatrix(x,y,z).neg();
+        return expression.toDM().computeMatrix(x, y, z).neg();
     }
 
 //    @Override
@@ -208,14 +207,14 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 //    }
 
     public DoubleToDouble getRealDD() {
-        if(expression.isDD()){
+        if (expression.isDD()) {
             return this;
         }
         return new Real(toDC());
     }
 
     public DoubleToDouble getImagDD() {
-        if(expression.isDD()){
+        if (expression.isDD()) {
             return FunctionFactory.DZERO(getDomainDimension());
         }
         return new Imag(toDC());
@@ -224,11 +223,12 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, getExprHelper(), x, d0, ranges) ;
+        return Expressions.computeComplex(this, getExprHelper(), x, d0, ranges);
     }
+
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, getExprHelper(), x, y, d0, ranges) ;
+        return Expressions.computeComplex(this, getExprHelper(), x, y, d0, ranges);
     }
 
     @Override
@@ -238,30 +238,32 @@ public abstract class AbstractUnaryExpOperator extends AbstractExprOperator impl
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
-        return Expressions.computeDouble(this, getExprHelper(), x, d0, range) ;
+        return Expressions.computeDouble(this, getExprHelper(), x, d0, range);
     }
+
     @Override
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, getExprHelper(), x, y, d0, ranges) ;
+        return Expressions.computeDouble(this, getExprHelper(), x, y, d0, ranges);
     }
 
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, getExprHelper(), x, y, z, d0, ranges) ;
+        return Expressions.computeDouble(this, getExprHelper(), x, y, z, d0, ranges);
     }
 
     @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, getExprHelper(), x, d0, ranges) ;
+        return Expressions.computeMatrix(this, getExprHelper(), x, d0, ranges);
     }
+
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, getExprHelper(), x, y, d0, ranges) ;
+        return Expressions.computeMatrix(this, getExprHelper(), x, y, d0, ranges);
     }
 
     @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, getExprHelper(), x, y, z, d0, ranges) ;
+        return Expressions.computeMatrix(this, getExprHelper(), x, y, z, d0, ranges);
     }
 
     @Override

@@ -8,10 +8,11 @@ import net.vpc.scholar.hadrumaths.Maths;
 /**
  * Created by vpc on 4/30/14.
  */
-public class Tanh extends TrigoFunctionX implements Cloneable{
+public class Tanh extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Tanh(Expr arg) {
-        super("tanh",arg, FunctionType.COMPLEX);
+        super("tanh", arg, FunctionType.COMPLEX);
     }
 
     @Override
@@ -19,12 +20,12 @@ public class Tanh extends TrigoFunctionX implements Cloneable{
         return "tanh";
     }
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.tanh();
     }
 
-    public double computeDoubleArg(double c, BooleanMarker defined){
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
         return Maths.tanh(c);
     }

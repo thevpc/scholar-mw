@@ -8,13 +8,15 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.Exp;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class ExpSimplifyRule implements ExpressionRewriterRule {
@@ -37,57 +39,58 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
         Expr aa = ee.getArgument();
         RewriteResult rewriteResult = ruleset.rewrite(aa);
         Expr simplifiedArg = rewriteResult.getValue();
-        if(simplifiedArg.isDoubleExpr()) {
+        if (simplifiedArg.isDoubleExpr()) {
             return RewriteResult.newVal(
-                    new DoubleValue(Maths.exp(simplifiedArg.toDouble()),simplifiedArg.getDomain())
+                    new DoubleValue(Maths.exp(simplifiedArg.toDouble()), simplifiedArg.getDomain())
             );
-        }else if(simplifiedArg.isComplex()){
-            Complex c=simplifiedArg.toComplex();
-            if(c.isReal()) {
+        } else if (simplifiedArg.isComplex()) {
+            Complex c = simplifiedArg.toComplex();
+            if (c.isReal()) {
                 return RewriteResult.newVal(
-                        DoubleValue.valueOf(Maths.exp(c.realdbl()))
+                        DoubleValue.valueOf(Math.exp(c.realdbl()))
                 );
-            }else if(c.isImag()){
+            } else if (c.isImag()) {
                 return RewriteResult.newVal(
-                            Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl()))
+                        Complex.valueOf(Math.cos(c.imagdbl()), Math.sin(c.imagdbl()))
                 );
-            }else {
+            } else {
                 return RewriteResult.newVal(
-                            Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())).mul(Maths.exp(c.realdbl()))
-                );
-            }
-        }else if(simplifiedArg.isComplexExpr()){
-            ComplexValue cv=(ComplexValue) simplifiedArg;
-            Complex c=cv.getValue();
-            if(c.isReal()) {
-                return RewriteResult.newVal(
-                        new DoubleValue(Maths.exp(c.realdbl()), simplifiedArg.getDomain())
-                );
-            }else if(c.isImag()){
-                return RewriteResult.newVal(
-                        new ComplexValue(Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())),simplifiedArg.getDomain())
-                );
-            }else {
-                return RewriteResult.newVal(
-                        new ComplexValue(Complex.valueOf(Maths.cos(c.imagdbl()),Maths.sin(c.imagdbl())).mul(Maths.exp(c.realdbl())),simplifiedArg.getDomain())
+                        Complex.valueOf(Math.cos(c.imagdbl()), Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl()))
                 );
             }
-        }else if(simplifiedArg.isDD()){
+        } else if (simplifiedArg.isComplexExpr()) {
+            ComplexValue cv = (ComplexValue) simplifiedArg;
+            Complex c = cv.getValue();
+            if (c.isReal()) {
+                return RewriteResult.newVal(
+                        new DoubleValue(Math.exp(c.realdbl()), simplifiedArg.getDomain())
+                );
+            } else if (c.isImag()) {
+                return RewriteResult.newVal(
+                        new ComplexValue(Complex.valueOf(Math.cos(c.imagdbl()), Math.sin(c.imagdbl())), simplifiedArg.getDomain())
+                );
+            } else {
+                return RewriteResult.newVal(
+                        new ComplexValue(Complex.valueOf(Math.cos(c.imagdbl()), Math.sin(c.imagdbl())).mul(Math.exp(c.realdbl())), simplifiedArg.getDomain())
+                );
+            }
+        } else if (simplifiedArg.isDD()) {
             //nothing to do
-        }else if(simplifiedArg.isDC()){
+        } else if (simplifiedArg.isDC()) {
             DoubleToComplex doubleToComplex = simplifiedArg.toDC();
-            Expr a= ruleset.rewriteOrSame(doubleToComplex.getRealDD()).toDD();
-            Expr b= ruleset.rewriteOrSame(doubleToComplex.getImagDD()).toDD();
-            return RewriteResult.newVal(Maths.mul(new Exp(a),Maths.sum(Maths.cos(b),Maths.mul(Maths.I,Maths.sin(b)))));
+            Expr a = ruleset.rewriteOrSame(doubleToComplex.getRealDD()).toDD();
+            Expr b = ruleset.rewriteOrSame(doubleToComplex.getImagDD()).toDD();
+            return RewriteResult.newVal(Maths.mul(new Exp(a), Maths.sum(Maths.cos(b), Maths.mul(Maths.I, Maths.sin(b)))));
         }
-        if(rewriteResult.isUnmodified()) {
+        if (rewriteResult.isUnmodified()) {
             return RewriteResult.unmodified(ee);
-        }else if(rewriteResult.isBestEffort()){
+        } else if (rewriteResult.isBestEffort()) {
             return RewriteResult.bestEffort(new Exp(rewriteResult.getValue()));
-        }else {
+        } else {
             return RewriteResult.newVal(new Exp(rewriteResult.getValue()));
         }
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -95,7 +98,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

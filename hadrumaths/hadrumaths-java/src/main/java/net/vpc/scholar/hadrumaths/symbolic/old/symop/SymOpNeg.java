@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.symbolic.old.symop;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.symbolic.old.*;
 
-import static net.vpc.scholar.hadrumaths.Complex.ZERO;
 import static net.vpc.scholar.hadrumaths.Complex.ONE;
+import static net.vpc.scholar.hadrumaths.Complex.ZERO;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -22,26 +22,26 @@ public class SymOpNeg extends SymOperator {
     }
 
     public SymExpression eval(SymContext context) {
-        SymExpression r=value.eval(context);
-        if(r instanceof SymOpNeg){
-            return ((SymOpNeg)r).getValue().eval(context);
-        }else if(r instanceof SymComplex){
-            SymComplex rr=(SymComplex) r;
-            if(rr.getValue().equals(ZERO)){
+        SymExpression r = value.eval(context);
+        if (r instanceof SymOpNeg) {
+            return ((SymOpNeg) r).getValue().eval(context);
+        } else if (r instanceof SymComplex) {
+            SymComplex rr = (SymComplex) r;
+            if (rr.getValue().equals(ZERO)) {
                 return SymComplex.XZERO;
-            }else if(rr.getValue().equals(ONE)){
+            } else if (rr.getValue().equals(ONE)) {
                 return new SymComplex(Complex.MINUS_ONE);
             }
         }
-        if(r instanceof SymMatrix){
+        if (r instanceof SymMatrix) {
             SymExpression[][] re = ((SymMatrix) r).getValue();
-            int maxr=((SymMatrix) r).getRows();
-            int maxc=((SymMatrix) r).getColumns();
-            SymExpression[][] ee=new SymExpression[maxr][maxc];
+            int maxr = ((SymMatrix) r).getRows();
+            int maxc = ((SymMatrix) r).getColumns();
+            SymExpression[][] ee = new SymExpression[maxr][maxc];
             for (int i = 0; i < ee.length; i++) {
                 SymExpression[] symExpressions = ee[i];
                 for (int j = 0; j < symExpressions.length; j++) {
-                    symExpressions[j]=new SymOpNeg(re[i][j]).eval(context);
+                    symExpressions[j] = new SymOpNeg(re[i][j]).eval(context);
                 }
             }
             return new SymMatrix(ee);
@@ -54,9 +54,9 @@ public class SymOpNeg extends SymOperator {
         c.setPreferParentheses(false);
         c.setOperatorPrecedence(SymStringContext.UNIT_MINUS_PRECEDENCE);
 
-        String s = SymUtils.formatRow(null,"-", value.toString(c));
+        String s = SymUtils.formatRow(null, "-", value.toString(c));
         boolean par = context.isPreferParentheses(SymStringContext.UNIT_MINUS_PRECEDENCE);
-        return par ? SymUtils.formatRow(null,"(",s,")") : s;
+        return par ? SymUtils.formatRow(null, "(", s, ")") : s;
     }
 
     public SymExpression getValue() {

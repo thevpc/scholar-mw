@@ -7,10 +7,11 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 4/30/14.
  */
-public class NeExpr extends ComparatorExpr implements Cloneable{
+public class NeExpr extends ComparatorExpr implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public NeExpr(Expr xarg, Expr yarg) {
-        super(xarg,yarg,FunctionType.DOUBLE);
+        super(xarg, yarg, FunctionType.DOUBLE);
     }
 
     @Override
@@ -18,33 +19,33 @@ public class NeExpr extends ComparatorExpr implements Cloneable{
         return "<>";
     }
 
-    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined){
-        if(!xdef && !ydef){
+    public Complex computeComplexArg(Complex x, Complex y, boolean xdef, boolean ydef, BooleanMarker defined) {
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
-        return (!x.equals(y))?Complex.ONE:Complex.ZERO;
+        return (!x.equals(y)) ? Complex.ONE : Complex.ZERO;
     }
 
-    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined){
-        if(!xdef && !ydef){
+    public Complex computeComplexArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
+        if (!xdef && !ydef) {
             return Complex.ZERO;
         }
         defined.set();
-        return x!=y ?Complex.ONE:Complex.ZERO;
+        return x != y ? Complex.ONE : Complex.ZERO;
     }
 
-    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined){
-        if(!xdef && !ydef){
+    public double computeDoubleArg(double x, double y, boolean xdef, boolean ydef, BooleanMarker defined) {
+        if (!xdef && !ydef) {
             return 0;
         }
         defined.set();
-        return x!=y ?1:0;
+        return x != y ? 1 : 0;
     }
 
     @Override
-    public Expr newInstance(Expr xargument,Expr yargument) {
-        return new NeExpr(xargument,yargument);
+    public Expr newInstance(Expr xargument, Expr yargument) {
+        return new NeExpr(xargument, yargument);
     }
 
 }

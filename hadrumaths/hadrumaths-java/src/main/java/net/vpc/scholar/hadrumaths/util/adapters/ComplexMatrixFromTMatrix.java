@@ -22,12 +22,12 @@ public class ComplexMatrixFromTMatrix<R> extends AbstractMatrix implements Matri
 
     @Override
     public Complex get(int row, int col) {
-        return converterTo.convert(base.get(row,col));
+        return converterTo.convert(base.get(row, col));
     }
 
     @Override
     public void set(int row, int col, Complex val) {
-        base.set(row,col,converterFrom.convert(val));
+        base.set(row, col, converterFrom.convert(val));
     }
 
     @Override

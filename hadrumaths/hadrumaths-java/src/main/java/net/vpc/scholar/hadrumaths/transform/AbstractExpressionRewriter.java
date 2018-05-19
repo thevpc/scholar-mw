@@ -15,22 +15,22 @@ import java.util.List;
 /**
  * Created by vpc on 1/24/15.
  */
-public abstract class AbstractExpressionRewriter implements ExpressionRewriter,CacheEnabled {
-    public static int MAX_REWRITE_TIME_SECONDS=1;
+public abstract class AbstractExpressionRewriter implements ExpressionRewriter, CacheEnabled {
+    public static int MAX_REWRITE_TIME_SECONDS = 1;
     private LRUMap<Expr, RewriteResult> cache = new LRUMap<Expr, RewriteResult>(Maths.Config.getSimplifierCacheSize());
     private boolean cacheEnabled = true;
-    protected List<ExprRewriteListener> rewriteListeners=new ArrayList<>();
-    protected List<ExprRewriteFailListener> rewriteFailListeners=new ArrayList<>();
+    protected List<ExprRewriteListener> rewriteListeners = new ArrayList<>();
+    protected List<ExprRewriteFailListener> rewriteFailListeners = new ArrayList<>();
 
-    protected ExprRewriteListener listenerListAdapter=new ExprRewriteListener() {
+    protected ExprRewriteListener listenerListAdapter = new ExprRewriteListener() {
         @Override
         public void onRewriteExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue) {
             for (ExprRewriteListener rewriteListener : rewriteListeners) {
-                rewriteListener.onRewriteExpr(rewriter, oldValue,newValue);
+                rewriteListener.onRewriteExpr(rewriter, oldValue, newValue);
             }
         }
     };
-    protected ExprRewriteFailListener listenerFailListAdapter=new ExprRewriteFailListener() {
+    protected ExprRewriteFailListener listenerFailListAdapter = new ExprRewriteFailListener() {
         @Override
         public void onUnmodifiedExpr(ExpressionRewriter rewriter, Expr oldValue) {
             for (ExprRewriteFailListener rewriteFailListener : rewriteFailListeners) {
@@ -43,7 +43,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             boolean b = (boolean) evt.getNewValue();
-            if(!b) {
+            if (!b) {
                 cache.clear();
             }
         }
@@ -61,7 +61,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
 
     @Override
     public boolean isCacheEnabled() {
-        return Maths.Config.isExpressionWriterCacheEnabled()  && cacheEnabled;
+        return Maths.Config.isExpressionWriterCacheEnabled() && cacheEnabled;
     }
 
     @Override
@@ -84,7 +84,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
 
     public Expr rewriteOrSame(Expr e) {
         Expr t = rewriteOrNull(e);
-        return t==null?e:t;
+        return t == null ? e : t;
     }
 
     @Override
@@ -95,51 +95,43 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter,C
     @Override
     public RewriteResult rewrite(Expr e) {
         if (isCacheEnabled()) {
-            if(Maths.Config.isDevelopmentMode()) {
+            if (Maths.Config.isDevelopmentMode()) {
                 PlatformUtils.requireEqualsAndHashCode(e.getClass());
             }
             RewriteResult found = cache.get(e);
             if (found != null) {
                 return found;
             }
-            RewriteResult r=null;
-            if(MAX_REWRITE_TIME_SECONDS>0){
+            RewriteResult r = null;
+            if (MAX_REWRITE_TIME_SECONDS > 0) {
                 Chronometer c = Maths.chrono();
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
-                    System.err.println("Expression Rewrite Took too long : "+c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
+                    System.err.println("Expression Rewrite Took too long : " + c.getSeconds() + "s ; " + e + " ==> " + r.getValue());
                 }
-            }else{
+            } else {
                 r = rewriteImpl(e);
             }
             cache.put(e, r);
             return r;
-        }else{
-            RewriteResult r=null;
-            if(MAX_REWRITE_TIME_SECONDS>0){
+        } else {
+            RewriteResult r = null;
+            if (MAX_REWRITE_TIME_SECONDS > 0) {
                 Chronometer c = Maths.chrono();
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
-                    System.err.println("Expression Rewrite Took too long : "+ c.getSeconds()+"s ; "+e+" ==> "+r.getValue());
+                    System.err.println("Expression Rewrite Took too long : " + c.getSeconds() + "s ; " + e + " ==> " + r.getValue());
                 }
-            }else{
+            } else {
                 r = rewriteImpl(e);
             }
-//            String ts=toString();
-//            if(ts.contains("CANONICAL")){
-                return r;
-//            }else {
-//                System.out.println(this + "::rewriteImpl " +e.getClass().getSimpleName()+":"+ e);
-//                RewriteResult v = rewriteImpl(e);
-//                System.out.println(this + "::rewriteImpl " +e.getClass().getSimpleName()+"->"+v.getValue().getClass().getSimpleName()+":"+ e + "\n\t" + v);
-//                return v;
-//            }
+            return r;
         }
     }
 
-    public abstract RewriteResult rewriteImpl(Expr e) ;
+    public abstract RewriteResult rewriteImpl(Expr e);
 
     public ExprRewriteListener[] getRewriteListeners() {
         return rewriteListeners.toArray(new ExprRewriteListener[rewriteListeners.size()]);

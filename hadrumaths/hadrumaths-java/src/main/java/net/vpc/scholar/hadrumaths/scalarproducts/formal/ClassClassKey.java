@@ -13,20 +13,20 @@ final class ClassClassKey implements Serializable {
     Class c2;
     private int h;
 
-    public ClassClassKey(Class c1, Class c2,int domainDimension) {
+    public ClassClassKey(Class c1, Class c2, int domainDimension) {
         this.c1 = c1;
         this.c2 = c2;
         this.domainDimension = domainDimension;
-        h=(c1.getName().hashCode()*31+c2.getName().hashCode())*31+domainDimension;
+        h = (c1.getName().hashCode() * 31 + c2.getName().hashCode()) * 31 + domainDimension;
     }
 
-    public ClassClassKey invert(){
-        return new ClassClassKey(c2,c1,domainDimension);
+    public ClassClassKey invert() {
+        return new ClassClassKey(c2, c1, domainDimension);
     }
 
     public boolean equals(Object obj) {
-        ClassClassKey obj2=(ClassClassKey) obj;
-        return obj2.c1.equals(c1) && obj2.c2.equals(c2) && obj2.domainDimension==domainDimension;
+        ClassClassKey obj2 = (ClassClassKey) obj;
+        return obj2.c1.equals(c1) && obj2.c2.equals(c2) && obj2.domainDimension == domainDimension;
     }
 
 
@@ -35,6 +35,6 @@ final class ClassClassKey implements Serializable {
     }
 
     public String toString() {
-        return "("+c1.getSimpleName()+","+c2.getSimpleName()+")";
+        return "(" + c1.getSimpleName() + "," + c2.getSimpleName() + ")";
     }
 }

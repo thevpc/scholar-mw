@@ -5,12 +5,12 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.impl;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.interop.matlab.MatlabFactory;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParamArray;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabVectorizeFormat;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
 
 /**
  * @author vpc

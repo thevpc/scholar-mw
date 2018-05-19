@@ -10,8 +10,8 @@ import java.util.concurrent.*;
 /**
  * Created by vpc on 12/12/16.
  */
-public class SolverExecutorService implements Closeable{
-//    public static void main(String[] args) {
+public class SolverExecutorService implements Closeable {
+    //    public static void main(String[] args) {
 //        try {
 //            Maths.solverExecutorService(1)
 //                    .submit(new Runnable() {
@@ -63,27 +63,29 @@ public class SolverExecutorService implements Closeable{
     private CompletionService ecs;
     private ExecutorService executor;
     List<Future> futures = new ArrayList<Future>();
+
     public SolverExecutorService(int threadsCount) {
         this(Executors.newFixedThreadPool(threadsCount));
     }
+
     public SolverExecutorService(ExecutorService e) {
-        this.executor=e;
+        this.executor = e;
         ecs = new ExecutorCompletionService(e);
     }
 
-    public SolverExecutorService submit(Collection<Callable> solvers){
+    public SolverExecutorService submit(Collection<Callable> solvers) {
         for (Callable s : solvers) {
             submit(s);
         }
         return this;
     }
 
-    public SolverExecutorService submit(final Callable s){
+    public SolverExecutorService submit(final Callable s) {
         futures.add(ecs.submit(s));
         return this;
     }
 
-    public SolverExecutorService submit(final Runnable s){
+    public SolverExecutorService submit(final Runnable s) {
         futures.add(ecs.submit(s, ""));
         return this;
     }
@@ -117,7 +119,7 @@ public class SolverExecutorService implements Closeable{
         }
     }
 
-  public SolverExecutorService solveFirst() throws InterruptedException {
+    public SolverExecutorService solveFirst() throws InterruptedException {
         int n = futures.size();
         Object result = null;
         try {
@@ -128,10 +130,10 @@ public class SolverExecutorService implements Closeable{
                         result = r;
                         break;
                     }
-                } catch (ExecutionException ignore) {}
+                } catch (ExecutionException ignore) {
+                }
             }
-        }
-        finally {
+        } finally {
             for (Future f : futures)
                 f.cancel(true);
         }

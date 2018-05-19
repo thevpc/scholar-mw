@@ -8,7 +8,7 @@ import java.util.List;
 public class DefaultPlotContainer extends AbstractPlotContainer implements PlotContainer {
     private PlotContainer actual;
     private JPanel panel;
-    private List<PlotPropertyListener> listeners=new ArrayList<>();
+    private List<PlotPropertyListener> listeners = new ArrayList<>();
     private PlotPropertyListener listenerDispatcher = new PlotPropertyListener() {
         @Override
         public void onPropertyChange(PlotPropertyEvent event) {
@@ -27,7 +27,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     public DefaultPlotContainer() {
         super();
-        panel=new JPanel(new BorderLayout());
+        panel = new JPanel(new BorderLayout());
         setActual(TabbedPlotWindowContainerFactory.INSTANCE.create());
     }
 
@@ -40,7 +40,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public PlotComponent getPlotComponent(int index) {
-        if(actual==null){
+        if (actual == null) {
             return null;
         }
         return actual.getPlotComponent(index);
@@ -48,7 +48,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public int getPlotComponentsCount() {
-        if(actual==null){
+        if (actual == null) {
             return 0;
         }
         return actual.getPlotComponentsCount();
@@ -56,15 +56,15 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public PlotContainer add(int index, String containerName) {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
-        return actual.add(index,containerName);
+        return actual.add(index, containerName);
     }
 
     @Override
     public void add(PlotComponent component) {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         actual.add(component);
@@ -72,7 +72,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public void display(PlotComponent component) {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         actual.display(component);
@@ -81,7 +81,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public void clear() {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         actual.clear();
@@ -89,7 +89,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public void remove(PlotComponent component) {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         actual.remove(component);
@@ -97,7 +97,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public PlotContainer add(String name) {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         return actual.add(name);
@@ -105,7 +105,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public String getPlotTitle() {
-        if(actual==null){
+        if (actual == null) {
             return null;
         }
         return actual.getPlotTitle();
@@ -113,7 +113,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public String getLayoutConstraints() {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         return actual.getLayoutConstraints();
@@ -126,46 +126,46 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public void display() {
-        if(actual==null){
+        if (actual == null) {
             throw new IllegalArgumentException("Unsupported");
         }
         actual.display();
     }
 
-    protected void registerActual(PlotContainer a){
-        if(a!=null) {
+    protected void registerActual(PlotContainer a) {
+        if (a != null) {
             a.addPlotPropertyListener(listenerDispatcher);
         }
     }
 
-    protected void unregisterActual(PlotContainer a){
-        if(a!=null) {
+    protected void unregisterActual(PlotContainer a) {
+        if (a != null) {
             a.removePlotPropertyListener(listenerDispatcher);
         }
     }
 
-    protected void setActual(PlotContainer a){
-        if(a!=this.actual) {
-            if( a instanceof DefaultPlotContainer){
+    protected void setActual(PlotContainer a) {
+        if (a != this.actual) {
+            if (a instanceof DefaultPlotContainer) {
                 throw new IllegalArgumentException("Unsupported");
             }
             unregisterActual(this.actual);
             this.actual = a;
             registerActual(this.actual);
-            panel.add(this.actual.toComponent(),SwingConstants.CENTER);
+            panel.add(this.actual.toComponent(), SwingConstants.CENTER);
         }
     }
 
     @Override
     public void addPlotPropertyListener(PlotPropertyListener listener) {
-        if(listener!=null) {
+        if (listener != null) {
             listeners.add(listener);
         }
     }
 
     @Override
     public void removePlotPropertyListener(PlotPropertyListener listener) {
-        if(listener!=null) {
+        if (listener != null) {
             listeners.remove(listener);
         }
     }
@@ -182,7 +182,7 @@ public class DefaultPlotContainer extends AbstractPlotContainer implements PlotC
 
     @Override
     public int indexOfPlotComponent(PlotComponent plotComponent) {
-        if(actual!=null){
+        if (actual != null) {
             return actual.indexOfPlotComponent(plotComponent);
         }
         return -1;

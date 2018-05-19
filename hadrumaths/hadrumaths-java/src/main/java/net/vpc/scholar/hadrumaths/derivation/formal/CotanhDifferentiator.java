@@ -5,7 +5,10 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.Cotan;
+import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.Sqr;
+import net.vpc.scholar.hadrumaths.symbolic.Sub;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -17,7 +20,7 @@ public class CotanhDifferentiator implements FunctionDifferentiator {
         Expr a = c.getArgument();
         return
                 (new Mul(
-                        d.derive(a,varIndex)
+                        d.derive(a, varIndex)
                         ,
                         new Sub(
                                 Complex.ONE,

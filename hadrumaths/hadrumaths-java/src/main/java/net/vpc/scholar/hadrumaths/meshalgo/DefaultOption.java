@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 
-public class DefaultOption implements MeshOptions{
+public class DefaultOption implements MeshOptions {
     private static final long serialVersionUID = 1L;
     protected EnhancedMeshPolygons enhancedMeshZone;
 
@@ -22,12 +22,12 @@ public class DefaultOption implements MeshOptions{
     }
 
     public final String dump() {
-      return getDumpStringHelper().toString();
+        return getDumpStringHelper().toString();
     }
 
     public Dumper getDumpStringHelper() {
-        Dumper h=new Dumper(getClass().getSimpleName());
-        h.add("enhancedMeshZone",enhancedMeshZone);
+        Dumper h = new Dumper(getClass().getSimpleName());
+        h.add("enhancedMeshZone", enhancedMeshZone);
         return h;
     }
 

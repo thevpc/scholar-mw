@@ -61,9 +61,9 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
 
     public void addComponentImpl(PlotComponent component, int index) {
         JComponent component1 = toComponent(component);
-        if(index<0) {
+        if (index < 0) {
             jTabbedPane.addTab(validateTitle(component.getPlotTitle()), component1);
-        }else{
+        } else {
             jTabbedPane.setComponentAt(index, component1);
         }
     }

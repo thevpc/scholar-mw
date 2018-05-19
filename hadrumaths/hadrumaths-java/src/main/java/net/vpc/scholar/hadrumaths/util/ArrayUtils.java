@@ -220,7 +220,7 @@ public final class ArrayUtils {
     }
 
     public static double[] add(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] + b[i];
@@ -238,7 +238,7 @@ public final class ArrayUtils {
     }
 
     public static double[] sub(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] - b[i];
@@ -265,7 +265,7 @@ public final class ArrayUtils {
     }
 
     public static double[] mul(double[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[] ret = new double[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i] * (b[i]);
@@ -796,7 +796,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] add(Complex[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].add(b[i]);
@@ -823,7 +823,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] add(Complex[] a, Complex[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].add(b[i]);
@@ -841,7 +841,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] sub(Complex[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].sub(b[i]);
@@ -868,7 +868,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] sub(Complex[] a, Complex[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].sub(b[i]);
@@ -877,10 +877,10 @@ public final class ArrayUtils {
     }
 
     public static Complex[][] sub(Complex[][] a, Complex[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][] ret = new Complex[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new Complex[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j].sub(b[i][j]);
@@ -890,10 +890,10 @@ public final class ArrayUtils {
     }
 
     public static double[][] sub(double[][] a, double[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][] ret = new double[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new double[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j] - (b[i][j]);
@@ -903,10 +903,10 @@ public final class ArrayUtils {
     }
 
     public static double[][] mul(double[][] a, double[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][] ret = new double[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new double[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j] * (b[i][j]);
@@ -916,10 +916,10 @@ public final class ArrayUtils {
     }
 
     public static double[][] div(double[][] a, double[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][] ret = new double[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new double[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j] / (b[i][j]);
@@ -929,10 +929,10 @@ public final class ArrayUtils {
     }
 
     public static Complex[][] add(Complex[][] a, Complex[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][] ret = new Complex[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new Complex[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j].add(b[i][j]);
@@ -942,10 +942,10 @@ public final class ArrayUtils {
     }
 
     public static double[][] add(double[][] a, double[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][] ret = new double[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new double[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j] + (b[i][j]);
@@ -955,7 +955,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[][][] add(Complex[][][] a, Complex[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][][] ret = new Complex[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = add(a[i], b[i]);
@@ -964,7 +964,7 @@ public final class ArrayUtils {
     }
 
     public static double[][][] add(double[][][] a, double[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][][] ret = new double[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = add(a[i], b[i]);
@@ -973,7 +973,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[][][] sub(Complex[][][] a, Complex[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][][] ret = new Complex[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = sub(a[i], b[i]);
@@ -982,7 +982,7 @@ public final class ArrayUtils {
     }
 
     public static double[][][] sub(double[][][] a, double[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][][] ret = new double[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = sub(a[i], b[i]);
@@ -991,7 +991,7 @@ public final class ArrayUtils {
     }
 
     public static double[][][] mul(double[][][] a, double[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][][] ret = new double[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = mul(a[i], b[i]);
@@ -1000,7 +1000,7 @@ public final class ArrayUtils {
     }
 
     public static double[][][] div(double[][][] a, double[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         double[][][] ret = new double[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = div(a[i], b[i]);
@@ -1009,7 +1009,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[][][] mul(Complex[][][] a, Complex[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][][] ret = new Complex[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = mul(a[i], b[i]);
@@ -1018,7 +1018,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[][][] div(Complex[][][] a, Complex[][][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][][] ret = new Complex[max][][];
         for (int i = 0; i < max; i++) {
             ret[i] = div(a[i], b[i]);
@@ -1027,10 +1027,10 @@ public final class ArrayUtils {
     }
 
     public static Complex[][] mul(Complex[][] a, Complex[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][] ret = new Complex[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new Complex[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j].mul(b[i][j]);
@@ -1040,10 +1040,10 @@ public final class ArrayUtils {
     }
 
     public static Complex[][] div(Complex[][] a, Complex[][] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[][] ret = new Complex[max][];
         for (int i = 0; i < max; i++) {
-            int maxj = Maths.max(a[i].length, b[i].length);
+            int maxj = Math.max(a[i].length, b[i].length);
             ret[i] = new Complex[maxj];
             for (int j = 0; j < maxj; j++) {
                 ret[i][j] = a[i][j].div(b[i][j]);
@@ -1053,7 +1053,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] div(Complex[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].div(b[i]);
@@ -1080,7 +1080,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] div(Complex[] a, Complex[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].div(b[i]);
@@ -1089,7 +1089,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] mul(Complex[] a, double[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].mul(b[i]);
@@ -1125,7 +1125,7 @@ public final class ArrayUtils {
     }
 
     public static Complex[] mul(Complex[] a, Complex[] b) {
-        int max = Maths.max(a.length, b.length);
+        int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];
         for (int i = 0; i < max; i++) {
             ret[i] = a[i].mul(b[i]);
@@ -1175,7 +1175,7 @@ public final class ArrayUtils {
                     f1 = gfps0[i][k].absdblsqr();
                     f2 = gfps0[j][k].absdblsqr();
                     f12 = (gfps0[i][k].sub(gfps0[j][k]).absdblsqr());
-                    fallmax = Maths.max(fallmax, Maths.max(f1, f2));
+                    fallmax = Math.max(fallmax, Math.max(f1, f2));
                     f += f12;
                 }
                 f = f / fallmax;

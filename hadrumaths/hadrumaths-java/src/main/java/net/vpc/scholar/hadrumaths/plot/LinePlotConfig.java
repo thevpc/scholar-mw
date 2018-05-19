@@ -1,4 +1,4 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-public class LinePlotConfig extends PlotConfig{
+public class LinePlotConfig extends PlotConfig {
 }

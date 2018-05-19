@@ -78,9 +78,9 @@ public class LockMonitor extends JPanel implements ActionListener {
                 }
 
                 if (isSelected) {
-                    bg=(bg == null ? table.getSelectionBackground(): bg);
+                    bg = (bg == null ? table.getSelectionBackground() : bg);
                 } else {
-                    Color unselectedBackground=getUnselectedBackground();
+                    Color unselectedBackground = getUnselectedBackground();
                     Color background = unselectedBackground != null
                             ? unselectedBackground
                             : table.getBackground();
@@ -90,7 +90,7 @@ public class LockMonitor extends JPanel implements ActionListener {
                             background = alternateColor;
                         }
                     }
-                    if(background!=null) {
+                    if (background != null) {
                         bg = (background);
                     }
                 }
@@ -101,7 +101,7 @@ public class LockMonitor extends JPanel implements ActionListener {
                         Color col;
                         col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
                         if (col != null) {
-                            bg=(col);
+                            bg = (col);
                         }
                     }
                 }
@@ -146,11 +146,11 @@ public class LockMonitor extends JPanel implements ActionListener {
                 }
 
                 if (isSelected) {
-                    fg=(fg == null ? table.getSelectionForeground()
+                    fg = (fg == null ? table.getSelectionForeground()
                             : fg);
                 } else {
                     Color unselectedForeground = getUnselectedForeground();
-                    fg=(unselectedForeground != null
+                    fg = (unselectedForeground != null
                             ? unselectedForeground
                             : table.getForeground());
                 }
@@ -161,7 +161,7 @@ public class LockMonitor extends JPanel implements ActionListener {
                         Color col;
                         col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
                         if (col != null) {
-                            fg=(col);
+                            fg = (col);
                         }
                     }
                 } else {
@@ -172,14 +172,14 @@ public class LockMonitor extends JPanel implements ActionListener {
             public Component getTableCellRendererComponent(JTable table,
                                                            Object value, boolean isSelected, boolean hasFocus,
                                                            int row, int column) {
-                Color bg = getDefaultBG(table, value, isSelected,hasFocus,row,column);
-                Color fg = getDefaultFG(table, value, isSelected,hasFocus,row,column);
+                Color bg = getDefaultBG(table, value, isSelected, hasFocus, row, column);
+                Color fg = getDefaultFG(table, value, isSelected, hasFocus, row, column);
                 if (value instanceof Number && ((Number) value).intValue() > 1) {
                     if (isSelected) {
-                        bg = (new Color(230,135,230));
+                        bg = (new Color(230, 135, 230));
 //                        fg = (Color.YELLOW);
                     } else {
-                        bg = (new Color(230,135,121));
+                        bg = (new Color(230, 135, 121));
 //                        fg = (Color.BLACK);
                     }
                 }
@@ -263,7 +263,7 @@ public class LockMonitor extends JPanel implements ActionListener {
                             AppLock file = appLockInfo.lock;
                             if (file.equals(lock)) {
                                 appLockInfo.hits++;
-                                if(appLockInfo.hits>1){
+                                if (appLockInfo.hits > 1) {
                                     UIManager.getLookAndFeel().provideErrorFeedback(null);
                                 }
                                 appLockInfo.time = new Date();
@@ -298,7 +298,8 @@ public class LockMonitor extends JPanel implements ActionListener {
                             }
                         }
                     }
-                }});
+                }
+            });
         }
 
         @Override

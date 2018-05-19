@@ -31,6 +31,7 @@ public class AbsoluteSamples extends Samples {
         this.x = x;
         this.dimension = 1;
     }
+
     public int getDimension() {
         return dimension;
     }
@@ -70,9 +71,11 @@ public class AbsoluteSamples extends Samples {
     public Samples toRelative() {
         return new RelativeSamples(false, dimension, x, y, z);
     }
+
     public Samples toAbsolute() {
         return this;
     }
+
     public Samples toAbsolute(Domain domain) {
         return this;
     }

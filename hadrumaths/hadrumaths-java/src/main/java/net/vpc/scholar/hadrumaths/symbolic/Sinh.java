@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public class Sinh extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Sinh(Expr arg) {
         super("sinh", arg, FunctionType.COMPLEX);
     }
@@ -26,7 +27,7 @@ public class Sinh extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.sinh(c);
+        return Math.sinh(c);
     }
 
     @Override

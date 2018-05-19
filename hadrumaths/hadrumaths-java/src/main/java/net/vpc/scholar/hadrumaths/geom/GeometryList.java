@@ -40,7 +40,6 @@ public interface GeometryList extends Cloneable, Iterable<Geometry>, Serializabl
     GeometryList clone();
 
 
-
     int size();
 
     Geometry get(int i);

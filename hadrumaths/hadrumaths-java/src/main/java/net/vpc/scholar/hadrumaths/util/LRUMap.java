@@ -10,7 +10,7 @@ import java.util.Map;
 public class LRUMap<A, B> extends LinkedHashMap<A, B> {
     private int maxEntries;
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        LRUMap p=new LRUMap(0);
 //    }
     public LRUMap(final int maxEntries) {
@@ -21,16 +21,15 @@ public class LRUMap<A, B> extends LinkedHashMap<A, B> {
     /**
      * Returns <tt>true</tt> if this <code>LruCache</code> has more entries than the maximum specified when it was
      * created.
-     *
+     * <p>
      * <p>
      * This method <em>does not</em> modify the underlying <code>Map</code>; it relies on the implementation of
      * <code>LinkedHashMap</code> to do that, but that behavior is documented in the JavaDoc for
      * <code>LinkedHashMap</code>.
      * </p>
      *
-     * @param eldest
-     *            the <code>Entry</code> in question; this implementation doesn't care what it is, since the
-     *            implementation is only dependent on the size of the cache
+     * @param eldest the <code>Entry</code> in question; this implementation doesn't care what it is, since the
+     *               implementation is only dependent on the size of the cache
      * @return <tt>true</tt> if the oldest
      * @see java.util.LinkedHashMap#removeEldestEntry(Map.Entry)
      */
@@ -39,18 +38,18 @@ public class LRUMap<A, B> extends LinkedHashMap<A, B> {
         return super.size() > maxEntries;
     }
 
-    public void resize(int maxEntries){
+    public void resize(int maxEntries) {
         //LRUMap<A, B> n = new LRUMap<A, B>(maxEntries);
         //n.putAll(this);
-        int old=this.maxEntries;
-        this.maxEntries=maxEntries;
-        if(old>maxEntries){
-            int size=size();
+        int old = this.maxEntries;
+        this.maxEntries = maxEntries;
+        if (old > maxEntries) {
+            int size = size();
             for (Iterator<Map.Entry<A, B>> iterator = this.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<A, B> abEntry = iterator.next();
                 iterator.remove();
                 size--;
-                if(size<=maxEntries){
+                if (size <= maxEntries) {
                     break;
                 }
             }

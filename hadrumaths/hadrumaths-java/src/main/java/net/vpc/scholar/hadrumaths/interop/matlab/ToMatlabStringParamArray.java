@@ -59,7 +59,7 @@ public class ToMatlabStringParamArray implements Cloneable {
 
     public ToMatlabStringParamArray clone() {
         try {
-            return (ToMatlabStringParamArray)super.clone();
+            return (ToMatlabStringParamArray) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }

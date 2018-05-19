@@ -7,9 +7,8 @@
 package net.vpc.scholar.hadrumaths;
 
 /**
- *
  * @author vpc
  */
 public abstract class AbstractFactory {
-    
+
 }

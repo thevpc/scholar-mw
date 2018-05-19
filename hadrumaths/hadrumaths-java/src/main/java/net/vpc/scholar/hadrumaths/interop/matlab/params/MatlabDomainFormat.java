@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.params;
 
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,8 +9,10 @@ import net.vpc.scholar.hadrumaths.interop.matlab.*;
  * Time: 11:21:16
  * To change this template use File | Settings | File Templates.
  */
-public class MatlabDomainFormat implements ToMatlabStringParam{
-    public static enum Type{NONE,GATE};
+public class MatlabDomainFormat implements ToMatlabStringParam {
+    public static enum Type {NONE, GATE}
+
+    ;
     private Type type;
 
     public MatlabDomainFormat(Type type) {

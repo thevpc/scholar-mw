@@ -1,7 +1,13 @@
 package net.vpc.scholar.hadrumaths.integration;
 
-import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;

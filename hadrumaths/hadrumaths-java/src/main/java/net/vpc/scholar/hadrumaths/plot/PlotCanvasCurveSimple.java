@@ -4,21 +4,19 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import javax.swing.*;
-
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
-import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.plot.curve.Curve;
 import net.vpc.scholar.hadrumaths.plot.curve.CurveStat;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
 /**
- *
  * @author vpc
  */
-public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel{
+public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel {
 
     private PlotModelProvider modelProvider;
     private CurveStat chartPanel;
@@ -26,7 +24,7 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel{
     public PlotCanvasCurveSimple(PlotModelProvider modelProvider) {
         super(new BorderLayout());
         this.modelProvider = modelProvider;
-        ValuesPlotModel model= (ValuesPlotModel) modelProvider.getModel();
+        ValuesPlotModel model = (ValuesPlotModel) modelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
         String theYTitle = model.getZtitle() == null ? "Y" : model.getZtitle();

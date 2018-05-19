@@ -1,11 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.ComponentDimension;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.PlaneAxis;
-import net.vpc.scholar.hadrumaths.UnsupportedComponentDimensionException;
 import net.vpc.scholar.hadrumaths.util.IntValidator;
 
 import java.util.Arrays;
@@ -540,7 +535,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         return result;
     }
 
-    public static VDiscrete discretize(Expr expr, @IntValidator(min = 1,max = 100000) int xSamples, @IntValidator(min = 1,max = 100000)int ySamples, @IntValidator(min = 1,max = 100000)int zSamples) {
+    public static VDiscrete discretize(Expr expr, @IntValidator(min = 1, max = 100000) int xSamples, @IntValidator(min = 1, max = 100000) int ySamples, @IntValidator(min = 1, max = 100000) int zSamples) {
         if (expr.isScalarExpr()) {
             return new VDiscrete(Discrete.discretize(expr, xSamples, ySamples, zSamples));
         } else {
@@ -617,11 +612,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     @Override
     public Expr add(Expr other) {
         Discrete[] values2 = new Discrete[values.length];
-        for (int i = 0; i <values2.length; i++) {
+        for (int i = 0; i < values2.length; i++) {
             Expr e = values2[i].add(other);
-            if(e instanceof Discrete) {
+            if (e instanceof Discrete) {
                 values2[i] = (Discrete) e;
-            }else{
+            } else {
                 return super.add(other);
             }
         }
@@ -631,11 +626,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     @Override
     public Expr sub(Expr other) {
         Discrete[] values2 = new Discrete[values.length];
-        for (int i = 0; i <values2.length; i++) {
+        for (int i = 0; i < values2.length; i++) {
             Expr e = values2[i].sub(other);
-            if(e instanceof Discrete) {
+            if (e instanceof Discrete) {
                 values2[i] = (Discrete) e;
-            }else{
+            } else {
                 return super.sub(other);
             }
         }
@@ -645,11 +640,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     @Override
     public Expr mul(Expr other) {
         Discrete[] values2 = new Discrete[values.length];
-        for (int i = 0; i <values2.length; i++) {
+        for (int i = 0; i < values2.length; i++) {
             Expr e = values2[i].mul(other);
-            if(e instanceof Discrete) {
+            if (e instanceof Discrete) {
                 values2[i] = (Discrete) e;
-            }else{
+            } else {
                 return super.mul(other);
             }
         }
@@ -659,29 +654,29 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     @Override
     public Expr div(Expr other) {
         Discrete[] values2 = new Discrete[values.length];
-        for (int i = 0; i <values2.length; i++) {
+        for (int i = 0; i < values2.length; i++) {
             Expr e = values2[i].div(other);
-            if(e instanceof Discrete) {
+            if (e instanceof Discrete) {
                 values2[i] = (Discrete) e;
-            }else{
+            } else {
                 return super.div(other);
             }
         }
         return create(values2);
     }
 
-    private static VDiscrete create(Discrete[] values2){
-        switch (values2.length){
-            case 1:{
+    private static VDiscrete create(Discrete[] values2) {
+        switch (values2.length) {
+            case 1: {
                 return new VDiscrete(values2[0]);
             }
-            case 2:{
-                return new VDiscrete(values2[0],values2[1]);
+            case 2: {
+                return new VDiscrete(values2[0], values2[1]);
             }
-            case 3:{
-                return new VDiscrete(values2[0],values2[1],values2[2]);
+            case 3: {
+                return new VDiscrete(values2[0], values2[1], values2[2]);
             }
         }
-        throw new IllegalArgumentException("Invalid dimension "+values2.length);
+        throw new IllegalArgumentException("Invalid dimension " + values2.length);
     }
 }

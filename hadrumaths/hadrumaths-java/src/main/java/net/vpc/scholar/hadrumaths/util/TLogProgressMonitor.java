@@ -41,7 +41,7 @@ public class TLogProgressMonitor extends AbstractEnhancedProgressMonitor {
         long newd = System.currentTimeMillis();
         String formattedMessage = messageFormat
                 .replace("%date%", new Date(newd).toString())
-                .replace("%value%", Double.isNaN(progress)?"   ?%":sdf.format(progress))
+                .replace("%value%", Double.isNaN(progress) ? "   ?%" : sdf.format(progress))
                 + " " + message;
         if (progress <= 0 || progress >= 1) {
             writer.trace(formattedMessage);

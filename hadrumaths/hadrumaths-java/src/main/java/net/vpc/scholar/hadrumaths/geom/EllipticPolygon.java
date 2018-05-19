@@ -12,11 +12,11 @@ import java.util.List;
  * Created by vpc on 8/2/14.
  */
 public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder, Cloneable, Serializable {
-    private Point center=new Point(0,0);
-    private double xradius=1;
-    private double yradius=1;
-    private int sides=24;
-    private double arcRatio=1;
+    private Point center = new Point(0, 0);
+    private double xradius = 1;
+    private double yradius = 1;
+    private int sides = 24;
+    private double arcRatio = 1;
     private double phase;
 
     public Point getCenter() {
@@ -49,7 +49,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
     }
 
     public EllipticPolygon setRadius(double xradius) {
-        return setRadius(xradius,xradius);
+        return setRadius(xradius, xradius);
     }
 
     public EllipticPolygon setRadius(double xradius, double yradius) {

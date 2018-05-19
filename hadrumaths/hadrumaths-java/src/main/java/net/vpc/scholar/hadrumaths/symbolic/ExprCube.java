@@ -18,9 +18,9 @@ public interface ExprCube extends ExprCubeCellIterator {
 
     public void set(Expr exp, int row, int col, int height);
 
-    public ExprCube preload() ;
+    public ExprCube preload();
 
-    public ExprCube withCache() ;
+    public ExprCube withCache();
 
-    public ExprCube simplify() ;
+    public ExprCube simplify();
 }

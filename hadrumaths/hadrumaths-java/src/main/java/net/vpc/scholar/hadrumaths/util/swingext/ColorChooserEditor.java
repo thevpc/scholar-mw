@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ColorChooserEditor extends AbstractCellEditor implements TableCellEditor,TableCellRenderer {
+public class ColorChooserEditor extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
 
     private JButton delegate = new JButton();
 
@@ -16,13 +16,13 @@ public class ColorChooserEditor extends AbstractCellEditor implements TableCellE
     public ColorChooserEditor() {
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Color c=Color.BLACK;
-                if(savedColor instanceof Color){
-                    c=(Color) savedColor;
+                Color c = Color.BLACK;
+                if (savedColor instanceof Color) {
+                    c = (Color) savedColor;
                 }
                 Color color = JColorChooser.showDialog(delegate, "Color Chooser", c);
-                if(color==null){
-                    color=c;
+                if (color == null) {
+                    color = c;
                 }
                 ColorChooserEditor.this.changeColor(color);
             }
@@ -38,7 +38,7 @@ public class ColorChooserEditor extends AbstractCellEditor implements TableCellE
         if (color != null) {
             savedColor = color;
             delegate.setBackground(color);
-        }else{
+        } else {
             savedColor = Color.WHITE;
             delegate.setBackground(Color.WHITE);
         }
@@ -52,9 +52,9 @@ public class ColorChooserEditor extends AbstractCellEditor implements TableCellE
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        if(isSelected){
+        if (isSelected) {
             changeColor(Color.LIGHT_GRAY);
-        }else{
+        } else {
             changeColor((Color) value);
         }
         return delegate;

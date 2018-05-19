@@ -15,8 +15,8 @@ public class OptionFlip extends DefaultOption {
     }
 
     public Dumper getDumpStringHelper() {
-        Dumper h=super.getDumpStringHelper();
-        h.add("precision",precision);
+        Dumper h = super.getDumpStringHelper();
+        h.add("precision", precision);
         return h;
     }
 

@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic.old.symop;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.old.*;
 
 /**
@@ -41,8 +40,8 @@ public class SymOpAdd extends SymOperator {
         } else if (l instanceof SymMatrix && r instanceof SymMatrix) {
             SymExpression[][] le = ((SymMatrix) l).getValue();
             SymExpression[][] re = ((SymMatrix) r).getValue();
-            int maxr = Maths.max(((SymMatrix) l).getRows(), ((SymMatrix) r).getRows());
-            int maxc = Maths.max(((SymMatrix) l).getColumns(), ((SymMatrix) r).getColumns());
+            int maxr = Math.max(((SymMatrix) l).getRows(), ((SymMatrix) r).getRows());
+            int maxc = Math.max(((SymMatrix) l).getColumns(), ((SymMatrix) r).getColumns());
             SymExpression[][] ee = new SymExpression[maxr][maxc];
             for (int i = 0; i < ee.length; i++) {
                 SymExpression[] symExpressions = ee[i];

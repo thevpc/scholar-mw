@@ -5,10 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
 import java.util.List;

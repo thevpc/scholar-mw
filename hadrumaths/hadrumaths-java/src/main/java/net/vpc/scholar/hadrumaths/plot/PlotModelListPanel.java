@@ -19,15 +19,16 @@ import java.util.Map;
 public class PlotModelListPanel extends BasePlotComponent implements PlotModelProvider, PlotPanel {
     private PlotModelList model;
     private JComponent mainComponent;
-    private PropertyChangeListener plotListener =  new PropertyChangeListener() {
+    private PropertyChangeListener plotListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
 //            if ("plotType".equals(evt.getPropertyName())) {
-                setup();
-                firePlotPropertyEvent(PlotPropertyListener.COMPONENT_DISPLAY_TYPE, evt.getOldValue(), evt.getNewValue());
+            setup();
+            firePlotPropertyEvent(PlotPropertyListener.COMPONENT_DISPLAY_TYPE, evt.getOldValue(), evt.getNewValue());
 //            }
         }
     };
+
     public PlotModelListPanel(PlotModelList model, PlotWindowManager windowManager) {
         super(new BorderLayout());
         setPreferredSize(new Dimension(400, 400));
@@ -44,18 +45,18 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
 
     @Override
     public void setModel(PlotModel model) {
-        if(model ==null){
+        if (model == null) {
             throw new NullPointerException();
         }
 
-        if(!(model instanceof PlotModelList)){
-            PlotModelList r=new PlotModelList(model.getTitle());
+        if (!(model instanceof PlotModelList)) {
+            PlotModelList r = new PlotModelList(model.getTitle());
             r.add(model);
-            model=r;
+            model = r;
         }
         if (this.model != model) {
-            PlotModelList oldmodel=this.model;
-            Map<String, Object> oldPops=null;
+            PlotModelList oldmodel = this.model;
+            Map<String, Object> oldPops = null;
             if (oldmodel != null) {
 //                oldmodel.removePropertyChangeListener(plotListener);
 //                oldPops = new HashMap<>(this.model.getProperties());
@@ -80,13 +81,11 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     }
 
 
-
-
     private void setup() {
-        JComponent oldComponent=this.mainComponent;
+        JComponent oldComponent = this.mainComponent;
         this.mainComponent = createPanel();
         JPopupMenu popupMenu = mainComponent.getComponentPopupMenu();
-        if(popupMenu!=null) {
+        if (popupMenu != null) {
 //            getModel().addPropertyChangeListener(plotListener);
             Plot.buildJPopupMenu(popupMenu, this);
         }
@@ -107,51 +106,52 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     }
 
     private JComponent createPanel() {
-        if(model.size()<=8){
+        if (model.size() <= 8) {
             return createGrid();
         }
         return createTabbedPane();
     }
 
     private JComponent createTabbedPane() {
-        JTabbedPane panel=new JTabbedPane();
+        JTabbedPane panel = new JTabbedPane();
         for (PlotModel plotModel : model) {
-            panel.addTab(plotModel.getTitle(),Plot.create(plotModel,getPlotWindowManager()).toComponent());
+            panel.addTab(plotModel.getTitle(), Plot.create(plotModel, getPlotWindowManager()).toComponent());
         }
         return panel;
     }
+
     private JComponent createGrid() {
         int size = model.size();
-        if(size<=1){
+        if (size <= 1) {
             for (PlotModel plotModel : model) {
-                return Plot.create(plotModel,getPlotWindowManager()).toComponent();
+                return Plot.create(plotModel, getPlotWindowManager()).toComponent();
             }
         }
-        if(size<=2){
-            JPanel panel=new JPanel();
-            panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));
+        if (size <= 2) {
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
             for (PlotModel plotModel : model) {
-                panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
-            }
-            return panel;
-        }
-        if(size<=8){
-            JPanel panel=new JPanel(new GridLayout(0,2));
-            for (PlotModel plotModel : model) {
-                panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
+                panel.add(Plot.create(plotModel, getPlotWindowManager()).toComponent());
             }
             return panel;
         }
-        JPanel panel=new JPanel(new GridLayout(0,4));
+        if (size <= 8) {
+            JPanel panel = new JPanel(new GridLayout(0, 2));
+            for (PlotModel plotModel : model) {
+                panel.add(Plot.create(plotModel, getPlotWindowManager()).toComponent());
+            }
+            return panel;
+        }
+        JPanel panel = new JPanel(new GridLayout(0, 4));
         for (PlotModel plotModel : model) {
-            panel.add(Plot.create(plotModel,getPlotWindowManager()).toComponent());
+            panel.add(Plot.create(plotModel, getPlotWindowManager()).toComponent());
         }
         return panel;
     }
 
     public String getPlotTitle() {
         String baseTitle = super.getPlotTitle();
-        if(baseTitle ==null){
+        if (baseTitle == null) {
             return getModel().getTitle();
         }
         return baseTitle;

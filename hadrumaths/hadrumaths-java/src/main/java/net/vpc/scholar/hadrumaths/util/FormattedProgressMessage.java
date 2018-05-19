@@ -11,8 +11,8 @@ public class FormattedProgressMessage implements ProgressMessage {
     private String message;
     private Object[] args;
 
-    public FormattedProgressMessage(Level level,String message, Object[] args) {
-        this.level= level;
+    public FormattedProgressMessage(Level level, String message, Object[] args) {
+        this.level = level;
         this.message = message;
         this.args = args;
     }
@@ -24,11 +24,11 @@ public class FormattedProgressMessage implements ProgressMessage {
 
     @Override
     public String getText() {
-        return MessageFormat.format(message ,args);
+        return MessageFormat.format(message, args);
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format(message ,args);
+        return MessageFormat.format(message, args);
     }
 }

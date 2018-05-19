@@ -8,7 +8,6 @@ import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
-import net.vpc.scholar.hadrumaths.format.params.RequireParenthesesFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
 import java.util.List;
@@ -20,8 +19,8 @@ public class PlusFormatter implements Formatter<Plus> {
 
     @Override
     public String format(Plus o, FormatParamSet format) {
-        StringBuilder sb=new StringBuilder();
-        format(sb,o,format);
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
         return sb.toString();
     }
 
@@ -31,7 +30,7 @@ public class PlusFormatter implements Formatter<Plus> {
         format = format.add(FormatFactory.REQUIRED_PARS);
         List<Expr> segments = o.getSubExpressions();
         int size = segments.size();
-        if (size>1 && par) {
+        if (size > 1 && par) {
             sb.append("(");
         }
         for (int i = 0; i < size; i++) {
@@ -39,10 +38,10 @@ public class PlusFormatter implements Formatter<Plus> {
             if (i > 0) {
                 sb.append(" + ");
             }
-            FormatFactory.format(sb,e, format.add(FormatFactory.GATE_DOMAIN));
+            FormatFactory.format(sb, e, format.add(FormatFactory.GATE_DOMAIN));
         }
 
-        if (size>1 && par) {
+        if (size > 1 && par) {
             sb.append(")");
         }
     }

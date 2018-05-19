@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.MonitoredAction;
+import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

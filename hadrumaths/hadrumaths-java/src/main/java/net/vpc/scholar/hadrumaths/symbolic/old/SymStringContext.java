@@ -4,12 +4,12 @@ package net.vpc.scholar.hadrumaths.symbolic.old;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 20 juil. 2007 08:04:33
  */
-public class SymStringContext implements Cloneable{
-    public static final int ADD_PRECEDENCE=1;
-    public static final int MUL_PRECEDENCE=2;
-    public static final int POW_PRECEDENCE=3;
-    public static final int NO_PRECEDENCE=-1;
-    public static final int UNIT_MINUS_PRECEDENCE=4;
+public class SymStringContext implements Cloneable {
+    public static final int ADD_PRECEDENCE = 1;
+    public static final int MUL_PRECEDENCE = 2;
+    public static final int POW_PRECEDENCE = 3;
+    public static final int NO_PRECEDENCE = -1;
+    public static final int UNIT_MINUS_PRECEDENCE = 4;
     private int operatorPrecedence;
     private boolean preferParentheses;
 
@@ -29,7 +29,7 @@ public class SymStringContext implements Cloneable{
     public boolean isPreferParentheses(int precedence) {
         return isPreferParentheses() || getOperatorPrecedence() > precedence;
     }
-    
+
     public boolean isPreferParentheses() {
         return preferParentheses;
     }
@@ -38,7 +38,7 @@ public class SymStringContext implements Cloneable{
         this.preferParentheses = preferParentheses;
     }
 
-    public SymStringContext clone(){
+    public SymStringContext clone() {
         try {
             return (SymStringContext) super.clone();
         } catch (CloneNotSupportedException e) {

@@ -1,11 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Out;
 
 /**
  * Created by vpc on 4/30/14.
@@ -30,7 +26,7 @@ public class ZZ extends AxisFunction implements Cloneable {
     @Override
     public Expr newInstance(Expr... arguments) {
         Expr xx = new ZZ(getDomain());
-        xx= Any.copyProperties(this, xx);
+        xx = Any.copyProperties(this, xx);
         return xx;
     }
 
@@ -46,14 +42,14 @@ public class ZZ extends AxisFunction implements Cloneable {
         if (nonNullRanges != null) {
             Complex[][][] cc = new Complex[z.length][y.length][x.length];
             ArrayUtils.fillArray3ZeroComplex(cc, nonNullRanges);
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                 Complex v = Complex.valueOf(z[t]);
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
                     }
                 }
             }
@@ -71,20 +67,19 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
 
-
     @Override
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
         if (nonNullRanges != null) {
             double[][][] cc = new double[z.length][y.length][x.length];
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                 double v = z[t];
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
                     }
                 }
             }
@@ -142,6 +137,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 //            return cc;
 //        }
     }
+
     @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         throw new ClassCastException("Missing Z");
@@ -153,14 +149,14 @@ public class ZZ extends AxisFunction implements Cloneable {
         if (nonNullRanges != null) {
             Matrix[][][] cc = new Matrix[z.length][y.length][x.length];
             ArrayUtils.fillArray3ZeroMatrix(cc, nonNullRanges, 1, 1);
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                 Matrix v = Complex.valueOf(z[t]).toMatrix();
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
                     }
                 }
             }
@@ -184,7 +180,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (domain.contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(z);
@@ -195,7 +191,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        return computeMatrix(x,y,z, BooleanMarker.none());
+        return computeMatrix(x, y, z, BooleanMarker.none());
     }
 
     @Override
@@ -208,7 +204,7 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y, double z,BooleanMarker defined) {
+    public Matrix computeMatrix(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(z).toMatrix();
@@ -219,17 +215,17 @@ public class ZZ extends AxisFunction implements Cloneable {
 
     @Override
     public Expr mul(Domain domain) {
-        return new Mul(new DoubleValue(1,Domain.FULLX),this);
+        return new Mul(new DoubleValue(1, Domain.FULLX), this);
     }
 
     @Override
     public Expr mul(double other) {
-        return new Mul(new DoubleValue(other,Domain.FULLX),this);
+        return new Mul(new DoubleValue(other, Domain.FULLX), this);
     }
 
     @Override
     public Expr mul(Complex other) {
-        return new Mul(other,this);
+        return new Mul(other, this);
     }
 
 
@@ -237,6 +233,7 @@ public class ZZ extends AxisFunction implements Cloneable {
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         throw new IllegalArgumentException("Missing Z");
     }
+
     @Override
     public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         throw new IllegalArgumentException("Missing Z");
@@ -270,7 +267,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
-        if(axis==Axis.Z){
+        if (axis == Axis.Z) {
             return false;
         }
         return true;

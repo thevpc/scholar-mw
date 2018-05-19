@@ -5,10 +5,11 @@ import net.vpc.scholar.hadrumaths.*;
 /**
  * Created by vpc on 4/30/14.
  */
-public class Cotan extends TrigoFunctionX implements Cloneable{
+public class Cotan extends TrigoFunctionX implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public Cotan(Expr arg) {
-        super("cotan",arg, FunctionType.DOUBLE);
+        super("cotan", arg, FunctionType.DOUBLE);
     }
 
     @Override
@@ -16,28 +17,29 @@ public class Cotan extends TrigoFunctionX implements Cloneable{
         return "cotan";
     }
 
-    public Complex computeComplexArg(Complex c, BooleanMarker defined){
+    public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return c.cotan();
     }
 
-    public double computeDoubleArg(double c, BooleanMarker defined){
+    public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return 1.0/ Maths.tan(c);
+        return Maths.cotan(c);
     }
 
     @Override
     public DoubleToDouble getRealDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return this;
         }
         return super.getRealDD();
     }
+
     @Override
     public DoubleToDouble getImagDD() {
         Expr a = getArgument();
-        if(a.isDC() && a.toDC().getImagDD().isZero()){
+        if (a.isDC() && a.toDC().getImagDD().isZero()) {
             return FunctionFactory.DZEROXY;
         }
         return super.getImagDD();

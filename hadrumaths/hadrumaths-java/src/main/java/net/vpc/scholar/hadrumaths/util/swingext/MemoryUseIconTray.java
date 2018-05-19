@@ -93,20 +93,20 @@ public class MemoryUseIconTray extends JComponent {
     }
 
     public String getToolTipText(MouseEvent event) {
-        Runtime runtime=Runtime.getRuntime();
+        Runtime runtime = Runtime.getRuntime();
         float _maxMem = runtime.maxMemory();
         float _totalMem = runtime.totalMemory();
         float _freeMem = runtime.freeMemory();
         float totalM = _maxMem / MO;
-                return MessageFormat.format(popupFormat, 
-                        ((int) ((_totalMem - _freeMem) / MO)),
-                        ((int) (_totalMem / MO)),
-                        ((int) totalM)
-                );
+        return MessageFormat.format(popupFormat,
+                ((int) ((_totalMem - _freeMem) / MO)),
+                ((int) (_totalMem / MO)),
+                ((int) totalM)
+        );
     }
 
     public void paint(Graphics g) {
-        Runtime runtime=Runtime.getRuntime();
+        Runtime runtime = Runtime.getRuntime();
         float _maxMem = runtime.maxMemory();
         float _totalMem = runtime.totalMemory();
         float _freeMem = runtime.freeMemory();
@@ -126,7 +126,7 @@ public class MemoryUseIconTray extends JComponent {
                 g.drawLine(1, i, iconTrayWidth - 1, i);
             }
             g.setColor(brighterColor);
-            int st=(int) (1 + (iconTrayHeight - 2) * rapport);
+            int st = (int) (1 + (iconTrayHeight - 2) * rapport);
             g.fillRect(1, st, iconTrayWidth - 1, iconTrayHeight - st);
         } else {
             int separation = (int) (1 + (iconTrayWidth - 2) * rapport);

@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 
 class ModelSeriesModel extends AbstractTableModel {
@@ -178,43 +176,43 @@ class ModelSeriesModel extends AbstractTableModel {
             case 0: {
                 //return "Visible";
                 lines[rowIndex].setVisible((Boolean) aValue);
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 1: {
                 //return "Title";
                 lines[rowIndex].setTitle((String) aValue);
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 2: {
                 //return "NodeType";
                 lines[rowIndex].setNodeType((Integer) aValue);
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 3: {
                 //return "LineType";
                 lines[rowIndex].setLineType((Integer) aValue);
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 4: {
                 //return "Color";
                 lines[rowIndex].setColor((Color) aValue);
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 5: {
                 //return "xmultiplier";
                 lines[rowIndex].setYmultiplier(((Number) aValue).doubleValue());
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
             case 6: {
                 //return "ymultiplier";
                 lines[rowIndex].setYmultiplier(((Number) aValue).doubleValue());
-                fireTableCellUpdated(rowIndex,columnIndex);
+                fireTableCellUpdated(rowIndex, columnIndex);
                 break;
             }
         }
@@ -223,9 +221,9 @@ class ModelSeriesModel extends AbstractTableModel {
     public void setSelectAll() {
         for (int i = 0; i < lines.length; i++) {
             ModelSeriesItem line = lines[i];
-            if(!line.isVisible()) {
+            if (!line.isVisible()) {
                 line.setVisible(true);
-                fireTableCellUpdated(i,0);
+                fireTableCellUpdated(i, 0);
             }
         }
     }
@@ -233,9 +231,9 @@ class ModelSeriesModel extends AbstractTableModel {
     public void setSelectNone() {
         for (int i = 0; i < lines.length; i++) {
             ModelSeriesItem line = lines[i];
-            if(line.isVisible()) {
+            if (line.isVisible()) {
                 line.setVisible(false);
-                fireTableCellUpdated(i,0);
+                fireTableCellUpdated(i, 0);
             }
         }
     }

@@ -9,7 +9,7 @@ public class SmartMatrixFactory extends AbstractMatrixFactory {
     @Override
     public Matrix newMatrix(int rows, int columns) {
         MatrixFactory factory = MemMatrixFactory.INSTANCE;
-        if ((rows>100 || columns>100) && !Maths.Config.memoryCanStores(rows * columns * 24L)) {
+        if ((rows > 100 || columns > 100) && !Maths.Config.memoryCanStores(rows * columns * 24L)) {
             factory = Maths.Config.getLargeMatrixFactory();
         }
         Matrix matrix = factory.newMatrix(rows, columns);

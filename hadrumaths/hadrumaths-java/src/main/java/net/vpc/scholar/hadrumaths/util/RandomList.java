@@ -2,34 +2,34 @@ package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.common.util.ObjectFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.symbolic.GenericFunctionX;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RandomList<T>{
+public class RandomList<T> {
     private List<RandomItem<T>> all = new ArrayList<>();
     double[] indexes = null;
     double x = 0;
 
-    public RandomList<T> addIf(boolean cond,double weigth,ObjectFactory<T> a) {
-        if(cond){
-            add(weigth,a);
+    public RandomList<T> addIf(boolean cond, double weigth, ObjectFactory<T> a) {
+        if (cond) {
+            add(weigth, a);
         }
         return this;
     }
-    public RandomList<T> addIf(boolean cond,ObjectFactory<T> a) {
-        if(cond){
+
+    public RandomList<T> addIf(boolean cond, ObjectFactory<T> a) {
+        if (cond) {
             add(a);
         }
         return this;
     }
 
     public RandomList<T> add(ObjectFactory<T> a) {
-        return add(1,a);
+        return add(1, a);
     }
 
-    public RandomList<T> add(double weigth,ObjectFactory<T> a) {
+    public RandomList<T> add(double weigth, ObjectFactory<T> a) {
         return add(new RandomItem(weigth) {
             @Override
             public Object create() {

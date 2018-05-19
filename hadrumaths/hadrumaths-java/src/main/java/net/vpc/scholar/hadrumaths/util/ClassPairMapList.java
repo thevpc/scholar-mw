@@ -10,28 +10,28 @@ import java.util.List;
 public class ClassPairMapList<V> {
     private ClassPairMap<List<V>> base;
 
-    public ClassPairMapList(Class baseKey1Type,Class baseKey2Type,Class<V> valueType, boolean symmetric) {
-        base=new ClassPairMap<List<V>>(baseKey1Type,baseKey2Type,(Class) List.class,symmetric);
+    public ClassPairMapList(Class baseKey1Type, Class baseKey2Type, Class<V> valueType, boolean symmetric) {
+        base = new ClassPairMap<List<V>>(baseKey1Type, baseKey2Type, (Class) List.class, symmetric);
     }
 
     public void add(Class classKey1, Class classKey2, V value) {
         List<V> t = base.getExact(classKey1, classKey2);
-        if(t==null){
-            t=new ArrayList<V>();
-            base.put(classKey1, classKey2,t);
+        if (t == null) {
+            t = new ArrayList<V>();
+            base.put(classKey1, classKey2, t);
         }
         t.add(value);
     }
 
     public void remove(Class classKey1, Class classKey2, V value) {
         List<V> t = base.getExact(classKey1, classKey2);
-        if(t!=null){
+        if (t != null) {
             t.remove(value);
         }
     }
 
     public List<V> getAll(Class classKey1, Class classKey2) {
-        ArrayList<V> all=new ArrayList<V>();
+        ArrayList<V> all = new ArrayList<V>();
         for (List<V> vs : base.getAll(classKey1, classKey2)) {
             all.addAll(vs);
         }
@@ -40,7 +40,7 @@ public class ClassPairMapList<V> {
 
     public List<V> getExact(Class classKey1, Class classKey2) {
         List<V> t = base.getExact(classKey1, classKey2);
-        if(t==null){
+        if (t == null) {
             return Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(t);

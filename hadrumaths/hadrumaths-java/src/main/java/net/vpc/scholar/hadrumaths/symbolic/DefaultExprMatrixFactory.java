@@ -7,8 +7,8 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 2/14/15.
  */
-public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
-    public static final ExprMatrixFactory INSTANCE=new DefaultExprMatrixFactory();
+public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory {
+    public static final ExprMatrixFactory INSTANCE = new DefaultExprMatrixFactory();
 
 
     @Override
@@ -30,54 +30,53 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
             public Expr get(int row, int col) {
 
                 Expr val = elements[row][col];
-                if(val==null) {
-                    switch (it){
-                        case FULL:{
-                            val=item.get(row,col);
+                if (val == null) {
+                    switch (it) {
+                        case FULL: {
+                            val = item.get(row, col);
                             break;
                         }
-                        case SYMETRIC:{
-                            if(col>=row) {
+                        case SYMETRIC: {
+                            if (col >= row) {
                                 val = get(row, col);
-                            }else{
-                                val = item.get(col,row);
+                            } else {
+                                val = item.get(col, row);
                             }
                             break;
                         }
-                        case HERMITIAN:{
-                            if(col>row) {
+                        case HERMITIAN: {
+                            if (col > row) {
                                 val = new Conj(get(row, col));
-                            }else{
-                                val = item.get(col,row);
+                            } else {
+                                val = item.get(col, row);
                             }
                             break;
                         }
-                        case DIAGONAL:{
-                            if(col==row){
-                                val = item.get(col,row);
-                            }else{
-                                val=Complex.ZERO;
+                        case DIAGONAL: {
+                            if (col == row) {
+                                val = item.get(col, row);
+                            } else {
+                                val = Complex.ZERO;
                             }
                             break;
                         }
-                        default:{
+                        default: {
                             throw new IllegalArgumentException("Unsupported");
                         }
                     }
-                    elements[row][col]=val;
+                    elements[row][col] = val;
                 }
                 return val;
             }
 
             @Override
             public void set(Expr exp, int row, int col) {
-                elements[row][col]=exp;
+                elements[row][col] = exp;
             }
         };
         return new DefaultExprMatrix(store);
 
     }
-
 
 
     @Override
@@ -89,7 +88,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
             case FULL: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
-                        elements[i][j]=item.get(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -97,11 +96,11 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
             case DIAGONAL: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < i; j++) {
-                        elements[i][j]=Complex.ZERO;
+                        elements[i][j] = Complex.ZERO;
                     }
-                    elements[i][i]=(item.get(i, i));
+                    elements[i][i] = (item.get(i, i));
                     for (int j = i + 1; j < columns; j++) {
-                        elements[i][j]=Complex.ZERO;
+                        elements[i][j] = Complex.ZERO;
                     }
                 }
                 break;
@@ -109,10 +108,10 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
             case SYMETRIC: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < i; j++) {
-                        elements[i][j]=elements[j][i];
+                        elements[i][j] = elements[j][i];
                     }
                     for (int j = i; j < columns; j++) {
-                        elements[i][j]=item.get(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -120,10 +119,10 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
             case HERMITIAN: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < i; j++) {
-                        elements[i][j]=new Conj(elements[j][i]);
+                        elements[i][j] = new Conj(elements[j][i]);
                     }
                     for (int j = i; j < columns; j++) {
-                        elements[i][j]=item.get(i, j);
+                        elements[i][j] = item.get(i, j);
                     }
                 }
                 break;
@@ -152,7 +151,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
 
             @Override
             public void set(Expr exp, int row, int col) {
-                elements[row][col]=exp;
+                elements[row][col] = exp;
             }
         };
         return new DefaultExprMatrix(store);
@@ -174,7 +173,7 @@ public class DefaultExprMatrixFactory extends AbstractExprMatrixFactory{
 
             @Override
             public Expr get(int row, int col) {
-                return item.get(row,col);
+                return item.get(row, col);
             }
 
             @Override

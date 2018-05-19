@@ -8,6 +8,7 @@ import net.vpc.scholar.hadrumaths.util.ArrayUtils;
  */
 public class XX extends AxisFunction implements Cloneable {
     private static final long serialVersionUID = 1L;
+
     public XX(Domain domain) {
         super(domain, "X");
     }
@@ -25,7 +26,7 @@ public class XX extends AxisFunction implements Cloneable {
     @Override
     public Expr newInstance(Expr... arguments) {
         Expr xx = new XX(getDomain());
-        xx= Any.copyProperties(this, xx);
+        xx = Any.copyProperties(this, xx);
         return xx;
     }
 
@@ -45,14 +46,14 @@ public class XX extends AxisFunction implements Cloneable {
         Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
         if (nonNullRanges != null) {
             Complex[][] cc = new Complex[y.length][x.length];
-            BooleanArray2 def = BooleanArrays.newArray(y.length,x.length);
+            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
             nonNullRanges.setDefined(def);
             ArrayUtils.fillArray2ZeroComplex(cc, nonNullRanges);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 Complex v = Complex.valueOf(x[k]);
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     cc[j][k] = v;
-                    def.set(j,k);
+                    def.set(j, k);
                 }
             }
             if (ranges != null) {
@@ -100,14 +101,14 @@ public class XX extends AxisFunction implements Cloneable {
         if (nonNullRanges != null) {
             Complex[][][] cc = new Complex[z.length][y.length][x.length];
             ArrayUtils.fillArray3ZeroComplex(cc, nonNullRanges);
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 Complex v = Complex.valueOf(x[k]);
                 for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                     for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
 
                     }
                 }
@@ -131,13 +132,13 @@ public class XX extends AxisFunction implements Cloneable {
         Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
         if (nonNullRanges != null) {
             double[][] cc = new double[y.length][x.length];
-            BooleanArray2 def = BooleanArrays.newArray(y.length,x.length);
+            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 double v = x[k];
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     cc[j][k] = v;
-                    def.set(j,k);
+                    def.set(j, k);
                 }
             }
             if (ranges != null) {
@@ -158,14 +159,14 @@ public class XX extends AxisFunction implements Cloneable {
         Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
         if (nonNullRanges != null) {
             double[][][] cc = new double[z.length][y.length][x.length];
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 double v = x[k];
                 for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                     for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
                     }
                 }
             }
@@ -212,13 +213,13 @@ public class XX extends AxisFunction implements Cloneable {
         if (nonNullRanges != null) {
             Matrix[][] cc = new Matrix[y.length][x.length];
             ArrayUtils.fillArray2ZeroMatrix(cc, nonNullRanges, 1, 1);
-            BooleanArray2 def = BooleanArrays.newArray(y.length,x.length);
+            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 Matrix v = Complex.valueOf(x[k]).toMatrix();
                 for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                     cc[j][k] = v;
-                    def.set(j,k);
+                    def.set(j, k);
                 }
             }
             if (ranges != null) {
@@ -240,14 +241,14 @@ public class XX extends AxisFunction implements Cloneable {
         if (nonNullRanges != null) {
             Matrix[][][] cc = new Matrix[z.length][y.length][x.length];
             ArrayUtils.fillArray3ZeroMatrix(cc, nonNullRanges, 1, 1);
-            BooleanArray3 def = BooleanArrays.newArray(z.length,y.length,x.length);
+            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
             nonNullRanges.setDefined(def);
             for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
                 Matrix v = Complex.valueOf(x[k]).toMatrix();
                 for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
                     for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
                         cc[t][j][k] = v;
-                        def.set(t,j,k);
+                        def.set(t, j, k);
                     }
                 }
             }
@@ -276,7 +277,7 @@ public class XX extends AxisFunction implements Cloneable {
                 cc[k] = v;
                 def.set(k);
             }
-            ArrayUtils.fillArray1ZeroMatrix(cc, nonNullRanges, -1,-1);
+            ArrayUtils.fillArray1ZeroMatrix(cc, nonNullRanges, -1, -1);
             if (ranges != null) {
                 ranges.set(nonNullRanges);
             }
@@ -314,7 +315,7 @@ public class XX extends AxisFunction implements Cloneable {
 
 
     @Override
-    public Complex computeComplex(double x, double y, double z,BooleanMarker defined) {
+    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         if (domain.contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(x);
@@ -341,7 +342,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y, double z,BooleanMarker defined) {
+    public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return x;
@@ -350,7 +351,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x, double y,BooleanMarker defined) {
+    public double computeDouble(double x, double y, BooleanMarker defined) {
         if (contains(x, y)) {
             defined.set();
             return x;
@@ -359,7 +360,7 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
     @Override
-    public double computeDouble(double x,BooleanMarker defined) {
+    public double computeDouble(double x, BooleanMarker defined) {
         if (contains(x)) {
             defined.set();
             return x;
@@ -379,19 +380,19 @@ public class XX extends AxisFunction implements Cloneable {
 
     @Override
     public Expr mul(Domain domain) {
-        return new Linear(1,0,0,domain);
+        return new Linear(1, 0, 0, domain);
     }
 
     @Override
     public Expr mul(double other) {
-        return new Linear(other,0,0,Domain.FULLX);
+        return new Linear(other, 0, 0, Domain.FULLX);
     }
 
     @Override
     public Expr mul(Complex other) {
-        if(other.isReal()){
+        if (other.isReal()) {
             return mul(other.toDouble());
         }
-        return new Mul(other,this);
+        return new Mul(other, this);
     }
 }

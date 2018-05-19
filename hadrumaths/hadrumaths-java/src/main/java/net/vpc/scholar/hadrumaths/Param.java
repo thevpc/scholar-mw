@@ -5,6 +5,7 @@ package net.vpc.scholar.hadrumaths;
  */
 public interface Param {
     String getName();
-    void configure(Object source,Object value) ;
+
+    void configure(Object source, Object value);
 
 }

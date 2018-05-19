@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.util.dump.Dumper;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 12 juin 2007 11:37:42
  */
-public class FractalDPloygonListHolder extends DefaultGeometryList implements FractalAreaGeometryList, Cloneable{
+public class FractalDPloygonListHolder extends DefaultGeometryList implements FractalAreaGeometryList, Cloneable {
     private FractalAreaGeometryList base;
     private Point translation;
 
@@ -40,15 +40,15 @@ public class FractalDPloygonListHolder extends DefaultGeometryList implements Fr
         base.setLevel(level);
         clear();
         for (Geometry polygon : base) {
-            add(polygon.translateGeometry(translation.x,translation.y));
+            add(polygon.translateGeometry(translation.x, translation.y));
         }
     }
 
 
     public Geometry[] getTransform() {
-        Geometry[] polygons=base.getTransform();
+        Geometry[] polygons = base.getTransform();
         for (int i = 0; i < polygons.length; i++) {
-            polygons[i]=polygons[i].translateGeometry(translation.x,translation.y);
+            polygons[i] = polygons[i].translateGeometry(translation.x, translation.y);
         }
         return polygons;
     }

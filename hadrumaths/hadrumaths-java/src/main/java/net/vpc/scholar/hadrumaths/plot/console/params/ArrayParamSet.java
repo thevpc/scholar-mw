@@ -17,7 +17,7 @@ public class ArrayParamSet<T> extends ParamSet<T> implements Cloneable {
     }
 
     public ArrayParamSet init(T... all) {
-        values=all;
+        values = all;
         return this;
     }
 
@@ -29,34 +29,34 @@ public class ArrayParamSet<T> extends ParamSet<T> implements Cloneable {
 
     @Override
     protected T getValueImpl(int index) {
-        return values==null?null:values[index == -1 ? 0 : index];
+        return values == null ? null : values[index == -1 ? 0 : index];
     }
 
     @Override
     protected T getValueImpl() {
-        return values==null?null:values[index == -1 ? 0 : index];
+        return values == null ? null : values[index == -1 ? 0 : index];
     }
 
     @Override
     public T getSmallValue() {
         T t = super.getSmallValue();
-        return t ==null?(values==null?null:values[0]):t;
+        return t == null ? (values == null ? null : values[0]) : t;
     }
 
     @Override
     public T getDefaultValue() {
         T t = super.getDefaultValue();
-        return t ==null?(values==null?null:values[0]):t;
+        return t == null ? (values == null ? null : values[0]) : t;
     }
 
     @Override
     protected boolean hasNextImpl() {
-        return (index + 1) < (values==null?0:values.length);
+        return (index + 1) < (values == null ? 0 : values.length);
     }
 
     @Override
     protected int getSizeImpl() {
-        return values==null?0:values.length;
+        return values == null ? 0 : values.length;
     }
 
     @Override
@@ -69,6 +69,7 @@ public class ArrayParamSet<T> extends ParamSet<T> implements Cloneable {
         index++;
         return getValueImpl();
     }
+
     //TODO what if alias?
     public T[] getValues() {
         return values;

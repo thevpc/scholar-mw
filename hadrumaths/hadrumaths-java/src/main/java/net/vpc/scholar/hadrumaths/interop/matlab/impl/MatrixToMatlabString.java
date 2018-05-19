@@ -5,21 +5,21 @@
 
 package net.vpc.scholar.hadrumaths.interop.matlab.impl;
 
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
-import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 
 /**
- *
  * @author vpc
  */
-public class MatrixToMatlabString implements ToMatlabString<Matrix>{
+public class MatrixToMatlabString implements ToMatlabString<Matrix> {
     public MatrixToMatlabString() {
     }
 
     @Override
     public String toMatlabString(Matrix o, ToMatlabStringParam... format) {
-        Complex[][] elements=o.getArray();
+        Complex[][] elements = o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {
             for (int j = 0; j < element.length; j++) {
@@ -60,5 +60,5 @@ public class MatrixToMatlabString implements ToMatlabString<Matrix>{
         sb.append("]");
         return sb.toString();
     }
-    
+
 }

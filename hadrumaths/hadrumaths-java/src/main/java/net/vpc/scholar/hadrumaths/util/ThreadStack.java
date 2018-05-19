@@ -5,8 +5,8 @@ import net.vpc.scholar.hadrumaths.Maths;
 import java.util.ArrayList;
 
 /**
-* Created by vpc on 1/14/15.
-*/
+ * Created by vpc on 1/14/15.
+ */
 public class ThreadStack {
     private Throwable throwable;
     private int ignored;
@@ -89,6 +89,7 @@ public class ThreadStack {
     }
 
     private static ArrayList<String> indents = new ArrayList<String>();
+
     public static ThreadStackElement currentThreadStackElement() {
         return new ThreadStack(1).currentElement();
     }
@@ -123,7 +124,7 @@ public class ThreadStack {
 
 
         public String getIndent() {
-            int nextLevel= depth +1;
+            int nextLevel = depth + 1;
             while (indents.size() < nextLevel) {
                 char[] cc = new char[indents.size()];
                 for (int i = 0; i < cc.length; i++) {
@@ -151,7 +152,7 @@ public class ThreadStack {
         }
 
         public String getDump(Object... params) {
-            return getIndent()+getClassName() + "." + getMethodName()+ "("+ Maths.dump(params)+")";
+            return getIndent() + getClassName() + "." + getMethodName() + "(" + Maths.dump(params) + ")";
         }
 
         public int depth() {

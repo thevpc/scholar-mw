@@ -6,9 +6,9 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.symbolic.Linear;
 import net.vpc.scholar.hadrumaths.symbolic.XX;
 import net.vpc.scholar.hadrumaths.symbolic.YY;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -19,7 +19,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 public class ToDDxyLinearRule implements ExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ToDDxyLinearRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{XX.class,YY.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{XX.class, YY.class};
 
     @Override
     public Class<? extends Expr>[] getTypes() {
@@ -27,13 +27,14 @@ public class ToDDxyLinearRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        if(e instanceof XX){
-            return RewriteResult.bestEffort(new Linear(1,0,0,((XX) e).getDomain()));
-        }else if(e instanceof YY){
-            return RewriteResult.bestEffort(new Linear(0,1,0,((YY) e).getDomain()));
+        if (e instanceof XX) {
+            return RewriteResult.bestEffort(new Linear(1, 0, 0, ((XX) e).getDomain()));
+        } else if (e instanceof YY) {
+            return RewriteResult.bestEffort(new Linear(0, 1, 0, ((YY) e).getDomain()));
         }
         return RewriteResult.unmodified(e);
     }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -41,7 +42,7 @@ public class ToDDxyLinearRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

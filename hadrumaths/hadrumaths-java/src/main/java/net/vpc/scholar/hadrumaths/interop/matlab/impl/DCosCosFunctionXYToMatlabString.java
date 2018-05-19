@@ -5,15 +5,17 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.impl;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.interop.matlab.MatlabFactory;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParamArray;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabVectorizeFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabXFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabYFormat;
+import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.Linear;
 
 /**
- *
  * @author vpc
  */
 public class DCosCosFunctionXYToMatlabString implements ToMatlabString<CosXCosY> {
@@ -37,7 +39,7 @@ public class DCosCosFunctionXYToMatlabString implements ToMatlabString<CosXCosY>
             }
             if (a != 0 || b != 0) {
                 sb.append("cos(");
-                sb.append(MatlabFactory.toMatlabString(new Linear(a, 0, b, domain),formatArray.clone().set(MatlabFactory.NO_DOMAIN).toArray()));
+                sb.append(MatlabFactory.toMatlabString(new Linear(a, 0, b, domain), formatArray.clone().set(MatlabFactory.NO_DOMAIN).toArray()));
                 sb.append(")");
                 if (c != 0 || d != 0) {
                     sb.append(mul);
@@ -49,7 +51,7 @@ public class DCosCosFunctionXYToMatlabString implements ToMatlabString<CosXCosY>
                         formatArray.clone().set(new MatlabXFormat(((MatlabYFormat) formatArray.getParam(MatlabFactory.Y)).getName())).set(MatlabFactory.NO_DOMAIN).toArray()));
                 sb.append(")");
             }
-            String s = MatlabFactory.toMatlabString(domain,format);
+            String s = MatlabFactory.toMatlabString(domain, format);
             return s.length() > 0 ? (s + mul + sb.toString()) : sb.toString();
         }
     }

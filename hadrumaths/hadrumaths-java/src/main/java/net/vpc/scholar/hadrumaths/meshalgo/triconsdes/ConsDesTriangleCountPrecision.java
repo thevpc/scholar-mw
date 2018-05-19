@@ -8,16 +8,18 @@ import java.util.List;
 public class ConsDesTriangleCountPrecision implements ConsDesPrecision {
     private static final long serialVersionUID = 1L;
     int nbre;
-    public ConsDesTriangleCountPrecision(int nbr){
-        nbre=nbr;
+
+    public ConsDesTriangleCountPrecision(int nbr) {
+        nbre = nbr;
     }
-    public boolean isMeshAllowed(List<Triangle> t, int iteration){
+
+    public boolean isMeshAllowed(List<Triangle> t, int iteration) {
         return t.size() < nbre;
     }
 
     public String dump() {
-        Dumper h=new Dumper(this,Dumper.Type.SIMPLE);
-        h.add("count",nbre);
+        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
+        h.add("count", nbre);
         return h.toString();
     }
 

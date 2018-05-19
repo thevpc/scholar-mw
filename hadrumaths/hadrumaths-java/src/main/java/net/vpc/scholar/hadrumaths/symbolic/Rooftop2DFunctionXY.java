@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Out;
 
 /**
@@ -21,8 +21,8 @@ final public class Rooftop2DFunctionXY extends PieceXFunction implements Cloneab
 
     public Rooftop2DFunctionXY(Domain domain, Axis invariance, double crestValue, RooftopType type) {
         super(domain, invariance, false, false,
-                (!RooftopType.FULL.equals(type) && Axis.X.equals(invariance))?0: RooftopType.FULL.equals(type) || RooftopType.NORTH.equals(type) || RooftopType.SOUTH.equals(type) ? 1 : 0,
-                (!RooftopType.FULL.equals(type) && Axis.Y.equals(invariance))?0: RooftopType.FULL.equals(type) || RooftopType.EAST.equals(type) || RooftopType.WEST.equals(type) ? 1 : 0,
+                (!RooftopType.FULL.equals(type) && Axis.X.equals(invariance)) ? 0 : RooftopType.FULL.equals(type) || RooftopType.NORTH.equals(type) || RooftopType.SOUTH.equals(type) ? 1 : 0,
+                (!RooftopType.FULL.equals(type) && Axis.Y.equals(invariance)) ? 0 : RooftopType.FULL.equals(type) || RooftopType.EAST.equals(type) || RooftopType.WEST.equals(type) ? 1 : 0,
                 new MySegmentFactory(crestValue, invariance, type));
         if (invariance != null && invariance != Axis.X && invariance != Axis.Y) {
             throw new IllegalArgumentException("Unsupported Axis " + invariance);
@@ -48,26 +48,26 @@ final public class Rooftop2DFunctionXY extends PieceXFunction implements Cloneab
         }
 
         public AbstractDoubleToDouble getFunction(PieceXFunction pieceXFunction, double minx, double maxx, double miny, double maxy, boolean oddX, boolean oddY) {
-            if(invariance!=null){
+            if (invariance != null) {
                 switch (invariance) {
                     case Y: {
-                        boolean one=true;
-                        switch (type){
-                            case EAST:{
-                                one=false;
+                        boolean one = true;
+                        switch (type) {
+                            case EAST: {
+                                one = false;
                                 break;
                             }
-                            case WEST:{
-                                one=true;
+                            case WEST: {
+                                one = true;
                                 break;
                             }
                             case NORTH:
-                            case SOUTH:{
-                                one=!oddX;
+                            case SOUTH: {
+                                one = !oddX;
                                 break;
                             }
-                            case FULL:{
-                                one=oddX;
+                            case FULL: {
+                                one = oddX;
                                 break;
                             }
                         }

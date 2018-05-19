@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
 import java.io.Serializable;
 
 public class MemComplexScalarProductCache extends AbstractScalarProductCache implements Serializable {
-    private Complex[/** p index **/][/** n index **/] cache=new Complex[0][0];
+    private Complex[/** p index **/][/** n index **/] cache = new Complex[0][0];
     private boolean hermitian;
     private boolean doubleValue;
     private boolean scalarValue;
@@ -202,12 +202,12 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                         @Override
                         public void invoke(EnhancedProgressMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue2) {
-                                    for (int q = 0; q < finalGp3.length; q++) {
-                                        for (int n = 0; n < maxF; n++) {
-                                            gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
-                                            mon.inc(monMessage);
-                                        }
+                                for (int q = 0; q < finalGp3.length; q++) {
+                                    for (int n = 0; n < maxF; n++) {
+                                        gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
+                                        mon.inc(monMessage);
                                     }
+                                }
                             } else {
                                 if (true) {
                                     DoubleToDouble[] df = new DoubleToDouble[maxF];

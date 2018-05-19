@@ -30,9 +30,9 @@ public class AppLockManager {
     }
 
     public void fireLockDetected(AppLock lock) {
-        AppLockEvent event=null;
+        AppLockEvent event = null;
         for (AppLockListener listener : getListeners()) {
-            if(event==null) {
+            if (event == null) {
                 event = new AppLockEvent(lock);
             }
             listener.onLockDetected(event);
@@ -40,9 +40,9 @@ public class AppLockManager {
     }
 
     public void fireLockAcquired(AppLock lock) {
-        AppLockEvent event=null;
+        AppLockEvent event = null;
         for (AppLockListener listener : getListeners()) {
-            if(event==null) {
+            if (event == null) {
                 event = new AppLockEvent(lock);
             }
             listener.onLockAcquired(event);
@@ -50,9 +50,9 @@ public class AppLockManager {
     }
 
     public void fireLockReleased(AppLock lock) {
-        AppLockEvent event=null;
+        AppLockEvent event = null;
         for (AppLockListener listener : getListeners()) {
-            if(event==null) {
+            if (event == null) {
                 event = new AppLockEvent(lock);
             }
             listener.onLockReleased(event);

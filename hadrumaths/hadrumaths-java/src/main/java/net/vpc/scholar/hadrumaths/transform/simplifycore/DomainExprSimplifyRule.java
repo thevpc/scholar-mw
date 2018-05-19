@@ -5,8 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DomainExpr;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -46,13 +46,13 @@ public class DomainExprSimplifyRule implements ExpressionRewriterRule {
                     ok = false;
                 }
 
-                if(ok){
-                    return RewriteResult.bestEffort(DoubleValue.valueOf(1,Domain.forBounds(
+                if (ok) {
+                    return RewriteResult.bestEffort(DoubleValue.valueOf(1, Domain.forBounds(
                             xmin.toDouble(),
                             xmax.toDouble()
                     )));
-                }else{
-                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin,xmax));
+                } else {
+                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin, xmax));
                 }
             }
             case 2: {
@@ -84,15 +84,15 @@ public class DomainExprSimplifyRule implements ExpressionRewriterRule {
                     ok = false;
                 }
 
-                if(ok){
-                    return RewriteResult.bestEffort(DoubleValue.valueOf(1,Domain.forBounds(
+                if (ok) {
+                    return RewriteResult.bestEffort(DoubleValue.valueOf(1, Domain.forBounds(
                             xmin.toDouble(),
                             xmax.toDouble(),
                             ymin.toDouble(),
                             ymax.toDouble()
                     )));
-                }else{
-                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin,xmax,ymin,ymax));
+                } else {
+                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin, xmax, ymin, ymax));
                 }
             }
             case 3: {
@@ -136,8 +136,8 @@ public class DomainExprSimplifyRule implements ExpressionRewriterRule {
                 } else {
                     ok = false;
                 }
-                if(ok){
-                    return RewriteResult.bestEffort(DoubleValue.valueOf(1,Domain.forBounds(
+                if (ok) {
+                    return RewriteResult.bestEffort(DoubleValue.valueOf(1, Domain.forBounds(
                             xmin.toDouble(),
                             xmax.toDouble(),
                             ymin.toDouble(),
@@ -145,8 +145,8 @@ public class DomainExprSimplifyRule implements ExpressionRewriterRule {
                             zmin.toDouble(),
                             zmax.toDouble()
                     )));
-                }else{
-                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin,xmax,ymin,ymax,zmin,zmax));
+                } else {
+                    return RewriteResult.bestEffort(DomainExpr.forBounds(xmin, xmax, ymin, ymax, zmin, zmax));
                 }
             }
         }

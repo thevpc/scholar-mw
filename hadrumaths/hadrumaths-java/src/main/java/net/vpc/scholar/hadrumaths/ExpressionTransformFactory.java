@@ -5,25 +5,19 @@
  */
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.transform.*;
+import net.vpc.scholar.hadrumaths.util.ClassMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import net.vpc.scholar.hadrumaths.transform.DomainXYMultiplierTransform;
-import net.vpc.scholar.hadrumaths.transform.DoubleMultiplierTransform;
-import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
-import net.vpc.scholar.hadrumaths.transform.OppositeTransform;
-import net.vpc.scholar.hadrumaths.transform.SymmetryTransform;
-import net.vpc.scholar.hadrumaths.transform.TranslateTransform;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 /**
- *
  * @author vpc
  */
-public class ExpressionTransformFactory extends AbstractFactory{
+public class ExpressionTransformFactory extends AbstractFactory {
 
-    private static final ClassMap<Map<Class, ExpressionTransformer>> expressionToExpressionTransformers = new ClassMap<Map<Class, ExpressionTransformer>>(Expr.class,(Class) Map.class);
+    private static final ClassMap<Map<Class, ExpressionTransformer>> expressionToExpressionTransformers = new ClassMap<Map<Class, ExpressionTransformer>>(Expr.class, (Class) Map.class);
 
     private static Map<Class, ExpressionTransformer> getExpressionTransformerMap(Class<? extends Expr> expressionClass) {
         Map<Class, ExpressionTransformer> t = expressionToExpressionTransformers.getExact(expressionClass);
@@ -41,7 +35,7 @@ public class ExpressionTransformFactory extends AbstractFactory{
                 return found;
             }
         }
-        throw new NoSuchElementException("Missing "+transformerClass+" for "+expressionClass);
+        throw new NoSuchElementException("Missing " + transformerClass + " for " + expressionClass);
     }
 
     public static void setExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass, ExpressionTransformer expressionTransformer) {
@@ -52,10 +46,10 @@ public class ExpressionTransformFactory extends AbstractFactory{
         }
     }
 
-    public static <T extends Expr> T transform(Expr e,ExpressionTransform transform) {
+    public static <T extends Expr> T transform(Expr e, ExpressionTransform transform) {
         return (T) getExpressionTransformer(e.getClass(), transform.getClass()).transform(e, transform);
     }
-    
+
     public static DoubleMultiplierTransform doubleMul(double d) {
         return new DoubleMultiplierTransform(d);
     }
@@ -68,8 +62,8 @@ public class ExpressionTransformFactory extends AbstractFactory{
         return new OppositeTransform(axis);
     }
 
-    public static SymmetryTransform symmetric(Axis axis,Domain domainXY) {
-        return new SymmetryTransform(axis,domainXY);
+    public static SymmetryTransform symmetric(Axis axis, Domain domainXY) {
+        return new SymmetryTransform(axis, domainXY);
     }
 
     public static TranslateTransform translate(double valueX, double valueY) {

@@ -10,8 +10,8 @@ import java.beans.PropertyChangeListener;
 
 public class ValuesPlotTableModel extends AbstractTableModel {
     private ValuesPlotModel model;
-    private int rows=0;
-    private int cols=0;
+    private int rows = 0;
+    private int cols = 0;
 
     public ValuesPlotTableModel(PlotModelProvider modelProvider) {
         this.model = (ValuesPlotModel) modelProvider.getModel();
@@ -24,7 +24,7 @@ public class ValuesPlotTableModel extends AbstractTableModel {
         this.rows = model.getZ().length;
         this.cols = 0;
         for (int i = 0; i < rows; i++) {
-            cols=Maths.max(model.getZ()[i].length,cols);
+            cols = Math.max(model.getZ()[i].length, cols);
         }
     }
 
@@ -37,7 +37,7 @@ public class ValuesPlotTableModel extends AbstractTableModel {
     }
 
     public String getColumnName(int columnIndex) {
-        return String.valueOf(columnIndex+1);
+        return String.valueOf(columnIndex + 1);
     }
 
     public Class<?> getColumnClass(int columnIndex) {
@@ -85,14 +85,14 @@ public class ValuesPlotTableModel extends AbstractTableModel {
 
     public Object getValueAt(int rowIndex, int columnIndex) {
         Complex[][] z = model.getZ();
-        int c=columnIndex;
-        Complex vv=(c<z[rowIndex].length)?z[rowIndex][c]:Complex.NaN;
-        switch (HadrumathsUtils.notNullValue(model.getConverter())){
-            case COMPLEX:{
+        int c = columnIndex;
+        Complex vv = (c < z[rowIndex].length) ? z[rowIndex][c] : Complex.NaN;
+        switch (HadrumathsUtils.notNullValue(model.getConverter())) {
+            case COMPLEX: {
                 return String.valueOf(vv);
             }
         }
-        return String.valueOf(Maths.toDouble(vv,HadrumathsUtils.notNullValue(model.getConverter())));
+        return String.valueOf(Maths.toDouble(vv, HadrumathsUtils.notNullValue(model.getConverter())));
     }
 
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {

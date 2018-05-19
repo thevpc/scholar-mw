@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.params;
 
-import net.vpc.scholar.hadrumaths.interop.matlab.*;
+import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -12,16 +13,16 @@ import java.text.NumberFormat;
  * Time: 13:52:01
  * To change this template use File | Settings | File Templates.
  */
-public class MatlabDoubleFormat implements ToMatlabStringParam{
+public class MatlabDoubleFormat implements ToMatlabStringParam {
     private NumberFormat format;
 
     public MatlabDoubleFormat(int precision) {
-        StringBuilder sb=new StringBuilder("0.");
-        if(precision<=0){
+        StringBuilder sb = new StringBuilder("0.");
+        if (precision <= 0) {
             sb.append("#");
-        }else{
+        } else {
             for (int i = 0; i < precision; i++) {
-                  sb.append('#');
+                sb.append('#');
             }
         }
         DecimalFormat f = new DecimalFormat(sb.toString());
@@ -30,6 +31,7 @@ public class MatlabDoubleFormat implements ToMatlabStringParam{
         f.setDecimalFormatSymbols(symbols);
         this.format = f;
     }
+
     public MatlabDoubleFormat(NumberFormat format) {
         this.format = format;
     }

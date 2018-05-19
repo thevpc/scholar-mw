@@ -13,6 +13,6 @@ import net.vpc.scholar.hadrumaths.symbolic.Sub;
 public class SubDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Sub c = (Sub) f;
-        return new Sub(d.derive(c.getFirst(),varIndex),d.derive(c.getSecond(),varIndex));
+        return new Sub(d.derive(c.getFirst(), varIndex), d.derive(c.getSecond(), varIndex));
     }
 }

@@ -12,11 +12,11 @@ public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
 
     @Override
     public ExprCube newPreloadedCube(int rows, int columns, int height, ExprCubeCellIterator item) {
-        return newPreloadedCube(rows,columns,height,CubeCellIteratorType.FULL, item);
+        return newPreloadedCube(rows, columns, height, CubeCellIteratorType.FULL, item);
     }
 
     @Override
-    public ExprCube newPreloadedCube(final int rows, final int columns, final int height,CubeCellIteratorType it, ExprCubeCellIterator item) {
+    public ExprCube newPreloadedCube(final int rows, final int columns, final int height, CubeCellIteratorType it, ExprCubeCellIterator item) {
 
 
         Expr[][] elements = new Expr[rows][columns];
@@ -25,7 +25,7 @@ public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < columns; j++) {
                         for (int k = 0; k < height; k++) {
-                            elements[i][j] = item.get(i, j,k);
+                            elements[i][j] = item.get(i, j, k);
                         }
                     }
                 }
@@ -55,12 +55,12 @@ public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
             }
 
             @Override
-            public Expr get(int row, int col,int h) {
+            public Expr get(int row, int col, int h) {
                 return elements[row][col][h];
             }
 
             @Override
-            public void set(Expr exp, int row, int col,int h) {
+            public void set(Expr exp, int row, int col, int h) {
                 elements[row][col][h] = exp;
             }
         };
@@ -89,17 +89,17 @@ public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
             }
 
             @Override
-            public Expr get(int row, int col,int h) {
+            public Expr get(int row, int col, int h) {
                 Expr v = elements[row][col][h];
-                if(v==null){
-                    v=item.get(row,col,h);
-                    elements[row][col][h]=v;
+                if (v == null) {
+                    v = item.get(row, col, h);
+                    elements[row][col][h] = v;
                 }
                 return v;
             }
 
             @Override
-            public void set(Expr exp, int row, int col,int h) {
+            public void set(Expr exp, int row, int col, int h) {
                 elements[row][col][h] = exp;
             }
         };
@@ -125,12 +125,12 @@ public class DefaultExprCubeFactory extends AbstractExprCubeFactory {
             }
 
             @Override
-            public Expr get(int row, int col,int h) {
-                return item.get(row, col,h);
+            public Expr get(int row, int col, int h) {
+                return item.get(row, col, h);
             }
 
             @Override
-            public void set(Expr exp, int row, int col,int h) {
+            public void set(Expr exp, int row, int col, int h) {
                 throw new IllegalArgumentException("Unmodifiable");
             }
         };

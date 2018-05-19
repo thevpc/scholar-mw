@@ -4,13 +4,9 @@ import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.transform.ExprRewriteFailLogger;
-import net.vpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.vpc.scholar.hadrumaths.Maths.mul;
 
 public class TestToString {
 

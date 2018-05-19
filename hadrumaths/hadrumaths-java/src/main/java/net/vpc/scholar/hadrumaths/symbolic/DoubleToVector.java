@@ -13,9 +13,9 @@ public interface DoubleToVector extends Expr, Serializable, DoubleToMatrix, Clon
 
     int getComponentSize();
 
-    Expr getX() ;
+    Expr getX();
 
-    Expr getY() ;
+    Expr getY();
 
-    Expr getZ() ;
+    Expr getZ();
 }

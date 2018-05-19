@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 
 public class ConsoleActionPlotComponent implements ConsoleAction {
     private static final long serialVersionUID = 1L;
@@ -8,7 +8,7 @@ public class ConsoleActionPlotComponent implements ConsoleAction {
     private PlotComponent component;
 
 
-    public ConsoleActionPlotComponent(PlotComponent component,String path) {
+    public ConsoleActionPlotComponent(PlotComponent component, String path) {
         this.component = component;
         this.path = path;
     }
@@ -17,6 +17,6 @@ public class ConsoleActionPlotComponent implements ConsoleAction {
         if (component == null) {
             return;
         }
-        plotter.displayImpl(component,path);
+        plotter.displayImpl(component, path);
     }
 }

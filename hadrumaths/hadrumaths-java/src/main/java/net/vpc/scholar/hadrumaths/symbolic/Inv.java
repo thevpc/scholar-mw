@@ -388,7 +388,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         DoubleToComplex c = expression.toDC();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex cc = c.computeComplex(x, y, z, rdefined);
         if (!rdefined.get()) {
             return Complex.ZERO;
@@ -400,7 +400,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
         DoubleToComplex c = expression.toDC();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex cc = c.computeComplex(x, y, rdefined);
         if (!rdefined.get()) {
             return Complex.ZERO;
@@ -412,7 +412,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public Complex computeComplex(double x, BooleanMarker defined) {
         DoubleToComplex c = expression.toDC();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         Complex cc = c.computeComplex(x, rdefined);
         if (!rdefined.get()) {
             return Complex.ZERO;
@@ -424,7 +424,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = doubleToDouble.computeDouble(x, y, z, rdefined);
         if (!rdefined.get()) {
             return 0;
@@ -436,7 +436,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = doubleToDouble.computeDouble(x, y, rdefined);
         if (!rdefined.get()) {
             return 0;
@@ -448,7 +448,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
     @Override
     public double computeDouble(double x, BooleanMarker defined) {
         DoubleToDouble doubleToDouble = expression.toDD();
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         double v = doubleToDouble.computeDouble(x, rdefined);
         if (!rdefined.get()) {
             return 0;
@@ -460,7 +460,7 @@ public class Inv extends AbstractExprOperator implements Cloneable {
 
     @Override
     public Matrix computeMatrix(double x, double y, double z) {
-        BooleanRef rdefined= BooleanMarker.ref();
+        BooleanRef rdefined = BooleanMarker.ref();
         Matrix matrix = expression.toDM().computeMatrix(x, y, z);
         return matrix.inv();
     }

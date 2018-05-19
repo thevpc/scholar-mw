@@ -4,9 +4,6 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ExamplePlot {
     public static void main(String[] args) {

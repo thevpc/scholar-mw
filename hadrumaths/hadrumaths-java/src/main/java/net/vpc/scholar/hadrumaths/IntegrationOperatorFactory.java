@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOpera
 /**
  * Created by vpc on 6/1/14.
  */
-public class IntegrationOperatorFactory extends AbstractFactory{
+public class IntegrationOperatorFactory extends AbstractFactory {
     public static final IntegrationOperator NUMERIC_SCALAR_PRODUCT_OPERATOR = new NumericIntegrationOperator();
     public static final IntegrationOperator SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR);
     public static final IntegrationOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.HARD_FORMAL_SCALAR_PRODUCT_OPERATOR);
@@ -44,6 +44,7 @@ public class IntegrationOperatorFactory extends AbstractFactory{
      * hminCoeff = 1E-52 / 1024.0;
      * hmaxCoeff = 1.0 / 32.0;
      * maxfcnt = 10000;
+     *
      * @return new NumericScalarProductOperator(new DQuadIntegralXY())
      */
     public static IntegrationOperator quad() {
@@ -57,11 +58,13 @@ public class IntegrationOperatorFactory extends AbstractFactory{
     public static IntegrationOperator rectmid() {
         return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectmid());
     }
+
     public static IntegrationOperator rectmid(int precision) {
         return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectmid(precision));
     }
+
     public static IntegrationOperator rectmid(int xprecision, int yprecision, int zprecision) {
-        return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectmid(xprecision,yprecision,zprecision));
+        return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectmid(xprecision, yprecision, zprecision));
     }
 
     public static IntegrationOperator rectlow() {
@@ -71,7 +74,8 @@ public class IntegrationOperatorFactory extends AbstractFactory{
     public static IntegrationOperator rectlow(int precision) {
         return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectlow(precision));
     }
-    public static IntegrationOperator rectlow(int xprecision, int yprecision,int zprecision) {
-        return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectlow(xprecision,yprecision,zprecision));
+
+    public static IntegrationOperator rectlow(int xprecision, int yprecision, int zprecision) {
+        return new FormalIntegrationOperator((FormalScalarProductOperator) ScalarProductOperatorFactory.rectlow(xprecision, yprecision, zprecision));
     }
 }

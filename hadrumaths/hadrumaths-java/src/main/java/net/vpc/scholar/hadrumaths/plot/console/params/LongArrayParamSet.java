@@ -14,6 +14,7 @@ public class LongArrayParamSet extends ParamSet implements Cloneable {
     public LongArrayParamSet(Param configurator) {
         this(configurator, new long[0]);
     }
+
     public LongArrayParamSet(Param configurator, long value) {
         this(configurator, new long[]{value});
     }

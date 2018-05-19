@@ -12,7 +12,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.util.TableOrder;
 
-public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeChart{
+public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeChart {
     protected ValuesPlotXDoubleModelFace data;
 
     public PlotCanvasAnyDoubleJFreeChart(PlotModelProvider plotModelProvider) {
@@ -31,6 +31,7 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
         }
         return dataset;
     }
+
     @Override
     protected int initialIndex(int index) {
         return data.getInitialIndex(index);
@@ -68,17 +69,17 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
 //            dataset.addSeries(series);
 //            return dataset;
 //        }else {
-            for (int i = 0; i < data.size(); i++) {
-                String key = data.getYTitle(i);
-                double[] x = data.getX(i);
-                double[] y = data.getY(i);
-                XYSeries series = new XYSeries(key);
-                for (int k = 0; k < y.length; k++) {
-                    series.add(x[k], y[k]);
-                }
-                dataset.addSeries(series);
+        for (int i = 0; i < data.size(); i++) {
+            String key = data.getYTitle(i);
+            double[] x = data.getX(i);
+            double[] y = data.getY(i);
+            XYSeries series = new XYSeries(key);
+            for (int k = 0; k < y.length; k++) {
+                series.add(x[k], y[k]);
             }
-            return dataset;
+            dataset.addSeries(series);
+        }
+        return dataset;
 //        }
     }
 

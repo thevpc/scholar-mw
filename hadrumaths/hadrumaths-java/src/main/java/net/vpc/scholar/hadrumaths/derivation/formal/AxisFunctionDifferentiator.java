@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.derivation.formal;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.symbolic.AxisFunction;

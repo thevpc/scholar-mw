@@ -5,14 +5,11 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
-
-import java.io.Serializable;
-
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
-import net.vpc.scholar.hadrumaths.ExpressionTransformFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
+
+import java.io.Serializable;
 
 /**
  * @author vpc
@@ -66,7 +63,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -77,7 +74,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public double computeDouble(double x, double y, double z, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, y, z, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();
@@ -88,7 +85,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public Complex computeComplex(double x, double y, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -99,7 +96,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public double computeDouble(double x, double y, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, y, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();
@@ -110,7 +107,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public Complex computeComplex(double x, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         Complex complex = getExpression().toDC().computeComplex(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return Complex.ZERO;
         }
         defined.set();
@@ -121,7 +118,7 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     public double computeDouble(double x, BooleanMarker defined) {
         BooleanRef rdefined = BooleanMarker.ref();
         double v = getExpression().toDD().computeDouble(x, rdefined);
-        if(!rdefined.get()){
+        if (!rdefined.get()) {
             return 0;
         }
         defined.set();

@@ -1,17 +1,13 @@
 package net.vpc.scholar.hadrumaths.plot.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.plot.console.*;
-import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
-import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.Matrix;
-
+import net.vpc.scholar.hadrumaths.plot.console.*;
+import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
+import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
+import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -54,7 +50,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                     getInfiniteValue(), // infiniteValue
                     getPlotType(), //plotType
                     new WindowPath(p.getPreferredPath(), getName())//preferredPath
-                    ,getPreferredLibraries()
+                    , getPreferredLibraries()
             ));
         }
         return all.iterator();
@@ -96,7 +92,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
             }
         }
-        EnhancedProgressMonitor[] monitors= ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        EnhancedProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
         EnhancedProgressMonitor monitor0 = monitors[0];
         EnhancedProgressMonitor monitor1 = monitors[1];
         EnhancedProgressMonitor monitor2 = monitors[2];
@@ -105,8 +101,8 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         double xmultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
             referenceMatrix = (VDiscrete) computeValue(p.getStructure(), monitor0, p);//.setTitle("[Ref]");
-            if(!monitor0.isTerminated()){
-                monitor0.terminate(getName()+" termination forced!");
+            if (!monitor0.isTerminated()) {
+                monitor0.terminate(getName() + " termination forced!");
             }
             if (!Double.isNaN(getMultiplier(YType.REFERENCE))) {
                 referenceMatrix.mul(getMultiplier(YType.REFERENCE));
@@ -123,8 +119,8 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         }
         if (_b_modeledMatrix) {
             modeledMatrix = (VDiscrete) computeValue(p.getStructure2(), monitor1, p);//.setTitle("[Model]");
-            if(!monitor1.isTerminated()){
-                monitor1.terminate(getName()+" termination forced!");
+            if (!monitor1.isTerminated()) {
+                monitor1.terminate(getName() + " termination forced!");
             }
             if (!Double.isNaN(getMultiplier(YType.MODELED))) {
                 modeledMatrix.mul(getMultiplier(YType.MODELED));
@@ -141,8 +137,8 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         }
         if (_b_relativeError) {
             assert referenceMatrix != null;
-            relativeError=(VDiscrete) referenceMatrix.relativeError(modeledMatrix);//.setTitle("[%]");
-            monitor2.terminate(getName()+" relative error evaluated.");
+            relativeError = (VDiscrete) referenceMatrix.relativeError(modeledMatrix);//.setTitle("[%]");
+            monitor2.terminate(getName() + " relative error evaluated.");
 //            Complex[][] d = referenceMatrix.get();
 //            Complex[][] m = modeledMatrix.getMatrix();
 //            Complex[][] c = new Complex[d.length][];
@@ -164,11 +160,11 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         }
         if (_b_absoluteError) {
             assert referenceMatrix != null;
-            absoluteError=(VDiscrete) referenceMatrix.sub(modeledMatrix);//.setTitle("[<>]");
+            absoluteError = (VDiscrete) referenceMatrix.sub(modeledMatrix);//.setTitle("[<>]");
             if (!Double.isNaN(getMultiplier())) {
                 absoluteError.mul(getMultiplier());
             }
-            monitor3.terminate(getName()+" relative error evaluated.");
+            monitor3.terminate(getName() + " relative error evaluated.");
         }
         for (YType yType : yTypes) {
             switch (yType) {
@@ -198,7 +194,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
                 case REFERENCE_VS_MODELED: {
                     if (modeledMatrix != null) {
-                        ret.add((VDiscrete) new VDiscrete(modeledMatrix.getComponent(Axis.X),modeledMatrix.getComponent(Axis.Y),modeledMatrix.getComponent(Axis.Z))
+                        ret.add((VDiscrete) new VDiscrete(modeledMatrix.getComponent(Axis.X), modeledMatrix.getComponent(Axis.Y), modeledMatrix.getComponent(Axis.Z))
                                 //.setTitle("VS")
                         );
                     }

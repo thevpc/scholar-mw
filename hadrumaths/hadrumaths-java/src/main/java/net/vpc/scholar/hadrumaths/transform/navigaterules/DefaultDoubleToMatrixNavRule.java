@@ -9,13 +9,11 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
-import net.vpc.scholar.hadrumaths.symbolic.RooftopXFunctionXY;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
 /**
- *
  * @author vpc
  */
 public class DefaultDoubleToMatrixNavRule implements ExpressionRewriterRule {
@@ -30,48 +28,48 @@ public class DefaultDoubleToMatrixNavRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        DefaultDoubleToMatrix r=(DefaultDoubleToMatrix) e;
-        DoubleToComplex[] s=new DoubleToComplex[r.getComponentSize()];
-        boolean newVal=false;
-        boolean bestVal=false;
+        DefaultDoubleToMatrix r = (DefaultDoubleToMatrix) e;
+        DoubleToComplex[] s = new DoubleToComplex[r.getComponentSize()];
+        boolean newVal = false;
+        boolean bestVal = false;
         for (int k = 0; k < s.length; k++) {
             DoubleToComplex i = r.getComponent(Axis.values()[k]);
             RewriteResult s2 = ruleset.rewrite(i);
-            if(s2.isUnmodified()){
-                s[k]=i;
-            }else if(s2.isBestEffort()){
-                s[k]=s2.getValue().toDC();
-                bestVal=true;
-            }else {
-                s[k]=s2.getValue().toDC();
-                newVal=true;
+            if (s2.isUnmodified()) {
+                s[k] = i;
+            } else if (s2.isBestEffort()) {
+                s[k] = s2.getValue().toDC();
+                bestVal = true;
+            } else {
+                s[k] = s2.getValue().toDC();
+                newVal = true;
             }
         }
-        if(newVal){
-            switch (r.getComponentSize()){
-                case 1 :{
+        if (newVal) {
+            switch (r.getComponentSize()) {
+                case 1: {
                     return RewriteResult.newVal(DefaultDoubleToMatrix.create(s[0]));
                 }
-                case 2 :{
-                    return RewriteResult.newVal(DefaultDoubleToMatrix.create(s[0],s[1]));
+                case 2: {
+                    return RewriteResult.newVal(DefaultDoubleToMatrix.create(s[0], s[1]));
                 }
-                case 3 :{
-                    return RewriteResult.newVal(DefaultDoubleToMatrix.create(s[0],s[1],s[2]));
+                case 3: {
+                    return RewriteResult.newVal(DefaultDoubleToMatrix.create(s[0], s[1], s[2]));
                 }
             }
-        }else if(bestVal){
-            switch (r.getComponentSize()){
-                case 1 :{
+        } else if (bestVal) {
+            switch (r.getComponentSize()) {
+                case 1: {
                     return RewriteResult.bestEffort(DefaultDoubleToMatrix.create(s[0]));
                 }
-                case 2 :{
-                    return RewriteResult.bestEffort(DefaultDoubleToMatrix.create(s[0],s[1]));
+                case 2: {
+                    return RewriteResult.bestEffort(DefaultDoubleToMatrix.create(s[0], s[1]));
                 }
-                case 3 :{
-                    return RewriteResult.bestEffort(DefaultDoubleToMatrix.create(s[0],s[1],s[2]));
+                case 3: {
+                    return RewriteResult.bestEffort(DefaultDoubleToMatrix.create(s[0], s[1], s[2]));
                 }
             }
-        }else{
+        } else {
             return RewriteResult.unmodified(r);
         }
         throw new IllegalArgumentException("Unsupported");
@@ -84,7 +82,7 @@ public class DefaultDoubleToMatrixNavRule implements ExpressionRewriterRule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null || !obj.getClass().equals(getClass())){
+        if (obj == null || !obj.getClass().equals(getClass())) {
             return false;
         }
         return true;

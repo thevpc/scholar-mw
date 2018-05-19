@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanList{
+public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanList {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final boolean[] ZERO_ELEMENTS = new boolean[0];
@@ -18,7 +18,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
     }
 
     public BooleanArrayList(int initialSize) {
-        this(false,initialSize);
+        this(false, initialSize);
     }
 
     public BooleanArrayList(boolean row, int initialSize) {
@@ -28,37 +28,37 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         } else if (initialSize == 0) {
             this.elementData = ZERO_ELEMENTS;
         } else {
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialSize);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
     }
 
     public boolean[] toBooleanArray() {
-        if(size==0){
+        if (size == 0) {
             return ZERO_ELEMENTS;
         }
-        boolean[] ret=new boolean[size];
-        System.arraycopy(elementData,0,ret,0,size);
+        boolean[] ret = new boolean[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
         return ret;
     }
 
     public Boolean sum() {
-        if(size==0){
+        if (size == 0) {
             return false;
         }
-        boolean d=elementData[0];
+        boolean d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d|=elementData[i];
+            d |= elementData[i];
         }
         return d;
     }
 
     public Boolean prod() {
-        if(size==0){
+        if (size == 0) {
             return false;
         }
-        boolean d=elementData[0];
+        boolean d = elementData[0];
         for (int i = 1; i < size; i++) {
-            d&=elementData[i];
+            d &= elementData[i];
         }
         return d;
     }
@@ -91,12 +91,12 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
     @Override
     public void appendAll(TVector<Boolean> e) {
         int esize = e.size();
-        if(e instanceof BooleanArrayList){
+        if (e instanceof BooleanArrayList) {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             BooleanArrayList e0 = (BooleanArrayList) e;
-            System.arraycopy(e0.elementData,0,elementData, this.size, esize);
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
             this.size += esize;
-        }else{
+        } else {
             ensureCapacityInternal(this.size + esize);  // Increments modCount!!
             for (Boolean a : e) {
                 elementData[this.size++] = a;
@@ -114,7 +114,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
 
     private void ensureCapacityInternal(int minCapacity) {
         if (elementData == ZERO_ELEMENTS) {
-            minCapacity = Maths.max(DEFAULT_CAPACITY, minCapacity);
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
         }
 
         ensureExplicitCapacity(minCapacity);
@@ -172,16 +172,16 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         }
     }
 
-    public static class BooleanReadOnlyList extends ReadOnlyTList<Boolean> implements BooleanList{
+    public static class BooleanReadOnlyList extends ReadOnlyTList<Boolean> implements BooleanList {
         public BooleanReadOnlyList(boolean row, TVectorModel<Boolean> model) {
             super(Maths.$BOOLEAN, row, model);
         }
 
         @Override
         public boolean[] toBooleanArray() {
-            boolean[] d=new boolean[size()];
+            boolean[] d = new boolean[size()];
             for (int i = 0; i < d.length; i++) {
-                d[i]=get(i);
+                d[i] = get(i);
             }
             return d;
         }

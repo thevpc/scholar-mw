@@ -16,11 +16,11 @@ public class ExpressionsPlotModel implements PlotModel {
     private String title;
     private Samples samples;
     private Domain domain;
-    private int xprec=-1;
-    private int yprec=-1;
-    private ComplexAsDouble complexAsDouble=ComplexAsDouble.ABS;
+    private int xprec = -1;
+    private int yprec = -1;
+    private ComplexAsDouble complexAsDouble = ComplexAsDouble.ABS;
     private Expr[] expressions = ArrayUtils.EMPTY_EXPR_ARRAY;
-    private ExpressionsPlotPanel.ShowType showType= ExpressionsPlotPanel.ShowType.CURVE_FX;
+    private ExpressionsPlotPanel.ShowType showType = ExpressionsPlotPanel.ShowType.CURVE_FX;
     private Map<String, Object> properties;
     private Set<ExternalLibrary> preferredLibraries;
     private CellPosition[] selectedAxis;

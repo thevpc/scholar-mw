@@ -21,7 +21,7 @@ import java.util.Map;
 public class ConvergenceEvaluator {
 
     private ParamSet paramSet;
-    private ConvergenceConfig config=new ConvergenceConfig();
+    private ConvergenceConfig config = new ConvergenceConfig();
     private ConvergenceEvaluator subEvaluator;
 
 
@@ -86,23 +86,23 @@ public class ConvergenceEvaluator {
     }
 
     public ConvergenceEvaluator combine(Param scf, Object[] var) {
-        return combine(Maths.paramSet(scf,var), config);
+        return combine(Maths.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, int[] var) {
-        return combine(Maths.paramSet(scf,var), config);
+        return combine(Maths.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, long[] var) {
-        return combine(Maths.paramSet(scf,var), config);
+        return combine(Maths.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, float[] var) {
-        return combine(Maths.paramSet(scf,var), config);
+        return combine(Maths.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, double[] var) {
-        return combine(Maths.paramSet(scf,var), config);
+        return combine(Maths.paramSet(scf, var), config);
     }
 
 
@@ -116,13 +116,13 @@ public class ConvergenceEvaluator {
         if (startIndex < 0) {
             startIndex = 0;
         }
-        class ConvInfo{
+        class ConvInfo {
             Object old = null;
-            int max ;
-            int endIndex ;
-            int index ;
-            int securityMax ;
-            int security ;
+            int max;
+            int endIndex;
+            int index;
+            int securityMax;
+            int security;
             Map<String, Object> pars = new HashMap<String, Object>();
             ConvergenceResult lastResult;
             ConvergenceResult bestResult = null;
@@ -130,7 +130,7 @@ public class ConvergenceEvaluator {
             int subEvaluatorStartIndex = -1;
             double err = Double.NaN;
         }
-        final ConvInfo convInfo=new ConvInfo();
+        final ConvInfo convInfo = new ConvInfo();
         convInfo.max = config.getMaxIterations();
         convInfo.endIndex = paramSet.getSize();
         convInfo.index = startIndex;
@@ -144,7 +144,7 @@ public class ConvergenceEvaluator {
         Maths.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
             @Override
             public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                EnhancedProgressMonitor monitor99=monitor.translate(0.8, 0);
+                EnhancedProgressMonitor monitor99 = monitor.translate(0.8, 0);
                 while (convInfo.index < convInfo.endIndex && (convInfo.max < 0 || convInfo.max > 0)) {
                     if (convInfo.max > 0) {
                         convInfo.max--;
@@ -152,8 +152,8 @@ public class ConvergenceEvaluator {
 //            if(subEvaluator==null) {
 //                System.out.println(">>" + monitor0.getProgressValue() + " : " + this);
 //            }
-                    monitor99.start("New Convergence Iteration {0}",convInfo.index);
-                    EnhancedProgressMonitor[] mon2 = monitor99.split(new double[]{50, 50}, new boolean[]{subEvaluator != null,true});
+                    monitor99.start("New Convergence Iteration {0}", convInfo.index);
+                    EnhancedProgressMonitor[] mon2 = monitor99.split(new double[]{50, 50}, new boolean[]{subEvaluator != null, true});
                     Object currValue = paramSet.getValue(convInfo.index);
 //            pars.put("value", currValue);
 //            pars.put("startIndex", startIndex);
@@ -173,19 +173,19 @@ public class ConvergenceEvaluator {
 //                mon2[1].getProgressValue();
 //            }
                     Object n = evaluator.evaluate(source, mon2[1]);
-                    if(mon2[1].isTerminated()) {
+                    if (mon2[1].isTerminated()) {
                         mon2[1].terminate("Iteration Eval terminated");
                     }
                     if (convInfo.old != null) {
                         convInfo.err = getRelativeError(convInfo.old, n);
                     }
-                    convInfo.lastResult = new ConvergenceResult(paramSet.getName(), source, n, convInfo.index, currValue, convInfo.old,convInfo.err, convInfo.pars, epsilon, convInfo.securityMax - convInfo.security, false,convInfo.subResult);
+                    convInfo.lastResult = new ConvergenceResult(paramSet.getName(), source, n, convInfo.index, currValue, convInfo.old, convInfo.err, convInfo.pars, epsilon, convInfo.securityMax - convInfo.security, false, convInfo.subResult);
                     if (convInfo.err < epsilon) {
                         if (config.getListener() != null) {
                             config.getListener().progress(convInfo.lastResult.setConfig(config));
                         }
                         if (convInfo.security == convInfo.securityMax) {
-                            convInfo.bestResult = new ConvergenceResult(paramSet.getName(), source, n, convInfo.index, currValue, convInfo.old,convInfo.err, convInfo.pars, epsilon, convInfo.securityMax - convInfo.security, true,convInfo.subResult);
+                            convInfo.bestResult = new ConvergenceResult(paramSet.getName(), source, n, convInfo.index, currValue, convInfo.old, convInfo.err, convInfo.pars, epsilon, convInfo.securityMax - convInfo.security, true, convInfo.subResult);
                         }
                         convInfo.security--;
                         if (convInfo.security < 0) {
@@ -214,7 +214,7 @@ public class ConvergenceEvaluator {
 //        if(subEvaluator==null) {
 //            System.out.println("\t###>>" + monitor0.getProgressValue() + " : " + this);
 //        }
-        monitor0.terminate("Convergence "+convInfo.bestResult);
+        monitor0.terminate("Convergence " + convInfo.bestResult);
         return convInfo.bestResult;
     }
 

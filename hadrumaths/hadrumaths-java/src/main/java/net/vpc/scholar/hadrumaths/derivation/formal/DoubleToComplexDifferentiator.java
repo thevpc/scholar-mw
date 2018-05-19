@@ -2,10 +2,10 @@ package net.vpc.scholar.hadrumaths.derivation.formal;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

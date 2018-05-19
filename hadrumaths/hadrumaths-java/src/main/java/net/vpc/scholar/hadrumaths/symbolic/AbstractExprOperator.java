@@ -1,11 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Out;
 
 /**
  * Created by vpc on 8/24/14.
@@ -16,7 +11,6 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
     public Matrix computeMatrix(double x) {
         return Expressions.computeMatrix(this, x);
     }
-
 
 
     @Override
@@ -236,7 +230,7 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
 
     protected boolean isInvariantImpl(Axis axis) {
         for (Expr expr : getSubExpressions()) {
-            if(!expr.isInvariant(axis)){
+            if (!expr.isInvariant(axis)) {
                 return false;
             }
         }
@@ -254,27 +248,27 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
 
     @Override
     public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x,d0,null);
+        return computeComplex(x, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x,y,d0,null);
+        return computeComplex(x, y, d0, null);
     }
 
     @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x,y,z,d0,null);
+        return computeComplex(x, y, z, d0, null);
     }
 
     @Override
     public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x,y,(Domain)null,null);
+        return computeComplex(x, y, (Domain) null, null);
     }
 
 }

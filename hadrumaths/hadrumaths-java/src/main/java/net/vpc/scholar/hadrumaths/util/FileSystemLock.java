@@ -6,7 +6,7 @@ import java.io.*;
  * Simple File Lock implementation
  * Created by vpc on 11/13/16.
  */
-public class FileSystemLock extends AbstractAppLock{
+public class FileSystemLock extends AbstractAppLock {
     private File file;
     //new RandomAccessFile(file,"rw")
     private RandomAccessFile os;
@@ -35,8 +35,6 @@ public class FileSystemLock extends AbstractAppLock{
         File companion = new File(file.getPath() + ".lock");
         return new FileSystemLock(companion);
     }
-
-
 
 
     public boolean isLocked() {
@@ -155,7 +153,7 @@ public class FileSystemLock extends AbstractAppLock{
     public void forceRelease() throws AppLockException {
         if (os == null) {
             file.delete();
-        }else {
+        } else {
             synchronized (FileSystemLock.class) {
                 try {
                     os.close();
