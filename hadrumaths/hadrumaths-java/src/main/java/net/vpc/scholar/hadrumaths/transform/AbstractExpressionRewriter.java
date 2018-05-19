@@ -19,14 +19,14 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
     public static int MAX_REWRITE_TIME_SECONDS = 1;
     private LRUMap<Expr, RewriteResult> cache = new LRUMap<Expr, RewriteResult>(Maths.Config.getSimplifierCacheSize());
     private boolean cacheEnabled = true;
-    protected List<ExprRewriteListener> rewriteListeners = new ArrayList<>();
+    protected List<ExprRewriteSuccessListener> rewriteSuccessListeners = new ArrayList<>();
     protected List<ExprRewriteFailListener> rewriteFailListeners = new ArrayList<>();
 
-    protected ExprRewriteListener listenerListAdapter = new ExprRewriteListener() {
+    protected ExprRewriteSuccessListener listenerSuccessListAdapter = new ExprRewriteSuccessListener() {
         @Override
-        public void onRewriteExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue) {
-            for (ExprRewriteListener rewriteListener : rewriteListeners) {
-                rewriteListener.onRewriteExpr(rewriter, oldValue, newValue);
+        public void onRewriteSuccessExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue) {
+            for (ExprRewriteSuccessListener rewriteSuccessListener : rewriteSuccessListeners) {
+                rewriteSuccessListener.onRewriteSuccessExpr(rewriter, oldValue, newValue);
             }
         }
     };
@@ -133,19 +133,23 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
 
     public abstract RewriteResult rewriteImpl(Expr e);
 
-    public ExprRewriteListener[] getRewriteListeners() {
-        return rewriteListeners.toArray(new ExprRewriteListener[rewriteListeners.size()]);
+    public ExprRewriteSuccessListener[] getRewriteSuccessListeners() {
+        return rewriteSuccessListeners.toArray(new ExprRewriteSuccessListener[rewriteSuccessListeners.size()]);
     }
 
     @Override
-    public ExpressionRewriter addRewriteListener(ExprRewriteListener listener) {
-        rewriteListeners.add(listener);
+    public ExpressionRewriter addRewriteSuccessListener(ExprRewriteSuccessListener listener) {
+        if(listener!=null) {
+            rewriteSuccessListeners.add(listener);
+        }
         return this;
     }
 
     @Override
-    public ExpressionRewriter removeRewriteListener(ExprRewriteListener listener) {
-        rewriteListeners.remove(listener);
+    public ExpressionRewriter removeRewriteSuccessListener(ExprRewriteSuccessListener listener) {
+        if(listener!=null) {
+            rewriteSuccessListeners.remove(listener);
+        }
         return this;
     }
 
@@ -155,13 +159,31 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
 
     @Override
     public ExpressionRewriter addRewriteFailListener(ExprRewriteFailListener listener) {
-        rewriteFailListeners.add(listener);
+        if(listener!=null) {
+            rewriteFailListeners.add(listener);
+        }
         return this;
     }
 
     @Override
     public ExpressionRewriter removeRewriteFailListener(ExprRewriteFailListener listener) {
-        rewriteFailListeners.remove(listener);
+        if(listener!=null) {
+            rewriteFailListeners.remove(listener);
+        }
+        return this;
+    }
+
+    @Override
+    public ExpressionRewriter addRewriteListener(ExprRewriteListener listener) {
+        addRewriteSuccessListener(listener);
+        addRewriteFailListener(listener);
+        return this;
+    }
+
+    @Override
+    public ExpressionRewriter removeRewriteListener(ExprRewriteListener listener) {
+        removeRewriteSuccessListener(listener);
+        removeRewriteFailListener(listener);
         return this;
     }
 }

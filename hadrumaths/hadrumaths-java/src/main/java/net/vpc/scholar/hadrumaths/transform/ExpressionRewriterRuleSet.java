@@ -21,9 +21,9 @@ import java.util.*;
  * @author vpc
  */
 public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
-    public static int DEBUG_REWRITE_ONCE=0;
-    public static int DEBUG_REWRITE_SUCCESS=0;
-    public static int DEBUG_REWRITE_FAIL=0;
+//    public static int DEBUG_REWRITE_ONCE=0;
+//    public static int DEBUG_REWRITE_SUCCESS=0;
+//    public static int DEBUG_REWRITE_FAIL=0;
     public List<ExpressionRewriterRule> rules = new ArrayList<ExpressionRewriterRule>();
     public ClassMap<List<ExpressionRewriterRule>> mapRules = new ClassMap<List<ExpressionRewriterRule>>(Expr.class, (Class) List.class);
     public Map<Class, List<ExpressionRewriterRule>> cachedMapRules = new HashMap<Class, List<ExpressionRewriterRule>>();
@@ -147,15 +147,12 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     }
 
     public RewriteResult rewriteOnce(Expr e) {
-        DEBUG_REWRITE_ONCE++;
+//        DEBUG_REWRITE_ONCE++;
         Expr curr = e;
         boolean modified = false;
         Class<? extends Expr> cls = e.getClass();
         int appliedRulesCount = 0;
         List<ExpressionRewriterRule> rulesByClass = getRulesByClass(cls);
-//        if(rulesByClass.size()==0){
-//            rulesByClass = getRulesByClass(cls);
-//        }
         int bestEfforts = 0;
         boolean debugExpressionRewrite = Maths.Config.isDebugExpressionRewrite();
         for (ExpressionRewriterRule rule : rulesByClass) {
@@ -180,14 +177,14 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             if (nextResult != null) {
                 Expr next = nextResult.getValue();
                 if (nextResult.isUnmodified()) {//next next != null && !next.equals(curr)
-                    DEBUG_REWRITE_FAIL++;
+//                    DEBUG_REWRITE_FAIL++;
                     for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
                         rewriteListener.onUnmodifiedExpr(this, e);
                     }
                 } else if (nextResult.isRewritten()) {//next next != null && !next.equals(curr)
-                    DEBUG_REWRITE_SUCCESS++;
-                    for (ExprRewriteListener rewriteListener : rewriteListeners) {
-                        rewriteListener.onRewriteExpr(this, e, next);
+//                    DEBUG_REWRITE_SUCCESS++;
+                    for (ExprRewriteSuccessListener rewriteListener : rewriteSuccessListeners) {
+                        rewriteListener.onRewriteSuccessExpr(this, e, next);
                     }
                     if (debugExpressionRewrite) {
                         if (next.toString().equals(curr.toString()) && !(curr instanceof Any)) {
@@ -222,7 +219,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     break;
                 }
             } else {
-                DEBUG_REWRITE_FAIL++;
+//                DEBUG_REWRITE_FAIL++;
                 for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
                     rewriteListener.onUnmodifiedExpr(this, e);
                 }

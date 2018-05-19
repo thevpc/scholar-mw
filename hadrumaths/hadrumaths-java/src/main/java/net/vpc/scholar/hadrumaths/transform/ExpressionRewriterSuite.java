@@ -53,13 +53,13 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
 
     public void add(ExpressionRewriter set) {
         sets.add(set);
-        set.addRewriteListener(listenerListAdapter);
+        set.addRewriteSuccessListener(listenerSuccessListAdapter);
         set.addRewriteFailListener(listenerFailListAdapter);
     }
 
     public void remove(ExpressionRewriter set) {
         sets.remove(set);
-        set.removeRewriteListener(listenerListAdapter);
+        set.removeRewriteSuccessListener(listenerSuccessListAdapter);
         set.removeRewriteFailListener(listenerFailListAdapter);
     }
 

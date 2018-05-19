@@ -18,15 +18,19 @@ public interface ExpressionRewriter {
 
     Expr rewriteOrNull(Expr e);
 
-    ExprRewriteListener[] getRewriteListeners();
+    ExprRewriteSuccessListener[] getRewriteSuccessListeners();
 
-    ExpressionRewriter addRewriteListener(ExprRewriteListener listener);
+    ExpressionRewriter addRewriteSuccessListener(ExprRewriteSuccessListener listener);
 
-    ExpressionRewriter removeRewriteListener(ExprRewriteListener listener);
+    ExpressionRewriter removeRewriteSuccessListener(ExprRewriteSuccessListener listener);
 
     ExprRewriteFailListener[] getRewriteFailListeners();
 
     ExpressionRewriter addRewriteFailListener(ExprRewriteFailListener listener);
 
     ExpressionRewriter removeRewriteFailListener(ExprRewriteFailListener listener);
+
+    ExpressionRewriter addRewriteListener(ExprRewriteListener listener);
+
+    public ExpressionRewriter removeRewriteListener(ExprRewriteListener listener);
 }
