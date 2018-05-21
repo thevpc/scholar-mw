@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.CacheEnabled;
+import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.util.LRUMap;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
@@ -24,9 +24,9 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
 
     protected ExprRewriteSuccessListener listenerSuccessListAdapter = new ExprRewriteSuccessListener() {
         @Override
-        public void onRewriteSuccessExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue) {
+        public void onModifiedExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue, boolean bestEffort) {
             for (ExprRewriteSuccessListener rewriteSuccessListener : rewriteSuccessListeners) {
-                rewriteSuccessListener.onRewriteSuccessExpr(rewriter, oldValue, newValue);
+                rewriteSuccessListener.onModifiedExpr(rewriter, oldValue, newValue, bestEffort);
             }
         }
     };

@@ -1,13 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,28 +76,28 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                 z1 = bounds1.getYMin();
                 t1 = bounds1.getXMin();
                 t2 = bounds1.getXMax();
-                z0 = Maths.min(bounds1.ywidth(), bounds2.ywidth());
+                z0 = Math.min(bounds1.ywidth(), bounds2.ywidth());
                 break;
             }
             case 'S': {
                 z1 = bounds1.getYMax();
                 t1 = bounds1.getXMin();
                 t2 = bounds1.getXMax();
-                z0 = Maths.min(bounds1.ywidth(), bounds2.ywidth());
+                z0 = Math.min(bounds1.ywidth(), bounds2.ywidth());
                 break;
             }
             case 'W': {
                 z1 = bounds1.getXMin();
                 t1 = bounds1.getYMin();
                 t2 = bounds1.getYMax();
-                z0 = Maths.min(bounds1.xwidth(), bounds2.xwidth());
+                z0 = Math.min(bounds1.xwidth(), bounds2.xwidth());
                 break;
             }
             case 'E': {
                 z1 = bounds1.getXMax();
                 t1 = bounds1.getYMin();
                 t2 = bounds1.getYMax();
-                z0 = Maths.min(bounds1.xwidth(), bounds2.xwidth());
+                z0 = Math.min(bounds1.xwidth(), bounds2.xwidth());
                 break;
             }
         }
@@ -152,14 +150,14 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
         }
         double s = 0;
         if (a2 >= a1 && a2 < b1) {
-            s = Maths.min(b1, b2) - a2;
+            s = Math.min(b1, b2) - a2;
         } else if (b2 >= a1 && b2 < b1) {
-            s = b2 - Maths.max(a1, a2);
+            s = b2 - Math.max(a1, a2);
         }
         if (s == 0) {
             return 0;
         }
-        double r = Maths.min(b1 - a1, b2 - a2);
+        double r = Math.min(b1 - a1, b2 - a2);
         if (r <= 0) {
             return 0;
         }
@@ -236,9 +234,9 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 x0 = bounds1.getXMax();
                             }
                             if (x0 > 0) {
-                                double ww = Math.abs(Maths.min(bounds1.getXwidth(), bounds2.getXwidth()));
-                                double h1 = Maths.max(bounds1.getYMin(), bounds2.getYMin());
-                                double h2 = Maths.min(bounds1.getYMax(), bounds2.getYMax());
+                                double ww = Math.abs(Math.min(bounds1.getXwidth(), bounds2.getXwidth()));
+                                double h1 = Math.max(bounds1.getYMin(), bounds2.getYMin());
+                                double h2 = Math.min(bounds1.getYMax(), bounds2.getYMax());
                                 double hh = h2 - h1;
                                 if (ww > 1 && hh > 1) {
                                     MeshZone zzone = new MeshZone(Domain.forPoints(x0 - ww / 2, h1, ww, hh),  MeshZoneType.ATTACHX);
@@ -260,9 +258,9 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 y0 = bounds1.getYMax();
                             }
                             if (y0 > 0) {
-                                double hh = Math.abs(Maths.min(bounds1.getYwidth(), bounds2.getYwidth()));
-                                double w1 = Maths.max(bounds1.getXMin(), bounds2.getXMin());
-                                double w2 = Maths.min(bounds1.getXMax(), bounds2.getXMax());
+                                double hh = Math.abs(Math.min(bounds1.getYwidth(), bounds2.getYwidth()));
+                                double w1 = Math.max(bounds1.getXMin(), bounds2.getXMin());
+                                double w2 = Math.min(bounds1.getXMax(), bounds2.getXMax());
                                 double ww = w2 - w1;
                                 if (hh > 1 && ww > 1) {
                                     MeshZone zzone = new MeshZone(Domain.forPoints(w1, y0 - hh / 2, ww, hh),  MeshZoneType.ATTACHY);

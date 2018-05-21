@@ -4,9 +4,9 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.Serializable;
 
@@ -73,7 +73,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         return hermitian ? complex.conj() : complex;
     }
 
-    public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor) {
+    public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
         EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
@@ -116,7 +116,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                                 for (int q = 0; q < finalGp.length; q++) {
                                     DoubleToComplex gpq = finalGp[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp.evalDC(hermitian, gpq, finalFn[n].toDC());
+                                        gfps[q][n] = finalSp.evalDC(gpq, finalFn[n].toDC());
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -168,7 +168,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                             if (!finalDoubleValue1) {
                                 for (int q = 0; q < finalGp2.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp1.eval(hermitian, finalGp2[q], finalFn1[n]);
+                                        gfps[q][n] = finalSp1.eval(finalGp2[q], finalFn1[n]);
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -204,7 +204,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                             if (!finalDoubleValue2) {
                                 for (int q = 0; q < finalGp3.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp2.eval(hermitian, finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
+                                        gfps[q][n] = finalSp2.eval(finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -251,7 +251,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                             if (!finalDoubleValue3) {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp3.eval(hermitian, finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y));
+                                        gfps[q][n] = finalSp3.eval(finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y));
                                         mon.inc(monMessage);
                                     }
                                 }

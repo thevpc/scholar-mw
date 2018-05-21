@@ -7,9 +7,9 @@ import net.vpc.scholar.hadrumaths._
   */
 object PlotExamples extends App{
   val d1 = domain(-5 * PI -> 5 * PI, -5 * PI -> 5 * PI)
-  val d2 = domain(0 -> 2 * PI, -(2 * PI) -> 2 * PI)
+  val d2 = domain(0.0 -> 2 * PI, -(2 * PI) -> 2 * PI)
 //  var f=sin(2*X)*cos(3*PI/5*(Y-5))*d2
-  var f=tan(X)*domain(0 -> 2*PI)
+  var f=tan(X)*domain(0.0 -> 2*PI)
 
   Plot.update("Titi").samples(Samples.adaptive(100,1000)).titles().asReal().plot(f)
 

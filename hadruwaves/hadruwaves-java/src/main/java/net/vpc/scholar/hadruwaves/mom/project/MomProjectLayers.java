@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import net.vpc.scholar.hadruwaves.mom.BoxLimit;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

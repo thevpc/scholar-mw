@@ -7,10 +7,10 @@ import net.vpc.scholar.hadrumaths.cache.DefaultObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.HFile;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.VoidMonitoredAction;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.IOException;
 
@@ -94,7 +94,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
         return hermitian ? complex.conj() : complex;
     }
 
-    public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, boolean hermitian, AxisXY axis, ProgressMonitor monitor) {
+    public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
         EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monMessage = name;
         if (sp == null) {
@@ -138,7 +138,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                                 for (int q = 0; q < finalGp1.length; q++) {
                                     DoubleToComplex gpq = finalGp1[q].toDC();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp.evalDC(hermitian, gpq, finalFn1[n].toDC()));
+                                        gfps.set(q, n, finalSp.evalDC(gpq, finalFn1[n].toDC()));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -200,7 +200,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!finalDoubleValue1) {
                                 for (int q = 0; q < finalGp3.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp1.eval(hermitian, finalGp3[q], finalFn2[n]));
+                                        gfps.set(q, n, finalSp1.eval(finalGp3[q], finalFn2[n]));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -235,7 +235,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!doubleValue) {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp2.eval(hermitian, finalGp4[q].toDV().getComponent(Axis.X), finalFn3[n].toDV().getComponent(Axis.X)));
+                                        gfps.set(q, n, finalSp2.eval(finalGp4[q].toDV().getComponent(Axis.X), finalFn3[n].toDV().getComponent(Axis.X)));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -264,7 +264,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
                             if (!finalDoubleValue3) {
                                 for (int q = 0; q < finalGp5.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps.set(q, n, finalSp3.eval(hermitian, finalGp5[q].toDV().getComponent(Axis.Y), finalFn4[n].toDV().getComponent(Axis.Y)));
+                                        gfps.set(q, n, finalSp3.eval(finalGp5[q].toDV().getComponent(Axis.Y), finalFn4[n].toDV().getComponent(Axis.Y)));
                                         mon.inc(monMessage);
                                     }
                                 }

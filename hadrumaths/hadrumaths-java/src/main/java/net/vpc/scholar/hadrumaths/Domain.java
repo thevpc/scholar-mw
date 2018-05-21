@@ -6,8 +6,8 @@ import net.vpc.scholar.hadrumaths.geom.Surface;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -1864,6 +1864,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
 
+
+
     @Override
     public Expr mul(Complex other) {
         if (other.isReal()) {
@@ -2117,4 +2119,23 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return Collections.EMPTY_SET;
     }
 
+    @Override
+    public Expr rdiv(double other) {
+        return Maths.expr(other).div(this);
+    }
+
+    @Override
+    public Expr rmul(double other) {
+        return Maths.expr(other).mul(this);
+    }
+
+    @Override
+    public Expr radd(double other) {
+        return Maths.expr(other).add(this);
+    }
+
+    @Override
+    public Expr rsub(double other) {
+        return Maths.expr(other).sub(this);
+    }
 }

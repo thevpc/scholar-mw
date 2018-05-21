@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -30,7 +30,8 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
     private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("OPTIMIZE_SP");
 
-    public FormalScalarProductOperator(ScalarProductOperator fallback) {
+    public FormalScalarProductOperator(boolean hermitian,ScalarProductOperator fallback) {
+        super(hermitian);
         this.fallback = fallback;
         if (fallback != null) {
             fallbackHelper = new OperatorToFormalScalarProductHelper(this.fallback);
@@ -98,6 +99,11 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     //
 //    public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class) {
 //    }
+
+    public boolean isSupported(Class f1Class, Class f2Class, int domainDimension) {
+        return getScalarProduct0(f1Class,f2Class, domainDimension) !=null;
+    }
+
     public FormalScalarProductHelper getScalarProduct0(Class f1Class, Class f2Class, int domainDimension) {
         ClassClassKey c0 = new ClassClassKey(f1Class, f2Class, domainDimension);
         FormalScalarProductHelper p = cache.get(c0);
@@ -271,6 +277,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         if (fallback != null) {
             sb.add("fallback", fallback);
         }
+        sb.add("hermitian", isHermitian());
         sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
         return sb;
     }
@@ -278,43 +285,31 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FormalScalarProductOperator)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         FormalScalarProductOperator that = (FormalScalarProductOperator) o;
 
-        if (expressionRewriter != null ? !expressionRewriter.equals(that.expressionRewriter) : that.expressionRewriter != null)
+        if (map != null ? !map.equals(that.map) : that.map != null) return false;
+        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
+        if (noHelperCache != null ? !noHelperCache.equals(that.noHelperCache) : that.noHelperCache != null)
             return false;
         if (fallback != null ? !fallback.equals(that.fallback) : that.fallback != null) return false;
-        if (map != null ? !map.equals(that.map) : that.map != null) return false;
-
-        return true;
+        if (fallbackHelper != null ? !fallbackHelper.equals(that.fallbackHelper) : that.fallbackHelper != null)
+            return false;
+        return expressionRewriter != null ? expressionRewriter.equals(that.expressionRewriter) : that.expressionRewriter == null;
     }
 
     @Override
     public int hashCode() {
-        int result = map != null ? map.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (map != null ? map.hashCode() : 0);
+        result = 31 * result + (cache != null ? cache.hashCode() : 0);
+        result = 31 * result + (noHelperCache != null ? noHelperCache.hashCode() : 0);
         result = 31 * result + (fallback != null ? fallback.hashCode() : 0);
+        result = 31 * result + (fallbackHelper != null ? fallbackHelper.hashCode() : 0);
         result = 31 * result + (expressionRewriter != null ? expressionRewriter.hashCode() : 0);
         return result;
-    }
-
-//    public static void main(String[] args) {
-//        for (int i = 0; i < 2; i++) {
-//            System.out.println("-----------------------------");
-//            FormalScalarProductOperator formalScalarProductOperator = new FormalScalarProductOperator(null);
-//            dump(formalScalarProductOperator);
-////            for (ExpressionRewriter set : formalScalarProductOperator.expressionRewriter.sets) {
-////                ExpressionRewriterRuleSet s=(ExpressionRewriterRuleSet)set;
-////                dump(s.mapRules);
-////            }
-////            for (Map.Entry<ClassClassKey, FormalScalarProductHelper> entry : formalScalarProductOperator.map.entrySet()) {
-////                System.out.println(entry.getValue().getClass().getSimpleName()+":"+entry.getKey().hashCode()+":"+entry.getValue().hashCode());
-////            }
-//        }
-//    }
-
-    private static void dump(Object o) {
-        System.out.println(o.getClass().getSimpleName() + ":" + o.hashCode());
     }
 
     private static class OperatorToFormalScalarProductHelper implements FormalScalarProductHelper {

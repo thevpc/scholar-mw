@@ -9,18 +9,6 @@ public class FastMessageFormat {
     private Map<String, Evaluator> vars = new HashMap<>();
     private List<Evaluator> items = new ArrayList<>();
 
-    public static void main(String[] args) {
-        FastMessageFormat f = new FastMessageFormat();
-        f.parse("${world}me HEllo ")
-                .addVar("world", new Evaluator() {
-                    @Override
-                    public String eval(Map<String, Object> context) {
-                        return "Key";
-                    }
-                });
-        System.out.println(f.format(null));
-    }
-
     public FastMessageFormat parse(String message) {
         char[] chars = message.toCharArray();
         int i = 0;

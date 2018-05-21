@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
-import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 
 import javax.swing.*;

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TestInfo;
+import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 

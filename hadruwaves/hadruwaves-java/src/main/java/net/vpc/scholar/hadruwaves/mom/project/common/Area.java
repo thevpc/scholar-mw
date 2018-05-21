@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.project.common;
 import java.awt.BasicStroke;
 import java.awt.Color;
 
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;

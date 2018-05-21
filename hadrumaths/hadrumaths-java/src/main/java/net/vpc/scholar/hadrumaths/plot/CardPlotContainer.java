@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.util.swingext.JListCardPanel;
+import net.vpc.scholar.hadrumaths.plot.swings.JListCardPanel;
 
 import javax.swing.*;
 import java.awt.*;

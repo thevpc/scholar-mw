@@ -27,7 +27,7 @@ import net.vpc.scholar.hadruwaves.mom.project.common.AreaFilter;
 import net.vpc.scholar.hadruwaves.mom.project.common.AreaGroup;
 import net.vpc.scholar.hadruwaves.mom.project.common.DefaultAreaFilter;
 import net.vpc.scholar.hadruwaves.mom.sources.planar.CstPlanarSource;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.str;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**

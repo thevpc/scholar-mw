@@ -8,7 +8,7 @@ package net.vpc.scholar.hadruwaves.mom.project.gpmesher;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

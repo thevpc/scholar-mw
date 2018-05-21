@@ -7,12 +7,13 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.MonitoredAction;
+import net.vpc.scholar.hadrumaths.util.MapUtils;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.util.*;
 

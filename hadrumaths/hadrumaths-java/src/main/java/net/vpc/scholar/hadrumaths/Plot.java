@@ -4,9 +4,12 @@ import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
+import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.swingext.ColorChooserEditor;
-import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.plot.swings.ColorChooserEditor;
+import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
@@ -861,7 +864,7 @@ public final class Plot {
             g = new ButtonGroup();
             for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
                 f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
-                f.setSelected(HadrumathsUtils.notNullValue(model.getConverter()) == ComplexAsDouble.ABS);
+                f.setSelected(PlatformUtils.notnull(model.getConverter(),ComplexAsDouble.ABS) == ComplexAsDouble.ABS);
                 g.add(f);
                 functionsMenu.add(f);
             }

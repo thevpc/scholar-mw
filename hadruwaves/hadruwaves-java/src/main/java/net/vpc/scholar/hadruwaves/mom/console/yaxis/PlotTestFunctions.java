@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.ArrayList;

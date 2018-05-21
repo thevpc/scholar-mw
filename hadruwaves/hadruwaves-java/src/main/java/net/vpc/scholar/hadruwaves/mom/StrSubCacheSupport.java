@@ -3,11 +3,8 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
-import net.vpc.scholar.hadrumaths.util.HFile;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-
-import java.io.File;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.

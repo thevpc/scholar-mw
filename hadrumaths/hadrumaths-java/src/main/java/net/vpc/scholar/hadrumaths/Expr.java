@@ -242,4 +242,15 @@ public interface Expr extends Serializable {
     Expr sub(Expr other);
 
     Expr negate();
+
+    Expr neg();
+
+    Expr rdiv(double other) ;
+
+    Expr rmul(double other) ;
+
+    Expr radd(double other) ;
+
+    Expr rsub(double other) ;
+
 }

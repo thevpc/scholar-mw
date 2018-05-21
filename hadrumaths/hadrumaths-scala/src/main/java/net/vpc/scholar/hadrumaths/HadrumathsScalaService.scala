@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths
 
 import java.util.logging.{Level, Logger}
 
-import net.vpc.scholar.hadrumaths.util.IOUtils
+import net.vpc.scholar.hadrumaths.io.IOUtils
 
 /**
   * Created by vpc on 7/18/17.

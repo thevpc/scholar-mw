@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.geom.GeometryList;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

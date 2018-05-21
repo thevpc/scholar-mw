@@ -6,8 +6,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 

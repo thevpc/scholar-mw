@@ -10,9 +10,16 @@ package net.vpc.scholar.hadrumaths.expeval;
  */
 public abstract class AbstractExpressionNode implements ExpressionNode {
     private String name;
+    private Class resultType;
 
-    public AbstractExpressionNode(String name) {
+    public AbstractExpressionNode(String name,Class resultType) {
         this.name = name;
+        this.resultType = resultType;
+    }
+
+    @Override
+    public Class getExprType() {
+        return resultType;
     }
 
     @Override

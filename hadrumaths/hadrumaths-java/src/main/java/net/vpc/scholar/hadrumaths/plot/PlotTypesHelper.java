@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.util.CollectionUtils;
+import net.vpc.scholar.hadrumaths.util.CollectionsUtils;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -357,9 +357,9 @@ public class PlotTypesHelper {
         } else if (obj instanceof Collection) {
             return (((Collection) obj).toArray());
         } else if (obj instanceof Iterable) {
-            return CollectionUtils.toList((Iterable) obj).toArray();
+            return CollectionsUtils.toList((Iterable) obj).toArray();
         } else if (obj instanceof Iterator) {
-            return CollectionUtils.toList((Iterator) obj).toArray();
+            return CollectionsUtils.toList((Iterator) obj).toArray();
         }
         throw new IllegalArgumentException("Not an Object Array");
     }

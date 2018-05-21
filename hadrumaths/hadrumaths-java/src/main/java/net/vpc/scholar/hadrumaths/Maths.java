@@ -1,8 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
@@ -19,7 +21,14 @@ import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
+import net.vpc.scholar.hadrumaths.dump.DumpManager;
+import net.vpc.scholar.hadrumaths.io.FailStrategy;
+import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
+import net.vpc.scholar.hadrumaths.io.HFileSystem;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.monitors.LongIterationComputationMonitorInc;
+import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import sun.misc.Unsafe;
 
 import java.awt.*;
@@ -375,9 +384,7 @@ public final class Maths {
     private Maths() {
     }
 
-    public static DomainExpr xdomain(Expr min, Expr max) {
-        return DomainExpr.forBounds(min, max);
-    }
+
 
     public static Domain xdomain(double min, double max) {
         return Domain.forBounds(min, max);
@@ -399,23 +406,117 @@ public final class Maths {
         return DomainExpr.forBounds(Complex.NEGATIVE_INFINITY, Complex.POSITIVE_INFINITY, Complex.NEGATIVE_INFINITY, Complex.POSITIVE_INFINITY, min, max);
     }
 
-    //    public static Domain domain(double min,double max){
-//        return Domain.forBounds(min,max);
-//    }
-//
-    public static Domain xydomain(double xmin, double xmax, double ymin, double ymax) {
+    public static Domain domain(RightArrowUplet2.Double u) {
+        return Domain.forBounds(u.getFirst(), u.getSecond());
+    }
+
+    public static Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
+        return Domain.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond());
+    }
+
+    public static Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
+        return Domain.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond(), uz.getFirst(), uz.getSecond());
+    }
+
+    public static Expr domain(RightArrowUplet2.Expr u) {
+        if (u.getFirst().isDouble() && u.getSecond().isDouble()) {
+            return Domain.forBounds(u.getFirst().toDouble(), u.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(u.getFirst(), u.getSecond());
+    }
+
+    public static Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
+        if (ux.getFirst().isDouble() && ux.getSecond().isDouble() && uy.getFirst().isDouble() && uy.getSecond().isDouble()) {
+            return Domain.forBounds(ux.getFirst().toDouble(), ux.getSecond().toDouble(), uy.getFirst().toDouble(), uy.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond());
+    }
+
+    public static Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
+        if (ux.getFirst().isDouble() && ux.getSecond().isDouble() && uy.getFirst().isDouble() && uy.getSecond().isDouble() && uz.getFirst().isDouble() && uz.getSecond().isDouble()) {
+            return Domain.forBounds(ux.getFirst().toDouble(), ux.getSecond().toDouble(), uy.getFirst().toDouble(), uy.getSecond().toDouble(), uz.getFirst().toDouble(), uz.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond(), uz.getFirst(), uz.getSecond());
+    }
+
+    public static DomainExpr domain(Expr min, Expr max) {
+        return DomainExpr.forBounds(min, max);
+    }
+
+    public static Domain domain(double min, double max) {
+        return Domain.forBounds(min, max);
+    }
+
+    public static Domain domain(double xmin, double xmax, double ymin, double ymax) {
         return Domain.forBounds(xmin, xmax, ymin, ymax);
     }
 
-    public static DomainExpr xydomain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
+    public static DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
         return DomainExpr.forBounds(xmin, xmax, ymin, ymax);
     }
 
-    public static Domain xyzdomain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+    public static Domain domain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
         return Domain.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
-    public static DomainExpr xyzdomain(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
+    public static DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
+        return DomainExpr.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
+    }
+
+    public static Domain II(RightArrowUplet2.Double u) {
+        return Domain.forBounds(u.getFirst(), u.getSecond());
+    }
+
+    public static Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
+        return Domain.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond());
+    }
+
+    public static Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
+        return Domain.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond(), uz.getFirst(), uz.getSecond());
+    }
+
+    public static Expr II(RightArrowUplet2.Expr u) {
+        if (u.getFirst().isDouble() && u.getSecond().isDouble()) {
+            return Domain.forBounds(u.getFirst().toDouble(), u.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(u.getFirst(), u.getSecond());
+    }
+
+    public static Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
+        if (ux.getFirst().isDouble() && ux.getSecond().isDouble() && uy.getFirst().isDouble() && uy.getSecond().isDouble()) {
+            return Domain.forBounds(ux.getFirst().toDouble(), ux.getSecond().toDouble(), uy.getFirst().toDouble(), uy.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond());
+    }
+
+    public static Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
+        if (ux.getFirst().isDouble() && ux.getSecond().isDouble() && uy.getFirst().isDouble() && uy.getSecond().isDouble() && uz.getFirst().isDouble() && uz.getSecond().isDouble()) {
+            return Domain.forBounds(ux.getFirst().toDouble(), ux.getSecond().toDouble(), uy.getFirst().toDouble(), uy.getSecond().toDouble(), uz.getFirst().toDouble(), uz.getSecond().toDouble());
+        }
+        return DomainExpr.forBounds(ux.getFirst(), ux.getSecond(), uy.getFirst(), uy.getSecond(), uz.getFirst(), uz.getSecond());
+    }
+
+    public static DomainExpr II(Expr min, Expr max) {
+        return DomainExpr.forBounds(min, max);
+    }
+
+    public static Domain II(double min, double max) {
+        return Domain.forBounds(min, max);
+    }
+
+    public static Domain II(double xmin, double xmax, double ymin, double ymax) {
+        return Domain.forBounds(xmin, xmax, ymin, ymax);
+    }
+
+    public static DomainExpr II(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
+        return DomainExpr.forBounds(xmin, xmax, ymin, ymax);
+    }
+
+    public static Domain II(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+        return Domain.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
+    }
+
+    public static DomainExpr II(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
         return DomainExpr.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
@@ -2113,11 +2214,31 @@ public final class Maths {
     }
 
     public static boolean isReal(Expr e) {
-        return e.toDC().getImagDD().isZero();
+        if (e.isDD()) {
+            return true;
+        }
+        if (e.isDC()) {
+            return e.toDC().getImagDD().isZero();
+        }
+        if (e.isDM()) {
+            ComponentDimension cd = e.getComponentDimension();
+            for (int i = 0; i < cd.rows; i++) {
+                for (int j = 0; j < cd.columns; j++) {
+                    if (!isReal(e.toDM().getComponent(i, j))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+        //return e.toDC().getImagDD().isZero();
     }
 
     public static boolean isImag(Expr e) {
-        return e.toDC().getRealDD().isZero();
+        if (e.isZero()) {
+            return false;
+        }
+        return !isReal(e);
     }
 
     public static Expr abs(Expr e) {
@@ -3837,7 +3958,7 @@ public final class Maths {
         return new ReadOnlyTVector<Expr>($EXPR, false, tVectorModel);
     }
 
-    private static TMatrix<Complex> resolveBestScalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ScalarProductOperator sp, ProgressMonitor monitor) {
+    private static TMatrix<Complex> resolveBestScalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ScalarProductOperator sp, ProgressMonitor monitor) {
         int rows = gp.length;
         int columns = fn.length;
 
@@ -3891,28 +4012,28 @@ public final class Maths {
         }
 
         if (!Config.memoryCanStores(24L * rows * columns)) {
-            return new MatrixScalarProductCache(Config.getLargeMatrixFactory()).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
+            return new MatrixScalarProductCache(Config.getLargeMatrixFactory()).evaluate(sp, fn, gp, axis, monitor).toMatrix();
         }
         if (doubleValue) {
-            return new MemDoubleScalarProductCache(scalarValue).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
+            return new MemDoubleScalarProductCache(scalarValue).evaluate(sp, fn, gp, axis, monitor).toMatrix();
         }
-        return new MemComplexScalarProductCache(hermitian, doubleValue, scalarValue).evaluate(sp, fn, gp, hermitian, axis, monitor).toMatrix();
+        return new MemComplexScalarProductCache(sp.isHermitian(), doubleValue, scalarValue).evaluate(sp, fn, gp, axis, monitor).toMatrix();
     }
 
-    public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
+    public static TMatrix<Complex> scalarProductCache(Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
     }
 
-    public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
+    public static TMatrix<Complex> scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
     }
 
-    public static TMatrix<Complex> scalarProductCache(boolean hermitian, ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getScalarProductOperator(), monitor);
+    public static TMatrix<Complex> scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(gp, fn, axis, sp, monitor);
     }
 
-    public static TMatrix<Complex> scalarProductCache(boolean hermitian, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(hermitian, gp, fn, axis, Config.getScalarProductOperator(), monitor);
+    public static TMatrix<Complex> scalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
+        return resolveBestScalarProductCache(gp, fn, axis, Config.getScalarProductOperator(), monitor);
     }
 
     public static Expr gate(Axis axis, double a, double b) {
@@ -3989,133 +4110,74 @@ public final class Maths {
         return Config.getScalarProductOperator().evalDD(null, f1, f2);
     }
 
-    public static Vector scalarProduct(boolean hermitian, Expr f1, TVector<Expr> f2) {
+    public static Vector scalarProduct(Expr f1, TVector<Expr> f2) {
         VectorCell spfact = new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(hermitian, f1, f2.get(index));
+                return scalarProduct(f1, f2.get(index));
             }
         };
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(boolean hermitian, Expr f1, TMatrix<Expr> f2) {
+    public static Matrix scalarProduct(Expr f1, TMatrix<Expr> f2) {
         return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return scalarProduct(hermitian, f1, f2.get(row, column));
+                return scalarProduct(f1, f2.get(row, column));
             }
         });
     }
 
-    public static Vector scalarProduct(boolean hermitian, TVector<Expr> f2, Expr f1) {
+    public static Vector scalarProduct(TVector<Expr> f2, Expr f1) {
         VectorCell spfact = new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(hermitian, f2.get(index), f1);
+                return scalarProduct(f2.get(index), f1);
             }
         };
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(boolean hermitian, TMatrix<Expr> f2, Expr f1) {
+    public static Matrix scalarProduct(TMatrix<Expr> f2, Expr f1) {
         return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
-                return scalarProduct(hermitian, f2.get(row, column), f1);
+                return scalarProduct(f2.get(row, column), f1);
             }
         });
     }
 
-    public static Complex scalarProduct(boolean hermitian, Domain domain, Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(hermitian, domain, f1, f2);
-    }
-
-    public static Complex scalarProduct(boolean hermitian, Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(hermitian, f1, f2);
+    public static Complex scalarProduct(Domain domain, Expr f1, Expr f2) {
+        return Config.getScalarProductOperator().eval(domain, f1, f2);
     }
 
     public static Complex scalarProduct(Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(false, f1, f2);
+        return Config.getScalarProductOperator().eval(f1, f2);
     }
-
-    public static Complex hscalarProduct(Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(true, f1, f2);
-    }
-//    public static Complex scalarProduct(DomainXY domain, IDCxy f1, IDCxy f2) {
-//        return getScalarProductOperator().process(domain, f1, f2);
-//    }//
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
-        return scalarProductMatrix(false, g, f);
-    }
-
-    public static Matrix hscalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
-        return scalarProductMatrix(false, g, f);
-    }
-
-    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
-        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, null));
+        return matrix(Config.getScalarProductOperator().eval(g, f, null));
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f) {
-        return scalarProduct(false, g, f);
-    }
-
-    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f) {
-        return scalarProduct(true, g, f);
-    }
-
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, null);
+        return Config.getScalarProductOperator().eval(g, f, null);
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return scalarProduct(false, g, f, monitor);
-    }
-
-    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return scalarProduct(true, g, f, monitor);
-    }
-
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, monitor);
+        return Config.getScalarProductOperator().eval(g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return scalarProductMatrix(false, g, f, monitor);
-    }
-
-    public static Matrix hscalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return scalarProductMatrix(true, g, f, monitor);
-    }
-
-    public static Matrix scalarProductMatrix(boolean hermitian, TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, monitor));
+        return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return scalarProduct(false, g, f, axis, monitor);
-    }
-
-    public static TMatrix<Complex> hscalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return scalarProduct(true, g, f, axis, monitor);
-    }
-
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, axis, monitor);
+        return Config.getScalarProductOperator().eval(g, f, axis, monitor);
     }
 
     public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
-        return scalarProductMatrix(false, g, f);
-    }
-
-    public static Matrix hscalarProductMatrix(Expr[] g, Expr[] f) {
-        return scalarProductMatrix(true, g, f);
-    }
-
-    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f) {
-        return (Matrix) Config.getScalarProductOperator().eval(hermitian, g, f, null).to($COMPLEX);
+        return (Matrix) Config.getScalarProductOperator().eval(g, f, null).to($COMPLEX);
     }
 
     public static Complex scalarProduct(Matrix g, Matrix f) {
@@ -4123,7 +4185,7 @@ public final class Maths {
     }
 
     public static Expr scalarProduct(Matrix g, TVector<Expr> f) {
-        return f.scalarProduct(false, g.to($EXPR));
+        return f.scalarProduct(g.to($EXPR));
     }
 
     public static Expr scalarProductAll(Matrix g, TVector<Expr>... f) {
@@ -4131,51 +4193,21 @@ public final class Maths {
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f) {
-        return scalarProduct(false, g, f);
-    }
-
-    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f) {
-        return scalarProduct(true, g, f);
-    }
-
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, null);
+        return Config.getScalarProductOperator().eval(g, f, null);
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return scalarProduct(false, g, f, monitor);
+        return Config.getScalarProductOperator().eval(g, f, monitor);
     }
 
-    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return scalarProduct(true, g, f, monitor);
+
+    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+        return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
     }
 
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, monitor);
-    }
-
-    public static TMatrix<Complex> scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return scalarProduct(false, g, f, monitor);
-    }
-
-    public static TMatrix<Complex> hscalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return scalarProduct(true, g, f, monitor);
-    }
-
-    public static Matrix scalarProductMatrix(boolean hermitian, Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return matrix(Config.getScalarProductOperator().eval(hermitian, g, f, monitor));
-    }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return scalarProduct(false, g, f, axis, monitor);
-    }
-
-    public static TMatrix<Complex> hscalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return scalarProduct(true, g, f, axis, monitor);
-    }
-
-    public static TMatrix<Complex> scalarProduct(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(hermitian, g, f, axis, monitor);
+        return Config.getScalarProductOperator().eval(g, f, axis, monitor);
     }
 
     //    public static String scalarProductToMatlabString(DFunctionXY f1, DFunctionXY f2, DomainXY domain0, ToMatlabStringParam... format) {
@@ -4306,15 +4338,7 @@ public final class Maths {
     }
 
     public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors) {
-        return vscalarProduct(false, vector, vectors);
-    }
-
-    public static <T> TVector<T> vhscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors) {
-        return vscalarProduct(true, vector, vectors);
-    }
-
-    public static <T> TVector<T> vscalarProduct(boolean hermitian, TVector<T> vector, TVector<TVector<T>> vectors) {
-        return vector.vscalarProduct(hermitian, vectors.toArray(new TVector[vectors.size()]));
+        return vector.vscalarProduct(vectors.toArray(new TVector[vectors.size()]));
     }
 
     public static TList<Expr> elist() {
@@ -4818,13 +4842,13 @@ public final class Maths {
     }
 
     public static Expr simplify(Expr a) {
-        return ExpressionRewriterFactory.getComputationOptimizer().rewriteOrSame(a);
+        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(a);
     }
 
     public static double norm(Expr a) {
         //TODO conjugate a
         Expr aCong = a;
-        Complex c = Config.getScalarProductOperator().eval(true, a, aCong);
+        Complex c = Config.getScalarProductOperator().eval(a, aCong);
         return sqrt(c).absdbl();
     }
 
@@ -5810,6 +5834,10 @@ public final class Maths {
         }
 
 
+        public static boolean deleteAllCache() {
+            return getCacheFileSystem().get("/").deleteFolderTree(null, FailStrategy.FAIL_SAFE);
+        }
+
         public static HFileSystem getCacheFileSystem() {
             return new FolderHFileSystem(new File(getCacheFolder()));
         }
@@ -5865,8 +5893,16 @@ public final class Maths {
 
         }
 
-        public static ExpressionRewriter getComputationOptimizer() {
-            return ExpressionRewriterFactory.getComputationOptimizer();
+        public static ExpressionRewriter getScalarProductSimplifier() {
+            return getScalarProductOperator().getExpressionRewriter();
+        }
+
+        public static ExpressionRewriter getIntegrationSimplifier() {
+            return getIntegrationOperator().getExpressionRewriter();
+        }
+
+        public static ExpressionRewriter getComputationSimplifier() {
+            return ExpressionRewriterFactory.getComputationSimplifier();
         }
 
 
@@ -5988,7 +6024,7 @@ public final class Maths {
         }
 
         public static void setLogMonitorLevel(Level level) {
-            Logger logger = LogProgressMonitor.getDefaultLogger();
+            Logger logger = LongIterationComputationMonitorInc.LogProgressMonitor.getDefaultLogger();
             logger.setLevel(level);
             Handler handler = null;
             for (Handler h : logger.getHandlers()) {
@@ -6296,5 +6332,52 @@ public final class Maths {
 
     public static double random() {
         return Math.random();
+    }
+
+    public static <A, B> RightArrowUplet2<A, B> rightArrow(A a, B b) {
+        return new RightArrowUplet2<A, B>(a, b);
+    }
+
+    public static RightArrowUplet2.Double rightArrow(double a, double b) {
+        return new RightArrowUplet2.Double(a, b);
+    }
+
+    public static RightArrowUplet2.Complex rightArrow(Complex a, Complex b) {
+        return new RightArrowUplet2.Complex(a, b);
+    }
+
+    public static RightArrowUplet2.Expr rightArrow(Expr a, Expr b) {
+        return new RightArrowUplet2.Expr(a, b);
+    }
+
+    public static Expr parseExpression(String expression) {
+        ExpressionEvaluator m = createExpressionParser();
+        Object evaluated = m.evaluate(expression);
+        if (evaluated instanceof Expr) {
+            return (Expr) evaluated;
+        }
+        if (evaluated instanceof Number) {
+            return expr(((Number) evaluated).doubleValue());
+        }
+        return (Expr) evaluated;
+    }
+
+    public static ExpressionEvaluator createExpressionEvaluator() {
+        return ExpressionEvaluatorFactory.createEvaluator();
+    }
+    public static ExpressionEvaluator createExpressionParser() {
+        return ExpressionEvaluatorFactory.createParser();
+    }
+
+    public static Expr evalExpression(String expression) {
+        ExpressionEvaluator m = createExpressionEvaluator();
+        Object evaluated = m.evaluate(expression);
+        if (evaluated instanceof Expr) {
+            return (Expr) evaluated;
+        }
+        if (evaluated instanceof Number) {
+            return expr(((Number) evaluated).doubleValue());
+        }
+        return (Expr) evaluated;
     }
 }

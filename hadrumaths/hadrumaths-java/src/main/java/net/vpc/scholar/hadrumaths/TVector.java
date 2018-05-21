@@ -51,41 +51,22 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
 
+
     T scalarProduct(TMatrix<T> v);
-
-    T hscalarProduct(TMatrix<T> v);
-
-    T scalarProduct(boolean hermitian, TMatrix<T> v);
-
-    TVector<T> scalarProduct(boolean hermitian, T other);
 
     TVector<T> scalarProduct(T other);
 
-    TVector<T> hscalarProduct(T other);
-
-    TVector<T> rscalarProduct(boolean hermitian, T other);
-
-    T scalarProduct(boolean hermitian, TVector<T> other);
+    TVector<T> rscalarProduct(T other);
 
     T scalarProduct(TVector<T> other);
 
-    T hscalarProduct(TVector<T> other);
-
     T scalarProductAll(TVector<T>... other);
-
-    T hscalarProductAll(TVector<T>... other);
-
-    T scalarProductAll(boolean hermitian, TVector<T>... other);
 
     <R> TVector<R> to(TypeReference<R> other);
 
     <R> boolean isConvertibleTo(TypeReference<R> other);
 
     TVector<T> vscalarProduct(TVector<T>... other);
-
-    TVector<T> vhscalarProduct(TVector<T>... other);
-
-    TVector<T> vscalarProduct(boolean hermitian, TVector<T>... other);
 
     TVector<T> dotmul(TVector<T> other);
 

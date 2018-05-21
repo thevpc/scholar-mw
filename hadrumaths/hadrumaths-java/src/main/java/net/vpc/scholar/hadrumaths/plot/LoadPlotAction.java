@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

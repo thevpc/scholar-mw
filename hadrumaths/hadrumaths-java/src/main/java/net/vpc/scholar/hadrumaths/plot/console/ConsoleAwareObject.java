@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.util.TLog;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.dump.Dumpable;
 
 /**
  * Created by vpc on 3/15/15.

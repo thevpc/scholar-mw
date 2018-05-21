@@ -3,19 +3,13 @@ package net.vpc.scholar.hadrumaths.integration.formal;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
-import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
-import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToCosXCosYRule;
-import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.ToDDxyLinearRule;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
 import net.vpc.scholar.hadrumaths.util.ClassMapList;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,30 +21,10 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
     private List<FormalIntegrationOperatorHasher> hashers = new ArrayList<FormalIntegrationOperatorHasher>();
     private ClassMapList<FormalIntegrationOperatorHasher> hashersMap = new ClassMapList<FormalIntegrationOperatorHasher>();
 
-    private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("OPTIMIZE_SP");
     private FormalScalarProductOperator formalOperator;
 
     public FormalIntegrationOperator(FormalScalarProductOperator formalOperator) {
         this.formalOperator = formalOperator;
-        expressionRewriter.clear();
-        ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
-        for (ExpressionRewriterRule r : ExpressionRewriterFactory.NAVIGATION_RULES) {
-            CANONICAL_RULE_SET.addRule(r);
-        }
-        for (ExpressionRewriterRule r : ExpressionRewriterFactory.CANONICAL_RULES) {
-            CANONICAL_RULE_SET.addRule(r);
-        }
-        expressionRewriter.add(CANONICAL_RULE_SET);
-
-
-        ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("EXPAND_SIMPLIFY");
-        for (ExpressionRewriterRule r : ExpressionRewriterFactory.SIMPLIFY_RULES) {
-            EXPAND_SIMPLIFY_RULE_SET.addRule(r);
-        }
-        EXPAND_SIMPLIFY_RULE_SET.addRule(MulAddLinerizeRule.INSTANCE);
-        EXPAND_SIMPLIFY_RULE_SET.addRule(ToCosXCosYRule.INSTANCE);
-        EXPAND_SIMPLIFY_RULE_SET.addRule(ToDDxyLinearRule.INSTANCE);
-        expressionRewriter.add(EXPAND_SIMPLIFY_RULE_SET);
     }
 
     public interface FormalIntegrationOperatorHasher {
@@ -111,12 +85,13 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
     public Dumper getDumpStringHelper() {
         Dumper sb = new Dumper(getClass().getSimpleName());
         sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
+        sb.add("spo", formalOperator);
         return sb;
     }
 
     @Override
     public ExpressionRewriter getExpressionRewriter() {
-        return expressionRewriter;
+        return formalOperator.getExpressionRewriter();
     }
 
     @Override
@@ -128,14 +103,14 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
 
         if (hashers != null ? !hashers.equals(that.hashers) : that.hashers != null) return false;
         if (hashersMap != null ? !hashersMap.equals(that.hashersMap) : that.hashersMap != null) return false;
-        return expressionRewriter != null ? expressionRewriter.equals(that.expressionRewriter) : that.expressionRewriter == null;
+        return formalOperator != null ? formalOperator.equals(that.formalOperator) : that.formalOperator == null;
     }
 
     @Override
     public int hashCode() {
         int result = hashers != null ? hashers.hashCode() : 0;
         result = 31 * result + (hashersMap != null ? hashersMap.hashCode() : 0);
-        result = 31 * result + (expressionRewriter != null ? expressionRewriter.hashCode() : 0);
+        result = 31 * result + (formalOperator != null ? formalOperator.hashCode() : 0);
         return result;
     }
 }

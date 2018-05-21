@@ -5,7 +5,7 @@
 package net.vpc.scholar.hadruwaves.mom.project;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

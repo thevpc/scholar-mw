@@ -3,7 +3,11 @@ package net.vpc.scholar.hadrumaths.cache;
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.io.*;
+import net.vpc.scholar.hadrumaths.monitors.DialogProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.*;
 import java.util.Map;

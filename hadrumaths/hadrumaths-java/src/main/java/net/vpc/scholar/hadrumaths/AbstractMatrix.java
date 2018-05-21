@@ -2002,12 +2002,12 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         throw new RuntimeException("Not a vector " + getRowCount() + "x" + getColumnCount());
     }
 
-    public Complex scalarProduct(boolean hermitian, TMatrix<Complex> m) {
-        return toVector().scalarProduct(hermitian, castToMatrix(m).toVector());
+    public Complex scalarProduct(TMatrix<Complex> m) {
+        return toVector().scalarProduct(castToMatrix(m).toVector());
     }
 
-    public Complex scalarProduct(boolean hermitian, TVector<Complex> v) {
-        return toVector().scalarProduct(hermitian, v);
+    public Complex scalarProduct(TVector<Complex> v) {
+        return toVector().scalarProduct(v);
     }
 
     public boolean isColumn() {
@@ -2360,26 +2360,6 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     //////////////////////////////////////////////////////////////////
-
-    @Override
-    public Complex scalarProduct(TMatrix<Complex> m) {
-        return scalarProduct(false, m);
-    }
-
-    @Override
-    public Complex scalarProduct(TVector<Complex> v) {
-        return scalarProduct(false, v);
-    }
-
-    @Override
-    public Complex hscalarProduct(TMatrix<Complex> m) {
-        return scalarProduct(true, m);
-    }
-
-    @Override
-    public Complex hscalarProduct(TVector<Complex> v) {
-        return scalarProduct(true, v);
-    }
 
 
     @Override

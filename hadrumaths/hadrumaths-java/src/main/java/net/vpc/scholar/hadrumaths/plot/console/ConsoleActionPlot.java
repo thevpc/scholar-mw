@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotModel;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotPanel;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.util.swingext.JListCardPanel;
+import net.vpc.scholar.hadrumaths.plot.swings.JListCardPanel;
 
 import javax.swing.*;
 import java.util.Set;

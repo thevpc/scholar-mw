@@ -4,8 +4,12 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.io.HFileFilter;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -463,7 +467,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         if (dd) {
             return Maths.dlist(sp.evalVDD(null, testFunction.toDV(), arr)).to(Maths.$COMPLEX);
         }
-        return Maths.columnVector(sp.evalVDC(true, null, testFunction.toDV(), arr));
+        return Maths.columnVector(sp.evalVDC(null, testFunction.toDV(), arr));
     }
 
     public void invalidateCache() {

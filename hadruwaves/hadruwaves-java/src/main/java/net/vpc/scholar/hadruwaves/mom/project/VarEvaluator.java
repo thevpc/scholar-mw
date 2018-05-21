@@ -13,12 +13,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.ExpressionEvaluatorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionFunction;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionStreamTokenizer;
-import net.vpc.scholar.hadrumaths.expeval.NoSuchVariableException;
-import net.vpc.scholar.hadrumaths.expeval.operators.OpListComma;
+import net.vpc.scholar.hadrumaths.expeval.*;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.Wall;
@@ -167,44 +164,45 @@ public class VarEvaluator {
         ExpressionStreamTokenizer tok = new ExpressionStreamTokenizer(new StringReader(expr));
         StringBuilder expr2 = new StringBuilder();
         try {
-            while (tok.nextToken() != ExpressionStreamTokenizer.TT_EOF) {
-                switch (tok.ttype) {
+            ExpressionStreamTokenizer.Token token;
+            while ((token=tok.nextToken()).ttype != ExpressionStreamTokenizer.TT_EOF) {
+                switch (token.ttype) {
                     case ExpressionStreamTokenizer.TT_EOL: {
                         expr2.append("\n");
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_NUMBER: {
-                        expr2.append(String.valueOf(tok.nval));
+                        expr2.append(String.valueOf(token.nval));
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_STRING: {
-                        expr2.append("\"").append(String.valueOf(tok.nval)).append("\"");
+                        expr2.append("\"").append(String.valueOf(token.nval)).append("\"");
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_COMPLEX: {
-                        expr2.append(String.valueOf(tok.cval));
+                        expr2.append(String.valueOf(token.cval));
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_WORD: {
-                        VariableExpression v2 = expressions.get(tok.sval);
+                        VariableExpression v2 = expressions.get(token.sval);
                         if (v2 == null) {
-                            expr2.append(tok.sval);
+                            expr2.append(token.sval);
                         } else {
                             switch (v2.getUnit()) {
                                 case LEN: {
-                                    expr2.append("((" + tok.sval + ")/DIM_UNIT)");
+                                    expr2.append("((" + token.sval + ")/DIM_UNIT)");
                                     break;
                                 }
                                 case LAMBDA: {
-                                    expr2.append("((" + tok.sval + ")/LAMBDA)");
+                                    expr2.append("((" + token.sval + ")/LAMBDA)");
                                     break;
                                 }
                                 case FREQ: {
-                                    expr2.append("((" + tok.sval + ")/FREQ_UNIT)");
+                                    expr2.append("((" + token.sval + ")/FREQ_UNIT)");
                                     break;
                                 }
                                 default: {
-                                    expr2.append(tok.sval);
+                                    expr2.append(token.sval);
                                     break;
                                 }
                             }
@@ -212,7 +210,7 @@ public class VarEvaluator {
                         break;
                     }
                     default: {
-                        expr2.append((char) tok.ttype);
+                        expr2.append((char) token.ttype);
                     }
                 }
             }
@@ -286,18 +284,18 @@ public class VarEvaluator {
                 }
             }
         }
-        ExpressionEvaluator parser = new ExpressionEvaluator();
-        parser.addDefaults();
+        ExpressionEvaluator parser = ExpressionEvaluatorFactory.createEvaluator();
+        parser.getContext().addDefaults();
 
-        parser.declare("DIM_UNIT", dimensionUnit);
-        parser.declare("FREQ_UNIT", frequencyUnit);
-        parser.declare("C", Maths.C);
-        parser.declare("U0", Maths.U0);
-        parser.declare("EPS0", Maths.EPS0);
+        parser.getContext().declareVar("DIM_UNIT", Double.class,dimensionUnit);
+        parser.getContext().declareVar("FREQ_UNIT", Double.class,frequencyUnit);
+        parser.getContext().declareVar("C", Double.class,Maths.C);
+        parser.getContext().declareVar("U0", Double.class,Maths.U0);
+        parser.getContext().declareVar("EPS0", Double.class,Maths.EPS0);
 
-        parser.declare(new ZinFunction());
-        parser.declare(new CapaFunction());
-        parser.declare(new SindicesFunction());
+        parser.getContext().declareFunction(new ZinFunction());
+        parser.getContext().declareFunction(new CapaFunction());
+        parser.getContext().declareFunction(new SindicesFunction());
 
         for (Iterator i = workingVars.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
@@ -305,7 +303,7 @@ public class VarEvaluator {
             Object v = entry.getValue();
             if (v instanceof Complex) {
                 Complex c = (Complex) v;
-                parser.declare(k, ((Complex) v));
+                parser.getContext().declareVar(k, Complex.class,((Complex) v));
             }
         }
 
@@ -321,22 +319,22 @@ public class VarEvaluator {
             } catch (NoSuchVariableException var) {
                 Complex c2 = getVarComplex(var.getVarName());//
 
-                parser.declare(var.getVarName(), c2.doubleValue());
+                parser.getContext().declareVar(var.getVarName(),Double.class, c2.doubleValue());
             }
         }
     }
 
     private abstract class SubStrFunction extends ExpressionFunction {
 
-        public SubStrFunction(String name) {
-            super(name);
+        public SubStrFunction(String name,Class type) {
+            super(name,type);
         }
 
         @Override
-        public Object evaluate(OpListComma.Uplet params, Map<String, Object> variables) {
+        public Object evaluate(Object[] args, ExpressionEvaluatorContext context) {
             MomStructure str = null;
             try {
-                String n = (String) params.get(0);
+                String n = (String) args[0];
                 Map<String, String> mapping = new HashMap<String, String>();
                 if (n.endsWith(")")) {
                     String nn = n.substring(n.indexOf('(') + 1, n.length() - 1);
@@ -377,25 +375,25 @@ public class VarEvaluator {
                 Logger.getLogger(VarEvaluator.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IllegalArgumentException(ex);
             }
-            return evaluate(str, params, variables);
+            return evaluate(str, args, context);
         }
 
-        public abstract Object evaluate(MomStructure str, OpListComma.Uplet params, Map<String, Object> variables);
+        public abstract Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context);
     }
 
     private class ZinFunction extends SubStrFunction {
 
         public ZinFunction() {
-            super("zin");
+            super("zin",Complex.class);
         }
 
         @Override
-        public Object evaluate(MomStructure str, OpListComma.Uplet params, Map<String, Object> variables) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
             int ii = 0;
             int jj = 0;
-            if (params.size() >= 3) {
-                ii = ((Number) params.get(1)).intValue() - 1;
-                jj = ((Number) params.get(2)).intValue() - 1;
+            if (params.length >= 3) {
+                ii = ((Number) params[1]).intValue() - 1;
+                jj = ((Number) params[2]).intValue() - 1;
             }
             return str.self().computeMatrix().get(ii, jj);
         }
@@ -404,16 +402,16 @@ public class VarEvaluator {
     private class CapaFunction extends SubStrFunction {
 
         public CapaFunction() {
-            super("capa");
+            super("capa",Complex.class);
         }
 
         @Override
-        public Object evaluate(MomStructure str, OpListComma.Uplet params, Map<String, Object> variables) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
             int ii = 0;
             int jj = 0;
-            if (params.size() >= 3) {
-                ii = ((Number) params.get(1)).intValue() - 1;
-                jj = ((Number) params.get(2)).intValue() - 1;
+            if (params.length >= 3) {
+                ii = ((Number) params[1]).intValue() - 1;
+                jj = ((Number) params[2]).intValue() - 1;
             }
             return str.capacity().computeMatrix().get(ii, jj);
         }
@@ -422,16 +420,16 @@ public class VarEvaluator {
     private class SindicesFunction extends SubStrFunction {
 
         public SindicesFunction() {
-            super("si");
+            super("sparam",Complex.class);
         }
 
         @Override
-        public Object evaluate(MomStructure str, OpListComma.Uplet params, Map<String, Object> variables) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
             int ii = 0;
             int jj = 0;
-            if (params.size() >= 3) {
-                ii = ((Number) params.get(1)).intValue() - 1;
-                jj = ((Number) params.get(2)).intValue() - 1;
+            if (params.length >= 3) {
+                ii = ((Number) params[1]).intValue() - 1;
+                jj = ((Number) params[2]).intValue() - 1;
             }
             return str.sparameters().computeMatrix().get(ii, jj);
         }

@@ -6,9 +6,10 @@ import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -89,7 +90,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                                 if (op != null) {//op==null si k==1
                                     //System.out.println("op = " + opValue.getMatrix());
                                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                                    TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                                     for (int p = 0; p < g.length; p++) {
                                         TVector<Complex> spc2p = spc2.getRow(p);
                                         for (int q = p; q < g.length; q++) {
@@ -155,7 +156,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                                 if (op != null) {//op==null si k==1
                                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                                    TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                                     for (int p = 0; p < g.length; p++) {
                                         TVector<Complex> spp2 = spc2.getRow(p);
                                         for (int q = 0; q < g.length; q++) {

@@ -4,30 +4,34 @@
  */
 package net.vpc.scholar.hadrumaths.expeval;
 
-import net.vpc.scholar.hadrumaths.expeval.operators.OpListComma;
-
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * @author vpc
  */
 public abstract class ExpressionFunction extends AbstractExpressionNode {
 
-    public ExpressionFunction(String name) {
-        super(name);
+    public ExpressionFunction(String name,Class returnType) {
+        super(name,returnType);
     }
 
-    public Object evaluate(Stack<Object> valuesStack, Map<String, Object> variables) {
-        Object o = valuesStack.pop();
-        if (!(o instanceof OpListComma.Uplet)) {
-            OpListComma.Uplet oo = new OpListComma.Uplet();
-            oo.add(o);
-            return evaluate(oo, variables);
-        } else {
-            return evaluate((OpListComma.Uplet) o, variables);
+//    public Object evaluate(Stack<Object> valuesStack, ExpressionEvaluatorContext context) {
+//        Object o = valuesStack.pop();
+//        if (!(o instanceof OpListComma.Uplet)) {
+//            return evaluate(new Object[]{oo}, context);
+//        } else {
+//            return evaluate(((OpListComma.Uplet) o).toArray(), context);
+//        }
+//    }
+
+    @Override
+    public String getString(Object[] args) {
+        StringBuilder sb=new StringBuilder(getName()).append("(");
+        for (int i = 0; i < args.length; i++) {
+            if(i>0){
+                sb.append(",");
+            }
+            sb.append(args[i]);
         }
+        sb.append(")");
+        return sb.toString();
     }
-
-    public abstract Object evaluate(OpListComma.Uplet params, Map<String, Object> variables);
 }

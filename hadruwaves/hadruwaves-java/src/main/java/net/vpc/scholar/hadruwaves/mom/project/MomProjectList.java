@@ -7,7 +7,7 @@ package net.vpc.scholar.hadruwaves.mom.project;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 import javax.swing.*;
 import java.awt.*;

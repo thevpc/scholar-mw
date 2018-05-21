@@ -9,25 +9,26 @@ import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 public class SimpleNumericScalarProductOperator extends AbstractScalarProductOperator {
 
     private DIntegralXY integrator;
-    private ExpressionRewriterRuleSet NO_SIMPLIFIER;
+    private ExpressionRewriterRuleSet simplifier;
 
-    public SimpleNumericScalarProductOperator() {
-        this(new DQuadIntegralXY());
+    public SimpleNumericScalarProductOperator(boolean hermitian) {
+        this(hermitian,new DQuadIntegralXY());
     }
 
-    public SimpleNumericScalarProductOperator(DIntegralXY integrator) {
+    public SimpleNumericScalarProductOperator(boolean hermitian,DIntegralXY integrator) {
+        super(hermitian);
         this.integrator = integrator;
     }
 
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         Domain inter = f1.getDomain().intersect(f2.getDomain()).intersect(domain);
         Expr f0 = Maths.mul(f1, f2);
-        DoubleToDouble sf = Maths.simplify(f0).toDD();
+        DoubleToDouble sf = getExpressionRewriter().rewriteOrSame(f0).toDD();
 //        Plot.title(f0.toString()).plot(f0,sf);
         switch (inter.getDimension()) {
             case 1: {
@@ -60,6 +61,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
     public Dumper getDumpStringHelper() {
         Dumper sb = new Dumper(getClass().getSimpleName());
         sb.add("integrator", integrator);
+        sb.add("hermitian", isHermitian());
         sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
         return sb;
     }
@@ -68,6 +70,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
     public String toString() {
         return "NumericScalarProductOperator{" +
                 "integrator=" + integrator +
+                ",hermitian=" + isHermitian() +
                 '}';
     }
 
@@ -89,11 +92,11 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
     }
 
     public ExpressionRewriter getExpressionRewriter() {
-        if (NO_SIMPLIFIER == null) {
-            NO_SIMPLIFIER = new ExpressionRewriterRuleSet("NO_SIMPLIFY");
-            NO_SIMPLIFIER.setCacheEnabled(false);
+        if (simplifier == null) {
+            simplifier = new ExpressionRewriterRuleSet("NO_SIMPLIFY");
+            simplifier.setCacheEnabled(false);
         }
-        return NO_SIMPLIFIER;
+        return simplifier;
     }
 
 }

@@ -36,18 +36,18 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
   var a = (100.567 * MM);
   var b = (30 * MM);
   var ep = 1.59 * MM;
-  var dBox = domain(0 -> a, -b / 2 -> b / 2)
+  var dBox = domain(0.0 -> a, -b / 2 -> b / 2)
   var ap = 50 * MM
   var bp = 5 * MM
-  var dPlot = domain(0 -> ap, -bp -> bp)
+  var dPlot = domain(0.0 -> ap, -bp -> bp)
   var d = 2.812 * MM;
   var l = 5.69 * MM;
   var L = 22.760 * MM;
   var W = 5.989 * MM;
-  var dLine = domain(0 -> (l + l / 1.2), -d / 2 -> d / 2)
+  var dLine = domain(0.0 -> (l + l / 1.2), -d / 2 -> d / 2)
   var dPatch = domain(l -> (l + L), -W / 2 -> W / 2)
   var s = 0.786 * MM;
-  var dSource = domain(0 -> s, -d / 2 -> d / 2)
+  var dSource = domain(0.0 -> s, -d / 2 -> d / 2)
   var PPatch = 5
   var PLine = 3
   var p = param("p")
@@ -90,11 +90,11 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
         //    val coeff = dtimes(1, 10, 5)
         //    println(dlist(dtimes(1, 10, 5)))
 
-        var dBox = domain(0 -> a, -b / 2 -> b / 2)
+        var dBox = domain(0.0 -> a, -b / 2 -> b / 2)
 
         while (count < dimX.length) {
 
-          dBox = domain(0 -> dimX(count), -dimY(count) / 2 -> dimY(count) / 2)
+          dBox = domain(0.0 -> dimX(count), -dimY(count) / 2 -> dimY(count) / 2)
           var E0 = normalize(expr(dSource))
           st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(epsr, ep), matchedLoad(1.0))
           st.getHintsManager.setHintAxisType(HintAxisType.X_ONLY);

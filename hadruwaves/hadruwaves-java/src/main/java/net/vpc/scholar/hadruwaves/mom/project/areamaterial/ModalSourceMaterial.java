@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

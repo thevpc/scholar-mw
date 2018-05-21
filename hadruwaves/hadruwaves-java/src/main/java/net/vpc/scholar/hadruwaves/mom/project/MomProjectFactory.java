@@ -16,7 +16,7 @@ import net.vpc.scholar.hadruwaves.mom.project.gpmesher.BoxModesGpMesher;
 import net.vpc.scholar.hadruwaves.mom.project.gpmesher.ConstantGpMesher;
 import net.vpc.scholar.hadruwaves.mom.project.gpmesher.RooftopGpMesher;
 import net.vpc.scholar.hadruwaves.mom.project.shapes.RectAreaShape;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

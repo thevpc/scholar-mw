@@ -8,9 +8,9 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.MonitoredAction;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -49,7 +49,7 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
 //        int progress=0;
                         for (int q = 0; q < gfps.length; q++) {
                             for (int n = 0; n < max; n++) {
-                                gfps[q][n] = scalarProduct(true, indexes[n].fn, indexes[q].fn);
+                                gfps[q][n] = scalarProduct(indexes[n].fn, indexes[q].fn);
 //                progress++;
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
                                 ProgressMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());

@@ -9,8 +9,12 @@ import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.swingext.ExtensionFileChooserFilter;
+import net.vpc.scholar.hadrumaths.plot.swings.ExtensionFileChooserFilter;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,6 +3,11 @@ package net.vpc.scholar.hadrumaths.cache;
 import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.io.FailStrategy;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.io.HFileFilter;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 import java.io.IOException;
 import java.io.InputStream;

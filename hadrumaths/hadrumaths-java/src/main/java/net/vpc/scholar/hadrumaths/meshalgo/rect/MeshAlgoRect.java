@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;

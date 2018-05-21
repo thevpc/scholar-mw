@@ -727,15 +727,15 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     protected String imagToString(double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
-            return String.valueOf(d) + "*i";
+            return String.valueOf(d) + "*î";
         }
         if (d == 1) {
-            return "i";
+            return "î";
         }
         if (d == -1) {
-            return "-i";
+            return "-î";
         }
-        return String.valueOf(d) + "i";
+        return String.valueOf(d) + "î";
     }
 
 //    public Complex angle() {
@@ -1326,6 +1326,22 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return true;
     }
 
+
+    public Complex rdiv(double other) {
+        return Complex.valueOf(other).div(this);
+    }
+
+    public Complex rmul(double other) {
+        return Complex.valueOf(other).mul(this);
+    }
+
+    public Complex radd(double other) {
+        return Complex.valueOf(other).add(this);
+    }
+
+    public Complex rsub(double other) {
+        return Complex.valueOf(other).sub(this);
+    }
 
     public Expr divide(Expr other) {
         return div(other);

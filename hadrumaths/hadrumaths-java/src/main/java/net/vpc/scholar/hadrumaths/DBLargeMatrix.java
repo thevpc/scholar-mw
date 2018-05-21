@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.cache.CacheObjectSerializedForm;
-import net.vpc.scholar.hadrumaths.util.HFile;
+import net.vpc.scholar.hadrumaths.io.HFile;
 
 import java.io.IOException;
 

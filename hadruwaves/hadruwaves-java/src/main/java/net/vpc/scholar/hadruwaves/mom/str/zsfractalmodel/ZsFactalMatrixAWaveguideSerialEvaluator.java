@@ -2,7 +2,6 @@ package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -14,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -62,7 +61,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
-                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         TVector<Complex> spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
@@ -74,7 +73,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     if (op != null) {//op==null si k==1
                         //System.out.println("op = " + opValue.getMatrix());
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                        TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                         for (int p = 0; p < g.length; p++) {
                             TVector<Complex> spc2p = spc2.getRow(p);
                             for (int q = p; q < g.length; q++) {
@@ -133,7 +132,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
-                    TMatrix<Complex> spc2 = Maths.scalarProductCache(true, gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
                         TVector<Complex> spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
@@ -144,7 +143,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                     if (op != null) {//op==null si k==1
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        TMatrix<Complex> spc2 = Maths.scalarProductCache(true, g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                        TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                         for (int p = 0; p < g.length; p++) {
                             TVector<Complex> spc2p = spc2.getRow(p);
                             for (int q = 0; q < g.length; q++) {

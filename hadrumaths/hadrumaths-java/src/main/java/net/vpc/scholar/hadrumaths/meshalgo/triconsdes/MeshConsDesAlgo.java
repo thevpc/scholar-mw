@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.meshalgo.triconsdes;
 
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -110,4 +110,12 @@ public class FormatParamSet {
         }
         return (T) p;
     }
+
+    public <T extends FormatParam> T getParam(Class<T> paramClass, T defaultValue) {
+        FormatParam p = values.get(paramClass);
+        if (p == null ) {
+            return defaultValue;
+        }
+        return (T) p;
+    }
 }

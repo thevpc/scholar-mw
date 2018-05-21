@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.JTableHelper;
-import net.vpc.scholar.hadrumaths.util.SwingUtils;
-import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
-import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
-import net.vpc.scholar.hadrumaths.util.swingext.SerializableChangeListener;
-import net.vpc.scholar.hadrumaths.util.swingext.SerializableTableModelListener;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
+import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.plot.swings.SerializableActionListener;
+import net.vpc.scholar.hadrumaths.plot.swings.SerializableChangeListener;
+import net.vpc.scholar.hadrumaths.plot.swings.SerializableTableModelListener;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 
 import javax.swing.*;

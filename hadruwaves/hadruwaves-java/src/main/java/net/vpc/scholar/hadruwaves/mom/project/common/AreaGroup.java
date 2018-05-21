@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom.project.common;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadruwaves.mom.project.MomProjectItem;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
 

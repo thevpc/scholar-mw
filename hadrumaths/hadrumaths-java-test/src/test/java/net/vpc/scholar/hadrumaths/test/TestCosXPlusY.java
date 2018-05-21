@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.test;
 import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -160,7 +160,7 @@ public class TestCosXPlusY {
             Expr e1 = e1list.get(i);
             Expr e2 = e2list.get(i);
             System.out.println("hardFormal " + i + " " + e1 + " *** " + e2 + "    :: " + vdomains.get(i));
-            v1list.add(ScalarProductOperatorFactory.hardFormal().eval(true, vdomains.get(i), e1, e2));
+            v1list.add(ScalarProductOperatorFactory.hardFormal().eval(vdomains.get(i), e1, e2));
         }
         ch1.stop();
         System.out.println(ch1);
@@ -169,7 +169,7 @@ public class TestCosXPlusY {
             Expr e1 = e1list.get(i);
             Expr e2 = e2list.get(i);
             System.out.println("quad " + i + " " + e1 + " ** " + e2 + "    :: " + vdomains.get(i));
-            v2list.add(ScalarProductOperatorFactory.quad().eval(true, vdomains.get(i), e1, e2));
+            v2list.add(ScalarProductOperatorFactory.quad().eval(vdomains.get(i), e1, e2));
         }
         ch2.stop();
         System.out.println(ch2);
@@ -200,17 +200,17 @@ public class TestCosXPlusY {
                 //Assert.fail();
                 System.err.println("FAIL...");
                 if (err * 100 > 1) {
-                    Complex v1 = ScalarProductOperatorFactory.hardFormal().eval(true, dom, e1, e2);
-                    Complex v2 = ScalarProductOperatorFactory.quad().eval(true, dom, e1, e2);
-                    Complex v3 = ScalarProductOperatorFactory.hardFormal().eval(true, dom, e1.simplify(), e2.simplify());
-                    Complex v4 = ScalarProductOperatorFactory.quad().eval(true, dom, e1.simplify(), e2.simplify());
+                    Complex v1 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1, e2);
+                    Complex v2 = ScalarProductOperatorFactory.quad().eval(dom, e1, e2);
+                    Complex v3 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1.simplify(), e2.simplify());
+                    Complex v4 = ScalarProductOperatorFactory.quad().eval(dom, e1.simplify(), e2.simplify());
                     System.out.println(v1 + " ; " + v2 + " ; " + v3 + " ; " + v4 + " ; ");
                     try {
                         IOUtils.saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    v1 = ScalarProductOperatorFactory.hardFormal().eval(true, dom, e1, e2);
+                    v1 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1, e2);
                     Assert.fail("FAIL...");
                 }
             }

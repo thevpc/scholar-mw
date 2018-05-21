@@ -8,14 +8,14 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 public class PlotTestModeFunctionsYScalarProducts extends PlotAxisSeries implements Cloneable {
     public PlotTestModeFunctionsYScalarProducts(YType... type) {
@@ -46,7 +46,7 @@ public class PlotTestModeFunctionsYScalarProducts extends PlotAxisSeries impleme
         for (int q = 0; q < cache_essai.length; q++) {
             for (int n = 0; n < max; n++) {
                 gfps[q][n] = Maths.scalarProduct(
-                        true, indexes[n].fn.getComponent(Axis.Y),
+                        indexes[n].fn.getComponent(Axis.Y),
                         cache_essai[q].getComponent(Axis.Y)
                 );
 //                progress++;

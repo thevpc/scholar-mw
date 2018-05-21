@@ -355,14 +355,6 @@ public interface TMatrix<T> extends Normalizable, Serializable {
 
     T scalarProduct(TVector<T> v);
 
-    T hscalarProduct(TMatrix<T> m);
-
-    T hscalarProduct(TVector<T> v);
-
-    T scalarProduct(boolean hermitian, TMatrix<T> m);
-
-    T scalarProduct(boolean hermitian, TVector<T> v);
-
     TMatrix<T> cos();
 
     TMatrix<T> acos();

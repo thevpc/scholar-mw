@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.HSBColorPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
-import net.vpc.scholar.hadrumaths.util.swingext.SerializableActionListener;
+import net.vpc.scholar.hadrumaths.plot.swings.SerializableActionListener;
 
 import javax.swing.*;
 import java.awt.*;

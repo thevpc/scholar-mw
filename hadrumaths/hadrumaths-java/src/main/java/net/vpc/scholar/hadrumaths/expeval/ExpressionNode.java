@@ -5,14 +5,23 @@
 
 package net.vpc.scholar.hadrumaths.expeval;
 
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * @author vpc
  */
 public interface ExpressionNode {
-    public String getName();
+    int PRECEDENCE_1 = 5;
+    int PRECEDENCE_2 = 10;
+    int PRECEDENCE_3 = 15;
+    int PRECEDENCE_4 = 20;
+    int PRECEDENCE_5 = 25;
+    int PRECEDENCE_6 = 30;
+    int PRECEDENCE_MAX = 32;
 
-    public Object evaluate(Stack<Object> valuesStack, Map<String, Object> variables);
+    String getName();
+
+    Class getExprType();
+
+    Object evaluate(Object[] args, ExpressionEvaluatorContext context);
+
+    String getString(Object[] args);
 }

@@ -40,9 +40,9 @@ public interface Vector extends Normalizable, Iterable<Complex>, TVector<Complex
     void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
 
 
-    Vector scalarProductToVector(boolean hermitian, Vector... other);
+    Vector scalarProductToVector(Vector... other);
 
-    Vector vscalarProduct(boolean hermitian, TVector<Complex>... other);
+    Vector vscalarProduct(TVector<Complex>... other);
 
 //    Complex scalarProduct(Vector other);
 //

@@ -32,5 +32,5 @@ public interface ExpressionRewriter {
 
     ExpressionRewriter addRewriteListener(ExprRewriteListener listener);
 
-    public ExpressionRewriter removeRewriteListener(ExprRewriteListener listener);
+    ExpressionRewriter removeRewriteListener(ExprRewriteListener listener);
 }

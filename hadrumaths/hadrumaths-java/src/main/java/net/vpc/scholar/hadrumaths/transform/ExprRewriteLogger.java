@@ -8,19 +8,23 @@ public class ExprRewriteLogger implements ExprRewriteListener {
     public static final ExprRewriteLogger INSTANCE = new ExprRewriteLogger(System.out);
     private PrintStream out;
 
+    public ExprRewriteLogger() {
+        this(System.out);
+    }
+
     public ExprRewriteLogger(PrintStream out) {
-        this.out = out;
+        this.out = out==null?System.out:out;
     }
 
     @Override
     public void onUnmodifiedExpr(ExpressionRewriter rewriter, Expr oldValue) {
         out = System.out;
-        out.println(rewriter + " :: " + oldValue.getClass().getSimpleName() + "->UNMODIFIED" + "  :: " + oldValue);
+        out.println(rewriter + " :: [UNMODIFIED] " + oldValue.getClass().getSimpleName() + "->UNMODIFIED" + "  :: " + oldValue);
     }
 
     @Override
-    public void onRewriteSuccessExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue) {
-        System.out.println(rewriter + " :: " + oldValue.getClass().getSimpleName() + "->" + newValue.getClass().getSimpleName() + "  :: " + oldValue + "\n\t\t" + newValue + " :: " + oldValue.equals(newValue));
+    public void onModifiedExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue, boolean bestEffort) {
+        System.out.println(rewriter + " :: [MODIFIED] " + (bestEffort?"(*) ":"")+ oldValue.getClass().getSimpleName() + "->" + newValue.getClass().getSimpleName() + "  :: " + oldValue + " ==> " + newValue);
     }
 
 }

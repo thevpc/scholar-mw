@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths._
 
 object CustomFunctions {
   def main(args: Array[String]): Unit = {
-    val dom = domain(0 -> 2 * PI, 0 -> 2 * PI)
+    val dom = domain(0.0 -> 2 * PI, 0.0 -> 2 * PI)
 
     var DDX=define("DDX",(x: Double)=>x*x)
     var CCX=define("CCX",(x: Complex)=>sin(x)*(x-1))

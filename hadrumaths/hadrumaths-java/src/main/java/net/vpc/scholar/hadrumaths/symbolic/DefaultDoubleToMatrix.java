@@ -166,7 +166,7 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToVector implements Clo
 //    }
 
     public Complex scalarProduct(boolean hemitian, DoubleToVector other) {
-        return Maths.scalarProduct(hemitian, this, other);
+        return Maths.scalarProduct(this, other);
     }
 
     public DoubleToVector add(DoubleToVector other) {

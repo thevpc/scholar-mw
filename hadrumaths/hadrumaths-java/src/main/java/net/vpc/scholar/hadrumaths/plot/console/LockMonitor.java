@@ -1,7 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
+import net.vpc.scholar.hadrumaths.concurrent.AppLock;
+import net.vpc.scholar.hadrumaths.concurrent.AppLockEvent;
+import net.vpc.scholar.hadrumaths.concurrent.AppLockListener;
+import net.vpc.scholar.hadrumaths.concurrent.AppLockManager;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;

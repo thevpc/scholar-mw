@@ -51,11 +51,11 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     }
 
     @Override
-    public Complex scalarProduct(boolean hermitian, TMatrix<Complex> v) {
-        return scalarProduct(hermitian, v.toVector());
+    public Complex scalarProduct(TMatrix<Complex> v) {
+        return scalarProduct(v.toVector());
     }
 
-    public Complex scalarProduct(boolean hermitian, TVector<Complex> other) {
+    public Complex scalarProduct(TVector<Complex> other) {
         int max = Math.max(size(), other.size());
         MutableComplex d = new MutableComplex();
         for (int i = 0; i < max; i++) {
@@ -64,7 +64,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         return d.toComplex();
     }
 
-    public Complex scalarProductAll(boolean hermitian, TVector<Complex>... other) {
+    public Complex scalarProductAll(TVector<Complex>... other) {
         int currSize = size();
         for (TVector<Complex> v : other) {
             int size = v.size();
@@ -562,34 +562,34 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
 
 
     @Override
-    public Vector scalarProductToVector(boolean hermitian, Vector... other) {
+    public Vector scalarProductToVector(Vector... other) {
         return Maths.columnVector(other.length, new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(hermitian, other[index]);
+                return scalarProduct(other[index]);
             }
         });
     }
 
 
     @Override
-    public Vector vscalarProduct(boolean hermitian, TVector<Complex>... other) {
+    public Vector vscalarProduct(TVector<Complex>... other) {
         return Maths.columnVector(other.length, new VectorCell() {
             @Override
             public Complex get(int index) {
-                return scalarProduct(hermitian, other[index]);
+                return scalarProduct(other[index]);
             }
         });
     }
 
     @Override
-    public Vector scalarProduct(boolean hermitian, Complex other) {
+    public Vector scalarProduct(Complex other) {
         if (isRow()) {
             return Maths.rowVector(size(),
                     new VectorCell() {
                         @Override
                         public Complex get(int index) {
-                            return getComponentVectorSpace().scalarProduct(hermitian, get(index), other);
+                            return getComponentVectorSpace().scalarProduct(get(index), other);
                         }
                     });
         }
@@ -597,19 +597,19 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
                 new VectorCell() {
                     @Override
                     public Complex get(int index) {
-                        return getComponentVectorSpace().scalarProduct(hermitian, get(index), other);
+                        return getComponentVectorSpace().scalarProduct(get(index), other);
                     }
                 });
     }
 
     @Override
-    public Vector rscalarProduct(boolean hermitian, Complex other) {
+    public Vector rscalarProduct(Complex other) {
         if (isRow()) {
             return Maths.rowVector(size(),
                     new VectorCell() {
                         @Override
                         public Complex get(int index) {
-                            return getComponentVectorSpace().scalarProduct(hermitian, other, get(index));
+                            return getComponentVectorSpace().scalarProduct(other, get(index));
                         }
                     });
         }
@@ -617,7 +617,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
                 new VectorCell() {
                     @Override
                     public Complex get(int index) {
-                        return getComponentVectorSpace().scalarProduct(hermitian, other, get(index));
+                        return getComponentVectorSpace().scalarProduct(other, get(index));
                     }
                 });
     }

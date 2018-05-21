@@ -8,7 +8,7 @@ package net.vpc.scholar.hadruwaves.mom.project.areamaterial;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
 import net.vpc.scholar.hadruwaves.mom.project.common.VarUnit;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

@@ -210,33 +210,13 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     }
 
     @Override
-    public TList<T> hscalarProduct(T other) {
-        return (TList<T>) super.hscalarProduct(other);
-    }
-
-    @Override
-    public TList<T> scalarProduct(boolean hermitian, T other) {
-        return (TList<T>) super.scalarProduct(hermitian, other);
-    }
-
-    @Override
-    public TList<T> rscalarProduct(boolean hermitian, T other) {
-        return (TList<T>) super.rscalarProduct(hermitian, other);
+    public TList<T> rscalarProduct(T other) {
+        return (TList<T>) super.rscalarProduct(other);
     }
 
     @Override
     public TList<T> vscalarProduct(TVector<T>... other) {
         return (TList<T>) super.vscalarProduct(other);
-    }
-
-    @Override
-    public TList<T> vhscalarProduct(TVector<T>... other) {
-        return (TList<T>) super.vhscalarProduct(other);
-    }
-
-    @Override
-    public TList<T> vscalarProduct(boolean hermitian, TVector<T>... other) {
-        return (TList<T>) super.vscalarProduct(hermitian, other);
     }
 
     @Override

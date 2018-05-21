@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.HFileSystem;
+import net.vpc.scholar.hadrumaths.io.HFileSystem;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

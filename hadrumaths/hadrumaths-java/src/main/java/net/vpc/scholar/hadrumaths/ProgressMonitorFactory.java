@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.monitors.*;
 
 import java.io.PrintStream;
 import java.util.logging.Level;
@@ -178,7 +179,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
     }
 
     public static EnhancedProgressMonitor createLogMonitor(String message, long freq) {
-        return temporize(new LogProgressMonitor(message, null), freq);
+        return temporize(new LongIterationComputationMonitorInc.LogProgressMonitor(message, null), freq);
     }
 
     public static EnhancedProgressMonitor createLogMonitor(String message, long freq, Logger out) {
@@ -210,11 +211,11 @@ public class ProgressMonitorFactory extends AbstractFactory {
     }
 
     public static EnhancedProgressMonitor logger(String messageFormat, Logger printStream) {
-        return new LogProgressMonitor(messageFormat, printStream);
+        return new LongIterationComputationMonitorInc.LogProgressMonitor(messageFormat, printStream);
     }
 
     public static EnhancedProgressMonitor logger(Logger printStream) {
-        return new LogProgressMonitor(null, printStream);
+        return new LongIterationComputationMonitorInc.LogProgressMonitor(null, printStream);
     }
 
     public static EnhancedProgressMonitor logger(long milliseconds) {
@@ -222,7 +223,7 @@ public class ProgressMonitorFactory extends AbstractFactory {
     }
 
     public static EnhancedProgressMonitor logger() {
-        return new LogProgressMonitor(null, null);
+        return new LongIterationComputationMonitorInc.LogProgressMonitor(null, null);
     }
 
     public static EnhancedProgressMonitor logger(String messageFormat, TLog printStream) {

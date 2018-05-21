@@ -7,7 +7,7 @@ package net.vpc.scholar.hadruwaves.mom.project.areamaterial;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
 import net.vpc.scholar.hadruwaves.mom.project.MomProjectFactory;
 import net.vpc.scholar.hadruwaves.mom.project.gpmesher.GpMesher;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

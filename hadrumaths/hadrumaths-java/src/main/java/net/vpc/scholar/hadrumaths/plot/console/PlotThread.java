@@ -4,10 +4,10 @@ import net.vpc.scholar.hadrumaths.Chronometer;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.util.ProgressMessage;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.StringProgressMessage;
-import net.vpc.scholar.hadrumaths.util.SwingUtils;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMessage;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.StringProgressMessage;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

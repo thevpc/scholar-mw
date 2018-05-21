@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.util.CacheEnabled;
+import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 
 /**
  * Created by vpc on 5/5/14.

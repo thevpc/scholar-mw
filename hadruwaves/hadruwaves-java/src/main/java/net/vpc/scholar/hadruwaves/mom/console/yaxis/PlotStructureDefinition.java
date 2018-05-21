@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.vpc.scholar.hadrumaths.util.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;

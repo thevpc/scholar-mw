@@ -27,13 +27,11 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
     }
 
     private static final long serialVersionUID = 1L;
-    private boolean hermitian;
     private transient WeakReference<Expr> meSimplified = new WeakReference<Expr>(null);
 
-    public ParametrizedScalarProduct(Expr xargument, Expr yargument, boolean hermitian) {
+    public ParametrizedScalarProduct(Expr xargument, Expr yargument) {
         super();
         init(xargument, yargument, null, false);
-        this.hermitian = hermitian;
 //        if( xargument instanceof DoubleValue && yargument instanceof DoubleValue && !isDD()){
 //            init(xargument, yargument, null,false);
 //        }
@@ -41,7 +39,7 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public String getFunctionName() {
-        return hermitian ? "**" : "***";
+        return "**";
     }
 
 
@@ -98,48 +96,42 @@ public class ParametrizedScalarProduct extends GenericFunctionXY {
 
     @Override
     public Expr newInstance(Expr xargument, Expr yargument) {
-        return new ParametrizedScalarProduct(xargument, yargument, hermitian);
+        return new ParametrizedScalarProduct(xargument, yargument);
     }
 
 //    @Override
 //    public String toString() {
 //        return "("+getXArgument()+getFunctionName()+getYArgument()+")";
 //    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+//
+//        ParametrizedScalarProduct that = (ParametrizedScalarProduct) o;
+//
+//        return true;
+//    }
 
-    public boolean isHermitian() {
-        return hermitian;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        ParametrizedScalarProduct that = (ParametrizedScalarProduct) o;
-
-        return hermitian == that.hermitian;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (hermitian ? 1 : 0);
-        return result;
-    }
+//    @Override
+//    public int hashCode() {
+//        int result = super.hashCode();
+//        return result;
+//    }
 
     @Override
     public Expr mul(double other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other));
     }
 
     @Override
     public Expr mul(Complex other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other));
     }
 
     @Override
     public Expr mul(Domain other) {
-        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other), hermitian);
+        return new ParametrizedScalarProduct(getXArgument().mul(other), getYArgument().mul(other));
     }
 }

@@ -5,9 +5,9 @@ import net.vpc.scholar.hadrumaths.plot.CardPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
 import net.vpc.scholar.hadrumaths.plot.TabbedPlotContainer;
-import net.vpc.scholar.hadrumaths.util.FileDrop;
+import net.vpc.scholar.hadrumaths.plot.swings.*;
+import net.vpc.scholar.hadrumaths.io.FileDrop;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
-import net.vpc.scholar.hadrumaths.util.swingext.*;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;

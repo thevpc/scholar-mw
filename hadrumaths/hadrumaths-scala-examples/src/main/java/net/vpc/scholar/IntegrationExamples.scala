@@ -18,19 +18,19 @@ object IntegrationExamples extends App{
   var t : Expr=null;
   var ii : Complex=null;
   T=define("T",(x:Double)=>sin(cos(x))/cos(x))
-  t = T(X) * domain(0 -> PI)
+  t = T(X) * domain(0.0 -> PI)
   Plot.plot(t)
   ii = integrate(t)
   println(ii)
 
   T=define("T",(x:Double)=>sin(x))
-  t = T(X) * domain(0 -> PI)
+  t = T(X) * domain(0.0 -> PI)
   Plot.plot(t)
   ii = integrate(t)
   println(ii)
 //
   T=define("T",(x:Double)=>(x))
-  t = T(X) * domain(0 -> 1.0)
+  t = T(X) * domain(0.0 -> 1.0)
   Plot.plot(t)
   ii = integrate(t)
   println(ii)

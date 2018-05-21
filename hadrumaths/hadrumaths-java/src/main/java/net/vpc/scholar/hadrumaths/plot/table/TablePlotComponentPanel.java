@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.table;
 
-import net.vpc.scholar.hadrumaths.ValuesPlotTableModel;
+import net.vpc.scholar.hadrumaths.plot.ValuesPlotTableModel;
 import net.vpc.scholar.hadrumaths.plot.PlotComponentPanel;
 import net.vpc.scholar.hadrumaths.plot.PlotModelProvider;
-import net.vpc.scholar.hadrumaths.util.JTableHelper;
+import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
 
 import javax.swing.*;
 import java.awt.*;

@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.dump.Dumpable;
 
 import java.util.Arrays;
 import java.util.Collections;

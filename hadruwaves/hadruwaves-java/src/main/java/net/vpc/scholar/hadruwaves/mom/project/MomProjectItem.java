@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadruwaves.mom.project;
 
 import net.vpc.scholar.hadruwaves.mom.project.common.ExpressionAware;
-import net.vpc.scholar.hadrumaths.util.Configuration;
+import net.vpc.scholar.hadrumaths.util.config.Configuration;
 
 /**
  *

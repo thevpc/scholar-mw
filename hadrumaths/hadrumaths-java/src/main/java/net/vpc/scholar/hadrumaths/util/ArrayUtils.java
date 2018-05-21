@@ -822,6 +822,14 @@ public final class ArrayUtils {
         return ret;
     }
 
+    public static Expr[] append(Expr[] a, Expr b) {
+        int max = a.length;
+        Expr[] ret = new Expr[max+1];
+        System.arraycopy(a,0,ret,0,a.length);
+        ret[a.length]=b;
+        return ret;
+    }
+
     public static Complex[] add(Complex[] a, Complex[] b) {
         int max = Math.max(a.length, b.length);
         Complex[] ret = new Complex[max];

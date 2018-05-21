@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.project.common;
 
 import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.ProgressMessage;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMessage;
 
 /**
  * Created by IntelliJ IDEA. User: taha Date: 3 juil. 2004 Time: 15:15:13 To

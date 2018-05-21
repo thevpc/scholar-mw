@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**

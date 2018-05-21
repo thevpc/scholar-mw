@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.test.util.ExprChecker;
 import net.vpc.scholar.hadrumaths.test.util.ExprGenerator;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 public class TestVals {
     public static void main(String[] args) {

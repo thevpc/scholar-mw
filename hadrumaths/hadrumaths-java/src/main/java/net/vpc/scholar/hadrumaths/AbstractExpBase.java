@@ -255,6 +255,26 @@ public abstract class AbstractExpBase implements Expr {
     }
 
     @Override
+    public Expr rdiv(double other) {
+        return Maths.expr(other).div(this);
+    }
+
+    @Override
+    public Expr rmul(double other) {
+        return Maths.expr(other).mul(this);
+    }
+
+    @Override
+    public Expr radd(double other) {
+        return Maths.expr(other).add(this);
+    }
+
+    @Override
+    public Expr rsub(double other) {
+        return Maths.expr(other).sub(this);
+    }
+
+    @Override
     public boolean isDoubleTyped() {
         return false;
     }

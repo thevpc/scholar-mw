@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
@@ -711,7 +711,7 @@ public final class Physics {
 //        int progress=0;
         for (int q = 0; q < gfps.length; q++) {
             for (int n = 0; n < max; n++) {
-                gfps[q][n] = Maths.scalarProduct(true, indexes[n].fn, indexes[q].fn);
+                gfps[q][n] = Maths.scalarProduct(indexes[n].fn, indexes[q].fn);
             }
         }
         Plot.title("<fn,fn>").asMatrix().plot(matrix(gfps));//.display();

@@ -1,10 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
@@ -34,7 +33,7 @@ public class ModeFunctionsDelegate implements ModeFunctions {
     }
 
     @Override
-    public void setObjectCacheResolver(ObjectCacheResolver cacheResolver) {
+    public void setObjectCacheResolver(ObjectCacheResolver objectCacheResolver) {
         this.objectCacheResolver=objectCacheResolver;
         if(base!=null){
             base.setObjectCacheResolver(objectCacheResolver);

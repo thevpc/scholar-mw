@@ -29,6 +29,9 @@ public class FormatFactory extends AbstractFactory {
     public static YFormat Y = new YFormat("Y");
     public static ZFormat Z = new ZFormat("Z");
     public static RequireParenthesesFormat REQUIRED_PARS = RequireParenthesesFormat.INSTANCE;
+    public static ComplexIFormat I = ComplexIFormat.I;
+    public static ComplexIFormat I_J = ComplexIFormat.J;
+    public static ComplexIFormat I_HAT = ComplexIFormat.I_HAT;
     public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE, true);
     public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, false);
     public static DomainFormat NON_FULL_GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, true);

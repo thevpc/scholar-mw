@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves
 
 import java.util.logging.{Level, Logger}
 
-import net.vpc.scholar.hadrumaths.util.IOUtils
+import net.vpc.scholar.hadrumaths.io.IOUtils
 import net.vpc.scholar.hadrumaths.{HadrumathsService, HadrumathsServiceDesc}
 
 /**

@@ -122,28 +122,28 @@ public class ExpressionRewriterFactory extends AbstractFactory {
             )
     );
 
-    private static final ExpressionRewriterSuite OPTIMIZE_COMPUTE = new ExpressionRewriterSuite("OPTIMIZE_COMPUTE");
+    private static final ExpressionRewriterSuite COMPUTATION_SIMPLIFIER = new ExpressionRewriterSuite("COMPUTATION_SIMPLIFIER");
 
     static {
         rebuild();
     }
 
     public static void rebuild() {
-        OPTIMIZE_COMPUTE.clear();
+        COMPUTATION_SIMPLIFIER.clear();
 
 //        ExpressionRewriterRuleSet CANONICAL_RULE_SET = new ExpressionRewriterRuleSet("CANONICAL");
 //        CANONICAL_RULE_SET.addAllRules(NAVIGATION_RULES);
 //        CANONICAL_RULE_SET.addAllRules(CANONICAL_RULES);
-//        OPTIMIZE_COMPUTE.add(CANONICAL_RULE_SET);
+//        COMPUTATION_SIMPLIFIER.add(CANONICAL_RULE_SET);
 
 
         ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("EXPAND_SIMPLIFY");
         EXPAND_SIMPLIFY_RULE_SET.addAllRules(SIMPLIFY_RULES);
-        OPTIMIZE_COMPUTE.add(EXPAND_SIMPLIFY_RULE_SET);
+        COMPUTATION_SIMPLIFIER.add(EXPAND_SIMPLIFY_RULE_SET);
     }
 
-    public static ExpressionRewriter getComputationOptimizer() {
-        return OPTIMIZE_COMPUTE;
+    public static ExpressionRewriter getComputationSimplifier() {
+        return COMPUTATION_SIMPLIFIER;
     }
 
     private ExpressionRewriterFactory() {

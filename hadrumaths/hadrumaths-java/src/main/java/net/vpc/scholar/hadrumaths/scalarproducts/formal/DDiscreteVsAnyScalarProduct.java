@@ -44,7 +44,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                     if (values[xi] != 0) {
                         dom = Domain.forBounds(x[xi], x[xi] + dx);
                         DoubleValue seg = DoubleValue.valueOf(values[xi], dom);
-                        d += sp.eval(false, domain, seg, f2).toDouble();
+                        d += sp.eval(domain, seg, f2).toDouble();
                     }
                 }
                 return d;
@@ -64,7 +64,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                         if (values[yi][xi] != 0) {
                             dom = Domain.forBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy);
                             DoubleValue seg = DoubleValue.valueOf(values[yi][xi], dom);
-                            d += sp.eval(false, domain, seg, f2).toDouble();
+                            d += sp.eval(domain, seg, f2).toDouble();
                         }
                     }
                 }
@@ -86,7 +86,7 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                             if (values[zi][yi][xi] != 0) {
                                 dom = Domain.forBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy, z[yi], z[yi] + dz);
                                 DoubleValue seg = DoubleValue.valueOf(values[zi][yi][xi], dom);
-                                d += sp.eval(false, domain, seg, f2).toDouble();
+                                d += sp.eval(domain, seg, f2).toDouble();
                             }
                         }
                     }

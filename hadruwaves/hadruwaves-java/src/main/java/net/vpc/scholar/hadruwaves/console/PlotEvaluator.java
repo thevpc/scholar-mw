@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.console;
 
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.

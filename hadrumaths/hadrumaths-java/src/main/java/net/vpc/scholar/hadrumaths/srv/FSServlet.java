@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.RuntimeIOException;
-import net.vpc.scholar.hadrumaths.util.HFile;
-import net.vpc.scholar.hadrumaths.util.HFileSystem;
-import net.vpc.scholar.hadrumaths.util.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.io.HFileSystem;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -4,9 +4,8 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 
@@ -29,6 +28,6 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Com
             throw new IllegalArgumentException();
         }
         DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
-        return Maths.scalarProductCache(true, momStructure.getTestFunctions().arr(), _g, getMonitor());
+        return Maths.scalarProductCache(momStructure.getTestFunctions().arr(), _g, getMonitor());
     }
 }

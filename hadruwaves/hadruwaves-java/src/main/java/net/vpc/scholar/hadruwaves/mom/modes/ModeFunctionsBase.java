@@ -4,7 +4,10 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.*;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
@@ -99,7 +102,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     //    }
     public static String toStr(int[] x) {
         StringBuilder sb = new StringBuilder("[").append(x.length).append("]{");
-        for (int i = 0; i < min(x.length, 3); i++) {
+        for (int i = 0; i < Math.min(x.length, 3); i++) {
             if (i > 0) {
                 sb.append(",");
             }
@@ -108,8 +111,8 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         if (x.length > 3) {
             sb.append("...");
         }
-        for (int i = max(x.length - 3, 3); i < x.length; i++) {
-            if (i > max(x.length - 3, 3)) {
+        for (int i = Math.max(x.length - 3, 3); i < x.length; i++) {
+            if (i > Math.max(x.length - 3, 3)) {
                 sb.append(",");
             }
             sb.append(x[i]);

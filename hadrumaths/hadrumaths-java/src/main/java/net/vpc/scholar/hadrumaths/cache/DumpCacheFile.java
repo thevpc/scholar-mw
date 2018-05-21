@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.util.AppLock;
-import net.vpc.scholar.hadrumaths.util.HFile;
+import net.vpc.scholar.hadrumaths.concurrent.AppLock;
+import net.vpc.scholar.hadrumaths.io.HFile;
 
 /**
  * Created by vpc on 5/30/14.

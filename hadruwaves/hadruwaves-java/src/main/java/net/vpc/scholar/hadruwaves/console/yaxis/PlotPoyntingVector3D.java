@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.util.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 public class PlotPoyntingVector3D extends PlotAxisCubes implements Cloneable {
     public PlotPoyntingVector3D(YType... type) {

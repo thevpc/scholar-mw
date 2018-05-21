@@ -12,6 +12,7 @@ import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.DoubleValidator;
 import net.vpc.scholar.hadrumaths.util.IntValidator;
 import net.vpc.scholar.hadrumaths.util.RandomList;
+import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

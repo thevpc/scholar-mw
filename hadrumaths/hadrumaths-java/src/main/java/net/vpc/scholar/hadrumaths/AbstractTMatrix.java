@@ -2001,32 +2001,12 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         throw new RuntimeException("Not a vector");
     }
 
-    public T scalarProduct(boolean hermitian, TMatrix<T> m) {
-        return toVector().scalarProduct(hermitian, m.toVector());
-    }
-
-    @Override
     public T scalarProduct(TMatrix<T> m) {
-        return scalarProduct(false, m);
+        return toVector().scalarProduct(m.toVector());
     }
 
-    @Override
     public T scalarProduct(TVector<T> v) {
-        return scalarProduct(false, v);
-    }
-
-    @Override
-    public T hscalarProduct(TMatrix<T> m) {
-        return scalarProduct(true, m);
-    }
-
-    @Override
-    public T hscalarProduct(TVector<T> v) {
-        return scalarProduct(true, v);
-    }
-
-    public T scalarProduct(boolean hermitian, TVector<T> v) {
-        return toVector().scalarProduct(hermitian, v);
+        return toVector().scalarProduct(v);
     }
 
     public boolean isColumn() {

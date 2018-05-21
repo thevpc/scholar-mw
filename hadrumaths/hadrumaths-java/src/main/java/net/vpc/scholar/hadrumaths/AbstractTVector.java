@@ -100,15 +100,8 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 //        return all;
 //    }
 
+
     public T scalarProduct(TVector<T> other) {
-        return scalarProduct(false, other);
-    }
-
-    public T hscalarProduct(TVector<T> other) {
-        return scalarProduct(true, other);
-    }
-
-    public T scalarProduct(boolean hermitian, TVector<T> other) {
         int max = Math.max(size(), other.size());
         VectorSpace<T> cs = getComponentVectorSpace();
         RepeatableOp<T> d = cs.addRepeatableOp();
@@ -118,62 +111,36 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return d.eval();
     }
 
+    @Override
     public TVector<T> scalarProduct(T other) {
-        return scalarProduct(false, other);
-    }
-
-    public TVector<T> hscalarProduct(T other) {
-        return scalarProduct(true, other);
-    }
-
-    @Override
-    public TVector<T> scalarProduct(boolean hermitian, T other) {
         return newVectorFromModel(isRow(), size(), new TVectorCell<T>() {
             @Override
             public T get(int index) {
-                return getComponentVectorSpace().scalarProduct(hermitian, AbstractTVector.this.get(index), other);
+                return getComponentVectorSpace().scalarProduct(AbstractTVector.this.get(index), other);
             }
         });
     }
 
     @Override
-    public TVector<T> rscalarProduct(boolean hermitian, T other) {
+    public TVector<T> rscalarProduct(T other) {
         return newVectorFromModel(isRow(), size(), new TVectorCell<T>() {
             @Override
             public T get(int index) {
-                return getComponentVectorSpace().scalarProduct(hermitian, other, AbstractTVector.this.get(index));
+                return getComponentVectorSpace().scalarProduct(other,AbstractTVector.this.get(index));
             }
         });
     }
 
-    @Override
     public TVector<T> vscalarProduct(TVector<T>... other) {
-        return vscalarProduct(false, other);
-    }
-
-    @Override
-    public TVector<T> vhscalarProduct(TVector<T>... other) {
-        return vscalarProduct(true, other);
-    }
-
-    public TVector<T> vscalarProduct(boolean hermitian, TVector<T>... other) {
         return newVectorFromModel(false, other.length, new TVectorCell<T>() {
             @Override
             public T get(int index) {
-                return scalarProduct(hermitian, other[index]);
+                return scalarProduct(other[index]);
             }
         });
     }
 
     public T scalarProductAll(TVector<T>... other) {
-        return scalarProductAll(false, other);
-    }
-
-    public T hscalarProductAll(TVector<T>... other) {
-        return scalarProductAll(true, other);
-    }
-
-    public T scalarProductAll(boolean hermitian, TVector<T>... other) {
         int currSize = size();
         for (TVector<T> v : other) {
             int size = v.size();
@@ -809,15 +776,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     public T scalarProduct(TMatrix<T> v) {
-        return scalarProduct(false, v);
-    }
-
-    public T hscalarProduct(TMatrix<T> v) {
-        return scalarProduct(true, v);
-    }
-
-    public T scalarProduct(boolean hermitian, TMatrix<T> v) {
-        return scalarProduct(hermitian, v.toVector());
+        return scalarProduct(v.toVector());
     }
 
     public TVector<T> setParam(String name, Object value) {

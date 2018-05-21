@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.convergence;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;

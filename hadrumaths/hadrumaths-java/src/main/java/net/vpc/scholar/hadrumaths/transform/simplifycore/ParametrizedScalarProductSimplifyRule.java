@@ -32,7 +32,7 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
             RewriteResult rxa = ruleset.rewrite(c.getXArgument());
             RewriteResult rya = ruleset.rewrite(c.getYArgument());
             if (!rxa.getValue().hasParams() && !rya.getValue().hasParams()) {
-                return RewriteResult.bestEffort(Maths.scalarProduct(c.isHermitian(), rxa.getValue(), rya.getValue()));
+                return RewriteResult.bestEffort(Maths.scalarProduct(rxa.getValue(), rya.getValue()));
             }
             Expr xa = rxa.getValue();
             Expr ya = rya.getValue();

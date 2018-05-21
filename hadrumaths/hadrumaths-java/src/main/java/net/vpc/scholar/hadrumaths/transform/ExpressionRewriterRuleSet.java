@@ -11,9 +11,9 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.util.CacheEnabled;
+import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.util.ClassMap;
-import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
+import net.vpc.scholar.hadrumaths.dump.DumpManager;
 
 import java.util.*;
 
@@ -183,8 +183,9 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     }
                 } else if (nextResult.isRewritten()) {//next next != null && !next.equals(curr)
 //                    DEBUG_REWRITE_SUCCESS++;
+                    boolean bestEffort = nextResult.isBestEffort();
                     for (ExprRewriteSuccessListener rewriteListener : rewriteSuccessListeners) {
-                        rewriteListener.onRewriteSuccessExpr(this, e, next);
+                        rewriteListener.onModifiedExpr(this, e, next, bestEffort);
                     }
                     if (debugExpressionRewrite) {
                         if (next.toString().equals(curr.toString()) && !(curr instanceof Any)) {
@@ -207,7 +208,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                         }
                     }
                     curr = next;
-                    if (nextResult.isBestEffort()) {
+                    if (bestEffort) {
                         bestEfforts++;
                     }
                     modified = true;

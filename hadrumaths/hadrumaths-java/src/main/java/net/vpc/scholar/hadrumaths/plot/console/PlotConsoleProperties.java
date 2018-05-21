@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.util.swingext.GridBagLayout2;
+import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
 
 import javax.swing.*;
 import java.io.IOException;

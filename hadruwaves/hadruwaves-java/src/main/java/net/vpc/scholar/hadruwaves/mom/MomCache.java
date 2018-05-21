@@ -10,7 +10,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.util.HFile;
+import net.vpc.scholar.hadrumaths.io.HFile;
 
 /**
  *

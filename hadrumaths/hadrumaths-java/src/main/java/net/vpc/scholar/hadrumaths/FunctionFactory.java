@@ -310,7 +310,7 @@ public final class FunctionFactory extends AbstractFactory {
 
     @Deprecated
     public static DoubleToDouble simplify(DoubleToDouble f) {
-        return ExpressionRewriterFactory.getComputationOptimizer().rewriteOrSame(f).toDD();
+        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(f).toDD();
     }
 
 //    public static IDoubleToComplex toCFunctionXY(IDoubleToDouble f) {

@@ -31,28 +31,16 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
     TList<T> transpose();
 
     @Override
-    TList<T> scalarProduct(boolean hermitian, T other);
-
-    @Override
     TList<T> scalarProduct(T other);
 
     @Override
-    TList<T> hscalarProduct(T other);
-
-    @Override
-    TVector<T> rscalarProduct(boolean hermitian, T other);
+    TVector<T> rscalarProduct(T other);
 
     @Override
     <R> TList<R> to(TypeReference<R> other);
 
     @Override
     TList<T> vscalarProduct(TVector<T>... other);
-
-    @Override
-    TList<T> vhscalarProduct(TVector<T>... other);
-
-    @Override
-    TList<T> vscalarProduct(boolean hermitian, TVector<T>... other);
 
     @Override
     TList<T> dotmul(TVector<T> other);
