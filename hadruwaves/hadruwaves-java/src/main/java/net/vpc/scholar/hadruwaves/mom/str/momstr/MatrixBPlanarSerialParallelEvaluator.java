@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -28,13 +28,13 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         if (_src.length != 1) {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
         }
-        EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
+        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
         TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
 
-        EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
+        ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
         return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] b = new Complex[_g.length][_src.length];
                 for (int n = 0; n < _src.length; n++) {
                     TVector<Complex> cc = sp.getColumn(n);

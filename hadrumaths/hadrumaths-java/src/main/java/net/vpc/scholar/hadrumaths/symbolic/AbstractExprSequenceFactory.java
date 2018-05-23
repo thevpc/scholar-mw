@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.TList;
-import net.vpc.scholar.hadrumaths.TypeReference;
+import net.vpc.common.util.TypeReference;
 
 /**
  * Created by vpc on 2/14/15.

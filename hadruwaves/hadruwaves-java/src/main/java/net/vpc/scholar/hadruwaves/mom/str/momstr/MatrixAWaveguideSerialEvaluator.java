@@ -1,21 +1,22 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.TestFunctions;
+import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 24 mai 2007 21:55:23
  */
 public class MatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
-    public static final MatrixAWaveguideSerialEvaluator INSTANCE=new MatrixAWaveguideSerialEvaluator();
+    public static final MatrixAWaveguideSerialEvaluator INSTANCE = new MatrixAWaveguideSerialEvaluator();
+
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
@@ -37,7 +38,7 @@ public class MatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
                         Complex zn = n.impedance;
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
-                        c.addProduct(zn,sp1,sp2);
+                        c.addProduct(zn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }
@@ -57,7 +58,7 @@ public class MatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
                         Complex zn = n.impedance;
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
-                        c.addProduct(zn,sp1,sp2);
+                        c.addProduct(zn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }

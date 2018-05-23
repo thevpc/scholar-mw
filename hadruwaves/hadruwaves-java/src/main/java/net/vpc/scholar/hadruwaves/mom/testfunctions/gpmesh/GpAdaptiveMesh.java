@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;

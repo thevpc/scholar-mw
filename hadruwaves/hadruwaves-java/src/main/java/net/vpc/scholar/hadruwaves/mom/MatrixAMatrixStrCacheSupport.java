@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -10,9 +10,9 @@ import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 class MatrixAMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
 
     private MomStructure momStructure;
-    private EnhancedProgressMonitor[] mon;
+    private ProgressMonitor[] mon;
 
-    public MatrixAMatrixStrCacheSupport(MomStructure momStructure, EnhancedProgressMonitor monitor) {
+    public MatrixAMatrixStrCacheSupport(MomStructure momStructure, ProgressMonitor monitor) {
         super(momStructure, MomStructure.CACHE_MATRIX_A,monitor);
         this.momStructure = momStructure;
         this.mon = getMonitor().split(new double[]{2,8});

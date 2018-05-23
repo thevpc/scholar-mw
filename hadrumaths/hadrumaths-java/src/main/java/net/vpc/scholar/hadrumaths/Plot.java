@@ -1,15 +1,20 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.ClassMap;
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
-import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
-import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.plot.swings.ColorChooserEditor;
 import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.Converter;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
@@ -864,7 +869,7 @@ public final class Plot {
             g = new ButtonGroup();
             for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
                 f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
-                f.setSelected(PlatformUtils.notnull(model.getConverter(),ComplexAsDouble.ABS) == ComplexAsDouble.ABS);
+                f.setSelected(PlatformUtils.notnull(model.getConverter(), ComplexAsDouble.ABS) == ComplexAsDouble.ABS);
                 g.add(f);
                 functionsMenu.add(f);
             }

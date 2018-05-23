@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 
 import net.vpc.common.log.Log;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 

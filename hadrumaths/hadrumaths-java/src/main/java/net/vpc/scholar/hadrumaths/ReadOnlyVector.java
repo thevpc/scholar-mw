@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 public class ReadOnlyVector extends AbstractVector {
     private static final long serialVersionUID = 1L;
     private TVectorModel<Complex> model;

@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.plot.CardPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
 import net.vpc.scholar.hadrumaths.plot.TabbedPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.swings.*;
-import net.vpc.scholar.hadrumaths.io.FileDrop;
+import net.vpc.scholar.hadrumaths.plot.swings.FileDrop;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;

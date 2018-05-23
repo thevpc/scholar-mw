@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
 import java.beans.PropertyChangeListener;

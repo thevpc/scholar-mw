@@ -1,12 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
@@ -50,8 +51,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
         MomStructure str = (MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                EnhancedProgressMonitor[] mon = monitor.split(new double[]{2, 8});
+            public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
 //        this.invalidateCache();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
@@ -73,12 +74,12 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 if (str.getHintsManager().isHintRegularZnOperator()) {
                     evan = indexes;
                 }
-                EnhancedProgressMonitor mon1 = mon[1];
+                ProgressMonitor mon1 = mon[1];
                 ModeInfo[] finalProp = prop;
                 ModeInfo[] finalEvan = evan;
                 return Maths.invokeMonitoredAction(mon1, "Loop 1", new MonitoredAction<VDiscrete>() {
                     @Override
-                    public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
                         MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
                         MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
@@ -151,8 +152,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                EnhancedProgressMonitor[] mon = monitor.split(new double[]{2, 8});
+            public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
 //        this.invalidateCache();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
@@ -182,7 +183,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 ModeInfo[] finalProp = prop;
                 return invokeMonitoredAction(mon[1], "???", new MonitoredAction<VDiscrete>() {
                     @Override
-                    public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex tempx;
                         MutableComplex tempy;
                         for (int zi = 0; zi < z.length; zi++) {

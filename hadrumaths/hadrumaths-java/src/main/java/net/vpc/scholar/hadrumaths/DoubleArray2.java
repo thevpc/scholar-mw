@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 import java.util.List;
 
 public class DoubleArray2 extends ArrayTList<DoubleArray> {

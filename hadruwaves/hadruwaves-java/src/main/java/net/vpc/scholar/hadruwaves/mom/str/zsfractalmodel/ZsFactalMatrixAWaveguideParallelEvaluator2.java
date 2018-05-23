@@ -1,15 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.FractalAreaGeometryList;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -47,7 +47,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
         final String simpleName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, simpleName, new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 DoubleToVector[] g = gpTestFunctions.arr();
                 Complex[][] b = new Complex[g.length][g.length];
                 ModeFunctions fn = str.getModeFunctions();
@@ -59,10 +59,10 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                 String monMessage = simpleName;
                 if (symMatrix) {
                     ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 3);
-                    EnhancedProgressMonitor m0 = ProgressMonitorFactory.createIncrementalMonitor(mons[0], (g.length * g.length));
+                    ProgressMonitor m0 = ProgressMonitorFactory.createIncrementalMonitor(mons[0], (g.length * g.length));
                     Maths.invokeMonitoredAction(m0, monMessage + " (g x g)", new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                             for (int p = 0; p < g.length; p++) {
                                 TVector<Complex> spp = sp.getRow(p);
                                 for (int q = p; q < g.length; q++) {
@@ -81,10 +81,10 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 
 
                     Yoperator[] opValues = Yop(str2, mons[1]);
-                    EnhancedProgressMonitor m2 = ProgressMonitorFactory.createIncrementalMonitor(mons[2], (opValues.length * g.length * g.length));
+                    ProgressMonitor m2 = ProgressMonitorFactory.createIncrementalMonitor(mons[2], (opValues.length * g.length * g.length));
                     Maths.invokeMonitoredAction(m2, monMessage + " (g x g x p)", new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                             for (Yoperator opValue : opValues) {
                                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                                 if (op != null) {//op==null si k==1
@@ -128,10 +128,10 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                     });
                 } else {
                     ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 3);
-                    EnhancedProgressMonitor m0 = ProgressMonitorFactory.createIncrementalMonitor(mons[0], (g.length * g.length));
+                    ProgressMonitor m0 = ProgressMonitorFactory.createIncrementalMonitor(mons[0], (g.length * g.length));
                     Maths.invokeMonitoredAction(m0, monMessage + " (g x g)", new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                             for (int p = 0; p < g.length; p++) {
                                 TVector<Complex> spp = sp.getRow(p);
                                 for (int q = 0; q < g.length; q++) {
@@ -148,10 +148,10 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                     });
 
                     Yoperator[] opValues = Yop(str2, mons[1]);
-                    EnhancedProgressMonitor m2 = ProgressMonitorFactory.createIncrementalMonitor(mons[2], (opValues.length * g.length * g.length));
+                    ProgressMonitor m2 = ProgressMonitorFactory.createIncrementalMonitor(mons[2], (opValues.length * g.length * g.length));
                     Maths.invokeMonitoredAction(m2, monMessage + " (g x g x p)", new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                             for (Yoperator opValue : opValues) {
                                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                                 if (op != null) {//op==null si k==1
@@ -193,7 +193,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
     }
 
     private Yoperator[] Yop(MomStructureFractalZop str2, ProgressMonitor cmonitor) {
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
         GpAdaptiveMesh gpAdaptatif = ((GpAdaptiveMesh) str2.getDirectGpTestFunctions());
         FractalAreaGeometryList polygon = (FractalAreaGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
         Geometry[] transform = polygon.getTransform();
@@ -205,7 +205,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName() + " Yop", new MonitoredAction<Yoperator[]>() {
             @Override
-            public Yoperator[] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Yoperator[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 if (isSimple0) {
                     return new Yoperator[0];
                 } else {

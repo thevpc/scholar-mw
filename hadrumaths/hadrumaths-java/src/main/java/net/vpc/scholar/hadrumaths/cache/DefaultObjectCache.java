@@ -1,13 +1,9 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.*;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.io.*;
-import net.vpc.scholar.hadrumaths.monitors.DialogProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.*;
 import java.util.Map;
@@ -92,7 +88,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     public static void storeObject(HFile path, Object object, ProgressMonitor computationMonitor, String message) throws IOException {
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(computationMonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.enhance(computationMonitor);
         if (object != null && object instanceof CacheObjectSerializerProvider) {
             HFile serFile = path.getFs().get(path.getPath() + ".ser");
             object = ((CacheObjectSerializerProvider) object).createCacheObjectSerializedForm(serFile);
@@ -162,11 +158,11 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     public void store(String name, Object o, ProgressMonitor computationMonitor) {
-        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
+        ProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
         String message = "store " + name;
         Maths.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws IOException {
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws IOException {
                 DumpCacheFile file = getObjectCacheFile(name);
                 HFile path = file.getFile();
                 storeObject(path, o, m, message);

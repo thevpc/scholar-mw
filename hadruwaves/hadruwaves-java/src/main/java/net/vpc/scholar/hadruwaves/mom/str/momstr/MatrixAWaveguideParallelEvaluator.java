@@ -1,21 +1,22 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.TestFunctions;
+import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 24 mai 2007 21:55:23
  */
 public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
-    public static final MatrixAWaveguideParallelEvaluator INSTANCE=new MatrixAWaveguideParallelEvaluator();
+    public static final MatrixAWaveguideParallelEvaluator INSTANCE = new MatrixAWaveguideParallelEvaluator();
+
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
@@ -24,8 +25,8 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_eva = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
-        boolean complex=fn.isComplex()||gpTestFunctions.isComplex();
-        boolean symMatrix=!complex;
+        boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
+        boolean symMatrix = !complex;
         if (symMatrix) {
             for (int p = 0; p < _g.length; p++) {
                 TVector<Complex> spp = sp.getRow(p);
@@ -37,7 +38,7 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
 //                        System.out.println(n+" ; yn = " + yn+" ; sp = " + sp1+" ; "+sp2);
-                        c.addProduct(yn,sp1,sp2);
+                        c.addProduct(yn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }
@@ -57,7 +58,7 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
                         Complex yn = n.impedance.inv();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(q).conj();
-                        c.addProduct(yn,sp1,sp2);
+                        c.addProduct(yn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }
@@ -65,6 +66,7 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
         }
         return Maths.matrix(b);
     }
+
     @Override
     public String toString() {
         return getClass().getName();

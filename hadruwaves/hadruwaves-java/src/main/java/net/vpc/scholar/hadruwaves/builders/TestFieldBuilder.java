@@ -1,20 +1,20 @@
 package net.vpc.scholar.hadruwaves.builders;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface TestFieldBuilder extends ValueBuilder {
-    public TestFieldBuilder monitor(ProgressMonitor monitor);
+    TestFieldBuilder monitor(ProgressMonitor monitor);
 
-    public TestFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator);
+    TestFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator);
 
     Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);
 

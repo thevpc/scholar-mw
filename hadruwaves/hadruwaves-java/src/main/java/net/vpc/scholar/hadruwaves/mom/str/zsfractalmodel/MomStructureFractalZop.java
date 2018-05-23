@@ -1,14 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceConfig;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.*;
@@ -26,6 +27,7 @@ public class MomStructureFractalZop extends MomStructure {
     public static void main(String[] args) {
         System.out.println(0.1 + 0.2);
     }
+
     public static final String HINT_USE_OLD_ZS_STYLE = "HINT_USE_OLD_ZS_STYLE";
     public static final String HINT_ZS_CONVERGENCE = "HINT_ZS_CONVERGENCE";
     public static final String HINT_SUB_MODEL_EQUIVALENT = "HINT_SUB_MODEL_EQUIVALENT";

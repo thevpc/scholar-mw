@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TypeReference;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -9,41 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class PlatformUtils {
-    private static Comparator<Class> CLASS_HIERARCHY_COMPARATOR = new Comparator<Class>() {
-        @Override
-        public int compare(Class o1, Class o2) {
-            if (o1.isAssignableFrom(o2)) {
-                return 1;
-            } else if (o2.isAssignableFrom(o1)) {
-                return -1;
-            }
-            if (o1.isInterface() && !o2.isInterface()) {
-                return 1;
-            }
-            if (o2.isInterface() && !o1.isInterface()) {
-                return -1;
-            }
-            return 0;
-        }
-    };
 
-    private static Comparator<TypeReference> TYPE_REFERENCE_HIERARCHY_COMPARATOR = new Comparator<TypeReference>() {
-        @Override
-        public int compare(TypeReference o1, TypeReference o2) {
-            if (o1.isAssignableFrom(o2)) {
-                return 1;
-            } else if (o2.isAssignableFrom(o1)) {
-                return -1;
-            }
-            if (o1.isInterface() && !o2.isInterface()) {
-                return 1;
-            }
-            if (o2.isInterface() && !o1.isInterface()) {
-                return -1;
-            }
-            return 0;
-        }
-    };
 
     public static void requireEqualsAndHashCode(Class o) {
         if (!hasValidEqualsAndHashCode(o)) {
@@ -62,81 +27,8 @@ public class PlatformUtils {
     }
 
 
-    public static Class lowestCommonAncestor(Class a, Class b) {
-        if (a.equals(b)) {
-            return a;
-        }
-        if (a.isAssignableFrom(b)) {
-            return a;
-        }
-        if (b.isAssignableFrom(a)) {
-            return b;
-        }
-        Class[] aHierarchy = findClassHierarchy(a, null);
-        Class[] bHierarchy = findClassHierarchy(b, null);
-        int i1 = -1;
-        int i2 = -1;
-        for (int ii = 0; ii < aHierarchy.length; ii++) {
-            for (int jj = 0; jj < bHierarchy.length; jj++) {
-                if (aHierarchy[ii].equals(bHierarchy[jj])) {
-                    if (i1 < 0 || ii + jj < i1 + i2) {
-                        i1 = ii;
-                        i2 = jj;
-                    }
-                }
-            }
-        }
-        if (i1 < 0) {
-            return Object.class;
-        }
-        return aHierarchy[i1];
-    }
 
-    public static TypeReference lowestCommonAncestor(TypeReference a, TypeReference b) {
-        if (a.equals(b)) {
-            return a;
-        }
-        if (a.isAssignableFrom(b)) {
-            return a;
-        }
-        if (b.isAssignableFrom(a)) {
-            return b;
-        }
-        TypeReference[] aHierarchy = findClassHierarchy(a, null);
-        TypeReference[] bHierarchy = findClassHierarchy(b, null);
-        int i1 = -1;
-        int i2 = -1;
-        for (int ii = 0; ii < aHierarchy.length; ii++) {
-            for (int jj = 0; jj < bHierarchy.length; jj++) {
-                if (aHierarchy[ii].equals(bHierarchy[jj])) {
-                    if (i1 < 0 || ii + jj < i1 + i2) {
-                        i1 = ii;
-                        i2 = jj;
-                    }
-                }
-            }
-        }
-        if (i1 < 0) {
-            return TypeReference.of(Object.class);
-        }
-        return aHierarchy[i1];
-    }
 
-    public static List<Class> commonAncestors(Class a, Class b) {
-        Class[] aHierarchy = findClassHierarchy(a, null);
-        Class[] bHierarchy = findClassHierarchy(b, null);
-        int i1 = -1;
-        int i2 = -1;
-        List<Class> all = new ArrayList<>();
-        for (int ii = 0; ii < aHierarchy.length; ii++) {
-            for (int jj = 0; jj < bHierarchy.length; jj++) {
-                if (aHierarchy[ii].equals(bHierarchy[jj])) {
-                    all.add(aHierarchy[ii]);
-                }
-            }
-        }
-        return all;
-    }
 
     public static boolean hasValidEqualsAndHashCode(Class cls) {
         boolean e = false;
@@ -169,74 +61,7 @@ public class PlatformUtils {
         return true;
     }
 
-    public static Class[] findClassHierarchy(Class clazz, Class baseType) {
-        HashSet<Class> seen = new HashSet<Class>();
-        Queue<Class> queue = new LinkedList<Class>();
-        List<Class> result = new LinkedList<Class>();
-        queue.add(clazz);
-        while (!queue.isEmpty()) {
-            Class i = queue.remove();
-            if (baseType == null || baseType.isAssignableFrom(i)) {
-                if (!seen.contains(i)) {
-                    seen.add(i);
-                    result.add(i);
-                    if (i.getSuperclass() != null) {
-                        queue.add(i.getSuperclass());
-                    }
-                    for (Class ii : i.getInterfaces()) {
-                        queue.add(ii);
-                    }
-                }
-            }
-        }
-        Collections.sort(result, CLASS_HIERARCHY_COMPARATOR);
-        return result.toArray(new Class[result.size()]);
-    }
 
-    public static TypeReference[] findClassHierarchy(TypeReference clazz, TypeReference baseType) {
-        HashSet<TypeReference> seen = new HashSet<TypeReference>();
-        Queue<TypeReference> queue = new LinkedList<TypeReference>();
-        List<TypeReference> result = new LinkedList<TypeReference>();
-        queue.add(clazz);
-        while (!queue.isEmpty()) {
-            TypeReference i = queue.remove();
-            if (baseType == null || baseType.isAssignableFrom(i)) {
-                if (!seen.contains(i)) {
-                    seen.add(i);
-                    result.add(i);
-                    if (i.getSuperclass() != null) {
-                        queue.add(i.getSuperclass());
-                    }
-                    for (TypeReference ii : i.getInterfaces()) {
-                        queue.add(ii);
-                    }
-                }
-            }
-        }
-        Collections.sort(result, TYPE_REFERENCE_HIERARCHY_COMPARATOR);
-        return result.toArray(new TypeReference[result.size()]);
-    }
-
-    public static Class[] findClassOnlyHierarchy(Class clazz, Class baseType) {
-        HashSet<Class> seen = new HashSet<Class>();
-        Queue<Class> queue = new LinkedList<Class>();
-        List<Class> result = new LinkedList<Class>();
-        queue.add(clazz);
-        while (!queue.isEmpty()) {
-            Class i = queue.remove();
-            if (baseType == null || baseType.isAssignableFrom(i)) {
-                if (!seen.contains(i)) {
-                    seen.add(i);
-                    result.add(i);
-                    if (i.getSuperclass() != null) {
-                        queue.add(i.getSuperclass());
-                    }
-                }
-            }
-        }
-        Collections.sort(result, CLASS_HIERARCHY_COMPARATOR);
-        return result.toArray(new Class[result.size()]);
-    }
 
     public static long gc2() {
         long before = Maths.inUseMemory();

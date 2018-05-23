@@ -1,10 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractElectricFieldBuilder;
@@ -53,7 +52,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                 }.computeCached();
             }
             case EVANESCENT: {
-                EnhancedProgressMonitor[] mon = ProgressMonitorFactory.enhance(monitor).split(2);
+                ProgressMonitor[] mon = ProgressMonitorFactory.enhance(monitor).split(2);
                 VDiscrete Eall = getStructure().electricField(ElectricFieldPart.FULL).monitor(mon[0]).computeVDiscrete(x, y, z);
                 VDiscrete E0 = getStructure().electricField(ElectricFieldPart.FUNDAMENTAL).monitor(mon[1]).computeVDiscrete(x, y, z);
                 return Eall.sub(E0);

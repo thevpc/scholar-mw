@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.console.PlotEvaluator;
 
 public class PlotValueVDiscrete extends PlotAxisCubes implements Cloneable {

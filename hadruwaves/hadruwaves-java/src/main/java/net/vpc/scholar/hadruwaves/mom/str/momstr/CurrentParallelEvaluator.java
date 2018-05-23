@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
@@ -22,11 +22,11 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 
     @Override
     public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
-//        EnhancedProgressMonitor emonitor=ProgressMonitorFactory.enhance(monitor);
+//        ProgressMonitor emonitor=ProgressMonitorFactory.enhance(monitor);
         MomStructure str=(MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();

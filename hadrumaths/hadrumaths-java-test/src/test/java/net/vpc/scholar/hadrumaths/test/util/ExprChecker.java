@@ -200,7 +200,7 @@ public class ExprChecker {
                     Plot.title("Incompatibility[D2]").plot(v2c);
 
                     Domain d = validExpr.getDomain();
-                    Domain domain = d.intersect(Maths.xydomain(-10, 10, -10, 10));
+                    Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10));
                     domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
                     AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision));
                     double[] x = relative.getX();
@@ -216,7 +216,7 @@ public class ExprChecker {
                     Plot.title("Incompatibility[D3]").plot(v3c);
 
                     Domain d = validExpr.getDomain();
-                    Domain domain = d.intersect(Maths.xyzdomain(-10, 10, -10, 10, -10, 10));
+                    Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
                     domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
                     AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision, zprecision));
                     double[] x = relative.getX();
@@ -264,7 +264,7 @@ public class ExprChecker {
         double[][][] doublesA = null;
 //        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
-        Domain domain = d.intersect(Maths.xyzdomain(-10, 10, -10, 10, -10, 10));
+        Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
         AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision, zprecision));
         double[] x = relative.getX();
@@ -310,7 +310,7 @@ public class ExprChecker {
         Complex[][][] doublesA = null;
 //        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
-        Domain domain = d.intersect(Maths.xyzdomain(-10, 10, -10, 10, -10, 10));
+        Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
         AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision, zprecision));
         double[] x = relative.getX();
@@ -358,7 +358,7 @@ public class ExprChecker {
         double[][] doublesA = null;
 //        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
-        Domain domain = d.intersect(Maths.xydomain(-10, 10, -10, 10));
+        Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
         AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision));
         double[] x = relative.getX();
@@ -444,7 +444,7 @@ public class ExprChecker {
     public Complex[][] checkDoubleToComplexXY(DoubleToComplex e) {
         Complex[][] doublesA = null;
         Domain d = e.getDomain();
-        Domain domain = d.intersect(Maths.xydomain(-10, 10, -10, 10));
+        Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
         AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision));
         double[] x = relative.getX();

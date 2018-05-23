@@ -5,24 +5,23 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.Set;
-import javax.swing.*;
-
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotModel;
+import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
-import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
+import net.vpc.scholar.hadruwaves.str.MWStructure;
+
+import javax.swing.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Set;
 
 /**
- *
  * @author vpc
  */
 public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler {
@@ -32,8 +31,8 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         if (PlotConsole.debugFramesCount > 3) {
             return;
         }
-        Set<ExternalLibrary> preferredLibraries=null;
-        MomStructure str=(MomStructure) structure;
+        Set<ExternalLibrary> preferredLibraries = null;
+        MomStructure str = (MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
         TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         PlotComponent aplot = Plot.nodisplay().asMatrix().title("Matrix A")
@@ -44,17 +43,17 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
-                .setTitle("gp").setExpressions(str.getTestFunctions().arr())
-                .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
-                .setPreferredLibraries(null)
-                ,Plot.getDefaultWindowManager()).toComponent();
+                        .setTitle("gp").setExpressions(str.getTestFunctions().arr())
+                        .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
+                        .setPreferredLibraries(null)
+                , Plot.getDefaultWindowManager()).toComponent();
 
         JComponent fplot = Plot.create(
                 new ExpressionsPlotModel()
-                .setTitle("fn").setExpressions(str.getModeFunctions().arr())
-                .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
-                .setPreferredLibraries(null)
-                ,Plot.getDefaultWindowManager()).toComponent();
+                        .setTitle("fn").setExpressions(str.getModeFunctions().arr())
+                        .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
+                        .setPreferredLibraries(null)
+                , Plot.getDefaultWindowManager()).toComponent();
 
         JFrame f = new JFrame(title + " : " + e.toString());
         f.addWindowListener(new WindowListener() {
@@ -91,7 +90,7 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         net.vpc.scholar.hadruwaves.mom.TestFunctions gtf = str.getTestFunctions();
         if (gtf instanceof GpAdaptiveMesh) {
             GpAdaptiveMesh gam = (GpAdaptiveMesh) gtf;
-            p.addTab("str", new PolygonPlot(gam.getPolygons(str.getCircuitType()), gam.getMeshAlgo(),gam.getPattern(),str.getDomain()));
+            p.addTab("str", new PolygonPlot(gam.getPolygons(str.getCircuitType()), gam.getMeshAlgo(), gam.getPattern(), str.getDomain()));
         }
         if (m != null) {
             p.addTab("Matrix", Plot.nodisplay().title("Matrix").plot(m.getArray()).toComponent());

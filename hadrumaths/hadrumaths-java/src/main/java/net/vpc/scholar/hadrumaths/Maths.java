@@ -1,15 +1,22 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.*;
+import net.vpc.common.util.mon.*;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
+import net.vpc.scholar.hadrumaths.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
+import net.vpc.scholar.hadrumaths.io.FailStrategy;
+import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
+import net.vpc.scholar.hadrumaths.io.HFileSystem;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.JColorArrayPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
@@ -21,14 +28,8 @@ import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.dump.DumpManager;
-import net.vpc.scholar.hadrumaths.io.FailStrategy;
-import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
-import net.vpc.scholar.hadrumaths.io.HFileSystem;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
-import net.vpc.scholar.hadrumaths.monitors.LongIterationComputationMonitorInc;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.util.Converter;
+import net.vpc.scholar.hadrumaths.util.LogUtils;
 import sun.misc.Unsafe;
 
 import java.awt.*;
@@ -383,7 +384,6 @@ public final class Maths {
 
     private Maths() {
     }
-
 
 
     public static Domain xdomain(double min, double max) {
@@ -888,7 +888,7 @@ public final class Maths {
         }
     }
 
-    public static Matrix loadMatrix(String file) throws IOException {
+    public static Matrix loadMatrix(String file) throws RuntimeIOException {
         return Config.getDefaultMatrixFactory().load(new File(Config.expandPath(file)));
     }
 
@@ -3967,7 +3967,7 @@ public final class Maths {
 //            Expr[] finalGp = gp;
 //            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
 //                @Override
-//                public Expr[][] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+//                public Expr[][] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
 //                    Expr[][] fg = new Expr[2][];
 //                    fg[0] = simplifyAll(finalFn, hmon[0]);
 //
@@ -4605,7 +4605,7 @@ public final class Maths {
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
         TypeReference cls = arr[0].getComponentType();
         for (int i = 0; i < arr.length; i++) {
-            cls = PlatformUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
+            cls = ReflectUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
         }
         VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
         return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
@@ -5233,8 +5233,12 @@ public final class Maths {
         return Config.getMetricFormatter().format(dimension);
     }
 
-    public static String formatPeriod(long period) {
-        return Config.TIME_PERIOD_FORMATTER.format(period);
+    public static String formatPeriodNanos(long period) {
+        return Config.TIME_PERIOD_FORMATTER.formatNanos(period);
+    }
+
+    public static String formatPeriodMillis(long period) {
+        return Config.TIME_PERIOD_FORMATTER.formatMillis(period);
     }
 
     public static int sizeOf(Class src) {
@@ -5376,7 +5380,7 @@ public final class Maths {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Config.getMemorySizeFormatter();
                 }
-                return new MemorySizeFormatter(subFormat);
+                return new BytesSizeFormatter(subFormat);
             }
             case "%":
             case "percent": {
@@ -5623,9 +5627,9 @@ public final class Maths {
         private static boolean strictComputationMonitor = false;
         private static float maxMemoryThreshold = 0.7f;
         private static FrequencyFormatter frequencyFormatter = new FrequencyFormatter();
-        private static MemorySizeFormatter memorySizeFormatter = new MemorySizeFormatter();
+        private static BytesSizeFormatter memorySizeFormatter = new BytesSizeFormatter();
         private static MetricFormatter metricFormatter = new MetricFormatter();
-        private static TimePeriodFormatter TIME_PERIOD_FORMATTER = new TimePeriodFormatter();
+        private static TimePeriodFormatter TIME_PERIOD_FORMATTER = new DefaultTimePeriodFormatter();
         private static ExprSequenceFactory DEFAULT_EXPR_SEQ_FACTORY = DefaultExprSequenceFactory.INSTANCE;
         private static ExprMatrixFactory DEFAULT_EXPR_MATRIX_FACTORY = DefaultExprMatrixFactory.INSTANCE;
         private static ExprCubeFactory DEFAULT_EXPR_CUBE_FACTORY = DefaultExprCubeFactory.INSTANCE;
@@ -5789,11 +5793,11 @@ public final class Maths {
             Config.frequencyFormatter = frequencyFormatter;
         }
 
-        public static MemorySizeFormatter getMemorySizeFormatter() {
+        public static BytesSizeFormatter getMemorySizeFormatter() {
             return memorySizeFormatter;
         }
 
-        public static void setMemorySizeFormatter(MemorySizeFormatter memorySizeFormatter) {
+        public static void setMemorySizeFormatter(BytesSizeFormatter memorySizeFormatter) {
             Config.memorySizeFormatter = memorySizeFormatter;
         }
 
@@ -6024,7 +6028,7 @@ public final class Maths {
         }
 
         public static void setLogMonitorLevel(Level level) {
-            Logger logger = LongIterationComputationMonitorInc.LogProgressMonitor.getDefaultLogger();
+            Logger logger = LogProgressMonitor.getDefaultLogger();
             logger.setLevel(level);
             Handler handler = null;
             for (Handler h : logger.getHandlers()) {
@@ -6365,6 +6369,7 @@ public final class Maths {
     public static ExpressionEvaluator createExpressionEvaluator() {
         return ExpressionEvaluatorFactory.createEvaluator();
     }
+
     public static ExpressionEvaluator createExpressionParser() {
         return ExpressionEvaluatorFactory.createParser();
     }

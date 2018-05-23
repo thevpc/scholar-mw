@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.console.yaxis;
 
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.*;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
@@ -7,9 +9,6 @@ import net.vpc.scholar.hadrumaths.plot.console.ComputeTitle;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.WindowPath;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMessage;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.StringProgressMessage;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -32,6 +31,7 @@ public abstract class PlotAxis implements Serializable, Cloneable, ProgressMonit
     private double progress = 0;
     private ProgressMessage progressMessage = new StringProgressMessage(Level.FINE, "");
     private ComplexAsDouble complexAsDouble = ComplexAsDouble.ABS;
+    private ProgressMonitorHelper h=new ProgressMonitorHelper();
 
     protected PlotAxis(String name, YType... type) {
         this(name, type, PlotType.CURVE);
@@ -227,5 +227,39 @@ public abstract class PlotAxis implements Serializable, Cloneable, ProgressMonit
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public ProgressMonitorInc getIncrementor() {
+        return h.getIncrementor();
+    }
+
+    @Override
+    public ProgressMonitor setIncrementor(ProgressMonitorInc incrementor) {
+        h.setIncrementor(incrementor);
+        return this;
+    }
+
+    @Override
+    public ProgressMonitor cancel() {
+        h.cancel();
+        return this;
+    }
+
+    @Override
+    public ProgressMonitor resume() {
+        h.resume();
+        return this;
+    }
+
+    @Override
+    public ProgressMonitor suspend() {
+        h.suspend();
+        return this;
+    }
+
+    @Override
+    public Chronometer getChronometer() {
+        return h.getChronometer();
     }
 }

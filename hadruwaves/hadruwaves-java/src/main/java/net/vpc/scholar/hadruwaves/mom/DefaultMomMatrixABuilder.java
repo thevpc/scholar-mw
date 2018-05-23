@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixABuilder;
 
 /**
@@ -24,7 +23,7 @@ class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
     public Matrix computeMatrixImpl() {
         return Maths.invokeMonitoredAction(getMonitor(), "A Builder", new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 momStructure.build();
                 return new MatrixAMatrixStrCacheSupport(momStructure, getMonitor()).get();
             }

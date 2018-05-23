@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -18,7 +18,7 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
 
     @Override
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
@@ -27,12 +27,12 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
             throw new IllegalArgumentException("WAVE_GUIDE Structure with no Propagative modes");
         }
         Complex[][] b = new Complex[_g.length][n_propa.length];
-        EnhancedProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
+        ProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
         TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
-        EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
+        ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
         Maths.invokeMonitoredAction(m, monitorMessage, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 for (int p = 0; p < _g.length; p++) {
                     TVector<Complex> spp = sp.getRow(p);
                     for (int n = 0; n < n_propa.length; n++) {

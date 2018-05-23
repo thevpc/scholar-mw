@@ -3,11 +3,9 @@ package net.vpc.scholar.hadrumaths.scalarproducts;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.Serializable;
+import net.vpc.common.util.mon.*;
 
 public class MemDoubleScalarProductCache extends AbstractScalarProductCache implements Serializable, DoubleScalarProductCache {
     private double[/** p index **/][/** n index **/] cache = new double[0][0];
@@ -17,11 +15,11 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
         this.scalarValue = scalarValue;
     }
 
-    private static Expr[] simplifyAll(Expr[] e, EnhancedProgressMonitor mon) {
+    private static Expr[] simplifyAll(Expr[] e, ProgressMonitor mon) {
         Expr[] all = new Expr[e.length];
         Maths.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 int length = all.length;
                 for (int i = 0; i < length; i++) {
                     mon.setProgress(i, length, messagePrefix + " {0}/{1}", (i + 1), length);
@@ -90,13 +88,13 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
             switch (axis) {
                 case XY:
                 case X: {
-                    EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, gp.length * 2 + maxF);
+                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, gp.length * 2 + maxF);
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
                     Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String monMessage) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             DoubleToDouble[] df = new DoubleToDouble[maxF];
                             DoubleToDouble[] dg = new DoubleToDouble[finalGp3.length];
                             for (int n = 0; n < maxF; n++) {
@@ -124,13 +122,13 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
         } else { //vector
             switch (axis) {
                 case XY: {
-                    EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
                     Expr[] finalGp2 = gp;
                     ScalarProductOperator finalSp1 = sp;
                     Expr[] finalFn1 = fn;
                     Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String monMessage) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
                             for (int q = 0; q < finalGp2.length; q++) {
                                 Expr gpq = finalGp2[q];
@@ -152,13 +150,13 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
                 }
                 default: {
                     Axis aa = axis == AxisXY.X ? Axis.X : axis == AxisXY.Y ? Axis.Y : null;
-                    EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, gp.length);
+                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, gp.length);
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
                     Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
-                        public void invoke(EnhancedProgressMonitor monitor, String monMessage) throws Exception {
+                        public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             DoubleToVector[] df = new DoubleToVector[maxF];
                             DoubleToVector[] dg = new DoubleToVector[finalGp3.length];
                             for (int n = 0; n < maxF; n++) {

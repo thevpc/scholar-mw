@@ -1,7 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.DatePart;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
 
 import javax.swing.*;
@@ -25,13 +26,13 @@ public class TaskComponent extends JPanel implements ActionListener {
     private JLabel timeRemLabel;
     private JLabel timeRemValue;
     private JProgressBar yProgress;
-    private EnhancedProgressMonitor monitor;
+    private ProgressMonitor monitor;
     private JToggleButton pause;
     private JButton detach;
     private JButton kill;
     private TaskMonitor taskMonitor;
 
-    public TaskComponent(TaskMonitor taskMonitor, EnhancedProgressMonitor monitor, String windowTitleString, String descString) {
+    public TaskComponent(TaskMonitor taskMonitor, ProgressMonitor monitor, String windowTitleString, String descString) {
         setOpaque(true);
         setBackground(Color.WHITE);
         monitor.start("Task Starting...");
@@ -180,11 +181,11 @@ public class TaskComponent extends JPanel implements ActionListener {
                 long remaining = spent == 0 ? -1 : (long) ((spent / d) * (1 - d));
                 long approx = spent == 0 ? -1 : (long) ((spent / d));
                 timeDurLabel.setText("Duration :");
-                timeDurValue.setText(Chronometer.formatPeriodNano(approx, Chronometer.DatePart.s));
+                timeDurValue.setText(Chronometer.formatPeriodNano(approx, DatePart.SECOND));
                 timeElapLabel.setText("Elapsed :");
-                timeElapValue.setText(Chronometer.formatPeriodNano(spent, Chronometer.DatePart.s));
+                timeElapValue.setText(Chronometer.formatPeriodNano(spent, DatePart.SECOND));
                 timeRemLabel.setText("Remaining :");
-                timeRemValue.setText(Chronometer.formatPeriodNano(remaining, Chronometer.DatePart.s));
+                timeRemValue.setText(Chronometer.formatPeriodNano(remaining, DatePart.SECOND));
                 detach.setEnabled(index < maxIndex);
                 updateProgress(d100, monitor.getProgressMessage().toString());
             } else if (monitor.isTerminated()) {

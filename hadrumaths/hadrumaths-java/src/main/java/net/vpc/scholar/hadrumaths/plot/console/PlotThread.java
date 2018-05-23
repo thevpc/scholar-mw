@@ -1,12 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.*;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMessage;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.StringProgressMessage;
 import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ import java.util.logging.Level;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 6 janv. 2007 12:22:57
  */
-public class PlotThread extends Thread implements ProgressMonitor {
+public class PlotThread  implements ProgressMonitor {
     private PlotAxis currentY = null;
     private ComputeTitle serieTitle;
     private ConsoleAwareObject direct;
@@ -28,9 +26,16 @@ public class PlotThread extends Thread implements ProgressMonitor {
     private PlotConsole plotter;
     private boolean stopped;
     private PlotData plotData;
+    private ProgressMonitorHelper ph=new ProgressMonitorHelper();
+    private Thread thread=new Thread(new Runnable() {
+        @Override
+        public void run() {
+            PlotThread.this.run();
+        }
+    },"PlotThread");
 
     public PlotThread(PlotAxis currentY, PlotData plotData, ComputeTitle serieTitle, ConsoleAwareObject direct, ConsoleAwareObject modele, ConsoleAxis axis, PlotConsole plotter) {
-        super("PlotThread");
+        super();
         chronometer = new Chronometer();
         this.currentY = currentY;
         this.serieTitle = serieTitle;
@@ -46,7 +51,7 @@ public class PlotThread extends Thread implements ProgressMonitor {
         return chronometer;
     }
 
-    public void run() {
+    private void run() {
         chronometer.start();
         try {
             try {
@@ -118,8 +123,10 @@ public class PlotThread extends Thread implements ProgressMonitor {
         return serieTitle;
     }
 
-    public void cancel() {
+    public ProgressMonitor cancel() {
         stop();
+        thread.stop();
+        return this;
     }
 
 
@@ -141,6 +148,35 @@ public class PlotThread extends Thread implements ProgressMonitor {
 
     @Override
     public boolean isCanceled() {
-        return false;
+        return ph.isCanceled();
+    }
+
+    @Override
+    public ProgressMonitorInc getIncrementor() {
+        return ph.getIncrementor();
+    }
+
+    @Override
+    public ProgressMonitor setIncrementor(ProgressMonitorInc incrementor) {
+        ph.setIncrementor(incrementor);
+        return this;
+    }
+
+    @Override
+    public void stop() {
+        thread.stop();
+    }
+
+    @Override
+    public ProgressMonitor resume() {
+        return this;
+    }
+
+    @Override
+    public ProgressMonitor suspend() {
+        return this;
+    }
+    public void start(){
+        thread.start();
     }
 }

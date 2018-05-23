@@ -4,7 +4,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 
 import javax.swing.*;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 

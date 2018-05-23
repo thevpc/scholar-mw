@@ -19,7 +19,7 @@ public class TestDomain {
 
 
     public static void main(String[] args) {
-        Mul m = new Mul(new DoubleValue(3, Maths.xydomain(0, 1, 0, 1)), Maths.X);
+        Mul m = new Mul(new DoubleValue(3, Maths.domain(0, 1, 0, 1)), Maths.X);
         Plus p=new Plus(m);
         System.out.println(m);
         System.out.println(p);

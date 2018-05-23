@@ -7,7 +7,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.PlotConfigEditor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;

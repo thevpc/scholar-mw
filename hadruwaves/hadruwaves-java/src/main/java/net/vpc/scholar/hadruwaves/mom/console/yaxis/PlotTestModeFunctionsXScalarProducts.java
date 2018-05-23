@@ -2,20 +2,20 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries implements Cloneable {
     public PlotTestModeFunctionsXScalarProducts(YType... type) {
@@ -35,7 +35,7 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         ModeFunctions fnModeFunctions = structure.getModeFunctions();
         TestFunctions gpTestFunctions = structure.getTestFunctions();
         DoubleToVector[] cache_essai = gpTestFunctions.arr();

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
 import junit.framework.Assert;
+import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
 import net.vpc.scholar.hadrumaths.io.IOUtils;

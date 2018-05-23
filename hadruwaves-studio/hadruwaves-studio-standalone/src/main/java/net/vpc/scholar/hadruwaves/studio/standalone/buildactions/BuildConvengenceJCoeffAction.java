@@ -4,7 +4,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 import java.util.ArrayList;
 import net.vpc.common.log.Log;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 
 

@@ -1,13 +1,16 @@
 package net.vpc.scholar.hadrumaths.plot.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.*;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -92,11 +95,11 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
             }
         }
-        EnhancedProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
-        EnhancedProgressMonitor monitor0 = monitors[0];
-        EnhancedProgressMonitor monitor1 = monitors[1];
-        EnhancedProgressMonitor monitor2 = monitors[2];
-        EnhancedProgressMonitor monitor3 = monitors[3];
+        ProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        ProgressMonitor monitor0 = monitors[0];
+        ProgressMonitor monitor1 = monitors[1];
+        ProgressMonitor monitor2 = monitors[2];
+        ProgressMonitor monitor3 = monitors[3];
         ParamSet theX = p.getAxis().getX();
         double xmultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
@@ -205,7 +208,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         return ret.toArray(new VDiscrete[ret.size()]);
     }
 
-    protected abstract VDiscrete computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p);
+    protected abstract VDiscrete computeValue(ConsoleAwareObject structure, net.vpc.common.util.mon.ProgressMonitor monitor, ConsoleActionParams p);
 
 
     public String getPlotTitle() {

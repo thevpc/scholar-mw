@@ -1,10 +1,9 @@
 package net.vpc.scholar.hadrumaths.cache;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -13,7 +12,7 @@ import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 public abstract class CacheSupport<T> {
     private String cacheItemName;
     private PersistenceCache persistenceCache;
-    private EnhancedProgressMonitor monitor;
+    private ProgressMonitor monitor;
 
     protected CacheSupport(PersistenceCache persistenceCache, String cacheItemName, ProgressMonitor monitor) {
         this.cacheItemName = cacheItemName;
@@ -47,7 +46,7 @@ public abstract class CacheSupport<T> {
                 monitor, cacheItemName,
                 new MonitoredAction<T>() {
                     @Override
-                    public T process(EnhancedProgressMonitor monitor, String messagePrefix) {
+                    public T process(ProgressMonitor monitor, String messagePrefix) {
                         if (oldValue != null) {
                             return oldValue;
                         }
@@ -80,7 +79,7 @@ public abstract class CacheSupport<T> {
         return getPersistenceCache().isCached(dump, getCacheItemName());
     }
 
-    public EnhancedProgressMonitor getMonitor() {
+    public ProgressMonitor getMonitor() {
         return monitor;
     }
 

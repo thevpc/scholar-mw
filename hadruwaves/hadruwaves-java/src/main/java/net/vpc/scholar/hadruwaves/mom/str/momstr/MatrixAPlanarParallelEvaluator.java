@@ -1,13 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.TestFunctions;
+import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -36,7 +37,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
                         Complex yn = n.impedance.inv();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
-                        c.addProduct(yn,sp1,sp2);
+                        c.addProduct(yn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }
@@ -56,7 +57,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
                         Complex yn = n.impedance.inv();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(q).conj();
-                        c.addProduct(yn,sp1,sp2);
+                        c.addProduct(yn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();
                 }

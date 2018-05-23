@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory;
 

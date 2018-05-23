@@ -22,8 +22,8 @@
 //                * neg(new Linear(8,6,9,xdomain(1,9)))
 //                *inv(real(r2)) / pow(imag(r2),expr(5))
 //                - abs(new CosXCosY(8,8,9,9,8,xdomain(1,9)))
-//                + new ComplexValue(î,xydomain(1,9,-1,9))
-////                + new CExp(-5,-2,-3,xydomain(1,9,-1,9))
+//                + new ComplexValue(î,domain(1,9,-1,9))
+////                + new CExp(-5,-2,-3,domain(1,9,-1,9))
 //                * new DCxy(expr(2).toDD(),expr(2).toDD())
 //                ;
 ////        Expr e = new CosXCosY(8,0,0,9,8,xdomain(1,9))

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
+import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.Converter;
 

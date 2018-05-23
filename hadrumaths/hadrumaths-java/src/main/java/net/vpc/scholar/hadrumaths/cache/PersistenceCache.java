@@ -1,13 +1,14 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.DatePart;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileFilter;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -531,7 +532,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                             }
                             if (oldValue != null) {
                                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli, DatePart.SECOND) + ")");
                                 }
                             }
                         }
@@ -562,7 +563,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                                         loadChrono.stop();
                                         objCache.addStat(cacheItemName + "#loadcache", loadChrono.getTime());
                                         if (timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000) {
-                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli,DatePart.SECOND) + ")");
                                         }
                                     }
                                 }
@@ -628,7 +629,7 @@ public class PersistenceCache implements PersistentCacheConfig {
                                 }
                                 c.stop();
                                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli) + ")");
+                                    System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli,DatePart.MILLISECOND) + ")");
                                 }
                             }
                             return value;

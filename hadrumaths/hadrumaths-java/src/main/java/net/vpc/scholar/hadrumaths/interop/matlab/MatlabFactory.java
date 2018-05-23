@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.interop.matlab;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.interop.matlab.impl.*;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;

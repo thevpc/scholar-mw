@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //    @Override
 //    public <R> R convertTo(Double value,Class<R> t) {

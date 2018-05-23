@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadruwaves.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedVector;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.xlabels.XLabel;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadruwaves.mom.console.yaxis.PlotAxisSeries;
@@ -38,7 +38,7 @@ public abstract class PlotAxisSeriesComplexVector extends PlotAxisSeries {
     }
 
     protected final NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
         ParamSet x = p.getAxis().getX();
         XLabel xlabel = p.getAxis().getXLabel();
 //        Complex[][] z = new Complex[x.getSize()][];

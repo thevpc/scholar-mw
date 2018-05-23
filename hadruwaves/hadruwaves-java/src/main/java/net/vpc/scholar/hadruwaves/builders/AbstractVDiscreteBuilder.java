@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadruwaves.builders;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
@@ -27,7 +26,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
                 monitor, getClass().getName(),
                 new MonitoredAction<VDiscrete>() {
                     @Override
-                    public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         return computeVDiscreteImpl(x, y, z, monitor);
                     }
                 }

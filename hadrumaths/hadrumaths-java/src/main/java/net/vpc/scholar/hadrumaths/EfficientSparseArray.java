@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 

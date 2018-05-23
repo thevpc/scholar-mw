@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import java.math.RoundingMode;

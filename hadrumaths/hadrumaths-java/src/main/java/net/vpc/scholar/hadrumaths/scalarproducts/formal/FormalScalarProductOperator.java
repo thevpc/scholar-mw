@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
+import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
@@ -291,12 +292,12 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         FormalScalarProductOperator that = (FormalScalarProductOperator) o;
 
         if (map != null ? !map.equals(that.map) : that.map != null) return false;
-        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
-        if (noHelperCache != null ? !noHelperCache.equals(that.noHelperCache) : that.noHelperCache != null)
-            return false;
+//        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
+//        if (noHelperCache != null ? !noHelperCache.equals(that.noHelperCache) : that.noHelperCache != null)
+//            return false;
         if (fallback != null ? !fallback.equals(that.fallback) : that.fallback != null) return false;
-        if (fallbackHelper != null ? !fallbackHelper.equals(that.fallbackHelper) : that.fallbackHelper != null)
-            return false;
+//        if (fallbackHelper != null ? !fallbackHelper.equals(that.fallbackHelper) : that.fallbackHelper != null)
+//            return false;
         return expressionRewriter != null ? expressionRewriter.equals(that.expressionRewriter) : that.expressionRewriter == null;
     }
 
@@ -304,10 +305,10 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (map != null ? map.hashCode() : 0);
-        result = 31 * result + (cache != null ? cache.hashCode() : 0);
-        result = 31 * result + (noHelperCache != null ? noHelperCache.hashCode() : 0);
+//        result = 31 * result + (cache != null ? cache.hashCode() : 0);
+//        result = 31 * result + (noHelperCache != null ? noHelperCache.hashCode() : 0);
         result = 31 * result + (fallback != null ? fallback.hashCode() : 0);
-        result = 31 * result + (fallbackHelper != null ? fallbackHelper.hashCode() : 0);
+//        result = 31 * result + (fallbackHelper != null ? fallbackHelper.hashCode() : 0);
         result = 31 * result + (expressionRewriter != null ? expressionRewriter.hashCode() : 0);
         return result;
     }

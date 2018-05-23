@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.*;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
@@ -715,7 +715,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
              }
              */
 
-            EnhancedProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 2);
+            ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 2);
             ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
             Comparator<ModeInfo> comparator = getModeInfoComparator();
             if (comparator != null) {
@@ -727,12 +727,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
             ModeIndex[] propagativeModes = sources.getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount());
             HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
-            EnhancedProgressMonitor mon2 = mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
+            ProgressMonitor mon2 = mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
             String message = toString() + ", evaluate mode properties";
             String str = toString();
             Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
                 @Override
-                public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                     int propagativeCount = 0;
                     int nonPropagativeCount = 0;
                     boolean _enableDefaultFunctionProperties = isHintEnableFunctionProperties();

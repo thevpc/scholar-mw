@@ -6,7 +6,7 @@ import javax.swing.JFileChooser;
 import net.vpc.lib.pheromone.application.swing.JFileChooser2;
 
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 
 
 /**

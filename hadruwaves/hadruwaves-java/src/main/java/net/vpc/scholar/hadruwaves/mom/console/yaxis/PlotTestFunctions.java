@@ -1,13 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class PlotTestFunctions extends PlotAxisCustom implements Cloneable {
     }
 
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        EnhancedProgressMonitor mon = ProgressMonitorFactory.enhance(this);
+        ProgressMonitor mon = ProgressMonitorFactory.enhance(this);
 //        mon.startm(getName());
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         if (containsType(YType.REFERENCE)) {

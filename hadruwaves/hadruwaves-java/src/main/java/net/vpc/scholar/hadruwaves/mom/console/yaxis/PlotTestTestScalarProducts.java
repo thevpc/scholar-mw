@@ -1,16 +1,16 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 
@@ -34,7 +34,7 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
         return Maths.invokeMonitoredAction(cmonitor, getClass().getSimpleName(), new MonitoredAction<NamedMatrix>() {
             @Override
-            public NamedMatrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public NamedMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 TestFunctions _testFunctions = structure.getTestFunctions();
                 Complex[][] gfps = new Complex[_testFunctions.count()][_testFunctions.count()];
                 int max = _testFunctions.count();

@@ -1,12 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.ClassMap;
+import net.vpc.scholar.hadrumaths.format.FormatParam;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.Formatter;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 import net.vpc.scholar.hadrumaths.util.LRUMap;
 
 import java.beans.PropertyChangeEvent;
@@ -323,6 +324,10 @@ public class FormatFactory extends AbstractFactory {
     }
 
     @SuppressWarnings("unchecked")
+    public static String format(Object o, FormatParam... format) {
+        return format(o,new FormatParamSet(format));
+    }
+
     public static String format(Object o, FormatParamSet format) {
         Formatter best = map.getRequired(o.getClass());
         return best.format(o, format);

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceResult;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
+
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
@@ -35,7 +35,7 @@ public abstract class AbstractValueBuilder implements ValueBuilder{
         return convergenceResult;
     }
 
-    public EnhancedProgressMonitor getMonitor() {
+    public ProgressMonitor getMonitor() {
         return ProgressMonitorFactory.enhance(monitor);
     }
 

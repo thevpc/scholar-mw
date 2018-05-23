@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.

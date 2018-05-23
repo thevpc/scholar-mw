@@ -1,22 +1,25 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.BooleanMarker;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
-import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
+import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
+import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
+import net.vpc.scholar.hadruwaves.mom.sources.Sources;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable {
 
@@ -27,7 +30,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
 
     @Override
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        EnhancedProgressMonitor mon = ProgressMonitorFactory.enhance(this);
+        ProgressMonitor mon = ProgressMonitorFactory.enhance(this);
 //        mon.startm(getName());
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         MomStructure str1 = (MomStructure) p.getStructure();
@@ -38,19 +41,19 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
             DoubleToVector[] sf = new DoubleToVector[0];
             if (ss instanceof PlanarSources) {
                 PlanarSources ps = (PlanarSources) ss;
-                sf=ps.getSourceFunctions();
+                sf = ps.getSourceFunctions();
             }
-            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.getTestFunctions().arr(), sf), str1.getDomain(), p.getPreferredPath(), getPlotType(),getPreferredLibraries()));
+            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.getTestFunctions().arr(), sf), str1.getDomain(), p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
         }
         if (containsType(YType.MODELED)) {
             if (p.getStructure2() != null) {
                 DoubleToVector[] sf = new DoubleToVector[0];
-                Sources ss = ((MomStructure)p.getStructure2()).getSources();
+                Sources ss = ((MomStructure) p.getStructure2()).getSources();
                 if (ss instanceof PlanarSources) {
                     PlanarSources ps = (PlanarSources) ss;
-                    sf=ps.getSourceFunctions();
+                    sf = ps.getSourceFunctions();
                 }
-                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.getTestFunctions().arr(), sf), str2.getDomain(), p.getPreferredPath(), getPlotType(),getPreferredLibraries()));
+                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.getTestFunctions().arr(), sf), str2.getDomain(), p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
             }
         }
 //        mon.terminatem(getName());

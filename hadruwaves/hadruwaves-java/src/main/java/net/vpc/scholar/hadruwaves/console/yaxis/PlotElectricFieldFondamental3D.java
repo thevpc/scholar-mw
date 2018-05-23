@@ -9,7 +9,7 @@ import net.vpc.scholar.hadruwaves.mom.ElectricFieldPart;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 public class PlotElectricFieldFondamental3D extends PlotAxisCubes implements Cloneable {
     public PlotElectricFieldFondamental3D(YType... type) {

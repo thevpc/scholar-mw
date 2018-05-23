@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
  */

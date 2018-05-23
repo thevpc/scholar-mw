@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.scholar.hadrumaths.io.HFile;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 import java.util.concurrent.Callable;
 

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.convergence;
 
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.

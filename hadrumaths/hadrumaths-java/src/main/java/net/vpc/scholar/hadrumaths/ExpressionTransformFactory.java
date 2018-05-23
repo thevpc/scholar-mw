@@ -5,8 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.transform.*;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 import java.util.HashMap;
 import java.util.Map;

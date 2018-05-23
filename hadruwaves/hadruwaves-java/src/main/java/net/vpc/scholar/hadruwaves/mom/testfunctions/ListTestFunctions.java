@@ -13,9 +13,9 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -89,7 +89,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
     public DoubleToVector[] toArray(ProgressMonitor monitor){
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
-            public DoubleToVector[] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public DoubleToVector[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 List<DoubleToVector> found=new ArrayList<DoubleToVector>();
                 for (int i = 0; i < list.size(); i++) {
                     Object expr = list.get(i);

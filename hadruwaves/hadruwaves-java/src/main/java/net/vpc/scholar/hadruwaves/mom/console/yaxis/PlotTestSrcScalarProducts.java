@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneable {
@@ -28,7 +28,7 @@ public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneab
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
 //        monitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(Maths.matrix(structure.getTestSourceScalarProducts(monitor)));
 //        monitor.terminatem(getClass().getSimpleName());

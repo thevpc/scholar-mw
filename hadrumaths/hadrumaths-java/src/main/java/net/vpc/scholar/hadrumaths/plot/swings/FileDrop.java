@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadrumaths.io;
+package net.vpc.scholar.hadrumaths.plot.swings;
 
 
 import java.awt.datatransfer.DataFlavor;

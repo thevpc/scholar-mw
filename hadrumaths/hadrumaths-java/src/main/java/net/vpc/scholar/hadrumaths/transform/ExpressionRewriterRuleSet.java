@@ -5,15 +5,15 @@
  */
 package net.vpc.scholar.hadrumaths.transform;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
+import net.vpc.scholar.hadrumaths.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
-import net.vpc.scholar.hadrumaths.dump.DumpManager;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * @author vpc
  */
 public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
-//    public static int DEBUG_REWRITE_ONCE=0;
+    //    public static int DEBUG_REWRITE_ONCE=0;
 //    public static int DEBUG_REWRITE_SUCCESS=0;
 //    public static int DEBUG_REWRITE_FAIL=0;
     public List<ExpressionRewriterRule> rules = new ArrayList<ExpressionRewriterRule>();

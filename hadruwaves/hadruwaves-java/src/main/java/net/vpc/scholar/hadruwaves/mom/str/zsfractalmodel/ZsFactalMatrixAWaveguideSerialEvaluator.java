@@ -1,19 +1,19 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.TestFunctions;
+import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -59,7 +59,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Domain zsdomain = opValue.getFn().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
-                        gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
+                        gzs[i] = (DoubleToVector) ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
                     TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
@@ -130,7 +130,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Domain zsdomain = opValue.getFn().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
-                        gzs[i] = (DoubleToVector)ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
+                        gzs[i] = (DoubleToVector) ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
                     }
                     TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {

@@ -2,6 +2,9 @@ package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
+import net.vpc.common.util.TypeReference;
+import net.vpc.scholar.hadrumaths.format.FormatParamSet;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -1836,7 +1839,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 if (j > 0) {
                     sbl.append(' ');
                 }
-                String disp = String.valueOf(get(i, j));
+                String disp = FormatFactory.format(get(i, j),FormatFactory.I);
                 sbl.append(disp);
                 sbl.append(' ');
                 int x = colsWidth[j] - disp.length();

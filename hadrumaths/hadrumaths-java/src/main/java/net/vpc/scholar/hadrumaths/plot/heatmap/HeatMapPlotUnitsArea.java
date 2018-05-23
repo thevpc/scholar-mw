@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 
-import net.vpc.scholar.hadrumaths.DoubleFormatter;
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
 
 import javax.swing.*;

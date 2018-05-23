@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.util.TLog;
+import net.vpc.scholar.hadrumaths.util.log.TLog;
 
 import javax.swing.*;
 import java.awt.*;

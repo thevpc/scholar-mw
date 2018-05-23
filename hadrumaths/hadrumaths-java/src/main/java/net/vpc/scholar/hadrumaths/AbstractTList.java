@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.Arrays;

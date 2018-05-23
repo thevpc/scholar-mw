@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.derivation;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.formal.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 public class FormalDifferentiation implements FunctionDifferentiatorManager {
     private ClassMap<FunctionDifferentiator> map = new ClassMap<FunctionDifferentiator>(Expr.class, FunctionDifferentiator.class, 40);

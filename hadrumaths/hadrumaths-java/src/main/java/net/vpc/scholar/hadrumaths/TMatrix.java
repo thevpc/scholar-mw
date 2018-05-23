@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintStream;

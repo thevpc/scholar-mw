@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.test;
 
+import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import org.junit.Assert;

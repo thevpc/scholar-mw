@@ -1,5 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
@@ -7,9 +11,6 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileFilter;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -185,7 +186,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //                ModeType[] goodModes = theSystemAllowed.toArray(new ModeType[theSystemAllowed.size()]);
 //                Maths.invokeMonitoredAction(mon, message, new VoidMonitoredAction() {
 //                    @Override
-//                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+//                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
 //                        int count = 0;
 //                        out:
 //                        for (int i = 0; ; i++) {
@@ -218,12 +219,12 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         chrono.start();
         ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
         ModeIterator iterator = getModeIteratorFactory().iterator(this);
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.createIncrementalMonitor(par0, max);
+        ProgressMonitor monitor = ProgressMonitorFactory.createIncrementalMonitor(par0, max);
         String str = toString() + ", enumerate modes";
         String message = str + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(monitor, str, new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 int index = 0;
                 int bruteMax = max * 100 + 1;
                 int bruteIndex = 0;
@@ -377,7 +378,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
 
 
-        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor).createIncrementalMonitor(testFunctions.length());
+        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor).createIncrementalMonitor(testFunctions.length());
         boolean dd = modesDesc.getBorders()!=WallBorders.PPPP;
         if(dd){
             for (Expr testFunction : testFunctions) {

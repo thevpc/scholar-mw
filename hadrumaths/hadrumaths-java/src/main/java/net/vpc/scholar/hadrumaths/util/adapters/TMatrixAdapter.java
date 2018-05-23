@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.util.adapters;
 
 import net.vpc.scholar.hadrumaths.AbstractTMatrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
-import net.vpc.scholar.hadrumaths.TypeReference;
+import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.VectorSpace;
 import net.vpc.scholar.hadrumaths.util.Converter;
 

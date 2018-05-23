@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadrumaths.util.log.TLogProgressMonitor;
 import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import javax.swing.*;
@@ -89,16 +89,16 @@ public class TaskMonitor extends JPanel implements ActionListener {
         task.start();
     }
 
-    public ProgressMonitor addTask(ProgressMonitor task, String windowTitle, String descLabel) {
+    public net.vpc.common.util.mon.ProgressMonitor addTask(net.vpc.common.util.mon.ProgressMonitor task, String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(task);
+        ProgressMonitor m = ProgressMonitorFactory.enhance(task);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }
 
-    public ProgressMonitor addTask(String windowTitle, String descLabel, ConsoleTask task) {
-        plotConsole.start();
-        EnhancedProgressMonitor m = ProgressMonitorFactory.logger(null, plotConsole.getLog()).temporize(5000);
+    public net.vpc.common.util.mon.ProgressMonitor addTask(String windowTitle, String descLabel, ConsoleTask task) {
+        plotConsole.start();//new TLogProgressMonitor(null, printStream)
+        ProgressMonitor m = new TLogProgressMonitor(null, plotConsole.getLog()).temporize(5000);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         new Thread(new Runnable() {
             @Override
@@ -109,9 +109,9 @@ public class TaskMonitor extends JPanel implements ActionListener {
         return m;
     }
 
-    public ProgressMonitor addTask(String windowTitle, String descLabel) {
+    public net.vpc.common.util.mon.ProgressMonitor addTask(String windowTitle, String descLabel) {
         plotConsole.start();
-        EnhancedProgressMonitor m = ProgressMonitorFactory.logger(null, plotConsole.getLog()).temporize(5000);
+        ProgressMonitor m = new TLogProgressMonitor(null, plotConsole.getLog()).temporize(5000);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }

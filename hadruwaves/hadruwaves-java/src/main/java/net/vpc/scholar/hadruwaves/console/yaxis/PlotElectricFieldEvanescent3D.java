@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ElectricFieldPart;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;

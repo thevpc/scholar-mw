@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 public class CachedTVectorUpdatableModel<T> implements TVectorUpdatableModel<T> {
     private TVectorCell<T> f;
     private EfficientSparseArray<T> arr;

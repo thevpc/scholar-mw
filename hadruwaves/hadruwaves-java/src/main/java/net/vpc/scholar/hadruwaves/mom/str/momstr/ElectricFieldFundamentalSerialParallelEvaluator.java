@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
 import static net.vpc.scholar.hadrumaths.Maths.exp;
 
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -22,7 +22,7 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
     public static final ElectricFieldFundamentalSerialParallelEvaluator INSTANCE=new ElectricFieldFundamentalSerialParallelEvaluator();
     @Override
     public VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
-        EnhancedProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
 
         ModeInfo[] indexes = str.getModes(monitor);
         ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
@@ -38,7 +38,7 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
         ModeInfo[] finalEvan = evan;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);
                 MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);
                 MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO,z.length,y.length,x.length);

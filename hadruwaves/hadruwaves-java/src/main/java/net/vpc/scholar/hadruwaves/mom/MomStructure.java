@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
@@ -10,11 +13,10 @@ import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.TLog;
-import net.vpc.scholar.hadrumaths.util.TLogNull;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.log.TLog;
+import net.vpc.scholar.hadrumaths.util.log.TLogNull;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.builders.*;
 import net.vpc.scholar.hadruwaves.mom.builders.MomMatrixABuilder;

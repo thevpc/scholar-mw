@@ -1,10 +1,11 @@
 package net.vpc.scholar.hadruwaves;
 
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
 import java.util.ArrayList;
@@ -124,14 +125,14 @@ public abstract class BoxModes {
         chrono.start();
         ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
         ModeIterator iterator = iterator();
-        EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         String message = tostr + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         int index = 0;
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;
@@ -201,14 +202,14 @@ public abstract class BoxModes {
         chrono.start();
         ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
         ModeIterator iterator = iterator();
-        EnhancedProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         String message = tostr + ", {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         int index = 0;
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;

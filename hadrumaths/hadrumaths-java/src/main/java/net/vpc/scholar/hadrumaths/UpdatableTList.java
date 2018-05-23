@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 import java.util.Collection;
 
 public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {

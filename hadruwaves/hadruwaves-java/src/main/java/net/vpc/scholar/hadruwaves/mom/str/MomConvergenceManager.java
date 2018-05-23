@@ -6,18 +6,14 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
+import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
-import net.vpc.scholar.hadruwaves.ModeInfo;
-
-import static java.lang.Math.abs;
 
 /**
- *
  * @author vpc
  */
 public class MomConvergenceManager {
@@ -68,7 +64,7 @@ public class MomConvergenceManager {
      * @return fn at convergence
      */
     public int getConvergenceFn(int maxFn, int step, double error) {
-        int oldMaxFn=momStructure.getModeFunctionsCount();
+        int oldMaxFn = momStructure.getModeFunctionsCount();
 //        momStructure.applyModeFunctionsChanges(fn);
 
         TestFunctions gp = momStructure.getTestFunctions();

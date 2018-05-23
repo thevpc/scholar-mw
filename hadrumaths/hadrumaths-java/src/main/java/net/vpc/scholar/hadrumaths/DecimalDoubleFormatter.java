@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.DoubleFormatter;
+
 import java.text.DecimalFormat;
 
 class DecimalDoubleFormatter implements DoubleFormatter {

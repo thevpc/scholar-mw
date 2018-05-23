@@ -25,7 +25,7 @@
 //
 //    @Test
 //    public void testNormalize(){
-//        Expr e=sin(X)*xydomain(0,2,0,2);
+//        Expr e=sin(X)*domain(0,2,0,2);
 //        Assert.assertEquals("sin(X) * domain(0->2, 0->2) * 0.6484215470020839",String.valueOf(normalize(e)));
 //    }
 //

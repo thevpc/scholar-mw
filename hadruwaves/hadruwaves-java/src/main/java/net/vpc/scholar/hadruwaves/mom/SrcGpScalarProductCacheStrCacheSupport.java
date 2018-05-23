@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 

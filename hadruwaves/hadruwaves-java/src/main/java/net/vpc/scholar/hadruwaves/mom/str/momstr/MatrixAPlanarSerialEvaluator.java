@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -33,17 +33,17 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
         if (symMatrix) {
             if(sp.isConvertibleTo(Maths.$DOUBLE)){
                 DoubleMatrix dsp=(DoubleMatrix) sp.to(Maths.$DOUBLE);
-                EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+                ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
                 Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex c = MutableComplex.Zero();
 
                         //copied to local to enhance performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
                         DoubleMatrix csp = dsp;
-                        EnhancedProgressMonitor cm = m;
+                        ProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
 
@@ -71,17 +71,17 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                     }
                 });
             }else {
-                EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+                ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
                 Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                     @Override
-                    public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex c = MutableComplex.Zero();
 
                         //copied to local to enhance performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
                         TMatrix<Complex> csp = sp;
-                        EnhancedProgressMonitor cm = m;
+                        ProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
 
@@ -112,10 +112,10 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                 });
             }
         } else {// non symmetric
-            EnhancedProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+            ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
             Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                 @Override
-                public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                     for (int p = 0; p < _g.length; p++) {
                         TVector<Complex> psp = sp.getRow(p);
                         for (int q = 0; q < _g.length; q++) {

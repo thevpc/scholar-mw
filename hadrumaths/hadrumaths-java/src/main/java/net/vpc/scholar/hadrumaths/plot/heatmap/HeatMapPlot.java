@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
-import net.vpc.scholar.hadrumaths.monitors.LongIterationComputationMonitorInc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -223,7 +223,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     private class PercentStatusBarElement extends StatusBarElement {
         public PercentStatusBarElement(String name) {
             super(name);
-            doubleFormatter = LongIterationComputationMonitorInc.PercentDoubleFormatter.INSTANCE;
+            doubleFormatter = PercentDoubleFormatter.INSTANCE;
         }
     }
 

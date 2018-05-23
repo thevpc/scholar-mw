@@ -11,7 +11,7 @@ public class RightArrowUplet2<A, B> extends UpletFactory.DUplet2<A, B> {
     }
 
     public static class Double extends RightArrowUplet2<java.lang.Double, java.lang.Double> {
-        public Double(java.lang.Double aDouble, java.lang.Double aDouble2) {
+        public Double(double aDouble, double aDouble2) {
             super(aDouble, aDouble2);
         }
     }

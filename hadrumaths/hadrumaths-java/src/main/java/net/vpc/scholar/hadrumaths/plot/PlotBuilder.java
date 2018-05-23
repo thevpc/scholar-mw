@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;

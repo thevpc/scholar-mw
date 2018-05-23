@@ -1,13 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
-import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.TestFunctions;
+import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -151,6 +152,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
     public String toString() {
         return getClass().getName();
     }
+
     @Override
     public String dump() {
         return getClass().getName();

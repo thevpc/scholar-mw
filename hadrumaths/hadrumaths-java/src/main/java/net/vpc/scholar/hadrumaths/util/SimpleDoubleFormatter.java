@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.DoubleFormatter;
+import net.vpc.common.util.DoubleFormatter;
 
 import java.text.DecimalFormat;
 

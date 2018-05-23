@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.common.util.mon.*;
 
 public interface ConsoleTask {
-    void run(EnhancedProgressMonitor mon);
+    void run(ProgressMonitor mon);
 }

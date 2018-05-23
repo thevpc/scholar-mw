@@ -5,10 +5,10 @@
 
 package net.vpc.scholar.hadrumaths.interop.derive;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.AbstractFactory;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 /**
  * @author vpc

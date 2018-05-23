@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.str.TestFieldEvaluator;
 
@@ -22,7 +22,7 @@ public class TestFieldSerialParallelEvaluator implements TestFieldEvaluator {
     public VDiscrete evaluate(MomStructure str, double[] x, double[] y, ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
-            public VDiscrete process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 

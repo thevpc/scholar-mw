@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.transform;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;

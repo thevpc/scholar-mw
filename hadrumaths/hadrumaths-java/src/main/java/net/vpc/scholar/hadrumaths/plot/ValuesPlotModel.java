@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.DoubleFormatter;
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Maths;
 

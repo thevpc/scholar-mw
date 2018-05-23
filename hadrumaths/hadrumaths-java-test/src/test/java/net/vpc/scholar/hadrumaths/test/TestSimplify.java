@@ -24,8 +24,8 @@ public class TestSimplify {
     @Test
     public void testSimplify2() {
         Maths.Config.setCacheEnabled(false);
-        System.out.println(X.mul(3).mul(xydomain(0, 1, 0, 1)).simplify());
-        Expr e1 = cos(X.mul(3)).mul(cos(Y.mul(3))).mul(xydomain(0, 1, 0, 1));
+        System.out.println(X.mul(3).mul(domain(0, 1, 0, 1)).simplify());
+        Expr e1 = cos(X.mul(3)).mul(cos(Y.mul(3))).mul(domain(0, 1, 0, 1));
         Expr e2 = cos(X.mul(3)).mul(cos(Y.mul(3)));
         Expr e21 = e1.simplify();
         Expr e22 = mul(e1, e2).simplify();
@@ -37,7 +37,7 @@ public class TestSimplify {
     @Test
     public void testSimplify3() {
         Maths.Config.setCacheEnabled(false);
-        Expr e1 = cos(X.mul(3)).mul(xydomain(0, 1, 0, 1));
+        Expr e1 = cos(X.mul(3)).mul(domain(0, 1, 0, 1));
         Expr e21 = e1.simplify();
         System.out.println(e21);
         Assert.assertEquals(("cos((3.0 * X * domain(0->1, 0->1)))"), e21.toString());
@@ -46,7 +46,7 @@ public class TestSimplify {
     @Test
     public void testSimplify4() {
         Maths.Config.setCacheEnabled(false);
-        Expr e1 = cos(X.mul(3)).mul(cos(Y.mul(3))).mul(xydomain(0, 1, 0, 1));
+        Expr e1 = cos(X.mul(3)).mul(cos(Y.mul(3))).mul(domain(0, 1, 0, 1));
         Expr e21 = Maths.Config.getIntegrationOperator().getExpressionRewriter().rewriteOrSame(e1);
         System.out.println(e21);
         Assert.assertEquals(("cos(3.0 * X) * cos(3.0 * Y) * domain(0->1, 0->1)"),e21.toString());

@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.PlatformUtils;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
@@ -144,7 +144,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 //        if(structure==null){
 //            throw new IllegalArgumentException("Unable to evaluate Test Functions since 'structure' is null");
 //        }
-        EnhancedProgressMonitor emon = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emon = ProgressMonitorFactory.enhance(monitor);
         DoubleToVector[] gpImpl = gpImpl(emon);
         DoubleToVector[] validGpImpl = null;
         HintAxisType fnAxis = getAxisType();
@@ -160,7 +160,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     Map<String, Object> properties0 = cFunctionXY2D.hasProperties() ? cFunctionXY2D.getProperties() : null;
                     if (!cFunctionXY2D.getComponent(Axis.X).isZero()) {
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(),cFunctionXY2D.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D.getProperties());
                         if (properties0 != null) {
                             properties.putAll(properties0);
                         }
@@ -173,7 +173,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         goodX.add(d);
                     }
                     if (!cFunctionXY2D.getComponent(Axis.Y).isZero()) {
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(),cFunctionXY2D.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D.getProperties());
                         if (properties0 != null) {
                             properties.putAll(properties0);
                         }
@@ -241,11 +241,11 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 validGpImpl = gpImpl;
                 for (int i = 0; i < validGpImpl.length; i++) {
                     DoubleToVector cFunctionXY2D = validGpImpl[i];
-                    Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(),cFunctionXY2D.getProperties());
+                    Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D.getProperties());
                     properties.put("Axis", "XY");
                     properties.put("Index", i);
                     properties.put("AxisIndex", i + 1);
-                    validGpImpl[i]=(DoubleToVector) cFunctionXY2D.setProperties(properties);
+                    validGpImpl[i] = (DoubleToVector) cFunctionXY2D.setProperties(properties);
                 }
                 break;
             }
@@ -255,11 +255,11 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.X).isZero()) {
                         cFunctionXY2D = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.DCZERO);
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(),cFunctionXY2D.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D.getProperties());
                         properties.put("Axis", "X");
                         properties.put("Index", index);
                         properties.put("AxisIndex", index);
-                        cFunctionXY2D=(DoubleToVector) cFunctionXY2D.setProperties(properties);
+                        cFunctionXY2D = (DoubleToVector) cFunctionXY2D.setProperties(properties);
                         newFcts.add(cFunctionXY2D);
                         index++;
                     }
@@ -273,7 +273,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.Y).isZero()) {
                         cFunctionXY2D = Maths.vector(Maths.DDZERO, cFunctionXY2D.getComponent(Axis.Y));
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(),cFunctionXY2D.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D.getProperties());
 
 //                        if (properties == null) {
 //                            properties = new LinkedHashMap<String, Object>();
@@ -281,7 +281,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("Axis", "Y");
                         properties.put("Index", newFcts.size() + 1);
                         properties.put("AxisIndex", index);
-                        cFunctionXY2D=(DoubleToVector) cFunctionXY2D.setProperties(properties);
+                        cFunctionXY2D = (DoubleToVector) cFunctionXY2D.setProperties(properties);
                         newFcts.add(cFunctionXY2D);
                         index++;
                     }
@@ -301,7 +301,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
             properties.put("DomainX", cFunctionVector2D.getComponent(Axis.X).getDomain());
             properties.put("DomainY", cFunctionVector2D.getComponent(Axis.Y).getDomain());
             cFunctionVector2D = (DoubleToVector) cFunctionVector2D.setMergedProperties(properties);
-            validGpImpl[i]=cFunctionVector2D;
+            validGpImpl[i] = cFunctionVector2D;
         }
         return validGpImpl;
 //            for (int i = 0; i < cachedFunctions.length; i++) {
@@ -368,9 +368,9 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
     @Override
     public void setAxisType(HintAxisType axisType) {
-        HintAxisType old=this.axisType;
+        HintAxisType old = this.axisType;
         this.axisType = axisType;
-        firePropertyChange("axisType",old,axisType);
+        firePropertyChange("axisType", old, axisType);
     }
 
     public Dumper getDumpStringHelper() {
@@ -394,9 +394,9 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
     @Override
     public void setFunctionsComparator(TestFunctionsComparator functionsComparator) {
-        TestFunctionsComparator old=this.functionsComparator;
+        TestFunctionsComparator old = this.functionsComparator;
         this.functionsComparator = functionsComparator;
-        firePropertyChange("functionsComparator",old,functionsComparator);
+        firePropertyChange("functionsComparator", old, functionsComparator);
     }
 
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {

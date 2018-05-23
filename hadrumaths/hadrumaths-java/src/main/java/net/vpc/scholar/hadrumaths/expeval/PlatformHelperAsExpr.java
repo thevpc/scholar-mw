@@ -1593,11 +1593,11 @@ public class PlatformHelperAsExpr {
 //        return Domain.forBounds(min,max);
 //    }
 //
-    public static Domain xydomain(double xmin, double xmax, double ymin, double ymax) {
+    public static Domain domain(double xmin, double xmax, double ymin, double ymax) {
         return Domain.forBounds(xmin, xmax, ymin, ymax);
     }
 
-    public static DomainExpr xydomain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
+    public static DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
         return DomainExpr.forBounds(xmin, xmax, ymin, ymax);
     }
 

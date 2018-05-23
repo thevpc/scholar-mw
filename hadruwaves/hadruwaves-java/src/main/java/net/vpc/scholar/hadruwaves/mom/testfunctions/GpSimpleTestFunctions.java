@@ -2,9 +2,9 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
@@ -27,7 +27,7 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
     protected DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
-            public DoubleToVector[] process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public DoubleToVector[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ArrayList<DoubleToVector> all=new ArrayList<DoubleToVector>();
                 for (int i1 = 0, cellsLength = cells.length; i1 < cellsLength; i1++) {
                     TestFunctionCell cell = cells[i1];

@@ -1,16 +1,16 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -35,13 +35,13 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        EnhancedProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
         return Maths.invokeMonitoredAction(
                 emonitor,
                 getClass().getSimpleName(),
                 new MonitoredAction<NamedMatrix>() {
                     @Override
-                    public NamedMatrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+                    public NamedMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         ModeFunctions fnModeFunctions = structure.getModeFunctions();
                         Complex[][] gfps = new Complex[fnModeFunctions.count()][fnModeFunctions.count()];
                         ModeInfo[] indexes = structure.getModes();

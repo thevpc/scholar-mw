@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;

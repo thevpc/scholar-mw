@@ -5,11 +5,14 @@
 
 package net.vpc.scholar.hadrumaths.convergence;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Normalizable;
+import net.vpc.scholar.hadrumaths.Param;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.VoidMonitoredAction;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -111,7 +114,7 @@ public class ConvergenceEvaluator {
     }
 
     public ConvergenceResult evaluate(Object source, int startIndex, ObjectEvaluator evaluator, ProgressMonitor monitor) {
-        EnhancedProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
         //split into  99 and 1  to disable reaching 100% of the evaluation
         if (startIndex < 0) {
             startIndex = 0;
@@ -143,8 +146,8 @@ public class ConvergenceEvaluator {
         double epsilon = config.getThreshold();
         Maths.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
             @Override
-            public void invoke(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
-                EnhancedProgressMonitor monitor99 = monitor.translate(0.8, 0);
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                ProgressMonitor monitor99 = monitor.translate(0.8, 0);
                 while (convInfo.index < convInfo.endIndex && (convInfo.max < 0 || convInfo.max > 0)) {
                     if (convInfo.max > 0) {
                         convInfo.max--;
@@ -153,7 +156,7 @@ public class ConvergenceEvaluator {
 //                System.out.println(">>" + monitor0.getProgressValue() + " : " + this);
 //            }
                     monitor99.start("New Convergence Iteration {0}", convInfo.index);
-                    EnhancedProgressMonitor[] mon2 = monitor99.split(new double[]{50, 50}, new boolean[]{subEvaluator != null, true});
+                    ProgressMonitor[] mon2 = monitor99.split(new double[]{50, 50}, new boolean[]{subEvaluator != null, true});
                     Object currValue = paramSet.getValue(convInfo.index);
 //            pars.put("value", currValue);
 //            pars.put("startIndex", startIndex);

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.dump;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
-import net.vpc.scholar.hadrumaths.util.ClassMap;
 
 import java.util.Collection;
 import java.util.Map;

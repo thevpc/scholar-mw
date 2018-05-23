@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
+import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;

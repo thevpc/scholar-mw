@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
-import net.vpc.scholar.hadrumaths.util.ClassPairMapList;
+import net.vpc.common.util.ClassPairMapList;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadrumaths.io;
 
+import net.vpc.common.util.mon.ProgressMonitorOutputStream;
 import net.vpc.scholar.hadrumaths.RuntimeIOException;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitor;
 
 import java.io.*;
 import java.net.URL;

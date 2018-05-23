@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 

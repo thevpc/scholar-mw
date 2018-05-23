@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.examples;
 
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadruwaves.Physics;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;

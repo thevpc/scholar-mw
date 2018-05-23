@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.TypeReference;
+
 public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //    @Override
 //    public <R> R convertTo(Complex value,Class<R> t) {

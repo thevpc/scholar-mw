@@ -6,10 +6,10 @@
 package net.vpc.scholar.hadrumaths
 
 
+import net.vpc.common.util.mon.ProgressMonitor
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.symbolic._
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor
 //import java.util
 
 import net.vpc.scholar

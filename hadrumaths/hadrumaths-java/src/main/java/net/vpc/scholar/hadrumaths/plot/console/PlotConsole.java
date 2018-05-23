@@ -1,20 +1,22 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
-import net.vpc.scholar.hadrumaths.Chronometer;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
+import net.vpc.scholar.hadrumaths.io.HFile;
+import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
-import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.plot.swings.ExtensionFileChooserFilter;
-import net.vpc.scholar.hadrumaths.io.HFile;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
+import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
+import net.vpc.scholar.hadrumaths.util.CloseOption;
+import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.log.TLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -177,8 +179,8 @@ public class PlotConsole implements PlotComponentDisplayer {
 //        run(new PlotData(windowTitle, direct, modele, axisList, parameters));
 //    }
 
-    public EnhancedProgressMonitor logger(String title) {
-        EnhancedProgressMonitor logger = ProgressMonitorFactory.logger(5 * Maths.SECOND);
+    public ProgressMonitor logger(String title) {
+        ProgressMonitor logger = ProgressMonitorFactory.logger(5 * Maths.SECOND);
         getTaskMonitor().addTask(logger, title, null);
         return logger;
     }

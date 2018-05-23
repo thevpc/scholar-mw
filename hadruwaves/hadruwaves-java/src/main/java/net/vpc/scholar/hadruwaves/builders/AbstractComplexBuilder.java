@@ -3,9 +3,9 @@ package net.vpc.scholar.hadruwaves.builders;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+
+import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -27,7 +27,7 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
     protected final Matrix computeMatrixImplLog(){
         return Maths.invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Matrix>() {
             @Override
-            public Matrix process(EnhancedProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 return computeMatrixImpl();
             }
         });

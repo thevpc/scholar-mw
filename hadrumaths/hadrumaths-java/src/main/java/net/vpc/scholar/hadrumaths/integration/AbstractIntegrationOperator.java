@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.integration;
 
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.monitors.EnhancedProgressMonitor;
-import net.vpc.scholar.hadrumaths.monitors.ProgressMonitor;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 
@@ -105,7 +105,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     @Override
     public Complex[] eval(Expr[] g, ProgressMonitor monitor) {
-        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
         m.start(null);
         Complex[] r = new Complex[g.length];
         for (int i = 0; i < g.length; i++) {
@@ -126,7 +126,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 //    }
 //
 //    public Complex[] eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-//        EnhancedProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
+//        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
 //        m.start(null);
 //        Complex[] r=new Complex[g.length];
 //        for (int i = 0; i < g.length; i++) {

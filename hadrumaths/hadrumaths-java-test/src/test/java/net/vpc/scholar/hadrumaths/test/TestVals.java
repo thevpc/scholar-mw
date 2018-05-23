@@ -89,7 +89,7 @@ public class TestVals {
 //        }
 //        exp=exp.getSubExpressions().get(0).toDD();
 //        exp=exp.getSubExpressions().get(0).getSubExpressions().get(0).toDD();
-//        DoubleToDouble exp = new Mul(new Asinh(new Cosh(Maths.X)),Maths.xydomain(0,1,0,1)).toDD();
+//        DoubleToDouble exp = new Mul(new Asinh(new Cosh(Maths.X)),Maths.domain(0,1,0,1)).toDD();
 //        System.out.println(1.0/Maths.log10(0));
 //        System.out.println(Complex.ONE.div(Complex.valueOf(0).log10()));
 //        if(true){
@@ -146,9 +146,9 @@ public class TestVals {
                 }
                 Expr e = null;
                 try {
-                    e = d.mul(Maths.xyzdomain(-5, 5, -5, 5, -5, 5)).toDD();
+                    e = d.mul(Maths.domain(-5, 5, -5, 5, -5, 5)).toDD();
                 } catch (Exception ex) {
-                    e = d.mul(Maths.xyzdomain(-5, 5, -5, 5, -5, 5)).toDD();
+                    e = d.mul(Maths.domain(-5, 5, -5, 5, -5, 5)).toDD();
 
                 }
                 new ExprChecker().setSaveError(true).setShowSuccess(false).checkExpression(e);
