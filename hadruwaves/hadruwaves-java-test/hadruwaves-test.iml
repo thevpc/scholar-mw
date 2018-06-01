@@ -13,10 +13,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="hadruwaves" />
     <orderEntry type="module" module-name="hadrumaths" />
-    <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
-    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-jdt-core:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-jdt-core:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt-main:2.3.2" level="project" />
@@ -81,6 +80,9 @@
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-i686:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.3" level="project" />
     <orderEntry type="module" module-name="vpc-common-utils" />
+    <orderEntry type="module" module-name="vpc-common-swings" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-prs:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
     <orderEntry type="library" name="Maven: java-oo:javac8-oo-plugin:0.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>

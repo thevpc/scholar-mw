@@ -25,10 +25,9 @@
     <orderEntry type="library" name="Maven: net.vpc.toolbox:jlauncher:1.4.0" level="project" />
     <orderEntry type="module" module-name="hadruwaves" />
     <orderEntry type="module" module-name="hadrumaths" />
-    <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
-    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-jdt-core:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-jdt-core:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt-main:2.3.2" level="project" />

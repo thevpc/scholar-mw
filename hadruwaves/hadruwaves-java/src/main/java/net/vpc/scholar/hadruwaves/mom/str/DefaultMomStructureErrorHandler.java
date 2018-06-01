@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotModel;
 import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
+import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
@@ -44,14 +45,14 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
                         .setTitle("gp").setExpressions(str.getTestFunctions().arr())
-                        .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
+                        .setPlotType(PlotType.CURVE)
                         .setPreferredLibraries(null)
                 , Plot.getDefaultWindowManager()).toComponent();
 
         JComponent fplot = Plot.create(
                 new ExpressionsPlotModel()
                         .setTitle("fn").setExpressions(str.getModeFunctions().arr())
-                        .setShowType(ExpressionsPlotPanel.ShowType.CURVE_FX)
+                        .setPlotType(PlotType.CURVE)
                         .setPreferredLibraries(null)
                 , Plot.getDefaultWindowManager()).toComponent();
 

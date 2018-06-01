@@ -1,0 +1,46 @@
+package net.vpc.scholar.hadrumaths.plot;
+
+import net.vpc.common.swings.TransferableImage;
+import net.vpc.scholar.hadrumaths.Plot;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.image.*;
+import java.io.*;
+public class CopyImageToClipboardAction extends AbstractPlotAction implements Serializable {
+    private static File staticLastFolder;
+    private PlotModelProvider plot;
+    private File selectedFile;
+
+    public CopyImageToClipboardAction(PlotModelProvider plot) {
+        super("Copy to Clipboard");
+        this.plot = plot;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        BufferedImage image = Plot.getImage(plot);
+        class MyClipboardOwner implements ClipboardOwner{
+            public void lostOwnership( Clipboard clip, Transferable trans ) {
+                System.out.println( "Lost Clipboard Ownership" );
+            }
+        }
+        MyClipboardOwner owner=new MyClipboardOwner();
+        TransferableImage trans = new TransferableImage( image );
+        Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+        c.setContents( trans, owner );
+
+
+    }
+
+
+}

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
+import net.vpc.common.swings.GridBagLayout2;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
@@ -7,7 +8,6 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
-import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 
 import javax.swing.*;
