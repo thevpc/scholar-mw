@@ -69,12 +69,12 @@ public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFree
 //            }
 //        }
 
-        if (data.size() > config.maxLegendCount && config.showLegend) {
-            config.showLegend = false;
+        if (data.size() > config.maxLegendCount.get() && config.showLegend.get()) {
+            config.showLegend.set(false);
         }
 
 
-        JFreeChart chart = createChart(data.getTitle(), config.showLegend, config.showTooltips);
+        JFreeChart chart = createChart(data.getTitle(), config.showLegend.get(), config.showTooltips.get());
         prepareJFreeChart(chart, x_minmax);
         chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(600, 400));

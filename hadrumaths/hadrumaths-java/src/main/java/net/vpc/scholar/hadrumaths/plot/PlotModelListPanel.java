@@ -5,6 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.swings.JDraggableTabbedPane;
 import net.vpc.scholar.hadrumaths.Plot;
 
 import javax.swing.*;
@@ -113,7 +114,7 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     }
 
     private JComponent createTabbedPane() {
-        JTabbedPane panel = new JTabbedPane();
+        JDraggableTabbedPane panel = new JDraggableTabbedPane();
         for (PlotModel plotModel : model) {
             panel.addTab(plotModel.getTitle(), Plot.create(plotModel, getPlotWindowManager()).toComponent());
         }

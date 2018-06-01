@@ -43,6 +43,7 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
         register(Tan.class, new TanDifferentiator());
         register(Tanh.class, new TanhDifferentiator());
         register(VDiscrete.class, new VDiscreteDifferentiator());
+        register(DoubleValue.class, new DoubleValueDifferentiator());
     }
 
     public FunctionDifferentiator getDerivator(Class f1Class) {

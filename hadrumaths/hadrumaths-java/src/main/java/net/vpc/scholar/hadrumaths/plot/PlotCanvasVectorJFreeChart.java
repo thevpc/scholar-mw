@@ -5,13 +5,15 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.MinMax;
-import org.jfree.chart.ChartUtilities;
+//import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.VectorRenderer;
+import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.xy.VectorXYDataset;
-import org.jfree.ui.RectangleInsets;
+//import org.jfree.ui.RectangleInsets;
 
 import java.awt.*;
 
@@ -123,7 +125,7 @@ public class PlotCanvasVectorJFreeChart extends PlotCanvasAnyComplexJFreeChart {
         localXYPlot.setAxisOffset(new RectangleInsets(2.0D, 2.0D, 2.0D, 2.0D));
         localXYPlot.setOutlinePaint(Color.black);
         JFreeChart localJFreeChart = new JFreeChart(theTitle, localXYPlot);
-        ChartUtilities.applyCurrentTheme(localJFreeChart);
+        ChartUtils.applyCurrentTheme(localJFreeChart);
         return localJFreeChart;
 
     }

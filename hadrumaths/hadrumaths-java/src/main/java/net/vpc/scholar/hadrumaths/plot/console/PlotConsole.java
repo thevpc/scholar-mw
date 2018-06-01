@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.ExtensionFileChooserFilter;
+import net.vpc.common.swings.JInternalFrameHelper;
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.ProgressMonitorFactory;
@@ -12,8 +15,6 @@ import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
-import net.vpc.scholar.hadrumaths.plot.swings.ExtensionFileChooserFilter;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 import net.vpc.scholar.hadrumaths.util.CloseOption;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 import net.vpc.scholar.hadrumaths.util.log.TLog;
@@ -51,7 +52,7 @@ public class PlotConsole implements PlotComponentDisplayer {
     //    private Hashtable<String, JCardPanel> cards;
     private Chronometer globalChronometer;
     private int globalProgressIndex;
-    private JTextArea logger;
+    private LogAreaComponent logger;
     private JInternalFrame logFrame;
     private TLog log = new ConsoleLogger(this);
     private PlotConsoleFrame plotConsoleFrame;
@@ -134,14 +135,14 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     }
 
-    public JInternalFrame getTaskMonitorFrame() {
+    public JInternalFrameHelper getTaskMonitorFrame() {
         getTaskMonitor();
-        return taskMonitorFrame;
+        return new JInternalFrameHelper(taskMonitorFrame);
     }
 
-    public JInternalFrame getLockMonitorFrame() {
+    public JInternalFrameHelper getLockMonitorFrame() {
         getLockMonitor();
-        return lockMonitorFrame;
+        return new JInternalFrameHelper(lockMonitorFrame);
     }
 
     protected void disposeAutoSave() {
@@ -201,6 +202,14 @@ public class PlotConsole implements PlotComponentDisplayer {
                 display(component);
             }
         })*/;
+    }
+
+    public void addPlotConsoleListener(PlotConsoleListener listener) {
+        getPlotConsoleFrame().addPlotConsoleListener(listener);
+    }
+
+    public void removePlotConsoleListener(PlotConsoleListener listener) {
+        getPlotConsoleFrame().removePlotConsoleListener(listener);
     }
 
     /**
@@ -524,7 +533,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 }
             }
         }
-        SwingUtils.invokeLater(new Runnable() {
+        SwingUtilities3.invokeLater(new Runnable() {
             public void run() {
                 action.execute(PlotConsole.this);
             }
@@ -708,14 +717,12 @@ public class PlotConsole implements PlotComponentDisplayer {
         //this.windowTitle = windowTitle;
     }
 
-    public JTextArea getLogArea() {
+    protected LogAreaComponent getLogArea() {
         if (logger == null) {
-            logger = new JTextArea();
-            logger.setFont(new Font("Monospaced", 0, 12));
-            logger.setEditable(false);
+            logger = new LogAreaComponent();
 
             JInternalFrame f = new JInternalFrame("Log", true, false, true, true);
-            f.add(new JScrollPane(logger));
+            f.add(new JScrollPane(logger.toComponent()));
             f.setPreferredSize(new Dimension(400, 300));
             f.pack();
             f.setVisible(true);
@@ -730,13 +737,8 @@ public class PlotConsole implements PlotComponentDisplayer {
     }
 
     public void silentLogLn(final String msg) {
-
-        SwingUtils.invokeLater(new Runnable() {
-            public void run() {
-                getLogArea().append(msg + "\n");
-            }
-        });
-        System.out.println("[LOG] " + msg);
+        getLogArea().append(msg);
+        //System.out.println("[LOG] " + msg);
     }
 
 
@@ -879,8 +881,8 @@ public class PlotConsole implements PlotComponentDisplayer {
         return this;
     }
 
-    public JInternalFrame getLogFrame() {
+    public JInternalFrameHelper getLogFrame() {
         getLogArea();
-        return logFrame;
+        return new JInternalFrameHelper(logFrame);
     }
 }

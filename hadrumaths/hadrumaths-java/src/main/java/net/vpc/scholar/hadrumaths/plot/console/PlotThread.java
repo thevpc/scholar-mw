@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.mon.*;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.logging.Level;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 6 janv. 2007 12:22:57
  */
-public class PlotThread  implements ProgressMonitor {
+public class PlotThread implements ProgressMonitor {
     private PlotAxis currentY = null;
     private ComputeTitle serieTitle;
     private ConsoleAwareObject direct;
@@ -26,13 +26,13 @@ public class PlotThread  implements ProgressMonitor {
     private PlotConsole plotter;
     private boolean stopped;
     private PlotData plotData;
-    private ProgressMonitorHelper ph=new ProgressMonitorHelper();
-    private Thread thread=new Thread(new Runnable() {
+    private ProgressMonitorHelper ph = new ProgressMonitorHelper();
+    private Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
             PlotThread.this.run();
         }
-    },"PlotThread");
+    }, "PlotThread");
 
     public PlotThread(PlotAxis currentY, PlotData plotData, ComputeTitle serieTitle, ConsoleAwareObject direct, ConsoleAwareObject modele, ConsoleAxis axis, PlotConsole plotter) {
         super();
@@ -88,7 +88,7 @@ public class PlotThread  implements ProgressMonitor {
             } catch (Throwable e) {
                 plotter.getLog().error(e);
             }
-            SwingUtils.invokeLater(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     plotter.ticMonitor();
@@ -176,7 +176,8 @@ public class PlotThread  implements ProgressMonitor {
     public ProgressMonitor suspend() {
         return this;
     }
-    public void start(){
+
+    public void start() {
         thread.start();
     }
 }

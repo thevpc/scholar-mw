@@ -7,6 +7,7 @@ import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.symbolic.Div;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadrumaths.symbolic.Sub;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -20,9 +21,12 @@ public class DivDifferentiator implements FunctionDifferentiator {
         Expr ad = d.derive(a, varIndex);
         Expr bd = d.derive(b, varIndex);
 
-        return new Plus(
-                new Div(new Mul(a, bd), new Mul(b, b)),
-                new Div(ad, b)
+        // a'/b - b'a / b²
+
+
+        return new Sub(
+                new Div(ad, b),
+                new Div(new Mul(a, bd), new Mul(b, b))
         );
     }
 }

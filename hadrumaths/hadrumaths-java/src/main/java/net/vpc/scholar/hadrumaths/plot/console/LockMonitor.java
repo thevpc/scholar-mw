@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.JInternalFrameHelper;
+import net.vpc.common.swings.JTableHelper;
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 import net.vpc.scholar.hadrumaths.concurrent.AppLock;
 import net.vpc.scholar.hadrumaths.concurrent.AppLockEvent;
 import net.vpc.scholar.hadrumaths.concurrent.AppLockListener;
@@ -42,7 +43,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         this.add(list, BorderLayout.NORTH);
         lockModel = new LocksTableModel();
         AppLockManager.getInstance().addListener(lockModel);
-        JTableHelper jTableHelper = JTableHelper.prepareIndexedTable(lockModel);
+        JTableHelper jTableHelper = SwingUtilities3.createIndexedTable(lockModel);
         jTableHelper.getPane().setPreferredSize(new Dimension(200, 50));
 
         table = jTableHelper.getTable();
@@ -215,8 +216,8 @@ public class LockMonitor extends JPanel implements ActionListener {
         unlockButton.addActionListener(this);
     }
 
-    public JInternalFrame getFrame() {
-        return frame;
+    public JInternalFrameHelper getFrame() {
+        return new JInternalFrameHelper(frame);
     }
 
     public void setFrame(JInternalFrame frame) {
@@ -259,7 +260,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         }
 
         public void add(AppLock lock) {
-            SwingUtils.invokeLater(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (files) {
@@ -289,7 +290,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         }
 
         public void remove(AppLock lock) {
-            SwingUtils.invokeLater(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (files) {

@@ -15,10 +15,11 @@ import net.vpc.scholar.hadrumaths.symbolic.Sinh;
 public class CoshDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Cosh c = (Cosh) f;
+        Expr a = c.getArgument();
         return
                 new Mul(
-                        d.derive(f, varIndex),
-                        new Sinh(f)
+                        d.derive(a, varIndex),
+                        new Sinh(a)
                 );
     }
 }

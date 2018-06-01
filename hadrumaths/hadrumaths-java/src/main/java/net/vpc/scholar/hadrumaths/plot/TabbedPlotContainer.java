@@ -5,6 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.swings.JDraggableTabbedPane;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -95,7 +97,7 @@ public class TabbedPlotContainer extends AbstractPlotContainer {
     @Override
     public JComponent toComponent() {
         if (jTabbedPane == null) {
-            jTabbedPane = new JTabbedPane();
+            jTabbedPane = new JDraggableTabbedPane();
             jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
             jTabbedPane.putClientProperty(PlotComponent.class.getName(), this);
             jTabbedPane.setPreferredSize(new Dimension(600, 400));

@@ -1,59 +1,100 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.scholar.hadrumaths.BooleanHolder;
+import net.vpc.scholar.hadrumaths.DoubleHolder;
+import net.vpc.scholar.hadrumaths.IntegerHolder;
 import net.vpc.scholar.hadrumaths.Plot;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlotConfig implements Cloneable {
+public class PlotConfig {
     public PlotConfigLineStepType lineStepType;
-    public Boolean showLegend;
-    public Integer maxLegendCount;
-    public Boolean showTooltips;
-    public Boolean nodeLabel;
-    public Boolean threeD;
-    public Boolean alternateColor;
-    public Boolean alternateNode;
-    public Boolean alternateLine;
-    public Boolean clockwise;
-    public Number polarAngleOffset;
+    public BooleanHolder showLegend = new BooleanHolder();
+    public IntegerHolder maxLegendCount = new IntegerHolder();
+    public BooleanHolder showTooltips = new BooleanHolder();
+    public BooleanHolder nodeLabel = new BooleanHolder();
+    public BooleanHolder threeD = new BooleanHolder();
+    public BooleanHolder alternateColor = new BooleanHolder();
+    public BooleanHolder alternateNode = new BooleanHolder();
+    public BooleanHolder alternateLine = new BooleanHolder();
+    public BooleanHolder clockwise = new BooleanHolder();
+    public DoubleHolder polarAngleOffset = new DoubleHolder();
 
     public Color color;
-    public Integer lineType;
-    public Integer nodeType;
-    public Boolean shapesVisible;
-    public Boolean lineVisible;
-    public Boolean shapesFilled;
-    public Number xmultiplier;
-    public Number ymultiplier;
-    public Number defaultXMultiplier;
+    public IntegerHolder lineType = new IntegerHolder();
+    public IntegerHolder nodeType = new IntegerHolder();
+    public BooleanHolder shapesVisible = new BooleanHolder();
+    public BooleanHolder lineVisible = new BooleanHolder();
+    public BooleanHolder shapesFilled = new BooleanHolder();
+    public DoubleHolder xmultiplier = new DoubleHolder();
+    public DoubleHolder ymultiplier = new DoubleHolder();
+    public DoubleHolder defaultXMultiplier = new DoubleHolder();
 
     public List<PlotConfig> children = new ArrayList<>();
 
     public PlotConfig copy() {
-        try {
-            PlotConfig other = (PlotConfig) clone();
-            other.children = new ArrayList<>();
-            for (PlotConfig child : children) {
-                other.children.add(child.copy());
+        PlotConfig other = new PlotConfig();
+        for (Field field : getClass().getDeclaredFields()) {
+            if (field.getType().equals(IntegerHolder.class)) {
+                IntegerHolder h = null;
+                IntegerHolder m = null;
+                try {
+                    h = (IntegerHolder) field.get(other);
+                    m = (IntegerHolder) field.get(this);
+                    h.set(m.get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if (field.getType().equals(BooleanHolder.class)) {
+                BooleanHolder h = null;
+                BooleanHolder  m = null;
+                try {
+                    h = (BooleanHolder) field.get(other);
+                    m = (BooleanHolder) field.get(this);
+                    h.set(m.get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if (field.getType().equals(DoubleHolder.class)) {
+                DoubleHolder h = null;
+                DoubleHolder  m = null;
+                try {
+                    h = (DoubleHolder) field.get(other);
+                    m = (DoubleHolder) field.get(this);
+                    h.set(m.get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if (field.getName().equals("children")) {
+                //do nothing...
+            }else{
+                try {
+                    field.set(other,field.get(this));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            return other;
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException("Impossible");
         }
+        other.children = new ArrayList<>();
+        for (PlotConfig child : children) {
+            other.children.add(child.copy());
+        }
+        return other;
     }
 
     public double getDefaultXMultiplier(double val) {
-        return defaultXMultiplier == null ? val : defaultXMultiplier.doubleValue();
+        return defaultXMultiplier.get(val);
     }
 
     public double getXMultiplier(double val) {
-        return xmultiplier == null ? val : xmultiplier.doubleValue();
+        return xmultiplier.get(val);
     }
 
     public double getYMultiplier(double val) {
-        return ymultiplier == null ? val : ymultiplier.doubleValue();
+        return ymultiplier.get(val);
     }
 
     public double getXMultiplierAt(int index, double val) {
@@ -67,7 +108,7 @@ public class PlotConfig implements Cloneable {
         if (index < children.size()) {
             children.get(index).getYMultiplier(val);
         }
-        return ymultiplier == null ? val : ymultiplier.doubleValue();
+        return ymultiplier.get(val);
     }
 
     public PlotConfig getOrCreate(int index) {
@@ -106,46 +147,20 @@ public class PlotConfig implements Cloneable {
         config.ensureChildrenSize(size);
         for (int i = 0; i < config.children.size(); i++) {
             PlotConfig lineConfig = config.children.get(i);
-            if (lineConfig.xmultiplier == null) {
-                lineConfig.xmultiplier = 1.0;
-            }
-            if (lineConfig.ymultiplier == null) {
-                lineConfig.ymultiplier = 1.0;
-            }
+            lineConfig.xmultiplier.setIfNull(1.0);
+            lineConfig.ymultiplier.setIfNull(1.0);
         }
-        if (config.showLegend == null) {
-            config.showLegend = true;
-        }
-        if (config.maxLegendCount == null) {
-            config.maxLegendCount = Plot.Config.getMaxLegendCount();
-        }
-
-        if (config.maxLegendCount < 0) {
-            config.maxLegendCount = Plot.Config.getMaxLegendCount();
-        }
-        if (config.showTooltips == null) {
-            config.showTooltips = true;
-        }
-
-        if (config.alternateColor == null) {
-            config.alternateColor = true;
-        }
-        if (config.alternateNode == null) {
-            config.alternateNode = false;
-        }
-        if (config.alternateLine == null) {
-            config.alternateLine = false;
-        }
-
+        config.showLegend.setIfNull(true);
+        config.maxLegendCount.setIfNull(Plot.Config.getMaxLegendCount());
+        config.showTooltips.setIfNull(true);
+        config.alternateColor.setIfNull(true);
+        config.alternateNode.setIfNull(false);
+        config.alternateLine.setIfNull(false);
         if (config.lineStepType == null) {
             config.lineStepType = PlotConfigLineStepType.DEFAULT;
         }
-        if (config.threeD == null) {
-            config.threeD = false;
-        }
-        if (config.nodeLabel == null) {
-            config.nodeLabel = false;
-        }
+        config.threeD.setIfNull(false);
+        config.nodeLabel.setIfNull(false);
         return config;
     }
 }

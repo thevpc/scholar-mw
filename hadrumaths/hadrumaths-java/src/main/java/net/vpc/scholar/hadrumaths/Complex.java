@@ -475,6 +475,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return (getReal() * getReal() + getImag() * getImag());
     }
 
+    public Complex abssqr() {
+        return Complex.valueOf(absdbl());
+    }
+
     public Complex neg() {
         return Complex.valueOf(-getReal(), -getImag());
     }

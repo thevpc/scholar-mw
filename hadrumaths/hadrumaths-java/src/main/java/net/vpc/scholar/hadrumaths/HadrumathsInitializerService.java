@@ -18,13 +18,7 @@ public class HadrumathsInitializerService implements HadrumathsService {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                if (Maths.Config.DEFAULT_LARGE_MATRIX_FACTORY != null) {
-                    try {
-                        Maths.Config.DEFAULT_LARGE_MATRIX_FACTORY.close();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
+                Maths.Config.close();
             }
         }));
     }

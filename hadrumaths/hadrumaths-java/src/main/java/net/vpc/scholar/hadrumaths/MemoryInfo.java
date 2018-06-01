@@ -15,12 +15,6 @@ public final class MemoryInfo {
         freeMemory = rt.freeMemory();
     }
 
-//    public MemoryInfo(long maxMemory, long totalMemory, long freeMemory) {
-//        this.maxMemory = maxMemory;
-//        this.totalMemory = totalMemory;
-//        this.freeMemory = freeMemory;
-//    }
-
     public MemoryUsage diff(MemoryInfo other) {
         if (other == null) {
             return new MemoryUsage(

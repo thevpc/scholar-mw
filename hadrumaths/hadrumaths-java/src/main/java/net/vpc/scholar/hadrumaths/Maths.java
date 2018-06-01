@@ -1,63 +1,39 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.*;
-import net.vpc.common.util.mon.*;
-import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.scholar.hadrumaths.cache.CacheMode;
-import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
-import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.dump.DumpManager;
+import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
-import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
-import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
-import net.vpc.scholar.hadrumaths.io.FailStrategy;
-import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
-import net.vpc.scholar.hadrumaths.io.HFileSystem;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
-import net.vpc.scholar.hadrumaths.plot.JColorArrayPalette;
-import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.util.*;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.Converter;
-import net.vpc.scholar.hadrumaths.util.LogUtils;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import sun.misc.Unsafe;
 
-import java.awt.*;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.Callable;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 public final class Maths {
-    private static double getit(double d) {
-        return d;
-    }
-
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double E = Math.E;
@@ -222,7 +198,7 @@ public final class Maths {
 
         @Override
         public Matrix load(File file) {
-            return Config.defaultMatrixFactory.load(file);
+            return Config.getDefaultMatrixFactory().load(file);
         }
     };
     public static final TStoreManager<TMatrix> TMATRIX_STORE_MANAGER = new TStoreManager<TMatrix>() {
@@ -233,7 +209,7 @@ public final class Maths {
 
         @Override
         public TMatrix load(File file) {
-            return Config.defaultMatrixFactory.load(file);
+            return Config.getDefaultMatrixFactory().load(file);
         }
     };
 
@@ -245,7 +221,7 @@ public final class Maths {
 
         @Override
         public TVector load(File file) {
-            return Config.defaultMatrixFactory.load(file).toVector();
+            return Config.getDefaultMatrixFactory().load(file).toVector();
         }
     };
 
@@ -257,7 +233,7 @@ public final class Maths {
 
         @Override
         public Vector load(File file) {
-            return Config.defaultMatrixFactory.load(file).toVector();
+            return Config.getDefaultMatrixFactory().load(file).toVector();
         }
     };
     public static final Converter IDENTITY = new IdentityConverter();
@@ -308,6 +284,7 @@ public final class Maths {
     private static final int WORD = ARCH_MODEL_BITS / BYTE_BITS;
     private static final int JOBJECT_MIN_SIZE = 16;
     private static final Logger $log = Logger.getLogger(Maths.class.getName());
+    public static final MathsConfig Config = MathsConfig.INSTANCE;
     public static DistanceStrategy<Double> DISTANCE_DOUBLE = new DistanceStrategy<Double>() {
         @Override
         public double distance(Double a, Double b) {
@@ -328,42 +305,6 @@ public final class Maths {
         }
     };
 
-    public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette(new Color[]{
-            new Color(0xFF, 0x55, 0x55),
-            new Color(0x55, 0x55, 0xFF),
-            new Color(0x55, 0xFF, 0x55),
-            new Color(0xFF, 0xFF, 0x55),
-            new Color(0xFF, 0x55, 0xFF),
-            new Color(0x55, 0xFF, 0xFF),
-            Color.pink,
-            Color.gray,
-            new Color(0xc0, 0x00, 0x00),
-            new Color(0x00, 0x00, 0xC0),
-            new Color(0x00, 0xC0, 0x00),
-            new Color(0xC0, 0xC0, 0x00),
-            new Color(0xC0, 0x00, 0xC0),
-            new Color(0x00, 0xC0, 0xC0),
-            new Color(64, 64, 64),
-            new Color(0xFF, 0x40, 0x40),
-            new Color(0x40, 0x40, 0xFF),
-            new Color(0x40, 0xFF, 0x40),
-            new Color(0xFF, 0xFF, 0x40),
-            new Color(0xFF, 0x40, 0xFF),
-            new Color(0x40, 0xFF, 0xFF),
-            new Color(192, 192, 192),
-            new Color(0x80, 0x00, 0x00),
-            new Color(0x00, 0x00, 0x80),
-            new Color(0x00, 0x80, 0x00),
-            new Color(0x80, 0x80, 0x00),
-            new Color(0x80, 0x00, 0x80),
-            new Color(0x00, 0x80, 0x80),
-            new Color(0xFF, 0x80, 0x80),
-            new Color(0x80, 0x80, 0xFF),
-            new Color(0x80, 0xFF, 0x80),
-            new Color(0xFF, 0xFF, 0x80),
-            new Color(0x00, 0x80, 0x00),
-            new Color(0x80, 0xFF, 0xFF)
-    });
 
     static {
         ServiceLoader<HadrumathsService> loader = ServiceLoader.load(HadrumathsService.class);
@@ -588,27 +529,27 @@ public final class Maths {
 
     //<editor-fold desc="Matrix functions">
     public static Matrix zerosMatrix(Matrix other) {
-        return Config.defaultMatrixFactory.newZeros(other);
+        return Config.getDefaultMatrixFactory().newZeros(other);
     }
 
     public static Matrix constantMatrix(int dim, Complex value) {
-        return Config.defaultMatrixFactory.newConstant(dim, value);
+        return Config.getDefaultMatrixFactory().newConstant(dim, value);
     }
 
     public static Matrix onesMatrix(int dim) {
-        return Config.defaultMatrixFactory.newOnes(dim);
+        return Config.getDefaultMatrixFactory().newOnes(dim);
     }
 
     public static Matrix onesMatrix(int rows, int cols) {
-        return Config.defaultMatrixFactory.newOnes(rows, cols);
+        return Config.getDefaultMatrixFactory().newOnes(rows, cols);
     }
 
     public static Matrix constantMatrix(int rows, int cols, Complex value) {
-        return Config.defaultMatrixFactory.newConstant(rows, cols, value);
+        return Config.getDefaultMatrixFactory().newConstant(rows, cols, value);
     }
 
     public static Matrix zerosMatrix(int dim) {
-        return Config.defaultMatrixFactory.newZeros(dim);
+        return Config.getDefaultMatrixFactory().newZeros(dim);
     }
 
     public static Matrix I(Complex[][] iValue) {
@@ -617,43 +558,43 @@ public final class Maths {
 
 
     public static Matrix zerosMatrix(int rows, int cols) {
-        return Config.defaultMatrixFactory.newZeros(rows, cols);
+        return Config.getDefaultMatrixFactory().newZeros(rows, cols);
     }
 
     public static Matrix identityMatrix(Matrix c) {
-        return Config.defaultMatrixFactory.newIdentity(c);
+        return Config.getDefaultMatrixFactory().newIdentity(c);
     }
 
     public static Matrix NaNMatrix(int dim) {
-        return Config.defaultMatrixFactory.newNaN(dim);
+        return Config.getDefaultMatrixFactory().newNaN(dim);
     }
 
     public static Matrix NaNMatrix(int rows, int cols) {
-        return Config.defaultMatrixFactory.newNaN(rows, cols);
+        return Config.getDefaultMatrixFactory().newNaN(rows, cols);
     }
 
     public static Matrix identityMatrix(int dim) {
-        return Config.defaultMatrixFactory.newIdentity(dim);
+        return Config.getDefaultMatrixFactory().newIdentity(dim);
     }
 
     public static Matrix identityMatrix(int rows, int cols) {
-        return Config.defaultMatrixFactory.newIdentity(rows, cols);
+        return Config.getDefaultMatrixFactory().newIdentity(rows, cols);
     }
 
     public static Matrix matrix(Matrix matrix) {
-        return Config.defaultMatrixFactory.newMatrix(matrix);
+        return Config.getDefaultMatrixFactory().newMatrix(matrix);
     }
 
     public static Matrix matrix(String string) {
-        return Config.defaultMatrixFactory.newMatrix(string);
+        return Config.getDefaultMatrixFactory().newMatrix(string);
     }
 
     public static Matrix matrix(Complex[][] complex) {
-        return Config.defaultMatrixFactory.newMatrix(complex);
+        return Config.getDefaultMatrixFactory().newMatrix(complex);
     }
 
     public static Matrix matrix(double[][] complex) {
-        return Config.defaultMatrixFactory.newMatrix(complex);
+        return Config.getDefaultMatrixFactory().newMatrix(complex);
     }
 
     public static Matrix matrix(int rows, int cols, MatrixCell cellFactory) {
@@ -661,7 +602,7 @@ public final class Maths {
     }
 
 //    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.defaultMatrixFactory.newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
+//        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
 //    }
 
     public static Matrix columnMatrix(final Complex... values) {
@@ -696,17 +637,6 @@ public final class Maths {
         return Config.getDefaultMatrixFactory().newRowMatrix(columns, cellFactory);
     }
 
-//    public static Matrix columnMatrix(int rows, final Int2Complex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newColumnMatrix(rows, new Int2ComplexCellFactory(cellFactory));
-//    }
-//    public static Matrix rowMatrix(int columns, final Int2Complex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newRowMatrix(columns, new Int2ComplexCellFactory(cellFactory));
-//    }
-//
-//    public static Matrix symmetricMatrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newSymmetric(rows, cols, new I2ToComplexMatrixCell(cellFactory));
-//    }
-
     public static Matrix symmetricMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.getDefaultMatrixFactory().newSymmetric(rows, cols, cellFactory);
     }
@@ -714,10 +644,6 @@ public final class Maths {
     public static Matrix hermitianMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.getDefaultMatrixFactory().newHermitian(rows, cols, cellFactory);
     }
-
-//    public static Matrix hermitianMatrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newHermitian(rows, cols, new I2ToComplexMatrixCell(cellFactory));
-//    }
 
     public static Matrix diagonalMatrix(int rows, int cols, MatrixCell cellFactory) {
         return Config.getDefaultMatrixFactory().newDiagonal(rows, cols, cellFactory);
@@ -735,10 +661,6 @@ public final class Maths {
         return Config.getDefaultMatrixFactory().newMatrix(dim, cellFactory);
     }
 
-//    public static Matrix matrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newMatrix(dim, new I2ToComplexMatrixCell(cellFactory));
-//    }
-
     public static Matrix matrix(int rows, int columns) {
         return Config.getDefaultMatrixFactory().newMatrix(rows, columns);
     }
@@ -754,18 +676,6 @@ public final class Maths {
     public static Matrix diagonalMatrix(int dim, MatrixCell cellFactory) {
         return Config.getDefaultMatrixFactory().newDiagonal(dim, cellFactory);
     }
-
-//    public static Matrix symmetricMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newMatrix(dim, new I2ToComplexMatrixCell(cellFactory));
-//    }
-
-//    public static Matrix hermitianMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newHermitian(dim, new I2ToComplexMatrixCell(cellFactory));
-//    }
-
-//    public static Matrix diagonalMatrix(int dim, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newDiagonal(dim, new I2ToComplexMatrixCell(cellFactory));
-//    }
 
     public static Matrix randomRealMatrix(int m, int n) {
         return Config.getDefaultMatrixFactory().newRandomReal(m, n);
@@ -860,18 +770,7 @@ public final class Maths {
     }
 
     public static <T> T loadOrEval(TypeReference<T> type, File file, TItem<T> item) throws RuntimeIOException {
-        TStoreManager<T> t = null;
-        if (type.equals($MATRIX)) {
-            t = (TStoreManager<T>) MATRIX_STORE_MANAGER;
-        } else if (type.equals($VECTOR)) {
-            t = (TStoreManager<T>) VECTOR_STORE_MANAGER;
-        } else if (type.getTypeClass().equals(TVector.class)) {
-            t = (TStoreManager<T>) TVECTOR_STORE_MANAGER;
-        } else if (type.getTypeClass().equals(TMatrix.class)) {
-            t = (TStoreManager<T>) TMATRIX_STORE_MANAGER;
-        } else {
-            throw new IllegalArgumentException("Unsupported store type " + type);
-        }
+        TStoreManager<T> t = TStoreManagerFactory.create(type);
         if (file.exists()) {
             $log.log(Level.INFO, "loading " + file.getAbsolutePath() + " ...");
             T load = t.load(file);
@@ -1025,25 +924,6 @@ public final class Maths {
         return rowVector(arr);
     }
 
-//    public static Vector columnVector(int rows, final Int2Complex cellFactory) {
-//        Int2ComplexCellFactory cc = new Int2ComplexCellFactory(cellFactory);
-//        Complex[] arr = new Complex[rows];
-//        for (int i = 0; i < rows; i++) {
-//            arr[i] = cc.get(i);
-//        }
-//        return columnVector(arr);
-//    }
-
-//    public static Vector rowVector(int columns, final Int2Complex cellFactory) {
-//        Int2ComplexCellFactory cc = new Int2ComplexCellFactory(cellFactory);
-//        Complex[] arr = new Complex[columns];
-//        for (int i = 0; i < columns; i++) {
-//            arr[i] = cc.get(i);
-//        }
-//        return rowVector(arr);
-//    }
-
-
     public static Vector columnVector(Complex[] elems) {
         return ArrayVector.Column(elems);
     }
@@ -1087,12 +967,7 @@ public final class Maths {
 
 
     public static double[] getColumn(double[][] a, int index) {
-        int maxi = a.length;
-        double[] ret = new double[maxi];
-        for (int i = 0; i < maxi; i++) {
-            ret[i] = a[i][index];
-        }
-        return ret;
+        return MathsArrays.getColumn(a, index);
     }
 
     /**
@@ -1110,66 +985,27 @@ public final class Maths {
      * @return
      */
     public static double[] dtimes(double min, double max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return subArray1(dtimes(min, max, maxTimes), times, strategy);
+        return MathsArrays.subArray1(dtimes(min, max, maxTimes), times, strategy);
     }
 
-    //    public static double log10(double nbr,double base){
-//        return Math.log(nbr)/Math.log(base);
-//    }
-//    public static double log10(double nbr){
-//        return Math.log(nbr)/Math.log(10);
-//    }
-
     public static double[] dtimes(double min, double max, int times) {
-        double[] d = new double[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            double step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
+        return MathsArrays.dtimes(min, max, times);
     }
 
     public static float[] ftimes(float min, float max, int times) {
-        float[] d = new float[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            float step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
+        return MathsArrays.ftimes(min, max, times);
     }
 
     public static long[] ltimes(long min, long max, int times) {
-        long[] d = new long[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            long step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
+        return MathsArrays.ltimes(min, max, times);
     }
 
     public static long[] lsteps(long min, long max, long step) {
-        int times = (int) Math.abs((max - min) / step) + 1;
-        long[] d = new long[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
+        return MathsArrays.lsteps(min, max, step);
     }
 
     public static int[] itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return subArray1(itimes(min, max, maxTimes), times, strategy);
+        return MathsArrays.subArray1(itimes(min, max, maxTimes), times, strategy);
     }
 
     public static double[] dsteps(int max) {
@@ -1181,69 +1017,28 @@ public final class Maths {
     }
 
     public static double dstepsLength(double min, double max, double step) {
-        if (step >= 0) {
-            if (max < min) {
-                return 0;
-            }
-            return (int) Math.abs((max - min) / step) + 1;
-        } else {
-            if (min < max) {
-                return 0;
-            }
-            return (int) Math.abs((max - min) / step) + 1;
-        }
+        return MathsArrays.dstepsLength(min, max, step);
     }
 
     public static double dstepsElement(double min, double max, double step, int index) {
-        if (step >= 0) {
-            if (max < min) {
-                throw new ArrayIndexOutOfBoundsException(index);
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            return min + index * step;
-        } else {
-            if (min < max) {
-                throw new ArrayIndexOutOfBoundsException(index);
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            return min + index * step;
-        }
+        return MathsArrays.dstepsElement(min, max, step, index);
     }
 
     public static double[] dsteps(double min, double max, double step) {
-        if (step >= 0) {
-            if (max < min) {
-                return new double[0];
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            double[] d = new double[times];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-            return d;
-        } else {
-            if (min < max) {
-                return new double[0];
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            double[] d = new double[times];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-            return d;
-        }
+        return MathsArrays.dsteps(min, max, step);
     }
 
+    //
     public static float[] fsteps(float min, float max, float step) {
-        if (max < min) {
-            return new float[0];
-        }
-        int times = (int) Math.abs((max - min) / step) + 1;
-        float[] d = new float[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
+        return MathsArrays.fsteps(min, max, step);
+    }
+
+    public static int[] isteps(int min, int max, int step) {
+        return MathsArrays.isteps(min, max, step);
+    }
+
+    public static int[] itimes(int min, int max, int times) {
+        return MathsArrays.itimes(min, max, times);
     }
 
     public static int[] isteps(int max) {
@@ -1254,33 +1049,10 @@ public final class Maths {
         return isteps(min, max, 1);
     }
 
-    public static int[] isteps(int min, int max, int step) {
-        if (max < min) {
-            return new int[0];
-        }
-        int times = Math.abs((max - min) / step) + 1;
-        int[] d = new int[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
-    }
-
     public static int[] itimes(int min, int max) {
         return itimes(min, max, max - min + 1);
     }
 
-    public static int[] itimes(int min, int max, int times) {
-        int[] d = new int[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * (max - min) / (times - 1);
-            }
-        }
-        return d;
-    }
 
     /**
      * sqrt(a^2 + b^2) without under/overflow.
@@ -1290,43 +1062,13 @@ public final class Maths {
      * @return
      */
     public static double hypot(double a, double b) {
-        double r;
-        if (Math.abs(a) > Math.abs(b)) {
-            r = b / a;
-            r = Math.abs(a) * Math.sqrt(1 + r * r);
-        } else if (b != 0) {
-            r = a / b;
-            r = Math.abs(b) * Math.sqrt(1 + r * r);
-        } else {
-            r = 0.0;
-        }
-        return r;
+        return MathsTrigo.hypot(a, b);
     }
 
     public static Complex sqr(Complex d) {
         return d.sqr();
     }
 
-
-//	public static double sinh(double x){
-//		return (Math.exp(x) - Math.exp(-x))/2;
-//	}
-//
-//	public static double cosh(double x){
-//		return (Math.exp(x) + Math.exp(-x))/2;
-//	}
-//
-//	public static double tanh(double x){
-//		double a=Math.exp(x);
-//		double b=Math.exp(-x);
-//		return (a - b)/(a + b);
-//	}
-//
-//	public static double cotanh(double x){
-//		double a=Math.exp(x);
-//		double b=Math.exp(-x);
-//		return (a + b)/(a - b);
-//	}
 
 //    public static int signOf(double d){
 //        return d<0?-1:d>0?1 : 0;
@@ -1476,120 +1218,24 @@ public final class Maths {
      * @param coef the coefficients of the polynomial.
      * @param N    the number of coefficients.
      */
-    public static double chbevl(double x, double coef[], int N) throws ArithmeticException {
-        double b0, b1, b2;
-
-        int p = 0;
-        int i;
-
-        b0 = coef[p++];
-        b1 = 0.0;
-        i = N - 1;
-
-        do {
-            b2 = b1;
-            b1 = b0;
-            b0 = x * b1 - b2 + coef[p++];
-        } while (--i > 0);
-
-        return (0.5 * (b0 - b2));
+    public static double chbevl(double x, double[] coef, int N) throws ArithmeticException {
+        return MathsTrigo.chbevl(x, coef, N);
     }
 
     public static long pgcd(long a, long b) {
-        long r, i;
-        while (b != 0) {
-            r = a % b;
-            a = b;
-            b = r;
-        }
-        return a;
+        return MathsAlgebra.pgcd(a, b);
     }
 
     public static int pgcd(int a, int b) {
-        int r, i;
-        while (b != 0) {
-            r = a % b;
-            a = b;
-            b = r;
-        }
-        return a;
+        return MathsAlgebra.pgcd(a, b);
     }
 
     public static double[][] toDouble(Complex[][] c, ComplexAsDouble complexAsDouble) {
-        if (complexAsDouble == null) {
-            complexAsDouble = ComplexAsDouble.REAL;
-        }
-        double[][] z = null;
-        if (c != null) {
-            switch (complexAsDouble) {
-                case ABS: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-                case REAL: {
-                    z = ArrayUtils.getReal(c);
-                    break;
-                }
-                case IMG: {
-                    z = ArrayUtils.getImag(c);
-                    break;
-                }
-                case DB: {
-                    z = ArrayUtils.getDb(c);
-                    break;
-                }
-                case DB2: {
-                    z = ArrayUtils.getDb2(c);
-                    break;
-                }
-                case ARG: {
-                    z = ArrayUtils.getArg(c);
-                    break;
-                }
-                case COMPLEX: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-            }
-        }
-        return z;
+        return MathsArrays.toDouble(c, complexAsDouble);
     }
 
     public static double[] toDouble(Complex[] c, ComplexAsDouble complexAsDouble) {
-        double[] z = null;
-        if (c != null) {
-            switch (complexAsDouble) {
-                case ABS: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-                case REAL: {
-                    z = ArrayUtils.getReal(c);
-                    break;
-                }
-                case IMG: {
-                    z = ArrayUtils.getImag(c);
-                    break;
-                }
-                case DB: {
-                    z = ArrayUtils.getDb(c);
-                    break;
-                }
-                case DB2: {
-                    z = ArrayUtils.getDb2(c);
-                    break;
-                }
-                case ARG: {
-                    z = ArrayUtils.getArg(c);
-                    break;
-                }
-                case COMPLEX: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-            }
-        }
-        return z;
+        return MathsArrays.toDouble(c, complexAsDouble);
     }
 
     /**
@@ -1603,36 +1249,8 @@ public final class Maths {
      * inclusive) accepted in range
      */
     public static int[] rangeCC(double[] orderedValues, double min, double max) {
-        //System.out.printf("[%f..%f] from [%f,%f]=",range[0],range[range.length-1],min,max);
-        int len = orderedValues.length;
-        int a = Arrays.binarySearch(orderedValues, min);
-        if (a < 0) {
-            a = -a - 1;
-            if (a == len) {
-                //System.out.printf("0%n");
-                return null;
-            }
-        }
-        int b = Arrays.binarySearch(orderedValues, max);
-        if (b < 0) {
-            b = -b - 2;
-            if (b < 0) {
-                //System.out.printf("0%n");
-                return null;
-            } else if (b == len) {
-                b = len - 1;
-            }
-        }
-        //System.out.printf("[%f,%f] as [%d,%d]%n",range[a],range[b],a,b);
-        return new int[]{a, b};
+        return MathsArrays.rangeCC(orderedValues, min, max);
     }
-
-//    public static void main(String[] args) {
-////        System.out.println(DumpManager.dump(rangeCO(new double[]{1,2,3,4,5,6,7}, -2, 2.3)));
-////        System.out.println(DumpManager.dump(rangeCO(new double[]{1,2,3,4,5,6,7}, -2, -1)));
-////        System.out.println(DumpManager.dump(rangeCO(new double[]{1,2,3,4,5,6,7}, -2, 1)));
-//        System.out.println(dump(rangeCO(new double[]{1, 2, 3, 4, 5, 6, 7}, -2, 1)));
-//    }
 
     /**
      * range closed min (inclusive) and open max (exclusive)
@@ -1645,53 +1263,9 @@ public final class Maths {
      * inclusive) accepted in range
      */
     public static int[] rangeCO(double[] orderedValues, double min, double max) {
-        //System.out.printf("[%f..%f] from [%f,%f]=",range[0],range[range.length-1],min,max);
-        if (orderedValues == null) {
-            return null;
-        }
-        int len = orderedValues.length;
-        int a = Arrays.binarySearch(orderedValues, min);
-        if (a < 0) {
-            a = -a - 1;
-            if (a == len) {
-                //System.out.printf("0%n");
-                return null;
-            }
-        }
-        int b = Arrays.binarySearch(orderedValues, max);
-        if (b < 0) {
-            b = -b - 2;
-            if (b < 0) {
-                //System.out.printf("0%n");
-                return null;
-            } else if (b == len) {
-                b = len - 1;
-            }
-        } else if (b == 0) {
-            return null;
-        } else {
-            b = b - 1;
-        }
-        if (b < a) {
-            return null;
-        }
-        //System.out.printf("[%f,%f] as [%d,%d]%n",range[a],range[b],a,b);
-        return new int[]{a, b};
+        return MathsArrays.rangeCO(orderedValues, min, max);
     }
 
-    //    public static double scalarProduct(DFunctionVector2D f1, DFunctionVector2D f2) {
-//        return defaultScalarProductOperator.process(f1, f2);
-//    }
-//
-//    public static double scalarProduct(DomainXY domain, DFunctionVector2D f1, DFunctionVector2D f2) {
-//        return defaultScalarProductOperator.process(domain, f1, f2);
-//    }
-//    public static Complex scalarProduct(IVDCxy f1, IVDCxy f2) {
-//        return defaultScalarProductOperator.process(f1, f2);
-//    }
-//    public static Complex scalarProduct(DomainXY domain, IVDCxy f1, IVDCxy f2) {
-//        return defaultScalarProductOperator.process(domain, f1, f2);
-//    }
     public static Complex csqrt(double d) {
         return Complex.valueOf(d).sqrt();
     }
@@ -1725,53 +1299,6 @@ public final class Maths {
         return c.cotan();
     }
 
-    private static double[] subArray1(double[] values, int count, IndexSelectionStrategy sel) {
-        switch (sel) {
-            case BALANCED: {
-                int[] ints = itimes(0, values.length - 1, count);
-                double[] xx = new double[ints.length];
-                for (int i = 0; i < ints.length; i++) {
-                    xx[i] = values[ints[i]];
-                }
-                return xx;
-            }
-            case FIRST: {
-                double[] xx = new double[count];
-                System.arraycopy(values, 0, xx, 0, count);
-                return xx;
-            }
-            case LAST: {
-                double[] xx = new double[count];
-                System.arraycopy(values, values.length - count, xx, 0, count);
-                return xx;
-            }
-        }
-        return null;
-    }
-
-    private static int[] subArray1(int[] values, int count, IndexSelectionStrategy sel) {
-        switch (sel) {
-            case BALANCED: {
-                int[] ints = itimes(0, values.length - 1, count);
-                int[] xx = new int[ints.length];
-                for (int i = 0; i < ints.length; i++) {
-                    xx[i] = values[ints[i]];
-                }
-                return xx;
-            }
-            case FIRST: {
-                int[] xx = new int[count];
-                System.arraycopy(values, 0, xx, 0, count);
-                return xx;
-            }
-            case LAST: {
-                int[] xx = new int[count];
-                System.arraycopy(values, values.length - count, xx, 0, count);
-                return xx;
-            }
-        }
-        return null;
-    }
 
     public static Vector vector(TVector v) {
         v = v.to($COMPLEX);
@@ -1875,103 +1402,24 @@ public final class Maths {
         return Math.random() <= 0.5;
     }
 
-    //    public static Domain domain(double xmin, double xmax) {
-//        return Domain.forBounds(xmin, xmax);
-//    }
-//
-//    public static Domain domain(double xmin, double xmax, double ymin, double ymax) {
-//        return Domain.forBounds(xmin, xmax, ymin, ymax);
-//    }
-//
-//    public static Domain domain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
-//        return Domain.forBounds(xmin, xmax, ymin, ymax,zmin,zmax);
-//    }
-//    public static Domain cornerBounds(double xmin, double ymin, double xmax, double ymax) {
-//        return Domain.forBounds(xmin, xmax, ymin, ymax);
-//    }
-//
-//    public static Domain cornerSizes(double xmin, double ymin, double xlen, double ylen) {
-//        return Domain.forBounds(xmin, xmin + xlen, ymin, ymin + ylen);
-//    }
-
     public static double[][] cross(double[] x, double[] y) {
-        double[][] r = new double[x.length * y.length][2];
-        int p = 0;
-        for (double aX : x) {
-            for (double aY : y) {
-                double[] v = r[p];
-                v[0] = aX;
-                v[1] = aY;
-                p++;
-            }
-        }
-        return r;
+        return MathsArrays.cross(x, y);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z) {
-        double[][] r = new double[x.length * y.length * z.length][3];
-        int p = 0;
-        for (double aX : x) {
-            for (double aY : y) {
-                for (double aZ : z) {
-                    double[] v = r[p];
-                    v[0] = aX;
-                    v[1] = aY;
-                    v[2] = aZ;
-                    p++;
-                }
-            }
-        }
-        return r;
+        return MathsArrays.cross(x, y, z);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z, Double3Filter filter) {
-        List<double[]> r = new ArrayList<>(x.length * y.length * z.length);
-        for (double aX : x) {
-            for (double aY : y) {
-                for (double aZ : z) {
-                    double[] v = new double[3];
-                    v[0] = aX;
-                    v[1] = aY;
-                    v[2] = aZ;
-                    if (filter == null || filter.accept(aX, aY, aZ)) {
-                        r.add(v);
-                    }
-                }
-            }
-        }
-        return r.toArray(new double[r.size()][]);
+        return MathsArrays.cross(x, y, z, filter);
     }
 
     public static int[][] cross(int[] x, int[] y) {
-        int[][] r = new int[x.length * y.length][2];
-        int p = 0;
-        for (int aX : x) {
-            for (int aY : y) {
-                int[] v = r[p];
-                v[0] = aX;
-                v[1] = aY;
-                p++;
-            }
-        }
-        return r;
+        return MathsArrays.cross(x, y);
     }
 
     public static int[][] cross(int[] x, int[] y, int[] z) {
-        int[][] r = new int[x.length * y.length * z.length][3];
-        int p = 0;
-        for (int aX : x) {
-            for (int aY : y) {
-                for (int aZ : z) {
-                    int[] v = r[p];
-                    v[0] = aX;
-                    v[1] = aY;
-                    v[2] = aZ;
-                    p++;
-                }
-            }
-        }
-        return r;
+        return MathsArrays.cross(x, y, z);
     }
 
     public static TList sineSeq(String borders, int m, int n, Domain domain) {
@@ -2015,15 +1463,6 @@ public final class Maths {
         return any(expr(e));
     }
 
-//    public static Any any(Domain e) {
-//        return new Any(expr(e));
-//    }
-
-    @Deprecated
-    public static TList<Expr> seq() {
-        return elist();
-    }
-
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, Int2Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax));
         if (filter != null) {
@@ -2061,17 +1500,17 @@ public final class Maths {
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final double[][] values) {
-        return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern));
+        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern));
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final DoubleParam p, final double[][] values) {
-        return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length,
+        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length,
                 new SimpleSeqMulti(pattern, new DoubleParam[]{m, n, p}, values)
         );
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam[] m, final double[][] values) {
-        return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values));
+        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values));
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, int min, int max) {
@@ -2079,135 +1518,17 @@ public final class Maths {
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final double[] values) {
-        return Config.DEFAULT_EXPR_SEQ_FACTORY.newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
+        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
     }
 
     public static ExprMatrix2 matrix(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues) {
-        return Config.DEFAULT_EXPR_MATRIX_FACTORY.newUnmodifiableMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
+        return Config.getExprMatrixFactory().newUnmodifiableMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
     }
 
     public static ExprCube cube(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues, final DoubleParam p, final double[] pvalues) {
-        return Config.DEFAULT_EXPR_CUBE_FACTORY.newUnmodifiableCube(mvalues.length, nvalues.length, pvalues.length, new SimpleSeq3b(pattern, m, mvalues, n, nvalues, p, pvalues));
+        return Config.getExprCubeFactory().newUnmodifiableCube(mvalues.length, nvalues.length, pvalues.length, new SimpleSeq3b(pattern, m, mvalues, n, nvalues, p, pvalues));
     }
 
-    //    public static void main(String[] args) {
-//        DoubleParam m=param("m");
-//        DoubleParam n=param("n");
-//        DoubleParam p=param("p");
-//        DoubleToVector v = vector(m, n, p);
-////        System.out.println(DumpManager.dumpSimple(seq2(v, m, dsteps(1, 4), n, dsteps(1, 4))));
-//        System.out.println(DumpManager.dumpSimple(seq3(v, m, dsteps(1, 2), n, dsteps(1, 3), p, dsteps(1, 4))));
-//    }
-//    public static TList<Expr>[] seq(ExprArrayList pattern, DoubleParam m, double[] values) {
-//        ExprArrayList[] list = new ExprArrayList[values.length];
-//        for (int i = 0; i < values.length; i++) {
-//            list[i] = pattern.setParam(m, values[i]);
-//        }
-//        return list;
-//    }
-//
-//    public static TList<Expr>[][] seq(ExprArrayList[] pattern, DoubleParam m, double[] values) {
-//        ExprArrayList[][] list = new ExprArrayList[values.length][];
-//        for (int i = 0; i < values.length; i++) {
-//            ExprArrayList[] sub = new ExprArrayList[pattern.length];
-//            for (int j = 0; j < sub.length; j++) {
-//                sub[j] = pattern[j].setParam(m, values[i]);
-//            }
-//            list[i] = sub;
-//        }
-//        return list;
-//    }
-//
-//    public static TList<Expr>[][][] seq(ExprArrayList[][] pattern, DoubleParam m, double[] values) {
-//        ExprArrayList[][][] list = new ExprArrayList[values.length][][];
-//        for (int i = 0; i < values.length; i++) {
-//            ExprArrayList[][] sub = new ExprArrayList[pattern.length][];
-//            for (int j = 0; j < sub.length; j++) {
-//                ExprArrayList[] sub2 = new ExprArrayList[sub.length];
-//                for (int k = 0; k < sub2.length; k++) {
-//                    sub2[k] = pattern[j][k].setParam(m, values[i]);
-//                }
-//            }
-//            list[i] = sub;
-//        }
-//        return list;
-//    }
-    //a koa ca sert??????? j'ai déja range
-    @Deprecated
-    public static int[] range2(double[] x, double min, double max) {
-        //new
-        int a = 0;
-
-        int low = 0;
-        int high = x.length - 1;
-
-        while (low <= high) {
-            int mid = (low + high) >> 1;
-            double midVal = x[mid];
-
-            int cmp;
-            if (midVal < min) {
-                cmp = -1;   // Neither val is NaN, thisVal is smaller
-            } else if (midVal > min) {
-                cmp = 1;    // Neither val is NaN, thisVal is larger
-            } else {
-                long midBits = Double.doubleToLongBits(midVal);
-                long keyBits = Double.doubleToLongBits(min);
-                cmp = (midBits == keyBits ? 0
-                        : // Values are equal
-                        (midBits < keyBits ? -1
-                                : // (-0.0, 0.0) or (!NaN, NaN)
-                                1));                     // (0.0, -0.0) or (NaN, !NaN)
-            }
-
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                low = mid;
-                break;
-            }
-        }
-        a = low;
-
-        int b = a;
-
-        low = a;
-        high = x.length - 1;
-
-        while (low <= high) {
-            int mid = (low + high) >> 1;
-            double midVal = x[mid];
-
-            int cmp;
-            if (midVal < max) {
-                cmp = -1;   // Neither val is NaN, thisVal is smaller
-            } else if (midVal > max) {
-                cmp = 1;    // Neither val is NaN, thisVal is larger
-            } else {
-                long midBits = Double.doubleToLongBits(midVal);
-                long keyBits = Double.doubleToLongBits(max);
-                cmp = (midBits == keyBits ? 0
-                        : // Values are equal
-                        (midBits < keyBits ? -1
-                                : // (-0.0, 0.0) or (!NaN, NaN)
-                                1));                     // (0.0, -0.0) or (NaN, !NaN)
-            }
-
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                high = mid;
-                break;
-            }
-        }
-        b = high;
-
-        return (a < 0 || a >= x.length || b < a) ? null : new int[]{a, b};
-    }
 
     public static Expr derive(Expr f, Axis axis) {
         return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
@@ -2265,12 +1586,8 @@ public final class Maths {
         return Complex.valueOf(a, b);
     }
 
-    public static Complex complex(Expr e) {
-        return e.toComplex();
-    }
-
     public static double Double(Expr e) {
-        return e.toDouble();
+        return e.simplify().toDouble();
     }
 
     public static Expr real(Expr e) {
@@ -2282,7 +1599,7 @@ public final class Maths {
     }
 
 
-    public static Complex complexValue(Expr e) {
+    public static Complex complex(Expr e) {
         return e.simplify().toComplex();
     }
 
@@ -2290,9 +1607,6 @@ public final class Maths {
         return e.simplify().toDouble();
     }
 
-    //    public static Discrete discrete(Domain domain, Complex value, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3) {
-//        return Discrete.cst(domain, value, dx, dy, dz, axis1, axis2, axis3);
-//    }
     public static Discrete discrete(Domain domain, Complex[][][] model, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3) {
         return Discrete.create(domain, model, x, y, z, dx, dy, dz, axis1, axis2, axis3);
     }
@@ -2313,64 +1627,15 @@ public final class Maths {
         return Discrete.create(model, x, y, z);
     }
 
-    public static Expr discretize(Expr expr, int xSamples, int ySamples, int zSamples) {
-        if (expr.isScalarExpr()) {
-            if (expr.isDD()) {
-                return DDiscrete.discretize(expr, xSamples, ySamples, zSamples);
-            } else {
-                return Discrete.discretize(expr, xSamples, ySamples, zSamples);
-            }
-        } else {
-            return VDiscrete.discretize(expr, xSamples, ySamples, zSamples);
-        }
+
+    public static Expr discrete(Expr expr, Samples samples) {
+        return MathsSampler.discrete(expr, samples);
     }
 
-    public static Expr discretize(Expr expr, Samples samples) {
-        if (expr.isScalarExpr()) {
-            if (expr.isDD()) {
-                return DDiscrete.discretize(expr, null, samples);
-            } else {
-                return Discrete.discretize(expr, null, samples);
-            }
-        } else {
-            return VDiscrete.discretize(expr, null, samples);
-        }
+    public static Expr abssqr(Expr e) {
+        return getVectorSpace($EXPR).abssqr(e);
     }
 
-    public static Expr discrete(Expr expr, int xSamples, int ySamples) {
-        if (expr instanceof Discrete || expr instanceof VDiscrete) {
-            return expr;
-        }
-        if (expr.isScalarExpr()) {
-            AbsoluteSamples samples = expr.getDomain().times(xSamples, ySamples);
-            Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-            return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
-        } else {
-            DoubleToVector v = expr.toDV();
-            ComponentDimension d = v.getComponentDimension();
-            if (d.columns == 1) {
-                if (d.rows == 1) {
-                    AbsoluteSamples samples = expr.getDomain().times(xSamples, ySamples);
-                    Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-                    return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
-                } else if (d.rows == 2) {
-                    return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples, ySamples),
-                            null
-                    );
-                } else if (d.rows == 3) {
-                    return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Z), xSamples, ySamples)
-                    );
-                }
-            }
-            throw new IllegalArgumentException("Unsupported");
-
-        }
-    }
 
     public static AdaptiveResult1 adaptiveEval(Expr expr, AdaptiveConfig config) {
         Domain domain = expr.getDomain();
@@ -2398,209 +1663,27 @@ public final class Maths {
     }
 
     public static <T> AdaptiveResult1 adaptiveEval(AdaptiveFunction1<T> expr, DistanceStrategy<T> distance, DomainX domain, AdaptiveConfig config) {
-        if (config == null) {
-            config = new AdaptiveConfig();
-        }
-        double xmin = domain.xmin();
-        double xmax = domain.xmax();
-        int minSteps = config.getMinimumXSamples();
-        int maxSamples = config.getMaximumXSamples();
-        double err = config.getError();
-        SamplifyListener listener = config.getListener();
-        double[] dsteps = dtimes(xmin, xmax, minSteps);
-        if (err <= 0) {
-            err = 0.1;
-        }
-        double yerr = 0.02;
-//        DoubleToComplex dc = expr.toDC();
-//        Complex[][] complexes2 = dc.computeComplexArg(dsteps,dsteps);
-        AdaptiveResult1 s = new AdaptiveResult1();
-        s.x.addAll(dsteps);
-        for (double x : dsteps) {
-            T v = expr.eval(x);
-            s.values.add(v);
-        }
-        BooleanArray stop = new BooleanArray();
+        return MathsSampler.adaptiveEval(expr, distance, domain, config);
+    }
 
-        for (int i = 0; i < s.size(); i++) {
-            stop.add(false);
-        }
+    public static Discrete discrete(Expr expr) {
+        return MathsSampler.discrete(expr);
+    }
 
-        if (listener != null) {
-            listener.onNewElements(new AdaptiveEvent(0, s.size(), Double.NaN, 0, s));
-        }
-
-        class Diff implements Comparable<Diff> {
-            String name;
-            int type;
-            int minIndex = -1;
-            int maxIndex = -1;
-            double minValue = 0;
-            double maxValue = Double.POSITIVE_INFINITY;
-            double ratio = 0;
-
-            public Diff(String name, int type) {
-                this.name = name;
-                this.type = type;
-            }
-
-            void regRegular(int index, double v) {
-                if (Double.isNaN(v) || Double.isInfinite(v)) {
-                    return;
-                }
-                reg(index, v);
-            }
-
-            void regRegularOrMax(int index, double v, double max) {
-                if (Double.isNaN(v) || Double.isInfinite(v)) {
-                    return;
-                }
-                if (v > max) {
-                    v = max;
-                }
-                reg(index, v);
-            }
-
-            void reg(int index, double v) {
-                if (minIndex < 0) {
-                    minIndex = index;
-                    maxIndex = index;
-                    minValue = v;
-                    maxValue = v;
-                } else if (v < minValue) {
-                    minValue = v;
-                    minIndex = index;
-                } else if (v > maxValue) {
-                    maxValue = v;
-                    maxIndex = index;
-                }
-                if (minValue == 0) {
-                    ratio = maxValue;
-                } else {
-                    ratio = (maxValue - minValue) / minValue;
-                }
-            }
-
-            @Override
-            public String toString() {
-                return "Diff{" +
-                        "name='" + name + '\'' +
-                        ", type=" + type +
-                        ", minIndex=" + minIndex +
-                        ", maxIndex=" + maxIndex +
-                        ", minValue=" + minValue +
-                        ", maxValue=" + maxValue +
-                        ", ratio=" + ratio +
-                        '}';
-            }
-
-            @Override
-            public int compareTo(Diff o) {
-                return Double.compare(ratio, o.ratio);
-            }
-        }
-
-        int TYPE_ERROR = 1;
-        int TYPE_WIDTH = 2;
-        int TYPE_DERIVE = 3;
-        while (s.x.size() < maxSamples) {
-            Diff ediff = new Diff("error", TYPE_ERROR);//error diff
-            Diff wdiff = new Diff("width", TYPE_WIDTH);//width diff
-            Diff ddiff = new Diff("derive", TYPE_DERIVE);//derive diff
-            List<Diff> diffs = new ArrayList<>(Arrays.asList(ediff, wdiff, ddiff));
-//            double maxErr = 0;
-//            double minErr = Double.POSITIVE_INFINITY;
-//            double minWidth = Double.POSITIVE_INFINITY;
-//            double maxWidth = 0;
-//            int indexWithMaxError = -1;
-//            int indexWithMinWidth = -1;
-//            int indexWithMaxWidth = -1;
-            int count = s.values.size();
-            for (int i = count - 2; i >= 0; i--) {
-                if (!stop.get(i)) {
-                    T c1 = (T) s.values.get(i);
-                    T c2 = (T) s.values.get(i + 1);
-                    double d1 = s.x.get(i);
-                    double d2 = s.x.get(i + 1);
-                    double d = d2 - d1;
-                    ediff.regRegularOrMax(i, distance.distance(c1, c2), 200);
-                    wdiff.regRegular(i, d);
-                    ddiff.regRegularOrMax(i, err / d, 200);
-                }
-            }
-            Collections.sort(diffs);
-
-            Diff worst = diffs.get(diffs.size() - 1);
-            int bestIndex = worst.maxIndex;
-            s.error = worst.ratio;
-            if (bestIndex == -1) {
-                break;
-            }
-            if (s.error < err) {
-                stop.add(bestIndex, true);
-                continue;
-            }
-            double d1 = s.x.get(bestIndex);
-            double d2 = s.x.get(bestIndex + 1);
-            T c1 = (T) s.values.get(bestIndex);
-            T c2 = (T) s.values.get(bestIndex + 1);
-            double d = (d1 + d2) / 2.0;
-            if (d == d1 || d == d2) {
-                stop.set(bestIndex, true);
-            } else {
-                T c = expr.eval(d);
-                if (distance.distance(c, c1) <= yerr || distance.distance(c, c2) <= yerr) {
-                    //no need to add this !
-                    stop.add(bestIndex, true);
-                } else {
-
-
-                    s.x.add(bestIndex + 1, d);
-                    s.values.add(bestIndex + 1, c);
-                    stop.add(bestIndex + 1, false);
-                    if (listener != null) {
-                        listener.onNewElements(new AdaptiveEvent(bestIndex + 1, 1, worst.ratio, worst.type, s));
-                    }
-                }
-            }
-        }
-        return s;
-        //now check if i have to
+    public static VDiscrete vdiscrete(Expr expr) {
+        return MathsSampler.vdiscrete(expr);
     }
 
     public static Expr discrete(Expr expr, int xSamples) {
-        if (expr instanceof Discrete || expr instanceof VDiscrete) {
-            return expr;
-        }
-        if (expr.isScalarExpr()) {
-            AbsoluteSamples samples = expr.getDomain().times(xSamples);
-            Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-            return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
-        } else {
-            DoubleToVector v = expr.toDV();
-            ComponentDimension d = v.getComponentDimension();
-            if (d.columns == 1) {
-                if (d.rows == 1) {
-                    AbsoluteSamples samples = expr.getDomain().times(xSamples);
-                    Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-                    return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
-                } else if (d.rows == 2) {
-                    return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples),
-                            null
-                    );
-                } else if (d.rows == 3) {
-                    return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Z), xSamples)
-                    );
-                }
-            }
-            throw new IllegalArgumentException("Unsupported");
+        return MathsSampler.discrete(expr, xSamples);
+    }
 
-        }
+    public static Expr discrete(Expr expr, int xSamples, int ySamples) {
+        return MathsSampler.discrete(expr, xSamples, ySamples);
+    }
+
+    public static Expr discrete(Expr expr, int xSamples, int ySamples, int zSamples) {
+        return MathsSampler.discrete(expr, xSamples, ySamples, zSamples);
     }
 
     public static AxisFunction axis(Axis e) {
@@ -2643,42 +1726,11 @@ public final class Maths {
     }
 
     public static double sin2(double d) {
-        if (d == 0) {
-            return 0.0;
-        }
-        double f = d / Math.PI;
-        if (isInt(f)) {
-            return 0;
-        }
-        return Math.sin(d);
+        return MathsTrigo.sin2(d);
     }
 
     public static double cos2(double d) {
-        if (d == 0) {
-            return 1;
-        }
-        double f = d / (Math.PI / 2);
-        if (isInt(f)) {
-            int r = ((int) Math.floor(Math.abs(f))) % 4;
-            switch (r) {
-                case 0: {
-                    return 1;
-                }
-                case 1: {
-                    return 0;
-                }
-                case 2: {
-                    return -1;
-                }
-                case 3: {
-                    return 0;
-                }
-                default: {
-                    return Math.cos(d);
-                }
-            }
-        }
-        return Math.cos(d);
+        return MathsTrigo.cos2(d);
     }
 
     public static boolean isInt(double d) {
@@ -2706,11 +1758,11 @@ public final class Maths {
      * @return string dump of the object
      */
     public static String dump(Object o) {
-        return Config.dumpManager.getDumpDelegate(o, false).getDumpString(o);
+        return Config.getDumpManager().getDumpDelegate(o, false).getDumpString(o);
     }
 
     public static String dumpSimple(Object o) {
-        return Config.dumpManager.getDumpDelegate(o, true).getDumpString(o);
+        return Config.getDumpManager().getDumpDelegate(o, true).getDumpString(o);
     }
 
     public static DoubleToDouble expr(double value, Geometry geometry) {
@@ -3326,47 +2378,15 @@ public final class Maths {
     }
 
     public static double min(double[] arr) {
-        if (arr.length == 0) {
-            return Double.NaN;
-        }
-        double min = Double.NaN;
-        for (int i = 0; i < arr.length; i++) {
-            if (Double.isNaN(min) || (!Double.isNaN(arr[i]) && arr[i] < min)) {
-                min = arr[i];
-            }
-        }
-        return min;
+        return MathsArrays.min(arr);
     }
 
     public static double max(double[] arr) {
-        if (arr.length == 0) {
-            return Double.NaN;
-        }
-        double max = Double.NaN;
-        for (int i = 0; i < arr.length; i++) {
-            if (Double.isNaN(max) || (!Double.isNaN(arr[i]) && arr[i] > max)) {
-                max = arr[i];
-            }
-        }
-        return max;
+        return MathsArrays.max(arr);
     }
 
     public static double avg(double[] arr) {
-        if (arr.length == 0) {
-            return Double.NaN;
-        }
-        double max = 0;
-        int count = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if ((!Double.isNaN(arr[i]))) {
-                max += arr[i];
-                count++;
-            }
-        }
-        if (count == 0) {
-            return Double.NaN;
-        }
-        return max / count;
+        return MathsArrays.avg(arr);
     }
 
     public static int min(int a, int b) {
@@ -3388,59 +2408,23 @@ public final class Maths {
     }
 
     public static double[] minMax(double[] a) {
-        double min = Double.MIN_VALUE;
-        double max = Double.MAX_VALUE;
-        for (double value : a) {
-            min = Math.min(min, value);
-            max = Math.max(max, value);
-        }
-        return new double[]{min, max};
+        return MathsArrays.minMax(a);
     }
 
     public static double[] minMaxAbs(double[] a) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        for (double anA : a) {
-            double abs = Math.abs(anA);
-            min = Math.min(min, abs);
-            max = Math.max(max, abs);
-        }
-        return new double[]{min, max};
+        return MathsArrays.minMaxAbs(a);
     }
 
     public static double[] minMaxAbsNonInfinite(double[] a) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        boolean b = false;
-        for (double anA : a) {
-            if (!Double.isNaN(anA) && !Double.isInfinite(anA)) {
-                double abs = Math.abs(anA);
-                min = Math.min(min, abs);
-                max = Math.max(max, abs);
-                b = true;
-            }
-        }
-        if (b) {
-            return new double[]{min, max};
-        } else {
-            return new double[]{0, 0};
-        }
+        return MathsArrays.minMaxAbsNonInfinite(a);
     }
 
     public static double avgAbs(double[] arr) {
-        double avg = 0;
-        for (double anArr : arr) {
-            avg += Math.abs(anArr);
-        }
-        return avg / arr.length;
+        return MathsArrays.avgAbs(arr);
     }
 
     public static double[] distances(double[] arr) {
-        double[] distances = new double[arr.length - 1];
-        for (int i = 1; i < arr.length; i++) {
-            distances[i - 1] = arr[i] - arr[i - 1];
-        }
-        return distances;
+        return MathsArrays.distances(arr);
     }
 
     public static double[] div(double[] a, double[] b) {
@@ -3916,27 +2900,6 @@ public final class Maths {
         }
         return c.toComplex();
     }
-//    public static void main(String[] args) {
-//        Maths.Config.setCacheEnabled(false);
-//        System.out.println("before=\n"+formatMemory());
-//        long start = inUseMemory();
-//        System.out.println(formatMemory(start));
-//        Domain[] gp=new Domain[10000000];
-//        Domain[] fn=new Domain[10000000];
-//        for (int i = 0; i < gp.length; i++) {
-//            gp[i]=(Domain.forWidth(0,10,0,10,0,10));
-//        }
-//        for (int i = 0; i < fn.length; i++) {
-//            fn[i]=(Domain.forWidth(0,10,0,10,0,10));
-//        }
-//        System.out.println("after=\n"+formatMemory());
-//        long end = inUseMemory();
-//        System.out.println(formatMemory(end));
-//        System.out.println("Memoire utilisee "+formatMemory(end-start));
-////        ScalarProductCache d = scalarProductCache(gp, fn, ProgressMonitorFactory.out().temporize(1000));
-////        Complex gf = d.gf(2, 2);
-////        System.out.println(gf);
-//    }
 
     public static TVector<Expr> seq(int size1, TVectorCell<Expr> f) {
         return new ReadOnlyTVector<Expr>($EXPR, false, new TVectorModelFromCell(size1, f));
@@ -4072,39 +3035,6 @@ public final class Maths {
     public static Expr gateZ(double a, double b) {
         return DoubleValue.valueOf(1, Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, a, b));
     }
-
-//    public static <T> Expr sum(TList<T> sequence) {
-//        int len = sequence.length();
-//        if (len == 0) {
-//            return CZERO;
-//        }
-//        List<Expr> all = new ArrayList<>();
-//        MutableComplex c = new MutableComplex();
-//        Queue<Expr> t = new LinkedList<>();
-//        for (int i = 0; i < len; i++) {
-//            Expr e = (Expr)sequence.get(i);
-//            t.add(e);
-//            while (!t.isEmpty()) {
-//                Expr e2 = t.remove();
-//                if (e2 instanceof Plus) {
-//                    t.addAll(e2.getSubExpressions());
-//                } else {
-//                    if (e2.isComplex()) {
-//                        c.add(e2.toComplex());
-//                    } else {
-//                        all.add(e2);
-//                    }
-//                }
-//            }
-//        }
-//        if (all.isEmpty()) {
-//            return c.toComplex();
-//        }
-//        if (!c.isZero()) {
-//            all.add(c.toComplex());
-//        }
-//        return new Plus(all);
-//    }
 
     public static double scalarProduct(DoubleToDouble f1, DoubleToDouble f2) {
         return Config.getScalarProductOperator().evalDD(null, f1, f2);
@@ -4456,138 +3386,47 @@ public final class Maths {
     }
 
     public static <T> T sum(TypeReference<T> type, T... arr) {
-        if ($COMPLEX.isAssignableFrom(type)) {
-            return (T) sum((Complex[]) arr);
-        }
-        if ($EXPR.isAssignableFrom(type)) {
-            return (T) sum((Expr[]) arr);
-        }
-        VectorSpace<T> s = getVectorSpace(type);
-        T a = s.zero();
-        for (int i = 0; i < arr.length; i++) {
-            a = s.add(a, arr[i]);
-        }
-        return a;
+        return MathsExpr.sum(type, arr);
     }
 
     public static <T> T sum(TypeReference<T> type, TVectorModel<T> arr) {
-        if ($COMPLEX.isAssignableFrom(type)) {
-            return (T) csum((TVectorModel<Complex>) arr);
-        }
-        if ($EXPR.isAssignableFrom(type)) {
-            return (T) esum((TVectorModel<Expr>) arr);
-        }
-        VectorSpace<T> s = getVectorSpace(type);
-        T a = s.zero();
-        int size = arr.size();
-        for (int i = 0; i < size; i++) {
-            a = s.add(a, arr.get(i));
-        }
-        return a;
+        return MathsExpr.sum(type, arr);
     }
 
     public static <T> T sum(TypeReference<T> type, int size, TVectorCell<T> arr) {
-        return sum(type, new TVectorModelFromCell<>(size, arr));
+        return MathsExpr.sum(type, size, arr);
     }
 
     public static <T> T mul(TypeReference<T> type, T... arr) {
-        if ($COMPLEX.isAssignableFrom(type)) {
-            return (T) mul((Complex[]) arr);
-        }
-        if ($EXPR.isAssignableFrom(type)) {
-            return (T) mul((Expr[]) arr);
-        }
-        VectorSpace<T> s = getVectorSpace(type);
-        T a = s.one();
-        for (int i = 0; i < arr.length; i++) {
-            a = s.mul(a, arr[i]);
-        }
-        return a;
+        return MathsExpr.mul(type, arr);
     }
 
     public static <T> T mul(TypeReference<T> type, TVectorModel<T> arr) {
-        if ($COMPLEX.isAssignableFrom(type)) {
-            return (T) cmul((TVectorModel<Complex>) arr);
-        }
-        if ($EXPR.isAssignableFrom(type)) {
-            return (T) emul((TVectorModel<Expr>) arr);
-        }
-        VectorSpace<T> s = getVectorSpace(type);
-        T a = s.one();
-        int size = arr.size();
-        for (int i = 0; i < size; i++) {
-            a = s.mul(a, arr.get(i));
-        }
-        return a;
+        return MathsExpr.mul(type, arr);
+    }
+
+    public static Complex avg(Discrete d) {
+        return MathsSampler.avg(d);
+    }
+    public static DoubleToVector vsum(VDiscrete d) {
+        return MathsSampler.vsum(d);
+    }
+
+    public static DoubleToVector vavg(VDiscrete d) {
+        return MathsSampler.vavg(d);
+    }
+
+
+    public static Complex avg(VDiscrete d) {
+        return MathsSampler.avg(d);
     }
 
     public static Expr sum(Expr... arr) {
-        int len = arr.length;
-        if (len == 0) {
-            return CZERO;
-        }
-        List<Expr> all = new ArrayList<>();
-        MutableComplex c = new MutableComplex();
-        Queue<Expr> t = new LinkedList<>();
-        for (int i = 0; i < len; i++) {
-            Expr e = arr[i];
-            t.add(e);
-            while (!t.isEmpty()) {
-                Expr e2 = t.remove();
-                if (e2 instanceof Plus) {
-                    t.addAll(e2.getSubExpressions());
-                } else {
-                    if (e2.isComplex()) {
-                        c.add(e2.toComplex());
-                    } else {
-                        all.add(e2);
-                    }
-                }
-            }
-        }
-        if (all.isEmpty()) {
-            return c.toComplex();
-        }
-        if (!c.isZero()) {
-            all.add(c.toComplex());
-        }
-        if (all.size() == 1) {
-            return all.get(0);
-        }
-        return new Plus(all);
+        return MathsExpr.sum(arr);
     }
 
     public static Expr esum(TVectorModel<Expr> arr) {
-        int len = arr.size();
-        if (len == 0) {
-            return CZERO;
-        }
-        List<Expr> all = new ArrayList<>();
-        MutableComplex c = new MutableComplex();
-        Queue<Expr> t = new LinkedList<>();
-        for (int i = 0; i < len; i++) {
-            Expr e = arr.get(i);
-            t.add(e);
-            while (!t.isEmpty()) {
-                Expr e2 = t.remove();
-                if (e2 instanceof Plus) {
-                    t.addAll(e2.getSubExpressions());
-                } else {
-                    if (e2.isComplex()) {
-                        c.add(e2.toComplex());
-                    } else {
-                        all.add(e2);
-                    }
-                }
-            }
-        }
-        if (all.isEmpty()) {
-            return c.toComplex();
-        }
-        if (!c.isZero()) {
-            all.add(c.toComplex());
-        }
-        return new Plus(all);
+        return MathsExpr.esum(arr);
     }
 
     public static <T> TMatrix<T> mul(TMatrix<T> a, TMatrix<T> b) {
@@ -4603,122 +3442,23 @@ public final class Maths {
     }
 
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
-        TypeReference cls = arr[0].getComponentType();
-        for (int i = 0; i < arr.length; i++) {
-            cls = ReflectUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
-        }
-        VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
-        return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
-            @Override
-            public int size() {
-                return arr[0].size();
-            }
-
-            @Override
-            public Expr get(int index) {
-                Expr e = arr[0].get(index);
-                for (int i = 1; i < arr.length; i++) {
-                    TVector<Expr> v = arr[i];
-                    e = componentVectorSpace.mul(e, v.get(index));
-                }
-                return e;
-            }
-        });
+        return MathsExpr.edotmul(arr);
     }
 
     public static TVector<Expr> edotdiv(TVector<Expr>... arr) {
-        VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
-        return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
-            @Override
-            public int size() {
-                return arr[0].size();
-            }
-
-            @Override
-            public Expr get(int index) {
-                Expr e = arr[0].get(index);
-                for (int i = 1; i < arr.length; i++) {
-                    TVector<Expr> v = arr[i];
-                    e = componentVectorSpace.div(e, v.get(index));
-                }
-                return e;
-            }
-        });
+        return MathsExpr.edotdiv(arr);
     }
 
     public static Complex cmul(TVectorModel<Complex> arr) {
-        int len = arr.size();
-        if (len == 0) {
-            return CZERO;
-        }
-        MutableComplex c = new MutableComplex(1, 0);
-        for (int i = 0; i < len; i++) {
-            Complex complex = arr.get(i);
-            if (complex.isZero()) {
-                return CZERO;
-            }
-            c.mul(complex);
-        }
-        return c.toComplex();
+        return MathsExpr.cmul(arr);
     }
 
     public static Expr emul(TVectorModel<Expr> arr) {
-        int len = arr.size();
-        if (len == 0) {
-            return CZERO;
-        }
-        List<Expr> all = new ArrayList<>();
-        Domain d = null;
-        MutableComplex c = new MutableComplex(1, 0);
-        Queue<Expr> t = new LinkedList<>();
-        for (int i = 0; i < len; i++) {
-            Expr e = arr.get(i);
-            t.add(e);
-            while (!t.isEmpty()) {
-                Expr e2 = t.remove();
-                if (e2 instanceof Mul) {
-                    t.addAll(e2.getSubExpressions());
-                } else {
-                    if (e2.isComplexExpr()) {
-                        Complex v = e2.toComplex();
-                        if (c.isZero()) {
-                            return CZERO;
-                        }
-                        c.mul(v);
-                        if (d == null) {
-                            d = e2.getDomain();
-                        } else {
-                            d = d.intersect(e2.getDomain());
-                        }
-                    } else {
-                        all.add(e2);
-                    }
-                }
-            }
-        }
-        Complex complex = c.toComplex();
-        Expr complexExpr = d == null ? complex : complex.mul(d);
-        if (all.isEmpty()) {
-            return complexExpr;
-        }
-        if (!complexExpr.equals(CONE)) {
-            all.add(0, complexExpr);
-        }
-        return new Mul(all.toArray(new Expr[all.size()]));
+        return MathsExpr.emul(arr);
     }
 
     public static Expr mul(Expr... e) {
-        return emul(new TVectorModel<Expr>() {
-            @Override
-            public int size() {
-                return e.length;
-            }
-
-            @Override
-            public Expr get(int index) {
-                return e[index];
-            }
-        });
+        return MathsExpr.mul(e);
     }
 
     public static Expr pow(Expr a, Expr b) {
@@ -4750,24 +3490,7 @@ public final class Maths {
     }
 
     public static Expr add(Expr... a) {
-        switch (a.length) {
-            case 0: {
-                throw new IllegalArgumentException("Missing arguments for add");
-            }
-            case 1: {
-                return a[0];
-            }
-            case 2: {
-                return new Plus(a[0], a[1]);
-            }
-            default: {
-                Plus p = new Plus(a[0], a[1]);
-                for (int i = 2; i < a.length; i++) {
-                    p = new Plus(p, a[i]);
-                }
-                return p;
-            }
-        }
+        return MathsExpr.add(a);
     }
 
     public static Expr div(Expr a, Expr b) {
@@ -4806,22 +3529,7 @@ public final class Maths {
     }
 
     public static <T> TMatrix<T> tmatrix(TypeReference<T> type, int rows, int columns, TMatrixCell<T> model) {
-        return tmatrix(type, new TMatrixModel<T>() {
-            @Override
-            public int getColumnCount() {
-                return rows;
-            }
-
-            @Override
-            public int getRowCount() {
-                return columns;
-            }
-
-            @Override
-            public T get(int row, int column) {
-                return model.get(row, column);
-            }
-        });
+        return tmatrix(type, new TMatrixCellToModel<>(rows, columns, model));
     }
 
 //    public static Expr expr(Domain d) {
@@ -5200,7 +3908,7 @@ public final class Maths {
     }
 
     public static String formatMetric(double value) {
-        return Config.metricFormatter.format(value);
+        return Config.getMetricFormatter().format(value);
     }
 
     public static MemoryInfo memoryInfo() {
@@ -5234,11 +3942,11 @@ public final class Maths {
     }
 
     public static String formatPeriodNanos(long period) {
-        return Config.TIME_PERIOD_FORMATTER.formatNanos(period);
+        return Config.getTimePeriodFormatter().formatNanos(period);
     }
 
     public static String formatPeriodMillis(long period) {
-        return Config.TIME_PERIOD_FORMATTER.formatMillis(period);
+        return Config.getTimePeriodFormatter().formatMillis(period);
     }
 
     public static int sizeOf(Class src) {
@@ -5330,7 +4038,7 @@ public final class Maths {
     }
 
     public static DoubleFormatter percentFormat() {
-        return Config.percentFormatter;
+        return Config.getPercentFormatter();
     }
 
     public static DoubleFormatter frequencyFormat() {
@@ -5346,103 +4054,15 @@ public final class Maths {
     }
 
     public static DoubleFormatter dblformat(String format) {
-        if (StringUtils.isEmpty(format)) {
-            format = "";
-        }
-        String[] a = format.split(" ");
-        String type = "";
-        String subFormat = "";
-        if (a.length == 0) {
-            //
-        } else {
-            type = a[0];
-            subFormat = format.substring(type.length());
-        }
-        switch (StringUtils.trim(format).toLowerCase()) {
-            case "hz":
-            case "freq":
-            case "frequency": {
-                if (StringUtils.isEmpty(subFormat)) {
-                    return Config.getFrequencyFormatter();
-                }
-                return new FrequencyFormatter(subFormat);
-            }
-            case "m":
-            case "metric": {
-                if (StringUtils.isEmpty(subFormat)) {
-                    return Config.getMetricFormatter();
-                }
-                return new MetricFormatter(subFormat);
-            }
-            case "b":
-            case "mem":
-            case "memory": {
-                if (StringUtils.isEmpty(subFormat)) {
-                    return Config.getMemorySizeFormatter();
-                }
-                return new BytesSizeFormatter(subFormat);
-            }
-            case "%":
-            case "percent": {
-                if (StringUtils.isEmpty(subFormat)) {
-                    return percentFormat();
-                }
-                return new DecimalDoubleFormatter(subFormat);
-            }
-            case "d":
-            case "double": {
-                if (StringUtils.isEmpty(subFormat)) {
-                    return Config.defaultDblFormat;
-                }
-                return new DecimalDoubleFormatter(subFormat);
-            }
-        }
-        if (StringUtils.isEmpty(subFormat)) {
-            return Config.defaultDblFormat;
-        }
-        return new DecimalDoubleFormatter(subFormat);
+        return DoubleFormatterFactory.create(format);
     }
 
     public static double[] resizePickFirst(double[] array, int newSize) {
-        int oldSize = array.length;
-        if (newSize == oldSize) {
-            double[] array2 = new double[newSize];
-            System.arraycopy(array, 0, array2, 0, newSize);
-            return array2;
-        } else if (newSize > oldSize) {
-            throw new IllegalArgumentException("Unsupported yet");
-        } else {
-            int windowSize = oldSize / newSize;
-            double[] array2 = new double[newSize];
-            for (int i = 0; i < newSize; i++) {
-                array2[i] = array[i * windowSize];
-            }
-            return array2;
-        }
+        return MathsArrays.resizePickFirst(array, newSize);
     }
 
     public static double[] resizePickAverage(double[] array, int newSize) {
-        int oldSize = array.length;
-        if (newSize == oldSize) {
-            double[] array2 = new double[newSize];
-            System.arraycopy(array, 0, array2, 0, newSize);
-            return array2;
-        } else if (newSize > oldSize) {
-            throw new IllegalArgumentException("Unsupported yet");
-        } else {
-            int windowSize = oldSize / newSize;
-            double[] array2 = new double[newSize];
-            for (int i = 0; i < newSize; i++) {
-                int m = 0;
-                double a = 0;
-                for (int j = 0; j < windowSize && i * windowSize + j < oldSize; j++) {
-                    m++;
-                    a += array[i * windowSize + j];
-                }
-                array2[i] = a / m;
-            }
-            return array2;
-        }
+        return MathsArrays.resizePickAverage(array, newSize);
     }
 
     public static <T> T[] toArray(Class<T> t, Collection<T> coll) {
@@ -5454,35 +4074,11 @@ public final class Maths {
     }
 
     public static double rerr(double a, double b) {
-        if (a == b) {
-            return 0;
-        }
-        if (Double.isNaN(a) && Double.isNaN(b)) {
-            return 0;
-        }
-        if (Double.isNaN(a) || Double.isNaN(b)) {
-            return Double.NaN;
-        }
-        if (Double.isInfinite(a) || Double.isInfinite(b)) {
-            return Double.POSITIVE_INFINITY;
-        }
-        return Math.abs(b - a) / Math.abs(a);
+        return MathsArrays.rerr(a, b);
     }
 
     public static double rerr(Complex a, Complex b) {
-        if (a.equals(b)) {
-            return 0;
-        }
-        if (a.isNaN() && b.isNaN()) {
-            return 0;
-        }
-        if (a.isNaN() || b.isNaN()) {
-            return Double.NaN;
-        }
-        if (a.isInfinite() || b.isInfinite()) {
-            return Double.POSITIVE_INFINITY;
-        }
-        return (b.sub(a)).absdbl() / a.absdbl();
+        return MathsArrays.rerr(a, b);
     }
 
     public static CustomCCFunctionXDefinition define(String name, CustomCCFunctionX f) {
@@ -5496,16 +4092,6 @@ public final class Maths {
     public static CustomDDFunctionXDefinition define(String name, CustomDDFunctionX f) {
         return new CustomDDFunctionXDefinition(name, f);
     }
-
-//    public static CustomFunctionDefinition define(String name,CustomFunction f){
-//        if(f instanceof CustomCCFunctionX){
-//            return new CustomCCFunctionXDefinition(name,(CustomCCFunctionX) f);
-//        }
-//        if(f instanceof CustomDDFunctionX){
-//            return new CustomDDFunctionXDefinition(name,(CustomDDFunctionX) f);
-//        }
-//        throw new IllegalArgumentException("Unsupported function definition");
-//    }
 
     public static CustomDDFunctionXYDefinition define(String name, CustomDDFunctionXY f) {
         return new CustomDDFunctionXYDefinition(name, f);
@@ -5591,8 +4177,7 @@ public final class Maths {
     }
 
     public static DoubleList refineSamples(TList<Double> values, int n) {
-        DoubleList values2 = (DoubleList) values.to($DOUBLE);
-        return (DoubleList) dlist(refineSamples(values2.toDoubleArray(), n));
+        return MathsSampler.refineSamples(values, n);
     }
 
     /**
@@ -5602,552 +4187,7 @@ public final class Maths {
      * @return
      */
     public static double[] refineSamples(double[] values, int n) {
-        if (n == 0) {
-            return Arrays.copyOf(values, values.length);
-        }
-        double[] d2 = new double[values.length + n * (values.length - 1)];
-        for (int i = 0; i < values.length - 1; i++) {
-            int s = i * (1 + n);
-            double[] d3 = dtimes(values[i], values[i + 1], n + 2);
-            System.arraycopy(d3, 0, d2, s, d3.length - 1);
-        }
-        d2[d2.length - 1] = values[values.length - 1];
-        return d2;
-    }
-
-    public static class Config {
-
-        private static final DumpManager dumpManager = new DumpManager();
-        private static final String defaultRootCachePath = "${user.home}/.cache/mathcache";
-        static MatrixFactory DEFAULT_LARGE_MATRIX_FACTORY = null;
-        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
-        private static int simplifierCacheSize = 2000;
-        //        private static float largeMatrixThreshold = 0.7f;
-        private static boolean debugExpressionRewrite = false;
-        private static boolean strictComputationMonitor = false;
-        private static float maxMemoryThreshold = 0.7f;
-        private static FrequencyFormatter frequencyFormatter = new FrequencyFormatter();
-        private static BytesSizeFormatter memorySizeFormatter = new BytesSizeFormatter();
-        private static MetricFormatter metricFormatter = new MetricFormatter();
-        private static TimePeriodFormatter TIME_PERIOD_FORMATTER = new DefaultTimePeriodFormatter();
-        private static ExprSequenceFactory DEFAULT_EXPR_SEQ_FACTORY = DefaultExprSequenceFactory.INSTANCE;
-        private static ExprMatrixFactory DEFAULT_EXPR_MATRIX_FACTORY = DefaultExprMatrixFactory.INSTANCE;
-        private static ExprCubeFactory DEFAULT_EXPR_CUBE_FACTORY = DefaultExprCubeFactory.INSTANCE;
-        private static int matrixBlockPrecision = 256;
-        private static InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
-        private static SolveStrategy defaultMatrixSolveStrategy = SolveStrategy.DEFAULT;
-        private static MatrixFactory defaultMatrixFactory = SmartMatrixFactory.INSTANCE;
-        private static CacheMode persistenceCacheMode = CacheMode.ENABLED;
-        private static boolean cacheEnabled = true;
-        private static boolean expressionWriterCacheEnabled = true;
-        private static boolean cacheExpressionPropertiesEnabled = true;
-        private static boolean cacheExpressionPropertiesEnabledEff = true;
-        private static boolean developmentMode = false;
-        private static boolean compressCache = true;
-        private static String rootCachePath = defaultRootCachePath;
-        private static String appCacheName = "default";
-        //        private static String largeMatrixCachePath = "${cache.folder}/large-matrix";
-        //    public static final ScalarProduct NUMERIC_SIMP_SCALAR_PRODUCT = new NumericSimplifierScalarProduct();
-        private static ScalarProductOperator defaultScalarProductOperator = null;
-        private static IntegrationOperator defaultIntegrationOperator = null;
-        private static FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
-        private static Map<ClassPair, Converter> converters = new HashMap<>();
-        private static Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
-
-        private static PropertyChangeSupport pcs = new PropertyChangeSupport(Config.class);
-        private static DoubleFormatter defaultDblFormat = new DoubleFormatter() {
-            @Override
-            public String formatDouble(double value) {
-                return String.valueOf(value);
-            }
-        };
-        private static DoubleFormatter percentFormatter = new DoubleFormatter() {
-            private final DecimalFormat d = new DecimalFormat("0.00%");
-
-            @Override
-            public String formatDouble(double value) {
-                return d.format(value);
-            }
-        };
-
-        static {
-            registerConverter(Double.class, Complex.class, DOUBLE_TO_COMPLEX);
-            registerConverter(Complex.class, Double.class, COMPLEX_TO_DOUBLE);
-            registerConverter(Double.class, TVector.class, DOUBLE_TO_TVECTOR);
-            registerConverter(TVector.class, Double.class, TVECTOR_TO_DOUBLE);
-            registerConverter(Double.class, Expr.class, DOUBLE_TO_EXPR);
-            registerConverter(Expr.class, Double.class, EXPR_TO_DOUBLE);
-
-            registerConverter(Complex.class, TVector.class, COMPLEX_TO_TVECTOR);
-            registerConverter(TVector.class, Complex.class, TVECTOR_TO_COMPLEX);
-            registerConverter(Complex.class, Expr.class, COMPLEX_TO_EXPR);
-            registerConverter(Expr.class, Complex.class, EXPR_TO_COMPLEX);
-        }
-
-        public static boolean isCompressCache() {
-            return compressCache;
-        }
-
-        public static void setCompressCache(boolean compressCache) {
-            Config.compressCache = compressCache;
-        }
-
-        public static boolean memoryCanStores(long bytesToStore) {
-            float maxMemoryThreshold = getMaxMemoryThreshold();
-            if (maxMemoryThreshold <= 0) {
-                return true;
-            }
-            return (bytesToStore <= (maxFreeMemory() * ((double) maxMemoryThreshold)));
-        }
-
-        public static float getMaxMemoryThreshold() {
-            return maxMemoryThreshold;
-        }
-
-        public static void setMaxMemoryThreshold(float maxMemoryThreshold) {
-            Config.maxMemoryThreshold = maxMemoryThreshold;
-        }
-
-        public static TMatrixFactory getTMatrixFactory(String id) {
-            TMatrixFactory fac = matrixFactories.get(id);
-            if (fac == null) {
-                if (SmartMatrixFactory.INSTANCE.getId().equals(id)) {
-                    registerTMatrixFactory(SmartMatrixFactory.INSTANCE);
-                    return SmartMatrixFactory.INSTANCE;
-                }
-                if (MemMatrixFactory.INSTANCE.getId().equals(id)) {
-                    registerTMatrixFactory(MemMatrixFactory.INSTANCE);
-                    return MemMatrixFactory.INSTANCE;
-                }
-                if (OjalgoMatrixFactory.INSTANCE.getId().equals(id)) {
-                    registerTMatrixFactory(OjalgoMatrixFactory.INSTANCE);
-                    return OjalgoMatrixFactory.INSTANCE;
-                }
-                if (JBlasMatrixFactory.INSTANCE.getId().equals(id)) {
-                    registerTMatrixFactory(JBlasMatrixFactory.INSTANCE);
-                    return JBlasMatrixFactory.INSTANCE;
-                }
-                String id1 = DBLargeMatrixFactory.createId(id);
-                if (id1 != null) {
-                    DBLargeMatrixFactory dbLargeMatrixFactory = new DBLargeMatrixFactory(id);
-                    registerTMatrixFactory(dbLargeMatrixFactory);
-                    return dbLargeMatrixFactory;
-                }
-                throw new IllegalArgumentException("Factory not Found : " + id);
-            } else {
-                return fac;
-            }
-        }
-
-        public static void registerTMatrixFactory(TMatrixFactory factory) {
-            TMatrixFactory fac = matrixFactories.get(factory.getId());
-            if (fac == null) {
-                matrixFactories.put(factory.getId(), factory);
-            } else {
-                throw new IllegalArgumentException("Already registered");
-            }
-        }
-
-        public static <A, B> void registerConverter(Class<A> a, Class<B> b, Converter<A, B> c) {
-            ClassPair k = new ClassPair(a, b);
-            if (c == null) {
-                converters.remove(k);
-            } else {
-                converters.put(k, c);
-            }
-        }
-
-        public static <A, B> Converter<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
-            ClassPair k = new ClassPair(a, b);
-            return converters.get(k);
-        }
-
-        public static <A, B> Converter<A, B> getConverter(Class<A> a, Class<B> b) {
-            if (a.equals(b)) {
-                return IDENTITY;
-            }
-            Converter converter = getRegisteredConverter(a, b);
-            if (converter == null) {
-                throw new NoSuchElementException("No such element : converter for " + a + " and " + b);
-            }
-            return converter;
-        }
-
-        public static <A, B> Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
-            return getConverter(a.getTypeClass(), b.getTypeClass());
-        }
-
-        public static boolean isDevelopmentMode() {
-            return developmentMode;
-        }
-
-        public static void setDevelopmentMode(boolean developmentMode) {
-            Config.developmentMode = developmentMode;
-        }
-
-        public static FrequencyFormatter getFrequencyFormatter() {
-            return frequencyFormatter;
-        }
-
-        public static void setFrequencyFormatter(FrequencyFormatter frequencyFormatter) {
-            Config.frequencyFormatter = frequencyFormatter;
-        }
-
-        public static BytesSizeFormatter getMemorySizeFormatter() {
-            return memorySizeFormatter;
-        }
-
-        public static void setMemorySizeFormatter(BytesSizeFormatter memorySizeFormatter) {
-            Config.memorySizeFormatter = memorySizeFormatter;
-        }
-
-        public static MetricFormatter getMetricFormatter() {
-            return metricFormatter;
-        }
-
-        public static void setMetricFormatter(MetricFormatter metricFormatter) {
-            Config.metricFormatter = metricFormatter;
-        }
-
-        public static MatrixFactory getDefaultMatrixFactory() {
-            return defaultMatrixFactory;
-        }
-
-        public static void setDefaultMatrixFactory(MatrixFactory defaultMatrixFactory) {
-            Config.defaultMatrixFactory = defaultMatrixFactory;
-        }
-
-        public static <T> TMatrixFactory<T> getDefaultMatrixFactory(TypeReference<T> baseType) {
-            throw new IllegalArgumentException("Not Yet Supported");
-        }
-
-        public static String getRootCachePath(boolean expand) {
-            return expand ? Config.expandPath(rootCachePath) : rootCachePath;
-        }
-
-        public static void setRootCachePath(String rootCachePath) {
-            Config.rootCachePath = rootCachePath;
-        }
-
-        public static String getDefaultCacheFolderName(boolean expand) {
-            return expand ? Config.expandPath(appCacheName) : appCacheName;
-        }
-
-        public static void setAppCacheName(String appCacheName) {
-            Config.appCacheName = appCacheName;
-        }
-
-
-        public static boolean deleteAllCache() {
-            return getCacheFileSystem().get("/").deleteFolderTree(null, FailStrategy.FAIL_SAFE);
-        }
-
-        public static HFileSystem getCacheFileSystem() {
-            return new FolderHFileSystem(new File(getCacheFolder()));
-        }
-
-        public static String getCacheFolder() {
-            return getCacheFolder(null);
-        }
-
-        public static String getCacheFolder(String folder) {
-            String baseCacheFolder = getRootCachePath(true);
-            if (folder == null) {
-                return baseCacheFolder + "/" + getDefaultCacheFolderName(true);
-            } else if (
-                    (!new File(folder).isAbsolute())
-                            && !folder.startsWith("./")
-                            && !folder.startsWith("../")
-                            && !folder.startsWith(".\\")
-                            && !folder.startsWith("..\\")
-                            && !folder.equals(".")
-                            && !folder.equals("..")
-                    ) {//folder.indexOf('/') < 0 && folder.indexOf('\\') < 0
-                return (baseCacheFolder + "/" + folder);
-            } else {
-                return (folder);
-            }
-        }
-
-        public static boolean isExpressionWriterCacheEnabled() {
-            return cacheEnabled && expressionWriterCacheEnabled;
-        }
-
-        public static void setExpressionWriterCacheEnabled(boolean enabled) {
-            boolean old = expressionWriterCacheEnabled;
-            expressionWriterCacheEnabled = enabled;
-            pcs.firePropertyChange("expressionWriterCacheEnabled", old, enabled);
-        }
-
-        public static CacheMode getPersistenceCacheMode() {
-            return cacheEnabled ? persistenceCacheMode : CacheMode.DISABLED;
-        }
-
-        public static void setPersistenceCacheMode(CacheMode persistenceCacheMode) {
-            if (persistenceCacheMode == null) {
-                persistenceCacheMode = CacheMode.DISABLED;
-            }
-            switch (persistenceCacheMode) {
-                case INHERITED: {
-                    persistenceCacheMode = CacheMode.ENABLED;
-                    break;
-                }
-            }
-            Config.persistenceCacheMode = persistenceCacheMode;
-
-        }
-
-        public static ExpressionRewriter getScalarProductSimplifier() {
-            return getScalarProductOperator().getExpressionRewriter();
-        }
-
-        public static ExpressionRewriter getIntegrationSimplifier() {
-            return getIntegrationOperator().getExpressionRewriter();
-        }
-
-        public static ExpressionRewriter getComputationSimplifier() {
-            return ExpressionRewriterFactory.getComputationSimplifier();
-        }
-
-
-        public static void addConfigChangeListener(PropertyChangeListener listener) {
-            pcs.addPropertyChangeListener(listener);
-        }
-
-        public static void addConfigChangeListener(String property, PropertyChangeListener listener) {
-            pcs.addPropertyChangeListener(property, listener);
-        }
-
-        public static void removeConfigChangeListener(PropertyChangeListener listener) {
-            pcs.removePropertyChangeListener(listener);
-        }
-
-        public static void removeConfigChangeListener(String property, PropertyChangeListener listener) {
-            pcs.removePropertyChangeListener(property, listener);
-        }
-
-        public static boolean isCacheEnabled() {
-            return cacheEnabled;
-        }
-
-        public static void setCacheEnabled(boolean enabled) {
-            boolean old = cacheEnabled;
-            cacheEnabled = enabled;
-            cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
-            pcs.firePropertyChange("cacheEnabled", old, cacheEnabled);
-        }
-
-        public static boolean isCacheExpressionPropertiesEnabled() {
-            return cacheExpressionPropertiesEnabledEff;
-        }
-
-        public static void setCacheExpressionPropertiesEnabled(boolean cacheExpressionPropertiesEnabled) {
-            boolean old = Config.cacheExpressionPropertiesEnabled;
-            Config.cacheExpressionPropertiesEnabled = cacheExpressionPropertiesEnabled;
-            cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
-            pcs.firePropertyChange("cacheEnabled", old, Config.cacheExpressionPropertiesEnabled);
-        }
-
-        public static void setCacheExpressionRewriterSize(ExpressionRewriter ew, int size) {
-            if (ew instanceof CacheEnabled) {
-                ((CacheEnabled) ew).setCacheSize(size);
-            }
-        }
-
-        public static FunctionDifferentiatorManager getFunctionDerivatorManager() {
-            if (getFunctionDifferentiatorManager() == null) {
-                setFunctionDifferentiatorManager(new FormalDifferentiation());
-            }
-            return getFunctionDifferentiatorManager();
-        }
-
-        public static void setFunctionDerivatorManager(FunctionDifferentiatorManager manager) {
-            setFunctionDifferentiatorManager(manager);
-        }
-
-        public static ScalarProductOperator getScalarProductOperator() {
-            if (defaultScalarProductOperator == null) {
-                defaultScalarProductOperator = ScalarProductOperatorFactory.formal();
-            }
-            return defaultScalarProductOperator;
-        }
-
-        public static void setScalarProductOperator(ScalarProductOperator sp) {
-            defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
-        }
-
-        public static IntegrationOperator getIntegrationOperator() {
-            if (defaultIntegrationOperator == null) {
-                defaultIntegrationOperator = IntegrationOperatorFactory.defaultValue();
-            }
-            return defaultIntegrationOperator;
-        }
-
-        public static void setIntegrationOperator(IntegrationOperator op) {
-            defaultIntegrationOperator = op == null ? IntegrationOperatorFactory.defaultValue() : op;
-        }
-
-
-        public static String getLargeMatrixCachePath(boolean expand) {
-            if (expand) {
-                return Config.expandPath(largeMatrixCachePath);
-            }
-            return largeMatrixCachePath;
-        }
-
-        public static void seLargeMatrixCachePath(String largeMatrixPath) {
-            largeMatrixCachePath = largeMatrixPath;
-        }
-
-        public static MatrixFactory getMatrixFactory() {
-            return defaultMatrixFactory;
-        }
-
-        public static MatrixFactory getLargeMatrixFactory() {
-            if (DEFAULT_LARGE_MATRIX_FACTORY == null) {
-                synchronized (Maths.class) {
-                    if (DEFAULT_LARGE_MATRIX_FACTORY == null) {
-                        LargeMatrixFactory s = (LargeMatrixFactory) getTMatrixFactory(
-                                DBLargeMatrixFactory.createLocalId(Config.getLargeMatrixCachePath(false), true, null)
-                        );
-                        s.setResetOnClose(true);
-                        DEFAULT_LARGE_MATRIX_FACTORY = s;
-                    }
-                }
-            }
-            return DEFAULT_LARGE_MATRIX_FACTORY;
-        }
-
-        public static void setDefaultLargeMatrixFactory(MatrixFactory m) {
-            synchronized (Maths.class) {
-                if (DEFAULT_LARGE_MATRIX_FACTORY != null) {
-                    DEFAULT_LARGE_MATRIX_FACTORY.close();
-                }
-                DEFAULT_LARGE_MATRIX_FACTORY = m;
-            }
-        }
-
-        public static void setLogMonitorLevel(Level level) {
-            Logger logger = LogProgressMonitor.getDefaultLogger();
-            logger.setLevel(level);
-            Handler handler = null;
-            for (Handler h : logger.getHandlers()) {
-                handler = h;
-                h.setLevel(level);
-            }
-            if (handler == null) {
-                handler = new ConsoleHandler();
-                handler.setLevel(level);
-                handler.setFormatter(LogUtils.LOG_FORMATTER_2);
-                logger.addHandler(handler);
-            }
-        }
-
-        public static String expandPath(String format) {
-            if (format == null) {
-                return format;
-            }
-            String s = replaceVars(format);
-            if (format.equals("~")) {
-                return System.getProperty("user.home");
-            }
-            if (format.startsWith("~") && format.length() > 1 && (format.charAt(1) == '/' || format.charAt(1) == '\\')) {
-                return System.getProperty("user.home") + format.substring(1);
-            }
-            if (format.equals("~~")) {
-                return replaceVars(defaultRootCachePath);
-            }
-            if (format.startsWith("~~") && format.length() > 2 && (format.charAt(2) == '/' || format.charAt(2) == '\\')) {
-                return replaceVars(defaultRootCachePath) + format.substring(2);
-            }
-            s = replaceVars(s);
-            return s;
-        }
-
-        public static String replaceVars(String format) {
-            return StringUtils.replaceVars(format, new StringMapper() {
-                @Override
-                public String get(String key) {
-                    String val = System.getProperty(key);
-                    if (val == null) {
-                        switch (key) {
-                            case "cache.root": {
-                                val = getRootCachePath(true);
-                                break;
-                            }
-                            case "cache.folder": {
-                                val = getCacheFolder();
-                                break;
-                            }
-                            case "cache.large-matrix": {
-                                val = getLargeMatrixCachePath(true);
-                                break;
-                            }
-                            default: {
-                                val = "${" + key + "}";
-                            }
-                        }
-                    }
-                    return val;
-                }
-            });
-        }
-
-        public static int getMatrixBlockPrecision() {
-            return matrixBlockPrecision;
-        }
-
-        public static void setMatrixBlockPrecision(int matrixBlockPrecision) {
-            Config.matrixBlockPrecision = matrixBlockPrecision;
-        }
-
-        public static InverseStrategy getDefaultMatrixInverseStrategy() {
-            return defaultMatrixInverseStrategy;
-        }
-
-        public static void setDefaultMatrixInverseStrategy(InverseStrategy defaultMatrixInverseStrategy) {
-            Config.defaultMatrixInverseStrategy = defaultMatrixInverseStrategy;
-        }
-
-        public static SolveStrategy getDefaultMatrixSolveStrategy() {
-            return defaultMatrixSolveStrategy;
-        }
-
-        public static void setDefaultMatrixSolveStrategy(SolveStrategy defaultMatrixSolveStrategy) {
-            Config.defaultMatrixSolveStrategy = defaultMatrixSolveStrategy;
-        }
-
-        public static FunctionDifferentiatorManager getFunctionDifferentiatorManager() {
-            return functionDifferentiatorManager;
-        }
-
-        public static void setFunctionDifferentiatorManager(FunctionDifferentiatorManager functionDifferentiatorManager) {
-            Config.functionDifferentiatorManager = functionDifferentiatorManager;
-        }
-
-        public static int getSimplifierCacheSize() {
-            return simplifierCacheSize;
-        }
-
-        public static void setSimplifierCacheSize(int simplifierCacheSize) {
-            Config.simplifierCacheSize = simplifierCacheSize;
-        }
-
-        public static boolean isDebugExpressionRewrite() {
-            return debugExpressionRewrite;
-        }
-
-        public static void setDebugExpressionRewrite(boolean debugExpressionRewrite) {
-            Config.debugExpressionRewrite = debugExpressionRewrite;
-        }
-
-        public static boolean isStrictComputationMonitor() {
-            return strictComputationMonitor;
-        }
-
-        public static void setStrictComputationMonitor(boolean strictComputationMonitor) {
-            Config.strictComputationMonitor = strictComputationMonitor;
-        }
+        return MathsSampler.refineSamples(values, n);
     }
 
     private static class IdentityConverter implements Converter, Serializable {
@@ -6385,4 +4425,5 @@ public final class Maths {
         }
         return (Expr) evaluated;
     }
+
 }

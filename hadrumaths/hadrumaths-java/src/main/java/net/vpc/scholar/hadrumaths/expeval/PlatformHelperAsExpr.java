@@ -1609,5 +1609,20 @@ public class PlatformHelperAsExpr {
         return DomainExpr.forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
+    public static Expr sqrt(Expr a) {
+        return Maths.sqrt(a);
+    }
+
+    public static Complex sqrt(Complex a) {
+        return Maths.sqrt(a);
+    }
+
+    public static Expr sqr(Expr a) {
+        return Maths.sqr(a);
+    }
+
+    public static Complex sqr(Complex a) {
+        return Maths.sqr(a);
+    }
 
 }

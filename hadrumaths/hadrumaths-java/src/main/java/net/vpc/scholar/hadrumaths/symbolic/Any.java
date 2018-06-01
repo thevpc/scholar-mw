@@ -27,7 +27,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         });
     }
 
-    public Expr object;
+    private Expr object;
     protected String name;
     private Map<String, Object> properties;
 

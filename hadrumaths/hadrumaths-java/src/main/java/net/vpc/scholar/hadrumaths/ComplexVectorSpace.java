@@ -405,4 +405,10 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
         }
         return false;
     }
+
+    @Override
+    public Complex abssqr(Complex a) {
+        return a.abssqr();
+    }
+
 }

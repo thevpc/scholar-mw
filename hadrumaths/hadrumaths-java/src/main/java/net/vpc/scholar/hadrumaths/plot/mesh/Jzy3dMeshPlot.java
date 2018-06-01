@@ -49,7 +49,7 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
 
     @Override
     public JPopupMenu getPopupMenu() {
-        return null;
+        return titleLabel.getComponentPopupMenu();
     }
 
     public Jzy3dMeshPlot(ValuesPlotXYDoubleModelFace model, JColorPalette colorPalette, PlotModelProvider plotModelProvider) {
@@ -59,6 +59,8 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         double[][] z = model.getZ();
 
         titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        JPopupMenu popup = new JPopupMenu();
+        titleLabel.setComponentPopupMenu(popup);
 
         if (colorPalette == null) {
             colorPalette = HSBColorPalette.DEFAULT_PALETTE;

@@ -1,17 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.swings.*;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
-import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
-import net.vpc.scholar.hadrumaths.plot.swings.SerializableActionListener;
-import net.vpc.scholar.hadrumaths.plot.swings.SerializableChangeListener;
-import net.vpc.scholar.hadrumaths.plot.swings.SerializableTableModelListener;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 
 import javax.swing.*;
@@ -75,6 +70,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JTable functionsTable;
     //    private Domain domainXY;
     private Domain domainXY0;
+    private JCheckBox fxRadioButton = new JCheckBox("F(x,y=cst)", true);
+    private JCheckBox fyRadioButton = new JCheckBox("F(x=cst,y)", true);
+
     private JCheckBox fxAxisRadioButton = new JCheckBox("Fx(x,y)", true);
     private JCheckBox fyAxisRadioButton = new JCheckBox("Fy(x,y)", true);
     private JRadioButton cadRealRadioButton = new JRadioButton("Real");
@@ -84,13 +82,15 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JRadioButton cadArgRadioButton = new JRadioButton("Arg");
     private JRadioButton cadComplexRadioButton = new JRadioButton("Complex");
     private JRadioButton cadAbsRadioButton = new JRadioButton("Abs");
-    private JRadioButton fx1DRadioButton = new JRadioButton("Curve F(x,y=cst)");
-    private JRadioButton fy1DRadioButton = new JRadioButton("Curve F(x=cst,y)");
-    private JRadioButton fyPolarRadioButton = new JRadioButton("Polar");
-    private JRadioButton fxy2DRadioButton = new JRadioButton("Surface 2D : F(x,y)");
-    private JRadioButton fxyMatrixRadioButton = new JRadioButton("Colourful Matrix : F(x,y)");
-    private JRadioButton fxy3DRadioButton = new JRadioButton("Mesh 3D : F(x,y)");
-    private JRadioButton tableRadioButton = new JRadioButton("Table");
+
+    private JRadioButton[] plotTypeRadioButton;
+    //    private JRadioButton fx1DRadioButton = new JRadioButton("Curve F(x,y=cst)");
+//    private JRadioButton fy1DRadioButton = new JRadioButton("Curve F(x=cst,y)");
+//    private JRadioButton fyPolarRadioButton = new JRadioButton("Polar");
+//    private JRadioButton fxy2DRadioButton = new JRadioButton("Surface 2D : F(x,y)");
+//    private JRadioButton fxyMatrixRadioButton = new JRadioButton("Colourful Matrix : F(x,y)");
+//    private JRadioButton fxy3DRadioButton = new JRadioButton("Mesh 3D : F(x,y)");
+//    private JRadioButton tableRadioButton = new JRadioButton("Table");
     private Expr[] selectedFunctions = new DoubleToVector[0];
     private int[] selectedFunctionsIndexes = new int[0];
     //    private JComboBox showType = new JComboBox(ShowType.values());
@@ -113,6 +113,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             updatePlotAsynch(true);
         }
     };
+    private boolean disableUpdatePlot = false;
 //    private ActionListener updatePlotActionListener = new ActionListener() {
 //        public void actionPerformed(ActionEvent e) {
 //            updatePlot(false);
@@ -155,7 +156,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
         fxAxisRadioButton.setSelected(false);
         fyAxisRadioButton.setSelected(false);
-
+        ButtonGroup fxyRadioButton = new ButtonGroup();
+        fxyRadioButton.add(fxRadioButton);
+        fxyRadioButton.add(fyRadioButton);
+        fxRadioButton.setSelected(true);
+        fyRadioButton.setSelected(false);
+        fxRadioButton.addItemListener(updatePlotItemListener);
         setComplexAsDouble(ComplexAsDouble.ABS);
         // check domain
 //        try {
@@ -251,7 +257,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
         JTabbedPane config = new JTabbedPane(JTabbedPane.LEFT);
         config.addTab("Functions", p);
-        config.addTab("Layout", createGeneralPane(ShowType.CURVE_FX));
+        config.addTab("Layout", createGeneralPane(PlotType.CURVE));
         config.addTab("Precision", createPrecisionPane());
 //        config.setPreferredSize(new Dimension(100,100));
 
@@ -298,7 +304,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         });
         //setPreferredSize(new Dimension(400, 400));
 //        onYValueChange();
-        updatePlot(true);
         this.add(verticalSlider);
         yValueSliderText.addFocusListener(new FocusAdapter() {
             @Override
@@ -455,7 +460,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             }
         });
 
-        JTableHelper jTableHelper = JTableHelper.prepareIndexedTable(functionsTableModel);
+        JTableHelper jTableHelper = SwingUtilities3.createIndexedTable(functionsTableModel);
         functionsTable = jTableHelper.getTable();
         jTableHelper.getPane().setPreferredSize(new Dimension(200, 50));
 
@@ -473,62 +478,24 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //        return g;
 //    }
 
-    public ShowType getShowType() {
-        if (fx1DRadioButton.isSelected()) {
-            return ShowType.CURVE_FX;
+    public PlotType getShowType() {
+        for (int i = 0; i < plotTypeRadioButton.length; i++) {
+            if (plotTypeRadioButton[i].isSelected()) {
+                return (PlotType) plotTypeRadioButton[i].getClientProperty(PlotType.class.getName());
+            }
         }
-        if (fy1DRadioButton.isSelected()) {
-            return ShowType.CURVE_FY;
-        }
-        if (fyPolarRadioButton.isSelected()) {
-            return ShowType.POLAR;
-        }
-        if (fxy2DRadioButton.isSelected()) {
-            return ShowType.SURFACE_2D;
-        }
-        if (fxyMatrixRadioButton.isSelected()) {
-            return ShowType.MATRIX;
-        }
-        if (fxy3DRadioButton.isSelected()) {
-            return ShowType.MESH;
-        }
-        if (tableRadioButton.isSelected()) {
-            return ShowType.TABLE;
-        }
-        return ShowType.SURFACE_2D;
+        return PlotType.HEATMAP;
     }
 
-    public void setShowType(ShowType showType) {
-        switch (showType) {
-            case CURVE_FX: {
-                fx1DRadioButton.setSelected(true);
-                break;
-            }
-            case CURVE_FY: {
-                fy1DRadioButton.setSelected(true);
-                break;
-            }
-            case SURFACE_2D: {
-                fxy2DRadioButton.setSelected(true);
-                break;
-            }
-            case POLAR: {
-                fyPolarRadioButton.setSelected(true);
-                break;
-            }
-            case MATRIX: {
-                fxyMatrixRadioButton.setSelected(true);
-                break;
-            }
-            case MESH: {
-                fxy3DRadioButton.setSelected(true);
-                break;
-            }
-            case TABLE: {
-                tableRadioButton.setSelected(true);
-                break;
+    public void setPlotType(PlotType showType) {
+        for (int i = 0; i < plotTypeRadioButton.length; i++) {
+            PlotType clientProperty = (PlotType) plotTypeRadioButton[i].getClientProperty(PlotType.class.getName());
+            if (clientProperty == showType) {
+                plotTypeRadioButton[i].setSelected(true);
+                return;
             }
         }
+        plotTypeRadioButton[0].setSelected(true);
     }
 
     private JPanel createPrecisionPane() {
@@ -557,7 +524,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         return south;
     }
 
-    private JPanel createGeneralPane(ShowType showType) {
+    private JPanel createGeneralPane(PlotType showType) {
         updateNow.addActionListener(
                 new SerializableActionListener() {
 
@@ -607,47 +574,42 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 }
         );
         ButtonGroup courbeGroup = new ButtonGroup();
-        fx1DRadioButton.setSelected(true);
-        courbeGroup.add(fx1DRadioButton);
-        fy1DRadioButton.setSelected(false);
-        courbeGroup.add(fy1DRadioButton);
-        fyPolarRadioButton.setSelected(false);
-        courbeGroup.add(fyPolarRadioButton);
-        fxy2DRadioButton.setSelected(false);
-        courbeGroup.add(fxy2DRadioButton);
-        fxyMatrixRadioButton.setSelected(false);
-        courbeGroup.add(fxyMatrixRadioButton);
-        fxy3DRadioButton.setSelected(false);
-        courbeGroup.add(fxy3DRadioButton);
-        tableRadioButton.setSelected(false);
-        courbeGroup.add(tableRadioButton);
+        java.util.List<PlotType> allValue = new ArrayList<>();
+        for (PlotType plotType : PlotType.values()) {
+            if (plotType != PlotType.ALL && plotType != PlotType.AUTO) {
+                allValue.add(plotType);
+            }
+        }
+        plotTypeRadioButton = new JRadioButton[allValue.size()];
+        for (int i = 0; i < plotTypeRadioButton.length; i++) {
+            PlotType tt = allValue.get(i);
+            plotTypeRadioButton[i] = new JRadioButton(tt.name());
+            plotTypeRadioButton[i].putClientProperty(PlotType.class.getName(), tt);
+            plotTypeRadioButton[i].setSelected(i == 0);
+            courbeGroup.add(plotTypeRadioButton[i]);
+            plotTypeRadioButton[i].addItemListener(updatePlotItemListener);
+        }
 
-        JPanel f = new JPanel(new GridBagLayout2(
-                "[A1<+]\n"
-                        + "[A2<+]\n"
-                        + "[A2b<+]\n"
-                        + "[A3<+]\n"
-                        + "[A4<+]\n"
-                        + "[A5<+]\n"
-                        + "[A6<+]\n"
-        ));
-        f.add(fx1DRadioButton, "A1");
-        f.add(fy1DRadioButton, "A2");
-        f.add(fyPolarRadioButton, "A2b");
-        f.add(fxy2DRadioButton, "A3");
-        f.add(fxyMatrixRadioButton, "A4");
-        f.add(fxy3DRadioButton, "A5");
-        f.add(tableRadioButton, "A6");
+        JPanel f0 = new JPanel();
+        f0.setLayout(new BoxLayout(f0, BoxLayout.Y_AXIS));
+        for (int i = 0; i < plotTypeRadioButton.length; i++) {
+            f0.add(plotTypeRadioButton[i]);
+        }
+        JPanel f = new JPanel(new BorderLayout());
         f.setBorder(BorderFactory.createTitledBorder("Plot Type"));
+        f.add(new JScrollPane(f0));
 
-//        fxAxisRadioButton.setSelected(true);
-//        fyAxisRadioButton.setSelected(true);
+
         JPanel xy = new JPanel(new GridBagLayout2(
                 "[A1+<]\n"
                         + "[A2+<]\n"
+                        + "[A3+<]\n"
+                        + "[A4+<]\n"
         ));
-        xy.add(fxAxisRadioButton, "A1");
-        xy.add(fyAxisRadioButton, "A2");
+        xy.add(fxRadioButton, "A1");
+        xy.add(fyRadioButton, "A2");
+        xy.add(fxAxisRadioButton, "A3");
+        xy.add(fyAxisRadioButton, "A4");
         xy.setBorder(BorderFactory.createTitledBorder("Components"));
 
         JPanel cad = new JPanel(new GridBagLayout2(
@@ -682,13 +644,13 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         all.add(f, "A1");
         all.add(xy, "A2");
         all.add(cad, "A3");
-        setShowType(showType);
-        fx1DRadioButton.addItemListener(updatePlotItemListener);
-        fy1DRadioButton.addItemListener(updatePlotItemListener);
-        fyPolarRadioButton.addItemListener(updatePlotItemListener);
-        fxy2DRadioButton.addItemListener(updatePlotItemListener);
-        fxy3DRadioButton.addItemListener(updatePlotItemListener);
-        tableRadioButton.addItemListener(updatePlotItemListener);
+        setPlotType(showType);
+//        fx1DRadioButton.addItemListener(updatePlotItemListener);
+//        fy1DRadioButton.addItemListener(updatePlotItemListener);
+//        fyPolarRadioButton.addItemListener(updatePlotItemListener);
+//        fxy2DRadioButton.addItemListener(updatePlotItemListener);
+//        fxy3DRadioButton.addItemListener(updatePlotItemListener);
+//        tableRadioButton.addItemListener(updatePlotItemListener);
         fxAxisRadioButton.addItemListener(updatePlotItemListener);
         fyAxisRadioButton.addItemListener(updatePlotItemListener);
 
@@ -788,7 +750,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             Domain d = Domain.EMPTYX;
             Domain m = Domain.EMPTYX;
             for (Expr function : this.model.getExpressions()) {
-//                for (CellPosition i : getAxis()) {
                 DoubleToMatrix ddf = function.toDM();
                 Domain dd = ddf.getDomain();
                 if (dd.isInfinite() && (ddf.isZero() || dd.isNaN())) {
@@ -796,7 +757,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 } else {
                     m = m.expand(dd);
                 }
-//                }
             }
             for (Expr function : this.model.getExpressions()) {
                 for (CellPosition i : getAxis()) {
@@ -1000,6 +960,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public void updatePlot(final boolean alwaysUpdate) {
+        if (disableUpdatePlot) {
+            return;
+        }
         if (isUpdating) {
             again = true;
             return;
@@ -1027,85 +990,50 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             updateNow.setEnabled(false);
             domainXY0 = null;
             switch (getShowType()) {
-                case CURVE_FX: {
-                    xValueSliderText.setVisible(false);
-                    xValueTitleLabel.setVisible(false);
-                    xValueSlider.setVisible(false);
-                    yValueSliderText.setVisible(true);
-                    yValueTitleLabel.setVisible(true);
-                    yValueSlider.setVisible(true);
+                case ALL:
+                case AUTO:
+                case CURVE:
+                case POLAR:
+                case BUBBLE:
+                case FIELD:
+                case PIE:
+                case BAR:
+                case RING:
+                case AREA: {
+                    setXValueEditable(fyRadioButton.isSelected());
+                    setYValueEditable(fxRadioButton.isSelected());
                     if (alwaysUpdate || autoUpdate.isSelected()) {
-                        updatePlotCurveFxAsync();
+                        updatePlotCurveFxOrFyAsync(getShowType());
                     }
                     break;
                 }
-                case CURVE_FY: {
-                    xValueSliderText.setVisible(true);
-                    xValueTitleLabel.setVisible(true);
-                    xValueSlider.setVisible(true);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
-                    if (alwaysUpdate || autoUpdate.isSelected()) {
-                        updatePlotCurveFyAsync();
-                    }
-                    break;
-                }
-                case POLAR: {
-                    xValueSliderText.setVisible(true);
-                    xValueTitleLabel.setVisible(true);
-                    xValueSlider.setVisible(true);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
-                    if (alwaysUpdate || autoUpdate.isSelected()) {
-                        updatePlotPolarAsync();
-                    }
-                    break;
-                }
-                case SURFACE_2D: {
-                    xValueSliderText.setVisible(false);
-                    xValueTitleLabel.setVisible(false);
-                    xValueSlider.setVisible(false);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
+                case HEATMAP: {
+                    setXValueEditable(false);
+                    setYValueEditable(false);
                     if (alwaysUpdate || autoUpdate.isSelected()) {
                         updatePlotSurfaceAsynch();
                     }
                     break;
                 }
                 case MATRIX: {
-                    xValueSliderText.setVisible(false);
-                    xValueTitleLabel.setVisible(false);
-                    xValueSlider.setVisible(false);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
+                    setXValueEditable(false);
+                    setYValueEditable(false);
                     if (alwaysUpdate || autoUpdate.isSelected()) {
                         updatePlotMatrixAsynch();
                     }
                     break;
                 }
                 case TABLE: {
-                    xValueSliderText.setVisible(false);
-                    xValueTitleLabel.setVisible(false);
-                    xValueSlider.setVisible(false);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
+                    setXValueEditable(false);
+                    setYValueEditable(false);
                     if (alwaysUpdate || autoUpdate.isSelected()) {
                         updatePlotTableAsynch();
                     }
                     break;
                 }
                 case MESH: {
-                    xValueSliderText.setVisible(false);
-                    xValueTitleLabel.setVisible(false);
-                    xValueSlider.setVisible(false);
-                    yValueSliderText.setVisible(false);
-                    yValueTitleLabel.setVisible(false);
-                    yValueSlider.setVisible(false);
+                    setXValueEditable(false);
+                    setYValueEditable(false);
                     if (alwaysUpdate || autoUpdate.isSelected()) {
                         updatePlotMeshAsynch();
                     }
@@ -1116,6 +1044,18 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             updatingProgressBar.setIndeterminate(false);
             updateNow.setEnabled(true);
         }
+    }
+
+    public void setXValueEditable(boolean value) {
+        xValueSliderText.setVisible(value);
+        xValueTitleLabel.setVisible(value);
+        xValueSlider.setVisible(value);
+    }
+
+    public void setYValueEditable(boolean value) {
+        yValueSliderText.setVisible(value);
+        yValueTitleLabel.setVisible(value);
+        yValueSlider.setVisible(value);
     }
 
     public double[] resolveX() {
@@ -1188,7 +1128,15 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         }
     }
 
-    public void updatePlotCurveFxAsync() {
+    public void updatePlotCurveFxOrFyAsync(PlotType plotType) {
+        if (fxRadioButton.isSelected()) {
+            updatePlotCurveFxAsync(plotType);
+        } else {
+            updatePlotCurveFyAsync(plotType);
+        }
+    }
+
+    public void updatePlotCurveFxAsync(PlotType plotType) {
         mainPanel_removeAll();
         Domain d = getDomainOrNull();
         double[] x = resolveX();
@@ -1226,7 +1174,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             }
 
 
-            PlotBuilder pb = Plot.nodisplay().asCurve().converter(complexValue).title(title.toString()).titles(titles);
+            PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(title.toString()).titles(titles);
             if (this.model.getProperties() != null) {
                 for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
                     pb.param(ee.getKey(), ee.getValue());
@@ -1238,51 +1186,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         mainPanel_invalidate();
     }
 
-    public void updatePlotPolarAsync() {
-        mainPanel_removeAll();
-        double[] x = resolveX();
-        for (CellPosition ax : getAxis()) {
-            ArrayList<Paint> colors = new ArrayList<Paint>();
-            Complex[][] yz;
-            yz = new Complex[selectedFunctions.length][];
-
-            double y = getFunctionYValue();
-            String[] titles = new String[selectedFunctions.length];
-            ComplexAsDouble complexValue = ComplexAsDouble.REAL;
-            HashSet<String> title = new HashSet<String>();
-            for (int i = 0; i < selectedFunctions.length; i++) {
-                titles[i] = getAxisExpression(selectedFunctions[i], ax).getTitle();
-                if (titles[i] == null) {
-                    titles[i] = (String) selectedFunctions[i].getTitle();
-                }
-                if (titles[i] == null) {
-                    titles[i] = String.valueOf(i + 1);
-                }
-                DoubleToComplex f = getAxisExpression(selectedFunctions[i], ax);
-                yz[i] = f.computeComplex(x, new double[]{y})[0];
-                complexValue = getComplexAsDouble();
-                colors.add(DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE[selectedFunctionsIndexes[i] % DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE.length]);
-                String t = selectedFunctions[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
-                if (t == null) {
-                    t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
-                }
-                title.add(t);
-            }
-
-
-            PlotBuilder pb = Plot.nodisplay().asPolar().converter(complexValue).title(title.toString()).titles(titles);
-            if (this.model.getProperties() != null) {
-                for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
-                    pb.param(ee.getKey(), ee.getValue());
-                }
-            }
-            PlotComponent chartPanel = pb.samples(Samples.absolute(x)).plot(yz);
-            mainPanel_add(chartPanel.toComponent());
-        }
-        mainPanel_invalidate();
-    }
-
-    public void updatePlotCurveFyAsync() {
+    public void updatePlotCurveFyAsync(PlotType type) {
         mainPanel_removeAll();
         Domain d = getDomainOrNull();
         double[] y = d == null ? new double[0] : Maths.dtimes(d.ymin(), d.ymax(), yPrecisionSlider.getValue());
@@ -1304,7 +1208,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 title.add(t);
             }
             ComplexAsDouble complexValue = getComplexAsDouble();
-            PlotBuilder pb = Plot.nodisplay().converter(complexValue).title(title.toString()).titles(titles).asCurve();
+            PlotBuilder pb = Plot.nodisplay().converter(complexValue).title(title.toString()).titles(titles).plotType(type);
             if (this.model.getProperties() != null) {
                 for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
                     pb.param(ee.getKey(), ee.getValue());
@@ -1312,24 +1216,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             }
             PlotComponent chartPanel = pb.samples(Samples.absolute(y)).plot(yz);
             mainPanel_add(chartPanel.toComponent());
-
-//        XYSeriesCollection data = new XYSeriesCollection();
-//        for (int i = 0; i < yz.length; i++) {
-//            XYSeries series = new XYSeries(String.valueOf(i + 1));
-//            for (int j = 0; j < x.length; j++) {
-//                series.add(x[j], yz[i][j]);
-//            }
-//            data.addSeries(series);
-//        }
-//
-//        JFreeChart chart = ChartFactory.createXYLineChart(area.getName() + " (OX)", "X", "Y", data, PlotOrientation.VERTICAL, true, true, false);
-//
-//        XYPlot plot = (XYPlot) chart.getPlot();
-//        NumberAxis axis = (NumberAxis) plot.getRangeAxis();
-//        axis.setAutoRangeIncludesZero(false);
-//        axis.setAutoRangeMinimumSize(1.0);
-//        ChartPanel chartPanel = new ChartPanel(chart);
-//        chartPanel.setPreferredSize(new java.awt.Dimension(600, 400));
         }
         mainPanel_invalidate();
     }
@@ -1478,7 +1364,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //    }
     private void mainPanel_add(final Component component) {
         try {
-            SwingUtils.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     mainPanel.add(component);
@@ -1491,10 +1377,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private void mainPanel_removeAll() {
         try {
-            SwingUtils.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
-                    mainPanel.removeAll();
+                    if (mainPanel != null) {
+                        mainPanel.removeAll();
+                    }
                 }
             });
         } catch (Exception ex) {
@@ -1504,11 +1392,13 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private void mainPanel_invalidate() {
         try {
-            SwingUtils.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
-                    mainPanel.invalidate();
-                    mainPanel.validate();
+                    if (mainPanel != null) {
+                        mainPanel.invalidate();
+                        mainPanel.validate();
+                    }
                 }
             });
         } catch (Exception ex) {
@@ -1636,8 +1526,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     @Override
     public void setModel(PlotModel model) {
-        ExpressionsPlotModel m = (ExpressionsPlotModel) model;
-        this.model = m;
+        disableUpdatePlot = true;
+        try {
+            ExpressionsPlotModel m = (ExpressionsPlotModel) model;
+            this.model = m;
 
 //        if (m.getProperties() != null) {
 //            for (Map.Entry<String, Object> e : getProperties().entrySet()) {
@@ -1647,56 +1539,58 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //            }
 //        }
 
-        if (m.getXprec() <= 0) {
-            m.setXprec(100);
-        }
-        if (m.getYprec() <= 0) {
-            m.setYprec(100);
-        }
-        setComplexAsDouble(m.getComplexAsDouble());
+            if (m.getXprec() <= 0) {
+                m.setXprec(100);
+            }
+            if (m.getYprec() <= 0) {
+                m.setYprec(100);
+            }
+            setComplexAsDouble(m.getComplexAsDouble());
 
-        boolean withX = false;
-        boolean withY = false;
-        Expr[] functions = m.getExpressions();
-        if (functions == null) {
-            m.setExpressions(functions = ArrayUtils.EMPTY_EXPR_ARRAY);
+            boolean withX = false;
+            boolean withY = false;
+            Expr[] functions = m.getExpressions();
+            if (functions == null) {
+                m.setExpressions(functions = ArrayUtils.EMPTY_EXPR_ARRAY);
+            }
+            for (Expr ff : functions) {
+                if (!ff.isInvariant(Axis.X)) {
+                    withX = true;
+                }
+                if (!ff.isInvariant(Axis.Y)) {
+                    withY = true;
+                }
+                if (withX && withY) {
+                    break;
+                }
+            }
+            fxAxisRadioButton.setSelected(withX);
+            fyAxisRadioButton.setSelected(withY);
+            fxRadioButton.setSelected(!m.isConstX());
+            fyRadioButton.setSelected(m.isConstX());
+            this.xPrecisionSlider.setModel(new DefaultBoundedRangeModel(m.getXprec(), 0, 1, m.getXprec() * 1000));
+            this.yPrecisionSlider.setModel(new DefaultBoundedRangeModel(m.getYprec(), 0, 1, m.getYprec() * 1000));
+            setXPrecision(m.getXprec(), false);
+            setYPrecision(m.getYprec(), false);
+            Samples samples = m.getSamples();
+            setPlotType(m.getPlotType());
+            functionsTableModel.setExpressions(functions);
+            if (samples != null) {
+                setSamples(samples, true);
+            }
+        } finally {
+            disableUpdatePlot = false;
         }
-        for (Expr ff : functions) {
-            if (!ff.isInvariant(Axis.X)) {
-                withX = true;
-            }
-            if (!ff.isInvariant(Axis.Y)) {
-                withY = true;
-            }
-            if (withX && withY) {
-                break;
-            }
-        }
-        fxAxisRadioButton.setSelected(withX);
-        fyAxisRadioButton.setSelected(withY);
+        updatePlot(true);
 
-        this.xPrecisionSlider.setModel(new DefaultBoundedRangeModel(m.getXprec(), 0, 1, m.getXprec() * 1000));
-        this.yPrecisionSlider.setModel(new DefaultBoundedRangeModel(m.getYprec(), 0, 1, m.getYprec() * 1000));
-        setXPrecision(m.getXprec(), false);
-        setYPrecision(m.getYprec(), false);
-        Samples samples = m.getSamples();
-        setShowType(m.getShowType());
-        functionsTableModel.setExpressions(functions);
-        if (samples != null) {
-            setSamples(samples, true);
-        }
     }
 
-    public enum ShowType {
-
-        CURVE_FX,
-        CURVE_FY,
-        POLAR,
-        SURFACE_2D,
-        MATRIX,
-        MESH,
-        TABLE
-    }
+//    public enum ShowType {
+//
+//        CURVE_FX,
+//        CURVE_FY,
+//        CURVE, BAR, AREA, FIELD, PIE, RING, BUBBLE, MESH, HEATMAP, MATRIX, POLAR, AUTO, TABLE, ALL
+//    }
 
     private class UpdatePlotItemListener implements ItemListener, Serializable {
 

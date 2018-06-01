@@ -11,5 +11,10 @@ public interface Formatter<T> {
 
     void format(StringBuilder sb, T o, FormatParamSet format);
 
-    String format(T o, FormatParamSet format);
+    default String format(T o, FormatParamSet format) {
+        StringBuilder sb = new StringBuilder();
+        format(sb, o, format);
+        return sb.toString();
+    }
+
 }

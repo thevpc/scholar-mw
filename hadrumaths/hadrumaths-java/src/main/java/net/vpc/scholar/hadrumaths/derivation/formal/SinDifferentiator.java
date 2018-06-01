@@ -15,10 +15,11 @@ import net.vpc.scholar.hadrumaths.symbolic.Sin;
 public class SinDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Sin c = (Sin) f;
+        Expr a = c.getArgument();
         return
                 new Mul(
-                        d.derive(f, varIndex),
-                        new Cos(f)
+                        d.derive(a, varIndex),
+                        new Cos(a)
                 );
     }
 }

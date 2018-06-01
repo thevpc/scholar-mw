@@ -42,13 +42,13 @@ public class PlotCanvasBarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
-        if (config.threeD) {
-            return ChartFactory.createBarChart3D(theTitle, theXTitle, theYTitle,
-                    data,
-                    PlotOrientation.VERTICAL,
-                    legend == null ? true : legend,
-                    tooltips == null ? true : tooltips,
-                    false);
+        if (config.threeD.get()) {
+//            return ChartFactory.createBarChart3D(theTitle, theXTitle, theYTitle,
+//                    data,
+//                    PlotOrientation.VERTICAL,
+//                    legend == null ? true : legend,
+//                    tooltips == null ? true : tooltips,
+//                    false);
         }
         return ChartFactory.createBarChart(theTitle, theXTitle, theYTitle,
                 data,

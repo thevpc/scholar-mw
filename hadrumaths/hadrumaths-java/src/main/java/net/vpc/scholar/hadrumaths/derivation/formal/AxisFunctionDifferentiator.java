@@ -16,6 +16,9 @@ public class AxisFunctionDifferentiator implements FunctionDifferentiator {
         AxisFunction c = (AxisFunction) f;
         String functionName = c.getFunctionName();
         if (functionName.equals(varIndex.toString())) {
+            if(c.getDomain().isFull()){
+                return Complex.ONE;
+            }
             return c.getDomain();//Maths.expr(c.getDomain());
         }
         return Complex.ZERO;

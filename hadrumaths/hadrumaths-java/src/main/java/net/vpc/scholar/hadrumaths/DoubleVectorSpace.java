@@ -402,4 +402,9 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
         return false;
     }
 
+    @Override
+    public Double abssqr(Double a) {
+        return a*a;
+    }
+
 }

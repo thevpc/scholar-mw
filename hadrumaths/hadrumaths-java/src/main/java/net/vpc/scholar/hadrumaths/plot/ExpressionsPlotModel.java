@@ -20,7 +20,8 @@ public class ExpressionsPlotModel implements PlotModel {
     private int yprec = -1;
     private ComplexAsDouble complexAsDouble = ComplexAsDouble.ABS;
     private Expr[] expressions = ArrayUtils.EMPTY_EXPR_ARRAY;
-    private ExpressionsPlotPanel.ShowType showType = ExpressionsPlotPanel.ShowType.CURVE_FX;
+    private PlotType plotType = PlotType.CURVE;
+    private boolean constX = false;
     private Map<String, Object> properties;
     private Set<ExternalLibrary> preferredLibraries;
     private CellPosition[] selectedAxis;
@@ -82,6 +83,15 @@ public class ExpressionsPlotModel implements PlotModel {
         return this;
     }
 
+    public boolean isConstX() {
+        return constX;
+    }
+
+    public ExpressionsPlotModel setConstX(boolean constX) {
+        this.constX = constX;
+        return this;
+    }
+
     public Expr[] getExpressions() {
         return expressions;
     }
@@ -91,12 +101,12 @@ public class ExpressionsPlotModel implements PlotModel {
         return this;
     }
 
-    public ExpressionsPlotPanel.ShowType getShowType() {
-        return showType;
+    public PlotType getPlotType() {
+        return plotType;
     }
 
-    public ExpressionsPlotModel setShowType(ExpressionsPlotPanel.ShowType showType) {
-        this.showType = showType;
+    public ExpressionsPlotModel setPlotType(PlotType plotType) {
+        this.plotType = plotType;
         return this;
     }
 

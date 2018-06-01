@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.JListCardPanel;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Plot;
@@ -8,7 +9,6 @@ import net.vpc.scholar.hadrumaths.plot.PlotType;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotModel;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotPanel;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.plot.swings.JListCardPanel;
 
 import javax.swing.*;
 import java.util.Set;

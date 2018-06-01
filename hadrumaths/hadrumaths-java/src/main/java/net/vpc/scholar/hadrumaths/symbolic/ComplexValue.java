@@ -26,6 +26,10 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
         return new ComplexValue(value, domain);
     }
 
+    public static ComplexValue valueOf(double value, Domain domain) {
+        return new ComplexValue(Complex.valueOf(value), domain);
+    }
+
     public ComplexValue(Complex value) {
         this(value, null);
     }

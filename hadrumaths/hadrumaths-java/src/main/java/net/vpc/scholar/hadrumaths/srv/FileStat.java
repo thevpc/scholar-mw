@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.srv;
 import java.io.Serializable;
 
 public class FileStat implements Serializable {
-    byte type;
-    long length;
+    public byte type;
+    public long length;
 
     @Override
     public String toString() {

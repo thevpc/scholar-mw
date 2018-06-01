@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.MinMax;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.CategoryToPieDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -10,7 +11,7 @@ import org.jfree.data.general.PieDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.util.TableOrder;
+//import org.jfree.util.TableOrder;
 
 public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeChart {
     protected ValuesPlotXDoubleModelFace data;
@@ -105,12 +106,12 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
             }
         }
 
-        if (data.size() > config.maxLegendCount && config.showLegend) {
-            config.showLegend = false;
+        if (data.size() > config.maxLegendCount.get() && config.showLegend.get()) {
+            config.showLegend.set(false);
         }
 
 
-        JFreeChart chart = createChart(data.getTitle(), config.showLegend, config.showTooltips);
+        JFreeChart chart = createChart(data.getTitle(), config.showLegend.get(), config.showTooltips.get());
         prepareJFreeChart(chart, x_minmax);
         chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(600, 400));

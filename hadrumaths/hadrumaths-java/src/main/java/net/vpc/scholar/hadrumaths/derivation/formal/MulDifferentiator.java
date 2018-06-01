@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.derivation.formal;
 
+import net.vpc.common.util.CollectionUtils;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
@@ -31,16 +32,17 @@ public class MulDifferentiator implements FunctionDifferentiator {
         if (children.size() == 2) {
             return derive(children.get(0), children.get(1), varIndex, d);
         }
-        List<Expr> a = new ArrayList<Expr>(children);
-        a.remove(a.size() - 1);
+        List<Expr> aL = CollectionUtils.head(children,- 1);
+        Mul a = new Mul(aL);
         Expr b = children.get(children.size() - 1);
-
-        Expr ad = deriveMul(a, varIndex, d);
-        Expr bd = d.derive(b, varIndex);
-        //a,bd
-        List<Expr> a2 = new ArrayList<Expr>(a);
-        a2.add(bd);
-        return new Plus(new Mul(a2.toArray(new Expr[a2.size()])), new Mul(ad, b));
+        return derive(a, b, varIndex, d);
+//
+//        Expr ad = deriveMul(a, varIndex, d);
+//        Expr bd = d.derive(b, varIndex);
+//        //a,bd
+//        List<Expr> a2 = new ArrayList<Expr>(a);
+//        a2.add(bd);
+//        return new Plus(new Mul(a2.toArray(new Expr[a2.size()])), new Mul(ad, b));
     }
 
     public Expr derive(Expr a, Expr b, Axis varIndex, FunctionDifferentiatorManager d) {

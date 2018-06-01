@@ -88,6 +88,10 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     private Expr[] expressions;
     private int domainDim;
 
+    public Mul(List<Expr> list) {
+        this(list.toArray(new Expr[list.size()]));
+    }
+
     public Mul(TVector<Expr> list) {
         this(list.toArray());
     }

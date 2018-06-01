@@ -16,12 +16,13 @@ import net.vpc.scholar.hadrumaths.symbolic.Sqrt;
 public class SqrtDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Sqrt c = (Sqrt) f;
+        Expr a = c.getArgument();
         return
                 new Div(
-                        d.derive(f, varIndex),
+                        d.derive(a, varIndex),
                         new Mul(
                                 Complex.valueOf(2),
-                                new Sqrt(f)
+                                new Sqrt(a)
                         )
                 );
     }

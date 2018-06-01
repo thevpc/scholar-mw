@@ -103,6 +103,16 @@ public class StringUtils {
             return defaultValue;
         }
     }
+    public static double parseDouble(String v1, double defaultValue) {
+        try {
+            if (isEmpty(v1)) {
+                return defaultValue;
+            }
+            return Double.parseDouble(trim(v1));
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
 
     public static boolean isEmpty(String str) {
         if (str == null || str.trim().length() == 0) {
@@ -312,6 +322,88 @@ public class StringUtils {
             sb.append('$');
         }
         return sb.toString();
+    }
+
+//    public static void main(String[] args) {
+//        System.out.println(matchSubstring("toto(est la)ou pas","toto({nom})ou {r}"));
+//    }
+
+    public static String replaceTail(String s,String oldTail,String newTail) {
+        if(s.endsWith(oldTail)){
+            return s.substring(0,s.length()-oldTail.length())+newTail;
+        }
+        throw new IllegalArgumentException("Missing old Tail");
+    }
+    public static String replaceHead(String s,String oldHead,String newHead) {
+        if(s.startsWith(oldHead)){
+            return newHead+s.substring(oldHead.length());
+        }
+        throw new IllegalArgumentException("Missing old Tail");
+    }
+    /**
+     * *
+     * **
+     *
+     * @param pattern containing {1}
+     * @return
+     */
+    public static Map<String,String> matchSubstring(String val,String pattern) {
+        if (pattern == null) {
+            pattern = "";
+        }
+        int i = 0;
+        char[] cc = pattern.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Set<String> ret=new HashSet<>();
+        while (i < cc.length) {
+            char c = cc[i];
+            switch (c) {
+                case '.':
+                case '!':
+                case '$':
+                case '[':
+                case ']':
+                case '(':
+                case ')':
+                case '?':
+                case '^':
+                case '*':
+                case '\\': {
+                    sb.append('\\').append(c);
+                    break;
+                }
+                case '{': {
+                    StringBuilder sb2=new StringBuilder();
+                    i++;
+                    while(i<cc.length && cc[i]!='}'){
+                        sb2.append(cc[i]);
+                        i++;
+                    }
+                    sb.append("(?<").append(sb2).append(">(.*))");
+                    if(ret.contains(sb2.toString())){
+                        throw new IllegalArgumentException("Already declared "+sb2);
+                    }
+                    ret.add(sb2.toString());
+                    break;
+                }
+                default: {
+                    sb.append(c);
+                }
+            }
+            i++;
+        }
+        sb.append("$");
+        sb.insert(0,"^");
+        Pattern p = Pattern.compile(sb.toString());
+        Matcher matcher = p.matcher(val);
+        while (matcher.find()){
+            Map<String,String> ok=new HashMap<>();
+            for (String k : ret) {
+                ok.put(k,matcher.group(k));
+            }
+            return ok;
+        }
+        return null;
     }
 
     private static Pattern pattern = Pattern.compile("\\$\\{(?<key>[^}]*)\\}");

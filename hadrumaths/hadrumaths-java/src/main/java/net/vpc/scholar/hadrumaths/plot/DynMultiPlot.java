@@ -4,8 +4,9 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.swings.JDraggableTabbedPane;
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +40,7 @@ public class DynMultiPlot {
 
         private String title;
         private JFrame frame;
-        private JTabbedPane jtp;
+        private JDraggableTabbedPane jtp;
 
         public DefaultWindowManager(String title) {
             this.title = title;
@@ -60,7 +61,7 @@ public class DynMultiPlot {
         public synchronized JFrame getFrame() {
             if (frame == null) {
                 frame = new JFrame(title);
-                jtp = new JTabbedPane();
+                jtp = new JDraggableTabbedPane();
                 frame.add(jtp);
                 frame.setMinimumSize(new Dimension(600, 400));
                 frame.pack();
@@ -121,7 +122,7 @@ public class DynMultiPlot {
         }
 
         try {
-            SwingUtils.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeAndWait(new Runnable() {
 
                 @Override
                 public void run() {

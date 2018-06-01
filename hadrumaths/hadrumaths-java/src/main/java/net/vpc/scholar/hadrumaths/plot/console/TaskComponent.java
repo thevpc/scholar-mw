@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.GridBagLayout2;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.DatePart;
 import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
 
 import javax.swing.*;
 import java.awt.*;

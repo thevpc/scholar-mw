@@ -1,12 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.*;
 import net.vpc.common.util.Chronometer;
-import net.vpc.scholar.hadrumaths.plot.CardPlotContainer;
-import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.plot.PlotContainer;
-import net.vpc.scholar.hadrumaths.plot.TabbedPlotContainer;
-import net.vpc.scholar.hadrumaths.plot.swings.*;
-import net.vpc.scholar.hadrumaths.plot.swings.FileDrop;
+import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
@@ -34,6 +30,7 @@ public class PlotConsoleFrame extends JFrame {
     JLabel globalLabel;
     JProgressBar globalProgress;
     long globalStartTime;
+    private List<PlotConsoleListener> listeners = new ArrayList<>();
     Map<String, JInternalFrame> userWindows = new HashMap<String, JInternalFrame>();
 
     public PlotConsoleFrame(PlotConsole console, String title) throws HeadlessException {
@@ -43,12 +40,8 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     public void prepare() {
-        try {
-            console.getTaskMonitor().getFrame().setClosed(true);
-            console.getLockMonitor().getFrame().setClosed(true);
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        }
+        console.getTaskMonitor().getFrame().setClosed(true);
+        console.getLockMonitor().getFrame().setClosed(true);
     }
 
     public void setVisible(boolean b) {
@@ -117,6 +110,33 @@ public class PlotConsoleFrame extends JFrame {
 
 //        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
         windowsMenu = new JMenu("Windows");
+//        JMenuItem tile_windows = new JMenuItem("Tile Windows");
+//        tile_windows.setAction();
+        windowsMenu.add(new AbstractPlotAction("Tile Windows") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities3.tileFrames(desktop);
+            }
+        });
+        windowsMenu.add(new AbstractPlotAction("Icon Windows") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities3.iconifyFrames(desktop);
+            }
+        });
+        windowsMenu.add(new AbstractPlotAction("De-Icon Windows") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities3.deiconifyFrames(desktop);
+            }
+        });
+        windowsMenu.add(new AbstractPlotAction("Close Windows") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities3.closeFrames(desktop);
+            }
+        });
+        windowsMenu.addSeparator();
         menubar.add(windowsMenu);
 
 
@@ -212,10 +232,15 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     private void init() {
+        try {
+            setIconImage(new ImageIcon(getClass().getResource("PlotConsole.png")).getImage());
+        }catch (Exception ex){
+            //
+        }
         setLayout(new BorderLayout());
         add(createMenuBar(), BorderLayout.NORTH);
         desktop = new JDesktopPane();
-        new FileDrop(null, desktop, /*dragBorder,*/ new FileDrop.Listener() {
+        SwingUtilities3.addFileDropListener(desktop, /*dragBorder,*/ new FileDropListener() {
             public void filesDropped(java.io.File[] files) {
                 try {
                     console.loadFiles(files);
@@ -273,28 +298,37 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     public JInternalFrame addFrame(FrameInfo frame) {
-        JInternalFrame f = new JInternalFrame(frame.getTitle(), frame.isResizable(), frame.isClosable(), frame.isMaximizable(), frame.isIconifiable());
+        JInternalFrame ff = new JInternalFrame(frame.getTitle(), frame.isResizable(), frame.isClosable(), frame.isMaximizable(), frame.isIconifiable());
+        JInternalFrameHelper f=new JInternalFrameHelper(ff);
         Component c = frame.getComponent();
         if (c == null) {
             c = new JLabel("...");
         }
-        f.add(c);
+        f.getFrame().add(c);
         Dimension ps = frame.getPreferredSize();
         if (ps != null) {
             f.setPreferredSize(ps);
         }
         f.pack();
         f.setVisible(true);
-        try {
-            f.setIcon(frame.isIcon());
-        } catch (PropertyVetoException ee) {
-            ee.printStackTrace();
-        }
-        addFrame(f);
-        return f;
+        f.setIcon(frame.isIcon());
+        addFrame(f.getFrame(), frame);
+        return f.getFrame();
     }
 
-    public void addFrame(JInternalFrame jInternalFrame) {
+
+    public void addPlotConsoleListener(PlotConsoleListener listener) {
+        if (listener != null && !listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removePlotConsoleListener(PlotConsoleListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void addFrame(JInternalFrame jInternalFrame, FrameInfo fino) {
+        jInternalFrame.putClientProperty(FrameInfo.class.getName(), fino);
         JMenuItem windowMenu = createWindowMenu(jInternalFrame);
         windowsMenu.add(windowMenu);
         String title = jInternalFrame.getTitle();
@@ -303,6 +337,13 @@ public class PlotConsoleFrame extends JFrame {
             public void internalFrameClosed(InternalFrameEvent e) {
                 windowsMenu.remove(windowMenu);
                 userWindows.remove(title);
+                JInternalFrame ifr = e.getInternalFrame();
+                FrameInfo fino = (FrameInfo) ifr.getClientProperty(FrameInfo.class.getName());
+                if (fino != null) {
+                    for (PlotConsoleListener listener : listeners) {
+                        listener.onCloseFrame(fino);
+                    }
+                }
             }
         });
         userWindows.put(title, jInternalFrame);
@@ -310,7 +351,7 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     public void addToolsFrame(JInternalFrame jInternalFrame) {
-        addFrame(jInternalFrame);
+        addFrame(jInternalFrame, null);
         toolsWindowsMenu.add(createWindowMenu(jInternalFrame));
     }
 
@@ -320,43 +361,35 @@ public class PlotConsoleFrame extends JFrame {
         i.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JComponent component1 = ((JComponent) e.getSource());
-                JInternalFrame inf = (JInternalFrame) (component1.getClientProperty("JInternalFrame"));
-                try {
-                    if (inf.getParent() == null) {
-                        onAddJInternalFrame(inf);
-                    }
-                    if (inf.isIcon()) {
-                        inf.setIcon(false);
-                    }
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+                JInternalFrameHelper inf = new JInternalFrameHelper((JInternalFrame) (component1.getClientProperty("JInternalFrame")));
+                if (inf.getFrame().getParent() == null) {
+                    onAddJInternalFrame(inf.getFrame());
+                }else {
+                    onPostAddJInternalFrame(inf);
                 }
-                inf.moveToFront();
             }
         });
         return i;
     }
 
+    private void onPostAddJInternalFrame(JInternalFrameHelper h) {
+        h.setVisible(true);
+        h.setIcon(false);
+        h.moveToFront();
+        h.setSelected(true);
+        h.getFrame().requestFocus(true);
+        System.out.println(h.getFrame().getTitle()+" :: "
+                + (h.getFrame().isIcon() ? "icon;" : "")
+                + (h.getFrame().isClosed() ? "closed;" : "")
+                + (h.getFrame().isSelected() ? "selected;" : "")
+                + (h.getFrame().isMaximum() ? "maximum;" : "")
+                + (h.getFrame().isVisible() ? "visible;" : "")
+        );
+    }
     private void onAddJInternalFrame(JInternalFrame inf) {
         //was closed!
         desktop.add(inf);
-        inf.setVisible(true);
-        try {
-            inf.setIcon(false);
-        } catch (PropertyVetoException ee) {
-            ee.printStackTrace();
-        }
-        try {
-            inf.setSelected(true);
-        } catch (PropertyVetoException e) {
-            //e.printStackTrace();
-        }
-        try {
-            inf.setIcon(false);
-        } catch (PropertyVetoException e) {
-            //e.printStackTrace();
-        }
-        inf.moveToFront();
+        onPostAddJInternalFrame(new JInternalFrameHelper(inf));
     }
 
     public void setGlobalInfo(String title, int value) {

@@ -2,12 +2,12 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -1364,7 +1364,20 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     //@Override
-    public DoubleToDouble abs() {
+    public Discrete abs() {
+        Complex[][][] d = new Complex[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = this.values[i][j][k].abs();
+                }
+            }
+        }
+        return Discrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
+    }
+
+    //@Override
+    public DoubleToDouble absdbl() {
         double[][][] d = new double[zcount][ycount][xcount];
         for (int i = 0; i < zcount; i++) {
             for (int j = 0; j < ycount; j++) {
@@ -1374,6 +1387,30 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
             }
         }
         return DDiscrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
+    }
+
+    public DoubleToDouble absdblsqr() {
+        double[][][] d = new double[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = this.values[i][j][k].absdblsqr();
+                }
+            }
+        }
+        return DDiscrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
+    }
+
+    public Discrete abssqr() {
+        Complex[][][] d = new Complex[zcount][ycount][xcount];
+        for (int i = 0; i < zcount; i++) {
+            for (int j = 0; j < ycount; j++) {
+                for (int k = 0; k < xcount; k++) {
+                    d[i][j][k] = Complex.valueOf(this.values[i][j][k].absdblsqr());
+                }
+            }
+        }
+        return Discrete.create(domain, d, x, y, z, dx, dy, dz, this.axis[0], this.axis[1], this.axis[2]);
     }
 
     @Override

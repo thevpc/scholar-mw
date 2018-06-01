@@ -57,6 +57,8 @@ public interface VectorSpace<T> {
 
     double absdbl(T a);
 
+    T abssqr(T a);
+
     T neg(T t);
 
     T conj(T t);

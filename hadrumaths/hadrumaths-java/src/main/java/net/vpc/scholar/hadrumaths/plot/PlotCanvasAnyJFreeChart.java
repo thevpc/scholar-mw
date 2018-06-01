@@ -4,8 +4,10 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
@@ -24,14 +26,16 @@ import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.AreaRenderer;
-import org.jfree.chart.renderer.xy.XYLine3DRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
-import org.jfree.ui.TextAnchor;
+import org.jfree.chart.ui.TextAnchor;
 
 import javax.swing.*;
 import java.awt.*;
+
+//import org.jfree.chart.renderer.xy.XYLine3DRenderer;
+//import org.jfree.ui.TextAnchor;
 
 /**
  * @author vpc
@@ -40,7 +44,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
     public static final Shape[] STANDARD_SERIES_SHAPES = DefaultDrawingSupplier.createStandardSeriesShapes();
     protected PlotModelProvider plotModelProvider;
     protected ChartPanel chartPanel;
-    protected JColorPalette paintArray = Maths.DEFAULT_PALETTE;
+    protected JColorPalette paintArray = Maths.Config.DEFAULT_PALETTE;
     protected PlotConfig config;
 
     public PlotCanvasAnyJFreeChart(PlotModelProvider plotModelProvider) {
@@ -65,7 +69,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         config = (PlotConfig) model.getProperty("config", null);
         config = PlotConfig.copy(config).validate(model.getZ().length);
-        config.defaultXMultiplier = getDefaultXMultiplier();
+        config.defaultXMultiplier.set(getDefaultXMultiplier());
     }
 
     protected abstract int initialIndex(int index);
@@ -92,25 +96,60 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             }
         }
 
+        String s = SimpleDoubleFormatter.INSTANCE.formatDouble(y);
         if (found != null) {
-            plot.removeAnnotation(found);
+            if(custom){
+                s=found.getText();
+                plot.removeAnnotation(found);
+            }else {
+                plot.removeAnnotation(found);
+                return;
+            }
         } else {
-            String s = String.valueOf(y);
             if (custom) {
-                s = (String) JOptionPane.showInputDialog(this, "select message text (default is y=" + s + ")\nx=" + x + "\ny=" + y, "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
+                ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
+                String ytitle = model.getYtitle(series);
+                DoubleFormatter xformat = model.getXformat();
+                DoubleFormatter yformat = model.getYformat();
+                String fx=SimpleDoubleFormatter.INSTANCE.formatDouble(x);
+                String fy=SimpleDoubleFormatter.INSTANCE.formatDouble(y);
+                String fX=xformat==null?fx:xformat.formatDouble(x);
+                String fY=yformat==null?fy:yformat.formatDouble(y);
+
+                String xstr = "";
+                if (xformat != null) {
+                    xstr = " =" + fX;
+                }
+                String ystr = "";
+                if (yformat != null) {
+                    ystr = " =" + fY;
+                }
+                s = (String) JOptionPane.showInputDialog(this, "select message text " +
+                                "\ndefault message is y=" + s
+                                + "\nSerie=" + ytitle
+                                + "\nx=" + fx + xstr
+                                + "\ny=" + fy + ystr
+                                + "\nyou can use $x, $X, $y, $Y, $s and $S vars"
+                        , "Add Annotation", JOptionPane.QUESTION_MESSAGE, null, null, s);
                 if (s == null) {
                     return;
                 }
+                s=s.replace("$x",(fx));
+                s=s.replace("$X",(fX));
+                s=s.replace("$y",(fy));
+                s=s.replace("$Y",(fY));
+                s=s.replace("$s",String.valueOf(series));
+                s=s.replace("$S",ytitle);
             }
 
-            XYPointerAnnotation annotation = new XYPointerAnnotation(s, x, y, 2 * Maths.PI / 32 * Maths.randomInt(32));
-            annotation.setTipRadius(0.0D);
-            annotation.setBaseRadius(35.0D);
-            annotation.setFont(new Font("SansSerif", 0, 9));
-            annotation.setPaint(Color.blue);
-            annotation.setTextAnchor(TextAnchor.HALF_ASCENT_RIGHT);
-            plot.addAnnotation(annotation);
         }
+        XYPointerAnnotation annotation = new XYPointerAnnotation(s, x, y, 2 * Maths.PI / 32 * Maths.randomInt(32));
+        annotation.setTipRadius(0.0D);
+        annotation.setBaseRadius(35.0D);
+        annotation.setFont(new Font("SansSerif", 0, 9));
+        annotation.setPaint(Color.blue);
+        annotation.setTextAnchor(TextAnchor.HALF_ASCENT_RIGHT);
+        plot.addAnnotation(annotation);
     }
 
     protected void onUserAnnotationCategory(ChartMouseEvent event, CategoryPlot plot, CategoryItemEntity entity, boolean custom) {
@@ -254,21 +293,39 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 break;
             }
         }
-        if (config.nodeLabel) {
+        if (r == null) {
+            r = new AreaRenderer() {
+                @Override
+                public Paint getItemPaint(int row, int column) {
+                    Paint paint = lookupSeriesPaint(row);
+                    if (paint instanceof Color) {
+                        Color c = (Color) paint;
+                        return new Color(
+                                c.getRed(),
+                                c.getGreen(),
+                                c.getBlue(),
+                                127
+                        );
+                    }
+                    return paint;
+                }
+            };
+        }
+        if (config.nodeLabel.get()) {
 //            localXYStepRenderer.setSeriesStroke(0, new BasicStroke(2.0F));
 //            localXYStepRenderer.setSeriesStroke(1, new BasicStroke(2.0F));
-            r.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator());
+            r.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
 //            localXYStepRenderer.setDefaultEntityRadius(6);
-            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-            r.setBaseItemLabelsVisible(true);
-            r.setBaseItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
+            r.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+            r.setDefaultItemLabelsVisible(true);
+            r.setDefaultItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
         }
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
             int i = initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
-            if (config.alternateColor) {
+            if (config.alternateColor.get()) {
                 color = lineConfig.color;
                 if (color == null) {
                     color = paintArray.getColor(i * 1.0f / dataSize());
@@ -285,17 +342,17 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             r.setSeriesPaint(jfreeChartIndex, color);
 
             Integer nodeType = null;
-            if (config.alternateNode) {
-                nodeType = lineConfig.nodeType;
+            if (config.alternateNode.get()) {
+                nodeType = lineConfig.nodeType.get();
                 if (nodeType == null) {
                     nodeType = -1; //zero will alternate
                 } else {
                     nodeType = nodeType;
                 }
             } else {
-                nodeType = lineConfig.nodeType;
+                nodeType = lineConfig.nodeType.get();
                 if (nodeType == null) {
-                    nodeType = config.nodeType;
+                    nodeType = config.nodeType.get();
                 }
                 if (nodeType == null) {
                     nodeType = 0;
@@ -308,35 +365,23 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             } else {
                 switch (Math.abs(nodeType) % 3) {
                     case 0: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = false;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = true;
-                        }
+                        lineConfig.shapesVisible.setIfNull(false);
+                        lineConfig.shapesFilled.setIfNull(true);
                         //leave defaults
 //                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
 //                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
                         break;
                     }
                     case 1: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = true;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = false;
-                        }
+                        lineConfig.shapesVisible.setIfNull(true);
+                        lineConfig.shapesFilled.setIfNull(false);
 //                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
 //                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
                         break;
                     }
                     case 2: {
-                        if (lineConfig.shapesVisible == null) {
-                            lineConfig.shapesVisible = true;
-                        }
-                        if (lineConfig.shapesFilled == null) {
-                            lineConfig.shapesFilled = true;
-                        }
+                        lineConfig.shapesVisible.setIfNull(true);
+                        lineConfig.shapesFilled.setIfNull(true);
 //                        r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesFilled);
 //                        r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesVisible);
                         break;
@@ -344,23 +389,21 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 }
             }
             Integer lineType = null;
-            if (config.alternateLine) {
-                lineType = lineConfig.lineType;
+            if (config.alternateLine.get()) {
+                lineType = lineConfig.lineType.get();
                 if (lineType == null) {
                     lineType = i;
                 }
             } else {
-                lineType = lineConfig.lineType;
+                lineType = lineConfig.lineType.get();
                 if (lineType == null) {
-                    lineType = config.lineType;
+                    lineType = config.lineType.get();
                 }
                 if (lineType == null) {
                     lineType = 0;
                 }
             }
-            if (lineConfig.lineVisible == null) {
-                lineConfig.lineVisible = true;
-            }
+            lineConfig.lineVisible.setIfNull(true);
 //            r.setSeriesLinesVisible(jfreeChartIndex, lineConfig.lineVisible);
 
             switch (Math.abs(lineType) % 11) {
@@ -461,29 +504,32 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 break;
             }
             case DEFAULT: {
-                if (config.threeD) {
-                    r = new XYLine3DRenderer();
+                if (config.threeD.get()) {
+                    r = new XYLineAndShapeRenderer();//XYLine3DRenderer();
                 } else {
                     r = new XYLineAndShapeRenderer();
                 }
                 break;
             }
         }
-        if (config.nodeLabel) {
+        if (r == null) {
+            r = new XYLineAndShapeRenderer();
+        }
+        if (config.nodeLabel.get()) {
 //            localXYStepRenderer.setSeriesStroke(0, new BasicStroke(2.0F));
 //            localXYStepRenderer.setSeriesStroke(1, new BasicStroke(2.0F));
-            r.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
+            r.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
 //            localXYStepRenderer.setDefaultEntityRadius(6);
-            r.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
-            r.setBaseItemLabelsVisible(true);
-            r.setBaseItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
+            r.setDefaultItemLabelGenerator(new StandardXYItemLabelGenerator());
+            r.setDefaultItemLabelsVisible(true);
+            r.setDefaultItemLabelFont(new Font("Dialog", Font.PLAIN, 8));
         }
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
             int i = initialIndex(ii);
             PlotConfig lineConfig = config.children.get(i);
             Color color = null;
-            if (config.alternateColor) {
+            if (config.alternateColor.get()) {
                 color = lineConfig.color;
                 if (color == null) {
                     color = paintArray.getColor(i * 1.0f / dataSize());
@@ -500,61 +546,55 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             r.setSeriesPaint(jfreeChartIndex, color);
 
             Integer nodeType = null;
-            if (config.alternateNode) {
-                nodeType = lineConfig.nodeType;
-                if (nodeType == null) {
+            if (config.alternateNode.get()) {
+                nodeType = lineConfig.nodeType.get();
+                if (nodeType == null || nodeType == 0) {
                     nodeType = -1; //zero will alternate
                 } else {
 //                    nodeType = nodeType;
                 }
             } else {
-                nodeType = lineConfig.nodeType;
-                if (nodeType == null) {
-                    nodeType = config.nodeType;
-                    if (nodeType == null) {
+                nodeType = lineConfig.nodeType.get();
+                if (nodeType == null || nodeType == 0) {
+                    nodeType = config.nodeType.get();
+                    if (nodeType == null || nodeType == 0) {
                         nodeType = 0;
                     }
                 } else {
-                    nodeType = nodeType + 1;
+                    nodeType = nodeType;// + 1;
                 }
             }
-            if (nodeType == -1) {
+            if (nodeType <= -1) {
                 //will alternate by default
             } else {
                 if (nodeType == 0) {
                     r.setSeriesShapesFilled(jfreeChartIndex, false);
                     r.setSeriesShapesVisible(jfreeChartIndex, false);
                 } else {
-                    if (lineConfig.shapesVisible == null) {
-                        lineConfig.shapesVisible = true;
-                    }
-                    if (lineConfig.shapesFilled == null) {
-                        lineConfig.shapesFilled = true;
-                    }
-                    r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled);
-                    r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible);
-                    r.setSeriesShape(jfreeChartIndex, STANDARD_SERIES_SHAPES[(nodeType - 1) % STANDARD_SERIES_SHAPES.length]);
+                    lineConfig.shapesVisible.setIfNull(true);
+                    lineConfig.shapesFilled.setIfNull(true);
+                    r.setSeriesShapesFilled(jfreeChartIndex, lineConfig.shapesFilled.get());
+                    r.setSeriesShapesVisible(jfreeChartIndex, lineConfig.shapesVisible.get());
+                    r.setSeriesShape(jfreeChartIndex, STANDARD_SERIES_SHAPES[Math.abs(nodeType - 1) % STANDARD_SERIES_SHAPES.length]);
                 }
             }
             Integer lineType = null;
-            if (config.alternateLine) {
-                lineType = lineConfig.lineType;
+            if (config.alternateLine.get()) {
+                lineType = lineConfig.lineType.get();
                 if (lineType == null) {
                     lineType = i;
                 }
             } else {
-                lineType = lineConfig.lineType;
+                lineType = lineConfig.lineType.get();
                 if (lineType == null) {
-                    lineType = config.lineType;
+                    lineType = config.lineType.get();
                 }
                 if (lineType == null) {
                     lineType = 0;
                 }
             }
-            if (lineConfig.lineVisible == null) {
-                lineConfig.lineVisible = true;
-            }
-            r.setSeriesLinesVisible(jfreeChartIndex, lineConfig.lineVisible);
+            lineConfig.lineVisible.setIfNull(true);
+            r.setSeriesLinesVisible(jfreeChartIndex, lineConfig.lineVisible.get());
 
             switch (Math.abs(lineType) % 11) {
                 case 0: {

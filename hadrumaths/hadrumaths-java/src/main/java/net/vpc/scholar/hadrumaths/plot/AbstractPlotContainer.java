@@ -5,8 +5,8 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.util.StringUtils;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -127,7 +127,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
 
     @Override
     public void remove(final PlotComponent component) {
-        SwingUtils.invokeAndWait(new Runnable() {
+        SwingUtilities3.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 if (component.getParentPlotContainer() == AbstractPlotContainer.this) {
@@ -154,7 +154,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
 
     public void add(final PlotComponent component) {
         prepare(component);
-        SwingUtils.invokeAndWait(new Runnable() {
+        SwingUtilities3.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 addComponentImpl(component, -1);
@@ -280,7 +280,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
             oldComponent = getPlotComponent(index);
         }
         prepare(container);
-        SwingUtils.invokeAndWait(new Runnable() {
+        SwingUtilities3.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 addComponentImpl(container, index);

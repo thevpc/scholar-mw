@@ -107,6 +107,50 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
 
+//    @Override
+    public VDiscrete abssqr() {
+        switch (componentDimension.rows) {
+            case 1: {
+                return new VDiscrete(values[0].abssqr());
+            }
+            case 2: {
+                return new VDiscrete(values[0].abssqr(), values[1].abssqr());
+            }
+            case 3: {
+                return new VDiscrete(values[0].abssqr(), values[1].abssqr(), values[2].abssqr());
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+    public VDiscrete sqr() {
+        switch (componentDimension.rows) {
+            case 1: {
+                return new VDiscrete(values[0].sqr());
+            }
+            case 2: {
+                return new VDiscrete(values[0].sqr(), values[1].sqr());
+            }
+            case 3: {
+                return new VDiscrete(values[0].sqr(), values[1].sqr(), values[2].sqr());
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+    public VDiscrete sqrt() {
+        switch (componentDimension.rows) {
+            case 1: {
+                return new VDiscrete(values[0].sqrt());
+            }
+            case 2: {
+                return new VDiscrete(values[0].sqrt(), values[1].sqrt());
+            }
+            case 3: {
+                return new VDiscrete(values[0].sqrt(), values[1].sqrt(), values[2].sqrt());
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
     public VDiscrete rot() {
         switch (componentDimension.rows) {
             case 3: {
@@ -271,13 +315,13 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     public Complex sum() {
         switch (componentDimension.rows) {
             case 1: {
-                values[Axis.X.ordinal()].sum();
+                return values[Axis.X.ordinal()].sum();
             }
             case 2: {
-                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum());
+                return values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum());
             }
             case 3: {
-                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum());
+                return values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum());
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
@@ -287,13 +331,45 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         int cc = getCountX() * getCountY() * getCountZ();
         switch (componentDimension.rows) {
             case 1: {
-                values[Axis.X.ordinal()].avg();
+                return values[Axis.X.ordinal()].avg();
             }
             case 2: {
-                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).div(cc);
+                return values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).div(cc);
             }
             case 3: {
-                values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum()).div(cc);
+                return values[Axis.X.ordinal()].sum().add(values[Axis.Y.ordinal()].sum()).add(values[Axis.Z.ordinal()].sum()).div(cc);
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
+    public DoubleToVector vavg() {
+        int cc = getCountX() * getCountY() * getCountZ();
+        switch (componentDimension.rows) {
+            case 1: {
+                return Maths.vector(values[Axis.X.ordinal()].avg());
+            }
+            case 2: {
+                return Maths.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg());
+            }
+            case 3: {
+                return Maths.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg(), values[Axis.Z.ordinal()].avg());
+            }
+        }
+        throw new UnsupportedComponentDimensionException(componentDimension.rows);
+    }
+
+    public DoubleToVector vsum() {
+        int cc = getCountX() * getCountY() * getCountZ();
+        switch (componentDimension.rows) {
+            case 1: {
+                Maths.vector(values[Axis.X.ordinal()].sum());
+            }
+            case 2: {
+                Maths.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum());
+            }
+            case 3: {
+                Maths.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum(), values[Axis.Z.ordinal()].sum());
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);

@@ -10,6 +10,7 @@ public class FSConstants {
         STAT,
         GET,
         LIST,
+        PING,
     }
 
     ;

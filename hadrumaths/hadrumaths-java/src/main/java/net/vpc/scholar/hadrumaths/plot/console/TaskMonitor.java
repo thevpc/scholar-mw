@@ -1,9 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.swings.JInternalFrameHelper;
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.util.log.TLogProgressMonitor;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,8 +54,8 @@ public class TaskMonitor extends JPanel implements ActionListener {
         decrementButton.addActionListener(this);
     }
 
-    public JInternalFrame getFrame() {
-        return frame;
+    public JInternalFrameHelper getFrame() {
+        return new JInternalFrameHelper(frame);
     }
 
     public void setFrame(JInternalFrame frame) {
@@ -169,7 +170,7 @@ public class TaskMonitor extends JPanel implements ActionListener {
         for (int i = 0; i < tasks.length; i++) {
             TaskComponent t = tasks[i];
             int finalI = i;
-            SwingUtils.invokeLater(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 public void run() {
                     t.ticMonitor(finalI, tasks.length - 1);
                 }

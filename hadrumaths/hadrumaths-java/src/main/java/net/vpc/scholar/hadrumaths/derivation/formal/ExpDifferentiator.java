@@ -14,8 +14,9 @@ import net.vpc.scholar.hadrumaths.symbolic.Mul;
 public class ExpDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Exp c = (Exp) f;
+        Expr a = c.getArgument();
         return new Mul(
-                d.derive(f, varIndex), c
+                d.derive(a, varIndex), c
         );
     }
 }

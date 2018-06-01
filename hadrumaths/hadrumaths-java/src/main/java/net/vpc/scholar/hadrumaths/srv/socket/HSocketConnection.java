@@ -1,6 +1,7 @@
-package net.vpc.scholar.hadrumaths.srv;
+package net.vpc.scholar.hadrumaths.srv.socket;
 
 import net.vpc.scholar.hadrumaths.RuntimeIOException;
+import net.vpc.scholar.hadrumaths.srv.HadrumathsServices;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -9,14 +10,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class HadrumathsConnection {
+public class HSocketConnection {
     private Socket socket;
     private InetAddress address;
     private int port;
     private DataInputStream in;
     private DataOutputStream out;
 
-    public HadrumathsConnection(InetAddress address, int port) {
+    public HSocketConnection(InetAddress address, int port) {
         this.address = address;
         if (port < 0) {
             port = HadrumathsServices.DEFAULT_SOCKET_PORT;
@@ -24,20 +25,20 @@ public class HadrumathsConnection {
         this.port = port;
     }
 
-    boolean isConnected() {
+    public boolean isConnected() {
         if (socket == null) {
             return false;
         }
         return socket.isConnected();
     }
 
-    void reconnectIfNecessary() throws RuntimeIOException {
+    public void reconnectIfNecessary() throws RuntimeIOException {
         if (!isConnected()) {
             reconnect();
         }
     }
 
-    void reconnect() throws RuntimeIOException {
+    public void reconnect() throws RuntimeIOException {
         close();
         connect();
     }
@@ -103,7 +104,7 @@ public class HadrumathsConnection {
         return out;
     }
 
-    public void consumeResponse() throws RuntimeIOException {
+    public void consumeResponseHeader() throws RuntimeIOException {
         byte b = 0;
         try {
             b = in().readByte();

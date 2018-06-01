@@ -5,5 +5,5 @@ package net.vpc.scholar.hadrumaths.util;
  * @creationtime 9 nov. 2006 02:35:04
  */
 public interface StringFilter {
-    public boolean accept(String value);
+    boolean accept(String value);
 }

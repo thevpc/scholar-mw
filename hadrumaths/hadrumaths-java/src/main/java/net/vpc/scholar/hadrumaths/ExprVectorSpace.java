@@ -189,6 +189,24 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
+    public Expr abssqr(Expr a) {
+        if (a.isDouble()) {
+            return Complex.valueOf(Maths.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()));
+        } else if (a.isDoubleExpr()) {
+            return ComplexValue.valueOf(Maths.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()), a.getDomain());
+        } else if (a.isComplex()) {
+            return (a.toComplex().abssqr());
+        } else if (a.isComplexExpr()) {
+            return ComplexValue.valueOf(a.toComplex().abssqr(), a.getDomain());
+        } else if (a instanceof Discrete) {
+            return ((Discrete) a).abssqr();
+        } else if (a instanceof VDiscrete) {
+            return ((VDiscrete) a).abssqr();
+        }
+        throw new IllegalArgumentException("Not Supported Yet");
+    }
+
+    @Override
     public Expr lt(Expr a, Expr b) {
         if (a.isDouble() && b.isDouble()) {
             return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0);
@@ -688,6 +706,12 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         if (e.isComplex()) {
             return (e.toComplex().sqr());
         }
+        if (e instanceof Discrete) {
+            return ((Discrete)e).sqr();
+        }
+        if (e instanceof VDiscrete) {
+            return ((VDiscrete)e).sqr();
+        }
         return new Sqr(e);
     }
 
@@ -701,6 +725,12 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         }
         if (e.isComplex()) {
             return (e.toComplex().sqrt());
+        }
+        if (e instanceof Discrete) {
+            return MathsSampler.sqrt((Discrete) e);
+        }
+        if (e instanceof VDiscrete) {
+            return MathsSampler.sqrt((VDiscrete) e);
         }
         return new Sqrt(e);
     }

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.swings.*;
 import net.vpc.common.util.ClassMap;
 import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
@@ -7,10 +8,6 @@ import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
-import net.vpc.scholar.hadrumaths.plot.swings.ColorChooserEditor;
-import net.vpc.scholar.hadrumaths.plot.swings.GridBagLayout2;
-import net.vpc.scholar.hadrumaths.plot.swings.JTableHelper;
-import net.vpc.scholar.hadrumaths.plot.swings.SwingUtils;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.Converter;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
@@ -243,7 +240,7 @@ public final class Plot {
     public static PlotConsole console() {
         PlotConsole plotConsole = new PlotConsole();
         try {
-            SwingUtils.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                     plotConsole.show();
@@ -562,7 +559,7 @@ public final class Plot {
     public static BufferedImage getImage(PlotModelProvider plotProvider) {
         Component c = plotProvider.getComponent();
         int graphWidth = c.getSize().width;
-        int graphHeight = c.getSize().width;
+        int graphHeight = c.getSize().height;
         if (graphWidth > 0 && graphHeight > 0) {
             BufferedImage bi = new BufferedImage(graphWidth, graphHeight, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = bi.createGraphics();
@@ -971,6 +968,7 @@ public final class Plot {
             });
         }
         componentPopupMenu.addSeparator();
+        componentPopupMenu.add(new CopyImageToClipboardAction(modelProvider));
         componentPopupMenu.add(new SaveJFigAction(modelProvider));
         componentPopupMenu.add(new LoadPlotAction());
         return componentPopupMenu;
@@ -1009,13 +1007,13 @@ public final class Plot {
                 config = new PlotConfig();
                 model.setProperty("config", config);
             }
-            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend == null ? true : config.showLegend);
-            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise == null ? ((polarClockwise == null ? true : polarClockwise.booleanValue())) : config.clockwise);
-            final JCheckBox threeDCheckBox = new JCheckBox("3D", config.threeD == null ? false : config.threeD);
-            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", config.alternateColor == null ? true : config.alternateColor);
-            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", config.alternateLine == null ? false : config.alternateLine);
-            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", config.alternateNode == null ? false : config.alternateNode);
-            final JCheckBox nodeLabelCheckBox = new JCheckBox("Show Labels", config.nodeLabel == null ? false : config.nodeLabel);
+            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend.get(true));
+            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise.get(((polarClockwise == null ? true : polarClockwise.booleanValue()))));
+            final JCheckBox threeDCheckBox = new JCheckBox("3D", config.threeD.get(false));
+            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", config.alternateColor.get(true));
+            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", config.alternateLine.get(false));
+            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", config.alternateNode.get(false));
+            final JCheckBox nodeLabelCheckBox = new JCheckBox("Show Labels", config.nodeLabel.get(false));
             final JSpinner defaultLineType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JSpinner defaultNodeType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JLabel defaultLineTypeLabel = new JLabel("Default Line Type");
@@ -1023,8 +1021,8 @@ public final class Plot {
             final JLabel polarOffsetLabel = new JLabel("Polar Offset");
             final JLabel defaultMaxLegendLabel = new JLabel("Max Legend");
             final JLabel lineStepTypeLabel = new JLabel("Interpolation");
-            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(config.maxLegendCount == null ? Plot.Config.getMaxLegendCount() : config.maxLegendCount));
-            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset == null ? (polarAngleOffset == null ? 0 : polarAngleOffset.doubleValue()) : config.polarAngleOffset));
+            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(config.maxLegendCount.get(Plot.Config.getMaxLegendCount())));
+            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset.get((polarAngleOffset == null ? 0 : polarAngleOffset.doubleValue()))));
             final JComboBox lineStepTypeCombo = new JComboBox(new Vector(Arrays.asList(PlotConfigLineStepType.values())));
             lineStepTypeCombo.setSelectedItem(config.lineStepType == null ? PlotConfigLineStepType.DEFAULT : config.lineStepType);
             defaultLineType.setEnabled(!alternateLineCheckBox.isSelected());
@@ -1041,8 +1039,8 @@ public final class Plot {
             alternateNodeCheckBox.addItemListener(itemListener);
             alternateColorCheckBox.addItemListener(itemListener);
 
-            defaultLineType.setValue(config.lineType == null ? 0 : config.lineType);
-            defaultNodeType.setValue(config.nodeType == null ? 0 : config.nodeType);
+            defaultLineType.setValue(config.lineType.get(0));
+            defaultNodeType.setValue(config.nodeType.get(0));
             general.add(showLegendCheckBox, "showLegend");
             general.add(defaultLineTypeLabel, "defaultLineTypeLabel");
             general.add(defaultNodeTypeLabel, "defaultNodeTypeLabel");
@@ -1065,7 +1063,7 @@ public final class Plot {
             general.add(zeroForDefaultsLabel1, "zeroForDefaultsLabel1");
             general.add(zeroForDefaultsLabel2, "zeroForDefaultsLabel2");
             ModelSeriesItem[] lines = new ModelSeriesItem[ytitles.length];
-            JColorPalette defaultPaintArray = Maths.DEFAULT_PALETTE;
+            JColorPalette defaultPaintArray = Maths.Config.DEFAULT_PALETTE;
             config.ensureChildrenSize(ytitles.length);
             for (int i = 0; i < ytitles.length; i++) {
                 lines[i] = new ModelSeriesItem();
@@ -1078,16 +1076,16 @@ public final class Plot {
                 }
                 lines[i].setColor(col);
                 lines[i].setVisible(model.getYVisible(i));
-                lines[i].setLineType(lineConfig.lineType);
-                lines[i].setNodeType(lineConfig.nodeType);
-                lines[i].setXmultiplier(lineConfig.xmultiplier);
-                lines[i].setYmultiplier(lineConfig.ymultiplier);
+                lines[i].setLineType(lineConfig.lineType.get(0));
+                lines[i].setNodeType(lineConfig.nodeType.get(0));
+                lines[i].setXmultiplier(lineConfig.xmultiplier.get(1));
+                lines[i].setYmultiplier(lineConfig.ymultiplier.get(1));
             }
             jTabbedPane.addTab("General", general);
             ;
 
             ModelSeriesModel seriesModel = new ModelSeriesModel(lines);
-            JTableHelper series = JTableHelper.prepareIndexedTable(seriesModel);
+            JTableHelper series = SwingUtilities3.createIndexedTable(seriesModel);
             JButton cornerButton = new JButton("#");
             JMenuBar b = new JMenuBar();
             JMenu m = new JMenu("#");
@@ -1120,28 +1118,28 @@ public final class Plot {
 
             jTabbedPane.addTab("Series", series.getPane());
 
-            jTabbedPane.addTab("Data", JTableHelper.prepareIndexedTable(tmodel).getPane());
+            jTabbedPane.addTab("Data", SwingUtilities3.createIndexedTable(tmodel).getPane());
             if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null, jTabbedPane, "Configure Series...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-                config.showLegend = showLegendCheckBox.isSelected();
-                config.alternateColor = alternateColorCheckBox.isSelected();
-                config.alternateNode = alternateNodeCheckBox.isSelected();
-                config.alternateLine = alternateLineCheckBox.isSelected();
-                config.threeD = threeDCheckBox.isSelected();
-                config.nodeLabel = nodeLabelCheckBox.isSelected();
-                config.clockwise = clockwiseCheckBox.isSelected();
-                config.polarAngleOffset = StringUtils.parseInt(polarOffsetText.getText(), 0);
-                config.nodeType = ((Number) defaultNodeType.getValue()).intValue();
-                config.lineType = ((Number) defaultLineType.getValue()).intValue();
-                config.maxLegendCount = StringUtils.parseInt(defaultMaxLegendText.getText(), 0);
+                config.showLegend.set(showLegendCheckBox.isSelected());
+                config.alternateColor.set(alternateColorCheckBox.isSelected());
+                config.alternateNode.set(alternateNodeCheckBox.isSelected());
+                config.alternateLine.set(alternateLineCheckBox.isSelected());
+                config.threeD.set(threeDCheckBox.isSelected());
+                config.nodeLabel.set(nodeLabelCheckBox.isSelected());
+                config.clockwise.set(clockwiseCheckBox.isSelected());
+                config.polarAngleOffset.set(StringUtils.parseDouble(polarOffsetText.getText(), 0));
+                config.nodeType.set(((Number) defaultNodeType.getValue()).intValue());
+                config.lineType.set(((Number) defaultLineType.getValue()).intValue());
+                config.maxLegendCount.set(StringUtils.parseInt(defaultMaxLegendText.getText(), 0));
                 config.lineStepType = (PlotConfigLineStepType) lineStepTypeCombo.getSelectedItem();
 
                 for (int i = 0; i < ytitles.length; i++) {
                     model.setYVisible(i, lines[i].isVisible());
                     PlotConfig lineConfig = config.children.get(i);
-                    lineConfig.lineType = lines[i].getLineType();
-                    lineConfig.nodeType = lines[i].getNodeType();
-                    lineConfig.xmultiplier = lines[i].getXmultiplier();
-                    lineConfig.ymultiplier = lines[i].getYmultiplier();
+                    lineConfig.lineType.set(lines[i].getLineType());
+                    lineConfig.nodeType.set(lines[i].getNodeType());
+                    lineConfig.xmultiplier.set(lines[i].getXmultiplier().doubleValue());
+                    lineConfig.ymultiplier.set(lines[i].getYmultiplier().doubleValue());
                     lineConfig.color = lines[i].getColor();
                 }
                 model.modelUpdated();

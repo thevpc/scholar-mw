@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
+import net.vpc.common.swings.SerializableActionListener;
 import net.vpc.scholar.hadrumaths.DMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.HSBColorPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
-import net.vpc.scholar.hadrumaths.plot.swings.SerializableActionListener;
 
 import javax.swing.*;
 import java.awt.*;

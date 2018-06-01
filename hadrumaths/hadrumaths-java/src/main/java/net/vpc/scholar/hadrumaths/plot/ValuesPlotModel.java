@@ -256,6 +256,14 @@ public class ValuesPlotModel implements PlotModel {
         firePropertyChange("z", old, this.z);
     }
 
+    public String getYtitle(int index) {
+        if(ytitles!=null) {
+            if (index >= 0 && index < ytitles.length) {
+                return ytitles[index];
+            }
+        }
+        return null;
+    }
     public String[] getYtitles() {
         return ytitles;
     }
@@ -394,7 +402,7 @@ public class ValuesPlotModel implements PlotModel {
 
     private void firePropertyChange(String name, Object oldValue, Object newValue) {
         if (!Objects.equals(oldValue, newValue)) {
-            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
+//            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
             changeSupport.firePropertyChange(name, oldValue, newValue);
         }
     }
@@ -435,7 +443,7 @@ public class ValuesPlotModel implements PlotModel {
             yvisible[index] = visible;
             changeSupport.firePropertyChange("yvisible", Boolean.FALSE, Boolean.TRUE);
             changeSupport.firePropertyChange("yvisible[" + index + "]", !visible, visible);
-            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
+//            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
         }
     }
 

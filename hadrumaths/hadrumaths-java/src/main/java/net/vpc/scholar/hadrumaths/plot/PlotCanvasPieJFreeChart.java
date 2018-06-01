@@ -9,8 +9,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.MultiplePiePlot;
 import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.util.TableOrder;
+//import org.jfree.util.TableOrder;
 
 import java.awt.*;
 
@@ -99,7 +100,7 @@ public class PlotCanvasPieJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
         CategoryDataset data = createCategoryDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         String theTitle = model.getTitle() == null ? "" : model.getTitle();
-        if (config.threeD) {
+        if (config.threeD.get()) {
             return ChartFactory.createMultiplePieChart3D(theTitle,
                     data,
                     TableOrder.BY_ROW,

@@ -34,7 +34,7 @@ public class FunctionsXYPlotConsoleAction implements ConsoleAction {
     public void execute(PlotConsole plotter) {
         ExpressionsPlotModel m = new ExpressionsPlotModel();
         m.setTitle(title).setDomain(domain).setExpressions(fn)
-                .setShowType(PlotBuilder.toShowType(plotType))
+                .setPlotType(plotType)
                 .setPreferredLibraries(preferredLibraries)
                 .setSelectedAxis(new CellPosition[]{new CellPosition(0, 0)})
         ;
