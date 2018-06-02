@@ -229,7 +229,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                             def0.set(i, j, k, readable.get());
                             readable.reset();
                         } else {
-                            ret1[i][j][k] = 0;
+                            ret1[i][j][k] = Complex.ZERO;
                         }
                     }
                 }
@@ -320,7 +320,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                         def0.set(j, k, readable.get());
                         readable.reset();
                     } else {
-                        ret1[j][k] = 0;
+                        ret1[j][k] = Complex.ZERO;
                     }
                 }
             }
@@ -407,7 +407,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
                     def0.set(k, readable.get());
                     readable.reset();
                 } else {
-                    ret1[k] = 0;
+                    ret1[k] = Complex.ZERO;
                 }
             }
             if (ranges != null) {

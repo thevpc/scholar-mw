@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../scala/test-mw-scala/example-project.iml" filepath="$PROJECT_DIR$/../scala/test-mw-scala/example-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/math.iml" filepath="$PROJECT_DIR$/math.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../scala/math-scala/math-scala.iml" filepath="$PROJECT_DIR$/../scala/math-scala/math-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../scala/test-mw-scala-j/test-mw-scala-j.iml" filepath="$PROJECT_DIR$/../scala/test-mw-scala-j/test-mw-scala-j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tmwlab/tmwlab.iml" filepath="$PROJECT_DIR$/../tmwlab/tmwlab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tmwlib/tmwlib.iml" filepath="$PROJECT_DIR$/../tmwlib/tmwlib.iml" />
+    </modules>
+  </component>
+</project>

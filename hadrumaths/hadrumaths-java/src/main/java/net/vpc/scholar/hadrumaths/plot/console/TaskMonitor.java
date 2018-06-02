@@ -38,10 +38,10 @@ public class TaskMonitor extends JPanel implements ActionListener {
         JToolBar south = new JToolBar(JToolBar.HORIZONTAL);
         south.setFloatable(false);
         this.add(south, BorderLayout.SOUTH);
-        incrementButton = new JButton("+");
-        decrementButton = new JButton("-");
-        incrementButton.setIcon(new ImageIcon(getClass().getResource("MoreTasks.gif")));
-        decrementButton.setIcon(new ImageIcon(getClass().getResource("LessTasks.gif")));
+        incrementButton = new JButton("");
+        decrementButton = new JButton("");
+        incrementButton.setIcon(SwingUtilities3.getScaledIcon(getClass().getResource("Plus.png"),32,32));
+        decrementButton.setIcon(SwingUtilities3.getScaledIcon(getClass().getResource("Minus.png"),32,32));
 
         countField = new JTextField(String.valueOf(parallelTasksCount));
         countField.setEditable(false);

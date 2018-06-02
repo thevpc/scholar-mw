@@ -1529,6 +1529,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return Domain.forBounds(xmin, xmax, ymin, ymax, zmin, zmax).toDomain(dim);
     }
 
+    public Domain cross(RightArrowUplet2.Double other) {
+        return cross(Maths.domain(other));
+    }
+
     public Domain cross(Domain other) {
         int a = getDimension();
         int b = other.getDimension();

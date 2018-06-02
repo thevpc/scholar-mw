@@ -26,6 +26,7 @@ public class SimplifyTest {
         System.out.println(f1);
         System.out.println(f1_simplified);
         System.out.println(f2);
-        Assert.assertEquals(f2, f1_simplified);
+        Assert.assertEquals("X * (18.0 * Y)", f2.toString());
+        Assert.assertEquals("X * 18 * Y", f1_simplified.toString());
     }
 }

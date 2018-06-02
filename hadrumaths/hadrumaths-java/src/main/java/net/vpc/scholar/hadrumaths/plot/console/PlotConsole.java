@@ -53,15 +53,15 @@ public class PlotConsole implements PlotComponentDisplayer {
     private Chronometer globalChronometer;
     private int globalProgressIndex;
     private LogAreaComponent logger;
-    private JInternalFrame logFrame;
+//    private JInternalFrame logFrame;
     private TLog log = new ConsoleLogger(this);
     private PlotConsoleFrame plotConsoleFrame;
     private CloseOption closeOption = CloseOption.EXIT;
     private TaskMonitor taskMonitor;
-    private JInternalFrame taskMonitorFrame;
+//    private JInternalFrame taskMonitorFrame;
     //    private PlotAxis currentY = null;
     private LockMonitor lockMonitor;
-    private JInternalFrame lockMonitorFrame;
+//    private JInternalFrame lockMonitorFrame;
     private boolean readOnly = false;
     private String autoSavingFilePattern;
     private File currentAutoSavingFile;
@@ -135,15 +135,15 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     }
 
-    public JInternalFrameHelper getTaskMonitorFrame() {
-        getTaskMonitor();
-        return new JInternalFrameHelper(taskMonitorFrame);
-    }
-
-    public JInternalFrameHelper getLockMonitorFrame() {
-        getLockMonitor();
-        return new JInternalFrameHelper(lockMonitorFrame);
-    }
+//    public JInternalFrameHelper getTaskMonitorFrame() {
+//        getTaskMonitor();
+//        return new JInternalFrameHelper(taskMonitorFrame);
+//    }
+//
+//    public JInternalFrameHelper getLockMonitorFrame() {
+//        getLockMonitor();
+//        return new JInternalFrameHelper(lockMonitorFrame);
+//    }
 
     protected void disposeAutoSave() {
         synchronized (autoSaving) {
@@ -481,18 +481,25 @@ public class PlotConsole implements PlotComponentDisplayer {
     public TaskMonitor getTaskMonitor() {
         if (taskMonitor == null) {
             taskMonitor = new TaskMonitor(this);
-            JInternalFrame f = new JInternalFrame("Task Monitor", true, true, true, true);
-            f.add(new JScrollPane(taskMonitor));
-            f.setPreferredSize(new Dimension(600, 300));
-            f.pack();
-            f.setVisible(true);
-            try {
-                f.setIcon(false);
-            } catch (PropertyVetoException e) {
-                e.printStackTrace();
-            }
-            taskMonitor.setFrame(f);
-            getPlotConsoleFrame().addToolsFrame(taskMonitorFrame = f);
+            JScrollPane comp = new JScrollPane(taskMonitor);
+            FrameInfo info=new FrameInfo().setTitle("Task Monitor").setResizable(true).setClosable(true).setMaximizable(true).setIconifiable(true)
+                    .setFrameIcon(SwingUtilities3.getScaledIcon(
+                            getClass().getResource("Tasks.png"),
+                            16,16
+                    ))
+                    .setComponent(comp);
+
+            //JInternalFrame f = new JInternalFrame("Task Monitor", true, true, true, true);
+            //f.add(comp);
+            //f.setPreferredSize(new Dimension(600, 300));
+            //f.pack();
+//            f.setVisible(true);
+//            try {
+//                f.setIcon(false);
+//            } catch (PropertyVetoException e) {
+//                e.printStackTrace();
+//            }
+            taskMonitor.setFrame(getPlotConsoleFrame().addToolsFrame(info));
         }
         return taskMonitor;
     }
@@ -500,21 +507,59 @@ public class PlotConsole implements PlotComponentDisplayer {
     public LockMonitor getLockMonitor() {
         if (lockMonitor == null) {
             lockMonitor = new LockMonitor(this);
-            JInternalFrame f = new JInternalFrame("Locks Monitor", true, true, true, true);
-            f.add(new JScrollPane(lockMonitor));
-            f.setPreferredSize(new Dimension(600, 300));
-            f.pack();
-            f.setVisible(true);
-            try {
-                f.setIcon(false);
-            } catch (PropertyVetoException e) {
-                e.printStackTrace();
-            }
-            lockMonitor.setFrame(f);
-            getPlotConsoleFrame().addToolsFrame(lockMonitorFrame = f);
+            FrameInfo info=new FrameInfo().setTitle("Locks Monitor")
+                    .setResizable(true).setClosable(true)
+                    .setMaximizable(true).setIconifiable(true)
+                    .setComponent(new JScrollPane(lockMonitor))
+                    .setFrameIcon(
+                            SwingUtilities3.getScaledIcon(getClass().getResource("Locks.png")
+                                    ,16,16
+                            )
+                    )
+                    ;
+//            JInternalFrame f = new JInternalFrame("Locks Monitor", true, true, true, true);
+//            f.add(new JScrollPane(lockMonitor));
+//            f.setPreferredSize(new Dimension(600, 300));
+//            f.pack();
+//            f.setVisible(true);
+//            try {
+//                f.setIcon(false);
+//            } catch (PropertyVetoException e) {
+//                e.printStackTrace();
+//            }
+            lockMonitor.setFrame(getPlotConsoleFrame().addToolsFrame(info));
         }
         return lockMonitor;
     }
+
+    protected LogAreaComponent getLogArea() {
+        if (logger == null) {
+            logger = new LogAreaComponent();
+            FrameInfo info=new FrameInfo().setTitle("Log").setResizable(true).setClosable(true).setMaximizable(true).setIconifiable(true)
+                    .setComponent(new JScrollPane(logger.toComponent()))
+                    .setFrameIcon(
+                            SwingUtilities3.getScaledIcon(
+                                    getClass().getResource("Log.png"),
+                                    16,16
+                            )
+                    )
+                    ;
+//            JInternalFrame f = new JInternalFrame("Log", true, false, true, true);
+//            f.add(new JScrollPane(logger.toComponent()));
+//            f.setPreferredSize(new Dimension(400, 300));
+//            f.pack();
+//            f.setVisible(true);
+//            try {
+//                f.setIcon(false);
+//            } catch (PropertyVetoException e) {
+//                e.printStackTrace();
+//            }
+
+            getPlotConsoleFrame().addToolsFrame(info);
+        }
+        return logger;
+    }
+
 
     public PlotConsole run(final ConsoleAction action) {
         if (disposing) {
@@ -717,24 +762,6 @@ public class PlotConsole implements PlotComponentDisplayer {
         //this.windowTitle = windowTitle;
     }
 
-    protected LogAreaComponent getLogArea() {
-        if (logger == null) {
-            logger = new LogAreaComponent();
-
-            JInternalFrame f = new JInternalFrame("Log", true, false, true, true);
-            f.add(new JScrollPane(logger.toComponent()));
-            f.setPreferredSize(new Dimension(400, 300));
-            f.pack();
-            f.setVisible(true);
-            try {
-                f.setIcon(false);
-            } catch (PropertyVetoException e) {
-                e.printStackTrace();
-            }
-            getPlotConsoleFrame().addToolsFrame(logFrame = f);
-        }
-        return logger;
-    }
 
     public void silentLogLn(final String msg) {
         getLogArea().append(msg);
@@ -881,8 +908,8 @@ public class PlotConsole implements PlotComponentDisplayer {
         return this;
     }
 
-    public JInternalFrameHelper getLogFrame() {
-        getLogArea();
-        return new JInternalFrameHelper(logFrame);
-    }
+//    public JInternalFrameHelper getLogFrame() {
+//        getLogArea();
+//        return new JInternalFrameHelper(logFrame);
+//    }
 }

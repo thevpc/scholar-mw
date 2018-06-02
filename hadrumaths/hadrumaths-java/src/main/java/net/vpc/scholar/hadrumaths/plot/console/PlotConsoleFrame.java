@@ -60,17 +60,17 @@ public class PlotConsoleFrame extends JFrame {
         }
     }
 
-    protected JMenuItem createMenuItem(String name, ActionListener action) {
-        JMenuItem jmi;
-        jmi = new JMenuItem(name);
-        jmi.addActionListener(action);
-        return jmi;
-    }
+//    protected JMenuItem createMenuItem(String name, Action action) {
+//        JMenuItem jmi;
+//        jmi = new JMenuItem(name);
+//        jmi.addActionListener(action);
+//        return jmi;
+//    }
 
     protected void prepareFileMenu(JMenu fileMenu) {
-        fileMenu.add(createMenuItem("Properties", new PlotConsolePropertiesAction()));
+        fileMenu.add(new JMenuItem(new PlotConsolePropertiesAction()));
 
-        fileMenu.add(createMenuItem("Load", new LoadAction()));
+        fileMenu.add(new JMenuItem(new LoadAction()));
         fileMenu.addSeparator();
         recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
         recentFilesMenu.addFileSelectedListener(
@@ -87,9 +87,9 @@ public class PlotConsoleFrame extends JFrame {
 
         fileMenu.add(recentFilesMenu);
         fileMenu.addSeparator();
-        fileMenu.add(createMenuItem("Close", new CloseAction()));
+        fileMenu.add(new JMenuItem(new CloseAction()));
 
-        fileMenu.add(createMenuItem("Exit", new ExitAction()));
+        fileMenu.add(new JMenuItem(new ExitAction()));
     }
 
     protected void prepareToolsMenu(JMenu toolsWindowsMenu) {
@@ -113,24 +113,37 @@ public class PlotConsoleFrame extends JFrame {
 //        JMenuItem tile_windows = new JMenuItem("Tile Windows");
 //        tile_windows.setAction();
         windowsMenu.add(new AbstractPlotAction("Tile Windows") {
+            {
+                putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("TileWindows.png"),16,16));
+            }
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities3.tileFrames(desktop);
             }
         });
         windowsMenu.add(new AbstractPlotAction("Icon Windows") {
+            {
+                putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("IconifyWindows.png"),16,16));
+            }
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities3.iconifyFrames(desktop);
             }
         });
         windowsMenu.add(new AbstractPlotAction("De-Icon Windows") {
+            {
+                putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("DeiconifyWindows.png"),16,16));
+            }
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities3.deiconifyFrames(desktop);
             }
         });
         windowsMenu.add(new AbstractPlotAction("Close Windows") {
+            {
+                putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("CloseWindows.png"),16,16));
+            }
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities3.closeFrames(desktop);
@@ -298,22 +311,7 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     public JInternalFrame addFrame(FrameInfo frame) {
-        JInternalFrame ff = new JInternalFrame(frame.getTitle(), frame.isResizable(), frame.isClosable(), frame.isMaximizable(), frame.isIconifiable());
-        JInternalFrameHelper f=new JInternalFrameHelper(ff);
-        Component c = frame.getComponent();
-        if (c == null) {
-            c = new JLabel("...");
-        }
-        f.getFrame().add(c);
-        Dimension ps = frame.getPreferredSize();
-        if (ps != null) {
-            f.setPreferredSize(ps);
-        }
-        f.pack();
-        f.setVisible(true);
-        f.setIcon(frame.isIcon());
-        addFrame(f.getFrame(), frame);
-        return f.getFrame();
+        return addFrame(null, frame);
     }
 
 
@@ -327,7 +325,21 @@ public class PlotConsoleFrame extends JFrame {
         listeners.remove(listener);
     }
 
-    public void addFrame(JInternalFrame jInternalFrame, FrameInfo fino) {
+    public JInternalFrame addFrame(JInternalFrame jInternalFrame, FrameInfo fino) {
+        jInternalFrame = new JInternalFrame(fino.getTitle(), fino.isResizable(), fino.isClosable(), fino.isMaximizable(), fino.isIconifiable());
+        if(fino.getFrameIcon()!=null) {
+            jInternalFrame.setFrameIcon(fino.getFrameIcon());
+        }
+        Component c = fino.getComponent();
+        if (c == null) {
+            c = new JLabel("...");
+        }
+        jInternalFrame.add(c);
+        Dimension ps = fino.getPreferredSize();
+        if (ps != null) {
+            jInternalFrame.setPreferredSize(ps);
+        }
+
         jInternalFrame.putClientProperty(FrameInfo.class.getName(), fino);
         JMenuItem windowMenu = createWindowMenu(jInternalFrame);
         windowsMenu.add(windowMenu);
@@ -347,49 +359,65 @@ public class PlotConsoleFrame extends JFrame {
             }
         });
         userWindows.put(title, jInternalFrame);
-        onAddJInternalFrame(jInternalFrame);
+        onAddJInternalFrame(jInternalFrame,fino);
+        return jInternalFrame;
     }
 
-    public void addToolsFrame(JInternalFrame jInternalFrame) {
-        addFrame(jInternalFrame, null);
+    public JInternalFrame addToolsFrame(FrameInfo fino) {
+        JInternalFrame jInternalFrame = addFrame(null, fino);
         toolsWindowsMenu.add(createWindowMenu(jInternalFrame));
+        return jInternalFrame;
     }
 
     private JMenuItem createWindowMenu(JInternalFrame jInternalFrame) {
         JMenuItem i = new JMenuItem(jInternalFrame.getTitle());
+        i.setIcon(jInternalFrame.getFrameIcon());
         i.putClientProperty("JInternalFrame", jInternalFrame);
         i.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JComponent component1 = ((JComponent) e.getSource());
                 JInternalFrameHelper inf = new JInternalFrameHelper((JInternalFrame) (component1.getClientProperty("JInternalFrame")));
                 if (inf.getFrame().getParent() == null) {
-                    onAddJInternalFrame(inf.getFrame());
+                    onAddJInternalFrame(inf.getFrame(),null);
                 }else {
-                    onPostAddJInternalFrame(inf);
+                    onPostAddJInternalFrame(inf,null);
                 }
             }
         });
         return i;
     }
 
-    private void onPostAddJInternalFrame(JInternalFrameHelper h) {
-        h.setVisible(true);
-        h.setIcon(false);
-        h.moveToFront();
-        h.setSelected(true);
-        h.getFrame().requestFocus(true);
-        System.out.println(h.getFrame().getTitle()+" :: "
-                + (h.getFrame().isIcon() ? "icon;" : "")
-                + (h.getFrame().isClosed() ? "closed;" : "")
-                + (h.getFrame().isSelected() ? "selected;" : "")
-                + (h.getFrame().isMaximum() ? "maximum;" : "")
-                + (h.getFrame().isVisible() ? "visible;" : "")
-        );
+    private void onPostAddJInternalFrame(JInternalFrameHelper h,FrameInfo fino) {
+        if(fino!=null) {
+            h.setVisible(true);
+            h.setIcon(fino.isClosable() && fino.isIcon());
+            if(!fino.isIcon()) {
+                h.moveToFront();
+                h.setSelected(true);
+            }
+            h.getFrame().pack();
+            h.getFrame().requestFocus(true);
+        }else{
+            h.setVisible(true);
+            h.setIcon(false);
+            h.moveToFront();
+            h.setSelected(true);
+            h.getFrame().pack();
+            h.getFrame().requestFocus(true);
+        }
+
+//        System.out.println(h.getFrame().getTitle()+" :: "
+//                + (h.getFrame().isIcon() ? "icon;" : "")
+//                + (h.getFrame().isClosed() ? "closed;" : "")
+//                + (h.getFrame().isSelected() ? "selected;" : "")
+//                + (h.getFrame().isMaximum() ? "maximum;" : "")
+//                + (h.getFrame().isVisible() ? "visible;" : "")
+//        );
     }
-    private void onAddJInternalFrame(JInternalFrame inf) {
+    private void onAddJInternalFrame(JInternalFrame inf,FrameInfo fino) {
         //was closed!
         desktop.add(inf);
-        onPostAddJInternalFrame(new JInternalFrameHelper(inf));
+        onPostAddJInternalFrame(new JInternalFrameHelper(inf),fino);
     }
 
     public void setGlobalInfo(String title, int value) {
@@ -521,7 +549,11 @@ public class PlotConsoleFrame extends JFrame {
         }
     }
 
-    public class ExitAction implements SerializableActionListener {
+    public class ExitAction extends AbstractPlotAction {
+        {
+            putValue(NAME, "Exit");
+            putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("Exit.png"),16,16));
+        }
         public void actionPerformed(ActionEvent e) {
             PlotConsoleFrame.this.setVisible(false);
             PlotConsoleFrame.this.dispose();
@@ -529,7 +561,11 @@ public class PlotConsoleFrame extends JFrame {
         }
     }
 
-    public class CloseAction implements SerializableActionListener {
+    public class CloseAction extends AbstractPlotAction {
+        {
+            putValue(NAME, "Close");
+            putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("Close.png"),16,16));
+        }
         public void actionPerformed(ActionEvent e) {
             PlotConsoleFrame.this.setVisible(false);
             PlotConsoleFrame.this.dispose();
@@ -539,14 +575,22 @@ public class PlotConsoleFrame extends JFrame {
         }
     }
 
-    public class PlotConsolePropertiesAction implements SerializableActionListener {
+    public class PlotConsolePropertiesAction extends AbstractPlotAction {
+        {
+            putValue(NAME, "Properties");
+            putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("Info.png"),16,16));
+        }
 
         public void actionPerformed(ActionEvent e) {
             JOptionPane.showMessageDialog(PlotConsoleFrame.this, new PlotConsoleProperties(console), "Properties", JOptionPane.PLAIN_MESSAGE);
         }
     }
 
-    public class LoadAction implements SerializableActionListener {
+    public class LoadAction extends AbstractPlotAction {
+        {
+            putValue(NAME, "Load");
+            putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(PlotConsoleFrame.class.getResource("Open.png"),16,16));
+        }
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser c = new JFileChooser();

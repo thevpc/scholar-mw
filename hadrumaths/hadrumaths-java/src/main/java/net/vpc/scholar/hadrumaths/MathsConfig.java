@@ -53,7 +53,7 @@ public final class MathsConfig {
     private FrequencyFormatter frequencyFormatter = new FrequencyFormatter();
     private BytesSizeFormatter memorySizeFormatter = new BytesSizeFormatter();
     private MetricFormatter metricFormatter = new MetricFormatter();
-    private TimePeriodFormatter timePeriodFormatter = new DefaultTimePeriodFormatter();
+    private net.vpc.common.util.TimePeriodFormatter timePeriodFormatter = new DefaultTimePeriodFormatter();
     private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
     private ExprMatrixFactory exprMatrixFactory = DefaultExprMatrixFactory.INSTANCE;
     private ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
@@ -627,7 +627,8 @@ public final class MathsConfig {
         return exprCubeFactory;
     }
 
-    public TimePeriodFormatter getTimePeriodFormatter() {
+    public net.vpc.common.util.TimePeriodFormatter getTimePeriodFormatter() {
+        
         return timePeriodFormatter;
     }
 

@@ -29,7 +29,7 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
 
     @Override
     public boolean isInvariantImpl(Axis axis) {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class FrameInfo {
@@ -10,7 +11,17 @@ public class FrameInfo {
     private boolean maximizable;
     private boolean iconifiable;
     private boolean icon;
+    private Icon frameIcon;
     private Dimension preferredSize = new Dimension(600, 400);
+
+    public Icon getFrameIcon() {
+        return frameIcon;
+    }
+
+    public FrameInfo setFrameIcon(Icon frameIcon) {
+        this.frameIcon = frameIcon;
+        return this;
+    }
 
     public Component getComponent() {
         return component;

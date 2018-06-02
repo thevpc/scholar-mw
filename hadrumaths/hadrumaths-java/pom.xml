@@ -92,7 +92,7 @@
         <dependency>
             <groupId>net.vpc.common</groupId>
             <artifactId>vpc-common-utils</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>net.vpc.common</groupId>
