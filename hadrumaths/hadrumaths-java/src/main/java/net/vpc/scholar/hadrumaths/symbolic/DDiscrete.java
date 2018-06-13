@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
@@ -24,9 +24,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     private static final long serialVersionUID = 1L;
 
     static {
-        FormatFactory.register(DDiscrete.class, new AbstractFormatter<DDiscrete>() {
+        FormatFactory.register(DDiscrete.class, new AbstractObjectFormat<DDiscrete>() {
             @Override
-            public void format(StringBuilder sb, DDiscrete o, FormatParamSet format) {
+            public void format(StringBuilder sb, DDiscrete o, ObjectFormatParamSet format) {
                 sb.append("DDiscrete(");
                 sb.append(Maths.dump(o.values));
                 sb.append(")");

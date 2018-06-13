@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
+import net.vpc.common.util.CollectionFilter;
+import net.vpc.common.util.CollectionUtils;
+import net.vpc.common.util.Converter;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.common.util.mon.VoidMonitoredAction;
@@ -667,7 +670,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         int modeOrdinal = mode.ordinal();
         List<ModeInfo> modeInfos = cachedIndexesByModeType[modeOrdinal];
         if (modeInfos == null) {
-            cachedIndexesByModeType[modeOrdinal] = modeInfos = Collections.unmodifiableList(CollectionsUtils.filter(Arrays.asList(getModes(monitor)), new CollectionFilter<ModeInfo>() {
+            cachedIndexesByModeType[modeOrdinal] = modeInfos = Collections.unmodifiableList(CollectionUtils.filter(Arrays.asList(getModes(monitor)), new CollectionFilter<ModeInfo>() {
                 @Override
                 public boolean accept(ModeInfo modeInfo, int baseIndex, Collection<ModeInfo> list) {
                     return modeInfo.mode.mtype == mode;
@@ -679,7 +682,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public synchronized List<DoubleToVector> getFunctions(final ModeType mode, ProgressMonitor monitor) {
-        return CollectionsUtils.convert(getModes(mode, monitor), new Converter<ModeInfo, DoubleToVector>() {
+        return CollectionUtils.convert(getModes(mode, monitor), new Converter<ModeInfo, DoubleToVector>() {
             @Override
             public DoubleToVector convert(ModeInfo value) {
                 return value.fn;
@@ -689,7 +692,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
 
     @Override
     public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
-        monitor = ProgressMonitorFactory.enhance(monitor);
+        monitor = ProgressMonitorFactory.nonnull(monitor);
         ObjectCache objectCache = cacheResolver == null ? null : cacheResolver.resolveObjectCache();
         if (cachedIndexes == null) {
             if (objectCache != null) {

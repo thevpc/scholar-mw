@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +36,9 @@ public class PlotBuilder {
     private EnumSet<ExternalLibrary> enabledExternalLibraries;
     private EnumSet<ExternalLibrary> preferredLibraries;
     private PlotWindowManager windowManager;
-    private DoubleFormatter xformat;
-    private DoubleFormatter yformat;
-    private DoubleFormatter zformat;
+    private DoubleFormat xformat;
+    private DoubleFormat yformat;
+    private DoubleFormat zformat;
     private Samples samples;
     private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
@@ -111,7 +111,7 @@ public class PlotBuilder {
         return this;
     }
 
-    public DoubleFormatter xformat() {
+    public DoubleFormat xformat() {
         return xformat;
     }
 
@@ -119,12 +119,12 @@ public class PlotBuilder {
         return xformat(Maths.dblformat(format));
     }
 
-    public PlotBuilder xformat(DoubleFormatter format) {
+    public PlotBuilder xformat(DoubleFormat format) {
         this.xformat = format;
         return this;
     }
 
-    public DoubleFormatter zformat() {
+    public DoubleFormat zformat() {
         return xformat;
     }
 
@@ -132,28 +132,28 @@ public class PlotBuilder {
         return zformat(Maths.dblformat(format));
     }
 
-    public PlotBuilder zformat(DoubleFormatter format) {
+    public PlotBuilder zformat(DoubleFormat format) {
         this.zformat = format;
         return this;
     }
 
 //    public PlotBuilder xsamples(Object[] format) {
 //        this.samples=null;
-//        this.xformat = new ArrayDoubleFormatter(format);
+//        this.xformat = new ArrayDoubleFormat(format);
 //        return this;
 //    }
 //
 //    public PlotBuilder xsamples(List format) {
 //        this.samples=null;
-//        this.xformat = new ListDoubleFormatter(format);
+//        this.xformat = new ListDoubleFormat(format);
 //        return this;
 //    }
 
-    public DoubleFormatter yformat() {
+    public DoubleFormat yformat() {
         return xformat;
     }
 
-    public PlotBuilder yformat(DoubleFormatter format) {
+    public PlotBuilder yformat(DoubleFormat format) {
         this.yformat = format;
         return this;
     }
@@ -270,7 +270,7 @@ public class PlotBuilder {
         } else {
             xsamples = -1;
             samples = null;
-            xformat(new ListDoubleFormatter(xvalue));
+            xformat(new ListDoubleFormat(xvalue));
             return this;
         }
     }
@@ -290,7 +290,7 @@ public class PlotBuilder {
         } else {
             xsamples = -1;
             samples = null;
-            xformat(new ListDoubleFormatter(xvalue.toJList()));
+            xformat(new ListDoubleFormat(xvalue.toJList()));
             return this;
         }
     }
@@ -1385,7 +1385,7 @@ public class PlotBuilder {
             path = this.path + "/" + path;
         }
         StringBuilder sb = new StringBuilder();
-        for (String s : StringUtils.split(path, "/")) {
+        for (String s : HadrumathsStringUtils.split(path, "/")) {
             sb.append("/").append(s);
         }
         if (sb.length() == 0) {
@@ -1409,10 +1409,10 @@ public class PlotBuilder {
         return this;
     }
 
-    private static class ArrayDoubleFormatter implements DoubleFormatter {
+    private static class ArrayDoubleFormat implements DoubleFormat {
         private final Object[] format;
 
-        public ArrayDoubleFormatter(Object[] format) {
+        public ArrayDoubleFormat(Object[] format) {
             this.format = format;
         }
 
@@ -1426,10 +1426,10 @@ public class PlotBuilder {
         }
     }
 
-    private static class ListDoubleFormatter implements DoubleFormatter {
+    private static class ListDoubleFormat implements DoubleFormat {
         private final List format;
 
-        public ListDoubleFormatter(List format) {
+        public ListDoubleFormat(List format) {
             this.format = format;
         }
 

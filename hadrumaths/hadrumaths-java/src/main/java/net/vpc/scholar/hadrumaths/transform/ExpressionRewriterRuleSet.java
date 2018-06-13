@@ -11,8 +11,8 @@ import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.dump.DumpManager;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 
 import java.util.*;
@@ -189,8 +189,8 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     }
                     if (debugExpressionRewrite) {
                         if (next.toString().equals(curr.toString()) && !(curr instanceof Any)) {
-                            String s1 = FormatFactory.format(curr, new FormatParamSet(DebugFormat.INSTANCE));
-                            String s2 = FormatFactory.format(next, new FormatParamSet(DebugFormat.INSTANCE));
+                            String s1 = FormatFactory.format(curr, new ObjectFormatParamSet(DebugObjectFormatParam.INSTANCE));
+                            String s2 = FormatFactory.format(next, new ObjectFormatParamSet(DebugObjectFormatParam.INSTANCE));
                             if (s1.equals(s2)) {
                                 if (curr.getClass().getSimpleName().equals(next.getClass().getSimpleName())) {
                                     if (curr.equals(next)) {

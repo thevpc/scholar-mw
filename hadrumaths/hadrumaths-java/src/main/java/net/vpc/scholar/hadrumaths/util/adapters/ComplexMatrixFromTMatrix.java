@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
+import net.vpc.common.util.Converter;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.util.Converter;
 
 /**
  * Created by vpc on 3/23/17.

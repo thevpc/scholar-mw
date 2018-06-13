@@ -28,7 +28,7 @@ public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneab
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
 //        monitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(Maths.matrix(structure.getTestSourceScalarProducts(monitor)));
 //        monitor.terminatem(getClass().getSimpleName());

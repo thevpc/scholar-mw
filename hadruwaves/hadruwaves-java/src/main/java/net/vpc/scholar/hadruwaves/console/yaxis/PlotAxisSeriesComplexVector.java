@@ -38,7 +38,7 @@ public abstract class PlotAxisSeriesComplexVector extends PlotAxisSeries {
     }
 
     protected final NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
         ParamSet x = p.getAxis().getX();
         XLabel xlabel = p.getAxis().getXLabel();
 //        Complex[][] z = new Complex[x.getSize()][];

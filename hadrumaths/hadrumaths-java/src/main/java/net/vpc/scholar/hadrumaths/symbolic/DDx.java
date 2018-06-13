@@ -15,7 +15,7 @@ public class DDx extends AbstractDoubleToDouble implements Cloneable {
     //    static {
 //        FormatFactory.register(DDx.class, new AbstractFormatter<DDx>() {
 //            @Override
-//            public void format(StringBuilder sb, DDx o, FormatParamSet format) {
+//            public void format(StringBuilder sb, DDx o, ObjectFormatParamSet format) {
 //                sb.append("DDx(");
 //                sb.append(o.defaultY);
 //                sb.append(",");

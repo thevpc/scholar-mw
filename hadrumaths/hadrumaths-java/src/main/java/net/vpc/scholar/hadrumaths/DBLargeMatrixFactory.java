@@ -29,45 +29,45 @@ public class DBLargeMatrixFactory extends LargeMatrixFactory {
 //    }
 //
 //    public static DBLargeMatrixFactory createLocalStorage(String id, File storeFolder) {
-//        if (StringUtils.isEmpty(id)) {
+//        if (HadrumathsStringUtils.isEmpty(id)) {
 //            id = storeFolder.getPath();
 //        }
 //        return createStorage(id, createConnection(storeFolder));
 //    }
 //
 //    public static DBLargeMatrixFactory createLocalSparseStorage(String id, File storeFolder) {
-//        if (StringUtils.isEmpty(id)) {
+//        if (HadrumathsStringUtils.isEmpty(id)) {
 //            id = storeFolder.getPath();
 //        }
 //        return createSparseStorage(id, createConnection(storeFolder), Complex.ZERO);
 //    }
 
 //    public static DBLargeMatrixFactory createLocalSparseStorage(String id, File storeFolder, Complex defaultValue) {
-//        if (StringUtils.isEmpty(id)) {
+//        if (HadrumathsStringUtils.isEmpty(id)) {
 //            id = storeFolder.getPath();
 //        }
 //        return createSparseStorage(id, createConnection(storeFolder), defaultValue);
 //    }
 //
 //    public static DBLargeMatrixFactory createRemoteStorage(String id, String server, String name, String login, String password) {
-//        if (StringUtils.isEmpty(id)) {
-//            id = login + "@" + (StringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
+//        if (HadrumathsStringUtils.isEmpty(id)) {
+//            id = login + "@" + (HadrumathsStringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
 //        }
 //        return createStorage(id, createConnection(server, name, login, password));
 //    }
 //
 //
 //    public static DBLargeMatrixFactory createRemoteSparseStorage(String id, String server, String name, String login, String password) {
-//        if (StringUtils.isEmpty(id)) {
-//            id = login + "@" + (StringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
+//        if (HadrumathsStringUtils.isEmpty(id)) {
+//            id = login + "@" + (HadrumathsStringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
 //        }
 //        return createSparseStorage(id, createConnection(server, name, login, password), Complex.ZERO);
 //    }
 //
 //
 //    public static DBLargeMatrixFactory createRemoteSparseStorage(String id, String server, String name, String login, String password, Complex defaultValue) {
-//        if (StringUtils.isEmpty(id)) {
-//            id = login + "@" + (StringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
+//        if (HadrumathsStringUtils.isEmpty(id)) {
+//            id = login + "@" + (HadrumathsStringUtils.isEmpty(server) ? "localhost" : server) + "/" + name;
 //        }
 //        return createSparseStorage(id, createConnection(server, name, login, password), defaultValue);
 //    }

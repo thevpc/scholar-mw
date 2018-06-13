@@ -20,7 +20,7 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
 
     public Matrix computePlanarSources(MWStructure structure, double[] x, double[] y, Axis axis, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-        ProgressMonitor mon = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor mon = ProgressMonitorFactory.nonnull(monitor);
         Sources ss = str.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();

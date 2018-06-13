@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="Maven 1" modules="tmwlib-hellow-world,tmwlib-examples-scala,tmwlib-hello-world,tmwlib-mastere-gt,example-project,math-scala,tmwlib-simple-example-scala,hadrumaths-scala-helloworld,thesis-2015-imen-khadhraoui2,hadruwaves-scala,thesis-2015-imen-khadhraoui,thesis-2012-basma-oueslati,imen-aouf,thesis-2015-raja-mchaalia,hadrumaths-scala-examples,hadruwaves-scala-examples-old,hadruwaves-scala-examples,hadruwaves-scala-helloworld,mastere-gt-hadruwaves,hadrumaths-scala" />
+    <option name="deprecationWarnings" value="true" />
+    <option name="uncheckedWarnings" value="true" />
+    <option name="featureWarnings" value="true" />
+    <option name="explainTypeErrors" value="true" />
+    <profile name="Maven 1" modules="tmwlib-hellow-world,tmwlib-examples-scala,tmwlib-hello-world,tmwlib-mastere-gt,example-project,math-scala,tmwlib-simple-example-scala,hadruwaves-scala-examples-old,thesis-2012-basma-oueslati,hadruwaves-scala,hadrumaths-scala,thesis-2015-imen-khadhraoui,mastere-gt-hadruwaves,imen-aouf,thesis-2015-imen-khadhraoui2,thesis-2015-raja-mchaalia,hadruwaves-scala-helloworld,hadruwaves-scala-examples,hadrumaths-scala-examples,hadrumaths-scala-helloworld" />
   </component>
 </project>

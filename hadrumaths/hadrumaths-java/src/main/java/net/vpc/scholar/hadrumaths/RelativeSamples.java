@@ -73,7 +73,7 @@ public class RelativeSamples extends Samples {
     }
 
     public Samples toAbsolute() {
-        return new AbsoluteSamples(true, dimension, x, y, z);
+        return new AbsoluteSamples(x, y, z);
     }
 
     public AbsoluteSamples toAbsolute(Domain domain) {

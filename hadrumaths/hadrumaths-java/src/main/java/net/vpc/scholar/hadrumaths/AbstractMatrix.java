@@ -3,7 +3,6 @@ package net.vpc.scholar.hadrumaths;
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
 import net.vpc.common.util.TypeReference;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
 
 import java.io.*;
 import java.util.ArrayList;

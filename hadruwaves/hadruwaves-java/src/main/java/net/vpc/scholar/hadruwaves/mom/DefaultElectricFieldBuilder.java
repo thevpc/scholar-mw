@@ -52,7 +52,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                 }.computeCached();
             }
             case EVANESCENT: {
-                ProgressMonitor[] mon = ProgressMonitorFactory.enhance(monitor).split(2);
+                ProgressMonitor[] mon = ProgressMonitorFactory.nonnull(monitor).split(2);
                 VDiscrete Eall = getStructure().electricField(ElectricFieldPart.FULL).monitor(mon[0]).computeVDiscrete(x, y, z);
                 VDiscrete E0 = getStructure().electricField(ElectricFieldPart.FUNDAMENTAL).monitor(mon[1]).computeVDiscrete(x, y, z);
                 return Eall.sub(E0);

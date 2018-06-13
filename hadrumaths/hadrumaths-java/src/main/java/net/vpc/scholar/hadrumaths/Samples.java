@@ -12,15 +12,15 @@ public abstract class Samples {
 
 
     public static AbsoluteSamples absolute(double[] x, double[] y, double[] z) {
-        return new AbsoluteSamples(true, x, y, z);
+        return new AbsoluteSamples(x, y, z);
     }
 
     public static AbsoluteSamples absolute(double[] x, double[] y) {
-        return new AbsoluteSamples(true, x, y);
+        return new AbsoluteSamples(x, y);
     }
 
     public static AbsoluteSamples absolute(double[] x) {
-        return new AbsoluteSamples(true, x);
+        return new AbsoluteSamples(x);
     }
 
     public static RelativeSamples relative(double[] x, double[] y, double[] z) {

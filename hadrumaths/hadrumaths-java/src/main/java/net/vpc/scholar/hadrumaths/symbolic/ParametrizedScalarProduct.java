@@ -1,16 +1,16 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 
 import java.lang.ref.WeakReference;
 
 public class ParametrizedScalarProduct extends GenericFunctionXY {
     static {
-        FormatFactory.register(ParametrizedScalarProduct.class, new AbstractFormatter<ParametrizedScalarProduct>() {
+        FormatFactory.register(ParametrizedScalarProduct.class, new AbstractObjectFormat<ParametrizedScalarProduct>() {
             @Override
-            public void format(StringBuilder sb, ParametrizedScalarProduct o, FormatParamSet format) {
+            public void format(StringBuilder sb, ParametrizedScalarProduct o, ObjectFormatParamSet format) {
                 boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
                 format = format.add(FormatFactory.REQUIRED_PARS);
                 if (par) {

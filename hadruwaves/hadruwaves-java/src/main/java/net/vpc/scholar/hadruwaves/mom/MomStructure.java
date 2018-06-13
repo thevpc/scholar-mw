@@ -1355,7 +1355,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public final TMatrix<Complex> getTestSourceScalarProducts(ProgressMonitor monitor) {
-        final ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
+        final ProgressMonitor monitor0 = ProgressMonitorFactory.nonnull(monitor);
         build();
         return new SrcGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }

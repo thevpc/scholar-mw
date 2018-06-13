@@ -35,7 +35,7 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         return Maths.invokeMonitoredAction(
                 emonitor,
                 getClass().getSimpleName(),

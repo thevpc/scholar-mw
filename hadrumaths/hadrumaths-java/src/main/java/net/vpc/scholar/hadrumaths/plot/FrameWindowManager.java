@@ -5,8 +5,9 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 import java.awt.*;

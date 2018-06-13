@@ -1,17 +1,18 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.*;
 import net.vpc.common.util.ClassMap;
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.Converter;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.Converter;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
@@ -449,11 +450,11 @@ public final class Plot {
                 } else if (line.startsWith("ytitle =")) {
                     ytitlesList.add(line.substring("ytitle".length() + 2));
                 } else if (line.startsWith("xformat =")) {
-                    m.setXformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
+                    m.setXformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
                 } else if (line.startsWith("yformat =")) {
-                    m.setYformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
+                    m.setYformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
                 } else if (line.startsWith("zformat =")) {
-                    m.setZformat((DoubleFormatter) IOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
+                    m.setZformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
                 }
             }
             m.setYtitles(ytitlesList.toArray(new String[ytitlesList.size()]));
@@ -865,7 +866,7 @@ public final class Plot {
             ValuesPlotModel model = (ValuesPlotModel) amodel;
             g = new ButtonGroup();
             for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
-                f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
+                f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, HadrumathsStringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
                 f.setSelected(PlatformUtils.notnull(model.getConverter(), ComplexAsDouble.ABS) == ComplexAsDouble.ABS);
                 g.add(f);
                 functionsMenu.add(f);
@@ -876,7 +877,7 @@ public final class Plot {
                 g = new ButtonGroup();
                 for (PlotType plotType : PlotType.values()) {
                     if (!plotType.equals(PlotType.ALL) && !plotType.equals(PlotType.AUTO)) {
-                        f = new JCheckBoxMenuItem(new PlotTypeAction(modelProvider, StringUtils.toCapitalized(plotType.name()), plotType));
+                        f = new JCheckBoxMenuItem(new PlotTypeAction(modelProvider, HadrumathsStringUtils.toCapitalized(plotType.name()), plotType));
                         PlotType type = (model).getPlotType();
                         f.setSelected(type == PlotType.CURVE);
                         g.add(f);
@@ -1127,10 +1128,10 @@ public final class Plot {
                 config.threeD.set(threeDCheckBox.isSelected());
                 config.nodeLabel.set(nodeLabelCheckBox.isSelected());
                 config.clockwise.set(clockwiseCheckBox.isSelected());
-                config.polarAngleOffset.set(StringUtils.parseDouble(polarOffsetText.getText(), 0));
+                config.polarAngleOffset.set(HadrumathsStringUtils.parseDouble(polarOffsetText.getText(), 0));
                 config.nodeType.set(((Number) defaultNodeType.getValue()).intValue());
                 config.lineType.set(((Number) defaultLineType.getValue()).intValue());
-                config.maxLegendCount.set(StringUtils.parseInt(defaultMaxLegendText.getText(), 0));
+                config.maxLegendCount.set(HadrumathsStringUtils.parseInt(defaultMaxLegendText.getText(), 0));
                 config.lineStepType = (PlotConfigLineStepType) lineStepTypeCombo.getSelectedItem();
 
                 for (int i = 0; i < ytitles.length; i++) {
@@ -1183,7 +1184,7 @@ public final class Plot {
         return builder().samples(samples);
     }
 
-    public static PlotBuilder xformat(DoubleFormatter format) {
+    public static PlotBuilder xformat(DoubleFormat format) {
         return builder().xformat(format);
     }
 

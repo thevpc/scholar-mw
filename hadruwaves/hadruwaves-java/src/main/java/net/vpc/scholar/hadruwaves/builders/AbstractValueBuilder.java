@@ -36,7 +36,7 @@ public abstract class AbstractValueBuilder implements ValueBuilder{
     }
 
     public ProgressMonitor getMonitor() {
-        return ProgressMonitorFactory.enhance(monitor);
+        return ProgressMonitorFactory.nonnull(monitor);
     }
 
     public ConvergenceEvaluator getConvergenceEvaluator() {

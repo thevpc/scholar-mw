@@ -1,12 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.jeep.ExpressionEvaluator;
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.Converter;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.util.TypeReference;
 import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluatorFactory;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
@@ -18,7 +20,6 @@ import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.Converter;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import sun.misc.Unsafe;
 
@@ -1628,6 +1629,9 @@ public final class Maths {
     }
 
 
+    public static Expr discrete(Expr expr, double[] xsamples, double[] ysamples, double[] zsamples) {
+        return discrete(expr,Samples.absolute(xsamples,ysamples,zsamples));
+    }
     public static Expr discrete(Expr expr, Samples samples) {
         return MathsSampler.discrete(expr, samples);
     }
@@ -4037,23 +4041,23 @@ public final class Maths {
         return c.stop();
     }
 
-    public static DoubleFormatter percentFormat() {
+    public static DoubleFormat percentFormat() {
         return Config.getPercentFormatter();
     }
 
-    public static DoubleFormatter frequencyFormat() {
+    public static DoubleFormat frequencyFormat() {
         return Config.getFrequencyFormatter();
     }
 
-    public static DoubleFormatter metricFormat() {
+    public static DoubleFormat metricFormat() {
         return Config.getMetricFormatter();
     }
 
-    public static DoubleFormatter memoryFormat() {
+    public static DoubleFormat memoryFormat() {
         return Config.getMemorySizeFormatter();
     }
 
-    public static DoubleFormatter dblformat(String format) {
+    public static DoubleFormat dblformat(String format) {
         return DoubleFormatterFactory.create(format);
     }
 
@@ -4173,7 +4177,7 @@ public final class Maths {
         if ($EXPR.isAssignableFrom(cls)) {
             return (VectorSpace<T>) Maths.EXPR_VECTOR_SPACE;
         }
-        throw new IllegalArgumentException("Not yet supported " + cls);
+        throw new NoSuchElementException("Not yet supported " + cls);
     }
 
     public static DoubleList refineSamples(TList<Double> values, int n) {

@@ -45,7 +45,7 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
         }
         return findOrCreateContainer(path, index + 1, p);
 //
-//        if (StringUtils.isInt(name)) {
+//        if (HadrumathsStringUtils.isInt(name)) {
 //
 //
 //            if (i < 0) {

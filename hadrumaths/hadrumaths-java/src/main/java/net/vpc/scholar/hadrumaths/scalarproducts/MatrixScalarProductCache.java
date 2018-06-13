@@ -95,7 +95,7 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
     }
 
     public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         String monMessage = name;
         if (sp == null) {
             sp = Maths.Config.getScalarProductOperator();

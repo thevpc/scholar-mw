@@ -4,10 +4,10 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
-import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormat;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
@@ -96,7 +96,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             }
         }
 
-        String s = SimpleDoubleFormatter.INSTANCE.formatDouble(y);
+        String s = SimpleDoubleFormat.INSTANCE.formatDouble(y);
         if (found != null) {
             if(custom){
                 s=found.getText();
@@ -109,10 +109,10 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             if (custom) {
                 ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
                 String ytitle = model.getYtitle(series);
-                DoubleFormatter xformat = model.getXformat();
-                DoubleFormatter yformat = model.getYformat();
-                String fx=SimpleDoubleFormatter.INSTANCE.formatDouble(x);
-                String fy=SimpleDoubleFormatter.INSTANCE.formatDouble(y);
+                DoubleFormat xformat = model.getXformat();
+                DoubleFormat yformat = model.getYformat();
+                String fx= SimpleDoubleFormat.INSTANCE.formatDouble(x);
+                String fy= SimpleDoubleFormat.INSTANCE.formatDouble(y);
                 String fX=xformat==null?fx:xformat.formatDouble(x);
                 String fY=yformat==null?fy:yformat.formatDouble(y);
 

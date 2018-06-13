@@ -114,7 +114,7 @@ public class ConvergenceEvaluator {
     }
 
     public ConvergenceResult evaluate(Object source, int startIndex, ObjectEvaluator evaluator, ProgressMonitor monitor) {
-        ProgressMonitor monitor0 = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor monitor0 = ProgressMonitorFactory.nonnull(monitor);
         //split into  99 and 1  to disable reaching 100% of the evaluation
         if (startIndex < 0) {
             startIndex = 0;

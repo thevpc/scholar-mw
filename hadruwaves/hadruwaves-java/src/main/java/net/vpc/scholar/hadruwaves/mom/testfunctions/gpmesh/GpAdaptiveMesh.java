@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.MapUtils;
+import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;

@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.common.swings.ExtensionFileChooserFilter;
-import net.vpc.common.swings.JInternalFrameHelper;
 import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.mon.ProgressMonitor;
@@ -16,12 +15,10 @@ import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
 import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadrumaths.util.CloseOption;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 import net.vpc.scholar.hadrumaths.util.log.TLog;
 
 import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyVetoException;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -103,8 +100,8 @@ public class PlotConsole implements PlotComponentDisplayer {
 
     public PlotConsole start() {
         if (startTime == 0) {
-            getLog().trace("Start Project " + getFrameTitle());
             getTaskMonitor();
+            getLog().trace("Start Project " + getFrameTitle());
             getLog();
             startTime = System.currentTimeMillis();
             disposing = false;
@@ -484,7 +481,7 @@ public class PlotConsole implements PlotComponentDisplayer {
             JScrollPane comp = new JScrollPane(taskMonitor);
             FrameInfo info=new FrameInfo().setTitle("Task Monitor").setResizable(true).setClosable(true).setMaximizable(true).setIconifiable(true)
                     .setFrameIcon(SwingUtilities3.getScaledIcon(
-                            getClass().getResource("Tasks.png"),
+                            PlotConsole.class.getResource("Tasks.png"),
                             16,16
                     ))
                     .setComponent(comp);
@@ -512,7 +509,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                     .setMaximizable(true).setIconifiable(true)
                     .setComponent(new JScrollPane(lockMonitor))
                     .setFrameIcon(
-                            SwingUtilities3.getScaledIcon(getClass().getResource("Locks.png")
+                            SwingUtilities3.getScaledIcon(PlotConsole.class.getResource("Locks.png")
                                     ,16,16
                             )
                     )
@@ -539,7 +536,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                     .setComponent(new JScrollPane(logger.toComponent()))
                     .setFrameIcon(
                             SwingUtilities3.getScaledIcon(
-                                    getClass().getResource("Log.png"),
+                                    PlotConsole.class.getResource("Log.png"),
                                     16,16
                             )
                     )
@@ -852,7 +849,7 @@ public class PlotConsole implements PlotComponentDisplayer {
         JComponent plotComponent = component.toComponent();
         if (plotComponent != null) {
 
-            List<String> pathList = StringUtils.split(path, "/");
+            List<String> pathList = HadrumathsStringUtils.split(path, "/");
             WindowPath preferredPath = new WindowPath(pathList.size() == 0 ? "NoName" : pathList.get(0));
             if (pathList.size() > 0) {
                 pathList.remove(0);
@@ -865,7 +862,7 @@ public class PlotConsole implements PlotComponentDisplayer {
                 plotGroup = "Plot";
             }
             ConsoleWindow window = getPlotConsoleFrame().getWindow(preferredPath);
-            window.addChild(StringUtils.toPath(pathList, "/"), component.toComponent());
+            window.addChild(HadrumathsStringUtils.toPath(pathList, "/"), component.toComponent());
 //            JComponent jcomponent = window.getComponent();
 //            if (jcomponent == null) {
 //                jcomponent = new JListCardPanel();

@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.cache.ObjectCache
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
 import net.vpc.scholar.hadrumaths.util.IOUtils
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
-import net.vpc.scholar.hadruwaves.mom._;import net.vpc.common.util.Chronometer;import net.vpc.common.util.mon.{ProgressMonitor, ProgressMonitorFactory}
+import net.vpc.scholar.hadruwaves.mom.{HintAxisType, MomStructure}
 import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIteratorFactory
 
 

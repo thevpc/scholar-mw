@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.plot.console;
 import net.vpc.common.swings.*;
 import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -40,8 +39,8 @@ public class PlotConsoleFrame extends JFrame {
     }
 
     public void prepare() {
-        console.getTaskMonitor().getFrame().setClosed(true);
-        console.getLockMonitor().getFrame().setClosed(true);
+//        console.getTaskMonitor().getFrame().setClosed(true);
+//        console.getLockMonitor().getFrame().setClosed(true);
     }
 
     public void setVisible(boolean b) {
@@ -170,10 +169,10 @@ public class PlotConsoleFrame extends JFrame {
                 if (ee.getKey().equals("/")) {
 
                 } else {
-                    List<String> split = StringUtils.split(ee.getKey(), "/");
+                    List<String> split = HadrumathsStringUtils.split(ee.getKey(), "/");
                     String nn = split.get(split.size() - 1);
                     split.remove(split.size() - 1);
-                    String pp = StringUtils.toPath(split, "/");
+                    String pp = HadrumathsStringUtils.toPath(split, "/");
                     PlotConsoleMenu e = new PlotConsoleMenu(nn, nn, pp, 0);
                     e.setInitialIndex(ee.getValue());
                     menusToCreate.add(e);
@@ -246,7 +245,7 @@ public class PlotConsoleFrame extends JFrame {
 
     private void init() {
         try {
-            setIconImage(new ImageIcon(getClass().getResource("PlotConsole.png")).getImage());
+            setIconImage(new ImageIcon(PlotConsole.class.getResource("PlotConsole.png")).getImage());
         }catch (Exception ex){
             //
         }

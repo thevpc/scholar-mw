@@ -18,7 +18,7 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
 
     @Override
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();

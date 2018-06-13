@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.ClassMap;
-import net.vpc.scholar.hadrumaths.format.FormatParam;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.LRUMap;
+import net.vpc.common.util.LRUMap;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,22 +24,22 @@ public class FormatFactory extends AbstractFactory {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final ClassMap<Formatter> map = new ClassMap<Formatter>(Object.class, Formatter.class, 30);
+    private static final ClassMap<ObjectFormat> map = new ClassMap<ObjectFormat>(Object.class, ObjectFormat.class, 30);
     private static final LRUMap<String, SimpleDateFormat> dateFormats = new LRUMap<String, SimpleDateFormat>(10);
-    public static XFormat X = new XFormat("X");
-    public static YFormat Y = new YFormat("Y");
-    public static ZFormat Z = new ZFormat("Z");
-    public static RequireParenthesesFormat REQUIRED_PARS = RequireParenthesesFormat.INSTANCE;
-    public static ComplexIFormat I = ComplexIFormat.I;
-    public static ComplexIFormat I_J = ComplexIFormat.J;
-    public static ComplexIFormat I_HAT = ComplexIFormat.I_HAT;
-    public static DomainFormat NO_DOMAIN = new DomainFormat(DomainFormat.Type.NONE, true);
-    public static DomainFormat GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, false);
-    public static DomainFormat NON_FULL_GATE_DOMAIN = new DomainFormat(DomainFormat.Type.GATE, true);
-    public static ProductFormat PRODUCT_STAR = new ProductFormat("*");
-    public static ProductFormat PRODUCT_NONE = new ProductFormat(null);
-    public static ProductFormat PRODUCT_DOTSTAR = new ProductFormat(".*");
-    public static FormatParamSet toStringFormat = new FormatParamSet();
+    public static XObjectFormatParam X = new XObjectFormatParam("X");
+    public static YObjectFormatParam Y = new YObjectFormatParam("Y");
+    public static ZObjectFormatParam Z = new ZObjectFormatParam("Z");
+    public static RequireParenthesesObjectFormatParam REQUIRED_PARS = RequireParenthesesObjectFormatParam.INSTANCE;
+    public static ComplexIObjectFormatParam I = ComplexIObjectFormatParam.I;
+    public static ComplexIObjectFormatParam I_J = ComplexIObjectFormatParam.J;
+    public static ComplexIObjectFormatParam I_HAT = ComplexIObjectFormatParam.I_HAT;
+    public static DomainObjectFormatParam NO_DOMAIN = new DomainObjectFormatParam(DomainObjectFormatParam.Type.NONE, true);
+    public static DomainObjectFormatParam GATE_DOMAIN = new DomainObjectFormatParam(DomainObjectFormatParam.Type.GATE, false);
+    public static DomainObjectFormatParam NON_FULL_GATE_DOMAIN = new DomainObjectFormatParam(DomainObjectFormatParam.Type.GATE, true);
+    public static ProductObjectFormatParam PRODUCT_STAR = new ProductObjectFormatParam("*");
+    public static ProductObjectFormatParam PRODUCT_NONE = new ProductObjectFormatParam(null);
+    public static ProductObjectFormatParam PRODUCT_DOTSTAR = new ProductObjectFormatParam(".*");
+    public static ObjectFormatParamSet toStringFormat = new ObjectFormatParamSet();
     private static PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -58,71 +58,71 @@ public class FormatFactory extends AbstractFactory {
     }
 
     static {
-        register(Matrix.class, new MatrixFormatter());
-        register(DCxy.class, new CFunctionXYFormatter());
-        register(CExp.class, new CExpFormatter());
+        register(Matrix.class, new MatrixObjectFormat());
+        register(DCxy.class, new CFunctionXYObjectFormat());
+        register(CExp.class, new CExpObjectFormat());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYFormatter());
-        register(Linear.class, new LinearFormatter());
-        register(CosXCosY.class, new CosCosFormatter());
-        register(CosXPlusY.class, new CosXPlusYFormatter());
-        register(DDxyAbstractSum.class, new DAbstractSumFunctionXYFormatter());
+        register(Linear.class, new LinearObjectFormat());
+        register(CosXCosY.class, new CosCosObjectFormat());
+        register(CosXPlusY.class, new CosXPlusYObjectFormat());
+        register(DDxyAbstractSum.class, new DAbstractSumFunctionXYObjectFormat());
 //        register(DomainX.class, new DomainXFormatter());
-        register(Domain.class, new DomainFormatter());
-        register(DomainExpr.class, new DomainExprFormatter());
-        register(DoubleToVector.class, new VDCxyFormatter());
-        register(Inv.class, new InvFormatter());
-        register(Neg.class, new NegFormatter());
-        register(Plus.class, new PlusFormatter());
-        register(Pow.class, new PowFormatter());
-        register(Mul.class, new MulFormatter());
-        register(Div.class, new DivFormatter());
-        register(Sub.class, new SubFormatter());
-        register(Any.class, new AnyFormatter());
-        register(DDx.class, new DDxFormatter());
-        register(DDy.class, new DDyFormatter());
-        register(DDz.class, new DDzFormatter());
-        register(ComparatorExpr.class, new ComparatorExprFormatter());
-        register(UFunction.class, new UFunctionFormatter());
+        register(Domain.class, new DomainObjectFormat());
+        register(DomainExpr.class, new DomainExprObjectFormat());
+        register(DoubleToVector.class, new VDCxyObjectFormat());
+        register(Inv.class, new InvObjectFormat());
+        register(Neg.class, new NegObjectFormat());
+        register(Plus.class, new PlusObjectFormat());
+        register(Pow.class, new PowObjectFormat());
+        register(Mul.class, new MulObjectFormat());
+        register(Div.class, new DivObjectFormat());
+        register(Sub.class, new SubObjectFormat());
+        register(Any.class, new AnyObjectFormat());
+        register(DDx.class, new DDxObjectFormat());
+        register(DDy.class, new DDyObjectFormat());
+        register(DDz.class, new DDzObjectFormat());
+        register(ComparatorExpr.class, new ComparatorExprObjectFormat());
+        register(UFunction.class, new UFunctionObjectFormat());
 //        register(DDxToDDxy.class, new DDxToDDxyFormatter());
-        register(Complex.class, new ComplexFormatter());
-        register(DDyIntegralX.class, new DDyIntegralXFormatter());
-        register(AbstractComposedFunction.class, new GenericFunctionFormatter());
-        register(ParamExpr.class, new ParamFormatter());
-        register(DoubleValue.class, new DoubleValueFormatter());
+        register(Complex.class, new ComplexObjectFormat());
+        register(DDyIntegralX.class, new DDyIntegralXObjectFormat());
+        register(AbstractComposedFunction.class, new GenericFunctionObjectFormat());
+        register(ParamExpr.class, new ParamObjectFormat());
+        register(DoubleValue.class, new DoubleValueObjectFormat());
 //        register(DoubleX.class, new DoubleXFormatter());
-        register(Double.class, new net.vpc.scholar.hadrumaths.format.impl.DoubleFormatter());
-        register(Number.class, new NumberFormatter());
+        register(Double.class, new DoubleObjectFormat());
+        register(Number.class, new NumberObjectFormat());
 //        register(DDxyToDDx.class, new DDxyToDDxFormatter());
-        register(ComplexValue.class, new ComplexXYFormatter());
-        register(YY.class, new YYFormatter());
-        register(XX.class, new XXFormatter());
-        register(ZZ.class, new ZZFormatter());
-        register(AxisTransform.class, new AxisTransformFormatter());
-        register(Shape2D.class, new Shape2DFormatter());
-        register(Discrete.class, new DiscreteFormatter());
-        register(Polygon.class, new PolygonFormatter());
-        register(Polyhedron.class, new PolyhedronFormatter());
-        register(String.class, new StringFormatter());
-        register(DDzIntegralXY.class, new DDzIntegralXYFormatter());
-        register(VDiscrete.class, new VDiscreteFormatter());
-        register(Real.class, new RealFormatter());
-        register(Imag.class, new ImagFormatter());
-//        register(ComparatorExpr.class, new Formatter() {
+        register(ComplexValue.class, new ComplexXYObjectFormat());
+        register(YY.class, new YYObjectFormat());
+        register(XX.class, new XXObjectFormat());
+        register(ZZ.class, new ZZObjectFormat());
+        register(AxisTransform.class, new AxisTransformObjectFormat());
+        register(Shape2D.class, new Shape2DObjectFormat());
+        register(Discrete.class, new DiscreteObjectFormat());
+        register(Polygon.class, new PolygonObjectFormat());
+        register(Polyhedron.class, new PolyhedronObjectFormat());
+        register(String.class, new StringObjectFormat());
+        register(DDzIntegralXY.class, new DDzIntegralXYObjectFormat());
+        register(VDiscrete.class, new VDiscreteObjectFormat());
+        register(Real.class, new RealObjectFormat());
+        register(Imag.class, new ImagObjectFormat());
+//        register(ComparatorExpr.class, new ObjectFormat() {
 //            @Override
-//            public String format(Object o, FormatParamSet format) {
+//            public String format(Object o, ObjectFormatParamSet format) {
 //                StringBuilder sb = new StringBuilder();
 //                format(sb, o, format);
 //                return sb.toString();
 //            }
 //
 //            @Override
-//            public void format(StringBuilder sb, Object o, FormatParamSet format) {
+//            public void format(StringBuilder sb, Object o, ObjectFormatParamSet format) {
 //                sb.append(o.toString());
 //            }
 //        });
-        register(NotExpr.class, new AbstractFormatter<NotExpr>() {
+        register(NotExpr.class, new AbstractObjectFormat<NotExpr>() {
             @Override
-            public void format(StringBuilder sb, NotExpr o, FormatParamSet format) {
+            public void format(StringBuilder sb, NotExpr o, ObjectFormatParamSet format) {
                 sb.append("not(");
                 FormatFactory.format(sb, o.getArgument(), format);
                 sb.append(")");
@@ -133,7 +133,7 @@ public class FormatFactory extends AbstractFactory {
     private FormatFactory() {
     }
 
-    public static void register(Class clz, Formatter t) {
+    public static void register(Class clz, ObjectFormat t) {
         map.put(clz, t);
     }
 
@@ -222,7 +222,7 @@ public class FormatFactory extends AbstractFactory {
 //        return sb.toString();
 //    }
 //
-//    public static String scalarProductFormatter(DomainXY domain0, DDxy f1, DDxy f2, FormatParam... format) {
+//    public static String scalarProductFormatter(DomainXY domain0, DDxy f1, DDxy f2, ObjectFormatParam... format) {
 //        FormatParamArray formatArray = new FormatParamArray(format);
 //        DomainXY domain = domain0 == null ? f1.intersect(f2) : f1.intersect(f2, domain0);
 //        if (domain.isEmpty()) {
@@ -267,7 +267,7 @@ public class FormatFactory extends AbstractFactory {
 //        return putInto;
 //    }
 //
-//    public static String formatScalarProduct(DomainXY domain0, DCxy f1, DCxy f2, FormatParam... format) {
+//    public static String formatScalarProduct(DomainXY domain0, DCxy f1, DCxy f2, ObjectFormatParam... format) {
 //        FormatParamArray formatArray = new FormatParamArray(format);
 //        DomainXY domain = domain0 == null ? f1.intersect(f2) : f1.intersect(f2, domain0);
 //        if (domain.isEmpty()) {
@@ -320,25 +320,25 @@ public class FormatFactory extends AbstractFactory {
 //    }
 
     public static String format(Object o) {
-        return format(o, FormatParamSet.EMPTY);
+        return format(o, ObjectFormatParamSet.EMPTY);
     }
 
     @SuppressWarnings("unchecked")
-    public static String format(Object o, FormatParam... format) {
-        return format(o,new FormatParamSet(format));
+    public static String format(Object o, ObjectFormatParam... format) {
+        return format(o,new ObjectFormatParamSet(format));
     }
 
-    public static String format(Object o, FormatParamSet format) {
-        Formatter best = map.getRequired(o.getClass());
+    public static String format(Object o, ObjectFormatParamSet format) {
+        ObjectFormat best = map.getRequired(o.getClass());
         return best.format(o, format);
     }
 
-    public static void format(StringBuilder sb, Object o, FormatParamSet format) {
-        Formatter best = map.getRequired(o.getClass());
+    public static void format(StringBuilder sb, Object o, ObjectFormatParamSet format) {
+        ObjectFormat best = map.getRequired(o.getClass());
         best.format(sb, o, format);
     }
 
-    public static String toParamString(double b, DoubleFormat df, boolean prefixWithSign, boolean zeroIsEmpty, boolean prefixWithSpace) {
+    public static String toParamString(double b, DoubleObjectFormatParam df, boolean prefixWithSign, boolean zeroIsEmpty, boolean prefixWithSpace) {
         StringBuilder sb = new StringBuilder();
         if (b == 0) {
             return zeroIsEmpty ? "" : ((prefixWithSign ? "+" : "") + "0.0");
@@ -372,7 +372,7 @@ public class FormatFactory extends AbstractFactory {
         return sb.toString();
     }
 
-//    public static String formatArg(Expr e, FormatParamSet format) {
+//    public static String formatArg(Expr e, ObjectFormatParamSet format) {
 //        String s = FormatFactory.format(e, format);
 //        if (needsParams(s)) {
 //            return ("(" + s + ")");
@@ -442,14 +442,14 @@ public class FormatFactory extends AbstractFactory {
         return getDateFormat(format).format(d);
     }
 
-    public static boolean requireAppendDomain(Expr o, FormatParamSet format) {
+    public static boolean requireAppendDomain(Expr o, ObjectFormatParamSet format) {
         return (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN));
     }
 
-    public static boolean appendStarredDomain(StringBuilder sb, Expr o, FormatParamSet format) {
+    public static boolean appendStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
         if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
 
-            ProductFormat pp = format.getParam(FormatFactory.PRODUCT_STAR);
+            ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
             String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
             sb.append(mul);
             FormatFactory.format(sb, o.getDomain(), format);
@@ -458,7 +458,7 @@ public class FormatFactory extends AbstractFactory {
         return false;
     }
 
-    public static boolean appendNonStarredDomain(StringBuilder sb, Expr o, FormatParamSet format) {
+    public static boolean appendNonStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
         if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
             FormatFactory.format(sb, o.getDomain(), format);
             return true;

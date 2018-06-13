@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
+import net.vpc.common.util.Converter;
 import net.vpc.scholar.hadrumaths.AbstractTMatrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.VectorSpace;
-import net.vpc.scholar.hadrumaths.util.Converter;
 
 public class TMatrixAdapter<R, T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;

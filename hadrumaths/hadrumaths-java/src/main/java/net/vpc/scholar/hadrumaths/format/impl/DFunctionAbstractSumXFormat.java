@@ -6,8 +6,8 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.Formatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
 import java.util.List;
@@ -15,17 +15,17 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class DFunctionAbstractSumXFormat implements Formatter<Plus> {
+public class DFunctionAbstractSumXFormat implements ObjectFormat<Plus> {
 
     @Override
-    public String format(Plus o, FormatParamSet format) {
+    public String format(Plus o, ObjectFormatParamSet format) {
         StringBuilder sb = new StringBuilder();
         format(sb, o, format);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Plus o, FormatParamSet format) {
+    public void format(StringBuilder sb, Plus o, ObjectFormatParamSet format) {
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         List<Expr> segments = o.getSubExpressions();
         int size = segments.size();

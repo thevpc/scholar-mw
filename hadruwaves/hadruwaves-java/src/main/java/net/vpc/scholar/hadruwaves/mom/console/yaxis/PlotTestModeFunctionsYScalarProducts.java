@@ -34,7 +34,7 @@ public class PlotTestModeFunctionsYScalarProducts extends PlotAxisSeries impleme
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
         ModeFunctions fnModeFunctions = structure.getModeFunctions();
         TestFunctions gpTestFunctions = structure.getTestFunctions();
         DoubleToVector[] cache_essai = gpTestFunctions.arr();

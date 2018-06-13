@@ -14,7 +14,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.MapUtils;
+import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;

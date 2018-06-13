@@ -5,8 +5,10 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.SwingUtilities3;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.common.util.PlatformTypes;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -64,7 +66,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
         }
-        if (name.startsWith("#") && StringUtils.isInt(name.substring(1))) {
+        if (name.startsWith("#") && PlatformTypes.isInteger(name.substring(1))) {
             int x = Integer.parseInt(name.substring(1));
             if (x >= 0 && x < count) {
                 PlotComponent c = getPlotComponent(x);
@@ -297,7 +299,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         if (path == null || !path.startsWith("/")) {
             throw new IllegalArgumentException("Invalid path " + path);
         }
-        List<String> pathList = StringUtils.split(path, "/");
+        List<String> pathList = HadrumathsStringUtils.split(path, "/");
         if (pathList.size() == 0) {
             add(component);
         } else {
@@ -315,7 +317,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
             pathList.remove(0);
-            pp.add(component, StringUtils.toPath(pathList, "/"));
+            pp.add(component, HadrumathsStringUtils.toPath(pathList, "/"));
         }
     }
 }

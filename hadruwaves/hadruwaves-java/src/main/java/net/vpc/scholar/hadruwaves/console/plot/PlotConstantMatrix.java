@@ -22,7 +22,7 @@ public class PlotConstantMatrix extends PlotAxisSeries implements Cloneable {
 
     @Override
     protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor m= ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor m= ProgressMonitorFactory.nonnull(monitor);
         String name = getName();
         m.start(name+", starting...");
         m.terminate(name+", terminated...");

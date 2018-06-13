@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 
 /**
  * Created by vpc on 8/21/14.
@@ -12,9 +12,9 @@ public class FixedAxisZFunction extends AbstractDoubleToDouble implements Clonea
     private static final long serialVersionUID = 1L;
 
     static {
-        FormatFactory.register(FixedAxisZFunction.class, new AbstractFormatter<FixedAxisZFunction>() {
+        FormatFactory.register(FixedAxisZFunction.class, new AbstractObjectFormat<FixedAxisZFunction>() {
             @Override
-            public void format(StringBuilder sb, FixedAxisZFunction o, FormatParamSet format) {
+            public void format(StringBuilder sb, FixedAxisZFunction o, ObjectFormatParamSet format) {
                 sb.append("FixedAxisZ(");
                 FormatFactory.format(sb, o.z, format.remove(FormatFactory.REQUIRED_PARS));
                 sb.append(", ");

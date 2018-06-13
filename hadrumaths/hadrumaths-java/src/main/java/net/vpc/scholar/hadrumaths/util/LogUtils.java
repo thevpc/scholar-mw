@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.Maths;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class LogUtils {
         @Override
         public boolean isLoggable(LogRecord record) {
             return true;
-//            String loggerName = record == null ? "" : StringUtils.trim(record.getLoggerName());
+//            String loggerName = record == null ? "" : HadrumathsStringUtils.trim(record.getLoggerName());
 //            return loggerName.startsWith("net.vpc.scholar");
         }
     };

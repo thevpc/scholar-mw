@@ -105,7 +105,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     @Override
     public Complex[] eval(Expr[] g, ProgressMonitor monitor) {
-        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor m = ProgressMonitorFactory.nonnull(monitor);
         m.start(null);
         Complex[] r = new Complex[g.length];
         for (int i = 0; i < g.length; i++) {
@@ -126,7 +126,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 //    }
 //
 //    public Complex[] eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-//        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor);
+//        ProgressMonitor m = ProgressMonitorFactory.nonnull(monitor);
 //        m.start(null);
 //        Complex[] r=new Complex[g.length];
 //        for (int i = 0; i < g.length; i++) {

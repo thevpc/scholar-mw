@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
-import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluator;
-import net.vpc.scholar.hadrumaths.ExpressionEvaluatorFactory;
+import net.vpc.common.jeep.ExpressionEvaluator;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluatorFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -35,7 +35,7 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         ModeFunctions fnModeFunctions = structure.getModeFunctions();
         TestFunctions gpTestFunctions = structure.getTestFunctions();
         DoubleToVector[] cache_essai = gpTestFunctions.arr();

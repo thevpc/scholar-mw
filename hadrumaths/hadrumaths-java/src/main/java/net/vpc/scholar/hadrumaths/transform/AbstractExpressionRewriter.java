@@ -4,7 +4,7 @@ import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.scholar.hadrumaths.util.LRUMap;
+import net.vpc.common.util.LRUMap;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.beans.PropertyChangeEvent;

@@ -106,7 +106,12 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                             mon1.setProgress(i, indexes_length, monText);
                             for (int zi = 0; zi < z_length; zi++) {
                                 Z = z[zi];
-                                zmnGammaZ = (Z < 0 ? mode.firstBoxSpaceGamma : mode.secondBoxSpaceGamma).mul(-Z).exp().mul(mode.impedance);
+                                //TODO Check if Z is always abs
+                                if(Z < 0){
+                                    zmnGammaZ = mode.firstBoxSpaceGamma.mul(Z).exp().mul(mode.impedance);
+                                }else{
+                                    zmnGammaZ = mode.secondBoxSpaceGamma.mul(-Z).exp().mul(mode.impedance);
+                                }
 
                                 for (int yi = 0; yi < y_length; yi++) {
                                     for (int xi = 0; xi < x_length; xi++) {

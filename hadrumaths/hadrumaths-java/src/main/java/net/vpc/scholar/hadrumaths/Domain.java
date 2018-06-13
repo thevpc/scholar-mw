@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Surface;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -347,13 +347,13 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //            return d1;
 //        }
 //        return Math.min(d1, d2);
-        if (d1!=d1) {
+        if (d1 != d1) {
             return d2;
         }
-        if (d2!=d2) {
+        if (d2 != d2) {
             return d1;
         }
-        return d1<= d2?d1:d2;
+        return d1 <= d2 ? d1 : d2;
     }
 
     protected static double max(double d1, double d2) {
@@ -364,13 +364,13 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //            return d1;
 //        }
 //        return Math.max(d1, d2);
-        if (d1!=d1) {
+        if (d1 != d1) {
             return d2;
         }
-        if (d2!=d2) {
+        if (d2 != d2) {
             return d1;
         }
-        return d1>= d2?d1:d2;
+        return d1 >= d2 ? d1 : d2;
     }
 
     private static double[] toAbsolute(double[] base, double min, double max) {
@@ -1154,8 +1154,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
         if (s instanceof RelativeSamples) {
             RelativeSamples r = (RelativeSamples) s;
-            return new AbsoluteSamples(true, s.getDimension()
-                    , toAbsolute(r.getX(), getXMin(), getXMax())
+            return new AbsoluteSamples(
+                    toAbsolute(r.getX(), getXMin(), getXMax())
                     , toAbsolute(r.getY(), getYMin(), getYMax())
                     , toAbsolute(r.getZ(), getZMin(), getZMax())
             );
@@ -1866,8 +1866,6 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public Expr mul(double other) {
         return DoubleValue.valueOf(other, this);
     }
-
-
 
 
     @Override

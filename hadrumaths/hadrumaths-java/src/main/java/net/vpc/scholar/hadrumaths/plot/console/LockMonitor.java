@@ -208,7 +208,7 @@ public class LockMonitor extends JPanel implements ActionListener {
         south.setFloatable(false);
         this.add(south, BorderLayout.SOUTH);
         unlockButton = new JButton("");
-        unlockButton.setIcon(SwingUtilities3.getScaledIcon(getClass().getResource("Minus.png"),32,32));
+        unlockButton.setIcon(SwingUtilities3.getScaledIcon(LockMonitor.class.getResource("Minus.png"),32,32));
 
         south.add(Box.createVerticalGlue());
         south.add(Box.createHorizontalGlue());

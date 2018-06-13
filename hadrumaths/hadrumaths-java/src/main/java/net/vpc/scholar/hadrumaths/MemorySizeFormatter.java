@@ -1,12 +1,12 @@
 //package net.vpc.scholar.hadrumaths;
 //
-//import net.vpc.common.util.DoubleFormatter;
+//import net.vpc.common.util.DoubleFormat;
 //import net.vpc.scholar.hadrumaths.util.StringUtils;
 //
 ///**
 // * Created by vpc on 3/20/17.
 // */
-//public class MemorySizeFormatter implements DoubleFormatter {
+//public class MemorySizeFormatter implements DoubleFormat {
 //
 //    boolean leadingZeros = false;
 //    boolean intermediateZeros = true;

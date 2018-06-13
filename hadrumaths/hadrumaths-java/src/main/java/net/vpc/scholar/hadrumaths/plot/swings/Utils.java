@@ -7,7 +7,7 @@ public class Utils {
     public static String drawBox(String header) {
         StringBuilder sb = new StringBuilder();
         int width = header.length() + 4;
-        //Formatter title = new Formatter(width, 2);
+        //ObjectFormat title = new ObjectFormat(width, 2);
         String asterixBar = "  " + drawLine(width + 2, '*');
         String whiteBar = "  *" + drawLine(width, ' ') + "*";
         sb.append(asterixBar).append("\n").append(whiteBar).append("\n  *").append(header).append("*\n").append(whiteBar).append("\n").append(asterixBar);

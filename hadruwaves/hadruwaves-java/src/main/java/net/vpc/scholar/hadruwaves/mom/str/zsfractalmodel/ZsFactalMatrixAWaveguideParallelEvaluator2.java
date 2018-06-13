@@ -193,7 +193,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
     }
 
     private Yoperator[] Yop(MomStructureFractalZop str2, ProgressMonitor cmonitor) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
         GpAdaptiveMesh gpAdaptatif = ((GpAdaptiveMesh) str2.getDirectGpTestFunctions());
         FractalAreaGeometryList polygon = (FractalAreaGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
         Geometry[] transform = polygon.getTransform();

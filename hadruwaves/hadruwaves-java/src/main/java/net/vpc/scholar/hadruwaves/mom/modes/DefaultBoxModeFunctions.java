@@ -378,7 +378,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
 
 
-        ProgressMonitor m = ProgressMonitorFactory.enhance(monitor).createIncrementalMonitor(testFunctions.length());
+        ProgressMonitor m = ProgressMonitorFactory.nonnull(monitor).createIncrementalMonitor(testFunctions.length());
         boolean dd = modesDesc.getBorders()!=WallBorders.PPPP;
         if(dd){
             for (Expr testFunction : testFunctions) {

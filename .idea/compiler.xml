@@ -37,6 +37,7 @@
         <module name="tmwlib-examples-scala" />
         <module name="tmwlib-hellow-world" />
         <module name="vpc-common-io" />
+        <module name="vpc-common-jeep" />
         <module name="vpc-common-strings" />
         <module name="vpc-common-swings" />
         <module name="vpc-common-utils" />
@@ -88,6 +89,7 @@
       <module name="tmwlib-simple-example-scala" target="1.5" />
       <module name="vpc-common-desktop-automation" target="1.7" />
       <module name="vpc-common-io" target="1.7" />
+      <module name="vpc-common-jeep" target="1.8" />
       <module name="vpc-common-strings" target="1.8" />
       <module name="vpc-common-swings" target="1.8" />
       <module name="vpc-common-utils" target="1.8" />

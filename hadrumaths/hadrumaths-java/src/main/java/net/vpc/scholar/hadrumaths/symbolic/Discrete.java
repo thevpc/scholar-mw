@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.impl.AbstractFormatter;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
@@ -21,9 +21,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     private static final long serialVersionUID = 1L;
 
     static {
-        FormatFactory.register(Discrete.class, new AbstractFormatter<Discrete>() {
+        FormatFactory.register(Discrete.class, new AbstractObjectFormat<Discrete>() {
             @Override
-            public void format(StringBuilder sb, Discrete o, FormatParamSet format) {
+            public void format(StringBuilder sb, Discrete o, ObjectFormatParamSet format) {
                 sb.append("Discrete(");
                 sb.append(Maths.dump(o.values));
                 sb.append(")");

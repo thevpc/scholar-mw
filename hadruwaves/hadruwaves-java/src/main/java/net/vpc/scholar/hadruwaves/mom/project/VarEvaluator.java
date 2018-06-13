@@ -12,10 +12,11 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.vpc.common.jeep.*;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ExpressionEvaluatorFactory;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluatorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.expeval.*;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.Wall;

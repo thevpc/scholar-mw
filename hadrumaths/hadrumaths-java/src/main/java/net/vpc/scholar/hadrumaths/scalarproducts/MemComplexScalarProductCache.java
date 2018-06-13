@@ -74,7 +74,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
     }
 
     public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
             sp = Maths.Config.getScalarProductOperator();

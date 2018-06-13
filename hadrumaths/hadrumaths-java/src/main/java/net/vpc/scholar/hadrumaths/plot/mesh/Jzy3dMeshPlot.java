@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.chart.Settings;

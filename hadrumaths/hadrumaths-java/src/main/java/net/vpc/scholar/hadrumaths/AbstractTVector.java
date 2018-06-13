@@ -822,6 +822,9 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     @Override
     public <R> boolean isConvertibleTo(TypeReference<R> other) {
+        if(other.isAssignableFrom(getComponentType())){
+            return true;
+        }
 //        if (
 //                Maths.$COMPLEX.equals(other)
 //                        || Maths.$EXPR.equals(other)
@@ -831,13 +834,21 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         if (other.isAssignableFrom(getComponentType())) {
             return true;
         }
-        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
-        for (T t : this) {
-            if (!vs.is(t, other)) {
-                return false;
-            }
+        VectorSpace<T> vs = null;
+        try {
+            vs = Maths.getVectorSpace(getComponentType());
+        }catch (NoSuchElementException ex){
+            //
         }
-        return true;
+        if(vs!=null) {
+            for (T t : this) {
+                if (!vs.is(t, other)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

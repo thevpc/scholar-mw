@@ -22,9 +22,9 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
     public static final ElectricFieldParallelEvaluator INSTANCE=new ElectricFieldParallelEvaluator();
     @Override
     public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
         MomStructure str=(MomStructure) structure;
-        monitor = ProgressMonitorFactory.enhance(monitor);
+        monitor = ProgressMonitorFactory.nonnull(monitor);
         String clsName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, clsName, new MonitoredAction<VDiscrete>() {
             @Override

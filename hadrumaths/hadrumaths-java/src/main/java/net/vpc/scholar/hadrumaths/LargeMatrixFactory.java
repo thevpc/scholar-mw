@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.common.strings.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import java.io.Closeable;
 import java.util.logging.Logger;

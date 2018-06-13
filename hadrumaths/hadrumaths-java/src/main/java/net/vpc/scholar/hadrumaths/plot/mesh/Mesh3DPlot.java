@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.mesh;
 
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;

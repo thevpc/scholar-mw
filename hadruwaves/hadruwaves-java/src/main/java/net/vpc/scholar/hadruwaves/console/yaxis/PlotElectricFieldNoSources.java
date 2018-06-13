@@ -36,7 +36,7 @@ public class PlotElectricFieldNoSources extends PlotAxisSeries implements Clonea
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] y = structure.toYForDomainCoeff(xAxis.getY());

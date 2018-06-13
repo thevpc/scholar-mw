@@ -18,9 +18,9 @@ import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
 import net.vpc.scholar.hadrumaths.util.StringMapper;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
@@ -50,9 +50,9 @@ public final class MathsConfig {
     private boolean debugExpressionRewrite = false;
     private boolean strictComputationMonitor = false;
     private float maxMemoryThreshold = 0.7f;
-    private FrequencyFormatter frequencyFormatter = new FrequencyFormatter();
-    private BytesSizeFormatter memorySizeFormatter = new BytesSizeFormatter();
-    private MetricFormatter metricFormatter = new MetricFormatter();
+    private FrequencyFormat frequencyFormatter = new FrequencyFormat();
+    private BytesSizeFormat memorySizeFormatter = new BytesSizeFormat();
+    private MetricFormat metricFormatter = new MetricFormat();
     private net.vpc.common.util.TimePeriodFormatter timePeriodFormatter = new DefaultTimePeriodFormatter();
     private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
     private ExprMatrixFactory exprMatrixFactory = DefaultExprMatrixFactory.INSTANCE;
@@ -75,7 +75,7 @@ public final class MathsConfig {
     private ScalarProductOperator defaultScalarProductOperator = null;
     private IntegrationOperator defaultIntegrationOperator = null;
     private FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
-    private Map<ClassPair, net.vpc.scholar.hadrumaths.util.Converter> converters = new HashMap<>();
+    private Map<ClassPair, Converter> converters = new HashMap<>();
     private Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
 
     public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette(new Color[]{
@@ -117,13 +117,13 @@ public final class MathsConfig {
 
 
     private PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
-    private DoubleFormatter defaultDblFormat = new DoubleFormatter() {
+    private DoubleFormat defaultDblFormat = new DoubleFormat() {
         @Override
         public String formatDouble(double value) {
             return String.valueOf(value);
         }
     };
-    private DoubleFormatter percentFormatter = new DoubleFormatter() {
+    private DoubleFormat percentFormatter = new DoubleFormat() {
         private final DecimalFormat d = new DecimalFormat("0.00%");
 
         @Override
@@ -210,7 +210,7 @@ public final class MathsConfig {
         }
     }
 
-    public <A, B> void registerConverter(Class<A> a, Class<B> b, net.vpc.scholar.hadrumaths.util.Converter<A, B> c) {
+    public <A, B> void registerConverter(Class<A> a, Class<B> b, Converter<A, B> c) {
         ClassPair k = new ClassPair(a, b);
         if (c == null) {
             converters.remove(k);
@@ -219,23 +219,23 @@ public final class MathsConfig {
         }
     }
 
-    public <A, B> net.vpc.scholar.hadrumaths.util.Converter<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
+    public <A, B> Converter<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
         ClassPair k = new ClassPair(a, b);
         return converters.get(k);
     }
 
-    public <A, B> net.vpc.scholar.hadrumaths.util.Converter<A, B> getConverter(Class<A> a, Class<B> b) {
+    public <A, B> Converter<A, B> getConverter(Class<A> a, Class<B> b) {
         if (a.equals(b)) {
             return Maths.IDENTITY;
         }
-        net.vpc.scholar.hadrumaths.util.Converter converter = getRegisteredConverter(a, b);
+        Converter converter = getRegisteredConverter(a, b);
         if (converter == null) {
             throw new NoSuchElementException("No such element : converter for " + a + " and " + b);
         }
         return converter;
     }
 
-    public <A, B> net.vpc.scholar.hadrumaths.util.Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
+    public <A, B> Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
         return getConverter(a.getTypeClass(), b.getTypeClass());
     }
 
@@ -247,27 +247,27 @@ public final class MathsConfig {
         this.developmentMode = developmentMode;
     }
 
-    public FrequencyFormatter getFrequencyFormatter() {
+    public FrequencyFormat getFrequencyFormatter() {
         return frequencyFormatter;
     }
 
-    public void setFrequencyFormatter(FrequencyFormatter frequencyFormatter) {
+    public void setFrequencyFormatter(FrequencyFormat frequencyFormatter) {
         this.frequencyFormatter = frequencyFormatter;
     }
 
-    public BytesSizeFormatter getMemorySizeFormatter() {
+    public BytesSizeFormat getMemorySizeFormatter() {
         return memorySizeFormatter;
     }
 
-    public void setMemorySizeFormatter(BytesSizeFormatter memorySizeFormatter) {
+    public void setMemorySizeFormatter(BytesSizeFormat memorySizeFormatter) {
         this.memorySizeFormatter = memorySizeFormatter;
     }
 
-    public MetricFormatter getMetricFormatter() {
+    public MetricFormat getMetricFormatter() {
         return metricFormatter;
     }
 
-    public void setMetricFormatter(MetricFormatter metricFormatter) {
+    public void setMetricFormatter(MetricFormat metricFormatter) {
         this.metricFormatter = metricFormatter;
     }
 
@@ -527,7 +527,7 @@ public final class MathsConfig {
     }
 
     public String replaceVars(String format) {
-        return StringUtils.replaceVars(format, new StringMapper() {
+        return HadrumathsStringUtils.replaceVars(format, new StringMapper() {
             @Override
             public String get(String key) {
                 String val = System.getProperty(key);
@@ -632,11 +632,11 @@ public final class MathsConfig {
         return timePeriodFormatter;
     }
 
-    public DoubleFormatter getPercentFormatter() {
+    public DoubleFormat getPercentFormatter() {
         return percentFormatter;
     }
 
-    public DoubleFormatter getDoubleFormat() {
+    public DoubleFormat getDoubleFormat() {
         return defaultDblFormat;
     }
 

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves;
 
+import net.vpc.common.util.Converter;
 import net.vpc.scholar.hadrumaths.HadrumathsService;
 import net.vpc.scholar.hadrumaths.HadrumathsServiceDesc;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.util.Converter;
 import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;

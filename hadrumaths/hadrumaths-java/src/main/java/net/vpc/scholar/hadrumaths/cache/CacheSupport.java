@@ -17,7 +17,7 @@ public abstract class CacheSupport<T> {
     protected CacheSupport(PersistenceCache persistenceCache, String cacheItemName, ProgressMonitor monitor) {
         this.cacheItemName = cacheItemName;
         this.persistenceCache = persistenceCache;
-        this.monitor = ProgressMonitorFactory.enhance(monitor);
+        this.monitor = ProgressMonitorFactory.nonnull(monitor);
     }
 
     /**

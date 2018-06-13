@@ -22,7 +22,7 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
     public static final ElectricFieldFundamentalSerialParallelEvaluator INSTANCE=new ElectricFieldFundamentalSerialParallelEvaluator();
     @Override
     public VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(cmonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
 
         ModeInfo[] indexes = str.getModes(monitor);
         ModeInfo[] evan = str.getModeFunctions().getVanishingModes();

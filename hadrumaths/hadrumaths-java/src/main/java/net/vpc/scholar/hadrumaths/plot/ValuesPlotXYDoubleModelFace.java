@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -14,9 +14,9 @@ public class ValuesPlotXYDoubleModelFace {
     private int[] initialIndexes;
     private String[] ytitles;
     private double[][] z;
-    private DoubleFormatter xformat;
-    private DoubleFormatter yformat;
-    private DoubleFormatter zformat;
+    private DoubleFormat xformat;
+    private DoubleFormat yformat;
+    private DoubleFormat zformat;
 
     public ValuesPlotXYDoubleModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
         double[][] x0 = model.getX();
@@ -122,15 +122,15 @@ public class ValuesPlotXYDoubleModelFace {
         return y.length;
     }
 
-    public DoubleFormatter getXformat() {
+    public DoubleFormat getXformat() {
         return xformat;
     }
 
-    public DoubleFormatter getYformat() {
+    public DoubleFormat getYformat() {
         return yformat;
     }
 
-    public DoubleFormatter getZformat() {
+    public DoubleFormat getZformat() {
         return zformat;
     }
 }

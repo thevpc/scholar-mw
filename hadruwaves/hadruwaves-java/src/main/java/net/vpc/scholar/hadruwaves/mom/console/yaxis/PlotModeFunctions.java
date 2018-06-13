@@ -20,7 +20,7 @@ public class PlotModeFunctions extends PlotAxisCustom implements Cloneable {
     }
 
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        ProgressMonitor mon = ProgressMonitorFactory.enhance(this);
+        ProgressMonitor mon = ProgressMonitorFactory.nonnull(this);
 //        mon.startm(getName());
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         if (containsType(YType.REFERENCE)) {

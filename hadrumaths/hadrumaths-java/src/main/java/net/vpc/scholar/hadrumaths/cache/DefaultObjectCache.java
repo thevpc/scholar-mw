@@ -88,7 +88,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     public static void storeObject(HFile path, Object object, ProgressMonitor computationMonitor, String message) throws IOException {
-        ProgressMonitor monitor = ProgressMonitorFactory.enhance(computationMonitor);
+        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(computationMonitor);
         if (object != null && object instanceof CacheObjectSerializerProvider) {
             HFile serFile = path.getFs().get(path.getPath() + ".ser");
             object = ((CacheObjectSerializerProvider) object).createCacheObjectSerializedForm(serFile);
@@ -158,7 +158,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     public void store(String name, Object o, ProgressMonitor computationMonitor) {
-        ProgressMonitor m = ProgressMonitorFactory.enhance(computationMonitor);
+        ProgressMonitor m = ProgressMonitorFactory.nonnull(computationMonitor);
         String message = "store " + name;
         Maths.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
             @Override

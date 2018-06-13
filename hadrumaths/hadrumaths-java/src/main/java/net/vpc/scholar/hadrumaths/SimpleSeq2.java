@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
-import net.vpc.scholar.hadrumaths.util.MapBuilder;
+import net.vpc.common.util.MapBuilder;
 
 import java.util.Arrays;
 

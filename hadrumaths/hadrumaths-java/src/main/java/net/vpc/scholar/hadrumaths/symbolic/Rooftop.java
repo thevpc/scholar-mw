@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.util.MapUtils;
+import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;

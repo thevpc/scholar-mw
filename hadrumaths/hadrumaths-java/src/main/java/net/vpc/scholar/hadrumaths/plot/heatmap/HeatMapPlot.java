@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
-import net.vpc.common.util.DoubleFormatter;
+import net.vpc.common.strings.StringUtils;
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -223,12 +223,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     private class PercentStatusBarElement extends StatusBarElement {
         public PercentStatusBarElement(String name) {
             super(name);
-            doubleFormatter = PercentDoubleFormatter.INSTANCE;
+            doubleFormat = PercentDoubleFormat.INSTANCE;
         }
     }
 
     private class StatusBarElement extends JLabel {
-        protected DoubleFormatter doubleFormatter = SimpleDoubleFormatter.INSTANCE;
+        protected DoubleFormat doubleFormat = SimpleDoubleFormat.INSTANCE;
 
         //        Dimension d=new Dimension(100, 10);
         public StatusBarElement(String name) {
@@ -263,7 +263,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
             } else if (d instanceof Number) {
                 if (d instanceof Complex) {
                     if (((Complex) d).isReal()) {
-                        setText(doubleFormatter.formatDouble(((Complex) d).getReal()));
+                        setText(doubleFormat.formatDouble(((Complex) d).getReal()));
                     } else {
                         setText(String.valueOf(d));
                     }
@@ -272,12 +272,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
                     return;
                 } else if (d instanceof BigDecimal) {
                     double d0 = ((Double) d).doubleValue();
-                    setText(doubleFormatter.formatDouble(d0));
+                    setText(doubleFormat.formatDouble(d0));
                 } else if (d instanceof Double) {
                     double d0 = ((Double) d).doubleValue();
-                    setText(doubleFormatter.formatDouble(d0));
+                    setText(doubleFormat.formatDouble(d0));
                 } else if (d instanceof Float) {
-                    setText(doubleFormatter.formatDouble(((Float) d).doubleValue()));
+                    setText(doubleFormat.formatDouble(((Float) d).doubleValue()));
                 } else {
                     setText(String.valueOf(d));
                 }

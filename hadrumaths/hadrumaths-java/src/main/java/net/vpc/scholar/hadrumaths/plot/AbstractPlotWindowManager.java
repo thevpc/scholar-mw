@@ -5,8 +5,9 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.SwingUtilities3;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -96,7 +97,7 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
                 jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
                 jComponent.putClientProperty(PlotComponent.class.getName(), component);
                 component.setPlotWindowManager(AbstractPlotWindowManager.this);
-                addPlotComponentImpl(component, StringUtils.splitToArr(path, "/"));
+                addPlotComponentImpl(component, HadrumathsStringUtils.splitToArr(path, "/"));
             }
         };
         SwingUtilities3.invokeAndWait(r);

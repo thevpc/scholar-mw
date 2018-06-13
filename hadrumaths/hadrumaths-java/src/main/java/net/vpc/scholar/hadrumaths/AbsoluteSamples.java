@@ -7,29 +7,46 @@ public class AbsoluteSamples extends Samples {
     private double[] z;
 
 
-    AbsoluteSamples(boolean absolute, int dim, double[] x, double[] y, double[] z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.dimension = dim;
+//    AbsoluteSamples(int dim, double[] x, double[] y, double[] z) {
+//        this.x = x;
+//        this.y = y;
+//        this.z = z;
+//        this.dimension = dim;
+//    }
+
+    AbsoluteSamples(double[] x, double[] y, double[] z) {
+        if(z!=null) {
+            if(x==null){
+                throw new IllegalArgumentException("x should not be null");
+            }
+            if(y==null){
+                throw new IllegalArgumentException("y should not be null");
+            }
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.dimension = 3;
+        }else if (y!=null){
+            if(x==null){
+                throw new IllegalArgumentException("x should not be null");
+            }
+            this.x = x;
+            this.y = y;
+            this.dimension = 2;
+        }else if (x!=null){
+            this.x = x;
+            this.dimension = 1;
+        }else{
+            throw new IllegalArgumentException("x should not be null");
+        }
     }
 
-    AbsoluteSamples(boolean absolute, double[] x, double[] y, double[] z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.dimension = 3;
+    AbsoluteSamples(double[] x, double[] y) {
+        this(x,y,null);
     }
 
-    AbsoluteSamples(boolean absolute, double[] x, double[] y) {
-        this.x = x;
-        this.y = y;
-        this.dimension = 2;
-    }
-
-    AbsoluteSamples(boolean absolute, double[] x) {
-        this.x = x;
-        this.dimension = 1;
+    AbsoluteSamples(double[] x) {
+        this(x,null,null);
     }
 
     public int getDimension() {

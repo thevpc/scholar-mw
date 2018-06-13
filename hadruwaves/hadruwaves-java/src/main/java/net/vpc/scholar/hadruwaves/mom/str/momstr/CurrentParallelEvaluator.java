@@ -22,7 +22,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 
     @Override
     public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
-//        ProgressMonitor emonitor=ProgressMonitorFactory.enhance(monitor);
+//        ProgressMonitor emonitor=ProgressMonitorFactory.nonnull(monitor);
         MomStructure str=(MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override

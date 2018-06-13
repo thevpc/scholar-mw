@@ -9,13 +9,13 @@ import java.util.NoSuchElementException;
  * change this template use File | Settings | File Templates.
  */
 public class FormatParamArray implements Cloneable {
-    private static final FormatParam[] EMPTY_AA = new FormatParam[0];
+    private static final ObjectFormatParam[] EMPTY_AA = new ObjectFormatParam[0];
 
-    private Map<Class, FormatParam> paramsTable;
+    private Map<Class, ObjectFormatParam> paramsTable;
 
-    public FormatParamArray(FormatParam[] array) {
+    public FormatParamArray(ObjectFormatParam[] array) {
         for (int i = 0; i < array.length; i++) {
-            FormatParam pp = array[i];
+            ObjectFormatParam pp = array[i];
             if (paramsTable != null && paramsTable.containsKey(pp.getClass())) {
                 throw new IllegalArgumentException("Param " + pp.getClass().getSimpleName());
             }
@@ -33,14 +33,14 @@ public class FormatParamArray implements Cloneable {
         return this;
     }
 
-    public FormatParamArray remove(FormatParam param) {
+    public FormatParamArray remove(ObjectFormatParam param) {
         if (paramsTable != null) {
             paramsTable.remove(param.getClass());
         }
         return this;
     }
 
-    public FormatParamArray set(FormatParam param) {
+    public FormatParamArray set(ObjectFormatParam param) {
         if (paramsTable == null) {
             paramsTable = new HashMap<>();
         }
@@ -48,21 +48,21 @@ public class FormatParamArray implements Cloneable {
         return this;
     }
 
-    public <T extends FormatParam> T getParam(T param) {
-        FormatParam p = getParam(param.getClass(), false);
+    public <T extends ObjectFormatParam> T getParam(T param) {
+        ObjectFormatParam p = getParam(param.getClass(), false);
         return (T) (p == null ? param : p);
     }
 
-    public <T extends FormatParam> T getParam(Class<T> paramClass, boolean required) {
-        FormatParam p = paramsTable == null ? null : paramsTable.get(paramClass);
+    public <T extends ObjectFormatParam> T getParam(Class<T> paramClass, boolean required) {
+        ObjectFormatParam p = paramsTable == null ? null : paramsTable.get(paramClass);
         if (p == null && required) {
             throw new NoSuchElementException(paramClass.getSimpleName() + " is requiered");
         }
         return (T) p;
     }
 
-    public FormatParam[] toArray() {
-        return ((paramsTable == null || paramsTable.size() == 0) ? EMPTY_AA : paramsTable.values().toArray(new FormatParam[paramsTable.size()]));
+    public ObjectFormatParam[] toArray() {
+        return ((paramsTable == null || paramsTable.size() == 0) ? EMPTY_AA : paramsTable.values().toArray(new ObjectFormatParam[paramsTable.size()]));
     }
 
     public FormatParamArray copy() {

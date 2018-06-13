@@ -65,10 +65,10 @@ public class TaskComponent extends JPanel implements ActionListener {
         pause = new JToggleButton("");
         pause.setOpaque(true);
         pause.setBackground(Color.WHITE);
-        pause.setIcon(new ImageIcon(getClass().getResource("PauseTask.gif")));
+        pause.setIcon(new ImageIcon(TaskComponent.class.getResource("PauseTask.gif")));
         pause.setToolTipText("Pause");
         pause.addActionListener(this);
-        detach = new JButton(new ImageIcon(getClass().getResource("NextTask.gif")));
+        detach = new JButton(new ImageIcon(TaskComponent.class.getResource("NextTask.gif")));
         detach.setOpaque(true);
         detach.setBackground(Color.WHITE);
         detach.setToolTipText("Start Next");
@@ -76,7 +76,7 @@ public class TaskComponent extends JPanel implements ActionListener {
         kill = new JButton("");
         kill.setOpaque(true);
         kill.setBackground(Color.WHITE);
-        kill.setIcon(new ImageIcon(getClass().getResource("StopTask.gif")));
+        kill.setIcon(new ImageIcon(TaskComponent.class.getResource("StopTask.gif")));
         kill.setToolTipText("Kill");
         kill.addActionListener(this);
         setLayout(new GridBagLayout2(

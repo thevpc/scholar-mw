@@ -27,7 +27,7 @@ public class PlotMatrixA extends PlotAxisSeries implements Cloneable {
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(structure.matrixA().monitor(monitor).computeMatrix().getArrayCopy());
 //        emonitor.terminatem(getClass().getSimpleName());

@@ -28,7 +28,7 @@ public class PlotTestModeFunctionsScalarProducts extends PlotAxisSeries implemen
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(Maths.matrix(structure.getTestModeScalarProducts(monitor)));
 //        emonitor.terminatem(getClass().getSimpleName());

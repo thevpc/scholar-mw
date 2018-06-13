@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.dump;
 import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.FormatParamSet;
-import net.vpc.scholar.hadrumaths.format.params.DebugFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
 
 import java.util.Collection;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class DumpManager {
         register(Expr.class, new DumpDelegate() {
             @Override
             public String getDumpString(Object object) {
-                return FormatFactory.format(object, new FormatParamSet(DebugFormat.INSTANCE));
+                return FormatFactory.format(object, new ObjectFormatParamSet(DebugObjectFormatParam.INSTANCE));
             }
         });
     }

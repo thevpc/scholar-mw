@@ -24,7 +24,7 @@ public class MomConvergenceManager {
     }
 
 //    public int computeTestFunctionsForReelFreqConvergence(double precision, double freq[], ProgressMonitor monitor) {
-//        monitor = ProgressMonitorFactory.enhance(monitor);
+//        monitor = ProgressMonitorFactory.nonnull(monitor);
 //        momStructure.build();
 //        double[] old = new double[freq.length];
 //        for (int fi = 0; fi < freq.length; fi++) {

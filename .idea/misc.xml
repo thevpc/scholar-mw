@@ -34,6 +34,7 @@
         <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings/pom.xml" />
         <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/pom.xml" />
         <option value="/data/vpc/Data/xprojects/net/vpc/apps/inspector-gadget/pom.xml" />
+        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/pom.xml" />
       </list>
     </option>
   </component>

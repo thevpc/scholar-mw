@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.util.DoubleFormatter;
 import net.vpc.scholar.hadrumaths.ExternalLibrary;
 import net.vpc.scholar.hadrumaths.Maths;
 
@@ -30,9 +30,9 @@ public class ValuesPlotModel implements PlotModel {
     private Map<String, Object> properties = new HashMap<String, Object>();
     private Set<ExternalLibrary> preferredLibraries = EnumSet.allOf(ExternalLibrary.class);
     private Set<ExternalLibrary> enabledLibraries = EnumSet.allOf(ExternalLibrary.class);
-    private DoubleFormatter xformat = null;
-    private DoubleFormatter yformat = null;
-    private DoubleFormatter zformat = null;
+    private DoubleFormat xformat = null;
+    private DoubleFormat yformat = null;
+    private DoubleFormat zformat = null;
 
     /**
      * surface
@@ -99,29 +99,29 @@ public class ValuesPlotModel implements PlotModel {
         check();
     }
 
-    public DoubleFormatter getXformat() {
+    public DoubleFormat getXformat() {
         return xformat;
     }
 
-    public ValuesPlotModel setXformat(DoubleFormatter xformat) {
+    public ValuesPlotModel setXformat(DoubleFormat xformat) {
         this.xformat = xformat;
         return this;
     }
 
-    public DoubleFormatter getYformat() {
+    public DoubleFormat getYformat() {
         return yformat;
     }
 
-    public ValuesPlotModel setYformat(DoubleFormatter yformat) {
+    public ValuesPlotModel setYformat(DoubleFormat yformat) {
         this.yformat = yformat;
         return this;
     }
 
-    public DoubleFormatter getZformat() {
+    public DoubleFormat getZformat() {
         return zformat;
     }
 
-    public ValuesPlotModel setZformat(DoubleFormatter zformat) {
+    public ValuesPlotModel setZformat(DoubleFormat zformat) {
         this.zformat = zformat;
         return this;
     }

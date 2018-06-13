@@ -1,12 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.BytesSizeFormatter;
-import net.vpc.common.util.DoubleFormatter;
-import net.vpc.common.util.MetricFormatter;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.common.strings.StringUtils;
+import net.vpc.common.util.BytesSizeFormat;
+import net.vpc.common.util.DoubleFormat;
+import net.vpc.common.util.FrequencyFormat;
+import net.vpc.common.util.MetricFormat;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 public class DoubleFormatterFactory {
-    public static DoubleFormatter create(String format){
+    public static DoubleFormat create(String format){
         if (StringUtils.isEmpty(format)) {
             format = "";
         }
@@ -26,14 +28,14 @@ public class DoubleFormatterFactory {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Maths.Config.getFrequencyFormatter();
                 }
-                return new FrequencyFormatter(subFormat);
+                return new FrequencyFormat(subFormat);
             }
             case "m":
             case "metric": {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Maths.Config.getMetricFormatter();
                 }
-                return new MetricFormatter(subFormat);
+                return new MetricFormat(subFormat);
             }
             case "b":
             case "mem":
@@ -41,26 +43,26 @@ public class DoubleFormatterFactory {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Maths.Config.getMemorySizeFormatter();
                 }
-                return new BytesSizeFormatter(subFormat);
+                return new BytesSizeFormat(subFormat);
             }
             case "%":
             case "percent": {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Maths.percentFormat();
                 }
-                return new DecimalDoubleFormatter(subFormat);
+                return new DecimalDoubleFormat(subFormat);
             }
             case "d":
             case "double": {
                 if (StringUtils.isEmpty(subFormat)) {
                     return Maths.Config.getDoubleFormat();
                 }
-                return new DecimalDoubleFormatter(subFormat);
+                return new DecimalDoubleFormat(subFormat);
             }
         }
         if (StringUtils.isEmpty(subFormat)) {
             return Maths.Config.getDoubleFormat();
         }
-        return new DecimalDoubleFormatter(subFormat);
+        return new DecimalDoubleFormat(subFormat);
     }
 }

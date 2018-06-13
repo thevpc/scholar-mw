@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.util.Converter;
 import net.vpc.common.util.TypeReference;
-import net.vpc.scholar.hadrumaths.util.Converter;
 
 import java.util.*;
 

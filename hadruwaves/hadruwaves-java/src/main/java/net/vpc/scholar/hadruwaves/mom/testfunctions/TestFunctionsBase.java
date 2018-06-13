@@ -144,7 +144,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 //        if(structure==null){
 //            throw new IllegalArgumentException("Unable to evaluate Test Functions since 'structure' is null");
 //        }
-        ProgressMonitor emon = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emon = ProgressMonitorFactory.nonnull(monitor);
         DoubleToVector[] gpImpl = gpImpl(emon);
         DoubleToVector[] validGpImpl = null;
         HintAxisType fnAxis = getAxisType();

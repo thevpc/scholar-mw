@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.util.log;
 
-import net.vpc.common.util.mon.AbstractProgressMonitor2;
+import net.vpc.common.util.mon.AbstractProgressMonitor;
 import net.vpc.common.util.mon.ProgressMessage;
-import net.vpc.scholar.hadrumaths.util.StringUtils;
+import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Date;
 
-public class TLogProgressMonitor extends AbstractProgressMonitor2 {
+public class TLogProgressMonitor extends AbstractProgressMonitor {
     private double progress;
     private ProgressMessage message;
     private String messageFormat;
@@ -39,7 +39,7 @@ public class TLogProgressMonitor extends AbstractProgressMonitor2 {
     }
 
     public void setProgressImpl(double progress, ProgressMessage message) {
-        DecimalFormat sdf = StringUtils.PERCENT_FORMAT;
+        DecimalFormat sdf = HadrumathsStringUtils.PERCENT_FORMAT;
         this.progress = progress;
         this.message = message;
         long newd = System.currentTimeMillis();

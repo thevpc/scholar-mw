@@ -26,7 +26,7 @@ public class PlotTestCoeff extends PlotAxisSeries implements Cloneable {
     }
 
     protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         NamedMatrix namedMatrix = new NamedMatrix(structure.matrixX().monitor(monitor).computeMatrix().getArray());
 //        emonitor.terminatem(getClass().getSimpleName());

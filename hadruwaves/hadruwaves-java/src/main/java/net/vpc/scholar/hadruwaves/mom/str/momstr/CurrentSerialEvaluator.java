@@ -23,7 +23,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
     @Override
     public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-//        ProgressMonitor emonitor = ProgressMonitorFactory.enhance(monitor);
+//        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         String monMessage = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, monMessage, new MonitoredAction<VDiscrete>() {
             @Override

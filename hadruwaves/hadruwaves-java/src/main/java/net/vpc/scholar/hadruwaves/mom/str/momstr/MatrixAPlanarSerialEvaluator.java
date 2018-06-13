@@ -39,7 +39,7 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                     public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex c = MutableComplex.Zero();
 
-                        //copied to local to enhance performance!
+                        //copied to local to nonnull performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
                         DoubleMatrix csp = dsp;
@@ -77,7 +77,7 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                     public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         MutableComplex c = MutableComplex.Zero();
 
-                        //copied to local to enhance performance!
+                        //copied to local to nonnull performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
                         TMatrix<Complex> csp = sp;

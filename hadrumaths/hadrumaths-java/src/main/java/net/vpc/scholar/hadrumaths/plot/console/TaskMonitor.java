@@ -40,8 +40,8 @@ public class TaskMonitor extends JPanel implements ActionListener {
         this.add(south, BorderLayout.SOUTH);
         incrementButton = new JButton("");
         decrementButton = new JButton("");
-        incrementButton.setIcon(SwingUtilities3.getScaledIcon(getClass().getResource("Plus.png"),32,32));
-        decrementButton.setIcon(SwingUtilities3.getScaledIcon(getClass().getResource("Minus.png"),32,32));
+        incrementButton.setIcon(SwingUtilities3.getScaledIcon(TaskMonitor.class.getResource("Plus.png"),32,32));
+        decrementButton.setIcon(SwingUtilities3.getScaledIcon(TaskMonitor.class.getResource("Minus.png"),32,32));
 
         countField = new JTextField(String.valueOf(parallelTasksCount));
         countField.setEditable(false);
@@ -55,10 +55,12 @@ public class TaskMonitor extends JPanel implements ActionListener {
     }
 
     public JInternalFrameHelper getFrame() {
+//        System.out.println("taskMonitor.getFrame");
         return new JInternalFrameHelper(frame);
     }
 
     public void setFrame(JInternalFrame frame) {
+//        System.out.println("taskMonitor.setFrame");
         this.frame = frame;
     }
 
@@ -86,13 +88,13 @@ public class TaskMonitor extends JPanel implements ActionListener {
         plotConsole.start();
         String windowTitle = (task.getWindowTitle());
         String descLabel = (task.getSerieTitle().toString());
-        list.add(new TaskComponent(this, ProgressMonitorFactory.enhance(task), windowTitle, descLabel));
+        list.add(new TaskComponent(this, ProgressMonitorFactory.nonnull(task), windowTitle, descLabel));
         task.start();
     }
 
     public net.vpc.common.util.mon.ProgressMonitor addTask(net.vpc.common.util.mon.ProgressMonitor task, String windowTitle, String descLabel) {
         plotConsole.start();
-        ProgressMonitor m = ProgressMonitorFactory.enhance(task);
+        ProgressMonitor m = ProgressMonitorFactory.nonnull(task);
         list.add(new TaskComponent(this, m, windowTitle, descLabel));
         return m;
     }

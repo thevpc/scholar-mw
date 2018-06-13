@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.heatmap;
 
 
-import net.vpc.common.util.DoubleFormatter;
-import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormatter;
+import net.vpc.common.util.DoubleFormat;
+import net.vpc.scholar.hadrumaths.util.SimpleDoubleFormat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +15,11 @@ public class HeatMapPlotUnitsArea extends JComponent {
     private boolean horizontal;
     private double min;
     private double max;
-    private DoubleFormatter doubleFormatter;
+    private DoubleFormat doubleFormat;
     private Font font;
     private Font font0;
 
-    public HeatMapPlotUnitsArea(boolean horizontal, double min, double max, DoubleFormatter doubleFormatter, int ticksCount, Dimension preferredDimension) {
+    public HeatMapPlotUnitsArea(boolean horizontal, double min, double max, DoubleFormat doubleFormat, int ticksCount, Dimension preferredDimension) {
         if (ticksCount <= 2) {
             ticksCount = 2;
         }
@@ -27,7 +27,7 @@ public class HeatMapPlotUnitsArea extends JComponent {
         this.ticksCount = ticksCount;
         this.min = min;
         this.max = max;
-        this.doubleFormatter = doubleFormatter;
+        this.doubleFormat = doubleFormat;
         setPreferredDimension(preferredDimension);
     }
 
@@ -89,10 +89,10 @@ public class HeatMapPlotUnitsArea extends JComponent {
             return df.format(v) + "%";
         } else {
             double v2 = min + (v / 100.0) * (max - min);
-            if (doubleFormatter == null) {
-                return SimpleDoubleFormatter.INSTANCE.formatDouble(v2);
+            if (doubleFormat == null) {
+                return SimpleDoubleFormat.INSTANCE.formatDouble(v2);
             }
-            return doubleFormatter.formatDouble(v2);
+            return doubleFormat.formatDouble(v2);
         }
     }
 

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.LRUMap;
+import net.vpc.common.util.LRUMap;
 import net.vpc.scholar.hadrumaths.dump.Dumpable;
 
 import java.io.ObjectStreamException;
