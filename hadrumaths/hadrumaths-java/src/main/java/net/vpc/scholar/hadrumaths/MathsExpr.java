@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.ReflectUtils;
+import net.vpc.common.util.PlatformReflectUtils;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
@@ -13,7 +13,7 @@ class MathsExpr {
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
         TypeReference cls = arr[0].getComponentType();
         for (int i = 0; i < arr.length; i++) {
-            cls = ReflectUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
+            cls = PlatformReflectUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
         }
         VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
         return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {

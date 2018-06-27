@@ -8,7 +8,7 @@
     <version>${scholar-version}</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.28</scholar-version>
+        <scholar-version>3.1.29</scholar-version>
     </properties>
     <dependencies>
         <dependency>

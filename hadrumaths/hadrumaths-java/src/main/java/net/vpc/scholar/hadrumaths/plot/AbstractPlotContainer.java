@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.SwingUtilities3;
-import net.vpc.common.util.PlatformTypes;
+import net.vpc.common.util.PlatformTypeUtils;
 import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
@@ -66,7 +66,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
         }
-        if (name.startsWith("#") && PlatformTypes.isInteger(name.substring(1))) {
+        if (name.startsWith("#") && PlatformTypeUtils.isInteger(name.substring(1))) {
             int x = Integer.parseInt(name.substring(1));
             if (x >= 0 && x < count) {
                 PlotComponent c = getPlotComponent(x);

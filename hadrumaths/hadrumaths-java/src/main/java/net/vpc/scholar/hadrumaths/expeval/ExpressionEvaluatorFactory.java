@@ -38,15 +38,15 @@ public final class ExpressionEvaluatorFactory {
 
     public static ExpressionEvaluator createEvaluator() {
         DefaultExpressionEvaluator e = new DefaultExpressionEvaluator();
-        e.getContext().setResolver(EVAL_RESOLVER);
-        e.getContext().setNodeResolver(ExprNodeResolver.INSTANCE);
+        e.getDefinition().addResolver(EVAL_RESOLVER);
+        e.getDefinition().addNodeResolver(ExprNodeResolver.INSTANCE);
         return e;
     }
 
     public static ExpressionEvaluator createParser() {
         DefaultExpressionEvaluator e = new DefaultExpressionEvaluator();
-        e.getContext().setResolver(PARSER);
-        e.getContext().setNodeResolver(ExprNodeResolver.INSTANCE);
+        e.getDefinition().addResolver(PARSER);
+        e.getDefinition().addNodeResolver(ExprNodeResolver.INSTANCE);
         return e;
     }
 

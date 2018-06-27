@@ -11,7 +11,7 @@
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.1.28</scholar-version>
+        <scholar-version>3.1.29</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>net.vpc.common</groupId>
             <artifactId>vpc-common-utils</artifactId>
-            <version>1.16</version>
+            <version>1.17</version>
         </dependency>
         <dependency>
             <groupId>net.vpc.common</groupId>
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>net.vpc.common</groupId>
             <artifactId>vpc-common-jeep</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <dependency>

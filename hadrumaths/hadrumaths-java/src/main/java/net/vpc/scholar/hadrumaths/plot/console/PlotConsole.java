@@ -102,7 +102,7 @@ public class PlotConsole implements PlotComponentDisplayer {
         if (startTime == 0) {
             getTaskMonitor();
             getLog().trace("Start Project " + getFrameTitle());
-            getLog();
+            getLockMonitor();
             startTime = System.currentTimeMillis();
             disposing = false;
             readOnly = false;

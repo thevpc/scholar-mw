@@ -3946,11 +3946,11 @@ public final class Maths {
     }
 
     public static String formatPeriodNanos(long period) {
-        return Config.getTimePeriodFormatter().formatNanos(period);
+        return Config.getTimePeriodFormat().formatNanos(period);
     }
 
     public static String formatPeriodMillis(long period) {
-        return Config.getTimePeriodFormatter().formatMillis(period);
+        return Config.getTimePeriodFormat().formatMillis(period);
     }
 
     public static int sizeOf(Class src) {
@@ -4042,7 +4042,7 @@ public final class Maths {
     }
 
     public static DoubleFormat percentFormat() {
-        return Config.getPercentFormatter();
+        return Config.getPercentFormat();
     }
 
     public static DoubleFormat frequencyFormat() {

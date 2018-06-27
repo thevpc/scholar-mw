@@ -28,9 +28,9 @@ public class ExpressionEvaluatorTest {
 
     private void testExpr(String expression) {
         ExpressionEvaluator m = ExpressionEvaluatorFactory.createParser();
-        m.getContext().addDefaults();
-        m.getContext().declareVar("x", Double.class);
-        m.getContext().declareVar("y", Double.class);
+        m.getDefinition().importDefaults();
+        m.getDefinition().declareVar("x", Double.class);
+        m.getDefinition().declareVar("y", Double.class);
         Object evaluated = m.evaluate(expression);
         System.out.println(expression);
         System.out.println(evaluated.toString());

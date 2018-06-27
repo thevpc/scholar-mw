@@ -53,7 +53,7 @@ public final class MathsConfig {
     private FrequencyFormat frequencyFormatter = new FrequencyFormat();
     private BytesSizeFormat memorySizeFormatter = new BytesSizeFormat();
     private MetricFormat metricFormatter = new MetricFormat();
-    private net.vpc.common.util.TimePeriodFormatter timePeriodFormatter = new DefaultTimePeriodFormatter();
+    private net.vpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
     private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
     private ExprMatrixFactory exprMatrixFactory = DefaultExprMatrixFactory.INSTANCE;
     private ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
@@ -123,7 +123,7 @@ public final class MathsConfig {
             return String.valueOf(value);
         }
     };
-    private DoubleFormat percentFormatter = new DoubleFormat() {
+    private DoubleFormat percentFormat = new DoubleFormat() {
         private final DecimalFormat d = new DecimalFormat("0.00%");
 
         @Override
@@ -627,13 +627,13 @@ public final class MathsConfig {
         return exprCubeFactory;
     }
 
-    public net.vpc.common.util.TimePeriodFormatter getTimePeriodFormatter() {
+    public net.vpc.common.util.TimePeriodFormat getTimePeriodFormat() {
         
-        return timePeriodFormatter;
+        return timePeriodFormat;
     }
 
-    public DoubleFormat getPercentFormatter() {
-        return percentFormatter;
+    public DoubleFormat getPercentFormat() {
+        return percentFormat;
     }
 
     public DoubleFormat getDoubleFormat() {

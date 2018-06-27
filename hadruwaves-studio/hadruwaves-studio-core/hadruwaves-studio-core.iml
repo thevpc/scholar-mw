@@ -12,6 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.29" level="project" />
     <orderEntry type="module" module-name="hadruwaves-studio-standalone" />
     <orderEntry type="library" name="Maven: net.vpc.lib.pheromone:pheromone-app:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: net.vpc.lib.pheromone:pheromone-ariana:1.0.0" level="project" />

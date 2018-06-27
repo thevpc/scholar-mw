@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.29" level="project" />
     <orderEntry type="module" module-name="hadrumaths-scala" />
     <orderEntry type="module" module-name="hadrumaths" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />

@@ -172,12 +172,16 @@ public class VarEvaluator {
                         expr2.append("\n");
                         break;
                     }
-                    case ExpressionStreamTokenizer.TT_NUMBER: {
-                        expr2.append(String.valueOf(token.nval));
+                    case ExpressionStreamTokenizer.TT_NUMBER_FLOAT: {
+                        expr2.append(String.valueOf(token.fval));
+                        break;
+                    }
+                    case ExpressionStreamTokenizer.TT_NUMBER_INT: {
+                        expr2.append(String.valueOf(token.ival));
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_STRING: {
-                        expr2.append("\"").append(String.valueOf(token.nval)).append("\"");
+                        expr2.append("\"").append(String.valueOf(token.sval)).append("\"");
                         break;
                     }
                     case ExpressionStreamTokenizer.TT_COMPLEX: {
@@ -286,25 +290,23 @@ public class VarEvaluator {
             }
         }
         ExpressionEvaluator parser = ExpressionEvaluatorFactory.createEvaluator();
-        parser.getContext().addDefaults();
+        parser.getDefinition().importDefaults();
+        parser.getDefinition().declareVar("DIM_UNIT", Double.class,dimensionUnit);
+        parser.getDefinition().declareVar("FREQ_UNIT", Double.class,frequencyUnit);
+        parser.getDefinition().declareVar("C", Double.class,Maths.C);
+        parser.getDefinition().declareVar("U0", Double.class,Maths.U0);
+        parser.getDefinition().declareVar("EPS0", Double.class,Maths.EPS0);
 
-        parser.getContext().declareVar("DIM_UNIT", Double.class,dimensionUnit);
-        parser.getContext().declareVar("FREQ_UNIT", Double.class,frequencyUnit);
-        parser.getContext().declareVar("C", Double.class,Maths.C);
-        parser.getContext().declareVar("U0", Double.class,Maths.U0);
-        parser.getContext().declareVar("EPS0", Double.class,Maths.EPS0);
-
-        parser.getContext().declareFunction(new ZinFunction());
-        parser.getContext().declareFunction(new CapaFunction());
-        parser.getContext().declareFunction(new SindicesFunction());
+        parser.getDefinition().declareFunction(new ZinFunction());
+        parser.getDefinition().declareFunction(new CapaFunction());
+        parser.getDefinition().declareFunction(new SindicesFunction());
 
         for (Iterator i = workingVars.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             String k = (String) entry.getKey();
             Object v = entry.getValue();
             if (v instanceof Complex) {
-                Complex c = (Complex) v;
-                parser.getContext().declareVar(k, Complex.class,((Complex) v));
+                parser.getDefinition().declareVar(k, Complex.class,v);
             }
         }
 
@@ -320,7 +322,7 @@ public class VarEvaluator {
             } catch (NoSuchVariableException var) {
                 Complex c2 = getVarComplex(var.getVarName());//
 
-                parser.getContext().declareVar(var.getVarName(),Double.class, c2.doubleValue());
+                parser.getDefinition().declareVar(var.getVarName(),Double.class, c2.doubleValue());
             }
         }
     }
@@ -328,14 +330,14 @@ public class VarEvaluator {
     private abstract class SubStrFunction extends ExpressionFunction {
 
         public SubStrFunction(String name,Class type) {
-            super(name,type);
+            super(name,type,new Class[]{String.class});
         }
 
         @Override
-        public Object evaluate(Object[] args, ExpressionEvaluatorContext context) {
+        public Object evaluate(ExpressionNode[] args,ExpressionEvaluator evaluator) {
             MomStructure str = null;
             try {
-                String n = (String) args[0];
+                String n = (String) args[0].evaluate(evaluator);
                 Map<String, String> mapping = new HashMap<String, String>();
                 if (n.endsWith(")")) {
                     String nn = n.substring(n.indexOf('(') + 1, n.length() - 1);
@@ -376,10 +378,10 @@ public class VarEvaluator {
                 Logger.getLogger(VarEvaluator.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IllegalArgumentException(ex);
             }
-            return evaluate(str, args, context);
+            return evaluate(str, args, evaluator);
         }
 
-        public abstract Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context);
+        public abstract Object evaluate(MomStructure str, Object[] params, ExpressionEvaluator context);
     }
 
     private class ZinFunction extends SubStrFunction {
@@ -389,7 +391,7 @@ public class VarEvaluator {
         }
 
         @Override
-        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluator context) {
             int ii = 0;
             int jj = 0;
             if (params.length >= 3) {
@@ -407,7 +409,7 @@ public class VarEvaluator {
         }
 
         @Override
-        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluator context) {
             int ii = 0;
             int jj = 0;
             if (params.length >= 3) {
@@ -425,7 +427,7 @@ public class VarEvaluator {
         }
 
         @Override
-        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluatorContext context) {
+        public Object evaluate(MomStructure str, Object[] params, ExpressionEvaluator context) {
             int ii = 0;
             int jj = 0;
             if (params.length >= 3) {
