@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 

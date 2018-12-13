@@ -5,6 +5,6 @@
     <option name="uncheckedWarnings" value="true" />
     <option name="featureWarnings" value="true" />
     <option name="explainTypeErrors" value="true" />
-    <profile name="Maven 1" modules="tmwlib-hellow-world,tmwlib-examples-scala,tmwlib-hello-world,tmwlib-mastere-gt,example-project,math-scala,tmwlib-simple-example-scala,hadruwaves-scala-examples-old,thesis-2015-imen-khadhraoui2,mastere-gt-hadruwaves,thesis-2015-raja-mchaalia,thesis-2015-imen-khadhraoui,hadrumaths-scala,imen-aouf,hadruwaves-scala,thesis-2012-basma-oueslati,hadruwaves-scala-helloworld,hadrumaths-scala-examples,hadrumaths-scala-helloworld,hadruwaves-scala-examples" />
+    <profile name="Maven 1" modules="tmwlib-hellow-world,tmwlib-examples-scala,tmwlib-hello-world,tmwlib-mastere-gt,example-project,math-scala,tmwlib-simple-example-scala,hadruwaves-scala-examples,hadruwaves-scala-examples-old,hadrumaths-scala-examples,mastere-gt-hadruwaves,hadrumaths-scala-helloworld,hadrumaths-scala,thesis-2015-raja-mchaalia,thesis-2012-basma-oueslati,thesis-2015-imen-khadhraoui,imen-aouf,thesis-2015-imen-khadhraoui2,hadruwaves-scala,hadruwaves-scala-helloworld" />
   </component>
 </project>

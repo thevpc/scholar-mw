@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 import java.util.Collection;

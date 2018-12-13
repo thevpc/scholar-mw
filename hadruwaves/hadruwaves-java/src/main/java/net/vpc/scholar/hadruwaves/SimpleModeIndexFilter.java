@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves;
 
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 public abstract class SimpleModeIndexFilter implements ModeIndexFilter {
     private boolean frequencyDependent;

@@ -315,4 +315,8 @@ public abstract class AbstractExpBase implements Expr {
         return s == null ? Collections.EMPTY_SET : s;
     }
 
+    @Override
+    public Object prop(String name) {
+        return getProperty(name);
+    }
 }

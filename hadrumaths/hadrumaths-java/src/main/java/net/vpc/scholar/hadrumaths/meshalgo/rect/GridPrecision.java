@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.meshalgo.rect;
 
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 

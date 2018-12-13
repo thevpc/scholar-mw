@@ -25,7 +25,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
  * User: taha
  * Date: 7 juil. 2003
  * Time: 10:44:40
- * To change this template use Options | File Templates.
+ * 
  */
 public class RooftopGpMesherEditor extends JPanel implements GpMesherEditor{
 

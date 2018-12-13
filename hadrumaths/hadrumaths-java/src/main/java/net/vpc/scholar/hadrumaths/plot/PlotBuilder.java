@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
@@ -7,20 +8,21 @@ import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
+import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
  * Created by vpc on 5/6/14.
  */
 public class PlotBuilder {
+
     private Domain domain;
     private PlotContainer parent;
     private PlotComponent update;
     private String updateName;
+    private String name;
     private String title;
     private List<String> titles = new ArrayList<>();
     private boolean display = true;
@@ -45,7 +47,15 @@ public class PlotBuilder {
     private List<Object> xsamplesToPlot = new ArrayList<>();
     private List<PlotBuilderListener> listeners = new ArrayList<>();
 
-    public PlotComponent plot(Object... any) {
+    public PlotComponent plotAll(Object... any) {
+        return plot((Object) any);
+    }
+
+    public PlotComponent plot() {
+        return plot(new Object[0]);
+    }
+
+    public PlotComponent plot(Object any) {
         return createPlotComponent(createModel(any));
     }
 
@@ -63,6 +73,7 @@ public class PlotBuilder {
     public PlotBuilder mimic(PlotBuilder other) {
         domain = other.domain;
         title = other.title;
+        name = other.name;
         plotType = other.plotType;
         converter = other.converter;
         xname = other.xname;
@@ -148,7 +159,6 @@ public class PlotBuilder {
 //        this.xformat = new ListDoubleFormat(format);
 //        return this;
 //    }
-
     public DoubleFormat yformat() {
         return xformat;
     }
@@ -156,6 +166,10 @@ public class PlotBuilder {
     public PlotBuilder yformat(DoubleFormat format) {
         this.yformat = format;
         return this;
+    }
+
+    public PlotBuilder yformat(String format) {
+        return yformat(Maths.dblformat(format));
     }
 
     public PlotBuilder setNoLibraryPreferred() {
@@ -239,7 +253,6 @@ public class PlotBuilder {
 //    public PlotBuilder zsamples(ToDoubleArrayAware yvalue) {
 //        return zsamples(yvalue.toDoubleArray());
 //    }
-
     public PlotBuilder xsamples(Object[] xvalue) {
         return xsamples(Arrays.asList(xvalue));
     }
@@ -249,19 +262,16 @@ public class PlotBuilder {
             return xsamples(new double[0]);
         }
         Class componentType = xvalue.get(0).getClass();
-        if (
-                componentType.equals(Double.TYPE)
-                        || componentType.equals(Double.class)
-                        || componentType.equals(Float.TYPE)
-                        || componentType.equals(Float.class)
-                        || componentType.equals(Integer.TYPE)
-                        || componentType.equals(Integer.class)
-                        || componentType.equals(Short.TYPE)
-                        || componentType.equals(Short.class)
-                        || componentType.equals(Long.TYPE)
-                        || componentType.equals(Long.class)
-
-                ) {
+        if (componentType.equals(Double.TYPE)
+                || componentType.equals(Double.class)
+                || componentType.equals(Float.TYPE)
+                || componentType.equals(Float.class)
+                || componentType.equals(Integer.TYPE)
+                || componentType.equals(Integer.class)
+                || componentType.equals(Short.TYPE)
+                || componentType.equals(Short.class)
+                || componentType.equals(Long.TYPE)
+                || componentType.equals(Long.class)) {
             DoubleList to = new DoubleArrayList(xvalue.size());
             for (Object o : xvalue) {
                 to.append(((Number) o).doubleValue());
@@ -280,11 +290,8 @@ public class PlotBuilder {
             return xsamples(new double[0]);
         }
         TypeReference componentType = xvalue.getComponentType();
-        if (
-                componentType.getTypeClass().equals(Double.TYPE)
-                        || componentType.getTypeClass().equals(Double.class)
-
-                ) {
+        if (componentType.getTypeClass().equals(Double.TYPE)
+                || componentType.getTypeClass().equals(Double.class)) {
             DoubleList to = (DoubleList) xvalue.to(Maths.$DOUBLE);
             return xsamples(to.toDoubleArray());
         } else {
@@ -406,6 +413,10 @@ public class PlotBuilder {
         this.title = title;
         return this;
     }
+    public PlotBuilder name(String name) {
+        this.name = name;
+        return this;
+    }
 
     public PlotBuilder titles(String... titles) {
         this.titles = new ArrayList<>(Arrays.asList(titles));
@@ -453,6 +464,10 @@ public class PlotBuilder {
         this.updateName = null;
         this.update = null;
         return this;
+    }
+
+    public PlotBuilder update() {
+        return update(path + "/" + name);
     }
 
     public PlotBuilder update(String updateName) {
@@ -553,7 +568,8 @@ public class PlotBuilder {
     }
 
     public PlotBuilder asComplex() {
-        return converter(ComplexAsDouble.COMPLEX);
+//        return converter(ComplexAsDouble.COMPLEX);
+        return converter(null);
     }
 
     public PlotBuilder plotType(PlotType plotType) {
@@ -577,8 +593,6 @@ public class PlotBuilder {
 //        }
 //        return plot(all);
 //    }
-
-
     private PlotModel _plotArr(Object[] any) {
         if (any == null) {
             return _plotAny(null);
@@ -589,12 +603,53 @@ public class PlotBuilder {
         return _plotAny(any);
     }
 
+    private TVector toTVectorD(Object any) {
+        if (any instanceof double[]) {
+            return DoubleArrayList.row((double[]) any);
+        } else if (any instanceof int[]) {
+            return new IntArrayList(true, (int[]) any);
+        } else if (any instanceof double[][]) {
+            double[][] d = (double[][]) any;
+            double[] d2 = new double[d.length];
+            for (int i = 0; i < d.length; i++) {
+                if (d[i].length != 1) {
+                    return null;
+                }
+                d2[i] = d[i][0];
+            }
+            return DoubleArrayList.column((double[]) d2);
+        } else if (any instanceof int[][]) {
+            int[][] d = (int[][]) any;
+            int[] d2 = new int[d.length];
+            for (int i = 0; i < d.length; i++) {
+                if (d[i].length != 1) {
+                    return null;
+                }
+                d2[i] = d[i][0];
+            }
+            return new IntArrayList(false, (int[]) d2);
+        }
+        return null;
+    }
+
     private PlotModel _plotAny(Object any) {
+        if (any instanceof PlotModel) {
+            PlotModel mm = (PlotModel) any;
+            postConfigure(mm);
+            return mm;
+        }
         if (any instanceof PlotLines) {
             PlotLines y = (PlotLines) any;
             titles(y.titles());
             xsamples(y.xsamples());
             any = y.getValues();
+        }
+        if (any instanceof JComponent) {
+            return new SwingComponentPlotModel((JComponent) any);
+        }
+        TVector a2 = toTVectorD(any);
+        if (a2 != null) {
+            any = a2;
         }
         PlotTypesHelper.TypeAndValue typeAndValue = PlotTypesHelper.resolveType(any);
         String s = typeAndValue.type;
@@ -614,6 +669,7 @@ public class PlotBuilder {
                 for (Object a : PlotTypesHelper.toObjectArray(o)) {
                     list.add(_plotAny(a));
                 }
+                postConfigure(list);
                 return list;
             case "complex[][]": {
                 boolean matrix = "true".equals(typeAndValue.props.get("matrix"));
@@ -669,36 +725,32 @@ public class PlotBuilder {
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             }
             case "file": {
-                try {
-                    PlotModel plotModel = Plot.loadPlotModel((File) o);
-                    if (plotModel instanceof ValuesPlotModel) {
-                        ValuesPlotModel v = (ValuesPlotModel) plotModel;
-                        if (xformat != null) {
-                            v.setXformat(xformat);
-                        }
-                        if (yformat != null) {
-                            v.setYformat(yformat);
-                        }
-                        if (xname != null) {
-                            v.setxTitle(xname);
-                        }
-                        if (yname != null) {
-                            v.setyTitle(yname);
-                        }
-                        if (converter != null) {
-                            v.setConverter(converter);
-                        }
-                        if (title != null) {
-                            v.setTitle(title);
-                        }
-                        if (titles != null && titles.size() > 0) {
-                            v.setYtitles(titles.toArray(new String[titles.size()]));
-                        }
+
+                PlotModel plotModel = Plot.loadPlotModel((File) o);
+                if (plotModel instanceof ValuesPlotModel) {
+                    ValuesPlotModel v = (ValuesPlotModel) plotModel;
+                    if (xformat != null) {
+                        v.setXformat(xformat);
                     }
-                    return plotModel;
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(e);
+                    if (yformat != null) {
+                        v.setYformat(yformat);
+                    }
+                    if (xname != null) {
+                        v.setxTitle(xname);
+                    }
+                    if (yname != null) {
+                        v.setyTitle(yname);
+                    }
+                    if (converter != null) {
+                        v.setConverter(converter);
+                    }
+                    if (titles != null && titles.size() > 0) {
+                        v.setYtitles(titles.toArray(new String[titles.size()]));
+                    }
                 }
+                postConfigureNonNull(plotModel);
+                return plotModel;
+
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             }
             default:
@@ -822,7 +874,6 @@ public class PlotBuilder {
 //    public PlotComponent plot(Expr... expressions) {
 //        return _plotExprArray(expressions);
 //    }
-
     private PlotModel _plotExprArray(Expr[] expressions) {
         if (expressions.length == 1 && samples instanceof AdaptiveSamples) {
             AdaptiveSamples adaptiveSamples = (AdaptiveSamples) samples;
@@ -893,30 +944,30 @@ public class PlotBuilder {
             ExpressionsPlotModel m = _createExpressionsPlotModel()
                     .setExpressions(other.toArray(new Expr[other.size()]))
                     .setComplexAsDouble(c);
-            PlotType pt=getPlotType();
-            if(pt==null){
-                int dd=1;
+            PlotType pt = getPlotType();
+            if (pt == null) {
+                int dd = 1;
                 for (Expr expr : other) {
                     int domainDimension = expr.getDomain().getDomainDimension();
-                    if(domainDimension>dd){
-                        dd=domainDimension;
+                    if (domainDimension > dd) {
+                        dd = domainDimension;
                     }
                 }
-                switch (dd){
-                    case 1:{
-                        pt=PlotType.CURVE;
+                switch (dd) {
+                    case 1: {
+                        pt = PlotType.CURVE;
                         break;
                     }
-                    case 2:{
-                        pt=PlotType.HEATMAP;
+                    case 2: {
+                        pt = PlotType.HEATMAP;
                         break;
                     }
-                    case 3:{
-                        pt=PlotType.HEATMAP;
+                    case 3: {
+                        pt = PlotType.HEATMAP;
                         break;
                     }
-                    default:{
-                        pt=PlotType.HEATMAP;
+                    default: {
+                        pt = PlotType.HEATMAP;
                         break;
                     }
                 }
@@ -924,18 +975,20 @@ public class PlotBuilder {
             }
             return m;
         } else if (other.size() == 0) {
-            return (
-                    new VDiscretePlotModel()
-                            .setTitle(title)
-                            .setPreferredLibraries(preferredLibraries)
-                            .setVdiscretes(discretes)
-            );
+            VDiscretePlotModel mm = new VDiscretePlotModel()
+                    .setPreferredLibraries(preferredLibraries)
+                    .setVdiscretes(discretes)
+                    .setConverter(converter);
+            postConfigure(mm);
+            return mm;
         } else {
             PlotModelList list = new PlotModelList("Expressions");
-            list.add(new VDiscretePlotModel()
-                    .setTitle(title)
+            VDiscretePlotModel mm = new VDiscretePlotModel()
                     .setPreferredLibraries(preferredLibraries)
-                    .setVdiscretes(discretes));
+                    .setVdiscretes(discretes)
+                    .setConverter(converter);
+            postConfigure(mm);
+            list.add(mm);
             list.add(_plotArr(other.toArray(new Expr[other.size()])));
 //            PlotContainer container = getWindowManager().add("Expressions");
 //            container.add(new VDiscretePlotPanel(
@@ -950,14 +1003,15 @@ public class PlotBuilder {
     }
 
     private ExpressionsPlotModel _createExpressionsPlotModel() {
-        return new ExpressionsPlotModel().setTitle(title).setDomain(domain).setSamples(samples).setXprec(xsamples).setYprec(ysamples)
+        ExpressionsPlotModel mm = new ExpressionsPlotModel().setDomain(domain).setSamples(samples).setXprec(xsamples).setYprec(ysamples)
                 .setPlotType(_getPlotType(PlotType.CURVE))
                 .setConstX(isConstX())
                 .setPreferredLibraries(preferredLibraries)
                 .setProperties(properties)
                 .setPreferredLibraries(preferredLibraries)
-                .setComplexAsDouble(getConverter(ComplexAsDouble.ABS))
-                ;
+                .setComplexAsDouble(getConverter(ComplexAsDouble.ABS));
+        postConfigure(mm);
+        return mm;
     }
 
 //    public PlotComponent plot(int xs, int ys, Expr... expressions) {
@@ -967,32 +1021,25 @@ public class PlotBuilder {
 //                .setExpressions(expressions);
 //        return createPlotComponent(m);
 //    }
-
 //    @Deprecated
 //    public PlotComponent plot(double[] x, double[] y) {
 //        return plot(x, new double[0], new double[][]{y});
 //    }
-
 //    public PlotComponent plot(double[] x, Complex[] y) {
 //        return plot(x, new double[0], new Complex[][]{y}, PlotType.HEATMAP);
 //    }
-
 //    public PlotComponent plot(double[] x, Vector y) {
 //        return plot(x, new double[0], new Complex[][]{y.toArray()}, PlotType.HEATMAP);
 //    }
-
 //    public PlotComponent plot(double[] x, double[] y, double[][] z) {
 //        return plot(x, y, ArrayUtils.toComplex(z), PlotType.HEATMAP);
 //    }
-
 //    public PlotComponent plot(Samples xy, double[][] z) {
 //        return plot(xy.getX(), xy.getY(), z);
 //    }
-
 //    public PlotComponent plot(Samples xy, Complex[][] z) {
 //        return plot(xy.getX(), xy.getY(), z, PlotType.HEATMAP);
 //    }
-
 //    public PlotComponent plot(double x, double[] y, Expr e) {
 //        DoubleToMatrix m = e.toDM();//TODO
 //        int[][] items = m.getComponentDimension().iterate();
@@ -1008,7 +1055,6 @@ public class PlotBuilder {
 //            return plotContainer;
 //        }
 //    }
-
 //    public PlotComponent plot(double[] x, double y, Expr e) {
 //        DoubleToMatrix m = e.toDM();
 //        int[][] items = m.getComponentDimension().iterate();
@@ -1024,32 +1070,26 @@ public class PlotBuilder {
 //            return plotContainer;
 //        }
 //    }
-
 //    public PlotComponent plot(Complex[][] z) {
 //        return plot(null, null, z, PlotType.HEATMAP);
 //    }
-
 //    public PlotComponent plot(double[][] z) {
 //        return plot(null, null, z);
 //    }
 //    public PlotComponent plot(double[][] z) {
 //        return plot(null,null,z);
 //    }
-
 //    public PlotComponent plot(double[] y) {
 //        //return plot(null,y);
 //        return plot(null, new double[0], ArrayUtils.toComplex(new double[][]{y}), PlotType.CURVE);
 //    }
-
 //    public PlotComponent plot(Complex[] y) {
 ////        return plot((double[]) null,y);
 //        return plot((double[]) null, new double[0], new Complex[][]{y}, PlotType.CURVE);
 //    }
-
 //    public PlotComponent plot(Point[]... xy) {
 //        return _plotPoints(xy);
 //    }
-
     private PlotModel _plotPoints(Point[][] xy) {
         double[][] x = new double[xy.length][];
         double[][] y = new double[xy.length][];
@@ -1100,23 +1140,24 @@ public class PlotBuilder {
 //    public PlotComponent plot(String globalTitle, String[] title, double[] x, Complex[][] y, ComplexAsDouble type) {
 //        return createPlotComponent(_defaultPlotModelXY(null, null, new double[][]{x}, y, type, _getPlotType(PlotType.CURVE)));
 //    }
-
     private PlotModel _plotComplexArray3(Complex[][][] z, PlotType preferredPlotType) {
-        return new VDiscretePlotModel()
-                .setTitle(title)
+        VDiscretePlotModel mm = new VDiscretePlotModel()
                 .setPreferredLibraries(preferredLibraries)
                 .setVdiscretes(new VDiscrete(
                         Discrete.create(z)
                 ));
+        postConfigure(mm);
+        return mm;
     }
 
     private PlotModel _plotDoubleArray3(double[][][] z, PlotType preferredPlotType) {
-        return new VDiscretePlotModel()
-                .setTitle(title)
+        VDiscretePlotModel mm = new VDiscretePlotModel()
                 .setPreferredLibraries(preferredLibraries)
                 .setVdiscretes(new VDiscrete(
                         Discrete.create(z)
                 ));
+        postConfigure(mm);
+        return mm;
     }
 
     private PlotModel _plotComplexArray2(Complex[][] z, PlotType preferredPlotType, boolean preferColumn) {
@@ -1328,7 +1369,7 @@ public class PlotBuilder {
                 .setXformat(xformat)
                 .setYformat(yformat)
                 .setZformat(zformat)
-                ;
+                .setConverter(converter);
     }
 
     private ValuesPlotModel _defaultPlotModelXYZ(String xtitle, String ytitle, String ztitle, double[] x, double[] y, Complex[][] z, ComplexAsDouble zDoubleFunction, PlotType plotType) {
@@ -1350,13 +1391,15 @@ public class PlotBuilder {
             }
             y = new double[][]{((AbsoluteSamples) samples).getY()};
         }
-        return new ValuesPlotModel(title, xtitle, ytitle, ztitle, titles.toArray(new String[titles.size()]), x, y, z, zDoubleFunction, plotType, properties)
+        ValuesPlotModel mm = new ValuesPlotModel(title, xtitle, ytitle, ztitle, titles.toArray(new String[titles.size()]), x, y, z, zDoubleFunction, plotType, properties)
                 .setEnabledLibraries(enabledExternalLibraries)
                 .setPreferredLibraries(preferredLibraries)
                 .setXformat(swapxy ? yformat : xformat)
                 .setYformat(swapxy ? xformat : yformat)
                 .setZformat(zformat)
-                ;
+                .setConverter(converter);
+        postConfigure(mm);
+        return mm;
     }
 
     public PlotBuilder addPlotBuilderListener(PlotBuilderListener listener) {
@@ -1385,7 +1428,7 @@ public class PlotBuilder {
             path = this.path + "/" + path;
         }
         StringBuilder sb = new StringBuilder();
-        for (String s : HadrumathsStringUtils.split(path, "/")) {
+        for (String s : StringUtils.split(path, "/")) {
             sb.append("/").append(s);
         }
         if (sb.length() == 0) {
@@ -1410,6 +1453,7 @@ public class PlotBuilder {
     }
 
     private static class ArrayDoubleFormat implements DoubleFormat {
+
         private final Object[] format;
 
         public ArrayDoubleFormat(Object[] format) {
@@ -1426,7 +1470,22 @@ public class PlotBuilder {
         }
     }
 
+    private void postConfigure(PlotModel mm) {
+        mm.setTitle(title);
+        mm.setName(name);
+    }
+
+    private void postConfigureNonNull(PlotModel mm) {
+        if (title != null) {
+            mm.setTitle(title);
+        }
+        if (name != null) {
+            mm.setName(name);
+        }
+    }
+
     private static class ListDoubleFormat implements DoubleFormat {
+
         private final List format;
 
         public ListDoubleFormat(List format) {

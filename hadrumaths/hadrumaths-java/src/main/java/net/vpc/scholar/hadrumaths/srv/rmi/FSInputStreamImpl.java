@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.srv.rmi;
 
-import net.vpc.scholar.hadrumaths.RuntimeIOException;
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.scholar.hadrumaths.srv.rmi.FSInputStream;
 
 import java.io.IOException;

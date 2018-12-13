@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.meshalgo;
 
 import net.vpc.scholar.hadrumaths.geom.Triangle;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.io.Serializable;

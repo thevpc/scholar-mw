@@ -12,7 +12,7 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.*;
 import java.util.logging.Level;

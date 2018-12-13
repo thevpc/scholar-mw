@@ -15,7 +15,7 @@ import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.*;
 

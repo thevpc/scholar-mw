@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.project.common;
 
 import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.mon.AbstractProgressMonitor;
 import net.vpc.common.util.mon.ProgressMessage;
 import net.vpc.common.util.mon.ProgressMonitor;
 
@@ -8,9 +9,7 @@ import net.vpc.common.util.mon.ProgressMonitor;
  * Created by IntelliJ IDEA. User: taha Date: 3 juil. 2004 Time: 15:15:13 To
  * change this template use File | Settings | File Templates.
  */
-public abstract class RunAction implements ProgressMonitor {
-
-    private Chronometer chronometer = new Chronometer(false);
+public abstract class RunAction extends AbstractProgressMonitor {
     private double progress;
 
     public double getProgress(){
@@ -32,16 +31,16 @@ public abstract class RunAction implements ProgressMonitor {
         return progress;
     }
 
-    public void setProgress(double progress, ProgressMessage message) {
+    public void setProgressImpl(double progress, ProgressMessage message) {
         this.progress = progress;
     }
 
     public void startChrono() {
-        chronometer.start();
+        getChronometer().start();
     }
 
     public void stopChrono() {
-        chronometer.stop();
+        getChronometer().stop();
     }
 
     public long getRemainingTimeEstimation() {
@@ -53,18 +52,8 @@ public abstract class RunAction implements ProgressMonitor {
     }
 
     public long getEvolvedTime() {
-        return chronometer.getTime();
+        return getChronometer().getTime();
 
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return false;
     }
 
     @Override

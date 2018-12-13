@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.

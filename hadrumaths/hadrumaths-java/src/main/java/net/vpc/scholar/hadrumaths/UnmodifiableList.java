@@ -6,6 +6,7 @@ import net.vpc.common.util.TypeReference;
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
+
     private static final long serialVersionUID = 1L;
     private final int size;
     private final TVectorCell<T> vectorCell;
@@ -38,6 +39,16 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
         throw new IllegalArgumentException("Unmodifiable");
     }
 
+    @Override
+    public TList<T> sort() {
+        return copy().sort();
+    }
+
+    @Override
+    public TList<T> removeDuplicates() {
+        return copy().removeDuplicates();
+    }
+
 //    @Override
 //    public String toString() {
 //        return "UnmodifiableList{" +
@@ -45,5 +56,4 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
 //                ", items=" + it +
 //                '}';
 //    }
-
 }

@@ -26,8 +26,6 @@ public interface PlotContainer extends PlotComponent, PlotComponentDisplayer {
 
     void add(PlotComponent component);
 
-    void display(PlotComponent component);
-
     void clear();
 
     void remove(PlotComponent component);

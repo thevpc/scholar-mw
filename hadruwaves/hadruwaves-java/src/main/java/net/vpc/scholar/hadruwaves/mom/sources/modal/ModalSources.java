@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom.sources.modal;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeIndex;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 

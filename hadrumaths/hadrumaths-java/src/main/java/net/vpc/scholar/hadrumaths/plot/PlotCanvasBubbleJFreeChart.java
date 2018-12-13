@@ -98,7 +98,7 @@ public class PlotCanvasBubbleJFreeChart extends PlotCanvasAnyXYDoubleJFreeChart 
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
         XYZDataset data = createXYZDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        String theTitle = model.getTitle() == null ? "" : model.getTitle();
+        String theTitle = model.getPreferredTitle();
         return ChartFactory.createBubbleChart(theTitle, theYTitle, theYTitle,
                 data, PlotOrientation.VERTICAL,
                 legend == null ? true : legend,

@@ -159,4 +159,14 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
 
     TList<T> sublist(int fromIndex, int toIndex);
 
+    
+    TList<T> sort();
+    
+    TList<T> removeDuplicates();
+
+
+    TVector<T> concat(T e);
+
+    TVector<T> concat(TVector<T> e);
+
 }

@@ -45,6 +45,12 @@ public class PlotContainerConsoleWindow implements ConsoleWindow {
 
     public void addChild(String title, JComponent component2) {
         PlotComponent pc = getPlotComponent(component2);
+        if(title==null||title.isEmpty()){
+            title="/";
+        }
+        if(!title.startsWith("/")){
+            title="/"+title;
+        }
         pane.add(pc, title);
 //        JComponent component = getComponent();
 //        if(component==null){

@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOpera
 import net.vpc.scholar.hadrumaths.scalarproducts.numeric.NumericScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 

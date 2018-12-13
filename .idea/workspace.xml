@@ -2,40 +2,193 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="2283ee65-8ba4-4d5d-99c2-bd4513db6542" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_2_0.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_2_0.xml" afterPath="" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModelImpl.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/hadruwaves-java-test.iml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/src/main/java/TT.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/interop/CstMwsUtils.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/interop/CstPlotDoubleColumn.java" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_vpc_common_vpc_common_strings_1_2_6.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_1_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/derby.log" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/derby.log" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/hadrumaths-test.iml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/hadrumaths-test.iml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/pom.xml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/pom.xml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/ExpressionEvaluatorTest.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/ExpressionEvaluatorTest.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestComplex2.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestComplex2.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestCosXPlusY.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestCosXPlusY.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestMatrices.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestMatrices.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprChecker.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprChecker.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/hadrumaths.iml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/hadrumaths.iml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/pom.xml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/pom.xml" />
-      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/FrequencyFormatter.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractMatrix.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractMatrix.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractMatrixFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractMatrixFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTMatrix.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTMatrix.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTVector.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTVector.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ArrayTList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ArrayTList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/BooleanArrayList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/BooleanArrayList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/CachedList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/CachedList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Chronometer.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Complex.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Complex.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ComplexMatrix.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ComplexMatrix.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ComplexR.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ComplexR.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleArrayList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleArrayList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleFormatterFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleFormatterFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/DoubleList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/EmptyMatrixException.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/EmptyMatrixException.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Expr.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Expr.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/HadrumathsInitializerService.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/HadrumathsInitializerService.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/IntArrayList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/IntArrayList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/LargeMatrixFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/LargeMatrixFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/LongArrayList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/LongArrayList.java" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsArrays.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsArrays.java" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsConfig.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsConfig.java" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsExpr.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsExpr.java" />
-      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TimePeriodFormatter.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MatrixFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MatrixFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MemoryInfo.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MemoryMeter.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MemoryUsage.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MinMax.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MinMax.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ModelSeriesModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ModelSeriesModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Plot.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Plot.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/PreloadedList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/PreloadedList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ReadOnlyTList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ReadOnlyTList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/RuntimeIOException.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TMatrix.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TMatrix.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TTransposedList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TTransposedList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TVector.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TVector.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/UnmodifiableList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/UnmodifiableList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/UpdatableTList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/UpdatableTList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Vector.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Vector.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/cache/PersistenceCache.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/cache/PersistenceCache.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/convergence/ConvergenceMultiPlotListener.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/convergence/ConvergenceMultiPlotListener.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/expeval/ExprNodeResolver.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/expeval/ExprNodeResolver.java" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/expeval/ExpressionEvaluatorFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/expeval/ExpressionEvaluatorFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/interop/ojalgo/OjalgoMatrixFactory.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/interop/ojalgo/OjalgoMatrixFactory.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/AbstractHFileSystem.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/AbstractHFileSystem.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/Base64StringSerializer.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/Base64StringSerializer.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/FolderHFileSystem.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/FolderHFileSystem.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/IOUtils.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/HadrumathsIOUtils.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/meshalgo/MeshZone.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/meshalgo/MeshZone.java" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotContainer.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotContainer.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotWindowManager.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotWindowManager.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/BasePlotComponent.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/BasePlotComponent.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/CardPlotContainer.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/CardPlotContainer.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ComplexAsDouble.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ComplexAsDouble.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/CopyImageToClipboardAction.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/CopyImageToClipboardAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ExpressionsPlotModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ExpressionsPlotModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ExpressionsPlotPanel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ExpressionsPlotPanel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/FramePlotContainer.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/FramePlotContainer.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/FrameWindowManager.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/FrameWindowManager.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/HSBColorPalette.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/HSBColorPalette.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorArrayPalette.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorArrayPalette.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorPalette.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorPalette.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/LoadPlotAction.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/LoadPlotAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotBuilder.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotBuilder.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyDoubleJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyDoubleJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyXYDoubleJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAnyXYDoubleJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAreaJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasAreaJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasBarJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasBarJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasBubbleJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasBubbleJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasCurveJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasCurveJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasCurveSimple.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasCurveSimple.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasPieJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasPieJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasRingJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasRingJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasVectorJFreeChart.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotCanvasVectorJFreeChart.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotComponent.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotComponent.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotContainer.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotContainer.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModelList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModelList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModelListPanel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModelListPanel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotPanel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotPanel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotPanel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotPanel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotTableModel.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotTableModel.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/ConsoleActionCubesPlot.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/ConsoleActionCubesPlot.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/ConsoleAwareObject.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/ConsoleAwareObject.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/FunctionsXYPlotConsoleAction.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/FunctionsXYPlotConsoleAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/LogAreaComponent.java" afterPath="" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsole.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsole.java" />
-      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/resources/net/vpc/scholar/hadrumaths/plot/console/Log.png" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/resources/net/vpc/scholar/hadrumaths/plot/console/Log.png" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleFileSupport.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleFileSupport.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleFrame.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleFrame.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleProjectTemplate.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleProjectTemplate.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleWindowManager.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleWindowManager.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotContainerConsoleWindow.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotContainerConsoleWindow.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/TaskComponent.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/TaskComponent.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlot.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlot.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlotArea.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlotArea.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/swings/JListCardPanel.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/FSServlet.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/FSServlet.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/rmi/FSInputStreamImpl.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/rmi/FSInputStreamImpl.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/socket/FSSocketServlet.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/socket/FSSocketServlet.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/socket/HSocketConnection.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/srv/socket/HSocketConnection.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/Discrete.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/Discrete.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/ParamExprList.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/ParamExprList.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/ArrayUtils.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/ArrayUtils.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/HadrumathsStringUtils.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/MapStringMapper.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/StringMapper.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/config/Properties2.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/config/Properties2.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/log/TLogProgressMonitor.java" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/log/TLogProgressMonitor.java" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-examples/hadrumaths-scala-examples.iml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-examples/hadrumaths-scala-examples.iml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-examples/pom.xml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-examples/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-helloworld/hadrumaths-scala-helloworld.iml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-helloworld/hadrumaths-scala-helloworld.iml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-helloworld/pom.xml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala-helloworld/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/hadrumaths-scala.iml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/hadrumaths-scala.iml" />
       <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/pom.xml" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/src/main/java/net/vpc/scholar/hadrumaths/HadrumathsScalaService.scala" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/src/main/java/net/vpc/scholar/hadrumaths/HadrumathsScalaService.scala" />
+      <change beforePath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/src/main/java/net/vpc/scholar/hadrumaths/MathScala.scala" afterPath="$PROJECT_DIR$/hadrumaths/hadrumaths-scala/src/main/java/net/vpc/scholar/hadrumaths/MathScala.scala" />
       <change beforePath="$PROJECT_DIR$/hadruwaves-studio/application/hadruwaves-studio-app.iml" afterPath="$PROJECT_DIR$/hadruwaves-studio/application/hadruwaves-studio-app.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-core/hadruwaves-studio-core.iml" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-core/hadruwaves-studio-core.iml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/hadruwaves-studio-standalone.iml" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/hadruwaves-studio-standalone.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/TMWLabApplication.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/TMWLabApplication.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/LoadStructureAction.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/LoadStructureAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrDumpAction.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrDumpAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrSaveAction.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrSaveAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrSaveAsAction.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/StrSaveAsAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/TmwlabAction.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/TmwlabAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/AreaGroupEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/AreaGroupEditor.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/PlotConfigData.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/PlotConfigData.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/areashapes/RectAreaShapeEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/areashapes/RectAreaShapeEditor.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/gpmeshs/BoxModesGpMesherEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/gpmeshs/BoxModesGpMesherEditor.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/gpmeshs/RooftopGpMesherEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/gpmeshs/RooftopGpMesherEditor.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/materials/PecMaterialEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/materials/PecMaterialEditor.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/materials/SurfaceImpedanceMaterialEditor.java" afterPath="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/editors/materials/SurfaceImpedanceMaterialEditor.java" />
       <change beforePath="$PROJECT_DIR$/hadruwaves-studio/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves-studio/pom.xml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-examples/hadruwaves-java-examples.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-examples/hadruwaves-java-examples.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-examples/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-examples/pom.xml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/hadruwaves-test.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/hadruwaves-test.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java-test/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/hadruwaves.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/hadruwaves.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/HadruwavesService.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/HadruwavesService.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/Physics.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/Physics.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/MomStructure.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/MomStructure.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/TestFunctionsBuilder.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/TestFunctionsBuilder.java" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/VarEvaluator.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/VarEvaluator.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/common/RunAction.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/common/RunAction.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/DefaultMomStructureErrorHandler.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/DefaultMomStructureErrorHandler.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/zsfractalmodel/MomStructureFractalZop.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/zsfractalmodel/MomStructureFractalZop.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/zsfractalmodel/ZsFactalMatrixAWaveguideParallelEvaluator2.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/zsfractalmodel/ZsFactalMatrixAWaveguideParallelEvaluator2.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/util/MomStrHelperImpl.java" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/util/MomStrHelperImpl.java" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-puppets/hadruwaves-puppets.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-puppets/hadruwaves-puppets.iml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-puppets/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-puppets/pom.xml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala-helloworld/hadruwaves-scala-helloworld.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala-helloworld/hadruwaves-scala-helloworld.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala-helloworld/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala-helloworld/pom.xml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/hadruwaves-scala.iml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/hadruwaves-scala.iml" />
       <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/pom.xml" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/src/main/java/net/vpc/scholar/hadruwaves/HadruwavesScalaService.scala" afterPath="$PROJECT_DIR$/hadruwaves/hadruwaves-scala/src/main/java/net/vpc/scholar/hadruwaves/HadruwavesScalaService.scala" />
       <change beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
     </list>
     <ignored path="scholar-mw.iws" />
@@ -294,10 +447,15 @@
     <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/target/" />
     <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/target/" />
     <ignored path="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/target/" />
-    <ignored path="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings/target/" />
-    <ignored path="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/target/" />
-    <ignored path="/data/vpc/Data/xprojects/net/vpc/apps/inspector-gadget/target/" />
-    <ignored path="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-swings/target/" />
+    <ignored path="$PROJECT_DIR$/../../apps/jvmon/target/" />
+    <ignored path="$PROJECT_DIR$/../../apps/inspector-gadget/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-commandline/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-io-ext-compress/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-sql/target/" />
+    <ignored path="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/target/" />
+    <ignored path="$PROJECT_DIR$/../../common/vpc-common/vpc-common-io-compress/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -306,6 +464,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/scholar_mw$ExpressionEvaluatorTest.coverage" NAME="ExpressionEvaluatorTest Coverage Results" MODIFIED="1530120925332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>net.vpc.scholar.hadrumaths.test.*</FILTER>
+    </SUITE>
     <SUITE FILE_PATH="coverage/scholar_mw$PlotExamples__1_.coverage" NAME="PlotExamples (1) Coverage Results" MODIFIED="1500967876684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.vpc.scala.imen.examples.*</FILTER>
     </SUITE>
@@ -313,11 +474,11 @@
       <FILTER>net.vpc.scholar.hadrumaths.test.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/scholar_mw$PatchComparisonMatlab1_article_nostr__1_.coverage" NAME="PatchComparisonMatlab1_article_nostr (1) Coverage Results" MODIFIED="1501932370453" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/scholar_mw$d_2017_07_26_PatchDEA1_ParamVariation_verifV1Coverage.coverage" NAME="d_2017_07_26_PatchDEA1_ParamVariation_verifV1Coverage Coverage Results" MODIFIED="1503231822153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>net.vpc.*</FILTER>
-    </SUITE>
     <SUITE FILE_PATH="coverage/scholar_mw$TestSimplify_testSimplify3.coverage" NAME="TestSimplify.testSimplify3 Coverage Results" MODIFIED="1526397091229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.vpc.scholar.hadrumaths.test.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/scholar_mw$d_2017_07_26_PatchDEA1_ParamVariation_verifV1Coverage.coverage" NAME="d_2017_07_26_PatchDEA1_ParamVariation_verifV1Coverage Coverage Results" MODIFIED="1503231822153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>net.vpc.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/scholar-mw$Imen4.coverage" NAME="Imen4 Coverage Results" MODIFIED="1488621726077" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.vpc.scala.imen.*</FILTER>
@@ -328,6 +489,7 @@
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
     <option name="GROUP_SCHEMA" value="true" />
     <option name="GROUP_CONTENTS" value="false" />
     <option name="SORT_POSITIONED" value="false" />
@@ -350,41 +512,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ExpressionEvaluatorTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/ExpressionEvaluatorTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="30" column="31" lean-forward="false" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExpressionEvaluatorDefinition.java" pinned="false" current-in-tab="false">
-        <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorDefinition.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4301">
-              <caret line="261" column="32" lean-forward="false" selection-start-line="261" selection-start-column="32" selection-end-line="261" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
-        <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="38" lean-forward="false" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
+      <file leaf-file-name="Boudour1.scala" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/boudour/Boudour1.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
-              <caret line="7" column="13" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="19" />
+              <caret line="11" column="41" lean-forward="false" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WaveGuideLineV1.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/WaveGuideLineV1.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3213">
+              <caret line="199" column="42" lean-forward="false" selection-start-line="199" selection-start-column="42" selection-end-line="199" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MoMPatchEEEEVect.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20160819/MoMPatchEEEEVect.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3298">
+              <caret line="206" column="50" lean-forward="false" selection-start-line="206" selection-start-column="50" selection-end-line="206" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -405,42 +557,38 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>fr</find>
-      <find>log</find>
-      <find>framein</find>
-      <find>LessTasks</find>
-      <find>Tile Win</find>
-      <find>icon</find>
-      <find>Locks Moni</find>
-      <find>setFrameIcon</find>
-      <find>MoreTasks</find>
-      <find>&quot;Exit&quot;</find>
-      <find>SwingUtilities3</find>
-      <find>8</find>
-      <find>2.3.8</find>
-      <find>vpc-common-swings</find>
-      <find>vpc-common-utils</find>
-      <find>vpc-common-io</find>
-      <find>3.1.27</find>
-      <find>BytesSizeFormatter</find>
-      <find>tr</find>
-      <find>.tr</find>
-      <find>trans</find>
-      <find>3.1.29</find>
-      <find>²²²</find>
-      <find>3.1.28</find>
-      <find>16</find>
-      <find>functions</find>
-      <find>TimePeriodFormatter</find>
-      <find>.16</find>
-      <find>formatLeft</find>
-      <find>vpc-common-jeep</find>
+      <find>&lt;artifactId&gt;vpc-common-utils&lt;/artifactId&gt;</find>
+      <find>isOption</find>
+      <find>readOption</find>
+      <find>readAny</find>
+      <find>readValue</find>
+      <find>compress</find>
+      <find>apache</find>
+      <find>-io</find>
+      <find>95.000</find>
+      <find>rebui</find>
+      <find>set</find>
+      <find>titleLabel.setText</find>
+      <find>getModel</find>
+      <find>createPl</find>
+      <find>any</find>
+      <find>firePropertyChange</find>
+      <find>title</find>
+      <find>plotModel</find>
+      <find>getNa</find>
+      <find>getColot</find>
+      <find>main</find>
+      <find>gree</find>
+      <find>sleep</find>
+      <find>JColorArrayPalette</find>
+      <find>3.1.30</find>
+      <find>lambda</find>
+      <find>5,</find>
+      <find>W</find>
+      <find>foca</find>
+      <find>normaliz</find>
     </findStrings>
     <replaceStrings>
-      <replace>sub</replace>
-      <replace>-</replace>
-      <replace>multiply</replace>
-      <replace>*</replace>
       <replace>* div</replace>
       <replace>div</replace>
       <replace>/</replace>
@@ -467,6 +615,10 @@
       <replace>Config.getDefaultMatrixFactory()</replace>
       <replace>3.1.28</replace>
       <replace>3.1.29</replace>
+      <replace>3.1.30</replace>
+      <replace>createTypeImplicitConversions</replace>
+      <replace>all.add(</replace>
+      <replace>new CurveInfo</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/../../../../../research/dev/2016/scala/thesis-2012-basma-oueslati/src/main/java/net/vpc/scala/basma</dir>
@@ -498,57 +650,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/ExprVectorSpace.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/FrameInfo.java" />
-        <option value="$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves/src/main/java/net/vpc/scholar/mentoring/enisotelecoms/s1/HelloWorld.scala" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/gui/JvmPlotConsole.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings/src/main/java/net/vpc/common/swings/SwingUtilities3.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotAction.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/TaskMonitor.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/LockMonitor.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsoleFrame.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings/pom.xml" />
-        <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/gui/JmxMonPlotConsoleLoadFileAction.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/connectors/formatters/HumainMemoryNamePathValueConverter.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/cui/components/MemoryComponent.java" />
-        <option value="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/momstr/ElectricFieldSerialEvaluator.java" />
-        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20170716/PatchComparisonMatlab1_article_nostr.scala" />
-        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/util/ErrPlotter.scala" />
-        <option value="$PROJECT_DIR$/hadruwaves/hadruwaves-scala-examples/src/main/java/net/vpc/scholar/old/d_2017_07_26_PatchDEA1_ParamVariation_verifold.scala" />
-        <option value="$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves-j/src/main/java/net/vpc/scholar/mentoring/EnisoRangsPrepasPlotUtils.java" />
-        <option value="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/pom.xml" />
-        <option value="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/actions/TmwlabAction.java" />
-        <option value="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/src/main/java/net/vpc/scholar/hadruwaves/studio/standalone/buildactions/BuildS11Action.java" />
-        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_04_12_PatchHumanBodyCase.scala" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbsoluteSamples.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Domain.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/RelativeSamples.java" />
-        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_04_12_PatchHumanBodyCase2.scala" />
-        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_06_10_ZinFreeSpace.scala" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotTypesHelper.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTVector.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/connectors/formatters/HumainTimeNamePathValueConverter.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionVariableFromFunction.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ConstExpressionFunction.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/MethodInvocationFunction.java" />
-        <option value="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/VarEvaluator.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionFunctionNode.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionFunction.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorResolver.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorDefinition.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorFactory.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/UtilClassExpressionEvaluatorResolver.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/evo/AntGenotype.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlot.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotPanelFActpry.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotPanelFactpry.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotPanelFactory.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ChronoModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/ConsoleActionCubesPlot.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/FunctionsXYPlotConsoleAction.java" />
+        <option value="$PROJECT_DIR$/../../apps/jvmon/src/main/java/net/vpc/tools/jvmon/MainExecutor.java" />
+        <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/ArtifactUtils.java" />
+        <option value="$PROJECT_DIR$/../../apps/jvmon/src/main/java/net/vpc/tools/jvmon/Main.java" />
+        <option value="$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/str/DefaultMomStructureErrorHandler.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ExpressionsPlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModelList.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModelImpl.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/BasePlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/BasePlotPanel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/SwingComponentPlotModel.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotBuilder.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ChronometerModel.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntMain.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntNetEvaluator.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntOpeningAngle.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntNetEvaluatorHelper.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntNetEvalResult.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Plot.java" />
         <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsConfig.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/ExpressionEvaluatorTest.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotContainer.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsExpr.java" />
-        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsole.java" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/pom.xml" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlotArea.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/HSBColorPalette.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorArrayPalette.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorPalette2.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/JColorPalette.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/src/main/java/net/vpc/scholar/projects/syscom2018/antenna/AntNetProblem.java" />
+        <option value="$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves-j/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui2/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2017-raja-mchaalia/thesis-2017-raja-mchaalia/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPotImen2.scala" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPlotImen.java" />
+        <option value="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20170716/PatchComparisonMatlab1_article_nostr.scala" />
+        <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/src/main/java/net/vpc/common/strings/StringUtils.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/WaveGuideLineV1.scala" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20160819/MoMPatchEEEEVect.scala" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/TTTT.java" />
+        <option value="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/boudour/Boudour1.scala" />
       </list>
     </option>
   </component>
@@ -582,11 +734,15 @@
       <expand>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="net.vpc.scholar.hadrumaths" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="net.vpc.scholar" type="9519ce18:MavenProjectsStructure$ProjectNode" />
         </path>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="net.vpc.scholar.hadrumaths" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="syscom2018" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="syscom2018" type="9519ce18:MavenProjectsStructure$ProjectNode" />
           <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
         </path>
       </expand>
@@ -596,10 +752,11 @@
   <component name="MavenRunner">
     <option name="skipTests" value="true" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1954" />
-    <option name="width" value="1660" />
-    <option name="height" value="1048" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="2002" />
+    <option name="y" value="121" />
+    <option name="width" value="1280" />
+    <option name="height" value="700" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -701,6 +858,9 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="1" />
+  </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -716,19 +876,100 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
-              <item name="scholar-mw" type="462c0819:PsiDirectoryNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="vpc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="vpc" type="462c0819:PsiDirectoryNode" />
+              <item name="scala" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="vpc" type="462c0819:PsiDirectoryNode" />
+              <item name="scala" type="462c0819:PsiDirectoryNode" />
+              <item name="imen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="scholar-mw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mentoring" type="9c53a853:ProjectViewModuleGroupNode" />
+              <item name="thesis-2015-imen-khadhraoui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="vpc" type="462c0819:PsiDirectoryNode" />
+              <item name="scala" type="462c0819:PsiDirectoryNode" />
+              <item name="imen" type="462c0819:PsiDirectoryNode" />
+              <item name="boudour" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
@@ -736,12 +977,12 @@
   <component name="PropertiesComponent">
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/pom.xml" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.35989258" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.scala.settings.ScalaProjectSettingsConfigurable" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="js-jscs-nodeInterpreter" value="/usr/bin/node" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="nodejs_interpreter_path" value="/usr/bin/node" />
@@ -774,18 +1015,18 @@
       <recent name="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/scilab/2017-07-16-ref-antenna/octave" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="net.vpc.tools.ig.db.SqlReaderFactory" />
+      <recent name="net.vpc.tools.ig.db.SqlReadFactory" />
       <recent name="net.vpc.scholar.hadrumaths.util.PlatformUtils" />
       <recent name="net.vpc.scholar.hadrumaths.util.CollectionsUtils" />
       <recent name="net.vpc.scholar.hadrumaths.test.util.ExprChecker" />
-      <recent name="net.vpc.scholar.hadrumaths.plot.PlotModelUtils" />
-      <recent name="net.vpc.scholar.hadrumaths.Maths" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="net.vpc.common.util" />
       <recent name="net.vpc.scholar.hadrumaths" />
       <recent name="net.vpc.scholar.hadrumaths.plot" />
       <recent name="net.vpc.scholar.hadrumaths.test" />
       <recent name="net.vpc.scholar.hadruwaves" />
-      <recent name="net.vpc.scholar.tmwlib.mom" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen" />
@@ -795,11 +1036,11 @@
       <recent name="$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="net.vpc.common.jeep" />
-      <recent name="net.vpc.scholar.hadrumaths.derivation.formal" />
-      <recent name="net.vpc.scholar.hadrumaths" />
-      <recent name="net.vpc.scholar.hadrumaths.srv.socket" />
-      <recent name="net.vpc.scholar.hadrumaths.srv" />
+      <recent name="net.vpc.scala.imen.boudour" />
+      <recent name="net.vpc.scala.imen" />
+      <recent name="net.vpc.scholar.hadrumaths.plot" />
+      <recent name="net.vpc.scholar.projects.syscom2018.antenna.mpso" />
+      <recent name="net.vpc.scholar.projects.syscom2018.antenna" />
     </key>
     <key name="OPEN_URL_DIALOG">
       <recent name="file://$USER_HOME$/.m2/settings.xml" />
@@ -821,7 +1062,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.Boudour1">
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="" />
       <option name="DEPLOY" value="true" />
@@ -854,6 +1095,44 @@
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
     </configuration>
+    <configuration name="AntMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="net.vpc.scholar.projects.syscom2018.antenna.evo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="net.vpc.scholar.projects.syscom2018.antenna.AntMain" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../../../../../research/projects/projet-2018/syscom2018/" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="syscom2018" />
+      <envs />
+    </configuration>
+    <configuration name="Boudour1" type="Application" factoryName="Application" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="net.vpc.scala.imen.boudour.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.boudour.Boudour1" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="thesis-2015-imen-khadhraoui" />
+      <envs />
+    </configuration>
     <configuration name="HelloWorld" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -873,14 +1152,14 @@
       <module name="mastere-gt-hadruwaves" />
       <envs />
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="MoMPatchUsingStructureV3" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="net.vpc.tools.jvmon.*" />
+          <option name="PATTERN" value="net.vpc.scala.imen.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="net.vpc.tools.jvmon.Main" />
+      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.MoMPatchUsingStructureV3" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -889,17 +1168,17 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="jvmon" />
+      <module name="thesis-2015-imen-khadhraoui" />
       <envs />
     </configuration>
-    <configuration name="TestPolar" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="ParabolaPlotImen" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="net.vpc.scholar.hadrumaths.test.*" />
+          <option name="PATTERN" value="net.vpc.scala.imen.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="net.vpc.scholar.hadrumaths.test.TestPolar" />
+      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.ParabolaPlotImen" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -908,7 +1187,26 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="hadrumaths-test" />
+      <module name="thesis-2015-imen-khadhraoui" />
+      <envs />
+    </configuration>
+    <configuration name="ParabolaPotImen2" type="Application" factoryName="Application" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="net.vpc.scala.imen.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.ParabolaPotImen2" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="thesis-2015-imen-khadhraoui" />
       <envs />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -963,25 +1261,6 @@
       <module name="thesis-2015-imen-khadhraoui" />
       <envs />
     </configuration>
-    <configuration name="d_2018_04_12_PatchHumanBodyCase2" type="Application" factoryName="Application" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="net.vpc.scala.imen.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.d_2018_04_12_PatchHumanBodyCase2" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="thesis-2015-imen-khadhraoui" />
-      <envs />
-    </configuration>
     <configuration name="d_2018_05_01_radiationAperturePEC" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -1020,54 +1299,10 @@
       <module name="thesis-2015-imen-khadhraoui2" />
       <envs />
     </configuration>
-    <configuration name="d_2018_06_10_ZinFreeSpace" type="Application" factoryName="Application" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="net.vpc.scala.imen.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="net.vpc.scala.imen.d_2018_06_10_ZinFreeSpace" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="thesis-2015-imen-khadhraoui" />
-      <envs />
-    </configuration>
     <configuration name="Scilab" type="External_Tools_CONFIGURATION" factoryName="External tools configuration factory">
       <method>
         <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_scilab" />
       </method>
-    </configuration>
-    <configuration name="TestDerive.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="net.vpc.scholar.hadrumaths.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="hadrumaths-test" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="net.vpc.scholar.hadrumaths" />
-      <option name="MAIN_CLASS_NAME" value="net.vpc.scholar.hadrumaths.TestDerive" />
-      <option name="METHOD_NAME" value="test2" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -1536,25 +1771,25 @@
       <method />
     </configuration>
     <list size="11">
-      <item index="0" class="java.lang.String" itemvalue="Application.d_2018_05_01_radiationAperturePEC" />
-      <item index="1" class="java.lang.String" itemvalue="Application.d_2018_05_01_radiationAperturePEC_v21" />
-      <item index="2" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase v1.3.121" />
-      <item index="3" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase v1.3.122" />
-      <item index="4" class="java.lang.String" itemvalue="External Tools.Scilab" />
+      <item index="0" class="java.lang.String" itemvalue="External Tools.Scilab" />
+      <item index="1" class="java.lang.String" itemvalue="Application.d_2018_05_01_radiationAperturePEC" />
+      <item index="2" class="java.lang.String" itemvalue="Application.d_2018_05_01_radiationAperturePEC_v21" />
+      <item index="3" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase v1.3.121" />
+      <item index="4" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase v1.3.122" />
       <item index="5" class="java.lang.String" itemvalue="Application.HelloWorld" />
-      <item index="6" class="java.lang.String" itemvalue="Application.TestPolar" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.TestDerive.test2" />
-      <item index="8" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase2" />
-      <item index="9" class="java.lang.String" itemvalue="Application.d_2018_06_10_ZinFreeSpace" />
-      <item index="10" class="java.lang.String" itemvalue="Application.Main" />
+      <item index="6" class="java.lang.String" itemvalue="Application.AntMain" />
+      <item index="7" class="java.lang.String" itemvalue="Application.ParabolaPlotImen" />
+      <item index="8" class="java.lang.String" itemvalue="Application.MoMPatchUsingStructureV3" />
+      <item index="9" class="java.lang.String" itemvalue="Application.ParabolaPotImen2" />
+      <item index="10" class="java.lang.String" itemvalue="Application.Boudour1" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.Main" />
-        <item index="1" class="java.lang.String" itemvalue="Application.d_2018_06_10_ZinFreeSpace" />
-        <item index="2" class="java.lang.String" itemvalue="Application.d_2018_04_12_PatchHumanBodyCase2" />
-        <item index="3" class="java.lang.String" itemvalue="Application.TestPolar" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestDerive.test2" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Boudour1" />
+        <item index="1" class="java.lang.String" itemvalue="Application.ParabolaPlotImen" />
+        <item index="2" class="java.lang.String" itemvalue="Application.ParabolaPotImen2" />
+        <item index="3" class="java.lang.String" itemvalue="Application.MoMPatchUsingStructureV3" />
+        <item index="4" class="java.lang.String" itemvalue="Application.AntMain" />
       </list>
     </recent_temporary>
   </component>
@@ -1810,13 +2045,27 @@
       <workItem from="1517580678332" duration="2038000" />
       <workItem from="1517833243969" duration="3536000" />
       <workItem from="1517865858907" duration="37000" />
-    </task>
-    <task id="LOCAL-00010" summary="first round of friendiness...">
-      <created>1502178562218</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1502178562218</updated>
+      <workItem from="1535443024896" duration="634000" />
+      <workItem from="1535650256909" duration="61000" />
+      <workItem from="1535650350539" duration="232000" />
+      <workItem from="1535650616698" duration="1166000" />
+      <workItem from="1535991352688" duration="25000" />
+      <workItem from="1536417677702" duration="2877000" />
+      <workItem from="1536671404530" duration="1570000" />
+      <workItem from="1536677605612" duration="684000" />
+      <workItem from="1536777765801" duration="65000" />
+      <workItem from="1538150234234" duration="3451000" />
+      <workItem from="1538155748726" duration="1327000" />
+      <workItem from="1538503078696" duration="1288000" />
+      <workItem from="1538911051412" duration="15207000" />
+      <workItem from="1538931255327" duration="7000" />
+      <workItem from="1538931341694" duration="2158000" />
+      <workItem from="1539534571355" duration="19233000" />
+      <workItem from="1539978573879" duration="41000" />
+      <workItem from="1541167083171" duration="18655000" />
+      <workItem from="1541232092207" duration="21000" />
+      <workItem from="1541407079125" duration="2202000" />
+      <workItem from="1541438117087" duration="599000" />
     </task>
     <task id="LOCAL-00011" summary="second round of friendiness... PI removed once again...">
       <created>1502433155504</created>
@@ -2154,43 +2403,50 @@
       <option name="project" value="LOCAL" />
       <updated>1528854564039</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="3.1.29">
+      <created>1530110363808</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1530110363810</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 36m 02s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExprParserTest - 2018.06.27 at 20h 26m 29s.xml">
+      <configuration name="ExprParserTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 36m 07s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExprParserTest - 2018.06.27 at 20h 27m 05s.xml">
+      <configuration name="ExprParserTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 36m 49s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 19h 46m 05s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 37m 18s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 19h 48m 03s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 37m 23s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 19h 48m 08s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 38m 05s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 20h 03m 22s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 39m 25s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 20h 16m 58s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 39m 30s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 20h 17m 27s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 46m 57s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 20h 22m 27s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestDerive_test2 - 2018.06.01 at 17h 47m 03s.xml">
-      <configuration name="TestDerive.test2" configurationId="JUnit" />
+    <history-entry file="ExpressionEvaluatorTest - 2018.06.27 at 20h 22m 32s.xml">
+      <configuration name="ExpressionEvaluatorTest" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2079616000" />
+    <option name="totallyTimeSpent" value="2151119000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -2202,39 +2458,39 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1954" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="2002" y="121" width="1280" height="700" extended-state="0" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18599562" sideWeight="0.497552" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33894736" sideWeight="0.15208112" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30736393" sideWeight="0.69905216" order="16" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1511254" sideWeight="0.28495198" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3665955" sideWeight="0.69905216" order="16" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4158628" sideWeight="0.715048" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34130436" sideWeight="0.4925187" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33894736" sideWeight="0.84791887" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3280899" sideWeight="0.49265605" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14621131" sideWeight="0.6568421" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.017857144" sideWeight="0.6568421" order="2" side_tool="false" content_ui="combo" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14989059" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17342582" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3094984" sideWeight="0.22222222" order="17" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25397795" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15154749" sideWeight="0.22923589" order="17" side_tool="true" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36227223" sideWeight="0.73745996" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18196371" sideWeight="0.3431579" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28526315" sideWeight="0.7529349" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6514658" sideWeight="0.6862327" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22678763" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925338" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.45583424" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15901814" sideWeight="0.7777778" order="18" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.386873" sideWeight="0.47455752" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15422277" sideWeight="0.7707641" order="18" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38633937" sideWeight="0.47455752" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="JSF" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3954109" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="DSM" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" x="-4" y="0" width="1928" height="1048" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31894737" sideWeight="0.6803629" order="23" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21864952" sideWeight="0.6168623" order="23" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21064061" sideWeight="0.48986125" order="20" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" x="798" y="192" width="1034" height="760" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2257,7 +2513,7 @@
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45404813" sideWeight="0.9097561" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.7545305" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4463158" sideWeight="0.57150483" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31618434" sideWeight="0.46478122" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2267,11 +2523,11 @@
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925338" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.45583424" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15901814" sideWeight="0.7777778" order="18" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.386873" sideWeight="0.47455752" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15422277" sideWeight="0.7707641" order="18" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38633937" sideWeight="0.47455752" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="JSF" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3954109" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="DSM" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" x="-4" y="0" width="1928" height="1048" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33157894" sideWeight="0.38678092" order="23" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21894094" sideWeight="0.6168623" order="23" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21064061" sideWeight="0.48986125" order="20" side_tool="false" content_ui="tabs" />
@@ -2282,7 +2538,7 @@
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.54008436" sideWeight="0.48345783" order="22" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel remote servers log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5570248" sideWeight="0.18333334" order="19" side_tool="true" content_ui="tabs" />
       <window_info id="Panda" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4054463" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17449306" sideWeight="0.6568421" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.021354167" sideWeight="0.6568421" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18836713" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14621131" sideWeight="0.24052718" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09166667" sideWeight="0.48863637" order="4" side_tool="true" content_ui="tabs" />
@@ -2294,26 +2550,26 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34130436" sideWeight="0.5074813" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27854857" sideWeight="0.69905216" order="16" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1511254" sideWeight="0.28495198" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3665955" sideWeight="0.69905216" order="16" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel Executor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32657418" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11891892" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17342582" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3094984" sideWeight="0.22222222" order="17" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25397795" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15154749" sideWeight="0.22923589" order="17" side_tool="true" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55368423" sideWeight="0.7593383" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36227223" sideWeight="0.73745996" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18599562" sideWeight="0.497552" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29052633" sideWeight="0.6632871" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19399786" sideWeight="0.715048" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21558164" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3280899" sideWeight="0.49265605" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45404813" sideWeight="0.9097561" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.7545305" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40421054" sideWeight="0.5875153" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31618434" sideWeight="0.46478122" order="1" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -2372,7 +2628,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="scalar products mapped by gp test function in cache" />
     <MESSAGE value="added serialVersionUID fields" />
     <MESSAGE value="fixed formatter&#10;fixed exp simplification" />
     <MESSAGE value="v3.1.9" />
@@ -2397,77 +2652,12 @@
     <MESSAGE value="3.1.26" />
     <MESSAGE value="3.1.27" />
     <MESSAGE value="3.1.28" />
-    <option name="LAST_COMMIT_MESSAGE" value="3.1.28" />
+    <MESSAGE value="3.1.29" />
+    <option name="LAST_COMMIT_MESSAGE" value="3.1.29" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_04_testIntegrate.scala</url>
-          <line>43</line>
-          <properties />
-          <option name="timeStamp" value="1814" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_04_testIntegrate.scala</url>
-          <line>36</line>
-          <properties />
-          <option name="timeStamp" value="1821" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves/src/main/java/net/vpc/scholar/mentoring/enisotelecoms/s4/M2018.scala</url>
-          <line>21</line>
-          <properties />
-          <option name="timeStamp" value="1824" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui2/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC21.scala</url>
-          <line>147</line>
-          <properties />
-          <option name="timeStamp" value="2156" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC.scala</url>
-          <line>386</line>
-          <properties />
-          <option name="timeStamp" value="2161" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC.scala</url>
-          <line>360</line>
-          <properties />
-          <option name="timeStamp" value="2195" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC.scala</url>
-          <line>347</line>
-          <properties />
-          <option name="timeStamp" value="2196" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC.scala</url>
-          <line>289</line>
-          <properties />
-          <option name="timeStamp" value="2198" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/example25.scala</url>
-          <line>24</line>
-          <properties />
-          <option name="timeStamp" value="2218" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/d_2018_05_01_radiationAperturePEC.scala</url>
-          <line>157</line>
-          <properties />
-          <option name="timeStamp" value="2273" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_04_12_PatchHumanBodyCase2.scala</url>
-          <line>119</line>
-          <properties />
-          <option name="timeStamp" value="2318" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/AbstractExprPropertyAware.java</url>
           <line>76</line>
@@ -2482,25 +2672,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Complex.java</url>
-          <line>1190</line>
+          <line>1206</line>
           <properties />
           <option name="timeStamp" value="1825" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>613</line>
+          <line>593</line>
           <properties />
           <option name="timeStamp" value="1829" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>673</line>
+          <line>653</line>
           <properties />
           <option name="timeStamp" value="1830" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>554</line>
+          <line>534</line>
           <properties />
           <option name="timeStamp" value="1833" />
         </line-breakpoint>
@@ -2524,13 +2714,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>616</line>
+          <line>596</line>
           <properties />
           <option name="timeStamp" value="1841" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java</url>
-          <line>4348</line>
+          <line>4316</line>
           <properties />
           <option name="timeStamp" value="1850" />
         </line-breakpoint>
@@ -2578,13 +2768,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>363</line>
+          <line>343</line>
           <properties />
           <option name="timeStamp" value="1862" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>445</line>
+          <line>425</line>
           <properties />
           <option name="timeStamp" value="1865" />
         </line-breakpoint>
@@ -2596,19 +2786,19 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>508</line>
+          <line>488</line>
           <properties />
           <option name="timeStamp" value="1885" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>510</line>
+          <line>490</line>
           <properties />
           <option name="timeStamp" value="1886" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>512</line>
+          <line>492</line>
           <properties />
           <option name="timeStamp" value="1887" />
         </line-breakpoint>
@@ -2638,21 +2828,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>439</line>
+          <line>419</line>
           <properties />
           <option name="timeStamp" value="1941" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>240</line>
-          <properties />
-          <option name="timeStamp" value="1942" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>244</line>
-          <properties />
-          <option name="timeStamp" value="1943" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/ParamExpr.java</url>
@@ -2662,7 +2840,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java</url>
-          <line>150</line>
+          <line>151</line>
           <properties />
           <option name="timeStamp" value="1945" />
         </line-breakpoint>
@@ -2680,7 +2858,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/util/ExprGenerator.java</url>
-          <line>297</line>
+          <line>277</line>
           <properties />
           <option name="timeStamp" value="1958" />
         </line-breakpoint>
@@ -2697,18 +2875,6 @@
           <option name="timeStamp" value="1964" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/IOUtils.java</url>
-          <line>444</line>
-          <properties />
-          <option name="timeStamp" value="1967" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/io/IOUtils.java</url>
-          <line>419</line>
-          <properties />
-          <option name="timeStamp" value="1974" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestBooleanArrays.java</url>
           <line>23</line>
           <properties />
@@ -2722,7 +2888,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/symbolic/Discrete.java</url>
-          <line>298</line>
+          <line>264</line>
           <properties />
           <option name="timeStamp" value="2013" />
         </line-breakpoint>
@@ -2734,7 +2900,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/VDiscretePlotPanel.java</url>
-          <line>166</line>
+          <line>184</line>
           <properties />
           <option name="timeStamp" value="2016" />
         </line-breakpoint>
@@ -2758,7 +2924,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java</url>
-          <line>20</line>
+          <line>21</line>
           <properties />
           <option name="timeStamp" value="2042" />
         </line-breakpoint>
@@ -2806,7 +2972,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java</url>
-          <line>92</line>
+          <line>93</line>
           <properties />
           <option name="timeStamp" value="2084" />
         </line-breakpoint>
@@ -2830,7 +2996,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/TestVals.java</url>
-          <line>106</line>
+          <line>107</line>
           <properties />
           <option name="timeStamp" value="2106" />
         </line-breakpoint>
@@ -2914,7 +3080,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java</url>
-          <line>1548</line>
+          <line>1550</line>
           <properties />
           <option name="timeStamp" value="2213" />
         </line-breakpoint>
@@ -2935,12 +3101,6 @@
           <line>245</line>
           <properties />
           <option name="timeStamp" value="2292" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/ValuesPlotModel.java</url>
-          <line>404</line>
-          <properties />
-          <option name="timeStamp" value="2301" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/derivation/formal/MulDifferentiator.java</url>
@@ -2968,15 +3128,90 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java</url>
-          <line>4179</line>
+          <line>4125</line>
           <properties />
           <option name="timeStamp" value="2319" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/DefaultExpressionParser.java</url>
+          <line>163</line>
+          <properties />
+          <option name="timeStamp" value="2321" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/MethodInvocationFunction.java</url>
+          <line>60</line>
+          <properties />
+          <option name="timeStamp" value="2330" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/MethodInvocationFunction.java</url>
+          <line>50</line>
+          <properties />
+          <option name="timeStamp" value="2333" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/JeepUtils.java</url>
+          <line>375</line>
+          <properties />
+          <option name="timeStamp" value="2335" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/JeepUtils.java</url>
+          <line>286</line>
+          <properties />
+          <option name="timeStamp" value="2346" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/heatmap/HeatMapPlotArea.java</url>
+          <line>598</line>
+          <properties />
+          <option name="timeStamp" value="2363" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPlotImen.java</url>
+          <line>129</line>
+          <properties />
+          <option name="timeStamp" value="2369" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPlotImen.java</url>
+          <line>92</line>
+          <properties />
+          <option name="timeStamp" value="2371" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsTrigo.java</url>
+          <line>95</line>
+          <properties />
+          <option name="timeStamp" value="2372" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPlotImen.java</url>
+          <line>105</line>
+          <properties />
+          <option name="timeStamp" value="2374" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang">
+            <option name="class-filters-enabled" value="true" />
+            <class-filters>
+              <class-filter pattern="net.vpc.*" />
+            </class-filters>
+          </properties>
+          <option name="timeStamp" value="2348" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_09_08_trenraoui.scala</url>
+          <line>11</line>
+          <properties />
+          <option name="timeStamp" value="2349" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="2321" />
+      <option name="time" value="2375" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -3039,6 +3274,11 @@
     </expressions>
     <expressions id="breakpointCondition">
       <expression>
+        <expression-string>m==null</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>resultType.equals(XNumber.class)</expression-string>
         <language-id>JAVA</language-id>
         <custom-info>net.vpc.common.util.XNumber</custom-info>
@@ -3087,11 +3327,6 @@
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>d.getDomainDimension()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
     <expressions id="setValue">
       <expression>
@@ -3102,407 +3337,393 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>TVector.class.isAssignableFrom(vv.getComponentType().getTypeClass())</expression-string>
+        <expression-string>Arrays.equals(antennas, antNet.antennas)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>getComponentType()</expression-string>
+        <expression-string>computeParameterTypes(m,baseIndex,argIndices)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>EzC.isScalarExpr</expression-string>
-        <language-id>Scala</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ExC.isScalarExpr</expression-string>
-        <language-id>Scala</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ExC.getComponentDimension</expression-string>
-        <language-id>Scala</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>expr.getDomainDimension()</expression-string>
+        <expression-string>MethodUtils.getMatchingAccessibleMethod(arg1, directName, arg2)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>expr.isScalarExpr()</expression-string>
+        <expression-string>MethodUtils.getMatchingAccessibleMethod(type, staticName, arg1, arg2)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>c.getDomain().isFull()</expression-string>
+        <expression-string>resolveFunctionDef0(name, args, context)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>d.derive(a, varIndex)</expression-string>
+        <expression-string>r.getArgTypes()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>other.getArgTypes()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>convArgTypes(other.getArgTypes(), argConverters)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>new ConvertedFunction(r,conv,null)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/expeval/ExpressionEvaluatorFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="29" column="19" lean-forward="false" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Samples.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="18" column="29" lean-forward="false" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbsoluteSamples.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Domain.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/_StringUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
-          <folding />
+          <caret line="2" column="6" lean-forward="false" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/transform/simplifycore/DomainExprSimplifyRule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="8" column="33" lean-forward="false" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/RelativeSamples.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
-          <caret line="75" column="15" lean-forward="false" selection-start-line="75" selection-start-column="15" selection-end-line="75" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/TypeReference.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="69" column="29" lean-forward="false" selection-start-line="69" selection-start-column="17" selection-end-line="69" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TVector.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/LogProgressMonitor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="24" />
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTVector.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ReusableProgressMonitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="824" column="54" lean-forward="false" selection-start-line="824" selection-start-column="54" selection-end-line="824" selection-end-column="54" />
+        <state relative-caret-position="68">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotBuilder.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitorTranslator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="605" column="34" lean-forward="false" selection-start-line="605" selection-start-column="34" selection-end-line="605" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/PlotTypesHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="190" column="0" lean-forward="false" selection-start-line="190" selection-start-column="0" selection-end-line="190" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_06_10_ZinFreeSpace.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="151" column="30" lean-forward="false" selection-start-line="151" selection-start-column="25" selection-end-line="151" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_04_12_PatchHumanBodyCase2.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="75" column="26" lean-forward="false" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/d_2018_05_01_radiationAperturePEC.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="21" column="18" lean-forward="false" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/common/vpc-common-utils/1.16/vpc-common-utils-1.16-sources.jar!/net/vpc/common/util/TypeReference.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="16" column="22" lean-forward="false" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/apps/jvmon/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="52" column="23" lean-forward="true" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/AbstractTMatrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="2408" column="33" lean-forward="false" selection-start-line="2408" selection-start-column="33" selection-end-line="2408" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TMatrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/apps/jvmon/src/main/java/net/vpc/tools/jvmon/connectors/formatters/HumainTimeNamePathValueConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="78" column="57" lean-forward="false" selection-start-line="78" selection-start-column="57" selection-end-line="78" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/PlatformHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
+        <state relative-caret-position="102">
           <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="23" column="34" lean-forward="false" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionVariable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/MethodInvocationFunction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="15" column="12" lean-forward="false" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk1.8.0_171-amd64/src.zip!/java/lang/String.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="3047" column="25" lean-forward="false" selection-start-line="3047" selection-start-column="25" selection-end-line="3047" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionFunctionNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="11" column="35" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/AbstractExpressionNode.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/StringPrefixProgressMessage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionFunction.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/StringProgressMessage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="18" column="36" lean-forward="false" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+        <state relative-caret-position="119">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionVariableFromFunction.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/LongIterationProgressMonitorInc.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="15" column="11" lean-forward="false" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+        <state relative-caret-position="119">
+          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorResolver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="31" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ConstExpressionFunction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="11" lean-forward="false" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="65" column="39" lean-forward="false" selection-start-line="65" selection-start-column="39" selection-end-line="65" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/UtilClassExpressionEvaluatorResolver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="63" column="35" lean-forward="false" selection-start-line="63" selection-start-column="35" selection-end-line="63" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadruwaves/hadruwaves-java/src/main/java/net/vpc/scholar/hadruwaves/mom/project/VarEvaluator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="406" column="31" lean-forward="false" selection-start-line="406" selection-start-column="31" selection-end-line="406" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="3952" column="41" lean-forward="false" selection-start-line="3952" selection-start-column="41" selection-end-line="3952" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="94" column="25" lean-forward="false" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="635" column="28" lean-forward="false" selection-start-line="635" selection-start-column="28" selection-end-line="635" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/TimePeriodFormatter.java" />
-    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/PlatformReflectUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-292">
-          <caret line="139" column="32" lean-forward="false" selection-start-line="139" selection-start-column="32" selection-end-line="139" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsExpr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="15" column="52" lean-forward="true" selection-start-line="15" selection-start-column="52" selection-end-line="15" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/AbstractPlotContainer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="68" column="36" lean-forward="true" selection-start-line="68" selection-start-column="36" selection-end-line="68" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/util/HadrumathsStringUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="27" column="37" lean-forward="true" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/src/main/java/net/vpc/common/strings/StringUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="20" column="19" lean-forward="false" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/resources/net/vpc/scholar/hadrumaths/plot/console/Log.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/plot/console/PlotConsole.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/cache/CacheAware.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/MonitoredAction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test/src/test/java/net/vpc/scholar/hadrumaths/test/ExpressionEvaluatorTest.java">
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/OperationCancelledException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="30" column="31" lean-forward="false" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
+        <state relative-caret-position="85">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/PrintStreamProgressMonitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitorAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitorFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitorHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitorInc.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/VoidMonitoredAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/FormattedProgressMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/DialogProgressMonitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/DeltaProgressMonitorInc.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/DoWith.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="12" column="17" lean-forward="false" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/PlatformUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="371" column="25" lean-forward="false" selection-start-line="371" selection-start-column="18" selection-end-line="371" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4287">
+          <caret line="122" column="68" lean-forward="false" selection-start-line="122" selection-start-column="68" selection-end-line="122" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../apps/jvmon/src/main/java/net/vpc/tools/jvmon/connectors/JvmOnService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9775">
+          <caret line="616" column="40" lean-forward="false" selection-start-line="616" selection-start-column="18" selection-end-line="616" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/src/main/java/net/vpc/common/util/mon/ProgressMonitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="20" lean-forward="true" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk1.8.0_171-amd64/src.zip!/java/awt/Component.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50354">
+          <caret line="3213" column="16" lean-forward="false" selection-start-line="3213" selection-start-column="16" selection-end-line="3213" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="70" column="56" lean-forward="false" selection-start-line="70" selection-start-column="56" selection-end-line="70" selection-end-column="56" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/scholar/hadrumaths/3.1.30/hadrumaths-3.1.30.jar!/net/vpc/scholar/hadrumaths/plot/JColorArrayPalette.class" />
+    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/scholar/hadrumaths/3.1.30/hadrumaths-3.1.30.jar!/net/vpc/scholar/hadrumaths/plot/JColorPalette.class" />
+    <entry file="jar:///usr/java/jdk1.8.0_171-amd64/src.zip!/javax/swing/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="203" column="33" lean-forward="false" selection-start-line="203" selection-start-column="33" selection-end-line="203" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/MathsTrigo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="94" column="25" lean-forward="false" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/src/main/java/net/vpc/common/jeep/ExpressionEvaluatorDefinition.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/scholar/hadrumaths/3.1.30/hadrumaths-3.1.30.jar!/net/vpc/scholar/hadrumaths/Maths.class" />
+    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/scholar/hadrumaths/3.1.30/hadrumaths-3.1.30.jar!/net/vpc/scholar/hadrumaths/ComplexR.class" />
+    <entry file="jar://$MAVEN_REPOSITORY$/net/vpc/scholar/hadrumaths/3.1.30/hadrumaths-3.1.30.jar!/net/vpc/scholar/hadrumaths/MathsTrigo.class" />
+    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/vpc-backup-on-start">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4301">
-          <caret line="261" column="32" lean-forward="false" selection-start-line="261" selection-start-column="32" selection-end-line="261" selection-end-column="32" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="19" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="12" column="31" lean-forward="false" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../education/modules/mw/dev/2016/mastere-gt-hadruwaves-j/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="12" column="31" lean-forward="false" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="12" column="31" lean-forward="false" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/pom.xml">
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui2/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="38" lean-forward="false" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
-          <folding />
+        <state relative-caret-position="195">
+          <caret line="12" column="25" lean-forward="false" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2017-raja-mchaalia/thesis-2017-raja-mchaalia/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="31" lean-forward="false" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hadruwaves-studio/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="42" lean-forward="false" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPotImen2.scala" />
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/ParabolaPlotImen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="263" column="43" lean-forward="false" selection-start-line="263" selection-start-column="43" selection-end-line="263" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3088#3089#0" expanded="true" />
+            <element signature="e#3133#3134#0" expanded="true" />
+            <element signature="e#5728#5729#0" expanded="true" />
+            <element signature="e#5777#5778#0" expanded="true" />
+            <element signature="e#5809#5810#0" expanded="true" />
+            <element signature="e#5837#5838#0" expanded="true" />
+            <element signature="e#8732#8733#0" expanded="true" />
+            <element signature="e#8776#8777#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java/src/main/java/net/vpc/scholar/hadrumaths/Maths.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="651">
+          <caret line="4412" column="4" lean-forward="false" selection-start-line="4412" selection-start-column="4" selection-end-line="4412" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20170716/PatchComparisonMatlab1_article_nostr.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="10" column="35" lean-forward="false" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/src/main/java/net/vpc/common/strings/StringUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="36" column="28" lean-forward="false" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/TTTT.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="7" column="13" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="19" />
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/boudour/Boudour1.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="11" column="41" lean-forward="false" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/WaveGuideLineV1.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3213">
+          <caret line="199" column="42" lean-forward="false" selection-start-line="199" selection-start-column="42" selection-end-line="199" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../research/dev/mentoring/2015-imen-khadhraoui/thesis-2015-imen-khadhraoui/src/main/java/net/vpc/scala/imen/p20160819/MoMPatchEEEEVect.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3298">
+          <caret line="206" column="50" lean-forward="false" selection-start-line="206" selection-start-column="50" selection-end-line="206" selection-end-column="50" />
           <folding />
         </state>
       </provider>
@@ -3536,7 +3757,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
-          <last-edited>scala-sdk-2.12.2</last-edited>
+          <last-edited>scala-sdk-2.12.4</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -3560,11 +3781,12 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>thesis-2015-imen-khadhraoui|mentoring</last-edited>
+          <last-edited>vpc-common-swings</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.35989258" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

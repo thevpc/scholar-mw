@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
@@ -182,4 +183,7 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
     TVector<T> copy();
 
     void forEachIndex(TVectorItemAction<T> action);
+
+
+
 }

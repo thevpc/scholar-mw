@@ -7,15 +7,15 @@ public class Base64StringSerializer implements StringSerializer {
     public static final Base64StringSerializer INSTANCE = new Base64StringSerializer();
     public static final String PREFIX = "base64://";
 
-    public static void main(String[] args) {
-        try {
-            String e = IOUtils.serializeObjectToString(19.3);
-            System.out.println(e);
-            System.out.println(IOUtils.deserializeObjectToString(e));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            String e = HadrumathsIOUtils.serializeObjectToString(19.3);
+//            System.out.println(e);
+//            System.out.println(HadrumathsIOUtils.deserializeObjectToString(e));
+//        } catch (Exception e1) {
+//            e1.printStackTrace();
+//        }
+//    }
 
     @Override
     public int acceptSerialize(Object value) {

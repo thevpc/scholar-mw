@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Surface;
@@ -2140,4 +2140,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public Expr rsub(double other) {
         return Maths.expr(other).sub(this);
     }
+
+    @Override
+    public Object prop(String name) {
+        return getProperty(name);
+    }
+
 }

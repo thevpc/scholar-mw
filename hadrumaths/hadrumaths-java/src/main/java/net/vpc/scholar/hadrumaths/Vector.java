@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.io.RuntimeIOException;
 import java.io.File;
 import java.io.PrintStream;
 

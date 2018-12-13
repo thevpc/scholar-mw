@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.scholar.hadrumaths.dump.DumpManager;
+import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
 import net.vpc.scholar.hadrumaths.symbolic.Any;

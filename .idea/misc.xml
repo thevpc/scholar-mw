@@ -31,10 +31,14 @@
         <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils/pom.xml" />
         <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings/pom.xml" />
         <option value="$PROJECT_DIR$/hadruwaves-studio/hadruwaves-studio-standalone/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/jvmon/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/apps/inspector-gadget/pom.xml" />
-        <option value="/data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep/pom.xml" />
+        <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-swings/pom.xml" />
+        <option value="$PROJECT_DIR$/../../apps/jvmon/pom.xml" />
+        <option value="$PROJECT_DIR$/../../apps/inspector-gadget/pom.xml" />
+        <option value="$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep/pom.xml" />
+        <option value="$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-commandline/pom.xml" />
+        <option value="$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-io-ext-compress/pom.xml" />
+        <option value="$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-sql/pom.xml" />
+        <option value="$USER_HOME$/data-vpc/Data/research/projects/projet-2018/syscom2018/pom.xml" />
       </list>
     </option>
   </component>

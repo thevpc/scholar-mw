@@ -116,7 +116,7 @@ public class PlotModelListPanel extends BasePlotComponent implements PlotModelPr
     private JComponent createTabbedPane() {
         JDraggableTabbedPane panel = new JDraggableTabbedPane();
         for (PlotModel plotModel : model) {
-            panel.addTab(plotModel.getTitle(), Plot.create(plotModel, getPlotWindowManager()).toComponent());
+            panel.addTab(plotModel.getPreferredTitle(), Plot.create(plotModel, getPlotWindowManager()).toComponent());
         }
         return panel;
     }

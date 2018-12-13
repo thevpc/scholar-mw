@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.meshalgo.*;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.Collection;

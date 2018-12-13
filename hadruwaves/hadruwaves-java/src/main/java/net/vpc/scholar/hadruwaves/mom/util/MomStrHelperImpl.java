@@ -8,7 +8,7 @@ package net.vpc.scholar.hadruwaves.mom.util;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
@@ -37,7 +37,7 @@ public class MomStrHelperImpl implements MomStrHelper {
     public void init(MomProject str) {
         this.str = str;
         momStructure = new MomStructure();
-        momStructure.getPersistentCache().setRootFolder(IOUtils.createHFile(str.getWorkDir().getPath()+"/cache"));
+        momStructure.getPersistentCache().setRootFolder(HadrumathsIOUtils.createHFile(str.getWorkDir().getPath()+"/cache"));
         momStructure.loadProject(str);
     }
 

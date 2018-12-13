@@ -260,7 +260,7 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
     public JFrame getFrame() {
         if (frame == null) {
             frame = new JFrame();
-            frame.setTitle(getModel().getTitle());
+            frame.setTitle(getModel().getPreferredTitle());
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             frame.getContentPane().setLayout(new BorderLayout());
             frame.getContentPane().add(this);

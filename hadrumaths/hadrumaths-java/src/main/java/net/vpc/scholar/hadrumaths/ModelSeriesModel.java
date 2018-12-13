@@ -54,10 +54,6 @@ class ModelSeriesModel extends AbstractTableModel {
 
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-//            case 0: {
-//                //return "Index";
-//                return Integer.class;
-//            }
             case 0: {
                 //return "Visible";
                 return Boolean.class;

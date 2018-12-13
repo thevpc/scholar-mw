@@ -5,7 +5,7 @@
 
 package net.vpc.scholar.hadrumaths.meshalgo;
 
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 /**
  * @author vpc

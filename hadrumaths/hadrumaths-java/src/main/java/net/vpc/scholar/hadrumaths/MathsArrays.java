@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
-import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class MathsArrays {
+
     static double[] subArray1(double[] values, int count, IndexSelectionStrategy sel) {
         switch (sel) {
             case BALANCED: {
@@ -56,7 +56,6 @@ class MathsArrays {
         return null;
     }
 
-
     public static double[] dtimes(double min, double max, int times) {
         double[] d = new double[times];
         if (times == 1) {
@@ -65,6 +64,25 @@ class MathsArrays {
             double step = (max - min) / (times - 1);
             for (int i = 0; i < d.length; i++) {
                 d[i] = min + i * step;
+            }
+        }
+        return d;
+    }
+
+    public static double[] dtimes(double min, double max, int times,DoubleFilter filter) {
+        if(filter==null){
+            return dtimes(min,max,times);
+        }
+        double[] d = new double[times];
+        if (times == 1) {
+            d[0] = min;
+        } else {
+            double step = (max - min) / (times - 1);
+            for (int i = 0; i < d.length; i++) {
+                double v=min + i * step;
+                if(filter.accept(v)) {
+                    d[i] = v;
+                }
             }
         }
         return d;
@@ -183,6 +201,24 @@ class MathsArrays {
         return d;
     }
 
+    public static int[] isteps(int min, int max, int step,IntFilter filter) {
+        if(filter==null){
+            return isteps(min,max,step);
+        }
+        if (max < min) {
+            return new int[0];
+        }
+        int times = Math.abs((max - min) / step) + 1;
+        IntArrayList d = new IntArrayList();
+        for (int i = 0; i < times; i++) {
+            int v = min + i * step;
+            if(filter.accept(v)) {
+                d.append(v);
+            }
+        }
+        return d.toIntArray();
+    }
+
     public static int[] itimes(int min, int max, int times) {
         int[] d = new int[times];
         if (times == 1) {
@@ -217,78 +253,29 @@ class MathsArrays {
     }
 
     public static double[][] toDouble(Complex[][] c, ComplexAsDouble complexAsDouble) {
+        if (c == null) {
+            return null;
+        }
         if (complexAsDouble == null) {
             complexAsDouble = ComplexAsDouble.REAL;
         }
-        double[][] z = null;
-        if (c != null) {
-            switch (complexAsDouble) {
-                case ABS: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-                case REAL: {
-                    z = ArrayUtils.getReal(c);
-                    break;
-                }
-                case IMG: {
-                    z = ArrayUtils.getImag(c);
-                    break;
-                }
-                case DB: {
-                    z = ArrayUtils.getDb(c);
-                    break;
-                }
-                case DB2: {
-                    z = ArrayUtils.getDb2(c);
-                    break;
-                }
-                case ARG: {
-                    z = ArrayUtils.getArg(c);
-                    break;
-                }
-                case COMPLEX: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-            }
+        double[][] z = new double[c.length][];
+        for (int i = 0; i < z.length; i++) {
+            z[i] = toDouble(c[i], complexAsDouble);
         }
         return z;
     }
 
     public static double[] toDouble(Complex[] c, ComplexAsDouble complexAsDouble) {
-        double[] z = null;
-        if (c != null) {
-            switch (complexAsDouble) {
-                case ABS: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-                case REAL: {
-                    z = ArrayUtils.getReal(c);
-                    break;
-                }
-                case IMG: {
-                    z = ArrayUtils.getImag(c);
-                    break;
-                }
-                case DB: {
-                    z = ArrayUtils.getDb(c);
-                    break;
-                }
-                case DB2: {
-                    z = ArrayUtils.getDb2(c);
-                    break;
-                }
-                case ARG: {
-                    z = ArrayUtils.getArg(c);
-                    break;
-                }
-                case COMPLEX: {
-                    z = ArrayUtils.absdbl(c);
-                    break;
-                }
-            }
+        if (c == null) {
+            return null;
+        }
+        if (complexAsDouble == null) {
+            complexAsDouble = ComplexAsDouble.REAL;
+        }
+        double[] z = new double[c.length];
+        for (int i = 0; i < z.length; i++) {
+            z[i]=complexAsDouble.toDouble(c[i]);
         }
         return z;
     }
@@ -297,9 +284,9 @@ class MathsArrays {
      * range closed min (inclusive) and closed max (inclusive)
      *
      * @param orderedValues array to look for range into. must be
-     *                      <strong>ordered</strong>
-     * @param min           min value accepted in range (inclusive)
-     * @param max           max value accepted in range (inclusive)
+     * <strong>ordered</strong>
+     * @param min min value accepted in range (inclusive)
+     * @param max max value accepted in range (inclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */
@@ -332,9 +319,9 @@ class MathsArrays {
      * range closed min (inclusive) and open max (exclusive)
      *
      * @param orderedValues array to look for range into. must be
-     *                      <strong>ordered</strong>
-     * @param min           min value accepted in range (inclusive)
-     * @param max           max value accepted in range (exclusive)
+     * <strong>ordered</strong>
+     * @param min min value accepted in range (inclusive)
+     * @param max max value accepted in range (exclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix;

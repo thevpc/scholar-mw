@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.srv.socket;
 
-import net.vpc.scholar.hadrumaths.RuntimeIOException;
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServices;
 
 import java.io.BufferedInputStream;

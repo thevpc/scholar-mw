@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PlotModelList implements PlotModel, Iterable<PlotModel> {
+public class PlotModelList extends BasePlotModel implements Iterable<PlotModel> {
     private List<PlotModel> values = new ArrayList<>();
-    private String title;
 
     public PlotModelList(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     public void add(PlotModel other) {
@@ -25,9 +24,5 @@ public class PlotModelList implements PlotModel, Iterable<PlotModel> {
 
     public int size() {
         return values.size();
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

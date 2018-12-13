@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.builders.AbstractSourceBuilder;
 
 /**

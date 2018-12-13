@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.srv;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileSystem;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.srv.rmi.FSRemoteImpl;
 import net.vpc.scholar.hadrumaths.srv.socket.AbstractHSocketServlet;
 

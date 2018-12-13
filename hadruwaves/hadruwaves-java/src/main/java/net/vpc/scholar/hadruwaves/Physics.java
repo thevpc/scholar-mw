@@ -1,8 +1,13 @@
 package net.vpc.scholar.hadruwaves;
 
+import net.vpc.common.mvn.PomId;
+import net.vpc.common.mvn.PomIdResolver;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
+import net.vpc.scholar.hadrumaths.plot.PlotModel;
+import net.vpc.scholar.hadrumaths.plot.ValuesPlotModel;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
@@ -11,6 +16,11 @@ import net.vpc.scholar.hadruwaves.mom.modes.ModeFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.modes.NonPeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.modes.PeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.CutOffModalSources;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
@@ -22,16 +32,16 @@ public final class Physics {
     private Physics() {
     }
 
-    public static ModeIndex TE(int m,int n){
-        return ModeIndex.mode(ModeType.TE, m,n);
+    public static ModeIndex TE(int m, int n) {
+        return ModeIndex.mode(ModeType.TE, m, n);
     }
 
-    public static ModeIndex TM(int m,int n){
-        return ModeIndex.mode(ModeType.TM, m,n);
+    public static ModeIndex TM(int m, int n) {
+        return ModeIndex.mode(ModeType.TM, m, n);
     }
 
-    public static ModeIndex TEM(){
-        return ModeIndex.mode(ModeType.TEM, 0,0);
+    public static ModeIndex TEM() {
+        return ModeIndex.mode(ModeType.TEM, 0, 0);
     }
 
     public static double K0(double freq) {
@@ -90,7 +100,7 @@ public final class Physics {
                     public boolean accept(ModeIndex i) {
                         switch (i.getModeType()) {
                             case TM: {
-                                return i.n() != 0 ;//i.n() != 0;
+                                return i.n() != 0;//i.n() != 0;
                             }
                             case TE: {
                                 return i.m() != 0;
@@ -234,7 +244,7 @@ public final class Physics {
                     public boolean accept(ModeIndex i) {
                         //OK
                         switch (i.type()) {
-                            case TM:{
+                            case TM: {
                                 return (i.m() != 0 && i.n() != 0);
                             }
                             case TE: {
@@ -306,7 +316,7 @@ public final class Physics {
                     public boolean accept(ModeIndex i) {
                         //TODO check ME
                         switch (i.type()) {
-                            case TE:{
+                            case TE: {
                                 return i.m() != 0 && i.n() != 0;//(i.m() != 0 && i.n() != 0);
                             }
                             case TM: {
@@ -410,7 +420,7 @@ public final class Physics {
                         //TODO check ME
                         switch (i.type()) {
                             case TE: {
-                                return (i.m() != 0 );
+                                return (i.m() != 0);
                             }
                             case TM: {
                                 return (i.m() != 0 && i.n() != 0);
@@ -442,12 +452,12 @@ public final class Physics {
 
                     @Override
                     public boolean accept(ModeIndex i) {
-                        switch (i.type()){
-                            case TE:{
-                                return (i.m() != 0 ) && (i.n() != 0 );
+                        switch (i.type()) {
+                            case TE: {
+                                return (i.m() != 0) && (i.n() != 0);
                             }
-                            case TM:{
-                                return (i.m() != 0 ) && (i.n() != 0 );
+                            case TM: {
+                                return (i.m() != 0) && (i.n() != 0);
                             }
                         }
                         return false;
@@ -476,11 +486,11 @@ public final class Physics {
 
                     @Override
                     public boolean accept(ModeIndex i) {
-                        switch (i.type()){
-                            case TE:{
+                        switch (i.type()) {
+                            case TE: {
                                 return (i.m() != 0 && i.n() != 0);
                             }
-                            case TM:{
+                            case TM: {
                                 return (i.m() != 0 && i.n() != 0);
                             }
                         }
@@ -513,7 +523,7 @@ public final class Physics {
                         //TODO check ME
                         switch (i.type()) {
                             case TE: {
-                                return (i.m() != 0 );
+                                return (i.m() != 0);
                             }
                             case TM: {
                                 return i.m() != 0 && i.n() != 0;
@@ -728,8 +738,22 @@ public final class Physics {
         }
     }
 
-    public static String getHadruwavesVersion(){
-        return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadruwaves");
+    public static String getHadruwavesVersion() {
+        return HadruwavesService.getVersion();
     }
+
+//    public static void main(String[] args) {
+//        CstPlotDoubleRow[] cstPlotDoubleRows = loadCSTLinearPlot(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11Boundaries.txt"));
+//        CstPlotDoubleRow[] cstPlotDoubleUnboxedRows = loadCSTLinearPlot(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11Unboxed.txt"));
+//        ValuesPlotModel plotModel = (ValuesPlotModel) Plot.loadPlotModel(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11BoxVariationSave.jfig"));
+//        PlotLines pl=new PlotLines();
+//        pl.addValues(cstPlotDoubleRows[1].getTitle(), ArrayUtils.mul(cstPlotDoubleRows[0].getValues(),1*Maths.GHZ),cstPlotDoubleRows[1].getValues());
+//        pl.addValues(cstPlotDoubleUnboxedRows[1].getTitle(), ArrayUtils.mul(cstPlotDoubleUnboxedRows[0].getValues(),1*Maths.GHZ),cstPlotDoubleUnboxedRows[1].getValues());
+//        pl.addValues(plotModel.getYtitle(0),plotModel.getX(0),plotModel.getZ(0));
+//        pl.addValues(plotModel.getYtitle(2),plotModel.getX(0),plotModel.getZ(2));
+//        Plot.asCurve().plot(pl.interpolate(InterpolationStrategy.SMOOTH));
+//
+//        System.out.println(cstPlotDoubleRows);
+//    }
 
 }

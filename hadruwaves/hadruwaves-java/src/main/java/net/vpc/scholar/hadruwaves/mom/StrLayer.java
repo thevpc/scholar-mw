@@ -7,8 +7,8 @@ package net.vpc.scholar.hadruwaves.mom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  *

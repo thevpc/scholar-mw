@@ -26,7 +26,7 @@ public abstract class PlotCanvasAnyXYDoubleJFreeChart extends PlotCanvasAnyJFree
         double[] y = data.getY();
         double[] x = data.getX();
         for (int yi = 0; yi < data.size(); yi++) {
-            for (int xi = 0; xi < y.length; xi++) {
+            for (int xi = 0; xi < x.length; xi++) {
                 double yf = y[yi];
                 double xf = x[xi];
                 double c = data.getZ(xi, yi);

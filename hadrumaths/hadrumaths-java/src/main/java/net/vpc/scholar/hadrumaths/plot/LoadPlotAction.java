@@ -1,9 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.io.FileUtils;
 import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -13,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -35,22 +33,22 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
         }
     };
 
-    public static void main(String[] args) {
-        System.out.println("LoadPlotAction version 1.1");
-        LoadPlotAction loadJFigAction = new LoadPlotAction();
-        ArrayList<File> files = new ArrayList<File>();
-
-        for (String arg : args) {
-            if (arg.trim().length() > 0) {
-                files.add(new File(Maths.Config.expandPath(arg)));
-            }
-        }
-        if (files.size() > 0) {
-            loadJFigAction.openFiles(files.toArray(new File[files.size()]));
-        } else {
-            loadJFigAction.showOpenFilesDialog(null);
-        }
-    }
+//    public static void main(String[] args) {
+//        System.out.println("LoadPlotAction version 1.1");
+//        LoadPlotAction loadJFigAction = new LoadPlotAction();
+//        ArrayList<File> files = new ArrayList<File>();
+//
+//        for (String arg : args) {
+//            if (arg.trim().length() > 0) {
+//                files.add(new File(Maths.Config.expandPath(arg)));
+//            }
+//        }
+//        if (files.size() > 0) {
+//            loadJFigAction.openFiles(files.toArray(new File[files.size()]));
+//        } else {
+//            loadJFigAction.showOpenFilesDialog(null);
+//        }
+//    }
 
     public LoadPlotAction() {
         super("Load Plot");
@@ -67,7 +65,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
             @Override
             public boolean accept(File f) {
-                String e = IOUtils.getFileExtension(f).toLowerCase();
+                String e = FileUtils.getFileExtension(f).toLowerCase();
                 return f.isDirectory()
                         || e.equals(Plot.JFIG_FILE_EXTENSION)
                         || e.equals(Plot.JFIGOBJ_FILE_EXTENSION)
@@ -85,7 +83,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
             @Override
             public boolean accept(File f) {
-                String e = IOUtils.getFileExtension(f).toLowerCase();
+                String e = FileUtils.getFileExtension(f).toLowerCase();
                 return f.isDirectory()
                         || e.equals(ObjectCache.CACHE_OBJECT_FILE_EXTENSION);
             }
@@ -99,7 +97,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
             @Override
             public boolean accept(File f) {
-                String e = IOUtils.getFileExtension(f).toLowerCase();
+                String e = FileUtils.getFileExtension(f).toLowerCase();
                 return f.isDirectory()
                         || e.equals(Plot.JFIG_FILE_EXTENSION)
                         || e.equals(Plot.JFIGOBJ_FILE_EXTENSION)

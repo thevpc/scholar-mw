@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.plot.AbstractComponentPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.AbstractPlotContainer;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotContainer;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 
@@ -89,6 +89,6 @@ public class PlotConsoleWindowManager extends AbstractComponentPlotWindowManager
     }
 
     public void addPlotComponentImpl(PlotComponent component, String[] path) {
-        plotConsole.display(component, HadrumathsStringUtils.toPath(path, "/"));
+        plotConsole.display(component, StringUtils.join("/",path));
     }
 }

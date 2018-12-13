@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
+import net.vpc.common.io.*;
 
 /**
  * Created by vpc on 11/17/16.
@@ -127,7 +128,7 @@ public class TestCosXPlusY {
 //    public void replay() {
 //        try {
 //            Maths.Config.setCacheEnabled(false);
-//            Object[] o = (Object[]) IOUtils.loadObject(System.getProperty("user.home") + "/err.sv");
+//            Object[] o = (Object[]) HadrumathsIOUtils.loadObject(System.getProperty("user.home") + "/err.sv");
 //            Expr e1=(Expr) o[0];
 //            Expr e2=(Expr) o[1];
 //            Domain dom=(Domain) o[2];
@@ -206,11 +207,7 @@ public class TestCosXPlusY {
                     Complex v3 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1.simplify(), e2.simplify());
                     Complex v4 = ScalarProductOperatorFactory.quad().eval(dom, e1.simplify(), e2.simplify());
                     System.out.println(v1 + " ; " + v2 + " ; " + v3 + " ; " + v4 + " ; ");
-                    try {
-                        IOUtils.saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    IOUtils.saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
                     v1 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1, e2);
                     Assert.fail("FAIL...");
                 }

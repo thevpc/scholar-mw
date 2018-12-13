@@ -8,23 +8,37 @@ import java.io.Serializable;
 public abstract class JColorPalette implements Cloneable, Serializable {
     private int size;
     private boolean reverse;
+    private String name;
 
-    protected JColorPalette(boolean reverse) {
+    protected JColorPalette(String name, boolean reverse) {
+        this.name = name;
         this.reverse = reverse;
         this.size = -1;
     }
 
-    protected JColorPalette(int size) {
+    public String getName() {
+        return name + (reverse ? "(reversed)" : "");
+    }
+
+    protected JColorPalette(String name, int size) {
+        this.name = name;
         this.size = size;
         this.reverse = false;
     }
 
-    protected JColorPalette(int size, boolean reverse) {
+    protected JColorPalette(String name, int size, boolean reverse) {
+        this.name = name;
         this.size = size;
         this.reverse = reverse;
     }
 
-    public abstract Color getColor(float ratio);
+
+    public Color getColor(float ratio){
+        ratio = getRatioTransform(ratio);
+        return getColorImpl(ratio);
+    }
+
+    protected abstract Color getColorImpl(float ratio);
 
     public int getSize() {
         return size;
@@ -34,7 +48,17 @@ public abstract class JColorPalette implements Cloneable, Serializable {
         return reverse;
     }
 
+    public void setReverse(boolean reverse) {
+        this.reverse = reverse;
+    }
+
     protected float getRatioTransform(float ratio) {
+        if(ratio<0){
+            ratio=0;
+        }
+        if(ratio>1){
+            ratio=1;
+        }
         if (size > 0) {
             float step = 1f / (size - 1);
             ratio = Maths.round(ratio / step) * step;

@@ -243,11 +243,11 @@ public final class ComplexR extends Complex implements DoubleToDouble {
 
 
     public Complex sin() {
-        return Complex.valueOf(Maths.sin2(real));
+        return Complex.valueOf(Math.sin(real));
     }
 
     public Complex cos() {
-        return Complex.valueOf(Maths.cos2(real));
+        return Complex.valueOf(Math.cos(real));
     }
 
     public Complex tan() {
@@ -345,14 +345,14 @@ public final class ComplexR extends Complex implements DoubleToDouble {
 
     public double dsqrt() {
         if (real >= 0) {
-            return Maths.sqrt(real);
+            return Math.sqrt(real);
         } else {
             return Double.NaN;
         }
     }
 
     public Complex sqrt() {
-        return real >= 0 ? Complex.valueOf(Maths.sqrt(real), 0) : Complex.valueOf(0, Maths.sqrt(-real));
+        return real >= 0 ? Complex.valueOf(Math.sqrt(real), 0) : Complex.valueOf(0, Math.sqrt(-real));
     }
 
     public Complex sqrt(int n) {
@@ -377,7 +377,7 @@ public final class ComplexR extends Complex implements DoubleToDouble {
 //        } else if (power == 2) {
 //            return sqr();
 //        } else {
-        return Complex.valueOf(Maths.pow(real, power));
+        return Complex.valueOf(Math.pow(real, power));
 //        } else if (power >= 0) {
 //            double r = Maths.pow(absdbl(), power);
 //            double angle = arg().toDouble();

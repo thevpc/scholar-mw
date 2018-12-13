@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.cache.Evaluator;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import org.junit.Test;
 
 /**

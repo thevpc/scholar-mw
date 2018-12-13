@@ -8,6 +8,7 @@ import java.util.Collection;
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 public class PreloadedList<T> extends AbstractTList<T> {
+
     private static final long serialVersionUID = 1L;
     private final TList<T> cache;
     private TypeReference<T> componentType;
@@ -58,8 +59,19 @@ public class PreloadedList<T> extends AbstractTList<T> {
 
     @Override
     public String toString() {
-        return "PreloadedList{" +
-                "cache=" + cache +
-                '}';
+        return "PreloadedList{"
+                + "cache=" + cache
+                + '}';
     }
+
+    @Override
+    public TList<T> sort() {
+        return copy().sort();
+    }
+
+    @Override
+    public TList<T> removeDuplicates() {
+        return copy().removeDuplicates();
+    }
+
 }

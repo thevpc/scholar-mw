@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class CardPlotContainer extends AbstractPlotContainer {
 
-    private JListCardPanel jTabbedPane;
+    private JListCardPanel cardPanel;
 
     public CardPlotContainer() {
         super();
@@ -24,10 +24,10 @@ public class CardPlotContainer extends AbstractPlotContainer {
 
 
     public int indexOfPlotComponent(PlotComponent plotComponent) {
-        if (jTabbedPane != null) {
-            int tabCount = jTabbedPane.getPageComponentsCount();
+        if (cardPanel != null) {
+            int tabCount = cardPanel.getPageComponentsCount();
             for (int i = 0; i < tabCount; i++) {
-                Component ii = jTabbedPane.getPageComponent(i);
+                Component ii = cardPanel.getPageComponent(i);
                 if (ii != null && plotComponent.toComponent() == ii) {
                     return i;
                 }
@@ -38,8 +38,8 @@ public class CardPlotContainer extends AbstractPlotContainer {
 
     @Override
     public PlotComponent getPlotComponent(int index) {
-        if (jTabbedPane != null) {
-            Component c = jTabbedPane.getPageComponent(index);
+        if (cardPanel != null) {
+            Component c = cardPanel.getPageComponent(index);
             if (c instanceof JComponent) {
                 return toPlotComponent((JComponent) c);
             }
@@ -49,8 +49,8 @@ public class CardPlotContainer extends AbstractPlotContainer {
 
     @Override
     public int getPlotComponentsCount() {
-        if (jTabbedPane != null) {
-            return jTabbedPane.getPageComponentsCount();
+        if (cardPanel != null) {
+            return cardPanel.getPageComponentsCount();
         }
         return 0;
     }
@@ -58,15 +58,15 @@ public class CardPlotContainer extends AbstractPlotContainer {
     @Override
     public void removePlotComponentImpl(PlotComponent component) {
         int index = indexOfPlotComponent(component);
-        jTabbedPane.removePageAt(index);
+        cardPanel.removePageAt(index);
     }
 
     public void addComponentImpl(PlotComponent component, int index) {
         JComponent component1 = toComponent(component);
         if (index < 0) {
-            jTabbedPane.addPage(validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
+            cardPanel.addPage(validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
         } else {
-            jTabbedPane.setPageAt(index, validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
+            cardPanel.setPageAt(index, validateTitle(component.getPlotTitle()), validateTitle(component.getPlotTitle()), null, component1);
         }
     }
 
@@ -82,26 +82,26 @@ public class CardPlotContainer extends AbstractPlotContainer {
 //    }
 
     public void clear() {
-        if (jTabbedPane != null) {
-            Component[] components = jTabbedPane.getPageComponents();
+        if (cardPanel != null) {
+            Component[] components = cardPanel.getPageComponents();
             for (Component component : components) {
                 if (component instanceof JComponent) {
                     PlotComponent t = toPlotComponent((JComponent) component);
                     remove(t);
                 }
             }
-            jTabbedPane.removeAll();
+            cardPanel.removeAll();
         }
     }
 
     @Override
     public JComponent toComponent() {
-        if (jTabbedPane == null) {
-            jTabbedPane = new JListCardPanel();
-            jTabbedPane.putClientProperty(PlotComponent.class.getName(), this);
-            jTabbedPane.setPreferredSize(new Dimension(600, 400));
+        if (cardPanel == null) {
+            cardPanel = new JListCardPanel();
+            cardPanel.putClientProperty(PlotComponent.class.getName(), this);
+            cardPanel.setPreferredSize(new Dimension(600, 400));
         }
-        return jTabbedPane;
+        return cardPanel;
     }
 
 

@@ -9,13 +9,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
-public class ValuesPlotModel implements PlotModel {
+public class ValuesPlotModel extends BasePlotModel {
     String DATA_PROPERTY = "DATA_PROPERTY";
 //    String PLOT_NAME_PROPERTY = "PLOT_NAME_PROPERTY";
 
     private static final long serialVersionUID = 1L;
-    private String name = "";
-    private String title = "";
     private String xtitle = "";
     private String ytitle = "";
     private String[] ytitles = new String[0];
@@ -26,7 +24,6 @@ public class ValuesPlotModel implements PlotModel {
     private Complex[][] z = new Complex[0][0];
     private ComplexAsDouble converter;
     private PlotType plotType = PlotType.CURVE;
-    private PropertyChangeSupport changeSupport;
     private Map<String, Object> properties = new HashMap<String, Object>();
     private Set<ExternalLibrary> preferredLibraries = EnumSet.allOf(ExternalLibrary.class);
     private Set<ExternalLibrary> enabledLibraries = EnumSet.allOf(ExternalLibrary.class);
@@ -71,9 +68,8 @@ public class ValuesPlotModel implements PlotModel {
     }
 
     public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Complex[][] z, ComplexAsDouble converter, PlotType plotType, Map<String, Object> properties) {
-        changeSupport = new PropertyChangeSupport(this);
-        this.title = title;
-        this.name = title;
+        setTitle(title);
+        setName(title);
         this.xtitle = xtitle;
         this.ytitle = ytitle;
         this.ytitles = ytitles;
@@ -167,26 +163,10 @@ public class ValuesPlotModel implements PlotModel {
     }
 
     public ValuesPlotModel() {
-        changeSupport = new PropertyChangeSupport(this);
+
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        Object old = this.title;
-        this.title = title;
-        firePropertyChange("title", old, this.title);
-    }
-
-
-    public void setName(String name) {
-        Object old = this.name;
-        this.name = name;
-        firePropertyChange("name", old, this.name);
-    }
-
+    
     public String getXtitle() {
         return xtitle;
     }
@@ -215,6 +195,18 @@ public class ValuesPlotModel implements PlotModel {
         Object old = this.ztitle;
         this.ztitle = zTitle;
         firePropertyChange("ztitle", old, this.ztitle);
+    }
+
+    public double[] getX(int index) {
+        return x[index];
+    }
+
+    public double[] getY(int index) {
+        return y[index];
+    }
+
+    public Complex[] getZ(int index) {
+        return z[index];
     }
 
     public double[][] getX() {
@@ -264,6 +256,7 @@ public class ValuesPlotModel implements PlotModel {
         }
         return null;
     }
+
     public String[] getYtitles() {
         return ytitles;
     }
@@ -341,10 +334,11 @@ public class ValuesPlotModel implements PlotModel {
         return converter;
     }
 
-    public void setConverter(ComplexAsDouble zDoubleFunction) {
+    public ValuesPlotModel setConverter(ComplexAsDouble zDoubleFunction) {
         Object old = this.converter;
         this.converter = zDoubleFunction;
         firePropertyChange("converter", old, this.converter);
+        return this;
     }
 
     public PlotType getPlotType() {
@@ -355,10 +349,6 @@ public class ValuesPlotModel implements PlotModel {
         Object old = this.plotType;
         this.plotType = plotType;
         firePropertyChange("plotType", old, this.plotType);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.addPropertyChangeListener(listener);
     }
 
     public Map<String, Object> getProperties() {
@@ -400,12 +390,6 @@ public class ValuesPlotModel implements PlotModel {
         }
     }
 
-    private void firePropertyChange(String name, Object oldValue, Object newValue) {
-        if (!Objects.equals(oldValue, newValue)) {
-//            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
-            changeSupport.firePropertyChange(name, oldValue, newValue);
-        }
-    }
 
     public void setProperty(int index, String key, Object value) {
         String s = "[" + index + "]." + key;
@@ -421,17 +405,6 @@ public class ValuesPlotModel implements PlotModel {
         return getProperty(s, defaultValue);
     }
 
-    public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
-        changeSupport.addPropertyChangeListener(property, listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.removePropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
-        changeSupport.removePropertyChangeListener(property, listener);
-    }
 
     public boolean getYVisible(int index) {
         ensureSize_yvisible(Math.max(index + 1, getValidYVisibleCount()));
@@ -441,14 +414,10 @@ public class ValuesPlotModel implements PlotModel {
     public void setYVisible(int index, boolean visible) {
         if (yvisible[index] != visible) {
             yvisible[index] = visible;
-            changeSupport.firePropertyChange("yvisible", Boolean.FALSE, Boolean.TRUE);
-            changeSupport.firePropertyChange("yvisible[" + index + "]", !visible, visible);
+            firePropertyChange("yvisible", Boolean.FALSE, Boolean.TRUE);
+            firePropertyChange("yvisible[" + index + "]", !visible, visible);
 //            changeSupport.firePropertyChange(DATA_PROPERTY, Boolean.FALSE, Boolean.TRUE);
         }
-    }
-
-    public String getName() {
-        return name;
     }
 
     public double[][] getZd() {

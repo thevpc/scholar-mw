@@ -5,7 +5,7 @@
 package net.vpc.scholar.hadruwaves.mom.sources;
 
 import java.io.Serializable;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**

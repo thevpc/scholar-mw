@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.common.util.TypeReference;
 
 import java.io.*;

@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileFilter;
 import net.vpc.scholar.hadruwaves.*;

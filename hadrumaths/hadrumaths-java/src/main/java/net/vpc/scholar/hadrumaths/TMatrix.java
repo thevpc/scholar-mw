@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.common.util.TypeReference;
 
 import java.io.BufferedReader;

@@ -86,6 +86,12 @@ public class MinMax {
     }
 
     @Override
+    public String toString() {
+        return "{" + "min=" + min + ", max=" + max + '}';
+    }
+    
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

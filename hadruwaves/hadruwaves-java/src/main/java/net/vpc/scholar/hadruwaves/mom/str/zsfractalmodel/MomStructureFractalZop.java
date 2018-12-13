@@ -4,7 +4,7 @@ import net.vpc.common.util.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceConfig;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
@@ -421,7 +421,7 @@ public class MomStructureFractalZop extends MomStructure {
                 }
                 str.invalidateCache();
 //                try {
-//                    storeString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
+//                    saveString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
@@ -487,7 +487,7 @@ public class MomStructureFractalZop extends MomStructure {
                 }
                 str.invalidateCache();
 //                try {
-//                    storeString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
+//                    saveString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }

@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.common.util.ClassMapList;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.List;

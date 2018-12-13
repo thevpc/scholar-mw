@@ -1,20 +1,12 @@
 package net.vpc.scholar.hadruwaves.studio.standalone;
 
+import net.vpc.common.io.FileUtils;
 import net.vpc.lib.pheromone.application.*;
 import net.vpc.lib.pheromone.application.loaders.SplashScreenObserver;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.areashapes.RectAreaShapeEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.gpmeshs.BoxModesGpMesherEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.gpmeshs.ConstantGpMesherEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.gpmeshs.RooftopGpMesherEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.materials.ModalSourceMaterialEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.materials.PecMaterialEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.materials.PlanarSourceMaterialEditor;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.materials.SurfaceImpedanceMaterialEditor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import net.vpc.common.prs.util.IOUtils;
 import net.vpc.common.swings.RecentFilesMenu;
 
 /**
@@ -110,7 +102,7 @@ public class TMWLabApplication extends DefaultApplication {
             File[] files = getRecentFilesMenu().getRecentFilesModel().getFiles();
             String[] filePaths = new String[files.length];
             for (int i = 0; i < filePaths.length; i++) {
-                filePaths[i] = IOUtils.getFilePath(files[i]);
+                filePaths[i] = FileUtils.getFilePath(files[i]);
             }
             getConfigurationManager().getSharedConfiguration().setStringArray("RecentFiles", filePaths, '\n');
         }

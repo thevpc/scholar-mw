@@ -9,6 +9,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class LongArrayList extends AbstractTList<Long> implements LongList {
+
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final long[] ZERO_ELEMENTS = new long[0];
@@ -32,6 +33,18 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
         } else {
             throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
+    }
+
+    public LongArrayList(boolean row, long[] values) {
+        this(row, values.length);
+        appendAll(values);
+    }
+
+    public void appendAll(long[] e) {
+        int increment = e.length;
+        ensureCapacityInternal(size + increment);  // Increments modCount!!
+        System.arraycopy(e, 0, elementData, this.size, increment);
+        this.size += increment;
     }
 
     public long[] toLongArray() {
@@ -126,21 +139,21 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
         modCount++;
 
         // overflow-conscious code
-        if (minCapacity - elementData.length > 0)
+        if (minCapacity - elementData.length > 0) {
             grow(minCapacity);
+        }
     }
 
     /**
-     * The maximum size of array to allocate.
-     * Some VMs reserve some header words in an array.
-     * Attempts to allocate larger arrays may result in
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
      * OutOfMemoryError: Requested array size exceeds VM limit
      */
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     /**
-     * Increases the capacity to ensure that it can hold at least the
-     * number of elements specified by the minimum capacity argument.
+     * Increases the capacity to ensure that it can hold at least the number of
+     * elements specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -148,10 +161,12 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
         // overflow-conscious code
         int oldCapacity = elementData.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity - minCapacity < 0)
+        if (newCapacity - minCapacity < 0) {
             newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE > 0)
+        }
+        if (newCapacity - MAX_ARRAY_SIZE > 0) {
             newCapacity = hugeCapacity(minCapacity);
+        }
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
@@ -160,9 +175,9 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
         if (minCapacity < 0) { // overflow
             throw new OutOfMemoryError();
         }
-        return (minCapacity > MAX_ARRAY_SIZE) ?
-                Integer.MAX_VALUE :
-                MAX_ARRAY_SIZE;
+        return (minCapacity > MAX_ARRAY_SIZE)
+                ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
     }
 
     public void trimToSize() {
@@ -175,6 +190,7 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
     }
 
     public static class LongReadOnlyList extends ReadOnlyTList<Long> implements LongList {
+
         public LongReadOnlyList(boolean row, TVectorModel<Long> model) {
             super(Maths.$LONG, row, model);
         }
@@ -187,5 +203,73 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
             }
             return d;
         }
+
+        @Override
+        public TVector<Long> concat(TVector<Long> e) {
+            LongArrayList v=new LongArrayList(isRow(),size()+(e==null?0:e.size()));
+            v.appendAll(this);
+            if(e!=null) {
+                v.appendAll(e);
+            }
+            return v;
+        }
+
+        @Override
+        public TList<Long> sort() {
+            long[] vals = toLongArray();
+            Arrays.sort(vals);
+            return new LongArrayList(isRow(), vals);
+        }
+
+        @Override
+        public TList<Long> removeDuplicates() {
+            long[] vals = toLongArray();
+            long[] vals2 = ((LongList) sort()).toLongArray();
+            long[] vals3 = new long[vals.length];
+            int x = 0;
+            for (int i = 0; i < vals2.length; i++) {
+                long val = vals2[i];
+                if (x == 0 || vals3[x - 1] != val) {
+                    vals3[x] = val;
+                    x++;
+                }
+            }
+            return new LongArrayList(isRow(), Arrays.copyOf(vals3, x));
+        }
+
     }
+
+    @Override
+    public LongList sort() {
+        long[] vals = toLongArray();
+        Arrays.sort(vals);
+        return new LongArrayList(isRow(), vals);
+    }
+
+    @Override
+    public LongList removeDuplicates() {
+        long[] vals = toLongArray();
+        long[] vals2 = sort().toLongArray();
+        long[] vals3 = new long[vals.length];
+        int x = 0;
+        for (int i = 0; i < vals2.length; i++) {
+            long val = vals2[i];
+            if (x == 0 || vals3[x - 1] != val) {
+                vals3[x] = val;
+                x++;
+            }
+        }
+        return new LongArrayList(isRow(), Arrays.copyOf(vals3, x));
+    }
+
+    @Override
+    public TVector<Long> concat(TVector<Long> e) {
+        LongArrayList v=new LongArrayList(isRow(),size()+(e==null?0:e.size()));
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
+
 }

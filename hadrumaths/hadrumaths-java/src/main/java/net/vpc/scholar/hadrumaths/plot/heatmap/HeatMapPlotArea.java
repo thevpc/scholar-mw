@@ -4,6 +4,7 @@ import net.vpc.common.swings.SerializableActionListener;
 import net.vpc.scholar.hadrumaths.DMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MinMax;
+import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.plot.HSBColorPalette;
 import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.plot.ValuesPlotXYDoubleModelFace;
@@ -20,6 +21,7 @@ import java.awt.event.MouseMotionListener;
  * @creationtime 16 juin 2004 00:42:43
  */
 public class HeatMapPlotArea extends JComponent implements MouseMotionListener, MouseListener {
+
     private static final long serialVersionUID = 1L;
     int rowsCount = 0;
     int columnsCount = 0;
@@ -36,6 +38,15 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     private int current_xj = -1;
     private boolean useTooltips = false;
     private HeatMapPlotNormalizer normalizer = new DefaultHeatMapPlotNormalizer();
+    private HeatMapRendrer renderer = new HeatMapRendrer() {
+        @Override
+        public void paintValue(HeatMapPlotArea area, Graphics g, Dimension size, double value, int x, int y, int width, int heigh, boolean selected) {
+        }
+
+        @Override
+        public void paintAnnotations(HeatMapPlotArea area, Graphics g) {
+        }
+    };
 
 //
 //    public HeatMapPlotArea(double[] x, double[] y, double[][] matrix) {
@@ -45,7 +56,6 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
 //    public HeatMapPlotArea(double[] x, double[] y, double[][] matrix, JColorPalette colorPalette) {
 //        dsteps(x, y, matrix, colorPalette, null);
 //    }
-
     public HeatMapPlotArea(ValuesPlotXYDoubleModelFace model, boolean reverseY, JColorPalette colorPalette, Dimension preferredDimension) {
         init(model, reverseY, colorPalette, preferredDimension);
     }
@@ -154,143 +164,162 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     public void mouseEntered(MouseEvent e) {
     }
 
+    public JMenu createColorContrastMenu() {
+        JMenu popupMenu = new JMenu("Color Contrast");
+        ButtonGroup contrastGroup = new ButtonGroup();
+        JMenuItem item = null;
+        item = new JCheckBoxMenuItem("Low contrast", true);
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(-1);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 512");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(512);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 256");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(256);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 32");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(32);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 16");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(16);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 8");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(8);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Hight Contrast 4");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(4);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        item = new JCheckBoxMenuItem("Monochrome");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setColorContrast(2);
+            }
+        });
+        contrastGroup.add(item);
+        popupMenu.add(item);
+
+        popupMenu.addSeparator();
+        item = new JCheckBoxMenuItem("Inverser", getColorPalette().isReverse());
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JCheckBoxMenuItem i = (JCheckBoxMenuItem) e.getSource();
+                setColorPalette(getColorPalette().derivePaletteReverse(i.isSelected()));
+            }
+        });
+        popupMenu.add(item);
+        return popupMenu;
+    }
+
+    public JMenu createColorPaletteMenu() {
+        JMenu popupMenu = new JMenu("Color Palette");
+        JMenuItem item = null;
+//        get = new JMenuItem("Couleur");
+        ButtonGroup palettesGroup = new ButtonGroup();
+        JColorPalette[] availableColorPalettes = Plot.getAvailableColorPalettes();
+        for (int i = 0; i < availableColorPalettes.length; i++) {
+            JColorPalette p = availableColorPalettes[i];
+            item = new JCheckBoxMenuItem(p.getName(), i == 0);
+            palettesGroup.add(item);
+            item.addActionListener(new SerializableActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JColorPalette old = getColorPalette();
+                    setColorPalette(p.derivePaletteReverse(old.isReverse()).derivePaletteSize(old.getSize()));
+                }
+            });
+            popupMenu.add(item);
+        }
+
+        return popupMenu;
+    }
+
+    public JMenu createRotationMenu() {
+        JMenu popupMenu = new JMenu("Transformations");
+        JMenuItem item = null;
+
+        item = new JMenuItem("Rotate Left");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                rotateLeft();
+            }
+        });
+        popupMenu.add(item);
+
+        item = new JMenuItem("Rotate Right");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                rotateRight();
+            }
+        });
+        popupMenu.add(item);
+
+        item = new JMenuItem("Horizontal Mirror");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                flipHorizontally();
+            }
+        });
+        popupMenu.add(item);
+
+        item = new JMenuItem("Vertical Mirror");
+        item.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                flipVertically();
+            }
+        });
+        popupMenu.add(item);
+        return popupMenu;
+    }
+
     public JPopupMenu getComponentPopupMenu() {
         JPopupMenu popupMenu = super.getComponentPopupMenu();
         if (popupMenu == null) {
             popupMenu = new JPopupMenu();
-            JMenuItem item = null;
-//        get = new JMenuItem("Couleur");
-            ButtonGroup group = new ButtonGroup();
-            item = new JCheckBoxMenuItem("Couleur", true);
-            group.add(item);
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JColorPalette old = getColorPalette();
-                    setColorPalette(HSBColorPalette.DEFAULT_PALETTE.derivePaletteReverse(old.isReverse()).derivePaletteSize(old.getSize()));
-                }
-            });
-            popupMenu.add(item);
 
-//        get = new JMenuItem("Variation de Gris");
-            item = new JCheckBoxMenuItem("Variation de Gris", false);
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JColorPalette old = getColorPalette();
-                    setColorPalette(HSBColorPalette.GRAY_PALETTE.derivePaletteReverse(old.isReverse()).derivePaletteSize(old.getSize()));
-                }
-            });
-            group.add(item);
-            popupMenu.add(item);
-            popupMenu.addSeparator();
-
-            item = new JMenuItem("Faible contrast");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(-1);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Haut Contrast 512");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(512);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Haut Contrast 256");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(256);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Haut Contrast 32");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(32);
-                }
-            });
-            popupMenu.add(item);
-
-
-            item = new JMenuItem("Haut Contrast 16");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(16);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Haut Contrast 8");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(8);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Haut Contrast 4");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(4);
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Monochrome");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setColorContrast(2);
-                }
-            });
-            popupMenu.add(item);
-
-            popupMenu.addSeparator();
-            item = new JCheckBoxMenuItem("Inverser", getColorPalette().isReverse());
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JCheckBoxMenuItem i = (JCheckBoxMenuItem) e.getSource();
-                    setColorPalette(getColorPalette().derivePaletteReverse(i.isSelected()));
-                }
-            });
-            popupMenu.add(item);
-
-
-            popupMenu.addSeparator();
-            item = new JMenuItem("Rotation Gauche");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    rotateLeft();
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Rotation Droite");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    rotateRight();
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Mirroir Horizontal");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    flipHorizontally();
-                }
-            });
-            popupMenu.add(item);
-
-            item = new JMenuItem("Mirroir Vertical");
-            item.addActionListener(new SerializableActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    flipVertically();
-                }
-            });
-            popupMenu.add(item);
+            popupMenu.add(createColorPaletteMenu());
+            popupMenu.add(createColorContrastMenu());
+            popupMenu.add(createRotationMenu());
 
             setComponentPopupMenu(popupMenu);
         }
@@ -300,8 +329,8 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     public void setPreferredDimension(Dimension preferredDimension) {
 //        float factor = (matrix.length > 0 && matrix[0].length > 0) ? ((float) matrix.length / (float) matrix[0].length) : 1;
         float factor = 1;
-        Dimension dim = (factor <= 1) ?
-                new Dimension(preferredDimension.width, (int) (preferredDimension.height * factor))
+        Dimension dim = (factor <= 1)
+                ? new Dimension(preferredDimension.width, (int) (preferredDimension.height * factor))
                 : new Dimension((int) (preferredDimension.width / factor), preferredDimension.height);
         setMinimumSize(dim);
         setPreferredSize(dim);
@@ -441,6 +470,7 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         return new HeatMapCell(x, y, xVal, yVal, zVal, zPercent);
     }
 
+    @Override
     public void paint(Graphics g) {
         Dimension d = getSize();
         double y = 0;
@@ -512,15 +542,16 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
                     g.fillRect(xx, yy, ixx, iyy);
                     if (current_yi == line && current_xj == column) {
                         Color brighterColor = colorPaletteContrasted.getColor(f).brighter();
-                        Color darkerColor = colorPaletteContrasted.getColor(f).darker();
+//                        Color darkerColor = colorPaletteContrasted.getColor(f).darker();
                         g.setColor(brighterColor);
                         g.fillRect(xx + 1, yy + 1, ixx - 2, iyy - 2);
                     }
                 }
+                renderer.paintValue(this, g, d, dv, xx, yy, ixx, iyy, current_yi == line && current_xj == column);
             }
         }
+        renderer.paintAnnotations(this, g);
     }
-
 
     public Object[] getxAxis() {
         return xAxis;

@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 
 import java.util.ArrayList;

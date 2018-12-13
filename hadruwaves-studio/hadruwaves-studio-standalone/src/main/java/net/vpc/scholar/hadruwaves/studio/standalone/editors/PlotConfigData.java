@@ -11,7 +11,7 @@ import net.vpc.scholar.hadruwaves.mom.project.common.ExpressionAware;
  * User: Taha
  * Date: 3 aout 2003
  * Time: 01:17:19
- * To change this template use Options | File Templates.
+ * 
  */
 public class PlotConfigData implements ExpressionAware {
 

@@ -8,12 +8,12 @@ public class JColorArrayPalette extends JColorPalette {
     private Color[] model;
 
 
-    public JColorArrayPalette(Color[] model) {
-        this(model, model.length);
+    public JColorArrayPalette(String name,Color[] model) {
+        this(name,model, model.length);
     }
 
-    public JColorArrayPalette(Color[] model, int size) {
-        super(size);
+    public JColorArrayPalette(String name,Color[] model, int size) {
+        super(name,size);
         this.model = model;
     }
 
@@ -25,8 +25,7 @@ public class JColorArrayPalette extends JColorPalette {
         return model;
     }
 
-    public Color getColor(float ratio) {
-        ratio = getRatioTransform(ratio);
+    public Color getColorImpl(float ratio) {
         int s = getSize();
         int x = (int) (ratio * s);
         return getColorAt(x < 0 ? 0 : (x >= s) ? (s - 1) : x);

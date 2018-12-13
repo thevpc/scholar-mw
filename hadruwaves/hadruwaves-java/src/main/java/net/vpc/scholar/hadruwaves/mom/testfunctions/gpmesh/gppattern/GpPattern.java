@@ -4,7 +4,7 @@ import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.geom;
 
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  * @author : vpc

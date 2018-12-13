@@ -98,7 +98,7 @@ public class PlotCanvasRingJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
         PieDataset data = createPieDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        String theTitle = model.getTitle() == null ? "" : model.getTitle();
+        String theTitle = model.getPreferredTitle();
 
         JFreeChart chart = ChartFactory.createRingChart(theTitle, data, false, true, false);
         RingPlot plot = (RingPlot) chart.getPlot();

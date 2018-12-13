@@ -1,17 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.jeep.ExpressionEvaluator;
-import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.Converter;
-import net.vpc.common.util.DoubleFormat;
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.io.RuntimeIOException;
+import net.vpc.common.jeep.ExpressionManager;
+import net.vpc.common.util.*;
 import net.vpc.common.util.mon.MonitoredAction;
 import net.vpc.common.util.mon.ProgressMonitor;
 import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluatorFactory;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
 import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadrumaths.plot.console.params.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
@@ -35,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class Maths {
+
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double E = Math.E;
@@ -278,8 +276,8 @@ public final class Maths {
     public static final TypeReference<TList<Matrix>> $MLIST = new TListMatrixTypeReference();
     public static final SimpleDateFormat UNIVERSAL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
-            System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model") :
-                    System.getProperty("os.arch").contains("64") ? "64" : "32"
+            System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model")
+                    : System.getProperty("os.arch").contains("64") ? "64" : "32"
     );
     private static final int BYTE_BITS = 8;
     private static final int WORD = ARCH_MODEL_BITS / BYTE_BITS;
@@ -306,7 +304,6 @@ public final class Maths {
         }
     };
 
-
     static {
         ServiceLoader<HadrumathsService> loader = ServiceLoader.load(HadrumathsService.class);
         TreeMap<Integer, List<HadrumathsService>> all = new TreeMap<>();
@@ -326,7 +323,6 @@ public final class Maths {
 
     private Maths() {
     }
-
 
     public static Domain xdomain(double min, double max) {
         return Domain.forBounds(min, max);
@@ -557,7 +553,6 @@ public final class Maths {
         return matrix(iValue).mul(I);
     }
 
-
     public static Matrix zerosMatrix(int rows, int cols) {
         return Config.getDefaultMatrixFactory().newZeros(rows, cols);
     }
@@ -602,10 +597,9 @@ public final class Maths {
         return Config.getDefaultMatrixFactory().newMatrix(rows, cols, cellFactory);
     }
 
-//    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
+    //    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
 //        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
 //    }
-
     public static Matrix columnMatrix(final Complex... values) {
         return Config.getDefaultMatrixFactory().newColumnMatrix(values);
     }
@@ -813,7 +807,6 @@ public final class Maths {
     }
 
     //</editor-fold>
-
     //<editor-fold desc="Vector functions">
     public static Vector rowVector(Complex[] elems) {
         return ArrayVector.Row(elems);
@@ -851,7 +844,6 @@ public final class Maths {
         return constantRowVector(dim, Complex.NaN);
     }
 
-
     public static TVector<Expr> columnVector(Expr[] expr) {
         return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, false);
     }
@@ -873,6 +865,26 @@ public final class Maths {
                 vector.getComponentType(), new CachedTVectorUpdatableModel<T>(vector, vector.getComponentType()),
                 false
         );
+    }
+
+    public static Complex[][] copyOf(Complex[][] val) {
+        if (val == null) {
+            return val;
+        }
+        Complex[][] val2 = new Complex[val.length][];
+        for (int i = 0; i < val2.length; i++) {
+            if (val[i] != null) {
+                val2[i] = Arrays.copyOf(val[i], val[i].length);
+            }
+        }
+        return val2;
+    }
+
+    public static Complex[] copyOf(Complex[] val) {
+        if (val == null) {
+            return val;
+        }
+        return Arrays.copyOf(val, val.length);
     }
 
     public static <T> TList<T> copyOf(TVector<T> vector) {
@@ -949,9 +961,7 @@ public final class Maths {
         return c.transpose();
     }
 
-
     //</editor-fold>
-
     //<editor-fold desc="Complex functions">
     public static Complex I(double iValue) {
         return Complex.I(iValue);
@@ -965,7 +975,6 @@ public final class Maths {
         return a.absdbl();
     }
     //</editor-fold>
-
 
     public static double[] getColumn(double[][] a, int index) {
         return MathsArrays.getColumn(a, index);
@@ -1038,6 +1047,10 @@ public final class Maths {
         return MathsArrays.isteps(min, max, step);
     }
 
+    public static int[] isteps(int min, int max, int step,IntFilter filter) {
+        return MathsArrays.isteps(min, max, step);
+    }
+
     public static int[] itimes(int min, int max, int times) {
         return MathsArrays.itimes(min, max, times);
     }
@@ -1054,7 +1067,6 @@ public final class Maths {
         return itimes(min, max, max - min + 1);
     }
 
-
     /**
      * sqrt(a^2 + b^2) without under/overflow.
      *
@@ -1070,11 +1082,9 @@ public final class Maths {
         return d.sqr();
     }
 
-
-//    public static int signOf(double d){
+    //    public static int signOf(double d){
 //        return d<0?-1:d>0?1 : 0;
 //    }
-
     public static double sqr(double d) {
         return d * d;
     }
@@ -1187,7 +1197,6 @@ public final class Maths {
         return x.toComplex();
     }
 
-
     /**
      * ----------- from colt Evaluates the series of Chebyshev polynomials Ti at
      * argument x/2. The series is given by
@@ -1200,17 +1209,17 @@ public final class Maths {
      * </pre> Coefficients are stored in reverse order, i.e. the zero order term
      * is last in the array. Note N is the number of coefficients, not the
      * order.
-     *
+     * <p>
      * If coefficients are for the interval a to b, x must have been transformed
      * to x -> 2(2x - b - a)/(b-a) before entering the routine. This maps x from
      * (a, b) to (-1, 1), over which the Chebyshev polynomials are defined.
-     *
+     * <p>
      * If the coefficients are for the inverted interval, in which (a, b) is
      * mapped to (1/b, 1/a), the transformation required is x -> 2(2ab/x - b -
      * a)/(b-a). If b is infinity, this becomes x -> 4a/x - 1.
-     *
+     * <p>
      * SPEED:
-     *
+     * <p>
      * Taking advantage of the recurrence properties of the Chebyshev
      * polynomials, the routine requires one more addition per loop than
      * evaluating a nested polynomial of the same degree.
@@ -1291,7 +1300,6 @@ public final class Maths {
         return c.inv();
     }
 
-
     public static Complex tan(Complex c) {
         return c.tan();
     }
@@ -1299,7 +1307,6 @@ public final class Maths {
     public static Complex cotan(Complex c) {
         return c.cotan();
     }
-
 
     public static Vector vector(TVector v) {
         v = v.to($COMPLEX);
@@ -1336,7 +1343,6 @@ public final class Maths {
         return a.sub(b);
     }
 
-
     public static double norm(Matrix a) {
         return a.norm(NormStrategy.DEFAULT);
     }
@@ -1361,7 +1367,6 @@ public final class Maths {
         return a.normInf();
     }
 
-
     public static DoubleToComplex complex(DoubleToDouble fx) {
         if (fx.isZero()) {
             return DCZERO;
@@ -1375,7 +1380,6 @@ public final class Maths {
     public static DoubleToComplex complex(DoubleToDouble fx, DoubleToDouble fy) {
         return DCxy.valueOf(fx, fy);
     }
-
 
     public static double randomDouble(double value) {
         return value * Math.random();
@@ -1482,6 +1486,20 @@ public final class Maths {
         return seq(pattern, m, n, cross);
     }
 
+    public static TList<Expr> seq(Expr pattern, DoubleParam m, int max, IntFilter filter) {
+        if (filter != null) {
+            DoubleArrayList list = new DoubleArrayList();
+            double[] mm = dsteps(0, max);
+            for (double cros : mm) {
+                if (filter.accept((int) cros)) {
+                    list.add(cros);
+                }
+            }
+            return seq(pattern,m,list.toDoubleArray());
+        }
+        return seq(pattern, m, 0, max);
+    }
+
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, DoubleParam p, int pmax, Int3Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax), dsteps(0, pmax), filter == null ? null : new Double3Filter() {
             @Override
@@ -1529,7 +1547,6 @@ public final class Maths {
     public static ExprCube cube(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues, final DoubleParam p, final double[] pvalues) {
         return Config.getExprCubeFactory().newUnmodifiableCube(mvalues.length, nvalues.length, pvalues.length, new SimpleSeq3b(pattern, m, mvalues, n, nvalues, p, pvalues));
     }
-
 
     public static Expr derive(Expr f, Axis axis) {
         return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
@@ -1599,7 +1616,6 @@ public final class Maths {
         return EXPR_VECTOR_SPACE.imag(e);
     }
 
-
     public static Complex complex(Expr e) {
         return e.simplify().toComplex();
     }
@@ -1628,10 +1644,14 @@ public final class Maths {
         return Discrete.create(model, x, y, z);
     }
 
+    public static Discrete discrete(Complex[][] model, double[] x, double[] y) {
+        return Discrete.create(model, x, y);
+    }
 
     public static Expr discrete(Expr expr, double[] xsamples, double[] ysamples, double[] zsamples) {
-        return discrete(expr,Samples.absolute(xsamples,ysamples,zsamples));
+        return discrete(expr, Samples.absolute(xsamples, ysamples, zsamples));
     }
+
     public static Expr discrete(Expr expr, Samples samples) {
         return MathsSampler.discrete(expr, samples);
     }
@@ -1639,7 +1659,6 @@ public final class Maths {
     public static Expr abssqr(Expr e) {
         return getVectorSpace($EXPR).abssqr(e);
     }
-
 
     public static AdaptiveResult1 adaptiveEval(Expr expr, AdaptiveConfig config) {
         Domain domain = expr.getDomain();
@@ -1835,11 +1854,10 @@ public final class Maths {
         return DefaultExprSequenceFactory.INSTANCE.newCachedSequence(list.length(), list);
     }
 
-//    public static <T extends Expr> TList<T> simplify(TList<T> list) {
+    //    public static <T extends Expr> TList<T> simplify(TList<T> list) {
 //        //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(length(), new SimplifiedSeq(this));
 //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(list.length(), new SimplifiedSeq(list));
 //    }
-
     public static <T> TList<T> abs(TList<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
@@ -1870,7 +1888,6 @@ public final class Maths {
         });
     }
 
-
     public static <T> TList<T> real(TList<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
@@ -1891,7 +1908,6 @@ public final class Maths {
         });
     }
 
-
     public static double real(Complex a) {
         return a.getReal();
     }
@@ -1899,7 +1915,6 @@ public final class Maths {
     public static double imag(Complex a) {
         return a.getImag();
     }
-
 
     public static boolean almostEqualRelative(float a, float b, float maxRelativeError) {
         if (a == b) {
@@ -1962,7 +1977,6 @@ public final class Maths {
     public static LongArrayParamSet lsteps(Param param, int min, int max, long step) {
         return new LongArrayParamSet(param, min, max, step);
     }
-
 
     public static Vector sin(Vector v) {
         return v.sin();
@@ -2197,7 +2211,6 @@ public final class Maths {
         return v.prod();
     }
 
-
     public static boolean roundEquals(double a, double b, double epsilon) {
         return Math.abs(a - b) < epsilon;
     }
@@ -2206,13 +2219,11 @@ public final class Maths {
         return (Math.round(val / precision)) * precision;
     }
 
-
     /////////////////////////////////////////////////////////////////
     // sample region functions
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="sample region functions">
 //</editor-fold>
-
     /////////////////////////////////////////////////////////////////
     // double functions
     /////////////////////////////////////////////////////////////////
@@ -2575,7 +2586,6 @@ public final class Maths {
         return x;
     }
 
-
     public static double[] mul(double[] a, double b) {
         int max = a.length;
         double[] ret = new double[max];
@@ -2624,12 +2634,10 @@ public final class Maths {
     }
     //</editor-fold>
 
-
     /////////////////////////////////////////////////////////////////
     // double[][] functions
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="double[][] functions">
-
     public static double[][] cos(double[][] c) {
         double[][] r = new double[c.length][];
         for (int i = 0; i < r.length; i++) {
@@ -3134,11 +3142,9 @@ public final class Maths {
         return Config.getScalarProductOperator().eval(g, f, monitor);
     }
 
-
     public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
     }
-
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
         return Config.getScalarProductOperator().eval(g, f, axis, monitor);
@@ -3161,6 +3167,24 @@ public final class Maths {
 
     public static ExprList elist(Expr... vector) {
         return new ExprArrayList(false, vector);
+    }
+
+    public static ExprList elist(TVector<Complex> vector) {
+        return new ExprArrayList(false, vector);
+    }
+
+    public static TList<Complex> clist(TVector<Expr> vector) {
+        return new ArrayTList<Complex>($COMPLEX, false, new TVectorModel<Complex>() {
+            @Override
+            public int size() {
+                return vector.size();
+            }
+
+            @Override
+            public Complex get(int index) {
+                return vector.get(index).simplify().toComplex();
+            }
+        });
     }
 
     public static TList<Complex> clist() {
@@ -3412,6 +3436,7 @@ public final class Maths {
     public static Complex avg(Discrete d) {
         return MathsSampler.avg(d);
     }
+
     public static DoubleToVector vsum(VDiscrete d) {
         return MathsSampler.vsum(d);
     }
@@ -3419,7 +3444,6 @@ public final class Maths {
     public static DoubleToVector vavg(VDiscrete d) {
         return MathsSampler.vavg(d);
     }
-
 
     public static Complex avg(VDiscrete d) {
         return MathsSampler.avg(d);
@@ -3536,10 +3560,9 @@ public final class Maths {
         return tmatrix(type, new TMatrixCellToModel<>(rows, columns, model));
     }
 
-//    public static Expr expr(Domain d) {
+    //    public static Expr expr(Domain d) {
 //        return DoubleValue.valueOf(1, d);
 //    }
-
     public static <T> T simplify(T a) {
         if (a instanceof Expr) {
             return (T) simplify((Expr) a);
@@ -3690,7 +3713,6 @@ public final class Maths {
         });
     }
 
-
     public static <T> TVector<T> sqr(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
@@ -3710,7 +3732,6 @@ public final class Maths {
             }
         });
     }
-
 
     public static <T> TVector<T> inv(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
@@ -3759,7 +3780,6 @@ public final class Maths {
             }
         });
     }
-
 
     public static <T> TList<T> addAll(TList<T> e, T... expressions) {
         TypeReference<T> st = e.getComponentType();
@@ -3833,13 +3853,11 @@ public final class Maths {
         });
     }
 
-//</editor-fold>
-
+    //</editor-fold>
     /////////////////////////////////////////////////////////////////
     // general purpose functions
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="general purpose functions">
-
     public static void loopOver(Object[][] values, LoopAction action) {
         int[] indexes = new int[values.length];
         for (int i = 0; i < indexes.length; i++) {
@@ -3971,13 +3989,14 @@ public final class Maths {
         Unsafe unsafeInstance = PrivateUnsafe.getUnsafeInstance();
         for (Field f : instanceFields) {
             long offset = unsafeInstance.objectFieldOffset(f);
-            if (offset > maxOffset) maxOffset = offset;
+            if (offset > maxOffset) {
+                maxOffset = offset;
+            }
         }
         return (((int) maxOffset / WORD) + 1) * WORD;
     }
 
-
-//    public static Complex csum(int size, Int2Complex f) {
+    //    public static Complex csum(int size, Int2Complex f) {
 //        MutableComplex c = new MutableComplex();
 //        int i = 0;
 //        while (i < size) {
@@ -3986,8 +4005,6 @@ public final class Maths {
 //        }
 //        return c.toComplex();
 //    }
-
-
     public static <T> T invokeMonitoredAction(ProgressMonitor mon, String messagePrefix, MonitoredAction<T> run) {
         return ProgressMonitorFactory.invokeMonitoredAction(mon, messagePrefix, run);
     }
@@ -4125,23 +4142,7 @@ public final class Maths {
         if (d == null) {
             return c.absdbl();
         }
-        switch (d) {
-            case ABS:
-                return c.absdbl();
-            case REAL:
-                return c.realdbl();
-            case IMG:
-                return c.imagdbl();
-            case DB:
-                return db(c.absdbl());
-            case DB2:
-                return db2(c.absdbl());
-            case ARG:
-                return c.arg().getReal();
-            case COMPLEX:
-                return c.absdbl();
-        }
-        return Double.NaN;
+        return d.toDouble(c);
     }
 
     public static Expr conj(Expr e) {
@@ -4195,6 +4196,7 @@ public final class Maths {
     }
 
     private static class IdentityConverter implements Converter, Serializable {
+
         @Override
         public Object convert(Object value) {
             return value;
@@ -4202,6 +4204,7 @@ public final class Maths {
     }
 
     private static class ComplexDoubleConverter implements Converter<Complex, Double>, Serializable {
+
         @Override
         public Double convert(Complex value) {
             return value.toDouble();
@@ -4209,6 +4212,7 @@ public final class Maths {
     }
 
     private static class DoubleComplexConverter implements Converter<Double, Complex>, Serializable {
+
         @Override
         public Complex convert(Double value) {
             return Complex.valueOf(value);
@@ -4216,6 +4220,7 @@ public final class Maths {
     }
 
     private static class DoubleTVectorConverter implements Converter<Double, TVector>, Serializable {
+
         @Override
         public TVector convert(Double value) {
             return Maths.columnVector(new Complex[]{Complex.valueOf(value)});
@@ -4223,6 +4228,7 @@ public final class Maths {
     }
 
     private static class TVectorDoubleConverter implements Converter<TVector, Double>, Serializable {
+
         @Override
         public Double convert(TVector value) {
             return value.toComplex().toDouble();
@@ -4230,6 +4236,7 @@ public final class Maths {
     }
 
     private static class ComplexTVectorConverter implements Converter<Complex, TVector>, Serializable {
+
         @Override
         public TVector convert(Complex value) {
             return Maths.columnVector(new Complex[]{value});
@@ -4237,6 +4244,7 @@ public final class Maths {
     }
 
     private static class TVectorComplexConverter implements Converter<TVector, Complex>, Serializable {
+
         @Override
         public Complex convert(TVector value) {
             return value.toComplex();
@@ -4244,6 +4252,7 @@ public final class Maths {
     }
 
     private static class ComplexExprConverter implements Converter<Complex, Expr>, Serializable {
+
         @Override
         public Expr convert(Complex value) {
             return value;
@@ -4251,6 +4260,7 @@ public final class Maths {
     }
 
     private static class ExprComplexConverter implements Converter<Expr, Complex>, Serializable {
+
         @Override
         public Complex convert(Expr value) {
             return value.toComplex();
@@ -4258,6 +4268,7 @@ public final class Maths {
     }
 
     private static class DoubleExprConverter implements Converter<Double, Expr>, Serializable {
+
         @Override
         public Expr convert(Double value) {
             return Complex.valueOf(value);
@@ -4265,6 +4276,7 @@ public final class Maths {
     }
 
     private static class ExprDoubleConverter implements Converter<Expr, Double>, Serializable {
+
         @Override
         public Double convert(Expr value) {
             return value.toComplex().toDouble();
@@ -4330,7 +4342,7 @@ public final class Maths {
     }
 
     public static String getHadrumathsVersion() {
-        return IOUtils.getArtifactVersionOrDev("net.vpc.scholar", "hadrumaths");
+        return HadrumathsInitializerService.getVersion();
     }
 
     public static ComponentDimension expandComponentDimension(ComponentDimension d1, ComponentDimension d2) {
@@ -4399,8 +4411,8 @@ public final class Maths {
     }
 
     public static Expr parseExpression(String expression) {
-        ExpressionEvaluator m = createExpressionParser();
-        Object evaluated = m.evaluate(expression);
+        ExpressionManager m = createExpressionParser();
+        Object evaluated = m.createEvaluator(expression).evaluate();
         if (evaluated instanceof Expr) {
             return (Expr) evaluated;
         }
@@ -4410,17 +4422,17 @@ public final class Maths {
         return (Expr) evaluated;
     }
 
-    public static ExpressionEvaluator createExpressionEvaluator() {
-        return ExpressionEvaluatorFactory.createEvaluator();
+    public static ExpressionManager createExpressionEvaluator() {
+        return ExpressionManagerFactory.createEvaluator();
     }
 
-    public static ExpressionEvaluator createExpressionParser() {
-        return ExpressionEvaluatorFactory.createParser();
+    public static ExpressionManager createExpressionParser() {
+        return ExpressionManagerFactory.createParser();
     }
 
     public static Expr evalExpression(String expression) {
-        ExpressionEvaluator m = createExpressionEvaluator();
-        Object evaluated = m.evaluate(expression);
+        ExpressionManager m = createExpressionEvaluator();
+        Object evaluated = m.createEvaluator(expression).evaluate();
         if (evaluated instanceof Expr) {
             return (Expr) evaluated;
         }
@@ -4430,4 +4442,182 @@ public final class Maths {
         return (Expr) evaluated;
     }
 
+    public static double toRadians(double a) {
+        return Math.toRadians(a);
+    }
+
+    public static double[] toRadians(double[] a) {
+        double[] b = new double[a.length];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = Math.toRadians(a[i]);
+        }
+        return b;
+    }
+
+    public static Complex det(Matrix m) {
+        return m.det();
+
+    }
+
+
+    public static int toInt(Object o) {
+        return toInt(o, null);
+    }
+
+    public static int toInt(Object o, Integer defaultValue) {
+        if (o == null) {
+            if (defaultValue != null) {
+                return defaultValue.intValue();
+            }
+            throw new NullPointerException();
+        }
+        try {
+            if (o instanceof Number) {
+                Number s = (Number) o;
+                return (int) s.intValue();
+            }
+            if (o instanceof String) {
+                String s = (String) o;
+                if (s.contains(".")) {
+
+                    return (int) Double.parseDouble(s);
+                }
+                return Integer.parseInt(s);
+            }
+            if (o instanceof Expr) {
+                Expr s = (Expr) o;
+                s = s.simplify();
+                Complex c = (Complex) s;
+                return (int) c.toDouble();
+            }
+        } catch (RuntimeException ex) {
+            if (defaultValue != null) {
+                return defaultValue;
+            }
+            throw ex;
+        }
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+        throw new ClassCastException();
+    }
+
+
+    public static long toLong(Object o) {
+        return toLong(o, null);
+    }
+
+    public static long toLong(Object o, Long defaultValue) {
+        if (o == null) {
+            if (defaultValue != null) {
+                return defaultValue.intValue();
+            }
+            throw new NullPointerException();
+        }
+        try {
+            if (o instanceof Number) {
+                Number s = (Number) o;
+                return (int) s.intValue();
+            }
+            if (o instanceof String) {
+                String s = (String) o;
+                if (s.contains(".")) {
+
+                    return (long) Double.parseDouble(s);
+                }
+                return Long.parseLong(s);
+            }
+            if (o instanceof Expr) {
+                Expr s = (Expr) o;
+                s = s.simplify();
+                Complex c = (Complex) s;
+                return (long) c.toDouble();
+            }
+        } catch (RuntimeException ex) {
+            if (defaultValue != null) {
+                return defaultValue;
+            }
+            throw ex;
+        }
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+        throw new ClassCastException();
+    }
+
+    public static double toDouble(Object o) {
+        return toDouble(o, null);
+    }
+
+    public static double toDouble(Object o, Double defaultValue) {
+        if (o == null) {
+            if (defaultValue != null) {
+                return defaultValue.doubleValue();
+            }
+            throw new NullPointerException();
+        }
+        try {
+            if (o instanceof Number) {
+                Number s = (Number) o;
+                return s.doubleValue();
+            }
+            if (o instanceof String) {
+                String s = (String) o;
+                return Double.parseDouble(s);
+            }
+            if (o instanceof Expr) {
+                Expr s = (Expr) o;
+                s = s.simplify();
+                Complex c = (Complex) s;
+                return c.toDouble();
+            }
+        } catch (RuntimeException ex) {
+            if (defaultValue != null) {
+                return defaultValue;
+            }
+            throw ex;
+        }
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+        throw new ClassCastException();
+    }
+
+    public static float toFloat(Object o) {
+        return toFloat(o, null);
+    }
+
+    public static float toFloat(Object o, Float defaultValue) {
+        if (o == null) {
+            if (defaultValue != null) {
+                return defaultValue.floatValue();
+            }
+            throw new NullPointerException();
+        }
+        try {
+            if (o instanceof Number) {
+                Number s = (Number) o;
+                return s.floatValue();
+            }
+            if (o instanceof String) {
+                String s = (String) o;
+                return Float.parseFloat(s);
+            }
+            if (o instanceof Expr) {
+                Expr s = (Expr) o;
+                s = s.simplify();
+                Complex c = (Complex) s;
+                return (float) c.toDouble();
+            }
+        } catch (RuntimeException ex) {
+            if (defaultValue != null) {
+                return defaultValue;
+            }
+            throw ex;
+        }
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+        throw new ClassCastException();
+    }
 }

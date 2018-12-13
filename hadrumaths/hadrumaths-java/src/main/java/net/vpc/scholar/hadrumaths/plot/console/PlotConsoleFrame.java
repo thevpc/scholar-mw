@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot.console;
 
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.*;
 import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.plot.*;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
@@ -169,10 +169,10 @@ public class PlotConsoleFrame extends JFrame {
                 if (ee.getKey().equals("/")) {
 
                 } else {
-                    List<String> split = HadrumathsStringUtils.split(ee.getKey(), "/");
+                    List<String> split = new ArrayList<>(Arrays.asList(StringUtils.split(ee.getKey(), "/")));
                     String nn = split.get(split.size() - 1);
                     split.remove(split.size() - 1);
-                    String pp = HadrumathsStringUtils.toPath(split, "/");
+                    String pp = StringUtils.join( "/",split);
                     PlotConsoleMenu e = new PlotConsoleMenu(nn, nn, pp, 0);
                     e.setInitialIndex(ee.getValue());
                     menusToCreate.add(e);
@@ -398,7 +398,9 @@ public class PlotConsoleFrame extends JFrame {
             h.getFrame().requestFocus(true);
         }else{
             h.setVisible(true);
-            h.setIcon(false);
+            if(!h.setIcon(false)){
+                System.out.println("Cant deiconify!");
+            }
             h.moveToFront();
             h.setSelected(true);
             h.getFrame().pack();

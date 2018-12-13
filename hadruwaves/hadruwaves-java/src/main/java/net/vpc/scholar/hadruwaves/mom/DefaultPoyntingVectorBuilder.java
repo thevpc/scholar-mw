@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractPoyntingVectorBuilder;
 

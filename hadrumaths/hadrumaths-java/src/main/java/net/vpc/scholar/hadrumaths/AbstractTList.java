@@ -46,6 +46,18 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
         };
     }
 
+
+    @Override
+    public TVector<T> concat(TVector<T> e) {
+        ArrayTList<T> v=new ArrayTList<T>(getComponentType(),isRow(),size()+(e==null?0:e.size()));
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
+
+
     @Override
     public TList<T> eval(ElementOp<T> op) {
         return newReadOnlyInstanceFromModel(getComponentType(), isRow(), new TVectorModel<T>() {
@@ -436,5 +448,12 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
                 return AbstractTList.this.get(finalFromIndex + index);
             }
         });
+    }
+
+    @Override
+    public TVector<T> concat(T e) {
+        ArrayTList<T> e1 = new ArrayTList<T>(getComponentType(),isRow(),1);
+        e1.append(e);
+        return concat(e1);
     }
 }

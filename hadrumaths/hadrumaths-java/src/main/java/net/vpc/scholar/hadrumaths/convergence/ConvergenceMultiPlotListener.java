@@ -132,7 +132,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
                             .yname(title)
                             .titles(all)
                             .nodisplay()
-                            .plot(x, dblValues).toComponent());
+                            .plotAll(x, dblValues).toComponent());
                     //valuesPanel.invalidate();
                     //getFrame().getContentPane().invalidate();
                     //valuesPanel.repaint();

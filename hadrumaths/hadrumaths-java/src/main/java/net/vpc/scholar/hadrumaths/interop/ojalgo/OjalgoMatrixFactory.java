@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.scholar.hadrumaths.*;
 
 import java.io.File;

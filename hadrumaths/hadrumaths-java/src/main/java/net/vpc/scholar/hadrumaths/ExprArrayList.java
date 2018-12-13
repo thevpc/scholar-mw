@@ -112,4 +112,14 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList {
         return new Mul(this);
     }
 
+    @Override
+    public TVector<Expr> concat(TVector<Expr> e) {
+        ExprArrayList v=new ExprArrayList(isRow(),size()+(e==null?0:e.size()));
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
+
 }

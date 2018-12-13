@@ -12,9 +12,9 @@ import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.util.log.TLog;
 import net.vpc.scholar.hadrumaths.util.log.TLogNull;
 import net.vpc.scholar.hadruwaves.*;
@@ -264,7 +264,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void loadProject(MomProject structureConfig) {
-        persistentCache.setRootFolder(IOUtils.createHFile(structureConfig.getConfigFile().getParent() + "/" + structureConfig.getConfigFile().getName() + ".cache"));
+        persistentCache.setRootFolder(HadrumathsIOUtils.createHFile(structureConfig.getConfigFile().getParent() + "/" + structureConfig.getConfigFile().getName() + ".cache"));
         structureConfig.recompile();
         getHintsManager().setHintFnMode(structureConfig.getHintFnModes());
         //setHintDiscardFnByScalarProduct();

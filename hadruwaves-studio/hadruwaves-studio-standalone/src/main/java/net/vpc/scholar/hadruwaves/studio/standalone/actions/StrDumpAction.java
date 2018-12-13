@@ -13,7 +13,7 @@ import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
  * User: taha
  * Date: 7 juil. 2003
  * Time: 14:00:39
- * To change this template use Options | File Templates.
+ * 
  */
 public class StrDumpAction extends StructureAction {
 

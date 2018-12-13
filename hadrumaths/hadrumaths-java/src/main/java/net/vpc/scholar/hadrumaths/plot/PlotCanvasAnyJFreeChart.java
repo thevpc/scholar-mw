@@ -139,7 +139,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
                 s=s.replace("$y",(fy));
                 s=s.replace("$Y",(fY));
                 s=s.replace("$s",String.valueOf(series));
-                s=s.replace("$S",ytitle);
+                s=s.replace("$S",ytitle==null?"":ytitle);
             }
 
         }

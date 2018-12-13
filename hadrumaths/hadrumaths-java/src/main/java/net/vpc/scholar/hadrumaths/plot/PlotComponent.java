@@ -5,13 +5,16 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import javax.swing.*;
+import net.vpc.common.io.RuntimeIOException;
+import net.vpc.scholar.hadrumaths.Plot;
 
 /**
  * @author vpc
  */
 public interface PlotComponent {
-
 
     PlotWindowManager getPlotWindowManager();
 
@@ -36,5 +39,11 @@ public interface PlotComponent {
     void addPlotPropertyListener(PlotPropertyListener listener);
 
     void removePlotPropertyListener(PlotPropertyListener listener);
+
+    BufferedImage getImage();
+
+    default void saveImageFile(String file) throws RuntimeIOException {
+        Plot.saveImageFile(this, file);
+    }
 
 }

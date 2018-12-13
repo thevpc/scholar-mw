@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class HSBColorPalette extends JColorPalette implements Cloneable {
     private static final long serialVersionUID = 1L;
-    public static final JColorPalette GRAY_PALETTE = new HSBColorPalette(-1, 0, 0, 0, 0, 0, 100);
-    public static final JColorPalette DEFAULT_PALETTE = new HSBColorPalette(-1, 260, 0, 100, 100, 20, 95);
+    public static final JColorPalette GRAY_PALETTE = new HSBColorPalette("GrayScale",-1, 0, 0, 0, 0, 0, 100);
+    public static final JColorPalette DEFAULT_PALETTE = new HSBColorPalette("Default",-1, 260, 0, 100, 100, 20, 95);
     private Color[] cache;
     private int minH;
     private int maxH;
@@ -15,8 +15,8 @@ public class HSBColorPalette extends JColorPalette implements Cloneable {
     private int maxB;
 
 
-    public HSBColorPalette(int size, int minH, int maxH, int minS, int maxS, int minB, int maxB) {
-        super(size, false);
+    public HSBColorPalette(String name,int size, int minH, int maxH, int minS, int maxS, int minB, int maxB) {
+        super(name,size, false);
         this.minH = minH;
         this.maxH = maxH;
         this.minS = minS;
@@ -47,10 +47,9 @@ public class HSBColorPalette extends JColorPalette implements Cloneable {
         return cache;
     }
 
-    public Color getColor(float ratio) {
+    public Color getColorImpl(float ratio) {
         Color[] colors = getColors();
         if (colors != null) {
-            ratio = getRatioTransform(ratio);
             int s = colors.length;// getSize();
             int x = (int) (ratio * s);
             return colors[x < 0 ? 0 : (x >= s) ? (s - 1) : x];

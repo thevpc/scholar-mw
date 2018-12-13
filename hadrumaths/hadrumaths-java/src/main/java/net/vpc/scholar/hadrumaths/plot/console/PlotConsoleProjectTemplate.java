@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.plot.console;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+import net.vpc.common.io.IOUtils;
 
 /**
  * @author : vpc
@@ -67,7 +66,7 @@ public abstract class PlotConsoleProjectTemplate {
         Properties props = new Properties();
         try {
             props = IOUtils.loadXMLProperties(file);
-        } catch (IOException e) {
+        } catch (Exception e) {
             //
         }
         Box verticalBox = Box.createVerticalBox();
@@ -118,8 +117,8 @@ public abstract class PlotConsoleProjectTemplate {
                 props.put(jCheckBox.getName(), jCheckBox.isSelected() ? "true" : "false");
             }
             try {
-                IOUtils.storeXMLProperties(file, props, null);
-            } catch (IOException e) {
+                IOUtils.saveXMLProperties(props, null, file);
+            } catch (Exception e) {
                 //
             }
             return true;

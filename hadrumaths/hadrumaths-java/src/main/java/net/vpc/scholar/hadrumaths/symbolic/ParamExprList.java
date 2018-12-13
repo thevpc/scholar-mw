@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.Arrays;
 
@@ -11,6 +11,7 @@ import java.util.Arrays;
  * Created by vpc on 5/30/14.
  */
 public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Cloneable {
+
     private static final long serialVersionUID = 1L;
     private double[][] values;
     private Expr pattern;
@@ -152,14 +153,23 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
 
     @Override
     public String toString() {
-        return "ParamExprList{" +
-                "values=" + Arrays.deepToString(values) +
-                ", pattern=" + pattern +
-                ", vars=" + Arrays.toString(vars) +
-                ", valuesDesc='" + valuesDesc + '\'' +
-                '}';
+        return "ParamExprList{"
+                + "values=" + Arrays.deepToString(values)
+                + ", pattern=" + pattern
+                + ", vars=" + Arrays.toString(vars)
+                + ", valuesDesc='" + valuesDesc + '\''
+                + '}';
     }
 
+//    @Override
+//    public TList<T> sort() {
+//        return copy().sort();
+//    }
+//
+//    @Override
+//    public TList<T> removeDuplicates() {
+//        return copy().removeDuplicates();
+//    }
 //    @Override
 //    public TList<Expr> copy() {
 //        try {
@@ -168,4 +178,13 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
 //            throw new IllegalArgumentException("Unsupported clone");
 //        }
 //    }
+    @Override
+    public TList<Expr> sort() {
+        return copy().sort();
+    }
+
+    @Override
+    public TList<Expr> removeDuplicates() {
+        return copy().removeDuplicates();
+    }
 }

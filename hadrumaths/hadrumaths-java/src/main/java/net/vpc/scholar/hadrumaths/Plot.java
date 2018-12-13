@@ -1,18 +1,17 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.io.FileUtils;
+import net.vpc.common.io.RuntimeIOException;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.*;
-import net.vpc.common.util.ClassMap;
-import net.vpc.common.util.Converter;
-import net.vpc.common.util.DoubleFormat;
+import net.vpc.common.util.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadrumaths.plot.console.PlotComponentDisplayer;
 import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 import org.jfree.chart.ChartPanel;
 
 import javax.imageio.ImageIO;
@@ -31,7 +30,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import net.vpc.common.io.IOUtils;
+
 public final class Plot {
+
+    public static final JColorPalette DEFAULT_COLOR_PALETTE = HSBColorPalette.DEFAULT_PALETTE;
+    public static final JColorPalette GREY_COLOR_PALETTE = HSBColorPalette.GRAY_PALETTE;
+    public static final JColorPalette SPECTRUM_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("Spectrum");
+    public static final JColorPalette PALE_SPECTRUM_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("PaleSpectrum");
+    public static final JColorPalette DARK_SPECTRUM_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("DarkSpectrum");
+    public static final JColorPalette GRAYSCALE_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("Grayscale");
+    public static final JColorPalette CYCLIC_GRAYSCALE_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("CyclicGrayscale");
+    public static final JColorPalette CYCLIC_RED_CYAN_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("CyclicRedCyan");
+    public static final JColorPalette EARTH_SKY_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("EarthSky");
+    public static final JColorPalette HOT_COLD_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("HotCold");
+    public static final JColorPalette FIRE_COLOR_PALETTE = JColorPalette2.makeDefaultPalette("Fire");
     /**
      * Java Figure
      */
@@ -52,6 +65,21 @@ public final class Plot {
     private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
 
     private Plot() {
+    }
+
+    public static JColorPalette[] getAvailableColorPalettes() {
+        return new JColorPalette[]{
+            DEFAULT_COLOR_PALETTE,
+            GREY_COLOR_PALETTE,
+            SPECTRUM_COLOR_PALETTE,
+            PALE_SPECTRUM_COLOR_PALETTE,
+            DARK_SPECTRUM_COLOR_PALETTE,
+            GRAYSCALE_COLOR_PALETTE,
+            CYCLIC_GRAYSCALE_COLOR_PALETTE,
+            CYCLIC_RED_CYAN_COLOR_PALETTE,
+            EARTH_SKY_COLOR_PALETTE,
+            HOT_COLD_COLOR_PALETTE,
+            FIRE_COLOR_PALETTE,};
     }
 
     public static PlotContainer create(String container) {
@@ -116,6 +144,10 @@ public final class Plot {
 
     public static PlotBuilder title(String title) {
         return builder().title(title);
+    }
+
+    public static PlotBuilder name(String name) {
+        return builder().name(name);
     }
 
     public static PlotBuilder titles(String... titles) {
@@ -294,7 +326,7 @@ public final class Plot {
     }
 
     public static boolean acceptFileByExtension(File file) {
-        String e = IOUtils.getFileExtension(file);
+        String e = FileUtils.getFileExtension(file);
         return acceptExtension(e);
     }
 
@@ -318,17 +350,24 @@ public final class Plot {
         if (model instanceof PlotModelList) {
             return new PlotModelListPanel((PlotModelList) model, windowManager);
         }
+        if (model instanceof PlotPanel) {
+            return (PlotPanel) model;
+        }
+        if (model instanceof PlotPanelFactory) {
+            return ((PlotPanelFactory) model).create(model);
+        }
         throw new IllegalArgumentException("Unsupported Model " + model);
     }
 
-    private static ValuesPlotModel loadDataBundle(File file) throws IOException {
+    private static ValuesPlotModel loadDataBundle(File file) throws RuntimeIOException {
         ZipInputStream in = null;
         ZipEntry ze = null;
 //        File ff = null;
         try {
-            in = new ZipInputStream(new FileInputStream(file));
-            while ((ze = in.getNextEntry()) != null) {
-                if ("data.figdata".equals(ze.getName())) {
+            try {
+                in = new ZipInputStream(new FileInputStream(file));
+                while ((ze = in.getNextEntry()) != null) {
+                    if ("data.figdata".equals(ze.getName())) {
 //                    ff = File.createTempFile("_p_", ".jfig");
 //                    FileOutputStream fos = null;
 //                    try {
@@ -343,132 +382,147 @@ public final class Plot {
 //                            fos.close();
 //                        }
 //                    }
-                    return loadDataJfig(in);
+                        return loadDataJfig(in);
+                    }
                 }
-            }
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
+            } finally {
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (Exception e) {
+                    //
                 }
-            } catch (Exception e) {
-                //
-            }
 //            if (ff != null) {
 //                ff.delete();
 //            }
+            }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
         throw new UnsupportedOperationException("Unknown file format");
     }
 
-    public static ValuesPlotModel loadDataJfig(String file) throws IOException {
+    public static ValuesPlotModel loadDataJfig(String file) throws RuntimeIOException {
         return loadDataJfig(new File(file));
     }
 
-    public static ValuesPlotModel loadDataJfig(File file) throws IOException {
+    public static ValuesPlotModel loadDataJfig(File file) throws RuntimeIOException {
         FileReader fileReader = null;
         try {
-            fileReader = new FileReader(file);
-            return loadDataJfig(fileReader);
-        } finally {
-            if (fileReader != null) {
-                fileReader.close();
+            try {
+                fileReader = new FileReader(file);
+                return loadDataJfig(fileReader);
+            } finally {
+                if (fileReader != null) {
+                    fileReader.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
-    public static ValuesPlotModel loadDataJfig(InputStream reader) throws IOException {
+    public static ValuesPlotModel loadDataJfig(InputStream reader) throws RuntimeIOException {
         InputStreamReader streamReader = null;
         try {
-            streamReader = new InputStreamReader(reader);
-            return loadDataJfig(streamReader);
-        } finally {
-            if (streamReader != null) {
-                streamReader.close();
+            try {
+                streamReader = new InputStreamReader(reader);
+                return loadDataJfig(streamReader);
+            } finally {
+                if (streamReader != null) {
+                    streamReader.close();
+                }
             }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
     }
 
-    public static ValuesPlotModel loadDataJfig(Reader reader) throws IOException {
+    public static ValuesPlotModel loadDataJfig(Reader reader) throws RuntimeIOException {
         ValuesPlotModel m = new ValuesPlotModel();
         BufferedReader br = null;
         try {
-            br = (reader instanceof BufferedReader) ? ((BufferedReader) reader) : new BufferedReader(reader);
-            String line = null;
-            ArrayList<String> ytitlesList = new ArrayList<String>();
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.length() == 0 || line.startsWith("#")) {
-                    continue;
-                }
-                if (line.startsWith("x =")) {
-                    StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
-                    if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line).append("\n");
-                            if (line.endsWith("]")) {
-                                break;
+            try {
+                br = (reader instanceof BufferedReader) ? ((BufferedReader) reader) : new BufferedReader(reader);
+                String line = null;
+                ArrayList<String> ytitlesList = new ArrayList<String>();
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() == 0 || line.startsWith("#")) {
+                        continue;
+                    }
+                    if (line.startsWith("x =")) {
+                        StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
+                        if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line).append("\n");
+                                if (line.endsWith("]")) {
+                                    break;
+                                }
                             }
                         }
-                    }
-                    m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(Maths.matrix(sb.toString()).getArray()));
-                } else if (line.startsWith("y =")) {
-                    StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
-                    if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line).append("\n");
-                            if (line.endsWith("]")) {
-                                break;
+                        m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(Maths.matrix(sb.toString()).getArray()));
+                    } else if (line.startsWith("y =")) {
+                        StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
+                        if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line).append("\n");
+                                if (line.endsWith("]")) {
+                                    break;
+                                }
                             }
                         }
-                    }
-                    m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(Maths.matrix(sb.toString()).getArray()));
-                } else if (line.startsWith("z =")) {
-                    StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
-                    if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line).append("\n");
-                            if (line.endsWith("]")) {
-                                break;
+                        m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(Maths.matrix(sb.toString()).getArray()));
+                    } else if (line.startsWith("z =")) {
+                        StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
+                        if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line).append("\n");
+                                if (line.endsWith("]")) {
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
-                } else if (line.startsWith("title =")) {
-                    m.setTitle(line.substring("title".length() + 2));
-                } else if (line.startsWith("name =")) {
-                    m.setTitle(line.substring("name".length() + 2));
-                } else if (line.startsWith("xlabel =")) {
-                    m.setxTitle(line.substring("xlabel".length() + 2));
-                } else if (line.startsWith("ylabel =")) {
-                    m.setyTitle(line.substring("ylabel".length() + 2));
-                } else if (line.startsWith("plotType =")) {
-                    m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
-                } else if (line.startsWith("zDoubleFunction =")) {
-                    m.setConverter(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
-                } else if (line.startsWith("ytitle =")) {
-                    ytitlesList.add(line.substring("ytitle".length() + 2));
-                } else if (line.startsWith("xformat =")) {
-                    m.setXformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
-                } else if (line.startsWith("yformat =")) {
-                    m.setYformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
-                } else if (line.startsWith("zformat =")) {
-                    m.setZformat((DoubleFormat) IOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
+                        m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
+                    } else if (line.startsWith("title =")) {
+                        m.setTitle(line.substring("title".length() + 2));
+                    } else if (line.startsWith("name =")) {
+                        m.setTitle(line.substring("name".length() + 2));
+                    } else if (line.startsWith("xlabel =")) {
+                        m.setxTitle(line.substring("xlabel".length() + 2));
+                    } else if (line.startsWith("ylabel =")) {
+                        m.setyTitle(line.substring("ylabel".length() + 2));
+                    } else if (line.startsWith("plotType =")) {
+                        m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
+                    } else if (line.startsWith("zDoubleFunction =")) {
+                        m.setConverter(ComplexAsDouble.valueOf(line.substring("zDoubleFunction".length() + 2)));
+                    } else if (line.startsWith("ytitle =")) {
+                        ytitlesList.add(line.substring("ytitle".length() + 2));
+                    } else if (line.startsWith("xformat =")) {
+                        m.setXformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
+                    } else if (line.startsWith("yformat =")) {
+                        m.setYformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
+                    } else if (line.startsWith("zformat =")) {
+                        m.setZformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
+                    }
+                }
+                m.setYtitles(ytitlesList.toArray(new String[ytitlesList.size()]));
+            } finally {
+                if (br != null) {
+                    br.close();
                 }
             }
-            m.setYtitles(ytitlesList.toArray(new String[ytitlesList.size()]));
-        } finally {
-            if (br != null) {
-                br.close();
-            }
+        } catch (IOException ex) {
+            throw new RuntimeIOException(ex);
         }
         return m;
     }
 
     public static void savePlot(File file, String preferredExtension, PlotModelProvider plotProvider) throws IOException {
         if (StringUtils.isEmpty(preferredExtension)) {
-            preferredExtension = IOUtils.getFileExtension(file).toLowerCase();
+            preferredExtension = FileUtils.getFileExtension(file).toLowerCase();
         } else {
             preferredExtension = preferredExtension.trim().toLowerCase();
             if (StringUtils.isEmpty(preferredExtension)) {
@@ -557,6 +611,24 @@ public final class Plot {
 
     }
 
+    public static BufferedImage getImage(PlotComponent plotProvider) {
+        Component c = plotProvider.toComponent();
+        int graphWidth = c.getSize().width;
+        int graphHeight = c.getSize().height;
+        if (graphWidth > 0 && graphHeight > 0) {
+            BufferedImage bi = new BufferedImage(graphWidth, graphHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bi.createGraphics();
+            c.paint(g2d);
+            return bi;
+        } else {
+            BufferedImage bi = new BufferedImage(600, 500, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bi.createGraphics();
+            c.paint(g2d);
+            return bi;
+//            return null;
+        }
+    }
+
     public static BufferedImage getImage(PlotModelProvider plotProvider) {
         Component c = plotProvider.getComponent();
         int graphWidth = c.getSize().width;
@@ -578,7 +650,7 @@ public final class Plot {
     private static void saveImagePNG(File file, PlotModelProvider plotProvider) throws IOException {
         BufferedImage img = getImage(plotProvider);
         if (img != null) {
-            ImageIO.write(img, "JPG", file);
+            ImageIO.write(img, "PNG", file);
         }
 //        if (USER_JFREECHART) {
 //            if (mainComponent instanceof ChartPanel) {
@@ -592,7 +664,35 @@ public final class Plot {
     private static void saveImageJPEG(File file, PlotModelProvider plotProvider) throws IOException {
         BufferedImage img = getImage(plotProvider);
         if (img != null) {
+            ImageIO.write(img, "JPG", file);
+        }
+//        if (USER_JFREECHART) {
+//            if (mainComponent instanceof ChartPanel) {
+//                ChartPanel cp = (ChartPanel) mainComponent;
+//                ChartUtilities.saveChartAsJPEG(file, cp.getChart(), getWidth(), getHeight());
+//            }
+//        } else {
+//        }
+    }
+
+    private static void saveImagePNG(File file, PlotComponent plotProvider) throws IOException {
+        BufferedImage img = getImage(plotProvider);
+        if (img != null) {
             ImageIO.write(img, "PNG", file);
+        }
+//        if (USER_JFREECHART) {
+//            if (mainComponent instanceof ChartPanel) {
+//                ChartPanel cp = (ChartPanel) mainComponent;
+//                ChartUtilities.saveChartAsPNG(file, cp.getChart(), getWidth(), getHeight());
+//            }
+//        } else {
+//        }
+    }
+
+    private static void saveImageJPEG(File file, PlotComponent plotProvider) throws IOException {
+        BufferedImage img = getImage(plotProvider);
+        if (img != null) {
+            ImageIO.write(img, "JPG", file);
         }
 //        if (USER_JFREECHART) {
 //            if (mainComponent instanceof ChartPanel) {
@@ -604,7 +704,7 @@ public final class Plot {
     }
 
     private static void saveDataFIGOBJ(File file, PlotModelProvider plotProvider) throws IOException {
-        IOUtils.saveZippedObject(file.getPath(), plotProvider.getModel());
+        HadrumathsIOUtils.saveZippedObject(file.getPath(), plotProvider.getModel());
     }
 
     private static void saveDataFIGDATA(File file, PlotModelProvider plotProvider) throws IOException {
@@ -645,10 +745,10 @@ public final class Plot {
                 }
             }
             if (model.getXformat() != null) {
-                printStream.println("xformat =" + IOUtils.serializeObjectToString(model.getXformat()));
+                printStream.println("xformat =" + HadrumathsIOUtils.serializeObjectToString(model.getXformat()));
             }
             if (model.getYformat() != null) {
-                printStream.println("yformat =" + IOUtils.serializeObjectToString(model.getXformat()));
+                printStream.println("yformat =" + HadrumathsIOUtils.serializeObjectToString(model.getXformat()));
             }
         } finally {
             if (printStream != null) {
@@ -841,7 +941,6 @@ public final class Plot {
         JMenuItem selectY = new JMenuItem("Configure Series");
         selectY.addActionListener(new ActionListener() {
 
-
             public void actionPerformed(ActionEvent e) {
                 configureSeries(modelProvider);
             }
@@ -850,10 +949,10 @@ public final class Plot {
         JMenu functionsMenu = new JMenu("Function");
         JMenu viewMenu = null;
         if (enableViewMenu) {
-            viewMenu = new JMenu("Display");
+            viewMenu = new JMenu("Chart Type");
         }
         componentPopupMenu.add(functionsMenu);
-        if (enableViewMenu) {
+        if (viewMenu != null) {
             componentPopupMenu.add(viewMenu);
         }
         componentPopupMenu.add(extProperties);
@@ -864,29 +963,28 @@ public final class Plot {
         final PlotModel amodel = modelProvider.getModel();
         if (amodel instanceof ValuesPlotModel) {
             ValuesPlotModel model = (ValuesPlotModel) amodel;
+            final PlotType t = model.getPlotType();
             g = new ButtonGroup();
             for (ComplexAsDouble complexAsDouble : ComplexAsDouble.values()) {
-                f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, HadrumathsStringUtils.toCapitalized(complexAsDouble.name()), complexAsDouble));
-                f.setSelected(PlatformUtils.notnull(model.getConverter(), ComplexAsDouble.ABS) == ComplexAsDouble.ABS);
+                f = new JCheckBoxMenuItem(new DoubleTypeAction(modelProvider, StringUtils.toCapitalized(complexAsDouble.getName()), complexAsDouble));
+                f.setSelected(PlatformUtils.notnull(model.getConverter(), ComplexAsDouble.ABS).equals(complexAsDouble));
                 g.add(f);
                 functionsMenu.add(f);
             }
 
-            if (enableViewMenu) {
+            if (viewMenu != null) {
 
                 g = new ButtonGroup();
                 for (PlotType plotType : PlotType.values()) {
                     if (!plotType.equals(PlotType.ALL) && !plotType.equals(PlotType.AUTO)) {
-                        f = new JCheckBoxMenuItem(new PlotTypeAction(modelProvider, HadrumathsStringUtils.toCapitalized(plotType.name()), plotType));
-                        PlotType type = (model).getPlotType();
-                        f.setSelected(type == PlotType.CURVE);
+                        f = new JCheckBoxMenuItem(new PlotTypeAction(modelProvider, StringUtils.toCapitalized(plotType.name()), plotType));
+                        f.setSelected(t == plotType);
                         g.add(f);
                         viewMenu.add(f);
                     }
                 }
             }
             extProperties.addActionListener(new ActionListener() {
-
 
                 public void actionPerformed(ActionEvent e) {
                     Complex[][] z1 = (model).getZ();
@@ -1128,10 +1226,10 @@ public final class Plot {
                 config.threeD.set(threeDCheckBox.isSelected());
                 config.nodeLabel.set(nodeLabelCheckBox.isSelected());
                 config.clockwise.set(clockwiseCheckBox.isSelected());
-                config.polarAngleOffset.set(HadrumathsStringUtils.parseDouble(polarOffsetText.getText(), 0));
+                config.polarAngleOffset.set(Convert.toDouble(polarOffsetText.getText(), DoubleParserConfig.LENIENT));
                 config.nodeType.set(((Number) defaultNodeType.getValue()).intValue());
                 config.lineType.set(((Number) defaultLineType.getValue()).intValue());
-                config.maxLegendCount.set(HadrumathsStringUtils.parseInt(defaultMaxLegendText.getText(), 0));
+                config.maxLegendCount.set(Convert.toInt(defaultMaxLegendText.getText(), IntegerParserConfig.LENIENT));
                 config.lineStepType = (PlotConfigLineStepType) lineStepTypeCombo.getSelectedItem();
 
                 for (int i = 0; i < ytitles.length; i++) {
@@ -1148,13 +1246,13 @@ public final class Plot {
         }
     }
 
-    public static PlotModel loadPlotModel(File file) throws IOException {
-        String e = IOUtils.getFileExtension(file).toLowerCase();
+    public static PlotModel loadPlotModel(File file) throws RuntimeIOException {
+        String e = FileUtils.getFileExtension(file).toLowerCase();
         if (e.equals(JFIGOBJ_FILE_EXTENSION)) {
             try {
                 return (PlotModel) IOUtils.loadZippedObject(file.getPath());
             } catch (ClassNotFoundException ee) {
-                throw new IOException(ee);
+                throw new RuntimeIOException(new IOException(ee));
             }
         } else if (e.equals(JFIG_FILE_EXTENSION) || e.equals(JFIGDATA_FILE_EXTENSION)) {
             return loadDataJfig(file);
@@ -1165,7 +1263,7 @@ public final class Plot {
             try {
                 o = IOUtils.loadZippedObject(file.getPath());
             } catch (ClassNotFoundException ee) {
-                throw new IOException(ee);
+                throw new RuntimeIOException(new IOException(ee));
             }
             if (o != null) {
                 return Plot.title(file.getName()).createModel(o);
@@ -1186,6 +1284,14 @@ public final class Plot {
 
     public static PlotBuilder xformat(DoubleFormat format) {
         return builder().xformat(format);
+    }
+
+    public static PlotBuilder xformat(String format) {
+        return builder().xformat(format);
+    }
+
+    public static PlotBuilder yformat(String format) {
+        return builder().yformat(format);
     }
 
     public static PlotComponent getCachedPlotComponent(String name) {
@@ -1292,7 +1398,6 @@ public final class Plot {
 //            getModel().setConverter(ComplexAsDouble.COMPLEX);
 //        }
 //    }
-
 //    private static class PlotCourbeAction extends ValuesModelAction implements Serializable {
 //
 //        public PlotCourbeAction(PlotModelProvider modelProvider) {
@@ -1328,8 +1433,8 @@ public final class Plot {
 //            getModel().setPlotType(PlotType.TABLE);
 //        }
 //    }
-
     public static class Config {
+
         private static int maxLegendCount = 20;
         private static String defaultWindowTitle = "Hadrumaths Plot";
         private static ClassMap<Converter> objectConverters = new ClassMap<Converter>(Object.class, Converter.class);
@@ -1371,13 +1476,13 @@ public final class Plot {
     }
 
     private static class DoubleTypeAction extends ValuesModelAction implements Serializable {
+
         private ComplexAsDouble type;
 
         public DoubleTypeAction(PlotModelProvider modelProvider, String name, ComplexAsDouble type) {
             super(name, modelProvider);
             this.type = type;
         }
-
 
         public void actionPerformed(ActionEvent e) {
             getModel().setConverter(type);
@@ -1416,8 +1521,8 @@ public final class Plot {
 //            getModel().setPlotType(PlotType.POLAR);
 //        }
 //    }
-
     private static abstract class ModelAction extends AbstractPlotAction implements Serializable {
+
         PlotModelProvider modelProvider;
 
         private ModelAction(String name, PlotModelProvider modelProvider) {
@@ -1435,6 +1540,7 @@ public final class Plot {
     }
 
     private static abstract class ValuesModelAction extends ModelAction {
+
         public ValuesModelAction(String name, PlotModelProvider modelProvider) {
             super(name, modelProvider);
         }
@@ -1445,6 +1551,7 @@ public final class Plot {
     }
 
     private static class PlotTypeAction extends ValuesModelAction {
+
         private PlotType type;
 
         public PlotTypeAction(PlotModelProvider modelProvider, String name, PlotType type) {
@@ -1452,9 +1559,54 @@ public final class Plot {
             this.type = type;
         }
 
-
         public void actionPerformed(ActionEvent e) {
             getModel().setPlotType(type);
         }
+    }
+
+    public static BufferedImage createImage(Component c) {
+        int graphWidth = c.getSize().width;
+        int graphHeight = c.getSize().height;
+        if (graphWidth > 0 && graphHeight > 0) {
+            BufferedImage bi = new BufferedImage(graphWidth, graphHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bi.createGraphics();
+            c.paint(g2d);
+            return bi;
+        } else {
+            BufferedImage bi = new BufferedImage(600, 500, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bi.createGraphics();
+            c.paint(g2d);
+            return bi;
+        }
+    }
+
+    public static void saveImageFile(PlotComponent component, String file) throws RuntimeIOException {
+        final File f = FileUtils.expandFile(file);
+        final String n = f.getName().toLowerCase();
+        if (n.endsWith(".png")) {
+            BufferedImage img = component.getImage();
+            if (img != null) {
+                try {
+                    ImageIO.write(img, "PNG", f);
+                    return;
+                } catch (IOException ex) {
+                    throw new RuntimeIOException(ex);
+                }
+            }
+            throw new RuntimeIOException("Unable to save image " + f);
+        }
+        if (n.endsWith(".jpg") || n.endsWith(".jpeg")) {
+            BufferedImage img = component.getImage();
+            if (img != null) {
+                try {
+                    ImageIO.write(img, "JPG", f);
+                    return;
+                } catch (IOException ex) {
+                    throw new RuntimeIOException(ex);
+                }
+            }
+            throw new RuntimeIOException("Unable to save image " + f);
+        }
+        throw new RuntimeIOException("Unable to save image " + f);
     }
 }

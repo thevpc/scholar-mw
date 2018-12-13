@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
-
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 31 juil. 2005 10:41:53
@@ -75,13 +74,18 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private JCheckBox fxAxisRadioButton = new JCheckBox("Fx(x,y)", true);
     private JCheckBox fyAxisRadioButton = new JCheckBox("Fy(x,y)", true);
-    private JRadioButton cadRealRadioButton = new JRadioButton("Real");
-    private JRadioButton cadImagRadioButton = new JRadioButton("Imag");
-    private JRadioButton cadDbRadioButton = new JRadioButton("DB");
-    private JRadioButton cadDb2RadioButton = new JRadioButton("DB2");
-    private JRadioButton cadArgRadioButton = new JRadioButton("Arg");
-    private JRadioButton cadComplexRadioButton = new JRadioButton("Complex");
-    private JRadioButton cadAbsRadioButton = new JRadioButton("Abs");
+    private JRadioButton cadRealRadioButton = createJRadioButton("Real", ComplexAsDouble.REAL);
+    private JRadioButton cadImagRadioButton = createJRadioButton("Imag", ComplexAsDouble.IMG);
+    private JRadioButton cadDbRadioButton = createJRadioButton("DB", ComplexAsDouble.DB);
+    private JRadioButton cadDb2RadioButton = createJRadioButton("DB2", ComplexAsDouble.DB2);
+    private JRadioButton cadArgRadioButton = createJRadioButton("Arg", ComplexAsDouble.ARG);
+    private JRadioButton cadComplexRadioButton = createJRadioButton("Complex", "COMPLEX");
+    private JRadioButton cadAbsRadioButton = createJRadioButton("Abs", ComplexAsDouble.ABS);
+    private JRadioButton[] cadRadioButtons = {
+        cadRealRadioButton, cadImagRadioButton, cadDbRadioButton,
+        cadDb2RadioButton, cadArgRadioButton, cadComplexRadioButton,
+        cadAbsRadioButton
+    };
 
     private JRadioButton[] plotTypeRadioButton;
     //    private JRadioButton fx1DRadioButton = new JRadioButton("Curve F(x,y=cst)");
@@ -131,18 +135,20 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //    public ExpressionsPlotPanel(String title, int xprec, int yprec, DoubleToDouble[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
 //        this(title, null, xprec, yprec, ComplexAsDouble.REAL, convert(functions), showType, properties, windowManager);
 //    }
-
 //    public ExpressionsPlotPanel(String title, int xprec,int yprec,DFunctionVector2D[] functions, PlotWindowManager windowManager) {
 //        this(title, null, xprec,yprec,ComplexAsDouble.REAL, convert(functions), windowManager);
 //    }
-
 //    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, ComplexAsDouble complexAsDouble, DoubleToComplex[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
 //        this(title, domainXY, xprec, yprec, complexAsDouble, convert(functions), showType, properties, windowManager);
 //    }
-
 //    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, ComplexAsDouble complexAsDouble, Expr[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
 //
 //    }
+    private static JRadioButton createJRadioButton(String name, Object value) {
+        JRadioButton r = new JRadioButton(name);
+        r.putClientProperty("Object", value);
+        return r;
+    }
 
     public ExpressionsPlotPanel(ExpressionsPlotModel model, PlotWindowManager windowManager) {
         super(new BorderLayout());
@@ -169,7 +175,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //        }catch(Exception e){
 //            System.err.println(e);
 //        }
-
 
 //        yTextField=new JTextField();
         this.yValueSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPrec, 500);
@@ -477,7 +482,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //        }
 //        return g;
 //    }
-
     public PlotType getShowType() {
         for (int i = 0; i < plotTypeRadioButton.length; i++) {
             if (plotTypeRadioButton[i].isSelected()) {
@@ -501,10 +505,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JPanel createPrecisionPane() {
         JPanel south = new JPanel(new GridBagLayout2(
                 "[xValueTitleLabel<  ][xValueSlider          +=][xValueLabel         ->]\n"
-                        + "[X               <  ][xPrecisionSlider      +=][xPrecisionLabel     ->]\n"
-                        + "[yValueTitleLabel<  ][yValueSlider          +=][yValueLabel         ->]\n"
-                        + "[Y               <  ][yPrecisionSlider      +=][yPrecisionLabel     ->]\n"
-                        + ""
+                + "[X               <  ][xPrecisionSlider      +=][xPrecisionLabel     ->]\n"
+                + "[yValueTitleLabel<  ][yValueSlider          +=][yValueLabel         ->]\n"
+                + "[Y               <  ][yPrecisionSlider      +=][yPrecisionLabel     ->]\n"
+                + ""
         ));
         south.add(xValueTitleLabel, "xValueTitleLabel");
         south.add(xValueSlider, "xValueSlider");
@@ -528,50 +532,50 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         updateNow.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        updatePlot(true);
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                updatePlot(true);
+            }
+        }
         );
         selectAllFunctions.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        selectAll(true);
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                selectAll(true);
+            }
+        }
         );
         selectAllByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        selectByCell(true);
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                selectByCell(true);
+            }
+        }
         );
         selectNoneByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        selectByCell(false);
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                selectByCell(false);
+            }
+        }
         );
         selectNoneFunctions.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        selectAll(false);
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                selectAll(false);
+            }
+        }
         );
         showContent.addActionListener(
                 new SerializableActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        showContent();
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                showContent();
+            }
+        }
         );
         ButtonGroup courbeGroup = new ButtonGroup();
         java.util.List<PlotType> allValue = new ArrayList<>();
@@ -599,12 +603,11 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         f.setBorder(BorderFactory.createTitledBorder("Plot Type"));
         f.add(new JScrollPane(f0));
 
-
         JPanel xy = new JPanel(new GridBagLayout2(
                 "[A1+<]\n"
-                        + "[A2+<]\n"
-                        + "[A3+<]\n"
-                        + "[A4+<]\n"
+                + "[A2+<]\n"
+                + "[A3+<]\n"
+                + "[A4+<]\n"
         ));
         xy.add(fxRadioButton, "A1");
         xy.add(fyRadioButton, "A2");
@@ -614,12 +617,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
         JPanel cad = new JPanel(new GridBagLayout2(
                 "[A1+<]\n"
-                        + "[A2+<]\n"
-                        + "[A3+<]\n"
-                        + "[A4+<]\n"
-                        + "[A5+<]\n"
-                        + "[A6+<]\n"
-                        + "[A7+<]\n"
+                + "[A2+<]\n"
+                + "[A3+<]\n"
+                + "[A4+<]\n"
+                + "[A5+<]\n"
+                + "[A6+<]\n"
+                + "[A7+<]\n"
         ));
         cad.add(cadAbsRadioButton, "A1");
         cad.add(cadRealRadioButton, "A2");
@@ -1173,7 +1176,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 title.add(t);
             }
 
-
             PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(title.toString()).titles(titles);
             if (this.model.getProperties() != null) {
                 for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
@@ -1221,61 +1223,76 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public ComplexAsDouble getComplexAsDouble() {
-        if (cadAbsRadioButton.isSelected()) {
-            return ComplexAsDouble.ABS;
-        }
-        if (cadRealRadioButton.isSelected()) {
-            return ComplexAsDouble.REAL;
-        }
-        if (cadImagRadioButton.isSelected()) {
-            return ComplexAsDouble.IMG;
-        }
-        if (cadDbRadioButton.isSelected()) {
-            return ComplexAsDouble.DB;
-        }
-        if (cadDb2RadioButton.isSelected()) {
-            return ComplexAsDouble.DB2;
-        }
-        if (cadArgRadioButton.isSelected()) {
-            return ComplexAsDouble.ARG;
-        }
-        if (cadComplexRadioButton.isSelected()) {
-            return ComplexAsDouble.COMPLEX;
+        for (JRadioButton r : cadRadioButtons) {
+            Object o = r.getClientProperty("Object");
+            if (o != null && o instanceof ComplexAsDouble) {
+                return (ComplexAsDouble) o;
+            }
         }
         return ComplexAsDouble.ABS;
+//        if (cadAbsRadioButton.isSelected()) {
+//            return ComplexAsDouble.ABS;
+//        }
+//        if (cadRealRadioButton.isSelected()) {
+//            return ComplexAsDouble.REAL;
+//        }
+//        if (cadImagRadioButton.isSelected()) {
+//            return ComplexAsDouble.IMG;
+//        }
+//        if (cadDbRadioButton.isSelected()) {
+//            return ComplexAsDouble.DB;
+//        }
+//        if (cadDb2RadioButton.isSelected()) {
+//            return ComplexAsDouble.DB2;
+//        }
+//        if (cadArgRadioButton.isSelected()) {
+//            return ComplexAsDouble.ARG;
+//        }
+//        if (cadComplexRadioButton.isSelected()) {
+//            return ComplexAsDouble.COMPLEX;
+//        }
+//        return ComplexAsDouble.ABS;
     }
 
     public void setComplexAsDouble(ComplexAsDouble complexAsDouble) {
-        switch (complexAsDouble) {
-            case ABS: {
-                cadAbsRadioButton.setSelected(true);
-                break;
-            }
-            case DB: {
-                cadDbRadioButton.setSelected(true);
-                break;
-            }
-            case DB2: {
-                cadDb2RadioButton.setSelected(true);
-                break;
-            }
-            case ARG: {
-                cadArgRadioButton.setSelected(true);
-                break;
-            }
-            case REAL: {
-                cadRealRadioButton.setSelected(true);
-                break;
-            }
-            case IMG: {
-                cadImagRadioButton.setSelected(true);
-                break;
-            }
-            case COMPLEX: {
-                cadComplexRadioButton.setSelected(true);
-                break;
+        for (JRadioButton r : cadRadioButtons) {
+            Object o = r.getClientProperty("Object");
+            if (o != null && o.equals(complexAsDouble)) {
+                r.setSelected(true);
+                return;
             }
         }
+        cadComplexRadioButton.setSelected(true);
+//        switch (complexAsDouble) {
+//            case ABS: {
+//                cadAbsRadioButton.setSelected(true);
+//                break;
+//            }
+//            case DB: {
+//                cadDbRadioButton.setSelected(true);
+//                break;
+//            }
+//            case DB2: {
+//                cadDb2RadioButton.setSelected(true);
+//                break;
+//            }
+//            case ARG: {
+//                cadArgRadioButton.setSelected(true);
+//                break;
+//            }
+//            case REAL: {
+//                cadRealRadioButton.setSelected(true);
+//                break;
+//            }
+//            case IMG: {
+//                cadImagRadioButton.setSelected(true);
+//                break;
+//            }
+//            case COMPLEX: {
+//                cadComplexRadioButton.setSelected(true);
+//                break;
+//            }
+//        }
     }
 
     public synchronized void updatePlotSurfaceAsynch() {
@@ -1538,7 +1555,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //                }
 //            }
 //        }
-
             if (m.getXprec() <= 0) {
                 m.setXprec(100);
             }
@@ -1591,7 +1607,6 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //        CURVE_FY,
 //        CURVE, BAR, AREA, FIELD, PIE, RING, BUBBLE, MESH, HEATMAP, MATRIX, POLAR, AUTO, TABLE, ALL
 //    }
-
     private class UpdatePlotItemListener implements ItemListener, Serializable {
 
         public void itemStateChanged(ItemEvent e) {

@@ -227,7 +227,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                         }
                         str.invalidateCache();
 //                try {
-//                    storeString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
+//                    saveString(DumpStringUtils.dump(str),new File("zop"+(i+1)+".txt"));
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }

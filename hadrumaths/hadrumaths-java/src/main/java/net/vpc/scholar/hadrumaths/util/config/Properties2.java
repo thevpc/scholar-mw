@@ -8,7 +8,7 @@ import java.util.*;
  * User: TAHA
  * Date: 7 fevr. 2004
  * Time: 09:11:50
- * To change this template use Options | File Templates.
+ * 
  */
 public class Properties2 extends LinkedHashMap {
     public static LoadMetaDataHandler DEFAULT_LOAD_META_DATA_HANDLER = new LoadMetaDataHandler();

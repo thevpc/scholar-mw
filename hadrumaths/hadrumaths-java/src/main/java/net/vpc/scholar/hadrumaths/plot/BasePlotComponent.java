@@ -2,11 +2,19 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.imageio.ImageIO;
+import net.vpc.common.io.IOUtils;
+import net.vpc.common.io.RuntimeIOException;
+import net.vpc.scholar.hadrumaths.Plot;
 
 public abstract class BasePlotComponent extends JPanel implements PlotComponent {
+
     private List<PlotPropertyListener> listeners;
     private PlotContainer parentPlotContainer;
     private PlotWindowManager plotWindowManager;
@@ -107,6 +115,16 @@ public abstract class BasePlotComponent extends JPanel implements PlotComponent 
 
     public void display() {
         getPlotWindowManager().add(this);
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return Plot.createImage(toComponent());
+    }
+
+    @Override
+    public void saveImageFile(String file) throws RuntimeIOException {
+        Plot.saveImageFile(this, file);
     }
 
 }

@@ -44,16 +44,18 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
-                        .setTitle("gp").setExpressions(str.getTestFunctions().arr())
+                        .setExpressions(str.getTestFunctions().arr())
                         .setPlotType(PlotType.CURVE)
                         .setPreferredLibraries(null)
+                        .setTitle("gp")
                 , Plot.getDefaultWindowManager()).toComponent();
 
         JComponent fplot = Plot.create(
                 new ExpressionsPlotModel()
-                        .setTitle("fn").setExpressions(str.getModeFunctions().arr())
+                        .setExpressions(str.getModeFunctions().arr())
                         .setPlotType(PlotType.CURVE)
                         .setPreferredLibraries(null)
+                        .setTitle("fn")
                 , Plot.getDefaultWindowManager()).toComponent();
 
         JFrame f = new JFrame(title + " : " + e.toString());

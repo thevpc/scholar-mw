@@ -5,22 +5,25 @@
  */
 package net.vpc.scholar.hadrumaths.plot;
 
+import java.awt.image.BufferedImage;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.SwingUtilities3;
-import net.vpc.common.util.PlatformTypeUtils;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
+import net.vpc.common.util.PlatformUtils;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import net.vpc.scholar.hadrumaths.Plot;
 
 /**
  * @author vpc
  */
 public abstract class AbstractPlotContainer implements PlotContainer {
+
     private PlotWindowContainerFactory plotWindowContainerFactory = TabbedPlotWindowContainerFactory.INSTANCE;
     private String title = "Plot";
     private String layoutConstraints = "";
@@ -66,7 +69,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
         }
-        if (name.startsWith("#") && PlatformTypeUtils.isInteger(name.substring(1))) {
+        if (name.startsWith("#") && PlatformUtils.isInteger(name.substring(1))) {
             int x = Integer.parseInt(name.substring(1));
             if (x >= 0 && x < count) {
                 PlotComponent c = getPlotComponent(x);
@@ -296,10 +299,16 @@ public abstract class AbstractPlotContainer implements PlotContainer {
 
     @Override
     public void add(PlotComponent component, String path) {
-        if (path == null || !path.startsWith("/")) {
-            throw new IllegalArgumentException("Invalid path " + path);
+        if (path == null || path.isEmpty()) {
+            path = "/";
         }
-        List<String> pathList = HadrumathsStringUtils.split(path, "/");
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+//        if (path == null || !path.startsWith("/")) {
+//            throw new IllegalArgumentException("Invalid path " + path);
+//        }
+        List<String> pathList = new ArrayList<>(Arrays.asList(StringUtils.split(path, "/")));
         if (pathList.size() == 0) {
             add(component);
         } else {
@@ -317,7 +326,13 @@ public abstract class AbstractPlotContainer implements PlotContainer {
                 }
             }
             pathList.remove(0);
-            pp.add(component, HadrumathsStringUtils.toPath(pathList, "/"));
+            pp.add(component, StringUtils.join("/", pathList));
         }
     }
+
+    @Override
+    public BufferedImage getImage() {
+        return Plot.createImage(toComponent());
+    }
+
 }

@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.integration;
 import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
 import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 

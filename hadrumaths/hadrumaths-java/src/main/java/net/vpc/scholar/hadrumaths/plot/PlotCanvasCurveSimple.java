@@ -25,7 +25,7 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel 
         super(new BorderLayout());
         this.modelProvider = modelProvider;
         ValuesPlotModel model = (ValuesPlotModel) modelProvider.getModel();
-        String theTitle = model.getTitle() == null ? "" : model.getTitle();
+        String theTitle = model.getPreferredTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
         String theYTitle = model.getZtitle() == null ? "Y" : model.getZtitle();
         String[] ytitles = model.getYtitles();

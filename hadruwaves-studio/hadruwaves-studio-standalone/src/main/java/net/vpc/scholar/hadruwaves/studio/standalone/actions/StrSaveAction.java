@@ -3,7 +3,8 @@ package net.vpc.scholar.hadruwaves.studio.standalone.actions;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import net.vpc.common.prs.util.IOUtils;
+
+import net.vpc.common.io.FileUtils;
 import net.vpc.lib.pheromone.application.swing.JFileChooser2;
 
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
@@ -42,7 +43,7 @@ public class StrSaveAction extends StructureAction {
 
     public void execute(RunningProjectThread thread) throws Exception {
         File selectFile = (File) thread.getProperties().get("SelectedFile");
-        String ext = IOUtils.getFileExtension(selectFile);
+        String ext = FileUtils.getFileExtension(selectFile);
         if(ext.length()==0){
             selectFile=new File(selectFile.getParentFile(),selectFile.getName()+".str");
         }

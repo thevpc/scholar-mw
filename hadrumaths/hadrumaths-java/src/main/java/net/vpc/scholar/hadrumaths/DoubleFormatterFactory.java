@@ -5,7 +5,6 @@ import net.vpc.common.util.BytesSizeFormat;
 import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.util.FrequencyFormat;
 import net.vpc.common.util.MetricFormat;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 public class DoubleFormatterFactory {
     public static DoubleFormat create(String format){

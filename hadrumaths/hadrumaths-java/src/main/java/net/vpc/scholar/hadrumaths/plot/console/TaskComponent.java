@@ -210,10 +210,10 @@ public class TaskComponent extends JPanel implements ActionListener {
         StringBuilder sb = new StringBuilder(df.format(progress));
         sb.append("%");
 //        if (spentTime > 0) {
-//            sb.append(" | + ").append(Chronometer.formatPeriod(spentTime,Chronometer.DatePart.s));
+//            sb.append(" | + ").append(Chronometer.formatPeriodMilli(spentTime,Chronometer.DatePart.s));
 //        }
 //        if (remainingTime > 0) {
-//            sb.append(" | - ").append(Chronometer.formatPeriod(remainingTime,Chronometer.DatePart.s));
+//            sb.append(" | - ").append(Chronometer.formatPeriodMilli(remainingTime,Chronometer.DatePart.s));
 //        }
         yProgress.setString(sb.toString());
     }

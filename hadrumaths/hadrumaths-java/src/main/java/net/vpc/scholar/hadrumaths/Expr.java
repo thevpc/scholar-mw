@@ -13,9 +13,6 @@ import java.util.Set;
  * @creationtime 17 juil. 2007 15:45:33
  */
 public interface Expr extends Serializable {
-//    double compute(double x,DomainX d);
-//    double compute(double x,double y,DomainXY d);
-//    double compute(double x,double y,double z,DomainXYZ d);
 
     /**
      * @param axis
@@ -142,6 +139,8 @@ public interface Expr extends Serializable {
 
     Double getDoubleProperty(String name);
 
+    Object prop(String name);
+
     Object getProperty(String name);
 
     Map<String, Object> getProperties();
@@ -166,7 +165,7 @@ public interface Expr extends Serializable {
     Expr simplify();
 
     /**
-     * simple call to Maths.normalize(this);
+     * simple call to Maths.normalizeString(this);
      *
      * @return
      */
@@ -245,12 +244,12 @@ public interface Expr extends Serializable {
 
     Expr neg();
 
-    Expr rdiv(double other) ;
+    Expr rdiv(double other);
 
-    Expr rmul(double other) ;
+    Expr rmul(double other);
 
-    Expr radd(double other) ;
+    Expr radd(double other);
 
-    Expr rsub(double other) ;
+    Expr rsub(double other);
 
 }

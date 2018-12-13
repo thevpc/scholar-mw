@@ -33,7 +33,11 @@ public class ValuesPlotXYDoubleModelFace {
         double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
 
         this.x = PlotModelUtils.mul(ArrayUtils.toValidOneDimArray(x0, (z == null || z.length == 0) ? -1 : z[0].length), defaultXMultiplier);
-        this.z = Maths.toDouble(ArrayUtils.toValidTwoDimArray(z0), model.getConverter());
+        ComplexAsDouble converter = model.getConverter();
+        if(converter==null){
+            converter=ComplexAsDouble.ABS;
+        }
+        this.z = Maths.toDouble(ArrayUtils.toValidTwoDimArray(z0), converter);
         this.y = ArrayUtils.toValidOneDimArray(y0, this.z.length);
 
         if (this.x.length == 0) {

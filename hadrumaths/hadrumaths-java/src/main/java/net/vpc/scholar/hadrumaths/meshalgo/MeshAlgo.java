@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.meshalgo;
 
 import net.vpc.scholar.hadrumaths.geom.Geometry;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 import java.io.Serializable;
 import java.util.Collection;

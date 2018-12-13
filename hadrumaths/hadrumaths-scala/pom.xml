@@ -5,10 +5,10 @@
     <artifactId>hadrumaths-scala</artifactId>
     <name>net.vpc.scholar.hadrumaths-scala</name>
     <packaging>jar</packaging>
-    <version>${scholar-version}</version>
+    <version>3.1.32</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.29</scholar-version>
+        <scholar-version>3.1.32</scholar-version>
         <github.global.server>github</github.global.server>
     </properties>
     <distributionManagement>

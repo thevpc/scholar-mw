@@ -2,7 +2,8 @@ package net.vpc.scholar.hadrumaths
 
 import java.util.logging.{Level, Logger}
 
-import net.vpc.scholar.hadrumaths.io.IOUtils
+import net.vpc.common.mvn.{PomId, PomIdResolver}
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
 
 /**
   * Created by vpc on 7/18/17.
@@ -10,9 +11,10 @@ import net.vpc.scholar.hadrumaths.io.IOUtils
 @HadrumathsServiceDesc(order = 500)
 class HadrumathsScalaService extends HadrumathsService {
   private val log: Logger = Logger.getLogger(classOf[HadrumathsScalaService].getName())
+  def getVersion: String = PomIdResolver.resolvePomId(classOf[HadrumathsScalaService], new PomId("", "", "DEV")).getVersion
 
   override def installService(): Unit = {
-    log.log(Level.INFO, "Initializing Hadrumaths Scala extension component... : (hadrumaths-scala version "+IOUtils.getArtifactVersionOrDev("net.vpc.scholar","hadrumaths-scala")+")");
+    log.log(Level.INFO, "Initializing Hadrumaths Scala extension component... : (hadrumaths-scala version "+getVersion+")");
     Plot.Config.registerConverter(classOf[Tuple2[Object, Object]], (i: Object) => {
       val tuple = i.asInstanceOf[Tuple2[Object, Object]]
       Array(tuple._1, tuple._2)

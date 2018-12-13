@@ -12,8 +12,7 @@ import java.util.Set;
 /**
  * Created by vpc on 6/4/17.
  */
-public class ExpressionsPlotModel implements PlotModel {
-    private String title;
+public class ExpressionsPlotModel extends BasePlotModel {
     private Samples samples;
     private Domain domain;
     private int xprec = -1;
@@ -27,15 +26,6 @@ public class ExpressionsPlotModel implements PlotModel {
     private CellPosition[] selectedAxis;
 
     public ExpressionsPlotModel() {
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public ExpressionsPlotModel setTitle(String title) {
-        this.title = title;
-        return this;
     }
 
     public Domain getDomain() {

@@ -161,6 +161,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
 
     private void updateAreaByModel() {
         area.setModel(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() == PlotType.HEATMAP);
+        titleLabel.setText(StringUtils.trim(model.getTitle()));
         repaint();
     }
 

@@ -29,7 +29,7 @@ public class TestMatrices {
 //                "54.49374833211236-73.37528044272875i  91.52848047601915+0.6557994140523506i\n" +
 //                "]");
 //
-//        MatrixFactory[] factories = getFactories();
+//        MatrixFactory[] factories = getLineSourceFactories();
 //        for (MatrixFactory f : factories) {
 //            System.out.println(f.getId()+"="+f.newMatrix(m).invSolve());
 //        }

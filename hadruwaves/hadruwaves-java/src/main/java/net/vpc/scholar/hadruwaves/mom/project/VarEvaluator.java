@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 import net.vpc.common.jeep.*;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionEvaluatorFactory;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
@@ -162,7 +162,11 @@ public class VarEvaluator {
             throw new IllegalArgumentException("Expression too complex");
         }
         
-        ExpressionStreamTokenizer tok = new ExpressionStreamTokenizer(new StringReader(expr));
+        ExpressionStreamTokenizer tok = new ExpressionStreamTokenizer(new StringReader(expr),
+                new ExpressionStreamTokenizerConfig()
+                .setAcceptComplexNumber(true)
+                .setOperators("+-*/<>!")
+        );
         StringBuilder expr2 = new StringBuilder();
         try {
             ExpressionStreamTokenizer.Token token;
@@ -184,7 +188,7 @@ public class VarEvaluator {
                         expr2.append("\"").append(String.valueOf(token.sval)).append("\"");
                         break;
                     }
-                    case ExpressionStreamTokenizer.TT_COMPLEX: {
+                    case ExpressionStreamTokenizer.TT_NUMBER_COMPLEX: {
                         expr2.append(String.valueOf(token.cval));
                         break;
                     }
@@ -289,30 +293,30 @@ public class VarEvaluator {
                 }
             }
         }
-        ExpressionEvaluator parser = ExpressionEvaluatorFactory.createEvaluator();
-        parser.getDefinition().importDefaults();
-        parser.getDefinition().declareVar("DIM_UNIT", Double.class,dimensionUnit);
-        parser.getDefinition().declareVar("FREQ_UNIT", Double.class,frequencyUnit);
-        parser.getDefinition().declareVar("C", Double.class,Maths.C);
-        parser.getDefinition().declareVar("U0", Double.class,Maths.U0);
-        parser.getDefinition().declareVar("EPS0", Double.class,Maths.EPS0);
+        ExpressionManager parser = ExpressionManagerFactory.createEvaluator();
+        parser.configureDefaults();
+        parser.declareVar("DIM_UNIT", Double.class,dimensionUnit);
+        parser.declareVar("FREQ_UNIT", Double.class,frequencyUnit);
+        parser.declareVar("C", Double.class,Maths.C);
+        parser.declareVar("U0", Double.class,Maths.U0);
+        parser.declareVar("EPS0", Double.class,Maths.EPS0);
 
-        parser.getDefinition().declareFunction(new ZinFunction());
-        parser.getDefinition().declareFunction(new CapaFunction());
-        parser.getDefinition().declareFunction(new SindicesFunction());
+        parser.declareFunction(new ZinFunction());
+        parser.declareFunction(new CapaFunction());
+        parser.declareFunction(new SindicesFunction());
 
         for (Iterator i = workingVars.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             String k = (String) entry.getKey();
             Object v = entry.getValue();
             if (v instanceof Complex) {
-                parser.getDefinition().declareVar(k, Complex.class,v);
+                parser.declareVar(k, Complex.class,v);
             }
         }
 
         while (true) {
             try {
-                Object n = parser.evaluate(expr);
+                Object n = parser.createEvaluator(expr).evaluate();
                 if (n instanceof Complex) {
                     return (Complex) n;
                 } else if (n instanceof Number) {
@@ -322,19 +326,19 @@ public class VarEvaluator {
             } catch (NoSuchVariableException var) {
                 Complex c2 = getVarComplex(var.getVarName());//
 
-                parser.getDefinition().declareVar(var.getVarName(),Double.class, c2.doubleValue());
+                parser.declareVar(var.getVarName(),Double.class, c2.doubleValue());
             }
         }
     }
 
-    private abstract class SubStrFunction extends ExpressionFunction {
+    private abstract class SubStrFunction extends FunctionBase {
 
         public SubStrFunction(String name,Class type) {
             super(name,type,new Class[]{String.class});
         }
 
         @Override
-        public Object evaluate(ExpressionNode[] args,ExpressionEvaluator evaluator) {
+        public Object evaluate(ExpressionNode[] args, ExpressionEvaluator evaluator) {
             MomStructure str = null;
             try {
                 String n = (String) args[0].evaluate(evaluator);

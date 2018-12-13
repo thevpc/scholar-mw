@@ -76,6 +76,8 @@ object MathScala {
     def iterator = convertii2id2(x.iterator);
   }
 
+  implicit def convertDoubleArrayToDList(x:Array[Double]): DoubleList = DoubleArrayList.column(x)
+
   implicit def convertii2id2(x: Iterator[(Int, Int)]): Iterator[(Double, Double)] = new Iterator[(Double, Double)] {
     def next() = {
       val v: (Int, Int) = x.next()
@@ -696,8 +698,8 @@ object MathScala {
     }
 
     def :+(v: TList[T]): TList[T] = {
-      value.appendAll(v)
-      value
+      //TODO FIX ME
+      return value.concat(v).asInstanceOf[TList[T]]
     }
   }
 

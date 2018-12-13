@@ -87,10 +87,8 @@ public class ValuesPlotTableModel extends AbstractTableModel {
         Complex[][] z = model.getZ();
         int c = columnIndex;
         Complex vv = (c < z[rowIndex].length) ? z[rowIndex][c] : Complex.NaN;
-        switch (PlatformUtils.notnull(model.getConverter(),ComplexAsDouble.ABS)) {
-            case COMPLEX: {
-                return String.valueOf(vv);
-            }
+        if(model.getConverter()==null){
+            return String.valueOf(vv);
         }
         return String.valueOf(Maths.toDouble(vv, PlatformUtils.notnull(model.getConverter(),ComplexAsDouble.ABS)));
     }

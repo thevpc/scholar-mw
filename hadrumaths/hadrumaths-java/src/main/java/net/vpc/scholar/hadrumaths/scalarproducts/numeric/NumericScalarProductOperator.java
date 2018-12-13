@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 public class NumericScalarProductOperator extends AbstractScalarProductOperator {
 

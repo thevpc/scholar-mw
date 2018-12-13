@@ -40,7 +40,7 @@ public class PlotCanvasBarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
         CategoryDataset data = createCategoryDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        String theTitle = model.getTitle() == null ? "" : model.getTitle();
+        String theTitle = model.getPreferredTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
         if (config.threeD.get()) {
 //            return ChartFactory.createBarChart3D(theTitle, theXTitle, theYTitle,

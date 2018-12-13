@@ -7,8 +7,8 @@ package net.vpc.scholar.hadruwaves.mom.sources.planar;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.logging.Level;

@@ -1,12 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.strings.StringConverter;
+import net.vpc.common.strings.StringUtils;
 import net.vpc.common.util.*;
 import net.vpc.common.util.mon.LogProgressMonitor;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.dump.DumpManager;
+import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
@@ -18,9 +20,7 @@ import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
-import net.vpc.scholar.hadrumaths.util.StringMapper;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
@@ -50,8 +50,8 @@ public final class MathsConfig {
     private boolean debugExpressionRewrite = false;
     private boolean strictComputationMonitor = false;
     private float maxMemoryThreshold = 0.7f;
-    private FrequencyFormat frequencyFormatter = new FrequencyFormat();
-    private BytesSizeFormat memorySizeFormatter = new BytesSizeFormat();
+    private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
+    private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
     private MetricFormat metricFormatter = new MetricFormat();
     private net.vpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
     private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
@@ -78,7 +78,7 @@ public final class MathsConfig {
     private Map<ClassPair, Converter> converters = new HashMap<>();
     private Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
 
-    public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette(new Color[]{
+    public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette("Array",new Color[]{
             new Color(0xFF, 0x55, 0x55),
             new Color(0x55, 0x55, 0xFF),
             new Color(0x55, 0xFF, 0x55),
@@ -527,9 +527,9 @@ public final class MathsConfig {
     }
 
     public String replaceVars(String format) {
-        return HadrumathsStringUtils.replaceVars(format, new StringMapper() {
+        return StringUtils.replaceDollarPlaceHolders(format, new StringConverter() {
             @Override
-            public String get(String key) {
+            public String convert(String key) {
                 String val = System.getProperty(key);
                 if (val == null) {
                     switch (key) {
@@ -628,7 +628,7 @@ public final class MathsConfig {
     }
 
     public net.vpc.common.util.TimePeriodFormat getTimePeriodFormat() {
-        
+
         return timePeriodFormat;
     }
 
@@ -640,7 +640,7 @@ public final class MathsConfig {
         return defaultDblFormat;
     }
 
-    public void close(){
+    public void close() {
         if (defaultLargeMatrixFactory != null) {
             try {
                 defaultLargeMatrixFactory.close();

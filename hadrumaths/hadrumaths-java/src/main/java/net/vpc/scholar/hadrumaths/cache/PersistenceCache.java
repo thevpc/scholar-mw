@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileFilter;
-import net.vpc.scholar.hadrumaths.io.IOUtils;
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.common.util.mon.ProgressMonitor;
 
 import java.io.IOException;
@@ -141,7 +141,7 @@ public class PersistenceCache implements PersistentCacheConfig {
     }
 
     public PersistenceCache setRootFolder(String rootFolder) {
-        return setRootFolder(rootFolder == null ? null : IOUtils.createHFile((rootFolder)));
+        return setRootFolder(rootFolder == null ? null : HadrumathsIOUtils.createHFile((rootFolder)));
     }
 
     //    private MomCache loadDump() throws IOException {

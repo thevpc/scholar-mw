@@ -9,6 +9,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanList {
+
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final boolean[] ZERO_ELEMENTS = new boolean[0];
@@ -32,6 +33,18 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         } else {
             throw new IllegalArgumentException("Illegal Capacity: " + initialSize);
         }
+    }
+
+    public BooleanArrayList(boolean row, boolean[] values) {
+        this(row, values.length);
+        appendAll(values);
+    }
+
+    public void appendAll(boolean[] e) {
+        int increment = e.length;
+        ensureCapacityInternal(size + increment);  // Increments modCount!!
+        System.arraycopy(e, 0, elementData, this.size, increment);
+        this.size += increment;
     }
 
     public boolean[] toBooleanArray() {
@@ -126,21 +139,21 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         modCount++;
 
         // overflow-conscious code
-        if (minCapacity - elementData.length > 0)
+        if (minCapacity - elementData.length > 0) {
             grow(minCapacity);
+        }
     }
 
     /**
-     * The maximum size of array to allocate.
-     * Some VMs reserve some header words in an array.
-     * Attempts to allocate larger arrays may result in
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
      * OutOfMemoryError: Requested array size exceeds VM limit
      */
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     /**
-     * Increases the capacity to ensure that it can hold at least the
-     * number of elements specified by the minimum capacity argument.
+     * Increases the capacity to ensure that it can hold at least the number of
+     * elements specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -148,10 +161,12 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         // overflow-conscious code
         int oldCapacity = elementData.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity - minCapacity < 0)
+        if (newCapacity - minCapacity < 0) {
             newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE > 0)
+        }
+        if (newCapacity - MAX_ARRAY_SIZE > 0) {
             newCapacity = hugeCapacity(minCapacity);
+        }
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
@@ -160,9 +175,9 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
         if (minCapacity < 0) { // overflow
             throw new OutOfMemoryError();
         }
-        return (minCapacity > MAX_ARRAY_SIZE) ?
-                Integer.MAX_VALUE :
-                MAX_ARRAY_SIZE;
+        return (minCapacity > MAX_ARRAY_SIZE)
+                ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
     }
 
     public void trimToSize() {
@@ -175,6 +190,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
     }
 
     public static class BooleanReadOnlyList extends ReadOnlyTList<Boolean> implements BooleanList {
+
         public BooleanReadOnlyList(boolean row, TVectorModel<Boolean> model) {
             super(Maths.$BOOLEAN, row, model);
         }
@@ -187,5 +203,109 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
             }
             return d;
         }
+
+        @Override
+        public TVector<Boolean> concat(TVector<Boolean> e) {
+            BooleanArrayList v=new BooleanArrayList(isRow(),size()+(e==null?0:e.size()));
+            v.appendAll(this);
+            if(e!=null) {
+                v.appendAll(e);
+            }
+            return v;
+        }
+
+
+        @Override
+        public BooleanList sort() {
+            boolean[] vals = toBooleanArray();
+            int t = 0;
+            for (boolean val : vals) {
+                if (val) {
+                    t++;
+                }
+            }
+            for (int i = 0; i < vals.length - t; i++) {
+                vals[i] = false;
+            }
+            for (int i = vals.length - t; i < vals.length; i++) {
+                vals[i] = true;
+            }
+            return new BooleanArrayList(isRow(), vals);
+        }
+
+        @Override
+        public BooleanList removeDuplicates() {
+            boolean[] vals = toBooleanArray();
+            int t = 0;
+            for (boolean val : vals) {
+                if (val) {
+                    t++;
+                }
+            }
+            if (vals.length < 2) {
+                return (BooleanList) copy();
+            }
+            if (t == vals.length) {
+                return new BooleanArrayList(isRow(), new boolean[]{false, true});
+            }
+            if (t == vals.length) {
+                return new BooleanArrayList(isRow(), new boolean[]{false, true});
+            } else {
+                return new BooleanArrayList(isRow(), new boolean[]{vals[0]});
+            }
+        }
+
     }
+
+    @Override
+    public BooleanList sort() {
+        boolean[] vals = toBooleanArray();
+        int t = 0;
+        for (boolean val : vals) {
+            if (val) {
+                t++;
+            }
+        }
+        for (int i = 0; i < vals.length - t; i++) {
+            vals[i] = false;
+        }
+        for (int i = vals.length - t; i < vals.length; i++) {
+            vals[i] = true;
+        }
+        return new BooleanArrayList(isRow(), vals);
+    }
+
+    @Override
+    public BooleanList removeDuplicates() {
+        boolean[] vals = toBooleanArray();
+        int t = 0;
+        for (boolean val : vals) {
+            if (val) {
+                t++;
+            }
+        }
+        if (vals.length < 2) {
+            return (BooleanList) copy();
+        }
+        if (t == vals.length) {
+            return new BooleanArrayList(isRow(), new boolean[]{false, true});
+        }
+        if (t == vals.length) {
+            return new BooleanArrayList(isRow(), new boolean[]{false, true});
+        } else {
+            return new BooleanArrayList(isRow(), new boolean[]{vals[0]});
+        }
+    }
+
+    @Override
+    public TVector<Boolean> concat(TVector<Boolean> e) {
+        BooleanArrayList v=new BooleanArrayList(isRow(),size()+(e==null?0:e.size()));
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
+
+
 }

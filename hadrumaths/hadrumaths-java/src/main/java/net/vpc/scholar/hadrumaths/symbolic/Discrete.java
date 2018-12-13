@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
@@ -45,40 +45,6 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     private int dimension;
     private Domain domain;
 
-
-//    public Cube(Complex value, int x, int y, int z) {
-//        Complex[][][] _model = new Complex[z][y][x];
-//        for (Complex[][] complexes : _model) {
-//            for (Complex[] complex : complexes) {
-//                for (int i = 0; i < complex.length; i++) {
-//                    complex[i] = value;
-//                }
-//            }
-//        }
-//        double[] xx = Maths.dtimes(0.0, x - 1, x);
-//        double[] yy = Maths.dtimes(0.0, y - 1, y);
-//        double[] zz = Maths.dtimes(0.0, z - 1, z);
-//        double dx = 1;
-//        double dy = 1;
-//        double dz = 1;
-//        dsteps(_model, xx, yy, zz, dx, dy, dz, Axis.X, Axis.Y, Axis.Z);
-//    }
-//
-//    public Cube(Complex[][][] model, double[] xvalues, double[] yvalues, double[] zvalues) {
-//        this(model, xvalues, yvalues, zvalues,
-//                xvalues.length>2?xvalues[1]-xvalues[0]:1,
-//                yvalues.length>2?yvalues[1]-yvalues[0]:1,
-//                zvalues.length>2?zvalues[1]-zvalues[0]:1
-//                );
-//    }
-//    public Cube(Complex[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz) {
-//        this(model, xvalues, yvalues, zvalues, dx, dy, dz, Axis.X, Axis.Y, Axis.Z);
-//    }
-//
-//    public Cube(Complex[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3) {
-//        dsteps(model, xvalues, yvalues, zvalues, dx, dy, dz, axis1, axis2, axis3);
-//    }
-
     public Discrete(Domain domain, Complex[][][] values, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
         init(domain, values, x, y, z, dx, dy, dz, axis1, axis2, axis3, dim);
     }
@@ -113,7 +79,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, model, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
-
+    
     public static Discrete create(Complex[][][] model) {
         double[] x = Maths.dsteps(0, model[0][0].length - 1, 1);
         double[] y = Maths.dsteps(0, model[0].length - 1, 1);
@@ -196,13 +162,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.y = new double[]{0};
                 this.z = new double[]{0};
                 if (z.length != model.length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Z dmension size "+z.length+" != "+model.length);
                 }
                 if (y.length != model[0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Y dmension size "+y.length+" != "+model[0].length);
                 }
                 if (x.length != model[0][0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid X dmension size "+x.length+" != "+model[0][0].length);
                 }
                 break;
             }
@@ -239,13 +205,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.y = yvalues != null ? yvalues : steps.getY();
                 this.z = new double[]{0};
                 if (z.length != model.length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Z dmension size "+z.length+" != "+model.length);
                 }
                 if (y.length != model[0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Y dmension size "+y.length+" != "+model[0].length);
                 }
                 if (x.length != model[0][0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid X dmension size "+x.length+" != "+model[0][0].length);
                 }
                 break;
             }
@@ -290,13 +256,13 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 this.y = yvalues != null ? yvalues : steps.getY();
                 this.z = zvalues != null ? zvalues : steps.getZ();
                 if (z.length != model.length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Z dmension size "+z.length+" != "+model.length);
                 }
                 if (y.length != model[0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid Y dmension size "+y.length+" != "+model[0].length);
                 }
                 if (x.length != model[0][0].length) {
-                    throw new IllegalArgumentException("Problem");
+                    throw new IllegalArgumentException("Invalid X dmension size "+x.length+" != "+model[0][0].length);
                 }
                 break;
             }
@@ -1118,9 +1084,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                     int ymin = currRange.ymin;
                     int ymax = currRange.ymax;
                     for (int xIndex = xmin; xIndex <= xmax; xIndex++) {
-                        double xx = xmin + xIndex * dx;
+                        double xx = x[xIndex];
                         for (int yIndex = ymin; yIndex <= ymax; yIndex++) {
-                            double yy = ymin + yIndex * dy;
+                            double yy = y[yIndex];
                             if (contains(xx, yy)) {
                                 int xi = (int) ((xx - domain.xmin()) / dx);
                                 int yi = (int) ((yy - domain.ymin()) / dy);

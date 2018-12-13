@@ -10,7 +10,7 @@
 package net.vpc.scholar.hadruwaves;
 
 import java.io.Serializable;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 /**
  *

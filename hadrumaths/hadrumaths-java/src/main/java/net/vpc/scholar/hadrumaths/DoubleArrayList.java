@@ -9,6 +9,7 @@ import java.util.Collection;
  * Created by vpc on 5/7/14.
  */
 public class DoubleArrayList extends AbstractTList<Double> implements DoubleList {
+
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final double[] ZERO_ELEMENTS = new double[0];
@@ -21,6 +22,19 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
 
     public DoubleArrayList(int initialSize) {
         this(false, initialSize);
+    }
+
+    public static DoubleArrayList row(double[] values) {
+        return new DoubleArrayList(true, values);
+    }
+
+    public static DoubleArrayList column(double[] values) {
+        return new DoubleArrayList(false, values);
+    }
+
+    public DoubleArrayList(boolean row, double[] values) {
+        this(row, values.length);
+        appendAll(values);
     }
 
     public DoubleArrayList(boolean row, int initialSize) {
@@ -133,21 +147,21 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         modCount++;
 
         // overflow-conscious code
-        if (minCapacity - elementData.length > 0)
+        if (minCapacity - elementData.length > 0) {
             grow(minCapacity);
+        }
     }
 
     /**
-     * The maximum size of array to allocate.
-     * Some VMs reserve some header words in an array.
-     * Attempts to allocate larger arrays may result in
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
      * OutOfMemoryError: Requested array size exceeds VM limit
      */
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     /**
-     * Increases the capacity to ensure that it can hold at least the
-     * number of elements specified by the minimum capacity argument.
+     * Increases the capacity to ensure that it can hold at least the number of
+     * elements specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -155,10 +169,12 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         // overflow-conscious code
         int oldCapacity = elementData.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity - minCapacity < 0)
+        if (newCapacity - minCapacity < 0) {
             newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE > 0)
+        }
+        if (newCapacity - MAX_ARRAY_SIZE > 0) {
             newCapacity = hugeCapacity(minCapacity);
+        }
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
@@ -167,9 +183,9 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         if (minCapacity < 0) { // overflow
             throw new OutOfMemoryError();
         }
-        return (minCapacity > MAX_ARRAY_SIZE) ?
-                Integer.MAX_VALUE :
-                MAX_ARRAY_SIZE;
+        return (minCapacity > MAX_ARRAY_SIZE)
+                ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
     }
 
     public void trimToSize() {
@@ -182,6 +198,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     }
 
     public static class DoubleReadOnlyList extends ReadOnlyTList<Double> implements DoubleList {
+
         public DoubleReadOnlyList(boolean row, TVectorModel<Double> model) {
             super(Maths.$DOUBLE, row, model);
         }
@@ -196,6 +213,16 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         }
 
         @Override
+        public TVector<Double> concat(TVector<Double> e) {
+            DoubleArrayList v=new DoubleArrayList(isRow(),size()+(e==null?0:e.size()));
+            v.appendAll(this);
+            if(e!=null) {
+                v.appendAll(e);
+            }
+            return v;
+        }
+
+        @Override
         public void append(double value) {
             append((Double) value);
         }
@@ -206,6 +233,30 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
                 append(value);
             }
         }
+
+        @Override
+        public DoubleList sort() {
+            double[] vals = toDoubleArray();
+            Arrays.sort(vals);
+            return new DoubleArrayList(isRow(), vals);
+        }
+
+        @Override
+        public DoubleList removeDuplicates() {
+            double[] vals = toDoubleArray();
+            double[] vals2 = sort().toDoubleArray();
+            double[] vals3 = new double[vals.length];
+            int x = 0;
+            for (int i = 0; i < vals2.length; i++) {
+                double val = vals2[i];
+                if (x == 0 || vals3[x - 1] != val) {
+                    vals3[x] = val;
+                    x++;
+                }
+            }
+            return new DoubleArrayList(isRow(), Arrays.copyOf(vals3, x));
+        }
+
     }
 
     @Override
@@ -217,6 +268,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     }
 
     private static class DoubleToComplexList extends UnmodifiableList<Complex> {
+
         private DoubleList list;
 
         public DoubleToComplexList(DoubleList list) {
@@ -237,4 +289,39 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
             return super.to(other);
         }
     }
+
+    @Override
+    public DoubleList sort() {
+        double[] vals = toDoubleArray();
+        Arrays.sort(vals);
+        return new DoubleArrayList(isRow(), vals);
+    }
+
+    @Override
+    public DoubleList removeDuplicates() {
+        double[] vals = toDoubleArray();
+        double[] vals2 = sort().toDoubleArray();
+        double[] vals3 = new double[vals.length];
+        int x = 0;
+        for (int i = 0; i < vals2.length; i++) {
+            double val = vals2[i];
+            if (x == 0 || vals3[x - 1] != val) {
+                vals3[x] = val;
+                x++;
+            }
+        }
+        return new DoubleArrayList(isRow(), Arrays.copyOf(vals3, x));
+    }
+
+    @Override
+    public TVector<Double> concat(TVector<Double> e) {
+        DoubleArrayList v=new DoubleArrayList(isRow(),size()+(e==null?0:e.size()));
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
+
+
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.io;
 
-import net.vpc.scholar.hadrumaths.RuntimeIOException;
+import net.vpc.common.io.RuntimeIOException;
 
 import java.io.File;
 import java.io.IOException;

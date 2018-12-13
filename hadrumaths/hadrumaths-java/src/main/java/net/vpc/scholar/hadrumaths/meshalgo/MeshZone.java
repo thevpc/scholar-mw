@@ -129,9 +129,6 @@ public class MeshZone {
             setDomain(intersect);
         }
         scale = !this.globalDomain.equals(domain0);
-        if (scale) {
-            System.out.println("Why Scale!!!");
-        }
     }
 
     public double toEffectiveX(double x) {

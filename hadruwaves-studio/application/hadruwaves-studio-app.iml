@@ -9,7 +9,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: net.vpc.scholar:hadruwaves:3.1.29" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-log:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-swings-prs:2.3.8" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-prs:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: net.vpc.upa:upa-api:1.2.0.48" level="project" />
     <orderEntry type="library" name="Maven: org.netbeans.external:asm-all-5.0.1:RELEASE82" level="project" />
     <orderEntry type="library" name="Maven: org.netbeans.modules:org-netbeans-bootstrap:RELEASE82" level="project" />
     <orderEntry type="library" name="Maven: org.netbeans.api:org-netbeans-libs-asm:RELEASE82" level="project" />
@@ -83,24 +86,24 @@
     <orderEntry type="library" name="Maven: org.netbeans.api:org-netbeans-libs-junit4:RELEASE82" level="project" />
     <orderEntry type="module" module-name="hadruwaves-studio-core" />
     <orderEntry type="module" module-name="hadruwaves-studio-standalone" />
-    <orderEntry type="library" name="Maven: net.vpc.lib.pheromone:pheromone-app:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.lib.pheromone:pheromone-ariana:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-log:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-swings:2.3.6" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-prs:2.2.0" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-config:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-utils:1.12" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.upa:upa-api:1.2.0.44" level="project" />
-    <orderEntry type="library" name="Maven: dori.jasper:jasper:0.0.1" level="project" />
+    <orderEntry type="module" module-name="vpc-pheromone-app" />
     <orderEntry type="library" name="Maven: net.sourceforge.jexcelapi:jxl:2.6" level="project" />
     <orderEntry type="library" name="Maven: net.vpc.toolbox:jlauncher:1.4.0" level="project" />
+    <orderEntry type="module" module-name="vpc-common-log" />
+    <orderEntry type="module" module-name="vpc-common-swings-prs" />
+    <orderEntry type="module" module-name="vpc-common-prs" />
+    <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
+    <orderEntry type="module" module-name="vpc-common-swings" />
+    <orderEntry type="module" module-name="vpc-common-config" />
+    <orderEntry type="module" module-name="vpc-common-utils" />
+    <orderEntry type="module" module-name="upa-api" />
     <orderEntry type="module" module-name="hadruwaves" />
     <orderEntry type="module" module-name="hadrumaths" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-api:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.jzy3d:jzy3d-jdt-core:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt-main:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt:natives-android-aarch64:2.3.2" level="project" />
@@ -161,10 +164,11 @@
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-linux-armhf:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-x86_64:natives:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.fommil.netlib:netlib-native_system-win-i686:natives:1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.vpc.common:vpc-common-classpath:1.3" level="project" />
+    <orderEntry type="module" module-name="vpc-common-classpath" />
+    <orderEntry type="module" module-name="vpc-common-io" />
     <orderEntry type="module" module-name="vpc-common-strings" />
     <orderEntry type="module" module-name="vpc-common-jeep" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
+    <orderEntry type="module" module-name="vpc-common-mvn" />
     <orderEntry type="library" name="Maven: java-oo:javac8-oo-plugin:0.5" level="project" />
     <orderEntry type="library" name="Maven: org.netbeans.api:org-openide-nodes:RELEASE82" level="project" />
     <orderEntry type="library" name="Maven: org.netbeans.api:org-openide-windows:RELEASE82" level="project" />

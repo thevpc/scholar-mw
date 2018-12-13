@@ -6,6 +6,7 @@ import net.vpc.common.util.TypeReference;
  * @author taha.bensalah@gmail.com on 7/21/16.
  */
 public class TTransposedList<T> extends AbstractTList<T> {
+
     private static final long serialVersionUID = 1L;
     private TList<T> other;
 
@@ -43,4 +44,15 @@ public class TTransposedList<T> extends AbstractTList<T> {
     public VectorSpace<T> getComponentVectorSpace() {
         return other.getComponentVectorSpace();
     }
+
+    @Override
+    public TList<T> sort() {
+        return copy().sort();
+    }
+
+    @Override
+    public TList<T> removeDuplicates() {
+        return copy().removeDuplicates();
+    }
+
 }

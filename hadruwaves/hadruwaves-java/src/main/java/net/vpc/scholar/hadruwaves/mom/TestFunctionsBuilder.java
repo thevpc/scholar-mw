@@ -90,7 +90,7 @@ public class TestFunctionsBuilder {
 //            ListTestFunctions t = (ListTestFunctions) this.testFunctions;
 //            ListTestFunctions t2 = new ListTestFunctions();
 //            for (IVDCxy cc : t.toList()) {
-//                t2.add(cc.normalize().toDC());
+//                t2.add(cc.normalizeString().toDC());
 //            }
 //            testFunctions=t2;
 //            return testFunctions;

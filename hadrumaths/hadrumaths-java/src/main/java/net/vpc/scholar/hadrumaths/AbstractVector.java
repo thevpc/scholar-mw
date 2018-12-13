@@ -716,4 +716,18 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         }
         return true;
     }
+
+//    @Override
+//    public TVector<Complex> concat(Complex e) {
+//        ArrayVector v=new ArrayVector(this);
+//        v.add(e);
+//        return v;
+//    }
+//
+//    @Override
+//    public TVector<Complex> concat(TVector<Complex> e) {
+//        ArrayVector v=new ArrayVector(this);
+//        v.add(e);
+//        return v;
+//    }
 }

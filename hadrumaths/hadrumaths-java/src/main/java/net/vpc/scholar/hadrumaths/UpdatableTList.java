@@ -5,6 +5,7 @@ import net.vpc.common.util.TypeReference;
 import java.util.Collection;
 
 public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
+
     private static final long serialVersionUID = 1L;
     private TList<T> delegate;
     private TVectorModel<T> model;
@@ -64,4 +65,15 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
             }
         }
     }
+
+    @Override
+    public TList<T> sort() {
+        return copy().sort();
+    }
+
+    @Override
+    public TList<T> removeDuplicates() {
+        return copy().removeDuplicates();
+    }
+
 }

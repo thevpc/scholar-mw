@@ -9,21 +9,23 @@ import java.util.Set;
 /**
  * Created by vpc on 6/4/17.
  */
-public class VDiscretePlotModel implements PlotModel {
-    private String title;
+public class VDiscretePlotModel extends BasePlotModel {
+    private ComplexAsDouble converter;
     private Set<ExternalLibrary> preferredLibraries;
     private VDiscrete[] vdiscretes;
 
     public VDiscretePlotModel() {
     }
 
-    public String getTitle() {
-        return title;
+    public VDiscretePlotModel setConverter(ComplexAsDouble zDoubleFunction) {
+        Object old = this.converter;
+        this.converter = zDoubleFunction;
+//        firePropertyChange("converter", old, this.converter);
+        return this;
     }
 
-    public VDiscretePlotModel setTitle(String title) {
-        this.title = title;
-        return this;
+    public ComplexAsDouble getConverter() {
+        return converter;
     }
 
     public Set<ExternalLibrary> getPreferredLibraries() {

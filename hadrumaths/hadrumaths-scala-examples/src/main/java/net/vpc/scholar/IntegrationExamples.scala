@@ -3,7 +3,7 @@ package net.vpc.scholar
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadrumaths.symbolic.CustomDDFunctionXDefinition
+import net.vpc.scholar.hadrumaths.symbolic._
 
 /**
   * Created by vpc on 7/17/17.

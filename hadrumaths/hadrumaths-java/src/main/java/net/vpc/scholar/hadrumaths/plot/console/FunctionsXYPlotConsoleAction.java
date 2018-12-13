@@ -33,10 +33,11 @@ public class FunctionsXYPlotConsoleAction implements ConsoleAction {
 
     public void execute(PlotConsole plotter) {
         ExpressionsPlotModel m = new ExpressionsPlotModel();
-        m.setTitle(title).setDomain(domain).setExpressions(fn)
+        m.setDomain(domain).setExpressions(fn)
                 .setPlotType(plotType)
                 .setPreferredLibraries(preferredLibraries)
                 .setSelectedAxis(new CellPosition[]{new CellPosition(0, 0)})
+                .setTitle(title)
         ;
         plotter.getPlotConsoleFrame().getWindow(preferredPath).addChild(
                 title, (JComponent) Plot.create(m, Plot.getDefaultWindowManager())

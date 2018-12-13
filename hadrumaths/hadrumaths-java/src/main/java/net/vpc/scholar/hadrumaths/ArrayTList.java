@@ -6,11 +6,13 @@ import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 /**
  * Created by vpc on 5/7/14.
  */
 public class ArrayTList<T> extends AbstractTList<T> {
+
     private static final long serialVersionUID = 1L;
 
     private ArrayList<T> values;
@@ -28,6 +30,13 @@ public class ArrayTList<T> extends AbstractTList<T> {
     public ArrayTList(TypeReference<T> componentType, boolean row, T[] values) {
         this(componentType, row, values.length);
         appendAll(Arrays.asList(values));
+    }
+    public ArrayTList(TypeReference<T> componentType, boolean row, TVectorModel<T> values) {
+        this(componentType, row, values.size());
+        int s=values.size();
+        for (int i = 0; i < s; i++) {
+            append(values.get(i));
+        }
     }
 
     @Override
@@ -54,6 +63,18 @@ public class ArrayTList<T> extends AbstractTList<T> {
         }
     }
 
+    @Override
+    public TVector<T> concat(TVector<T> e) {
+        ArrayTList<T> v=new ArrayTList<T>(componentType,
+                isRow(),
+                size()+(e==null?0:e.size())
+        );
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
+        }
+        return v;
+    }
 
     public void append(int index, T e) {
         values.add(index, e);
@@ -132,7 +153,6 @@ public class ArrayTList<T> extends AbstractTList<T> {
 //        }
 //        return next;
 //    }
-
     public int size() {
         return values.size();
     }
@@ -168,4 +188,28 @@ public class ArrayTList<T> extends AbstractTList<T> {
     public void trimToSize() {
         values.trimToSize();
     }
+
+    @Override
+    public TList<T> sort() {
+        Object[] vals = values.toArray();
+        Arrays.sort(vals);
+        return new ArrayTList(componentType, isRow(), vals);
+    }
+
+    @Override
+    public TList<T> removeDuplicates() {
+        Object[] vals = values.toArray();
+        Object[] vals2 = sort().toArray();
+        Object[] vals3 = new Object[vals.length];
+        int x = 0;
+        for (int i = 0; i < vals2.length; i++) {
+            Object val = vals2[i];
+            if (x == 0 || !PlatformUtils.equals(vals3[x - 1], val)) {
+                vals3[x] = val;
+                x++;
+            }
+        }
+        return new ArrayTList(componentType, isRow(), vals3);
+    }
+
 }

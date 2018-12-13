@@ -95,7 +95,7 @@ public class PlotCanvasVectorJFreeChart extends PlotCanvasAnyComplexJFreeChart {
     protected JFreeChart createChart(String theYTitle, Boolean legend, Boolean tooltips) {
         VectorXYDataset data = createVectorXYDataset();
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        String theTitle = model.getTitle() == null ? "" : model.getTitle();
+        String theTitle = model.getPreferredTitle();
         String theXTitle = model.getXtitle() == null ? "X" : model.getXtitle();
 //        return ChartFactory.createAreaChart(theTitle, theXTitle, theYTitle,
 //                data,

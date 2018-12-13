@@ -105,20 +105,6 @@ public class ExprGenerator {
         for (int i = 0; i < 1000; i++) {
             Expr r = g.generate(Expr.class);
             String sf = FormatFactory.format(r);
-//            String st = r.toString();
-//            if (!st.equals(sf)) {
-//                System.out.println("Why");
-//            }
-//            Expr pbm = check(r, tt -> tt.toString().contains("- -"));
-//            if (pbm!=null) {
-//                System.out.println("Why "+pbm.toString());
-//            }
-//            pbm = check(r, tt -> tt.toString().contains("1("));
-//            if (pbm!=null) {
-//                pbm.toString();
-//                System.out.println("Why "+pbm.toString());
-//            }
-
             System.out.println(sf);
             System.out.print("");
         }
@@ -237,13 +223,7 @@ public class ExprGenerator {
                 return ((Expr) o).isDD();
             }
         }, expressionComplexity);
-        if (!expr.isDD()) {
-            System.out.println("Why");
-        }
         DoubleToDouble doubleToDouble = expr.toDD();
-        if (!doubleToDouble.isDD()) {
-            System.out.println("Why");
-        }
         return doubleToDouble;
     }
 

@@ -2,6 +2,8 @@ package net.vpc.scholar.hadruwaves.studio.standalone.actions;
 
 import java.awt.Component;
 import javax.swing.*;
+
+import net.vpc.common.strings.StringUtils;
 import net.vpc.lib.pheromone.application.ApplicationRenderer;
 import net.vpc.lib.pheromone.application.actions.ApplicationAction;
 import net.vpc.lib.pheromone.application.swing.AdvancedAction;
@@ -12,7 +14,6 @@ import net.vpc.scholar.hadrumaths.plot.AbstractPlotWindowManager;
 import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
 import net.vpc.scholar.hadrumaths.plot.PlotComponent;
 import net.vpc.scholar.hadrumaths.plot.PlotWindowManager;
-import net.vpc.scholar.hadrumaths.util.HadrumathsStringUtils;
 
 /**
  * Created with IntelliJ IDEA. User: vpc Date: 8/9/12 Time: 5:05 PM To change
@@ -73,7 +74,7 @@ public abstract class TmwlabAction extends ApplicationAction {
     public PlotBuilder plotter() {
         return Plot.builder().windowManager(getWindowManager(getApplicationRenderer()));
     }
-    
+
     private PlotWindowManager createPlotWindowManager() {
         return new AbstractPlotWindowManager() {
             @Override
@@ -89,7 +90,7 @@ public abstract class TmwlabAction extends ApplicationAction {
             @Override
             public void addPlotComponentImpl(PlotComponent component, String[] path) {
                 JComponent comp = component.toComponent();
-                String pathString = HadrumathsStringUtils.toPath(path, "/");
+                String pathString = StringUtils.join("/", path);
                 comp.putClientProperty(PlotWindowManager.class.getName() + ":key", pathString);
                 getApplicationRenderer().getWindowManager().addWindow(pathString,
                         component.getPlotTitle(),

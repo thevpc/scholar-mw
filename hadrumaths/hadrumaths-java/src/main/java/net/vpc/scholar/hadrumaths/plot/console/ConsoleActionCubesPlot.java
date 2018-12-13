@@ -38,9 +38,9 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
                         "/" + plotTitle,
                         Plot.create(
                                 new VDiscretePlotModel()
-                                        .setTitle(plotTitle)
                                         .setPreferredLibraries(preferredLibraries)
                                         .setVdiscretes(yvalues)
+                                        .setTitle(plotTitle)
                                 ,
                                 Plot.getDefaultWindowManager()
                         ).toComponent()

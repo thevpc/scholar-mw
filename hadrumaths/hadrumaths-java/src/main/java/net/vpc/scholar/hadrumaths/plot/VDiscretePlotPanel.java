@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.plot;
 
+import com.sun.javafx.PlatformUtil;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.curve.CurvePlot;
 import net.vpc.scholar.hadrumaths.plot.heatmap.DefaultHeatMapPlotNormalizer;
@@ -13,25 +14,30 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 19 juil. 2007 01:05:06
  */
 public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
+
     private final JPanel pp = new JPanel();
     private JComboBox d2d3 = new JComboBox(new Object[]{"1D", "2D", "Matrix", "3D"});
     private JComboBox xyz = new JComboBox(new Object[]{"X", "Y", "Z", "All"});
     private JComboBox surface = new JComboBox(new Object[]{"YZ", "XZ", "XY"});
+    private JComboBox conversions = new JComboBox(ComplexAsDouble.values());
     private JComboBox norm = new JComboBox(NormalizerType.values());
     private JSlider slider = new JSlider();
     private static final int TYPE_1D = 1;
     private static final int TYPE_2D = 2;
     private static final int TYPE_MATRIX = 3;
     private static final int TYPE_MESH = 4;
-    private int typeSurface = TYPE_1D;
+    private int typeSurface = TYPE_2D;
     private Axis[] xyzValue = Axis.values();
     private Axis surfaceValue = Axis.Z;
+    private ComplexAsDouble convert = ComplexAsDouble.ABS;
     //    private String title;
     private NormalizerType normalizerType = NormalizerType.FULL;
     private int revalidatingPlot = 0;
@@ -46,6 +52,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
             model = new VDiscretePlotModel();
         }
         this.model2 = model;
+        this.convert = model.getConverter();
         setPlotWindowManager(windowManager);
         JToolBar tb = new JToolBar();
         d2d3.setSelectedIndex(typeSurface - 1);
@@ -58,6 +65,8 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
         tb.addSeparator();
         tb.add(new JLabel("Surface"));
         tb.add(surface);
+        tb.add(new JLabel("Conversion"));
+        tb.add(conversions);
         tb.addSeparator();
         tb.add(new JLabel("Value"));
         tb.add(slider);
@@ -67,6 +76,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
         pp.setLayout(new GridLayout(1, 0));
         add(pp, BorderLayout.CENTER);
         surface.setSelectedIndex(2);
+        conversions.setSelectedIndex(0);
         xyz.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -102,6 +112,14 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     surfaceValue = Axis.values()[surface.getSelectedIndex()];
+                    revalidatePlot();
+                }
+            }
+        });
+        conversions.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    convert = (ComplexAsDouble) conversions.getSelectedItem();
                     revalidatePlot();
                 }
             }
@@ -194,44 +212,55 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                             }
                         }
                         ValuesPlotModel pmodel = new ValuesPlotModel(
-                                "Axe " + axis + " ; Coupe " + surface.getSelectedItem(), null, null, null, axis1, axis2, renderedValues, ComplexAsDouble.ABS, PlotType.HEATMAP,
+                                "Axe " + axis + " ; Coupe " + surface.getSelectedItem(), null, null, null, axis1, axis2, renderedValues,
+                                convert,
+                                PlotType.HEATMAP,
                                 null
                         );
                         SimplePlotModelProvider modelProvider = new SimplePlotModelProvider(pmodel, this);
-                        if (typeSurface == TYPE_2D) {
-                            pmodel.setPlotType(PlotType.HEATMAP);
-                            HeatMapPlot allHeatMapPlot = new HeatMapPlot(
-                                    modelProvider, null, 200
-                            );
+                        switch (typeSurface) {
+                            case TYPE_2D: {
+                                pmodel.setPlotType(PlotType.HEATMAP);
+                                HeatMapPlot allHeatMapPlot = new HeatMapPlot(
+                                        modelProvider, null, 200
+                                );      //                        allHeatMapPlot.rotateLeft();
 //                        allHeatMapPlot.rotateLeft();
-//                        allHeatMapPlot.rotateLeft();
-                            allHeatMapPlot.setNormalizer(new ExtendedNormalizer(axis));
-                            Plot.buildJPopupMenu((PlotComponentPanel) allHeatMapPlot, modelProvider);
-                            pp.add(allHeatMapPlot);
-                        } else if (typeSurface == TYPE_MATRIX) {
-                            pmodel.setPlotType(PlotType.MATRIX);
-                            HeatMapPlot allHeatMapPlot = new HeatMapPlot(
-                                    modelProvider, null, 200
-                            );
-                            allHeatMapPlot.setNormalizer(new ExtendedNormalizer(axis));
-                            Plot.buildJPopupMenu((PlotComponentPanel) allHeatMapPlot, modelProvider);
-                            pp.add(allHeatMapPlot);
-                        } else if (typeSurface == TYPE_MESH) {
-                            pmodel.setPlotType(PlotType.MESH);
-                            PlotComponentPanel allSurface2DPlot = ChartFactory.createMesh(
-                                    modelProvider, null, model2.getPreferredLibraries()
-                            );
-                            Plot.buildJPopupMenu(allSurface2DPlot, modelProvider);
-//                        allSurface2DPlot.setNormalizer(new ExtendedNormalizer(axis));
-                            pp.add(allSurface2DPlot.toComponent());
-                        } else if (typeSurface == TYPE_1D) {
-                            pmodel.setPlotType(PlotType.CURVE);
-                            CurvePlot allSurface2DPlot = new CurvePlot(
-                                    modelProvider, true
-                            );
-//                        allSurface2DPlot.setNormalizer(new ExtendedNormalizer(axis));
-                            Plot.buildJPopupMenu((PlotComponentPanel) allSurface2DPlot, modelProvider);
-                            pp.add(allSurface2DPlot);
+                                allHeatMapPlot.setNormalizer(new ExtendedNormalizer(axis));
+                                Plot.buildJPopupMenu((PlotComponentPanel) allHeatMapPlot, modelProvider);
+                                pp.add(allHeatMapPlot);
+                                break;
+                            }
+                            case TYPE_MATRIX: {
+                                pmodel.setPlotType(PlotType.MATRIX);
+                                HeatMapPlot allHeatMapPlot = new HeatMapPlot(
+                                        modelProvider, null, 200
+                                );
+                                allHeatMapPlot.setNormalizer(new ExtendedNormalizer(axis));
+                                Plot.buildJPopupMenu((PlotComponentPanel) allHeatMapPlot, modelProvider);
+                                pp.add(allHeatMapPlot);
+                                break;
+                            }
+                            case TYPE_MESH: {
+                                pmodel.setPlotType(PlotType.MESH);
+                                PlotComponentPanel allSurface2DPlot = ChartFactory.createMesh(
+                                        modelProvider, null, model2.getPreferredLibraries()
+                                );
+                                Plot.buildJPopupMenu(allSurface2DPlot, modelProvider);
+                                //                        allSurface2DPlot.setNormalizer(new ExtendedNormalizer(axis));
+                                pp.add(allSurface2DPlot.toComponent());
+                                break;
+                            }
+                            case TYPE_1D: {
+                                pmodel.setPlotType(PlotType.CURVE);
+                                CurvePlot allSurface2DPlot = new CurvePlot(
+                                        modelProvider, true
+                                );      //                        allSurface2DPlot.setNormalizer(new ExtendedNormalizer(axis));
+                                Plot.buildJPopupMenu((PlotComponentPanel) allSurface2DPlot, modelProvider);
+                                pp.add(allSurface2DPlot);
+                                break;
+                            }
+                            default:
+                                break;
                         }
                     }
                 }
@@ -261,6 +290,7 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
     }
 
     private class ExtendedNormalizer extends DefaultHeatMapPlotNormalizer {
+
         private Axis axis;
 
         public ExtendedNormalizer(Axis axis) {
@@ -283,10 +313,14 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                         ComponentDimension d = c3D.getComponentDimension();
                         for (int[] rc : d.iterate()) {
                             Complex[][][] c3 = ((Discrete) c3D.getComponent(rc[0], rc[1])).getValues();
+                            ComplexAsDouble dc = convert;
+                            if (dc == null) {
+                                dc = ArrayUtils.resolveComplexAsDouble(c3);
+                            }
                             for (Complex[][] z : c3) {
                                 for (Complex[] y : z) {
                                     for (Complex x : y) {
-                                        minMax.registerValue(x.absdbl());
+                                        minMax.registerValue(dc.toDouble(x));
                                     }
                                 }
                             }
@@ -296,10 +330,15 @@ public class VDiscretePlotPanel extends BasePlotComponent implements PlotPanel {
                 case CUBE: {
                     for (VDiscrete c3D : model2.getVdiscretes()) {
                         Complex[][][] c3 = c3D.getComponent(axis).getValues();
+                        ComplexAsDouble dc = convert;
+                        if (dc == null) {
+                            dc = ArrayUtils.resolveComplexAsDouble(c3);
+                        }
+
                         for (Complex[][] z : c3) {
                             for (Complex[] y : z) {
                                 for (Complex x : y) {
-                                    minMax.registerValue(x.absdbl());
+                                    minMax.registerValue(dc.toDouble(x));
                                 }
                             }
                         }

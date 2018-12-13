@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 
 import java.io.Serializable;

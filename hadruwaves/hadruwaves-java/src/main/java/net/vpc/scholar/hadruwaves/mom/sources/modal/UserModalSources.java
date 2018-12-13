@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.sources.modal;
 
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;

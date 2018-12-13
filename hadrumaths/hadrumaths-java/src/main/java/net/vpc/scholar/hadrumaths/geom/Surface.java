@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.geom;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
 import net.vpc.scholar.hadrumaths.MinMax;
-import net.vpc.scholar.hadrumaths.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.dump.Dumper;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.awt.geom.Area;

@@ -6,11 +6,71 @@ import net.vpc.scholar.hadrumaths.symbolic.Range;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 
 public final class ArrayUtils {
+
     public static final Expr[] EMPTY_EXPR_ARRAY = new Expr[0];
 
     private ArrayUtils() {
+    }
+
+    public static ComplexAsDouble resolveComplexAsDouble(Complex[][][] c) {
+        if (c == null) {
+            return ComplexAsDouble.REAL;
+        }
+
+        for (Complex[][] d : c) {
+            ComplexAsDouble d2 = resolveComplexAsDouble(d);
+            if (d2 == ComplexAsDouble.ABS) {
+                return d2;
+            }
+        }
+        return ComplexAsDouble.REAL;
+    }
+
+    public static ComplexAsDouble resolveComplexAsDouble(Complex[][] c) {
+        if (c == null) {
+            return ComplexAsDouble.REAL;
+        }
+
+        for (Complex[] d : c) {
+            ComplexAsDouble d2 = resolveComplexAsDouble(d);
+            if (d2 == ComplexAsDouble.ABS) {
+                return d2;
+            }
+        }
+        return ComplexAsDouble.REAL;
+    }
+
+    public static ComplexAsDouble resolveComplexAsDouble(Complex[] c) {
+        if (c == null) {
+            return ComplexAsDouble.REAL;
+        }
+        for (Complex d : c) {
+            if (!d.isReal()) {
+                return ComplexAsDouble.ABS;
+            }
+        }
+        return ComplexAsDouble.REAL;
+    }
+
+    public static double[][] transpose(double[] c) {
+        double[][] r = new double[c.length][1];
+        for (int i = 0; i < c.length; i++) {
+            r[i][0] = c[i];
+        }
+        return r;
+    }
+
+    public static double[][] transpose(double[][] c) {
+        double[][] r = new double[c[0].length][c.length];
+        for (int i = 0; i < c.length; i++) {
+            for (int j = 0; j < i; j++) {
+                r[j][i] = c[i][j];
+            }
+        }
+        return r;
     }
 
     public static Integer[] box(int[] c) {
@@ -291,7 +351,6 @@ public final class ArrayUtils {
         return ret;
     }
 
-
     public static boolean equals(double[] a, double[] a2) {
         return Arrays.equals(a, a2);
     }
@@ -300,12 +359,14 @@ public final class ArrayUtils {
         if (a == a2) {
             return true;
         }
-        if (a == null || a2 == null)
+        if (a == null || a2 == null) {
             return false;
+        }
 
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
+        }
 
         for (int i = 0; i < length; i++) {
             if (!Arrays.equals(a[i], a2[i])) {
@@ -319,12 +380,14 @@ public final class ArrayUtils {
         if (a == a2) {
             return true;
         }
-        if (a == null || a2 == null)
+        if (a == null || a2 == null) {
             return false;
+        }
 
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
+        }
 
         for (int i = 0; i < length; i++) {
             if (!Arrays.equals(a[i], a2[i])) {
@@ -338,12 +401,14 @@ public final class ArrayUtils {
         if (a == a2) {
             return true;
         }
-        if (a == null || a2 == null)
+        if (a == null || a2 == null) {
             return false;
+        }
 
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
+        }
 
         for (int i = 0; i < length; i++) {
             if (!Objects.equals(a[i], a2[i])) {
@@ -357,12 +422,14 @@ public final class ArrayUtils {
         if (a == a2) {
             return true;
         }
-        if (a == null || a2 == null)
+        if (a == null || a2 == null) {
             return false;
+        }
 
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
+        }
 
         for (int i = 0; i < length; i++) {
             if (!equals(a[i], a2[i])) {
@@ -376,12 +443,14 @@ public final class ArrayUtils {
         if (a == a2) {
             return true;
         }
-        if (a == null || a2 == null)
+        if (a == null || a2 == null) {
             return false;
+        }
 
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
+        }
 
         for (int i = 0; i < length; i++) {
             if (!equals(a[i], a2[i])) {
@@ -612,7 +681,6 @@ public final class ArrayUtils {
 //        }));
 //
 //    }
-
     //    public static void main0(String[] args) {
 //        final int err=1000000000;
 //        final int size=100;
@@ -670,7 +738,6 @@ public final class ArrayUtils {
 //        fill(rr, Complex.ZERO);
 //        System.out.println(Arrays.deepToString(rr));
 //    }
-
     public static Complex[][] fillMatrix(Complex[][] sourceMatrix, Complex value) {
         int rowsCount = sourceMatrix == null ? 0 : sourceMatrix.length;
         int columnsCount = 0;
@@ -716,7 +783,6 @@ public final class ArrayUtils {
         }
         return sourceMatrix;
     }
-
 
     public static Complex[][] fill(Complex[][] c, Complex value) {
         int clen = c.length;
@@ -825,9 +891,9 @@ public final class ArrayUtils {
 
     public static Expr[] append(Expr[] a, Expr b) {
         int max = a.length;
-        Expr[] ret = new Expr[max+1];
-        System.arraycopy(a,0,ret,0,a.length);
-        ret[a.length]=b;
+        Expr[] ret = new Expr[max + 1];
+        System.arraycopy(a, 0, ret, 0, a.length);
+        ret[a.length] = b;
         return ret;
     }
 
@@ -1115,7 +1181,6 @@ public final class ArrayUtils {
         return ret;
     }
 
-
     public static Complex[] mul(Complex[] a, Complex b) {
         int max = a.length;
         Complex[] ret = new Complex[max];
@@ -1150,7 +1215,6 @@ public final class ArrayUtils {
         }
         return ret;
     }
-
 
     /**
      * @param gfps0
@@ -1435,7 +1499,6 @@ public final class ArrayUtils {
         }
     }
 
-
     public static void fillArray2ZeroComplex0(Complex[][] arr, Range nonNullRanges) {
         int i = 0;
         int rows = arr.length;
@@ -1689,10 +1752,10 @@ public final class ArrayUtils {
         return r;
     }
 
-
     public static int hashCode(Object[][] a) {
-        if (a == null)
+        if (a == null) {
             return 0;
+        }
 
         int result = 1;
         for (Object[] element : a) {

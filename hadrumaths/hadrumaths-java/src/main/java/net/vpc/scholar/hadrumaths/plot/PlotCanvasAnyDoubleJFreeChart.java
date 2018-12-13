@@ -45,22 +45,22 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
 
     protected XYDataset createXYDataset() {
         XYSeriesCollection dataset = new XYSeriesCollection();
-//        boolean shouldSwap=data.size()>1;
-//        double[] x2=new double[data.size()];
-//        double[] y2=new double[data.size()];
+//        boolean shouldSwap = data.size() > 1;
+//        double[] x2 = new double[data.size()];
+//        double[] y2 = new double[data.size()];
 //        for (int i = 0; i < data.size(); i++) {
 //            double[] x = data.getX(i);
 //            double[] y = data.getY(i);
-//            if(x.length==1 && y.length==1){
+//            if (y.length == 1) {
 //                //ok
-//                x2[i]=x[0];
-//                y2[i]=y[0];
-//            }else{
-//                shouldSwap=false;
+//                x2[i] = x[0];
+//                y2[i] = y[0];
+//            } else {
+//                shouldSwap = false;
 //                break;
 //            }
 //        }
-//        if(shouldSwap){
+//        if (shouldSwap) {
 //            XYSeries series = new XYSeries(data.getYTitle(0));
 //            for (int i = 0; i < data.size(); i++) {
 //                double[] x = data.getX(i);
@@ -69,18 +69,18 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
 //            }
 //            dataset.addSeries(series);
 //            return dataset;
-//        }else {
-        for (int i = 0; i < data.size(); i++) {
-            String key = data.getYTitle(i);
-            double[] x = data.getX(i);
-            double[] y = data.getY(i);
-            XYSeries series = new XYSeries(key);
-            for (int k = 0; k < y.length; k++) {
-                series.add(x[k], y[k]);
+//        } else {
+            for (int i = 0; i < data.size(); i++) {
+                String key = data.getYTitle(i);
+                double[] x = data.getX(i);
+                double[] y = data.getY(i);
+                XYSeries series = new XYSeries(key);
+                for (int k = 0; k < y.length; k++) {
+                    series.add(x[k], y[k]);
+                }
+                dataset.addSeries(series);
             }
-            dataset.addSeries(series);
-        }
-        return dataset;
+            return dataset;
 //        }
     }
 

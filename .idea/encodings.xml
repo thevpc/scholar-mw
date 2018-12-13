@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-jeep" charset="UTF-8" />
-    <file url="file:///data/vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-swings" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../../../../../research/dev/2016/scala/test-mw-scala-j" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-desktop-automation" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-io" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-jeep" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-strings" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-swings" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../../common/vpc-common/vpc-common-utils" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hadrumaths/hadrumaths-java-test" charset="UTF-8" />
@@ -18,5 +18,9 @@
     <file url="file://$PROJECT_DIR$/hadruwaves/hadruwaves-java-examples" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hadruwaves/hadruwaves-java-test" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hadruwaves/hadruwaves-puppets" charset="UTF-8" />
+    <file url="file://$USER_HOME$/data-vpc/Data/research/projects/projet-2018/syscom2018" charset="UTF-8" />
+    <file url="file://$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-commandline" charset="UTF-8" />
+    <file url="file://$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-io-compress" charset="UTF-8" />
+    <file url="file://$USER_HOME$/data-vpc/Data/xprojects/net/vpc/common/vpc-common/vpc-common-sql" charset="UTF-8" />
   </component>
 </project>
