@@ -41,20 +41,6 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
 //        return computeMatrix(new double[]{x}, new double[]{y}, new double[]{z}, (Domain) null, null)[0][0][0];
 //    }
 
-    @Override
-    public Matrix[] computeMatrix(double[] x) {
-        return computeMatrix(x, (Domain) null, null);
-    }
-
-    @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y) {
-        return computeMatrix(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
-        return computeMatrix(x, y, z, (Domain) null, null);
-    }
 
     @Override
     public boolean isDDImpl() {
@@ -280,6 +266,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             int r = ii[0];
             int c = ii[1];
             values[r][c] = getComponent(r, c).toDC().computeComplex(x, y, d0, rangeOutHolder);
+            ExpressionsDebug.debug_check(values[r][c],rangeOutHolder);
             if (rangeOut != null) {
                 if (rangeOutHolder.get() == null) {
                     rangeOut = rangeOut.intersect(rangeOutHolder.get());

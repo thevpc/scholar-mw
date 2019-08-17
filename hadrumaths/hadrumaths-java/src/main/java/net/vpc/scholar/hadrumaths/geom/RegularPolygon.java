@@ -101,7 +101,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
             double y = center.y + radius * Maths.sin2(i * dblpi / sides + phase);
             all.add(Point.create(x, y));
         }
-        return new Polygon(all.toArray(new Point[all.size()]));
+        return new Polygon(all.toArray(new Point[0]));
     }
 
     @Override

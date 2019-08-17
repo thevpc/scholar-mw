@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
-public class ExprNodeResolver implements ExpressionEvaluatorResolver {
+public class ExprNodeResolver extends AbstractExpressionEvaluatorResolver {
     public static final ExprNodeResolver INSTANCE = new ExprNodeResolver();
 
     @Override

@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.common.util.Chronometer;
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.ExpressionRewriterFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
@@ -29,7 +32,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     private ScalarProductOperator fallback;
     private FormalScalarProductHelper fallbackHelper;
 
-    private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("OPTIMIZE_SP");
+    private final ExpressionRewriterSuite expressionRewriter = new ExpressionRewriterSuite("FormalScalarProductExpandOptimizeRuleSuite");
 
     public FormalScalarProductOperator(boolean hermitian,ScalarProductOperator fallback) {
         super(hermitian);
@@ -45,7 +48,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 //        expressionRewriter.add(CANONICAL_RULE_SET);
 
 
-        ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("EXPAND_SIMPLIFY");
+        ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet(" FormalScalarProductExpandSimplifyRuleSet");
         for (ExpressionRewriterRule r : ExpressionRewriterFactory.SIMPLIFY_RULES) {
             EXPAND_SIMPLIFY_RULE_SET.addRule(r);
         }

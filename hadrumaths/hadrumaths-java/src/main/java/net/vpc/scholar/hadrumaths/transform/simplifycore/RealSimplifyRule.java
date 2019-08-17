@@ -80,7 +80,7 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
             for (Expr expr : e1) {
                 e2.add(Maths.real(expr));
             }
-            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[e2.size()])));
+            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[0])));
         }
         if (rbase.getValue() instanceof Sub) {
             return RewriteResult.newVal(new Sub(Maths.real(((Sub) rbase.getValue()).getFirst()), Maths.real(((Sub) rbase.getValue()).getSecond())));
@@ -210,8 +210,8 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
                             e.getImagDD()
                     };
                 }else{
-                    Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[realOnly.size()]), e.getRealDD());
-                    Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[realOnly.size()]), e.getImagDD());
+                    Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[0]), e.getRealDD());
+                    Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[0]), e.getImagDD());
                     return new DoubleToDouble[]{
                             r.length==1?r[0].toDD():Maths.mul(r).toDD(),
                             i.length==1?i[0].toDD():Maths.mul(i).toDD()
@@ -225,15 +225,15 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
                 } else {
                     List<Expr> e2 = new ArrayList<Expr>(m.getSubExpressions());
                     e2.remove(0);
-                    b = Maths.mul(e2.toArray(new Expr[e2.size()])).toDC();
+                    b = Maths.mul(e2.toArray(new Expr[0])).toDC();
                 }
                 Sub realFull = new Sub(Maths.mul(a.getRealDD(), b.getRealDD()), Maths.mul(a.getImagDD(), b.getImagDD()));
                 DoubleToDouble imagFull = Maths.sum(Maths.mul(a.getRealDD(), b.getImagDD()), Maths.mul(a.getImagDD(), b.getRealDD())).toDD();
                 if(realOnly.isEmpty()) {
                     return new DoubleToDouble[]{realFull, imagFull};
                 }else{
-                    Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[realOnly.size()]), realFull);
-                    Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[realOnly.size()]), imagFull);
+                    Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[0]), realFull);
+                    Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[0]), imagFull);
                     return new DoubleToDouble[]{
                             r.length==1?r[0].toDD():Maths.mul(r).toDD(),
                             i.length==1?i[0].toDD():Maths.mul(i).toDD()

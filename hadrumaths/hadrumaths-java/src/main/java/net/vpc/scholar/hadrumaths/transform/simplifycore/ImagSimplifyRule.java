@@ -53,7 +53,7 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
             for (Expr expr : e1) {
                 e2.add(Maths.imag(expr));
             }
-            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[e2.size()])));
+            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[0])));
         }
         if (rbase.getValue() instanceof Sub) {
             return RewriteResult.newVal(new Sub(Maths.imag(((Sub) rbase.getValue()).getFirst()), Maths.imag(((Sub) rbase.getValue()).getSecond())));

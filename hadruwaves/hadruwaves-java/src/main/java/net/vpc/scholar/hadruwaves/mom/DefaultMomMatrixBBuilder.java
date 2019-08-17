@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixBBuilder;
 
 /**
@@ -12,13 +12,13 @@ import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixBBuilder;
  */
 class DefaultMomMatrixBBuilder extends AbstractMomMatrixBBuilder {
 
-    MomStructure momStructure;
 
     public DefaultMomMatrixBBuilder(MomStructure momStructure) {
-        this.momStructure = momStructure;
+        super(momStructure);
     }
 
     private Matrix computeMatrixImpl() {
+        MomStructure momStructure = getStructure();
         momStructure.build();
         return new MatrixBMatrixStrCacheSupport(this, getMonitor()).get();
     }
@@ -29,7 +29,7 @@ class DefaultMomMatrixBBuilder extends AbstractMomMatrixBBuilder {
         if (conv == null) {
             return computeMatrixImpl();
         } else {
-            return storeConvergenceResult(conv.evaluate(momStructure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImpl();

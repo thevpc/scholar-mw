@@ -2,9 +2,10 @@ package net.vpc.scholar.hadrumaths;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class ComplexArray {
+public class ComplexArray implements Iterable<Complex>{
     private List<Complex> values = new ArrayList<>();
 
     public ComplexArray() {
@@ -63,5 +64,10 @@ public class ComplexArray {
     @Override
     public String toString() {
         return values.toString();
+    }
+
+    @Override
+    public Iterator<Complex> iterator() {
+        return values.iterator();
     }
 }

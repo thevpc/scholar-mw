@@ -604,7 +604,7 @@ public class Configuration
                 }
             }
         }
-        return al.toArray(new String[al.size()]);
+        return al.toArray(new String[0]);
     }
 
     public Object getProperty(String key) {

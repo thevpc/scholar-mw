@@ -1,24 +1,33 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
 import net.vpc.common.util.Converter;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.AbstractTMatrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
-import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadrumaths.VectorSpace;
 
 public class TMatrixAdapter<R, T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;
     protected TMatrix<R> base;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
     private Converter<R, T> converterTo;
     private Converter<T, R> converterFrom;
 
-    public TMatrixAdapter(TMatrix<R> base, TypeReference<T> componentType) {
+    public TMatrixAdapter(TMatrix<R> base, TypeName<T> componentType) {
         this.base = base;
         this.componentType = componentType;
         VectorSpace<R> vs = base.getComponentVectorSpace();
         converterTo = vs.getConverterTo(componentType);
         converterFrom = vs.getConverterFrom(componentType);
+    }
+
+    @Override
+    public void set(T[][] elements) {
+        for (int i = 0; i < elements.length; i++) {
+            for (int j = 0; j < elements[i].length; j++) {
+                set(i,j,elements[i][j]);
+            }
+        }
     }
 
     @Override
@@ -42,12 +51,12 @@ public class TMatrixAdapter<R, T> extends AbstractTMatrix<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 
     @Override
-    public <R> TMatrix<R> to(TypeReference<R> other) {
+    public <R> TMatrix<R> to(TypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (TMatrix<R>) this;
         }

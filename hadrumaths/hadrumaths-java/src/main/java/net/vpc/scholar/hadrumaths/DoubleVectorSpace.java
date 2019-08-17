@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //    @Override
@@ -60,7 +60,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public Double convert(Matrix d) {
+    public Double convert(TMatrix d) {
         return d.toDouble();
     }
 
@@ -117,6 +117,11 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     @Override
     public double absdbl(Double a) {
         return Math.abs(a);
+    }
+
+    @Override
+    public double absdblsqr(Double a) {
+        return a*a;
     }
 
     @Override
@@ -290,7 +295,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public TypeReference<Double> getItemType() {
+    public TypeName<Double> getItemType() {
         return Maths.$DOUBLE;
     }
 
@@ -389,7 +394,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public <R> boolean is(Double value, TypeReference<R> type) {
+    public <R> boolean is(Double value, TypeName<R> type) {
         if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)) {
             return true;
         }
@@ -407,4 +412,8 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
         return a*a;
     }
 
+    @Override
+    public Double rem(Double a, Double b) {
+        return a%b;
+    }
 }

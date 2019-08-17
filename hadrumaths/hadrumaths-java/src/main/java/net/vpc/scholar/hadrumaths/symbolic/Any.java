@@ -6,6 +6,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * @author vpc
  */
-public class Any extends AbstractVerboseExprRef implements Cloneable {
+public class Any extends AbstractVerboseExprRef implements Cloneable, DoubleToDouble, DoubleToComplex, DoubleToVector, DoubleToMatrix {
     private static final long serialVersionUID = 1L;
 
     static {
@@ -38,7 +39,7 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     public Any(Expr object, String name, Map<String, Object> properties) {
         this.name = name;
         this.properties = properties == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap<>(properties));
-        this.object = object;
+        this.object = unwrap(object);
     }
 
     public static Expr unwrap(Expr e) {
@@ -105,21 +106,17 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return cloned;
     }
 
-    public boolean isZeroImpl() {
-        return object.isZero();
-    }
+//    protected boolean isZeroImpl() {
+//        return object.isZero();
+//    }
 
-    public boolean isNaNImpl() {
-        return object.isNaN();
-    }
-
-    public boolean isInfiniteImpl() {
-        return object.isInfinite();
-    }
-
-    public boolean isInvariantImpl(Axis axis) {
-        return object.isInvariant(axis);
-    }
+//    protected boolean isInfiniteImpl() {
+//        return object.isInfinite();
+//    }
+//
+//    protected boolean isInvariantImpl(Axis axis) {
+//        return object.isInvariant(axis);
+//    }
 
     public Expr getObject() {
         return object;
@@ -154,6 +151,14 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         Expr second = unwrap(e);
         return wrap(
                 new Div(first, second)
+        );
+    }
+
+    public Any rem(Expr e) {
+        Expr first = object;
+        Expr second = unwrap(e);
+        return wrap(
+                new Reminder(first, second)
         );
     }
 
@@ -308,11 +313,6 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
     }
 
     @Override
-    public double[] computeDouble(double x, double[] y) {
-        return object.toDD().computeDouble(x, y);
-    }
-
-    @Override
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
         return object.toDC().computeComplex(x, y, z, defined);
     }
@@ -424,6 +424,32 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return object.getComponentDimension();
     }
 
+
+    @Override
+    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return toDV().computeVector(x, y, z, d0, ranges);
+    }
+
+    @Override
+    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return toDV().computeVector(x, y, d0, ranges);
+    }
+
+    @Override
+    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+        return toDV().computeVector(x, d0, ranges);
+    }
+
+//    @Override
+//    public Vector[] computeVector(double[] x, double y, Domain d0, Out<Range> ranges) {
+//        return toDV().computeVector(x, y, d0, ranges);
+//    }
+
+//    @Override
+//    public Vector[] computeVector(double x, double[] y, Domain d0, Out<Range> ranges) {
+//        return toDV().computeVector(x, y, d0, ranges);
+//    }
+
     @Override
     public Expr getComponent(int row, int col) {
         return wrap(object.toDM().getComponent(row, col));
@@ -500,11 +526,6 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
             return this;
         }
         return wrap(e, getTitle(), getProperties());
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(object);
     }
 
 //    @Override
@@ -620,30 +641,6 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return
                 //wrap(
                 (DoubleToComplex) object.toDV().getComponent(a)
-                //)
-                ;
-    }
-
-    public DoubleToComplex getX() {
-        return
-                //wrap(
-                (DoubleToComplex) object.toDV().getComponent(Axis.X)
-                //)
-                ;
-    }
-
-    public DoubleToComplex getY() {
-        return
-                //wrap(
-                (DoubleToComplex) object.toDV().getComponent(Axis.Y)
-                //)
-                ;
-    }
-
-    public DoubleToComplex getZ() {
-        return
-                //wrap(
-                (DoubleToComplex) object.toDV().getComponent(Axis.Z)
                 //)
                 ;
     }
@@ -824,4 +821,18 @@ public class Any extends AbstractVerboseExprRef implements Cloneable {
         return object.isDoubleTyped();
     }
 
+    @Override
+    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
+        return object.toDV().computeVector(x, y, z,defined);
+    }
+
+    @Override
+    public Vector computeVector(double x, double y, BooleanMarker defined) {
+        return object.toDV().computeVector(x, y,defined);
+    }
+
+    @Override
+    public Vector computeVector(double x, BooleanMarker defined) {
+        return object.toDV().computeVector(x, defined);
+    }
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceConfig;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
@@ -139,7 +139,7 @@ public class MomStructureFractalZop extends MomStructure {
                 TVector<Complex> spq = sp.getRow(q);
                 Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
-                    Complex zn = n.impedance;
+                    Complex zn = n.impedance.impedanceValue();
                     Complex sp1 = spp.get(n.index);
                     Complex sp2 = spq.get(n.index).conj();
                     c = c.add(zn.mul(sp1).mul(sp2));
@@ -185,7 +185,7 @@ public class MomStructureFractalZop extends MomStructure {
                 TVector<Complex> spq = sp.getRow(q);
                 Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
-                    Complex zn = n.impedance;
+                    Complex zn = n.impedance.impedanceValue();
                     Complex sp1 = spp.get(n.index);
                     Complex sp2 = spq.get(n.index).conj();
                     c = c.add(zn.mul(sp1).mul(sp2));
@@ -248,23 +248,25 @@ public class MomStructureFractalZop extends MomStructure {
 
     //    }
     @Override
-    public void setFractalScale(int k) {
+    public MomStructure setFractalScale(int k) {
 //        this.k = k == 0 ? 0 : -1;
         this.fractalScale = getModelBaseKFactor();
         this.realK = k;
         invalidateCache();
+        return this;
     }
 
     public Matrix resolveNextPointFixe(Matrix Zinit, int kInit) {
         getLog().debug(1.2337139917695478E-4 / 4.11237997256516E-5);
-        double a = getXdim();
+        double a = getDomain().getXwidth();
         setFractalScale(1);
         for (int ki = 0; ki < kInit; ki++) {
             if (true) {
                 throw new IllegalArgumentException("TODO : getMetalQuotient() removed");
             }
             double metalQuotient = 1.0 / 3;
-            setXdim(a * Math.pow(metalQuotient, (kInit - ki)));
+            Domain d = getDomain();
+            setDomain(Domain.forWidth(d.xmin(),a * Math.pow(metalQuotient, (kInit - ki)),d.xmin(),d.ywidth()));
             Matrix A_ = getAMatrix(Zinit);
             Matrix B_ = matrixB().computeMatrix();
             Matrix ZinCond;
@@ -279,7 +281,7 @@ public class MomStructureFractalZop extends MomStructure {
                 getLog().error("B=" + A_);
                 throw new RuntimeException(e);
             }
-            getLog().debug("k=" + (kInit - ki) + " => a=" + getXdim());
+            getLog().debug("k=" + (kInit - ki) + " => a=" + getDomain().getXwidth());
             getLog().debug("\tz=" + ZinCond);
             getLog().debug("\terr=" + ZinCond.getErrorMatrix(Zinit, 1E-5));
             Zinit = ZinCond;

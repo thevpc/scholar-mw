@@ -5,10 +5,10 @@
     <artifactId>hadruwaves-scala-examples</artifactId>
     <name>net.vpc.scholar.hadruwaves-scala-examples</name>
     <packaging>jar</packaging>
-    <version>${scholar-version}</version>
+    <version>3.1.33</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.21</scholar-version>
+        <scholar-version>3.1.33</scholar-version>
         <github.global.server>github</github.global.server>
     </properties>
     <distributionManagement>
@@ -33,11 +33,6 @@
             <groupId>net.vpc.scholar</groupId>
             <artifactId>hadruwaves</artifactId>
             <version>${scholar-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.12.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -82,6 +77,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -96,11 +92,16 @@
                         <jvmArg>-Xms64m</jvmArg>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                    <args>
+                        <arg>-feature</arg>
+                        <arg>-language:postfixOps</arg>
+                    </args>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

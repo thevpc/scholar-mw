@@ -9,11 +9,7 @@ import net.vpc.lib.pheromone.application.actions.ApplicationAction;
 import net.vpc.lib.pheromone.application.swing.AdvancedAction;
 import net.vpc.lib.pheromone.application.winman.AppWindow;
 import net.vpc.lib.pheromone.ariana.util.Resources;
-import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.plot.AbstractPlotWindowManager;
-import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
-import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.plot.PlotWindowManager;
+import net.vpc.scholar.hadruplot.*;
 
 /**
  * Created with IntelliJ IDEA. User: vpc Date: 8/9/12 Time: 5:05 PM To change

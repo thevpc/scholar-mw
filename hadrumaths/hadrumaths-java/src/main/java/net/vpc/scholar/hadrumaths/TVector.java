@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.TypeReference;
+import java.io.UncheckedIOException;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.io.File;
@@ -11,13 +11,15 @@ import java.util.List;
 
 public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, Serializable {
 
-    TypeReference<T> getComponentType();
+    TypeName<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 
     boolean isRow();
 
     boolean isColumn();
+
+    boolean isScalar();
 
     boolean isComplex();
 
@@ -29,9 +31,17 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     T apply(int i);
 
+    T get(Enum i);
+
+    T apply(Enum i);
+
     void set(int i, T value);
 
+    void set(Enum i, T value);
+
     void update(int i, T value);
+
+    void update(Enum i, T value);
 
     <R> R[] toArray(Class<R> type);
 
@@ -45,13 +55,13 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     int length();
 
-    void store(String file) throws RuntimeIOException;
+    void store(String file) throws UncheckedIOException;
 
-    void store(File file) throws RuntimeIOException;
+    void store(File file) throws UncheckedIOException;
 
-    void store(PrintStream stream) throws RuntimeIOException;
+    void store(PrintStream stream) throws UncheckedIOException;
 
-    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
+    void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException;
 
 
     T scalarProduct(TMatrix<T> v);
@@ -64,9 +74,9 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     T scalarProductAll(TVector<T>... other);
 
-    <R> TVector<R> to(TypeReference<R> other);
+    <R> TVector<R> to(TypeName<R> other);
 
-    <R> boolean isConvertibleTo(TypeReference<R> other);
+    <R> boolean isConvertibleTo(TypeName<R> other);
 
     TVector<T> vscalarProduct(TVector<T>... other);
 
@@ -88,6 +98,10 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     TVector<T> div(T other);
 
+    TVector<T> rem(T other);
+
+    TVector<T> rem(TVector<T> other);
+
     TVector<T> dotpow(T other);
 
     TVector<T> inv();
@@ -104,6 +118,8 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     TVector<T> transpose();
 
+    TVector<T> neg();
+
     TVector<T> conj();
 
     TVector<T> cos();
@@ -113,6 +129,7 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
     TVector<T> sin();
 
     TVector<T> sinh();
+    TVector<T> sincard();
 
     TVector<T> tan();
 
@@ -153,6 +170,9 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
     TVector<T> exp();
 
     TVector<T> sqrt();
+    TVector<T> sqrt(int n);
+    TVector<T> pow(TVector<T> b);
+    TVector<T> pow(double n);
 
     TVector<T> sqr();
 
@@ -165,16 +185,18 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
     TVector<T> asin();
 
     TVector<T> atan();
+    TVector<T> arg();
 
     TVector<T> acotan();
 
     boolean isDouble();
+    boolean isZero();
 
     TVector<T> eval(ElementOp<T> op);
 
-    <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op);
+    <R> TVector<R> transform(TypeName<R> toType, TTransform<T, R> op);
 
-    <R> boolean acceptsType(TypeReference<R> type);
+    <R> boolean acceptsType(TypeName<R> type);
 
     TVector<T> setParam(TParam param, Object value);
 

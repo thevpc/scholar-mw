@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,7 +79,7 @@ public class IntArrayList extends AbstractTList<Integer> implements IntList {
     }
 
     @Override
-    public TypeReference<Integer> getComponentType() {
+    public TypeName<Integer> getComponentType() {
         return Maths.$INTEGER;
     }
 

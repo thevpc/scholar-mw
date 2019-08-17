@@ -1,5 +1,5 @@
-import net.vpc.scholar.hadrumaths.Plot;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadruplot.Plot;
 
 public class TT {
     public static void main(String[] args) {

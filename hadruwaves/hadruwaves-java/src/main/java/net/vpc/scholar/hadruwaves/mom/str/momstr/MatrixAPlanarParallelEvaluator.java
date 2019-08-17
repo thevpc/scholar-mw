@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -9,6 +9,7 @@ import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
+import net.vpc.scholar.hadruwaves.util.Impedance;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -27,6 +28,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
         TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
+        Impedance scalarSurfaceImpedance=str.getSerialZs();
         if (symMatrix) {
             for (int p = 0; p < _g.length; p++) {
                 TVector<Complex> spp = sp.getRow(p);
@@ -34,7 +36,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
                     TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
-                        Complex yn = n.impedance.inv();
+                        Complex yn = n.impedance.serial(scalarSurfaceImpedance).admittanceValue();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
                         c.addProduct(yn, sp1, sp2);
@@ -54,7 +56,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
                     TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
-                        Complex yn = n.impedance.inv();
+                        Complex yn = n.impedance.serial(scalarSurfaceImpedance).admittanceValue();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(q).conj();
                         c.addProduct(yn, sp1, sp2);

@@ -1,13 +1,13 @@
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
 
 import static net.vpc.scholar.hadrumaths.Domain.forWidth;
 import static net.vpc.scholar.hadrumaths.Maths.*;
-import net.vpc.scholar.hadrumaths.Samples;
+import net.vpc.scholar.hadruplot.Samples;
 
 import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.matchedLoad;
 import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.shortCircuit;

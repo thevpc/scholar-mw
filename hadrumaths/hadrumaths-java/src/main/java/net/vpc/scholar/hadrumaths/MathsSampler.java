@@ -4,6 +4,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.Samples;
 
 import java.util.ArrayList;
 import java.util.Arrays;

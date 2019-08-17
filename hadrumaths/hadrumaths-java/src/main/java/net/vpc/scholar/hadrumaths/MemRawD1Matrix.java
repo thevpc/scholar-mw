@@ -631,6 +631,20 @@ public final class MemRawD1Matrix extends AbstractMatrix implements Serializable
     }
 
     @Override
+    public Matrix abssqr() {
+        Complex[][] d = new Complex[getRowCount()][getColumnCount()];
+        for (int i = 0; i < d.length; i++) {
+            for (int j = 0; j < d[i].length; j++) {
+                double rr = _getr(i, j);
+                double ii = _getr(i, j);
+                double v = (rr * rr + ii * ii);
+                d[i][j] = Complex.valueOf(v);
+            }
+        }
+        return getFactory().newMatrix(d);
+    }
+
+    @Override
     public double condHadamard() {
         Complex det = det();
         double x = 1;

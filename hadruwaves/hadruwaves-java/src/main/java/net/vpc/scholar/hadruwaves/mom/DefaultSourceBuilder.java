@@ -4,16 +4,16 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.builders.AbstractSourceBuilder;
+import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
 class DefaultSourceBuilder extends AbstractSourceBuilder {
 
-    private MomStructure momStructure;
 
     public DefaultSourceBuilder(MomStructure momStructure) {
-        this.momStructure = momStructure;
+        super(momStructure);
     }
 
     @Override
@@ -22,6 +22,7 @@ class DefaultSourceBuilder extends AbstractSourceBuilder {
 
         final double[] x0 = x == null ? new double[]{0} : x;
         final double[] y0 = y == null ? new double[]{0} : y;
+        MomStructure momStructure = getStructure();
         Dumper p = new Dumper("computePlanarSources").add("x", x).add("y", y).add("axis", axis);
         return new StrSubCacheSupport<Matrix>(momStructure, "sources-planar", p.toString(),getMonitor()) {
 

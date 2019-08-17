@@ -16,7 +16,9 @@ public class Dumper {
     private Object baseRef;
     private StringBuilder sb = new StringBuilder();
     private String name;
+    private String elementSeparator=";";
     private Type type = Type.OBJECT;
+    private boolean containsLineSeparator= false;
 
     public enum Type {
         SIMPLE,
@@ -24,7 +26,14 @@ public class Dumper {
         ARRAY
     }
 
-    ;
+    public String getElementSeparator() {
+        return elementSeparator;
+    }
+
+    public Dumper setElementSeparator(String elementSeparator) {
+        this.elementSeparator = elementSeparator==null?";":elementSeparator;
+        return this;
+    }
 
     public Dumper(Object c) {
         this(c, Type.OBJECT);
@@ -118,37 +127,42 @@ public class Dumper {
 
     public Dumper add(String varName, Object value) {
         boolean first = sb.length() == 0;
-        String p = null;
-        if (type == Type.SIMPLE) {
-            p = varName == null ? "" : (varName + "=");
-        } else {
-            p = varName == null ? "  " : ("  " + varName + " = ");
-        }
-//        StringBuilder prefix=new StringBuilder();
-//        for (int i = 0; i < p.length(); i++) {
-//              prefix.append(' ');
-//        }
         if (!first) {
             if (type == Type.SIMPLE) {
-                sb.append(";");
+                sb.append(getElementSeparator());
             }
         }
-        sb.append(p);
-        String str = (type == Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
-        if (str.indexOf('\n') >= 0 || str.indexOf('\r') >= 0) {
-            boolean firstLine = true;
-            for (StringTokenizer stok = new StringTokenizer(str, "\r\n"); stok.hasMoreTokens(); ) {
-                if (firstLine) {
-                    firstLine = false;
-                } else {
-                    sb.append("  ");
-                }
-                sb.append(stok.nextToken()).append("\n");
+        String p = null;
+        if(varName!=null) {
+            if (type == Type.SIMPLE) {
+                sb.append(varName).append("=");
+            } else {
+                sb.append("  ").append(varName).append(" = ");
             }
-        } else {
-            sb.append(str);
-            if (!(type == Type.SIMPLE)) {
+        }else{
+            if (type != Type.SIMPLE) {
+                sb.append("  ");
+            }
+        }
+        String str = (type == Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
+        sb.ensureCapacity(sb.length()+str.length());
+        StringTokenizer stok = new StringTokenizer(str, "\r\n");
+        if(stok.hasMoreTokens()){
+            sb.append(stok.nextToken());
+            boolean b=stok.hasMoreTokens();
+            if (b || !(type == Type.SIMPLE)) {
                 sb.append("\n");
+                if(b){
+                    containsLineSeparator=true;
+                    sb.append("  ");
+                    sb.append(stok.nextToken());
+                    sb.append("\n");
+                    while (stok.hasMoreTokens()) {
+                        sb.append("  ");
+                        sb.append(stok.nextToken());
+                        sb.append("\n");
+                    }
+                }
             }
         }
         return this;
@@ -161,14 +175,14 @@ public class Dumper {
                 return name + "(" + s + ")";
             }
             case ARRAY: {
-                if (s.indexOf('\n') >= 0) {
+                if (containsLineSeparator) {
                     return name + "[\n" + s + "]";
                 } else {
                     return name + "[" + s + "]";
                 }
             }
             case OBJECT: {
-                if (s.indexOf('\n') >= 0) {
+                if (containsLineSeparator) {
                     return name + "{\n" + s + "}";
                 } else {
                     return name + "{" + s + "}";

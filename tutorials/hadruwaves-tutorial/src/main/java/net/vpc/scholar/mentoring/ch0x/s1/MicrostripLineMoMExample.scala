@@ -3,6 +3,7 @@ package net.vpc.scholar.mentoring.ch0x.s1
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.WallBorders
 
@@ -10,14 +11,18 @@ import net.vpc.scholar.hadruwaves.WallBorders
   * Created by vpc on 5/27/17.
   */
 object MicrostripLineMoMExample extends App {
-  var N = 2000        // number of modes
+  var N = 200000        // number of modes
+  var Gn = 4        // number of modes
   var a = 100 * CM // box length along x
   var b = 50 * CM  // box length along y
   var v = 1 * MM   // width (along x) of the source
   var l = 5 * MM   // length of the strip line
   var w = 1 * MM   // width (along y) of the strip line
   var f = 3 * GHZ     // frequency
+  val space = matchedLoadBoxSpace(1) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
+  val mass = shortCircuitBoxSpace(2.2, 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
 
+  var lineDomain = domain(0.0 -> l * 1.5, -w -> w) // line domain
   var box = domain(0.0 -> a, -b / 2 -> b / 2) // box domain
 
   var m = param("m")  // m and n parameters
@@ -25,15 +30,18 @@ object MicrostripLineMoMExample extends App {
 
   // defines a parametrized test function
   var gp = cos((2 * m + 1) * PI / 2 * X / l) * cos(n * PI / w * (Y + w / 2)
-  ) * domain(0.0 -> l, -w / 2 -> w / 2)
+  ) * lineDomain
+
+  //if(true) System.exit(0);
+
   println(gp)
 
   println(gp(m -> 3)) // replaces m by 3 in gp, remember m is a parameter using (->) operator
   println(gp(m -> 3) !!) // replaces m by 3 in gp and then simplifies it with the !! operator
 
   var g = seq(gp,        // evaluates a sequence/list of all values of gp test functions where
-    m, dsteps(0, 4),     // m varies from 0 to 4 (inclusive) an so does n
-    n, dsteps(0, 4)
+    m, dsteps(0, Gn),     // m varies from 0 to 4 (inclusive) an so does n
+    n, dsteps(0, Gn)
   )
 
   var P = g.length()     // test functions count
@@ -47,7 +55,7 @@ object MicrostripLineMoMExample extends App {
   var B = columnMatrix(P, (i:Int) => complex(g(i) ** e0))
 
 
-  Plot.plot(g)  // plots the g test functions sequence/list
+  Plot.title("Test functions").plot(g)  // plots the g test functions sequence/list
 
   // uses a predefined library for
   // evaluating the Z operator (Mode Operator)
@@ -61,16 +69,14 @@ object MicrostripLineMoMExample extends App {
 
   println(fct.slice(0,4).mkString("\n")) // gets the first 4 modes function then prints items separated by \n
 
-  Plot.plot(fct.slice(0,50))
+  Plot.title("Mode functions").plot(fct.slice(0,50))
 
 
   // calculates all scalar products between g test function and fct mode functions
   // evaluated as a matrix M where Mij=<g(i),fct(j)>
   //var ps: Matrix = matrix(g :** fct)
-  val space = matchedLoadBoxSpace(1) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
-  val masse = shortCircuitBoxSpace(2.2, 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
   val ymn1=modes.admittances(N,f,space)
-  val ymn2=modes.admittances(N,f,masse)
+  val ymn2=modes.admittances(N,f,mass)
   val ymn=ymn1++ymn2
 
   // z operator is the sum (using csum function) over
@@ -101,5 +107,5 @@ object MicrostripLineMoMExample extends App {
   // plot J current over a domain a bit larger than
   // the g domain
   Plot.title("Current").asHeatMap().
-    domain(domain(0.0 -> l * 1.5, -w -> w)).plot(J)
+    domain(lineDomain).plot(J)
 }

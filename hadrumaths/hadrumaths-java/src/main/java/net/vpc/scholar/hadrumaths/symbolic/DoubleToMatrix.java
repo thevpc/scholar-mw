@@ -12,23 +12,7 @@ import net.vpc.scholar.hadrumaths.*;
  *
  * @author vpc
  */
-public interface DoubleToMatrix extends Expr {
-
-    Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
-
-    Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges);
-
-    Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges);
-
-    Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges);
-
-    Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges);
-
-    Matrix computeMatrix(double x);
-
-    Matrix computeMatrix(double x, double y);
-
-    Matrix computeMatrix(double x, double y, double z);
+public interface DoubleToMatrix extends DoubleDomainExpr {
 
     ComponentDimension getComponentDimension();
 
@@ -36,10 +20,41 @@ public interface DoubleToMatrix extends Expr {
 
     String getComponentTitle(int row, int col);
 
-    Matrix[][][] computeMatrix(double[] x, double[] y, double[] z);
+    Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
 
-    Matrix[][] computeMatrix(double[] x, double[] y);
+    Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges);
 
-    Matrix[] computeMatrix(double[] x);
-//    public IDMxy setName(String name);
+    Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges);
+
+    default Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeMatrix(this, x, y, d0, ranges);
+    }
+
+    default Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeMatrix(this, x, y, d0, ranges);
+    }
+    default Matrix computeMatrix(double x) {
+        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
+    }
+
+    default Matrix computeMatrix(double x, double y) {
+        return Expressions.computeMatrix(this, x, y);
+    }
+
+    default Matrix computeMatrix(double x, double y, double z){
+        return Expressions.computeMatrix(this, x, y);
+    }
+
+    default Matrix[] computeMatrix(double[] x) {
+        return computeMatrix(x, (Domain) null, null);
+    }
+
+    default Matrix[][] computeMatrix(double[] x, double[] y) {
+        return computeMatrix(x, y, (Domain) null, null);
+    }
+
+    default Matrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
+        return computeMatrix(x, y, z, (Domain) null, null);
+    }
+
 }

@@ -3,6 +3,7 @@ package net.vpc.scholar.mentoring.ch0x.s4
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves._
 object M2018 extends App{
   var a=100 * MM
@@ -17,6 +18,7 @@ object M2018 extends App{
   var p=param("p")
   private val dom = domain(0.0 -> a, -w / 2 -> w / 2)
   var gp=cos((2.0*p+1.0)/2.0*PI*X/a) * dom
+  var g3=gp(p->3)
   var g=seq(gp,p,0,P)
   var expr2=cos(X/a)
   val complexes: Array[Complex] = expr2.computeComplex((dom/5).xvalues())

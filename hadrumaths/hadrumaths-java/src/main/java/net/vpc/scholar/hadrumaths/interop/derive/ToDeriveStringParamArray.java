@@ -54,7 +54,7 @@ public class ToDeriveStringParamArray implements Cloneable {
     }
 
     public ToDeriveStringParam[] toArray() {
-        return (ToDeriveStringParam[]) paramsTable.values().toArray(new ToDeriveStringParam[paramsTable.size()]);
+        return (ToDeriveStringParam[]) paramsTable.values().toArray(new ToDeriveStringParam[0]);
     }
 
     public ToDeriveStringParamArray clone() {

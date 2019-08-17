@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public interface SparseArray<T> {
     T get(int i);
 
-    TypeReference<T> getComponentType();
+    TypeName<T> getComponentType();
 
     void set(int i, T value);
 

@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
 import net.vpc.scholar.hadrumaths.io.HFile;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.

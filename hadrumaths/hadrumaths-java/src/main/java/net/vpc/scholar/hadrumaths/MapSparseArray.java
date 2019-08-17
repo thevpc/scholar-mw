@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,14 +10,14 @@ public class MapSparseArray<T> implements SparseArray<T> {
     private int maxIndex = -1;
     private int length = -1;
     private int initialSize = 0;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public MapSparseArray(TypeReference<T> componentType, int length) {
+    public MapSparseArray(TypeName<T> componentType, int length) {
         this.length = length;
         this.componentType = componentType;
     }
 
-    public MapSparseArray(TypeReference<T> componentType, int length, int initialSize) {
+    public MapSparseArray(TypeName<T> componentType, int length, int initialSize) {
         this.initialSize = initialSize;
         this.length = length;
         this.componentType = componentType;
@@ -56,7 +56,7 @@ public class MapSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 }

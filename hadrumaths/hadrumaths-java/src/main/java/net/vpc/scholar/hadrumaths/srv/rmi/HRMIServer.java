@@ -5,11 +5,6 @@ import net.vpc.scholar.hadrumaths.srv.HadrumathsAbstractServer;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServices;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServlet;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;

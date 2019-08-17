@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
@@ -80,7 +80,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
     }
 
     @Override
-    public TypeReference<Expr> getComponentType() {
+    public TypeName<Expr> getComponentType() {
         return Maths.$EXPR;
     }
 

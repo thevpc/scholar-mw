@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -19,16 +19,16 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
     @Override
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
         ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
-        String monitorMessage = getClass().getSimpleName();
+        final String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
-        DoubleToVector[] _g = gpTestFunctions.arr();
-        ModeInfo[] n_propa = str.getModeFunctions().getPropagatingModes();
+        final DoubleToVector[] _g = gpTestFunctions.arr();
+        final ModeInfo[] n_propa = str.getModeFunctions().getPropagatingModes();
         if (n_propa.length == 0) {
             throw new IllegalArgumentException("WAVE_GUIDE Structure with no Propagative modes");
         }
-        Complex[][] b = new Complex[_g.length][n_propa.length];
+        final Complex[][] b = new Complex[_g.length][n_propa.length];
         ProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
-        TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
+        final TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
         ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
         Maths.invokeMonitoredAction(m, monitorMessage, new VoidMonitoredAction() {
             @Override

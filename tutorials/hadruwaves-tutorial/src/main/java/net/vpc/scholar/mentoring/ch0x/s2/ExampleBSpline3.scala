@@ -1,5 +1,7 @@
 package net.vpc.scholar.mentoring.ch0x.s2
 
+import net.vpc.scholar.hadruplot.Plot
+
 object ExampleBSpline3 {
   import net.vpc.scholar.hadrumaths.MathScala._
   import net.vpc.scholar.hadrumaths.Maths._

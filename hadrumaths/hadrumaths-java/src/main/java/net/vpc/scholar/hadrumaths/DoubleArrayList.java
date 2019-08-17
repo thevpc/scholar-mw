@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,7 +80,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     }
 
     @Override
-    public TypeReference<Double> getComponentType() {
+    public TypeName<Double> getComponentType() {
         return Maths.$DOUBLE;
     }
 
@@ -260,7 +260,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
     }
 
     @Override
-    public <R> TList<R> to(TypeReference<R> other) {
+    public <R> TList<R> to(TypeName<R> other) {
         if (other.equals(Maths.$COMPLEX)) {
             return (TList<R>) new DoubleToComplexList(this);
         }
@@ -282,7 +282,7 @@ public class DoubleArrayList extends AbstractTList<Double> implements DoubleList
         }
 
         @Override
-        public <R> TList<R> to(TypeReference<R> other) {
+        public <R> TList<R> to(TypeName<R> other) {
             if (other.equals(Maths.$DOUBLE)) {
                 return (TList<R>) list;
             }

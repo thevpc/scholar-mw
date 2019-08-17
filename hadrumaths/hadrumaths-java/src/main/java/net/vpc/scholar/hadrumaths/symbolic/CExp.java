@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
+import java.lang.Double;
 import java.util.Collections;
 import java.util.List;
 
@@ -130,15 +131,17 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         if (r != null) {
             Complex[][] c = new Complex[y.length][x.length];
             ArrayUtils.fillArray2ZeroComplex(c, r);
+            BooleanArray2 def0 = r.setDefined2(x.length, y.length);
             for (int j = r.ymin; j <= r.ymax; j++) {
 //                int maxk = c[j].length;
                 for (int k = r.xmin; k <= r.xmax; k++) {
                     //"amp*exp(iax)*exp(iby)"
                     c[j][k] = Complex.I(a * x[k]).exp().mul(Complex.I(b * y[j]).exp()).mul(amp);
+                    def0.set(j,k);
                 }
             }
             if (ranges != null) {
-                ranges.set(null);
+                ranges.set(r);
             }
             return c;
         } else {
@@ -159,12 +162,14 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
         if (r != null) {
             Complex[] c = new Complex[x.length];
             ArrayUtils.fillArray1ZeroComplex(c, r);
+            BooleanArray1 def0 = r.setDefined1(x.length);
             for (int k = r.xmin; k <= r.xmax; k++) {
                 //"amp*exp(iax)*exp(iby)"
                 c[k] = Complex.I(a).mul(x[k]).exp().mul(amp);
+                def0.set(k);
             }
             if (ranges != null) {
-                ranges.set(null);
+                ranges.set(r);
             }
             return c;
         } else {

@@ -11,6 +11,10 @@ object T02_Complex extends App {
   var h = 1 + 2 * î
   var y=0*î
   y=h
+
+  h.acos()
+  acos(h)
+
   println(conj(h))
   println(h.conj)
 }

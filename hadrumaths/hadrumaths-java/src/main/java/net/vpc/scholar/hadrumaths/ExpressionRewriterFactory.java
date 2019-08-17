@@ -45,6 +45,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 //                    ,DDxUxNavRule.INSTANCE
 //                    ,DDxyToDDxNavRule.INSTANCE
                     , DivNavRule.INSTANCE
+                    , ReminderNavRule.INSTANCE
                     , ParamExprNavRule.INSTANCE
 //                    ,DoubleXNavRule.INSTANCE
                     , DoubleXYNavRule.INSTANCE
@@ -66,7 +67,9 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , AxisTransformNavRule.INSTANCE
                     , RooftopXFunctionXYNavRule.INSTANCE
                     , SinSeqYZNavRule.INSTANCE
-                    , DefaultDoubleToMatrixNavRule.INSTANCE
+                    , DC2DVNavRule.INSTANCE
+                    , DC2DMNavRule.INSTANCE
+                    , DefaultDoubleToVectorNavRule.INSTANCE
             )
     );
     public static final List<ExpressionRewriterRule> SIMPLIFY_RULES = new ArrayList<ExpressionRewriterRule>(
@@ -81,6 +84,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , DDxyLinearSimplifyRule.INSTANCE
 //                    , DDxyToDDxSimplifyRule.INSTANCE
                     , DivSimplifyRule.INSTANCE
+                    , ReminderSimplifyRule.INSTANCE
                     , DoubleXYSimplifyRule.INSTANCE
                     , GenericFunctionSimplifyRule.INSTANCE
                     , GenericFunctionXSimplifyRule.INSTANCE
@@ -122,7 +126,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
             )
     );
 
-    private static final ExpressionRewriterSuite COMPUTATION_SIMPLIFIER = new ExpressionRewriterSuite("COMPUTATION_SIMPLIFIER");
+    private static final ExpressionRewriterSuite COMPUTATION_SIMPLIFIER = new ExpressionRewriterSuite("ExpressionRewriterFactoryComputationSuite");
 
     static {
         rebuild();
@@ -137,7 +141,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 //        COMPUTATION_SIMPLIFIER.add(CANONICAL_RULE_SET);
 
 
-        ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("EXPAND_SIMPLIFY");
+        ExpressionRewriterRuleSet EXPAND_SIMPLIFY_RULE_SET = new ExpressionRewriterRuleSet("ExpressionRewriterFactoryExpandSimplfyRuleSet");
         EXPAND_SIMPLIFY_RULE_SET.addAllRules(SIMPLIFY_RULES);
         COMPUTATION_SIMPLIFIER.add(EXPAND_SIMPLIFY_RULE_SET);
     }

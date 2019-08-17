@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author vpc
  */
-public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
+public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     static {
@@ -31,6 +31,26 @@ public abstract class Ref extends AbstractVerboseExpr implements Cloneable {
     private Expr object;
 
     protected Ref() {
+    }
+
+    @Override
+    public int getComponentSize() {
+        return object.getComponentDimension().rows;
+    }
+
+    @Override
+    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return object.toDV().computeVector(x, y, z,d0, ranges);
+    }
+
+    @Override
+    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return object.toDV().computeVector(x, y, d0, ranges);
+    }
+
+    @Override
+    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+        return object.toDV().computeVector(x, d0, ranges);
     }
 
     @Override

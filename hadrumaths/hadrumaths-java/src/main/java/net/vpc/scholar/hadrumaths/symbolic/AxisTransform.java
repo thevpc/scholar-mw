@@ -16,7 +16,9 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
+public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
+        ,DoubleToDouble,DoubleToComplex,DoubleToVector,DoubleToMatrix
+{
     private static final long serialVersionUID = 1L;
 
     static {
@@ -40,6 +42,13 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         this.dim = dim;
         domain = expression.getDomain().transform(axis[0], axis[1], axis[2], dim);
     }
+
+    @Override
+    public int getComponentSize() {
+        return 3;
+    }
+
+
 
     @Override
     public boolean isDoubleTyped() {
@@ -117,6 +126,23 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         int yindex = axis[0].equals(Axis.Y) ? 0 : axis[1].equals(Axis.Y) ? 1 : 2;
         int zindex = axis[0].equals(Axis.Z) ? 0 : axis[1].equals(Axis.Z) ? 1 : 2;
         Matrix[][][] ret = new Matrix[count[zindex]][count[yindex]][count[xindex]];
+        for (int z = 0; z < ret.length; z++) {
+            for (int y = 0; y < ret[z].length; y++) {
+                for (int x = 0; x < ret[z][y].length; x++) {
+                    int[] t = {x, y, z};
+                    ret[z][y][x] = xyz[t[zindex]][t[yindex]][t[xindex]];
+                }
+            }
+        }
+        return ret;
+    }
+
+    public Vector[][][] convertBackXYZValues(Vector[][][] xyz) {
+        int[] count = {xyz[0][0].length, xyz[0].length, xyz.length};
+        int xindex = axis[0].equals(Axis.X) ? 0 : axis[1].equals(Axis.X) ? 1 : 2;
+        int yindex = axis[0].equals(Axis.Y) ? 0 : axis[1].equals(Axis.Y) ? 1 : 2;
+        int zindex = axis[0].equals(Axis.Z) ? 0 : axis[1].equals(Axis.Z) ? 1 : 2;
+        Vector[][][] ret = new Vector[count[zindex]][count[yindex]][count[xindex]];
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
@@ -274,6 +300,7 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
             Complex[][] ret = expression.toDC().computeComplex(x, y, d0, r2);
+            ExpressionsDebug.debug_check(ret,r2);
             ret = convertBackXYZValues(new Complex[][][]{ret})[0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
@@ -419,6 +446,32 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
+    public Vector[][] computeVector(double[] x0, double[] y0, Domain d00, Out<Range> ranges) {
+        double[][] xyz = convertXYZAxis(x0, y0, new double[0]);
+        double[] x = xyz[0];
+        double[] y = xyz[1];
+        Domain domainXY = getDomain();
+        Domain d0 = convertDomain(d00);
+        Range r = Domain.range(domainXY, d0, x, y);
+        if (r != null) {
+            Out<Range> r2 = new Out<Range>();
+            Vector[][] ret = expression.toDV().computeVector(x, y, d0, r2);
+            ret = convertBackXYZValues(new Vector[][][]{ret})[0];
+            if (ranges != null) {
+                ranges.set(convertBackRange(r));
+            }
+            return ret;
+        } else {
+            ComponentDimension d = getComponentDimension();
+            Vector[][] ret = ArrayUtils.fillArray2Vector(x0.length, y0.length, Maths.zerosVector(d.rows));
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    @Override
     public Matrix[] computeMatrix(double[] x0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, new double[0], new double[0]);
         double[] x = xyz[0];
@@ -436,6 +489,31 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         } else {
             ComponentDimension d = getComponentDimension();
             Matrix[] ret = ArrayUtils.fill(new Matrix[x0.length], Maths.zerosMatrix(d.rows, d.columns));
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    @Override
+    public Vector[] computeVector(double[] x0, Domain d00, Out<Range> ranges) {
+        double[][] xyz = convertXYZAxis(x0, new double[0], new double[0]);
+        double[] x = xyz[0];
+        Domain domainXY = getDomain();
+        Domain d0 = convertDomain(d00);
+        Range r = Domain.range(domainXY, d0, x);
+        if (r != null) {
+            Out<Range> r2 = new Out<Range>();
+            Vector[] ret = expression.toDV().computeVector(x, d0, r2);
+            ret = convertBackXYZValues(new Vector[][][]{{ret}})[0][0];
+            if (ranges != null) {
+                ranges.set(convertBackRange(r));
+            }
+            return ret;
+        } else {
+            ComponentDimension d = getComponentDimension();
+            Vector[] ret = ArrayUtils.fill(new Vector[x0.length], Maths.zerosVector(d.rows));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -471,6 +549,33 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
     }
 
     @Override
+    public Vector[][][] computeVector(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
+        double[][] xyz = convertXYZAxis(x0, y0, z0);
+        double[] x = xyz[0];
+        double[] y = xyz[1];
+        double[] z = xyz[2];
+        Domain domainXY = getDomain();
+        Domain d0 = convertDomain(d00);
+        Range r = Domain.range(domainXY, d0, x, y, z);
+        if (r != null) {
+            Out<Range> r2 = new Out<Range>();
+            Vector[][][] ret = expression.toDV().computeVector(x, y, z, d0, r2);
+            ret = convertBackXYZValues(ret);
+            if (ranges != null) {
+                ranges.set(convertBackRange(r));
+            }
+            return ret;
+        } else {
+            ComponentDimension d = getComponentDimension();
+            Vector[][][] ret = ArrayUtils.fillArray3Vector(x0.length, y0.length, z0.length, Maths.zerosVector(d.rows));
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    @Override
     public double[] computeDouble(double[] x0, Domain d00, Out<Range> range) {
         double[][] xyz = convertXYZAxis(x0, new double[0], new double[0]);
         double[] x = xyz[0];
@@ -494,30 +599,6 @@ public class AxisTransform extends AbstractVerboseExpr implements Cloneable {
         }
     }
 
-    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
-    }
-
-    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
-    }
-
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, x, y, d0, ranges);
-    }
-
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, x, y, d0, ranges);
-    }
-
-    @Override
-    public Matrix computeMatrix(double x) {
-        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
-    }
-
-    public Matrix computeMatrix(double x, double y) {
-        return Expressions.computeMatrix(this, x, y);
-    }
 
     public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeDouble(this, x, y, d0, ranges);

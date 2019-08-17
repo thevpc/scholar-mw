@@ -5,7 +5,8 @@ import net.vpc.scholar.hadrumaths.Maths;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlatformUtils {
 
@@ -105,12 +106,12 @@ public class PlatformUtils {
 //    }
 
 
-    public static <K, V> Map<K, V> merge(Map<K, V> destination, Map<K, V>... sources) {
+    public static <K, V> Map<K, ? super V> merge(Map<K, ? super V> destination, Map<K, ? extends V>... sources) {
         if (destination == null) {
             destination = new HashMap<K, V>();
         }
         if (sources != null) {
-            for (Map<K, V> source : sources) {
+            for (Map<K, ? extends V> source : sources) {
                 if (source != null) {
                     destination.putAll(source);
                 }

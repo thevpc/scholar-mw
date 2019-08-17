@@ -30,7 +30,7 @@ object T02_ScalaTypes extends App{
   b1(0)=b1(0)+1 //increments the first element
 
   //-------------------------------
-  // MULTI DIMENTIONAL ARRAYS
+  // MULTI DIMENSIONAL ARRAYS
   // int array of size 5 initialized with 1, ...5 values
   var b2 : Array[Array[Double]] =Array.ofDim[Double](2,3)
   println(b2(0)(0)) // prints first element

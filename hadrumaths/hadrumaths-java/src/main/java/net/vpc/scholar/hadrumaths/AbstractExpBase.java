@@ -319,4 +319,24 @@ public abstract class AbstractExpBase implements Expr {
     public Object prop(String name) {
         return getProperty(name);
     }
+
+    @Override
+    public Expr simplify() {
+        return Maths.simplify(this);
+    }
+
+    @Override
+    public Expr normalize() {
+        return Maths.normalize(this);
+    }
+
+    @Override
+    public int getDomainDimension() {
+        return getDomain().getDimension();
+    }
+
+    @Override
+    public String toString() {
+        return FormatFactory.toString(this);
+    }
 }

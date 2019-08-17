@@ -3,13 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>net.vpc.scholar.tutorial</groupId>
     <artifactId>hadruwaves-tutorial</artifactId>
     <version>1.7</version>
     <url>http://scala-lang.org</url>
     <properties>
-        <scholar-version>3.1.32</scholar-version>
+        <scholar-version>3.1.33</scholar-version>
     </properties>
     <dependencies>
         <dependency>
@@ -40,6 +39,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -54,11 +54,16 @@
                         <jvmArg>-Xms64m</jvmArg>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                    <args>
+                        <arg>-feature</arg>
+                        <arg>-language:postfixOps</arg>
+                    </args>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

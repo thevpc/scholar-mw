@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeType;
@@ -254,7 +254,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
                         fy = Maths.complex(new CosXCosY(1, f.a, f.b, f.c, f.d, f.getDomain()));
                     }
                     if (ok) {
-                        DoubleToVector cfv2d = (DoubleToVector) Maths.vector(fx, fy).setProperties(d1.getProperties());
+                        DoubleToVector cfv2d =  Maths.vector(fx, fy).setProperties(d1.getProperties()).toDV();
                         d1 = cfv2d;
                     }
                 }
@@ -287,23 +287,23 @@ public final class BoxModesPattern implements RectangularGpPattern {
                     switch (str.getHintsManager().getHintAxisType()) {
                         case Y_ONLY: {
                             if (!d1.getComponent(Axis.Y).isZero()) {
-                                d1=(DoubleToVector) d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription());
-                                d1=(DoubleToVector) d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription());
+                                d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
+                                d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
                                 all.add(d1);
                             }
                             break;
                         }
                         case X_ONLY: {
                             if (!d1.getComponent(Axis.X).isZero()) {
-                                d1=(DoubleToVector) d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription());
-                                d1=(DoubleToVector) d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription());
+                                d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
+                                d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
                                 all.add(d1);
                             }
                             break;
                         }
                         default: {
-                            d1=(DoubleToVector) d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription());
-                            d1=(DoubleToVector) d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription());
+                            d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
+                            d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
                             all.add(d1);
                             break;
                         }

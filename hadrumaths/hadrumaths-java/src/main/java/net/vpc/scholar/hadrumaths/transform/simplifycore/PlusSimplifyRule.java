@@ -5,12 +5,12 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
+import net.vpc.common.util.ClassPairMapList;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
-import net.vpc.common.util.ClassPairMapList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -273,7 +273,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //        for (Domain domain : grouped.domainx.keySet().toArray(new Domain[grouped.domainx.size()])) {
 //            grouped.domainx.put(domain, simplifyX((List) grouped.get(domain), grouped.fullx));
 //        }
-        for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[grouped.domainxy.size()])) {
+        for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[0])) {
             List<RewriteResult> rewriteResults = simplifyXY(grouped.get(domain), grouped.fullxy);
             List<Expr> rewriteResults2 = new ArrayList<>();
             for (RewriteResult rewriteResult : rewriteResults) {
@@ -310,7 +310,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 grouped.addxy(Maths.expr(grouped.complex, Domain.FULL(ee.getDomainDimension())));
             }
             List<RewriteResult> all = new ArrayList<RewriteResult>();
-            for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[grouped.domainxy.size()])) {
+            for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[0])) {
                 all.addAll(simplifyXY(grouped.get(domain), grouped.fullxy));
             }
             if (all.isEmpty()) {
@@ -329,7 +329,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 }
                 exprs.add(all.get(i).getValue());
             }
-            Expr newVal = Maths.sum(exprs.toArray(new Expr[exprs.size()]));
+            Expr newVal = Maths.sum(exprs.toArray(new Expr[0]));
             if (newVal.equals(e)) {
                 return RewriteResult.unmodified(e);
             }

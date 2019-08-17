@@ -212,6 +212,11 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
 //    }
 
     @Override
+    public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
+        return Expressions.computeDouble(this, expr3Helper, x, d0, ranges);
+    }
+
+    @Override
     public Matrix computeMatrix(double x, double y) {
         if (contains(x, y)) {
             Matrix xx = getXArgument().toDM().computeMatrix(x, y);
@@ -233,10 +238,6 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         return Complex.ZERO.toMatrix();
     }
 
-    @Override
-    public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, expr3Helper, x, d0, ranges);
-    }
 
     @Override
     public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
@@ -253,19 +254,72 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
         return Expressions.computeMatrix(this, expr3Helper, x, y, z, d0, ranges);
     }
 
+    @Override
+    public Vector computeVector(double x, double y) {
+        if (contains(x, y)) {
+            Vector xx = getXArgument().toDV().computeVector(x, y);
+            Vector yy = getYArgument().toDV().computeVector(x, y);
+            Vector zz = getZArgument().toDV().computeVector(x, y);
+            return evalVector(xx, yy, zz);
+        }
+        return Complex.ZERO.toVector();
+    }
+
+    @Override
+    public Vector computeVector(double x, double y, double z) {
+        if (contains(x, y, z)) {
+            Vector xx = getXArgument().toDV().computeVector(x, y, z);
+            Vector yy = getYArgument().toDV().computeVector(x, y, z);
+            Vector zz = getZArgument().toDV().computeVector(x, y, z);
+            return evalVector(xx, yy, zz);
+        }
+        return Complex.ZERO.toVector();
+    }
+
+
+    @Override
+    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, expr3Helper, x, y, d0, ranges);
+    }
+
+    @Override
+    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, expr3Helper, x, d0, ranges);
+    }
+
+    @Override
+    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, expr3Helper, x, y, z, d0, ranges);
+    }
+
     protected Matrix evalMatrix(Matrix x, Matrix y, Matrix z) {
         int columnCount = x.getColumnCount();
         int rowCount = x.getRowCount();
         if (
                 columnCount != y.getColumnCount()
                         || rowCount != y.getRowCount()
-                ) {
+        ) {
             throw new IllegalArgumentException("Dimension mismatch");
         }
         return Maths.matrix(rowCount, columnCount, new MatrixCell() {
             @Override
             public Complex get(int row, int column) {
                 return evalComplex(x.get(row, column), y.get(row, column), z.get(row, column));
+            }
+        });
+    }
+
+    protected Vector evalVector(Vector x, Vector y, Vector z) {
+        int rowCount = x.size();
+        if (
+                rowCount != y.size()
+        ) {
+            throw new IllegalArgumentException("Dimension mismatch");
+        }
+        return Maths.columnVector(rowCount, new VectorCell() {
+            @Override
+            public Complex get(int row) {
+                return evalComplex(x.get(row), y.get(row), z.get(row));
             }
         });
     }
@@ -448,6 +502,18 @@ public abstract class GenericFunctionXYZ extends AbstractComposedFunction {
             boolean def = options.isDefined3();
             if (def) {
                 Matrix d = evalMatrix(a, b, c);
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
+
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector c, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.isDefined3();
+            if (def) {
+                Vector d = evalVector(a, b, c);
                 defined.set();
                 return d;
             } else {

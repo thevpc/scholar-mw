@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.srv.socket;
 
-import net.vpc.scholar.hadrumaths.io.HFileSystem;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServices;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServlet;
 

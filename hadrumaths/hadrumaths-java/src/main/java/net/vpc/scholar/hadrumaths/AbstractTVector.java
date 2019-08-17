@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.TypeReference;
+import java.io.UncheckedIOException;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -18,6 +18,11 @@ public abstract class AbstractTVector<T> implements TVector<T> {
 
     public AbstractTVector(boolean row) {
         this.rowType = row;
+    }
+
+    @Override
+    public boolean isScalar() {
+        return size()==1;
     }
 
     @Override
@@ -167,19 +172,19 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public void store(String file) throws RuntimeIOException {
+    public void store(String file) throws UncheckedIOException {
         toMatrix().store(file);
     }
 
-    public void store(File file) throws RuntimeIOException {
+    public void store(File file) throws UncheckedIOException {
         toMatrix().store(file);
     }
 
-    public void store(PrintStream stream) throws RuntimeIOException {
+    public void store(PrintStream stream) throws UncheckedIOException {
         toMatrix().store(stream);
     }
 
-    public void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException {
+    public void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException {
         toMatrix().store(stream, commentsChar, varName);
     }
 
@@ -290,6 +295,16 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
+    public TVector<T> rem(T other) {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.rem(get(i), other);
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
     public TVector<T> dotpow(T other) {
         T[] all = newT(size());
         VectorSpace<T> cs = getComponentVectorSpace();
@@ -370,6 +385,87 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         VectorSpace<T> cs = getComponentVectorSpace();
         for (int i = 0; i < all.length; i++) {
             all[i] = cs.sub(get(i), other.get(i));
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> rem(TVector<T> other) {
+        T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.rem(get(i), other.get(i));
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> pow(TVector<T> other) {
+        T[] all = newT(Math.max(size(), other.size()));
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.pow(get(i), other.get(i));
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> sqrt(int n) {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.sqrt(get(i), n);
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> pow(double n) {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.pow(get(i), n);
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> neg() {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.neg(get(i));
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public TVector<T> arg() {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.arg(get(i));
+        }
+        return newInstanceFromValues(isRow(), all);
+    }
+
+    @Override
+    public boolean isZero() {
+        VectorSpace<T> ss = getComponentVectorSpace();
+        for (int i = 0; i < size(); i++) {
+            if(!ss.isZero(get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public TVector<T> sincard() {
+        T[] all = newT(size());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.sincard(get(i));
         }
         return newInstanceFromValues(isRow(), all);
     }
@@ -712,7 +808,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         );
     }
 
-    public <R> TVector<R> transform(TypeReference<R> toType, TTransform<T, R> op) {
+    public <R> TVector<R> transform(TypeName<R> toType, TTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
                 toType, isRow(), new TVectorModel<R>() {
                     @Override
@@ -730,7 +826,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public <R> boolean acceptsType(TypeReference<R> type) {
+    public <R> boolean acceptsType(TypeName<R> type) {
         return getComponentType().getTypeClass().isAssignableFrom(type.getTypeClass());
     }
 
@@ -740,7 +836,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public <R> TVector<R> to(TypeReference<R> other) {
+    public <R> TVector<R> to(TypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (TVector<R>) this;
         }
@@ -813,7 +909,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
         return newReadOnlyInstanceFromModel(getComponentType(), row, new TVectorModelFromCell<>(size, cellFactory));
     }
 
-    protected <R> TVector<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, final TVectorModel<R> model) {
+    protected <R> TVector<R> newReadOnlyInstanceFromModel(TypeName<R> type, boolean row, final TVectorModel<R> model) {
         return new ReadOnlyTVector<R>(type, row, model);
     }
 
@@ -822,7 +918,7 @@ public abstract class AbstractTVector<T> implements TVector<T> {
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+    public <R> boolean isConvertibleTo(TypeName<R> other) {
         if(other.isAssignableFrom(getComponentType())){
             return true;
         }
@@ -890,5 +986,25 @@ public abstract class AbstractTVector<T> implements TVector<T> {
             }
         }
         return hash;
+    }
+
+    @Override
+    public T get(Enum i) {
+        return get(i.ordinal());
+    }
+
+    @Override
+    public T apply(Enum i) {
+        return get(i.ordinal());
+    }
+
+    @Override
+    public void set(Enum i, T value) {
+        set(i.ordinal(),value);
+    }
+
+    @Override
+    public void update(Enum i, T value) {
+        set(i.ordinal(),value);
     }
 }

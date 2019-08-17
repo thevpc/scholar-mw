@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.TypeReference;
+import java.io.UncheckedIOException;
+import net.vpc.common.util.TypeName;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,8 +11,13 @@ import java.io.Serializable;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public interface TMatrix<T> extends Normalizable, Serializable {
+public interface TMatrix<T> extends Normalizable, Serializable, Iterable<TVector<T>> {
 
+    DMatrix getErrorMatrix(TMatrix<T> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy);
+
+    DMatrix getErrorMatrix(TMatrix<T> baseMatrix);
+
+    DMatrix getErrorMatrix(TMatrix<T> baseMatrix, double minErrorForZero);
 
     double norm(NormStrategy ns);
 
@@ -64,6 +69,8 @@ public interface TMatrix<T> extends Normalizable, Serializable {
     T prod();
 
     void set(TMatrix<T>[][] subMatrixes);
+
+    void set(T[][] elements);
 
     void setAll(T value);
 
@@ -129,6 +136,8 @@ public interface TMatrix<T> extends Normalizable, Serializable {
 
     TMatrix<T> div(TMatrix<T> other);
 
+    TMatrix<T> rem(TMatrix<T> other);
+
     TMatrix<T> mul(TMatrix<T> other);
 
 //    TMatrix<T> multiply(TMatrix<T> other);
@@ -159,7 +168,10 @@ public interface TMatrix<T> extends Normalizable, Serializable {
 
     T get(int vectorIndex);
 
+    T get(Enum anyEnum);
+
     T apply(int vectorIndex);
+    T apply(Enum anyEnum);
 
     void add(int row, int col, T val);
 
@@ -262,22 +274,22 @@ public interface TMatrix<T> extends Normalizable, Serializable {
     TMatrix<T> solve(TMatrix<T> B, SolveStrategy solveStrategy);
 
 
-    void store(String file) throws RuntimeIOException;
+    void store(String file) throws UncheckedIOException;
 
-    void store(File file) throws RuntimeIOException;
+    void store(File file) throws UncheckedIOException;
 
-    void store(PrintStream stream) throws RuntimeIOException;
+    void store(PrintStream stream) throws UncheckedIOException;
 
-    void store(String file, String commentsChar, String varName) throws RuntimeIOException;
+    void store(String file, String commentsChar, String varName) throws UncheckedIOException;
 
-    void store(File file, String commentsChar, String varName) throws RuntimeIOException;
+    void store(File file, String commentsChar, String varName) throws UncheckedIOException;
 
 
-    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
+    void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException;
 
-    void read(BufferedReader reader) throws RuntimeIOException;
+    void read(BufferedReader reader) throws UncheckedIOException;
 
-    void read(File file) throws RuntimeIOException;
+    void read(File file) throws UncheckedIOException;
 
     void read(String reader);
 
@@ -300,6 +312,14 @@ public interface TMatrix<T> extends Normalizable, Serializable {
     double[][] absdbls();
 
     TMatrix<T> abs();
+
+    TMatrix<T> abssqr();
+
+    TMatrix<T> sqr();
+
+    TMatrix<T> sqrt();
+
+    TMatrix<T> sqrt(int n);
 
     double cond();
 
@@ -374,6 +394,8 @@ public interface TMatrix<T> extends Normalizable, Serializable {
 
     TMatrix<T> sinh();
 
+    TMatrix<T> sincard();
+
     TMatrix<T> arg();
 
     TMatrix<T> atan();
@@ -438,15 +460,15 @@ public interface TMatrix<T> extends Normalizable, Serializable {
 
     TMatrix<T> dotpow(T n);
 
-    TypeReference<T> getComponentType();
+    TypeName getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 
     TMatrix<T> copy();
 
-    <R> boolean isConvertibleTo(TypeReference<R> type);
+    <R> boolean isConvertibleTo(TypeName<R> type);
 
-    <R> TMatrix<R> to(TypeReference<R> other);
+    <R> TMatrix<R> to(TypeName<R> other);
 
     boolean isHermitian();
 

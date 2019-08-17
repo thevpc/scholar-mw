@@ -6,7 +6,7 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -95,7 +95,7 @@ public class MomConvergenceManager {
         boolean converged = false;
         while (n < n_eva.length) {
             TVector<Complex> spc = sp.getColumn(n_eva[n].index);
-            Complex zn = n_eva[n].impedance;
+            Complex zn = n_eva[n].impedance.impedanceValue();
             for (int s = 0; s < step && n < n_eva.length; s++) {
                 for (int p = 0; p < _g.length; p++) {
                     for (int q = 0; q < _g.length; q++) {

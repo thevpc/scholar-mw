@@ -48,7 +48,24 @@ public class VDCxySimplifyRule implements ExpressionRewriterRule {
             updated[i] = s2.getValue();
         }
         if (changed) {
-            Expr e2 = Maths.vector(updated[0].toDC(), updated[1].toDC());
+            Expr e2=null;
+            switch (length){
+                case 1: {
+                    e2 = Maths.vector(updated[0].toDC().toDC());
+                    break;
+                }
+                case 2: {
+                    e2 = Maths.vector(updated[0].toDC(), updated[1].toDC());
+                    break;
+                }
+                case 3: {
+                    e2 = Maths.vector(updated[0].toDC(), updated[1].toDC(), updated[2].toDC());
+                    break;
+                }
+                default:{
+                    throw new IllegalArgumentException("Unsupported");
+                }
+            }
             e2 = Any.copyProperties(e, e2);
             return bestEfforts == length ? RewriteResult.bestEffort(e2) : RewriteResult.newVal(e2);
         }

@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
@@ -47,24 +47,24 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        return v2;
 //    }
 
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
-        MomStructure str = (MomStructure) structure;
+    public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, final double[] z, ProgressMonitor monitor) {
+        final MomStructure str = (MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
 //        this.invalidateCache();
-                DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Matrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
 
 
-                Complex[] J = Testcoeff.getColumn(0).toArray();
+                final Complex[] J = Testcoeff.getColumn(0).toArray();
                 if (J.length != _g.length) {
                     throw new IllegalStateException();
                 }
 //        FnIndexes[] n_eva = isHint(HINT_REGULAR_ZN_OPERATOR) ? fnBaseFunctions.getModes() : fnBaseFunctions.getVanishingModes();
-                ModeInfo[] indexes = str.getModes();
+                final ModeInfo[] indexes = str.getModes();
                 ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
                 ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
                 if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
@@ -74,9 +74,9 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 if (str.getHintsManager().isHintRegularZnOperator()) {
                     evan = indexes;
                 }
-                ProgressMonitor mon1 = mon[1];
-                ModeInfo[] finalProp = prop;
-                ModeInfo[] finalEvan = evan;
+                final ProgressMonitor mon1 = mon[1];
+                final ModeInfo[] finalProp = prop;
+                final ModeInfo[] finalEvan = evan;
                 return Maths.invokeMonitoredAction(mon1, "Loop 1", new MonitoredAction<VDiscrete>() {
                     @Override
                     public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -108,9 +108,9 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                                 Z = z[zi];
                                 //TODO Check if Z is always abs
                                 if(Z < 0){
-                                    zmnGammaZ = mode.firstBoxSpaceGamma.mul(Z).exp().mul(mode.impedance);
+                                    zmnGammaZ = mode.firstBoxSpaceGamma.mul(Z).exp().mul(mode.impedance.impedanceValue());
                                 }else{
-                                    zmnGammaZ = mode.secondBoxSpaceGamma.mul(-Z).exp().mul(mode.impedance);
+                                    zmnGammaZ = mode.secondBoxSpaceGamma.mul(-Z).exp().mul(mode.impedance.impedanceValue());
                                 }
 
                                 for (int yi = 0; yi < y_length; yi++) {
@@ -152,25 +152,25 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
     }
 
     @Deprecated
-    private VDiscrete evaluate__02(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
-        MomStructure str = (MomStructure) structure;
+    private VDiscrete evaluate__02(MWStructure structure, final double[] x, final double[] y, final double[] z, ProgressMonitor monitor) {
+        final MomStructure str = (MomStructure) structure;
 
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
 //        this.invalidateCache();
-                DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Matrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
 
 
-                Complex[] J = Testcoeff.getColumn(0).toArray();
+                final Complex[] J = Testcoeff.getColumn(0).toArray();
                 if (J.length != _g.length) {
                     throw new IllegalStateException();
                 }
 //        FnIndexes[] n_eva = isHint(HINT_REGULAR_ZN_OPERATOR) ? fnBaseFunctions.getModes() : fnBaseFunctions.getVanishingModes();
-                ModeInfo[] indexes = str.getModes();
+                final ModeInfo[] indexes = str.getModes();
                 ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
                 ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
                 if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
@@ -180,12 +180,12 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 if (str.getHintsManager().isHintRegularZnOperator()) {
                     evan = indexes;
                 }
-                MutableComplex[][][] fx = new MutableComplex[z.length][y.length][x.length];
-                MutableComplex[][][] fy = new MutableComplex[z.length][y.length][x.length];
-                MutableComplex[][][] fz = new MutableComplex[z.length][y.length][x.length];
-                TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
-                ModeInfo[] finalEvan = evan;
-                ModeInfo[] finalProp = prop;
+                final MutableComplex[][][] fx = new MutableComplex[z.length][y.length][x.length];
+                final MutableComplex[][][] fy = new MutableComplex[z.length][y.length][x.length];
+                final MutableComplex[][][] fz = new MutableComplex[z.length][y.length][x.length];
+                final TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                final ModeInfo[] finalEvan = evan;
+                final ModeInfo[] finalProp = prop;
                 return invokeMonitoredAction(mon[1], "???", new MonitoredAction<VDiscrete>() {
                     @Override
                     public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -216,7 +216,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //            System.out.println("progress = " + monitor.getProgressValue());
                             for (int zi = 0; zi < z.length; zi++) {
                                 Z = z[zi];
-                                zmnGammaZ = /*Complex.ONE.*/mode.impedance.mul(exp((Z < 0 ? mode.firstBoxSpaceGamma : mode.secondBoxSpaceGamma).mul(-Z)));
+                                zmnGammaZ = /*Complex.ONE.*/mode.impedance.impedanceValue().mul(exp((Z < 0 ? mode.firstBoxSpaceGamma : mode.secondBoxSpaceGamma).mul(-Z)));
                                 for (int yi = 0; yi < y.length; yi++) {
                                     for (int xi = 0; xi < x.length; xi++) {
                                         tempx = (fx[zi][yi][xi]);

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -10,9 +10,9 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
     private static final long serialVersionUID = 1L;
     private final int size;
     private final TVectorCell<T> vectorCell;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public UnmodifiableList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> vectorCell) {
+    public UnmodifiableList(TypeName<T> componentType, boolean row, int size, TVectorCell<T> vectorCell) {
         super(row);
         this.componentType = componentType;
         this.size = size;
@@ -20,7 +20,7 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

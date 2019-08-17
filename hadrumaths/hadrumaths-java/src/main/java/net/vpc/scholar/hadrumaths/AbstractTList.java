@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     }
 
     @Override
-    public <R> TList<R> transform(TypeReference<R> toType, TTransform<T, R> op) {
+    public <R> TList<R> transform(TypeName<R> toType, TTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
                 toType, isRow(), new TVectorModel<R>() {
                     @Override
@@ -197,7 +197,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     }
 
     @Override
-    public <R> TList<R> to(TypeReference<R> other) {
+    public <R> TList<R> to(TypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (TList<R>) this;
         }
@@ -280,6 +280,11 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     @Override
     public TList<T> div(T other) {
         return (TList<T>) super.div(other);
+    }
+
+    @Override
+    public TList<T> rem(T other) {
+        return (TList<T>) super.rem(other);
     }
 
     @Override
@@ -419,7 +424,7 @@ public abstract class AbstractTList<T> extends AbstractTVector<T> implements TLi
     }
 
     @Override
-    protected <R> TList<R> newReadOnlyInstanceFromModel(TypeReference<R> type, boolean row, TVectorModel<R> model) {
+    protected <R> TList<R> newReadOnlyInstanceFromModel(TypeName<R> type, boolean row, TVectorModel<R> model) {
         return Maths.listro(type, row, model);
     }
 

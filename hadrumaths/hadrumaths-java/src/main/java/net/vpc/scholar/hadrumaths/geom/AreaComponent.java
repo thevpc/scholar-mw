@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
-import net.vpc.scholar.hadrumaths.Maths;
 
 import javax.swing.*;
 import java.awt.*;

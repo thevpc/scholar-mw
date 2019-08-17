@@ -5,10 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.BooleanMarker;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.NoneOutBoolean;
-import net.vpc.scholar.hadrumaths.Out;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * @author vpc
@@ -18,10 +15,6 @@ public interface DoubleToDouble extends DoubleDomainExpr {
     double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
 
     double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges);
-
-    double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges);
-
-    double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges);
 
     double[] computeDouble(double[] x, Domain d0, Out<Range> range);
 
@@ -36,6 +29,14 @@ public interface DoubleToDouble extends DoubleDomainExpr {
 
     double computeDouble(double x, double y, double z, BooleanMarker defined);
 
+    default double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeDouble(this,x,y,d0,ranges);
+    }
+
+    default double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeDouble(this,x,y,d0,ranges);
+    }
+
     default double computeDouble(double x) {
         return computeDouble(x, NoneOutBoolean.INSTANCE);
     }
@@ -48,12 +49,30 @@ public interface DoubleToDouble extends DoubleDomainExpr {
         return computeDouble(x, y, z, NoneOutBoolean.INSTANCE);
     }
 
-    double[] computeDouble(double[] x);
+//    double[] computeDouble(double[] x);
+//
+//    double[][] computeDouble(double[] x, double[] y);
+//
+//    double[] computeDouble(double x, double[] y);
+//
+//    double[][][] computeDouble(double[] x, double[] y, double[] z);
 
-    double[][] computeDouble(double[] x, double[] y);
 
-    double[] computeDouble(double x, double[] y);
+    default double[] computeDouble(double[] x) {
+        return computeDouble(x, (Domain) null, null);
+    }
 
-    double[][][] computeDouble(double[] x, double[] y, double[] z);
+    default double[] computeDouble(double x, double[] y) {
+        return computeDouble(x, y, (Domain) null, null);
+    }
+
+    default double[][][] computeDouble(double[] x, double[] y, double[] z) {
+        return computeDouble(x, y, z, (Domain) null, null);
+    }
+
+    default double[][] computeDouble(double[] x, double[] y) {
+        return computeDouble(x, y, (Domain) null, null);
+    }
+
 
 }

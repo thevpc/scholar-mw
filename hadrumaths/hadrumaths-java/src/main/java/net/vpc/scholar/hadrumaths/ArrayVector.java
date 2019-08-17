@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -117,7 +117,7 @@ public class ArrayVector extends AbstractVector implements Serializable {
 
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
@@ -13,19 +13,19 @@ import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixABuilder;
  */
 class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
 
-    private MomStructure momStructure;
     private ProgressMonitor[] mon;
 
     public DefaultMomMatrixABuilder(MomStructure momStructure) {
-        this.momStructure = momStructure;
+        super(momStructure);
     }
 
     public Matrix computeMatrixImpl() {
         return Maths.invokeMonitoredAction(getMonitor(), "A Builder", new MonitoredAction<Matrix>() {
             @Override
             public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                MomStructure momStructure = getStructure();
                 momStructure.build();
-                return new MatrixAMatrixStrCacheSupport(momStructure, getMonitor()).get();
+                return new MatrixAMatrixStrCacheSupport(momStructure, monitor).get();
             }
         });
     }
@@ -41,6 +41,7 @@ class DefaultMomMatrixABuilder extends AbstractMomMatrixABuilder {
         if (conv == null) {
             return computeMatrixImplLog();
         } else {
+            MomStructure momStructure = getStructure();
             return storeConvergenceResult(conv.evaluate(momStructure, new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {

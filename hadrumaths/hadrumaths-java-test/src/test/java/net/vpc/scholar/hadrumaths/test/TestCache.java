@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
 import junit.framework.Assert;
-import net.vpc.scholar.hadrumaths.cache.Evaluator;
+import net.vpc.scholar.hadrumaths.cache.CacheEvaluator;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
@@ -17,12 +17,12 @@ public class TestCache {
         PersistenceCache persistentCache = new PersistenceCache(null, "imen", null);
 
         persistentCache.setEnabled(true);
-        Dumper dumper = new Dumper("calkile", Dumper.Type.SIMPLE);
+        Dumper dumper = new Dumper("cacheExample", Dumper.Type.SIMPLE);
         dumper.add("theta", Math.PI);
         persistentCache.getObjectCache(HashValue.valueOf(dumper), false).delete();
-        MyEvaluator evaluator = new MyEvaluator();
+        MyCacheEvaluator evaluator = new MyCacheEvaluator();
         for (int i = 0; i < 8; i++) {
-            Object v = persistentCache.evaluate("calkile", null, evaluator, dumper);
+            Object v = persistentCache.evaluate("cacheExample", null, evaluator, dumper);
             System.out.println(v);
         }
         Assert.assertEquals(1, evaluator.getInvocationCount());
@@ -30,9 +30,9 @@ public class TestCache {
         persistentCache.setEnabled(false);
         Assert.assertNull(persistentCache.getObjectCache(HashValue.valueOf(dumper), false));
 
-        evaluator = new MyEvaluator();
+        evaluator = new MyCacheEvaluator();
         for (int i = 0; i < 8; i++) {
-            Object v = persistentCache.evaluate("calkile", null, evaluator, dumper);
+            Object v = persistentCache.evaluate("cacheExample", null, evaluator, dumper);
             System.out.println(v);
         }
         Assert.assertEquals(8, evaluator.getInvocationCount());
@@ -43,19 +43,19 @@ public class TestCache {
         PersistenceCache persistentCache = new PersistenceCache(null, "imen", null);
 
         persistentCache.setEnabled(false);
-        Dumper dumper = new Dumper("calkile", Dumper.Type.SIMPLE);
+        Dumper dumper = new Dumper("cacheExample", Dumper.Type.SIMPLE);
         dumper.add("theta", Math.PI);
         Assert.assertNull(persistentCache.getObjectCache(HashValue.valueOf(dumper), false));
 
-        MyEvaluator evaluator = new MyEvaluator();
+        MyCacheEvaluator evaluator = new MyCacheEvaluator();
         for (int i = 0; i < 8; i++) {
-            Object v = persistentCache.evaluate("calkile", null, evaluator, dumper);
+            Object v = persistentCache.evaluate("cacheExample", null, evaluator, dumper);
             System.out.println(v);
         }
         Assert.assertEquals(8, evaluator.getInvocationCount());
     }
 
-    private static class MyEvaluator implements Evaluator {
+    private static class MyCacheEvaluator implements CacheEvaluator {
         public int invocationCount;
 
         @Override

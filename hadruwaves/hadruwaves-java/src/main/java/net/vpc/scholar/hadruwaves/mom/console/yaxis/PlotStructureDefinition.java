@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.BooleanMarker;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.scholar.hadruplot.console.ConsoleAction;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadrumaths.plot.FunctionsXYPlotConsoleAction;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCustom;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -43,7 +43,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 PlanarSources ps = (PlanarSources) ss;
                 sf = ps.getSourceFunctions();
             }
-            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.getTestFunctions().arr(), sf), str1.getDomain(), p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
+            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.getTestFunctions().arr(), sf), str1.getDomain(), p.getPreferredPath(), getPlotType(), getLibraries()));
         }
         if (containsType(YType.MODELED)) {
             if (p.getStructure2() != null) {
@@ -53,7 +53,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                     PlanarSources ps = (PlanarSources) ss;
                     sf = ps.getSourceFunctions();
                 }
-                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.getTestFunctions().arr(), sf), str2.getDomain(), p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
+                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.getTestFunctions().arr(), sf), str2.getDomain(), p.getPreferredPath(), getPlotType(), getLibraries()));
             }
         }
 //        mon.terminatem(getName());

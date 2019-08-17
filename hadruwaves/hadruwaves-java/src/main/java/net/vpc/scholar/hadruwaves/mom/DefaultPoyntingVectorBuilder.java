@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractPoyntingVectorBuilder;
@@ -17,11 +17,6 @@ class DefaultPoyntingVectorBuilder extends AbstractPoyntingVectorBuilder {
         super(momStructure);
     }
 
-    @Override
-    public MomStructure getStructure() {
-        return (MomStructure) super.getStructure();
-    }
-
     public VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z,ProgressMonitor monitor) {
         final double[] x0 = x == null ? new double[]{0} : x;
         final double[] y0 = y == null ? new double[]{0} : y;
@@ -31,7 +26,8 @@ class DefaultPoyntingVectorBuilder extends AbstractPoyntingVectorBuilder {
 
             @Override
             public VDiscrete compute(ObjectCache momCache) {
-                return getStructure().createPoyntingVectorEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
+                MomStructure momStructure = getStructure();
+                return momStructure.createPoyntingVectorEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
             }
         }.computeCached();
     }

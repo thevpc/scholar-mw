@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.expeval;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import org.apache.commons.lang3.reflect.MethodUtils;
 
 public class PlatformHelper2 {
     public static Complex div(float a, Complex b) {

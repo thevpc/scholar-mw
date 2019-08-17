@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic.old;
 
+import net.vpc.scholar.hadrumaths.Align;
+
 import java.util.ArrayList;
 
 /**
@@ -7,9 +9,6 @@ import java.util.ArrayList;
  * @creationtime 18 juil. 2007 21:52:28
  */
 public class SymUtils {
-    public enum Align {
-        NORTH_WEST, NORTH, NORTH_EAST, WEST, CENTER, EAST, SOUTH, SOUTH_WEST, SOUTH_EAST
-    }
 
     public static final BoxFormat NO_FORMAT = new BoxFormat();
 
@@ -77,7 +76,7 @@ public class SymUtils {
                     break;
                 }
             }
-            lines = newLines.toArray(new String[newLines.size()]);
+            lines = newLines.toArray(new String[0]);
         }
 
     }

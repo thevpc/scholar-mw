@@ -11,6 +11,8 @@ public interface TMatrixFactory<T> {
 
     TMatrix newMatrix(TMatrix<T> other);
 
+    TMatrix<T> newMatrix(TMatrix<T>[][] blocs);
+
     TMatrix<T> newMatrix(int rows, int columns);
 
     TMatrix<T> newZeros(TMatrix<T> other);
@@ -39,12 +41,12 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newMatrix(String string);
 
-    TMatrix<T> newMatrix(MutableComplex[][] complex);
-
+//    TMatrix<T> newMatrix(MutableComplex[][] complex);
+//
     TMatrix<T> newMatrix(T[][] complex);
 
-    TMatrix<T> newMatrix(double[][] complex);
-
+//    TMatrix<T> newMatrix(double[][] complex);
+//
     TMatrix<T> newMatrix(int rows, int cols, TMatrixCell<T> cellFactory);
 
     TMatrix<T> newMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<T> item);
@@ -75,25 +77,25 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newDiagonal(int dim, TMatrixCell<T> cellFactory);
 
-    TMatrix<T> newRandomReal(int m, int n);
-
-    TMatrix<T> newRandomReal(int m, int n, int min, int max);
-
-    TMatrix<T> newRandomReal(int m, int n, double min, double max);
-
-    TMatrix<T> newRandomImag(int m, int n, double min, double max);
-
-    TMatrix<T> newRandomImag(int m, int n, int min, int max);
-
-    TMatrix<T> newRandom(int m, int n, int minReal, int maxReal, int minImag, int maxImag);
-
-    TMatrix<T> newRandom(int m, int n, double minReal, double maxReal, double minImag, double maxImag);
-
-    TMatrix<T> newRandom(int m, int n, double min, double max);
-
-    TMatrix<T> newRandom(int m, int n, int min, int max);
-
-    TMatrix<T> newRandomImag(int m, int n);
+//    TMatrix<T> newRandomReal(int m, int n);
+//
+//    TMatrix<T> newRandomReal(int m, int n, int min, int max);
+//
+//    TMatrix<T> newRandomReal(int m, int n, double min, double max);
+//
+//    TMatrix<T> newRandomImag(int m, int n, double min, double max);
+//
+//    TMatrix<T> newRandomImag(int m, int n, int min, int max);
+//
+//    TMatrix<T> newRandom(int m, int n, int minReal, int maxReal, int minImag, int maxImag);
+//
+//    TMatrix<T> newRandom(int m, int n, double minReal, double maxReal, double minImag, double maxImag);
+//
+//    TMatrix<T> newRandom(int m, int n, double min, double max);
+//
+//    TMatrix<T> newRandom(int m, int n, int min, int max);
+//
+//    TMatrix<T> newRandomImag(int m, int n);
 
     TMatrix<T> load(File file) throws IOException;
 
@@ -135,5 +137,6 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory);
 
+    TMatrix<T> newImmutableIdentity(int rows, int cols);
 
 }

@@ -7,8 +7,8 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
 
 /**
@@ -29,6 +29,7 @@ public class DoubleObjectFormat implements ObjectFormat<Double> {
     public void format(StringBuilder sb, Double o, ObjectFormatParamSet format) {
         DoubleObjectFormatParam df = format.getParam(DoubleObjectFormatParam.class, false);
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+        boolean _float = format.containsParam(FormatFactory.REQUIRED_FLOAT);
         if (par && !(o.doubleValue() < 0)) {
             par = false;
         }
@@ -37,10 +38,10 @@ public class DoubleObjectFormat implements ObjectFormat<Double> {
         }
         if (df != null) {
             sb.append(df.getFormat().format(o));
-        } else if (Maths.isInt(o)) {
-            sb.append(String.valueOf(o.intValue()));
+        } else if (!_float && Maths.isInt(o)) {
+            sb.append(o.intValue());
         } else {
-            sb.append(String.valueOf(o.doubleValue()));
+            sb.append(o.doubleValue());
         }
         if (par) {
             sb.append(")");

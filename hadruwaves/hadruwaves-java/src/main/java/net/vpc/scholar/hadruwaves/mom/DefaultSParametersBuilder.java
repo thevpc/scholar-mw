@@ -24,7 +24,7 @@ class DefaultSParametersBuilder extends AbstractSParametersBuilder {
         Matrix z0 = null;
         switch (momStructure.getProjectType()) {
             case WAVE_GUIDE: {
-                z0 = Maths.matrix(new Complex[][]{{momStructure.getModeFunctions().getPropagatingModes()[0].impedance}});
+                z0 = Maths.matrix(new Complex[][]{{momStructure.getModeFunctions().getPropagatingModes()[0].impedance.impedanceValue()}});
                 break;
             }
             case PLANAR_STRUCTURE: {

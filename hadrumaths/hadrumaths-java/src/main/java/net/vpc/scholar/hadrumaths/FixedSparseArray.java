@@ -1,15 +1,15 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 public class FixedSparseArray<T> implements SparseArray<T> {
     private T[] values;
     private int maxIndex = -1;
     private int length = -1;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public FixedSparseArray(TypeReference<T> componentType, int length) {
+    public FixedSparseArray(TypeName<T> componentType, int length) {
         this.componentType = componentType;
         values = ArrayUtils.newArray(componentType, length);
         this.length = length;
@@ -48,7 +48,7 @@ public class FixedSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 }

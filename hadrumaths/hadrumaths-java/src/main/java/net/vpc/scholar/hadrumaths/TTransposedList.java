@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
@@ -36,7 +36,7 @@ public class TTransposedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return other.getComponentType();
     }
 

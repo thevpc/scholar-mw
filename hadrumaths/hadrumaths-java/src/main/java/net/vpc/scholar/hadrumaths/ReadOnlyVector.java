@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class ReadOnlyVector extends AbstractVector {
     private static final long serialVersionUID = 1L;
@@ -12,7 +12,7 @@ public class ReadOnlyVector extends AbstractVector {
     }
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 

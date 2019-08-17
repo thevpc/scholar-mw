@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -482,7 +482,7 @@ public final class GeomUtils {
 //        boolean changes = true;
 //        while (changes) {
 //            changes = false;
-//            Area[] all2 = all.toArray(new Area[all.size()]);
+//            Area[] all2 = all.toArray(new Area[0]);
 //            for (int i = 0; i < all2.length; i++) {
 //                Area area = all2[i];
 ////                System.out.println(area.getBounds());

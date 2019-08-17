@@ -64,7 +64,7 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
                     n.add(new Mul(ta, tb));
                 }
             }
-            return new Plus(n.toArray(new Expr[n.size()]));
+            return new Plus(n.toArray(new Expr[0]));
         } else if (a instanceof Plus) {
             Plus ap = ((Plus) a);
             List<Expr> n = new ArrayList<Expr>();
@@ -72,7 +72,7 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
                 ta = ruleset.rewriteOrSame(ta);
                 n.add(new Mul(ta, b));
             }
-            return new Plus(n.toArray(new Expr[n.size()]));
+            return new Plus(n.toArray(new Expr[0]));
         } else if (b instanceof Plus) {
             Plus bp = ((Plus) b);
             List<Expr> n = new ArrayList<Expr>();
@@ -80,7 +80,7 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
                 tb = ruleset.rewriteOrSame(tb);
                 n.add(new Mul(a, tb));
             }
-            return new Plus(n.toArray(new Expr[n.size()]));
+            return new Plus(n.toArray(new Expr[0]));
         }
 //        return new Mul(a, b);
         return Maths.mul(a, b);

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,7 +79,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
     }
 
     @Override
-    public TypeReference<Boolean> getComponentType() {
+    public TypeName<Boolean> getComponentType() {
         return Maths.$BOOLEAN;
     }
 

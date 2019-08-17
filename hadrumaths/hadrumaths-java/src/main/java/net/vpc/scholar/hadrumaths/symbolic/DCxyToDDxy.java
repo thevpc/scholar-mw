@@ -121,6 +121,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Out<Range> r2 = ranges == null ? new Out<Range>() : ranges;
         Complex[][] c = base.computeComplex(x, y, d0, r2);
+        ExpressionsDebug.debug_check(c,r2);
         double[][] r = new double[y.length][x.length];
         Range d = r2.get();
         if (d != null) {

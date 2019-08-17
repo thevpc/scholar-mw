@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
 import static net.vpc.scholar.hadrumaths.Maths.exp;
 
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -21,10 +21,10 @@ import net.vpc.scholar.hadruwaves.str.ElectricFieldFundamentalEvaluator;
 public class ElectricFieldFundamentalSerialParallelEvaluator implements ElectricFieldFundamentalEvaluator {
     public static final ElectricFieldFundamentalSerialParallelEvaluator INSTANCE=new ElectricFieldFundamentalSerialParallelEvaluator();
     @Override
-    public VDiscrete evaluate(MomStructure str, double[] x, double[] y, double[] z, ProgressMonitor cmonitor) {
+    public VDiscrete evaluate(MomStructure str, final double[] x, final double[] y, final double[] z, ProgressMonitor cmonitor) {
         ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
 
-        ModeInfo[] indexes = str.getModes(monitor);
+        final ModeInfo[] indexes = str.getModes(monitor);
         ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
         ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
         if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
@@ -34,8 +34,8 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
         if (str.getHintsManager().isHintRegularZnOperator()) {
             evan = indexes;
         }
-        ModeInfo[] finalProp = prop;
-        ModeInfo[] finalEvan = evan;
+        final ModeInfo[] finalProp = prop;
+        final ModeInfo[] finalEvan = evan;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {

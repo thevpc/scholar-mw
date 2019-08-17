@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
 
     TList<T> eval(ElementOp<T> op);
 
-    <R> TList<R> transform(TypeReference<R> toType, TTransform<T, R> op);
+    <R> TList<R> transform(TypeName<R> toType, TTransform<T, R> op);
 
     void appendAll(TVector<T> e);
 
@@ -38,7 +38,7 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
     TVector<T> rscalarProduct(T other);
 
     @Override
-    <R> TList<R> to(TypeReference<R> other);
+    <R> TList<R> to(TypeName<R> other);
 
     @Override
     TList<T> vscalarProduct(TVector<T>... other);
@@ -69,6 +69,9 @@ public interface TList<T> extends Iterable<T>, TVector<T> {
 
     @Override
     TList<T> div(T other);
+
+    @Override
+    TList<T> rem(T other);
 
     @Override
     TList<T> dotpow(T other);

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class Plus extends AbstractExprOperator implements Cloneable {
+public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     static {
@@ -84,6 +84,17 @@ public class Plus extends AbstractExprOperator implements Cloneable {
                 return zero;
             }
         }
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined || options.value2Defined;
+            if (def) {
+                Vector d = a.add(b);
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
     };
 
     public Plus(TVector<Expr> list) {
@@ -91,7 +102,7 @@ public class Plus extends AbstractExprOperator implements Cloneable {
     }
 
     public Plus(List<Expr> expressions) {
-        this(expressions.toArray(new Expr[expressions.size()]));
+        this(expressions.toArray(new Expr[0]));
     }
 
     public Plus(Expr... expressions) {
@@ -112,6 +123,11 @@ public class Plus extends AbstractExprOperator implements Cloneable {
 //        if(someConstrained && someUnconstrained){
 //            System.out.println("Plus : someConstrained && someUnconstrained");
 //        }
+    }
+
+    @Override
+    protected Expressions.BinaryExprHelper getBinaryExprHelper() {
+        return binaryExprHelper;
     }
 
     public Expr clone() {

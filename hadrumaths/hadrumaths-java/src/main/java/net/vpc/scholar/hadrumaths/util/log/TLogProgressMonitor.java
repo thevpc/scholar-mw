@@ -1,12 +1,13 @@
 package net.vpc.scholar.hadrumaths.util.log;
 
 import net.vpc.common.util.DoubleFormat;
-import net.vpc.common.util.mon.AbstractProgressMonitor;
-import net.vpc.common.util.mon.ProgressMessage;
+import net.vpc.common.mon.BaseProgressMonitor;
+import net.vpc.common.mon.ProgressMessage;
 import net.vpc.scholar.hadrumaths.Maths;
+
 import java.util.Date;
 
-public class TLogProgressMonitor extends AbstractProgressMonitor {
+public class TLogProgressMonitor extends BaseProgressMonitor {
     private double progress;
     private ProgressMessage message;
     private String messageFormat;

@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadrumaths.srv.rmi;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.scholar.hadrumaths.srv.rmi.FSInputStream;
+import java.io.UncheckedIOException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +32,7 @@ public class FSInputStreamImpl extends UnicastRemoteObject implements FSInputStr
             count = in.read(buffer, 0, max);
             return Arrays.copyOf(buffer, count);
         } catch (IOException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }

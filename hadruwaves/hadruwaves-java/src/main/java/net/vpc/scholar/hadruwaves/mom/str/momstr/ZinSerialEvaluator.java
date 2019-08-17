@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -34,7 +34,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
             if (str.getHintsManager().isHintRegularZnOperator()) {
                 ModeFunctions fn = str.getModeFunctions();
                 for (ModeInfo fnIndexes : fn.getPropagatingModes()) {
-                    ZinPaire = ZinPaire.sub(fnIndexes.impedance);
+                    ZinPaire = ZinPaire.sub(fnIndexes.impedance.impedanceValue());
                 }
             }
         } catch (Exception e) {

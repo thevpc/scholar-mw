@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

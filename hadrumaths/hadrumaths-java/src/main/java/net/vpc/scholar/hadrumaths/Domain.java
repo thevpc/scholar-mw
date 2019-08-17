@@ -1,13 +1,17 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Surface;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.PlotDomain;
+import net.vpc.scholar.hadruplot.RelativeSamples;
+import net.vpc.scholar.hadruplot.Samples;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -17,7 +21,7 @@ import java.util.*;
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
  */
-public abstract class Domain /*extends AbstractGeometry*/ implements Serializable, Dumpable/*, PolygonBuilder*/, Cloneable, Expr {
+public abstract class Domain /*extends AbstractGeometry*/ implements Serializable, Dumpable/*, PolygonBuilder*/, Cloneable, Expr, PlotDomain {
 
     public static final Domain NaNX = new DomainX(Double.NaN, Double.NaN);
     public static final Domain NaNXY = new DomainXY(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
@@ -1018,27 +1022,27 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public String dump() {
         switch (getDimension()) {
             case 1: {
-                Dumper h = new Dumper("Domain", Dumper.Type.SIMPLE);
-                h.add("x", xmin() + "->" + xmax());
+                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+                h.add(xmin() + "->" + xmax());
                 return h.toString();
             }
             case 2: {
-                Dumper h = new Dumper("Domain", Dumper.Type.SIMPLE);
-                h.add("x", xmin() + "->" + xmax());
-                h.add("y", ymin() + "->" + ymax());
+                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+                h.add(xmin() + "->" + xmax());
+                h.add(ymin() + "->" + ymax());
                 return h.toString();
             }
         }
-        Dumper h = new Dumper("Domain", Dumper.Type.SIMPLE);
-        h.add("x", xmin() + "->" + xmax());
-        h.add("y", ymin() + "->" + ymax());
-        h.add("z", zmin() + "->" + zmax());
+        Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+        h.add(xmin() + "->" + xmax());
+        h.add(ymin() + "->" + ymax());
+        h.add(zmin() + "->" + zmax());
         return h.toString();
     }
 
     @Override
     public String toString() {
-        return dump();
+        return FormatFactory.format(this);
     }
 
     @Override
@@ -1164,42 +1168,22 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     public AbsoluteSamples times(int xtimes, int ytimes, int ztimes) {
+        if (isInfiniteX()) {
+            throw new IllegalArgumentException("Infinite X Domain");
+        }
         switch (dimension()) {
             case 1: {
-                if (isInfiniteX()) {
-                    throw new IllegalArgumentException("Infinite X Domain");
-                }
-                if (ytimes == 1 && ztimes == 1) {
-                    return Samples.absolute(Maths.dtimes(xmin(), xmax(), xtimes));
-                }
-                return Samples.absolute(
-                        Maths.dtimes(xmin(), xmax(), xtimes),
-                        ArrayUtils.fill(new double[ytimes], Double.NaN),
-                        ArrayUtils.fill(new double[ztimes], Double.NaN)
-                );
+                return Samples.absolute(Maths.dtimes(xmin(), xmax(), xtimes));
             }
             case 2: {
-                if (isInfiniteX()) {
-                    throw new IllegalArgumentException("Infinite X Domain");
-                }
                 if (isInfiniteY()) {
                     throw new IllegalArgumentException("Infinite Y Domain");
                 }
-                if (ztimes == 1) {
-                    return Samples.absolute(
-                            Maths.dtimes(xmin(), xmax(), xtimes),
-                            Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
-                    );
-                }
                 return Samples.absolute(
                         Maths.dtimes(xmin(), xmax(), xtimes),
-                        Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes),
-                        ArrayUtils.fill(new double[ztimes], Double.NaN)
+                        Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
                 );
             }
-        }
-        if (isInfiniteX()) {
-            throw new IllegalArgumentException("Infinite X Domain");
         }
         if (isInfiniteY()) {
             throw new IllegalArgumentException("Infinite Y Domain");
@@ -1275,6 +1259,112 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             }
         }
         return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
+    }
+
+    public Domain scale(Align anchor,double x) {
+        return scale(anchor,x, x, x);
+    }
+
+    public Domain scale(Align anchor,double x, double y) {
+        return scale(anchor,x, y, x);
+    }
+
+    public Domain scale(Align anchor,double x, double y, double z) {
+        switch (dimension()) {
+            case 1: {
+                switch (anchor){
+                    case WEST:
+                    case SOUTH_WEST:
+                    case NORTH_WEST: {
+                        return forWidth(xmin(), xwidth() * x);
+                    }
+                    case EAST:
+                    case SOUTH_EAST:
+                    case NORTH_EAST: {
+                        double w = xwidth() * x;
+                        return forWidth(xmin() - (w - xwidth()), w);
+                    }
+                    case CENTER:
+                    case NORTH:
+                    case SOUTH:{
+                        double w = xwidth() * x;
+                        return forWidth(xmin() - (w - xwidth())/2, w);
+                    }
+                    default:{
+                        throw new IllegalArgumentException("Unsupported "+anchor);
+                    }
+                }
+                //return forWidth(xmin(), xwidth() * x);
+            }
+            case 2: {
+                double xwidth = xwidth() * x;
+                double ywidth = ywidth() * y;
+                switch (anchor){
+                    case NORTH_WEST: {
+                        return forWidth(xmin(), xwidth, ymin(), ywidth);
+                    }
+                    case CENTER: {
+                        return forWidth(xmin()-(xwidth-xwidth())/2, xwidth, ymin()-(ywidth-ywidth())/2, ywidth);
+                    }
+                    default:{
+                        throw new IllegalArgumentException("Unsupported "+anchor);
+                    }
+//                    case WEST:{
+//                        throw new IllegalArgumentException("Unsupported yet");
+//                    }
+//                    case SOUTH_WEST:{
+//                        return forWidth(xmin(), xwidth, ymin(), ywidth() * y);
+//                    }
+//                    case EAST:
+//                    case SOUTH_EAST:
+//                    case NORTH_EAST: {
+//                        double w = xwidth() * x;
+//                        return forWidth(xmin() - (w - xwidth()), w);
+//                    }
+//                    case NORTH:
+//                    case SOUTH:{
+//                        double w = xwidth() * x;
+//                        return forWidth(xmin() - (w - xwidth())/2, w);
+//                    }
+                }
+                //return forWidth(xmin(), xwidth, ymin(), ywidth() * y);
+            }
+        }
+        double xwidth = xwidth() * x;
+        double ywidth = ywidth() * y;
+        double zwidth = zwidth() * z;
+        switch (anchor){
+            case NORTH_WEST: {
+                return forWidth(xmin(), xwidth, ymin(), ywidth, zmin(), zwidth);
+            }
+            case CENTER: {
+                return forWidth(xmin()-(xwidth-xwidth())/2, xwidth
+                        , ymin()-(ywidth-ywidth())/2, ywidth
+                        , zmin()-(zwidth-zwidth())/2, zwidth
+                );
+            }
+            default:{
+                throw new IllegalArgumentException("Unsupported "+anchor);
+            }
+//                    case WEST:{
+//                        throw new IllegalArgumentException("Unsupported yet");
+//                    }
+//                    case SOUTH_WEST:{
+//                        return forWidth(xmin(), xwidth, ymin(), ywidth() * y);
+//                    }
+//                    case EAST:
+//                    case SOUTH_EAST:
+//                    case NORTH_EAST: {
+//                        double w = xwidth() * x;
+//                        return forWidth(xmin() - (w - xwidth()), w);
+//                    }
+//                    case NORTH:
+//                    case SOUTH:{
+//                        double w = xwidth() * x;
+//                        return forWidth(xmin() - (w - xwidth())/2, w);
+//                    }
+        }
+//        return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
     }
 
     //    @Override
@@ -2146,4 +2236,88 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return getProperty(name);
     }
 
+    public Domain replaceXmin(double newValue){
+        switch (dimension()){
+            case 1:{
+                return Domain.forBounds(newValue,xmax());
+            }
+            case 2:{
+                return Domain.forBounds(newValue,xmax(),ymin(),ymax());
+            }
+            case 3:{
+                return Domain.forBounds(newValue,xmax(),ymin(),ymax(),zmin(),zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+    public Domain replaceXwidth(double newValue){
+        switch (dimension()){
+            case 1:{
+                return Domain.forBounds(xmin(),xmin()+newValue);
+            }
+            case 2:{
+                return Domain.forBounds(xmin(),xmin()+newValue,ymin(),ymax());
+            }
+            case 3:{
+                return Domain.forBounds(xmin(),xmin()+newValue,ymin(),ymax(),zmin(),zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+    public Domain replaceYmin(double newValue){
+        switch (dimension()){
+            case 1:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 2:{
+                return Domain.forBounds(xmin(),xwidth(),newValue,ymax());
+            }
+            case 3:{
+                return Domain.forBounds(xmin(),xmax(),newValue,ymax(),zmin(),zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+    public Domain replaceYwidth(double newValue){
+        switch (dimension()){
+            case 1:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 2:{
+                return Domain.forBounds(xmin(),xmax(),ymin(),ymin()+newValue);
+            }
+            case 3:{
+                return Domain.forBounds(xmin(),xmax(),ymin(),ymin()+newValue,zmin(),zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+    public Domain replaceZmin(double newValue){
+        switch (dimension()){
+            case 1:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 2:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 3:{
+                return Domain.forBounds(xmin(),xmax(),ymin(),ymax(),newValue,zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+    public Domain replaceZwidth(double newValue){
+        switch (dimension()){
+            case 1:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 2:{
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 3:{
+                return Domain.forBounds(xmin(),xmax(),ymin(),ymax(),zmin(),zmin()+newValue);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class Div extends AbstractExprOperator implements Cloneable {
+public class Div extends AbstractExprOperatorBinary implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     private static Expressions.BinaryExprHelper<Div> binaryExprHelper = new Expressions.BinaryExprHelper<Div>() {
@@ -67,6 +67,18 @@ public class Div extends AbstractExprOperator implements Cloneable {
                 return zero;
             }
         }
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined && options.value2Defined;
+            if (def) {
+                defined.set();
+                Vector d = a.div(b.toComplex());
+                //defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
     };
 
     static {
@@ -88,6 +100,11 @@ public class Div extends AbstractExprOperator implements Cloneable {
     public Div(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
         domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
+    }
+
+    @Override
+    protected Expressions.BinaryExprHelper getBinaryExprHelper() {
+        return binaryExprHelper;
     }
 
     public boolean isZeroImpl() {
@@ -144,17 +161,13 @@ public class Div extends AbstractExprOperator implements Cloneable {
 
     @Override
     public ComponentDimension getComponentDimension() {
-        if (isDM()) {
-            for (Expr expression : expressions) {
-                ComponentDimension d = expression.getComponentDimension();
-                if (d.rows != 1 || d.columns != 1) {
-                    return d;
-                }
+        for (Expr expression : expressions) {
+            ComponentDimension d = expression.getComponentDimension();
+            if (d.rows != 1 || d.columns != 1) {
+                return d;
             }
-            return ComponentDimension.SCALAR;
-        } else {
-            throw new ClassCastException();
         }
+        return ComponentDimension.SCALAR;
     }
 
 

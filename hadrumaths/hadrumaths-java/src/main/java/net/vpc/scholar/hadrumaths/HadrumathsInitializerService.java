@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.mvn.PomId;
 import net.vpc.common.mvn.PomIdResolver;
-import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
 
 import java.util.logging.Level;

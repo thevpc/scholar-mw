@@ -5,13 +5,13 @@
 //import net.vpc.scholar.math.DMatrix;
 //import net.vpc.scholar.math.Matrix;
 //import net.vpc.scholar.math.util.ProgressMonitor;
-//import net.vpc.scholar.tmwlib.console.yaxis.PlotAxisSeriesComplex;
+//import net.vpc.scholar.tmwlib.console.yaxis.PlotAxisSeriesSingleValue;
 //import net.vpc.scholar.tmwlib.mom.MomStructure;
 //import net.vpc.scholar.math.plot.console.yaxis.YType;
 //import net.vpc.scholar.math.plot.console.paramsets.ParamSet;
 //import net.vpc.scholar.math.plot.console.ConsoleActionParams;
 //
-//public class PlotTestConvergenceForZin extends PlotAxisSeriesComplex implements Cloneable {
+//public class PlotTestConvergenceForZin extends PlotAxisSeriesSingleValue implements Cloneable {
 //    private int start;
 //    private double error;
 //    private boolean returnActualGpCount;

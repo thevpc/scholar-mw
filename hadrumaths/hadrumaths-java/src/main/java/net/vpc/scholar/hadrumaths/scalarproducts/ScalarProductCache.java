@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.common.util.mon.*;
 
 public interface ScalarProductCache {
 

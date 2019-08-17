@@ -3,15 +3,16 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.console.params.XParamSet;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisSeries;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory;
 
@@ -37,7 +38,7 @@ public class PlotTestField2D extends PlotAxisSeries implements Cloneable {
     }
 
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure, monitor, p);
     }
 
@@ -47,12 +48,12 @@ public class PlotTestField2D extends PlotAxisSeries implements Cloneable {
 //        setPlotType(PlotType.HEATMAP);
 //    }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
 //        XParamSet xAxis = (XParamSet) p.getAxis().getX();
 //        double[] y = structure.toYForDomainCoeff(xAxis.getY());
 //        double[] x = structure.toXForDomainCoeff(xAxis.getValues());
 //        Complex[][] c = structure.computeTestField(x, y, monitor).getCube(axis).getMatrix(Axis.Z, 0);
-//        return new NamedMatrix(c, x, y);
+//        return new PlotMatrix(c, x, y);
 
 
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
@@ -72,9 +73,9 @@ public class PlotTestField2D extends PlotAxisSeries implements Cloneable {
         Complex[][] c = j.getComponent(axis).getArray(Axis.Z, 0);
         if (x.length == 1 && y.length > 0) {
             //inverser les axes
-            return new NamedMatrix(Maths.matrix(c).transpose().getArray(), y, x);
+            return new PlotMatrix(Maths.matrix(c).transpose().getArray(), y, x);
         } else {
-            return new NamedMatrix(c, x, y);
+            return new PlotMatrix(c, x, y);
         }
     }
 

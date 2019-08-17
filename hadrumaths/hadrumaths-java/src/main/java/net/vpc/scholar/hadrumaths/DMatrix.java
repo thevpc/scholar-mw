@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -184,7 +184,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     @Override
-    public TypeReference<Double> getComponentType() {
+    public TypeName<Double> getComponentType() {
         return Maths.$DOUBLE;
     }
     /* ------------------------

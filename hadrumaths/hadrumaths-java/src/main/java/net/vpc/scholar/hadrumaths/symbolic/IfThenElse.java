@@ -301,6 +301,7 @@ public class IfThenElse extends GenericFunctionXYZ implements Cloneable {
             Out<Range> r1 = new Out<Range>();
 
             Complex[][] ret1 = getXArgument().toDC().computeComplex(x, y, d0, r1);
+            ExpressionsDebug.debug_check(ret1,r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();

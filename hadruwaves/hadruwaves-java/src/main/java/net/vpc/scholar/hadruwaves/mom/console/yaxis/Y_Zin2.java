@@ -10,7 +10,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //import net.vpc.scholar.math.plot.plotconsole.ConsoleActionParams;
 //
 //@Deprecated
-//public class Y_Zin2 extends PlotAxisSeriesComplex implements Cloneable {
+//public class Y_Zin2 extends PlotAxisSeriesSingleValue implements Cloneable {
 //    private int x;
 //    private int y;
 //

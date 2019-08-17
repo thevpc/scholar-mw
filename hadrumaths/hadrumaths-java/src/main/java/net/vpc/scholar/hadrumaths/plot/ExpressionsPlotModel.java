@@ -2,12 +2,10 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.ExternalLibrary;
-import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadruplot.*;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by vpc on 6/4/17.
@@ -17,12 +15,12 @@ public class ExpressionsPlotModel extends BasePlotModel {
     private Domain domain;
     private int xprec = -1;
     private int yprec = -1;
-    private ComplexAsDouble complexAsDouble = ComplexAsDouble.ABS;
+    private PlotDoubleConverter toDoubleConverter = PlotDoubleConverter.ABS;
     private Expr[] expressions = ArrayUtils.EMPTY_EXPR_ARRAY;
     private PlotType plotType = PlotType.CURVE;
     private boolean constX = false;
     private Map<String, Object> properties;
-    private Set<ExternalLibrary> preferredLibraries;
+    private String libraries;
     private CellPosition[] selectedAxis;
 
     public ExpressionsPlotModel() {
@@ -64,12 +62,12 @@ public class ExpressionsPlotModel extends BasePlotModel {
         return this;
     }
 
-    public ComplexAsDouble getComplexAsDouble() {
-        return complexAsDouble;
+    public PlotDoubleConverter getComplexAsDouble() {
+        return toDoubleConverter;
     }
 
-    public ExpressionsPlotModel setComplexAsDouble(ComplexAsDouble complexAsDouble) {
-        this.complexAsDouble = complexAsDouble;
+    public ExpressionsPlotModel setComplexAsDouble(PlotDoubleConverter toDoubleConverter) {
+        this.toDoubleConverter = toDoubleConverter;
         return this;
     }
 
@@ -80,6 +78,11 @@ public class ExpressionsPlotModel extends BasePlotModel {
     public ExpressionsPlotModel setConstX(boolean constX) {
         this.constX = constX;
         return this;
+    }
+
+    @Override
+    public ExpressionsPlotModel setLibraries(String libraries) {
+        return (ExpressionsPlotModel) super.setLibraries(libraries);
     }
 
     public Expr[] getExpressions() {
@@ -106,15 +109,6 @@ public class ExpressionsPlotModel extends BasePlotModel {
 
     public ExpressionsPlotModel setProperties(Map<String, Object> properties) {
         this.properties = properties;
-        return this;
-    }
-
-    public Set<ExternalLibrary> getPreferredLibraries() {
-        return preferredLibraries;
-    }
-
-    public ExpressionsPlotModel setPreferredLibraries(Set<ExternalLibrary> preferredLibraries) {
-        this.preferredLibraries = preferredLibraries;
         return this;
     }
 

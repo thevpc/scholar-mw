@@ -141,11 +141,6 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return (DoubleToDouble) super.clone();
     }
 
-    @Override
-    public String toString() {
-        return FormatFactory.toString(this);
-    }
-
     public DoubleToComplex toDC() {
         return new ComplexValue(Complex.valueOf(getValue()), getDomain());
     }
@@ -532,26 +527,6 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     public boolean contains(double x, double y, double z) {
         return domain.contains(x, y, z);
-    }
-
-    @Override
-    public double[] computeDouble(double[] x) {
-        return computeDouble(x, (Domain) null, null);
-    }
-
-    @Override
-    public double[] computeDouble(double x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        return computeDouble(x, y, z, (Domain) null, null);
-    }
-
-    @Override
-    public double[][] computeDouble(double[] x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
     }
 
     @Override

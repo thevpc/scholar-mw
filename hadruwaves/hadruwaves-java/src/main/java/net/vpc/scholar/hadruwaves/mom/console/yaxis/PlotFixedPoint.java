@@ -7,7 +7,7 @@
 //import net.vpc.scholar.math.plot.console.yaxis.YType;
 //import net.vpc.scholar.math.plot.console.ConsoleActionParams;
 //
-//public class PlotFixedPoint extends PlotAxisSeriesComplex implements Cloneable {
+//public class PlotFixedPoint extends PlotAxisSeriesSingleValue implements Cloneable {
 //    private int x;
 //    private int y;
 //

@@ -1,13 +1,15 @@
 package net.vpc.scholar.hadruwaves.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadruplot.PlotAxisSeriesSingleValue;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruwaves.Physics;
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 
-public class PlotSelfL extends PlotAxisSeriesComplex implements Cloneable {
+public class PlotSelfL extends PlotAxisSeriesSingleValue implements Cloneable {
     private int x;
     private int y;
 
@@ -22,8 +24,9 @@ public class PlotSelfL extends PlotAxisSeriesComplex implements Cloneable {
     }
 
     @Override
-    protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
-        Complex z = structure.self().monitor(this).computeMatrix().get(this.x, this.y);
-        return z.div(Complex.I(Physics.omega(structure.getFrequency())));
+    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        MomStructure ss = (MomStructure) structure;
+        Complex z = ss.self().monitor(this).computeMatrix().get(this.x, this.y);
+        return z.div(Complex.I(Physics.omega(ss.getFrequency())));
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class Mul extends AbstractExprOperator implements Cloneable {
+public class Mul extends AbstractExprOperatorBinary implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     private static Expressions.BinaryExprHelper<Mul> binaryExprHelper = new Expressions.BinaryExprHelper<Mul>() {
@@ -66,6 +66,18 @@ public class Mul extends AbstractExprOperator implements Cloneable {
                 return zero;
             }
         }
+
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined && options.value2Defined;
+            if (def) {
+                Vector d = a.mul(b.toComplex());
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
     };
 
     static {
@@ -89,7 +101,7 @@ public class Mul extends AbstractExprOperator implements Cloneable {
     private int domainDim;
 
     public Mul(List<Expr> list) {
-        this(list.toArray(new Expr[list.size()]));
+        this(list.toArray(new Expr[0]));
     }
 
     public Mul(TVector<Expr> list) {
@@ -124,6 +136,11 @@ public class Mul extends AbstractExprOperator implements Cloneable {
 //        if(domainsCount>1){
 //            System.out.println("Why");
 //        }
+    }
+
+    @Override
+    protected Expressions.BinaryExprHelper getBinaryExprHelper() {
+        return binaryExprHelper;
     }
 
     public boolean isZeroImpl() {

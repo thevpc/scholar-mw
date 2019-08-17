@@ -45,7 +45,7 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
     }
 
     public <T> void clear() {
-        for (ExpressionRewriter set : sets.toArray(new ExpressionRewriter[sets.size()])) {
+        for (ExpressionRewriter set : sets.toArray(new ExpressionRewriter[0])) {
             remove(set);
         }
         sets.clear();

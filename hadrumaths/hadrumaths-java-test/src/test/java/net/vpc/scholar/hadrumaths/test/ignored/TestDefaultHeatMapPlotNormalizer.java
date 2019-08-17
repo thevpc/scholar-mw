@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.test.ignored;
 
-import net.vpc.scholar.hadrumaths.plot.heatmap.DefaultHeatMapPlotNormalizer;
+import net.vpc.scholar.hadruplot.backends.simple.heatmap.DefaultPlotNormalizer;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.plot.heatmap.DefaultHeatMapPlotNormalizer;
  */
 public class TestDefaultHeatMapPlotNormalizer {
     public static void main(String[] args) {
-        DefaultHeatMapPlotNormalizer m=new DefaultHeatMapPlotNormalizer();
+        DefaultPlotNormalizer m=new DefaultPlotNormalizer();
         double[][] matrix = m.normalize(new double[][]{{1, 2}, {3, 4}});
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {

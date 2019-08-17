@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
@@ -18,14 +18,14 @@ import net.vpc.scholar.hadruwaves.str.SourceEvaluator;
 public class DefaultSourceEvaluator implements SourceEvaluator {
     public static final DefaultSourceEvaluator INSTANCE = new DefaultSourceEvaluator();
 
-    public Matrix computePlanarSources(MWStructure structure, double[] x, double[] y, Axis axis, ProgressMonitor monitor) {
+    public Matrix computePlanarSources(MWStructure structure, final double[] x, final double[] y, final Axis axis, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-        ProgressMonitor mon = ProgressMonitorFactory.nonnull(monitor);
-        Sources ss = str.getSources();
+        final ProgressMonitor mon = ProgressMonitorFactory.nonnull(monitor);
+        final Sources ss = str.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();
         }
-        String monName = getClass().getSimpleName();
+        final String monName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(mon, monName, new MonitoredAction<Matrix>() {
             @Override
             public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {

@@ -2,6 +2,7 @@ package net.vpc.scholar.hadruwaves;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadruwaves.util.Impedance;
 
 import java.io.Serializable;
 
@@ -12,7 +13,7 @@ public final class ModeInfo implements Serializable,Cloneable {
     public double cutOffFrequency;
     public Complex firstBoxSpaceGamma;
     public Complex secondBoxSpaceGamma;
-    public Complex impedance;
+    public Impedance impedance;
     public boolean propagating;
     public DoubleToVector fn;
 

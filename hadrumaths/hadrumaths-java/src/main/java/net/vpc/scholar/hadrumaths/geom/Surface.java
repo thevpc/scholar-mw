@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.geom;
 
+import net.vpc.common.util.MinMax;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
-import net.vpc.scholar.hadrumaths.MinMax;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -350,7 +350,7 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
 
     public Polygon toPolygon() {
         if (isPolygonal()) {
-            return new Polygon(points.toArray(new Point[points.size()]));
+            return new Polygon(points.toArray(new Point[0]));
         }
         throw new IllegalArgumentException("Not a Polygon");
     }

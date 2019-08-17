@@ -138,7 +138,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
         }
         DoubleToVector fn = null;
         fn = Maths.vector((fx), (fy));
-        fn = (DoubleToVector) fn.setTitle(borders.toString() + "/" + i);
+        fn = fn.setTitle(borders.toString() + "/" + i).toDV();
         return fn;
     }
 

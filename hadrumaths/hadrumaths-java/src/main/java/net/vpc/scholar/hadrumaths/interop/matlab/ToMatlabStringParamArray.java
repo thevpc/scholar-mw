@@ -54,7 +54,7 @@ public class ToMatlabStringParamArray implements Cloneable {
     }
 
     public ToMatlabStringParam[] toArray() {
-        return (ToMatlabStringParam[]) paramsTable.values().toArray(new ToMatlabStringParam[paramsTable.size()]);
+        return (ToMatlabStringParam[]) paramsTable.values().toArray(new ToMatlabStringParam[0]);
     }
 
     public ToMatlabStringParamArray clone() {

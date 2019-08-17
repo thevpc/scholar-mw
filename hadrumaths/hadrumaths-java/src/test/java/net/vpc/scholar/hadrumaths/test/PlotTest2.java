@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
-import net.vpc.scholar.hadrumaths.plot.PlotBuilder;
-import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
+import net.vpc.scholar.hadruplot.PlotBuilder;
+import net.vpc.scholar.hadruplot.console.PlotConsole;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,13 +24,13 @@ public class PlotTest2 {
                     f.parse("2017-12-06"),
                     f.parse("2017-12-07"),
             };
-            PlotBuilder plotter = c.plotter().zformat("frequency");
-//        PlotBuilder plotter = Plot.builder();//c.plotter();
+            PlotBuilder plotter = c.newPlot().zformat("frequency");
+//        PlotBuilder newPlot = Plot.builder();//c.newPlot();
             plotter.asHeatMap().title("P1").cd("/A").xsamples(dates).plot(doubles);
-//            plotter.title("P2").cd("/A/B").plot(doubles);
-//            plotter.title("P3").cd("/A/B/C").plot(doubles);
-//            plotter.title("P4").cd("/A/B/C").plot(doubles);
-//        c.plotter().update("Toto").plot(new double[]{1,15,13,3,4,1,9});
+//            newPlot.title("P2").cd("/A/B").plot(doubles);
+//            newPlot.title("P3").cd("/A/B/C").plot(doubles);
+//            newPlot.title("P4").cd("/A/B/C").plot(doubles);
+//        c.newPlot().update("Toto").plot(new double[]{1,15,13,3,4,1,9});
         } catch (ParseException e) {
             e.printStackTrace();
         }

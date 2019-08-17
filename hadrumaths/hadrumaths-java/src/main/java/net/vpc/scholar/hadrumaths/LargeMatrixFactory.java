@@ -43,7 +43,7 @@ public abstract class LargeMatrixFactory extends AbstractMatrixFactory implement
         if (id == null) {
             throw new IllegalArgumentException("Id should not be null");
         }
-        this.id = StringUtils.isEmpty(id) ? "large-matrix" : id;
+        this.id = StringUtils.isBlank(id) ? "large-matrix" : id;
         this.sparse = sparse;
         if (defaultValue == null) {
             defaultValue = Complex.ZERO;

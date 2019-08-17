@@ -1,24 +1,24 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadruplot.console.params.*;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.params.*;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxis;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.PlotMatrix;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxis;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeType;
-import net.vpc.scholar.hadruwaves.console.PlotEvaluator;
+import net.vpc.scholar.hadruplot.PlotEvaluator;
 import net.vpc.scholar.hadruwaves.console.params.FreqParam;
 import net.vpc.scholar.hadruwaves.console.params.OmegaParam;
-import net.vpc.scholar.hadruwaves.console.plot.PlotConstantMatrix;
+import net.vpc.scholar.hadruplot.PlotConstantMatrix;
 import net.vpc.scholar.hadruwaves.console.plot.PlotConstantVDiscrete;
-import net.vpc.scholar.hadruwaves.console.plot.PlotValueMatrix;
+import net.vpc.scholar.hadruplot.PlotValueMatrix;
 import net.vpc.scholar.hadruwaves.console.plot.PlotValueVDiscrete;
 import net.vpc.scholar.hadruwaves.console.yaxis.*;
 import net.vpc.scholar.hadruwaves.mom.console.params.*;
@@ -117,47 +117,47 @@ public class MomParamFactory extends AbstractFactory {
             });
         }
 
-        public static PlotAxis namedMatrix(String name, NamedMatrix value, PlotType plotType) {
+        public static PlotAxis namedMatrix(String name, PlotMatrix value, PlotType plotType) {
             return new PlotConstantMatrix(name, value, plotType);
         }
 
-        public static PlotAxis namedMatrix(String name, PlotEvaluator<NamedMatrix> value, PlotType plotType) {
+        public static PlotAxis namedMatrix(String name, PlotEvaluator<PlotMatrix> value, PlotType plotType) {
             return new PlotValueMatrix(name, value, plotType);
         }
 
         public static PlotAxis matrix(String name, Matrix value, PlotType plotType) {
-            return new PlotConstantMatrix(name, new NamedMatrix(value), plotType);
+            return new PlotConstantMatrix(name, new PlotMatrix(value.getArray()), plotType);
         }
 
         public static PlotAxis matrix(String name, final PlotEvaluator<Matrix> value, PlotType plotType) {
-            return new PlotValueMatrix(name, new PlotEvaluator<NamedMatrix>() {
+            return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
-                public NamedMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
-                    return new NamedMatrix(value.computeValue(source, monitor, p));
+                public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
+                    return new PlotMatrix(value.computeValue(source, monitor, p).getArray());
                 }
             }, plotType);
         }
 
         public static PlotAxis vector(String name, Vector value, PlotType plotType) {
-            return new PlotConstantMatrix(name, new NamedMatrix(value.toMatrix()), plotType);
+            return new PlotConstantMatrix(name, new PlotMatrix(value.toMatrix().getArray()), plotType);
         }
 
         public static PlotAxis vector(String name, Vector value) {
             if (value.isColumn()) {
                 value = value.transpose();
             }
-            return new PlotConstantMatrix(name, new NamedMatrix(value.toMatrix()), PlotType.CURVE);
+            return new PlotConstantMatrix(name, new PlotMatrix(value.toMatrix().getArray()), PlotType.CURVE);
         }
 
         public static PlotAxis vector(String name, final PlotEvaluator<Vector> value, PlotType plotType) {
-            return new PlotValueMatrix(name, new PlotEvaluator<NamedMatrix>() {
+            return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
-                public NamedMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
+                public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
                     Vector vector = value.computeValue(source, monitor, p);
                     if (vector.isColumn()) {
                         vector = vector.transpose();
                     }
-                    return new NamedMatrix(vector.toMatrix());
+                    return new PlotMatrix(vector.toMatrix().getArray());
                 }
             }, plotType);
         }
@@ -219,9 +219,9 @@ public class MomParamFactory extends AbstractFactory {
             return new CircuitTypeParam();
         }
 
-        public static Param widthFactor() {
-            return new WidthFactorParam();
-        }
+//        public static Param widthFactor() {
+//            return new WidthFactorParam();
+//        }
 
         public static Param width() {
             return new BoxWithParam();
@@ -235,9 +235,9 @@ public class MomParamFactory extends AbstractFactory {
             return new FrequencyByWidthFactorParam();
         }
 
-        public static Param xminFactor() {
-            return new BoxXminFactorParam();
-        }
+//        public static Param xminFactor() {
+//            return new BoxXminFactorParam();
+//        }
 
         public static Param xmin() {
             return new BoxXminParam();
@@ -436,17 +436,17 @@ public class MomParamFactory extends AbstractFactory {
             return Maths.doubleParamSet(params.xmin());
         }
 
-        public static DoubleArrayParamSet xminFactor() {
-            return Maths.doubleParamSet(params.xminFactor());
-        }
+//        public static DoubleArrayParamSet xminFactor() {
+//            return Maths.doubleParamSet(params.xminFactor());
+//        }
 
         public static DoubleArrayParamSet ymin() {
             return Maths.doubleParamSet(params.ymin());
         }
 
-        public static DoubleArrayParamSet widthFactor() {
-            return Maths.doubleParamSet(params.widthFactor());
-        }
+//        public static DoubleArrayParamSet widthFactor() {
+//            return Maths.doubleParamSet(params.widthFactor());
+//        }
 
         public static DoubleArrayParamSet freqByWidthFactor() {
             return Maths.doubleParamSet(params.frequencyByWidthFactor());

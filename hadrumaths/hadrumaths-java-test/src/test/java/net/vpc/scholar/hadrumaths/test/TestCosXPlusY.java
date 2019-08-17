@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
+import static net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -207,7 +207,7 @@ public class TestCosXPlusY {
                     Complex v3 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1.simplify(), e2.simplify());
                     Complex v4 = ScalarProductOperatorFactory.quad().eval(dom, e1.simplify(), e2.simplify());
                     System.out.println(v1 + " ; " + v2 + " ; " + v3 + " ; " + v4 + " ; ");
-                    IOUtils.saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
+                    saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
                     v1 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1, e2);
                     Assert.fail("FAIL...");
                 }

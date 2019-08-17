@@ -4,6 +4,7 @@ import java.util.logging.{Level, Logger}
 
 import net.vpc.common.mvn.{PomId, PomIdResolver}
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
+import net.vpc.scholar.hadruplot.Plot
 
 /**
   * Created by vpc on 7/18/17.

@@ -5,14 +5,14 @@
 
 package net.vpc.scholar.hadrumaths.convergence;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Normalizable;
-import net.vpc.scholar.hadrumaths.Param;
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.console.params.Param;
+import net.vpc.scholar.hadruplot.console.params.ParamSet;
 
 import java.io.PrintStream;
 import java.util.HashMap;

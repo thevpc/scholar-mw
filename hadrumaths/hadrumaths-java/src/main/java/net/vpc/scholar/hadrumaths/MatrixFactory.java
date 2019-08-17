@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
+import java.io.UncheckedIOException;
+
 import java.io.File;
 
 /**
@@ -101,7 +102,7 @@ public interface MatrixFactory extends TMatrixFactory<Complex> {
 
     Matrix newRandomImag(int m, int n);
 
-    Matrix load(File file) throws RuntimeIOException;
+    Matrix load(File file) throws UncheckedIOException;
 
     void close();
 

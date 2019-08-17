@@ -1,18 +1,20 @@
 package net.vpc.scholar.hadruwaves.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.PlotAxisSeriesSingleValue;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
 
-public class ModeModeFunctionsConvergence extends PlotAxisSeriesComplex implements Cloneable {
+public class ModeModeFunctionsConvergence extends PlotAxisSeriesSingleValue implements Cloneable {
 
     public ModeModeFunctionsConvergence(YType... type) {
         super("FnConvergence",type);
     }
 
-    protected Complex computeComplex(MomStructure structure, ParamSet x, ConsoleActionParams p) {
-        return Complex.valueOf(structure.getModeFunctionsCount());
+    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        return Complex.valueOf(((MomStructure)structure).getModeFunctionsCount());
     }
 }

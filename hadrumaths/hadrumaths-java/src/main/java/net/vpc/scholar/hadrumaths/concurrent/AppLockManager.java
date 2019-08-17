@@ -25,7 +25,7 @@ public class AppLockManager {
 
     public AppLockListener[] getListeners() {
         synchronized (listeners) {
-            return listeners.toArray(new AppLockListener[listeners.size()]);
+            return listeners.toArray(new AppLockListener[0]);
         }
     }
 

@@ -1,15 +1,15 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.TVectorCell;
-import net.vpc.common.util.TypeReference;
 
 /**
  * Created by vpc on 2/14/15.
  */
 public interface ExprSequenceFactory<T extends Expr> {
-    TypeReference<T> getComponentType();
+    TypeName<T> getComponentType();
 
     TList<T> newSequence(T pattern, DoubleParam[] vars, int[] max);
 

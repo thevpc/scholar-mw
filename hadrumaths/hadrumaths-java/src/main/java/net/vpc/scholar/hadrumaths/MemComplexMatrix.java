@@ -917,6 +917,18 @@ public final class MemComplexMatrix extends AbstractMatrix implements Serializab
     }
 
     @Override
+    public Matrix abssqr() {
+        Complex[][] d = new Complex[getRowCount()][getColumnCount()];
+        for (int i = 0; i < d.length; i++) {
+            for (int j = 0; j < d[i].length; j++) {
+                d[i][j] = Complex.valueOf(elements[i][j].absdblsqr());
+            }
+        }
+        return newMemMatrix(d);
+    }
+
+
+    @Override
     public double condHadamard() {
         Complex det = det();
         double x = 1;

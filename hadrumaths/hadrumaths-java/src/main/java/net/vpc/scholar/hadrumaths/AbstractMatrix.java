@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.TypeReference;
+import java.io.UncheckedIOException;
+import net.vpc.common.util.TypeName;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -473,6 +473,10 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         return mul(other.inv());
     }
 
+    public Matrix rem(TMatrix<Complex> other) {
+        return toComplex().rem(other.toComplex()).toMatrix();
+    }
+
     public Matrix mul(TMatrix<Complex> other) {
         if (getColumnCount() != other.getRowCount()) {
             throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
@@ -653,6 +657,18 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 X.set(i, j, get(i, j).sinh());
+            }
+        }
+        return X;
+    }
+
+    public Matrix sincard() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        Matrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sincard());
             }
         }
         return X;
@@ -1747,11 +1763,11 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
 //        }
 //        return B;
     //    }
-    public void store(String file) throws RuntimeIOException {
+    public void store(String file) throws UncheckedIOException {
         store(new File(Maths.Config.expandPath(file)));
     }
 
-    public void store(File file) throws RuntimeIOException {
+    public void store(File file) throws UncheckedIOException {
         FileOutputStream fileOutputStream = null;
         try {
             try {
@@ -1762,16 +1778,16 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
-    public void store(PrintStream stream) throws RuntimeIOException {
+    public void store(PrintStream stream) throws UncheckedIOException {
         store(stream, null, null);
     }
 
 
-    public void store(String file, String commentsChar, String varName) throws RuntimeIOException {
+    public void store(String file, String commentsChar, String varName) throws UncheckedIOException {
         PrintStream out = null;
         try {
             try {
@@ -1783,11 +1799,11 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
-    public void store(File file, String commentsChar, String varName) throws RuntimeIOException {
+    public void store(File file, String commentsChar, String varName) throws UncheckedIOException {
         PrintStream out = null;
         try {
             try {
@@ -1799,12 +1815,12 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
 
-    public void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException {
+    public void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException {
         int columns = getColumnCount();
         int rows = getRowCount();
         int[] colsWidth = new int[columns];
@@ -1870,7 +1886,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         }
     }
 
-    public void read(File file) throws RuntimeIOException {
+    public void read(File file) throws UncheckedIOException {
         BufferedReader r = null;
         try {
             try {
@@ -1881,11 +1897,11 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
-    public void read(BufferedReader reader) throws RuntimeIOException {
+    public void read(BufferedReader reader) throws UncheckedIOException {
         int rows = getRowCount();
         int columns = getColumnCount();
         ArrayList<ArrayList<Complex>> l = new ArrayList<ArrayList<Complex>>(rows > 0 ? rows : 10);
@@ -1906,7 +1922,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                     if (pos == START) {
                         boolean isFirstLine = (line.startsWith("["));
                         if (!isFirstLine) {
-                            throw new RuntimeIOException("Expected a '[' but found '" + line + "'");
+                            throw new UncheckedIOException(new IOException("Expected a '[' but found '" + line + "'"));
                         }
                         line = line.substring(1, line.length());
                         pos = LINE;
@@ -1936,7 +1952,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
 
         if (rows == l.size() && columns == cols) {
@@ -2052,6 +2068,18 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 X.set(i, j, get(i, j).absdbl(), 0);
+            }
+        }
+        return X;
+    }
+
+    public Matrix abssqr() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        Matrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).absdblsqr(), 0);
             }
         }
         return X;
@@ -2353,7 +2381,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName getComponentType() {
         return Maths.$COMPLEX;
     }
 
@@ -2469,7 +2497,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
 
 
     @Override
-    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+    public <R> boolean isConvertibleTo(TypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)

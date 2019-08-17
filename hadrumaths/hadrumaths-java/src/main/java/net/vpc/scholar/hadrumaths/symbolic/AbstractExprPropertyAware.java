@@ -72,15 +72,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
         return false;
     }
 
-    @Override
-    public Complex toComplex() {
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
-    }
-
-    @Override
-    public Matrix toMatrix() {
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
-    }
 
     @Override
     public Expr clone() {
@@ -98,11 +89,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
 //        clone.name = name;
 //            clone._cache_isProperties = _cache_isProperties==null?null:(BitSet) _cache_isProperties.clone();
         return clone;
-    }
-
-    @Override
-    public String toString() {
-        return FormatFactory.toString(this);
     }
 
     @Override
@@ -139,58 +125,6 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
 //        int result = name != null ? name.hashCode() : 0;
 //        result = 31 * result + (properties != null ? properties.hashCode() : 0);
 //        return result;
-    }
-
-
-//    @Override
-//    public boolean isScalarExpr(){
-//        get
-//        return false;
-//    }
-
-    @Override
-    public Expr simplify() {
-        return Maths.simplify(this);
-    }
-
-    @Override
-    public Expr normalize() {
-        return Maths.normalize(this);
-    }
-
-//    public Matrix computeMatrix(double x, double y, double z) {
-//        throw new IllegalArgumentException("computeMatrix() Not yet supported in " + getClass().getName());
-//    }
-
-//    public Complex computeComplexArg(double x, double y, double z) {
-//        return Expressions.computeComplexArg((DoubleToComplex) this, x, y, z);
-//    }
-
-//    public double computeDouble(double x, double y, double z) {
-//        return toDC().computeComplexArg(x, y, z).toDouble();
-//    }
-
-
-//    public Complex[][][] computeComplexArg(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-//        throw new IllegalArgumentException("computeComplexArg() Not yet supported in " + getClass().getName());
-//    }
-//
-//    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-//        throw new IllegalArgumentException("computeDouble() Not yet supported in " + getClass().getName());
-//    }
-//
-//    public CMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-//        throw new IllegalArgumentException("computeMatrix() Not yet supported in " + getClass().getName());
-//    }
-
-//    @Override
-//    public int getDomainDimension() {
-//        throw new IllegalArgumentException("getDomainDimension() Not yet supported in "+getClass().getName());
-//    }
-
-    @Override
-    public int getDomainDimension() {
-        return getDomain().getDimension();
     }
 
     protected boolean isScalarExprImpl() {

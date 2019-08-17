@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.console;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.plot.console.*;
+import net.vpc.scholar.hadruplot.console.*;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
 import net.vpc.scholar.hadrumaths.geom.GeometryList;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;

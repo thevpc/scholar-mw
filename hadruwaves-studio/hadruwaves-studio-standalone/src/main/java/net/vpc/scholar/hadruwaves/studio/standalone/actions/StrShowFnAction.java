@@ -1,8 +1,6 @@
 package net.vpc.scholar.hadruwaves.studio.standalone.actions;
 
-import net.vpc.lib.pheromone.ariana.util.Resources;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
-import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
@@ -31,7 +29,7 @@ public class StrShowFnAction extends StructureAction {
                 String desc="=>E(x=" + b.getExDescription()+",y="+b.getEyDescription()+") ; J(x="+b.getJxDescription()+",y="+b.getJxDescription()+")";
                 plotter().title(getTitle()+" "+desc).domain(jxy.getStructure().getDomain()).plot(jxy.getStructure().getModeFunctions().arr());
                 
-//                FunctionsXYPlotPanel panel = new FunctionsXYPlotPanel(getTitle()+" "+desc, jxy.getStructure().getDomain(), ComplexAsDouble.ABS, base.fn());
+//                FunctionsXYPlotPanel panel = new FunctionsXYPlotPanel(getTitle()+" "+desc, jxy.getStructure().getDomain(), PlotDoubleConverter.ABS, base.fn());
 
 //                etRenderer().getWindowManager().addWindow(getKey(),
 //                getTitle(),

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.console.xlabels;
 
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamSet;
-import net.vpc.scholar.hadrumaths.plot.console.xlabels.AbstractXLabel;
+import net.vpc.scholar.hadruplot.console.params.ParamSet;
+import net.vpc.scholar.hadruplot.console.xlabels.AbstractXLabel;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**

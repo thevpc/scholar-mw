@@ -1,22 +1,23 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitorCreator;
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheAware;
 import net.vpc.scholar.hadrumaths.cache.HashValue;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.params.ParamTarget;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.console.ConsoleLogger;
+import net.vpc.scholar.hadruplot.console.NullConsoleLogger;
+import net.vpc.scholar.hadruplot.console.params.ParamTarget;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-import net.vpc.scholar.hadrumaths.util.log.TLog;
-import net.vpc.scholar.hadrumaths.util.log.TLogNull;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.builders.*;
 import net.vpc.scholar.hadruwaves.mom.builders.MomMatrixABuilder;
@@ -32,6 +33,7 @@ import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadruwaves.mom.str.*;
 import net.vpc.scholar.hadruwaves.mom.str.momstr.*;
 import net.vpc.scholar.hadruwaves.str.*;
+import net.vpc.scholar.hadruwaves.util.Impedance;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -39,9 +41,6 @@ import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-
-import static net.vpc.scholar.hadruwaves.Physics.K0;
-import static net.vpc.scholar.hadruwaves.Physics.lambda;
 
 public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpable, ConsoleAwareObject, CacheAware {
 
@@ -59,6 +58,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     private HashMap<String, Object> parameters = new HashMap<String, Object>();
     private MomStructureHintsManager hintsManager;
     private ElectricFieldEvaluator electricFieldEvaluator;
+    private FarFieldEvaluator farFieldEvaluator;
     private ElectricFieldFundamentalEvaluator electricFieldFundamentalEvaluator;
     private CurrentEvaluator currentEvaluator;
     private TestFieldEvaluator testFieldEvaluator;
@@ -72,12 +72,13 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     private ScalarProductOperator scalarProductOperator;
     /**
      * user objects are not included in the dump and could be used as extra info
-     * on structure extra info should not influence structure caracteristics
+     * on structure extra info should not influence structure characteristics
      * calculation
      */
     private HashMap<String, Object> userObjects = new HashMap<String, Object>();
     //    private ModeFunctions modeFunctions = ModeFunctionsFactory.createBox("EMEM");
     private TestFunctions testFunctions = null;
+    private Impedance serialZs = Physics.impedance(Complex.ZERO);
     /*new GpAdaptativeMesh(
      new DefaultDPolygonList(new DomainXY(0, 0, 100, 100)),
      new DefaultDPolygonList(new DomainXY(0, 0, 100, 100)),
@@ -90,7 +91,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
      * domaine de la structure
      */
     //    private transient HashMap<String, Object> hints = new HashMap<String, Object>();
-    private TLog log = TLogNull.SILENT;
+    private ConsoleLogger log = NullConsoleLogger.INSTANCE;
     private StrLayer[] layers = StrLayer.NO_LAYERS;
     /**
      * mode functions count
@@ -105,26 +106,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //    private int testFunctionsCount = 4;
     private BoxSpace firstBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1,0);
     private BoxSpace secondBoxSpace = new BoxSpace(BoxLimit.NOTHING, 1, -1,0);
-    /**
-     * A/Lambda;
-     */
-    private double widthFactor = Double.NaN;
-    /**
-     * B/A;
-     */
-    private double heightFactor = Double.NaN;
-    /**
-     * largeur de la sructure (along OY)
-     */
-    private double ydim;
-    /**
-     * longueur de la structure (along OX)
-     */
-    private double xdim;
-    private double xmin;
-    private double ymin = 0;
-    private double xminFactor = Double.NaN;
-    private double yminFactor = Double.NaN;
+    private Domain domain;
     /**
      * frequency
      */
@@ -133,6 +115,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     private String name;
     private boolean rebuild = true;
     private HashValue buildHash;
+    private ProgressMonitorCreator monitor;
     private MWStructureErrorHandler errorHandler = new DefaultMomStructureErrorHandler();
     private PropertyChangeSupport pcs;
     private ModeFunctionsDelegate modeFunctionsDelegate = new ModeFunctionsDelegate(null);
@@ -180,6 +163,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             ;
             this.hintsManager.setAll(other.getHintsManager());
             this.electricFieldEvaluator = other.electricFieldEvaluator;
+            this.farFieldEvaluator = other.farFieldEvaluator;
             this.electricFieldFundamentalEvaluator = other.electricFieldFundamentalEvaluator;
             this.currentEvaluator = other.currentEvaluator;
             this.testFieldEvaluator = other.testFieldEvaluator;
@@ -202,14 +186,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             this.projectType = other.projectType;
             this.firstBoxSpace = other.firstBoxSpace;
             this.secondBoxSpace = other.secondBoxSpace;
-            this.widthFactor = other.widthFactor;
-            this.heightFactor = other.heightFactor;
-            this.ydim = other.ydim;
-            this.xdim = other.xdim;
-            this.xmin = other.xmin;
-            this.ymin = other.ymin;
-            this.xminFactor = other.xminFactor;
-            this.yminFactor = other.yminFactor;
+            this.domain = other.domain;
             this.frequency = other.frequency;
             this.name = other.name;
 //            this.rebuild = true;
@@ -217,8 +194,34 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             this.errorHandler = other.errorHandler;
             //this.pcs;
             this.modeFunctionsDelegate.setBase(other.getModeFunctions().clone());
-            ;
+            this.serialZs =other.serialZs;
+            this.monitor =other.monitor;
         }
+    }
+
+    @Override
+    public ProgressMonitorCreator getMonitor() {
+        return monitor;
+    }
+
+    @Override
+    public ProgressMonitorCreator monitor() {
+        return getMonitor();
+    }
+
+    @Override
+    public MomStructure setMonitor(ProgressMonitorCreator monitor) {
+        this.monitor = monitor;
+        return this;
+    }
+    @Override
+    public MomStructure monitor(ProgressMonitorCreator monitor) {
+        setMonitor(monitor);
+        return this;
+    }
+
+    public static MomStructure PPPP(Domain domain, double frequency, int modes, BoxSpace bottom, BoxSpace upper) {
+        return createMomStructure(WallBorders.PPPP, domain, frequency, modes, bottom, upper);
     }
 
     public static MomStructure EEEE(Domain domain, double frequency, int modes, BoxSpace bottom, BoxSpace upper) {
@@ -251,19 +254,30 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return createMomStructure(WallBorders.valueOf(borders), domain, frequency, modes, bottom, upper);
     }
 
+    public Impedance getSerialZs() {
+        return serialZs;
+    }
+
+    public MomStructure setSerialZs(Impedance serialZs) {
+        this.serialZs = serialZs ==null? Physics.impedance(Complex.ZERO): serialZs;
+        return this;
+    }
+
     public MomStructureHintsManager getHintsManager() {
         return hintsManager;
     }
 
-    public void loadProject(String projectFile) throws ParseException, IOException {
+    public MomStructure loadProject(String projectFile) throws ParseException, IOException {
         loadProject(new MomProject(new File(Maths.Config.expandPath(projectFile))));
+        return this;
     }
 
-    public void loadProject(File projectFile) throws ParseException, IOException {
+    public MomStructure loadProject(File projectFile) throws ParseException, IOException {
         loadProject(new MomProject(projectFile));
+        return this;
     }
 
-    public void loadProject(MomProject structureConfig) {
+    public MomStructure loadProject(MomProject structureConfig) {
         persistentCache.setRootFolder(HadrumathsIOUtils.createHFile(structureConfig.getConfigFile().getParent() + "/" + structureConfig.getConfigFile().getName() + ".cache"));
         structureConfig.recompile();
         getHintsManager().setHintFnMode(structureConfig.getHintFnModes());
@@ -275,9 +289,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         setProjectType(structureConfig.getProjectType());
         ArrayList<StrLayer> ll = new ArrayList<StrLayer>();
         for (MomProjectExtraLayer projectLayer : structureConfig.getLayers().getExtraLayers()) {
-            ll.add(new StrLayer(projectLayer.getMinZ(), projectLayer.getWidth(), projectLayer.getImpedance()));
+            ll.add(new StrLayer(projectLayer.getWidth(), projectLayer.getImpedance()));
         }
-        setLayers(ll.toArray(new StrLayer[ll.size()]));
+        setLayers(ll.toArray(new StrLayer[0]));
         setFirstBoxSpace(new BoxSpace(
                 structureConfig.getLayers().getTopLimit(),
                 structureConfig.getLayers().getTopEpsr(),
@@ -309,26 +323,15 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //        setHintFnMode(structureConfig.getBox().y);//
 //        setHintAxisType(structureConfig.getBox().y);//
 //        setHintRegularZnOperator(structureConfig.getBox().y);//
+        return this;
     }
 
-    public void load(MomStructure other) {
-        //        this.gpEssaiType = other.gpEssaiType;
-//        this.fnModeType = other.fnModeType;
+    public MomStructure load(MomStructure other) {
         setFractalScale(other.fractalScale);
         this.modeFunctionsMax = other.modeFunctionsMax;
-//        this.testFunctionsCount = other.testFunctionsCount;
-        this.heightFactor = other.heightFactor;
-        this.widthFactor = other.widthFactor;
-        this.ydim = other.ydim;
-        if (Double.isNaN(this.ydim)) {
-            System.err.println("??");
-        }
-        this.xdim = other.xdim;
-        this.xminFactor = other.xminFactor;
-        this.yminFactor = other.yminFactor;
-        this.xmin = other.xmin;
-        this.ymin = other.ymin;
+        this.domain = other.domain;
         this.frequency = other.frequency;
+
         this.setTestFunctions(other.getGpTestFunctionsTemplate());
         this.setSources(other.getSources());
         if (this.sources != null) {
@@ -341,6 +344,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         setLayers(other.getLayers());
         this.persistentCache.setAll(other.getPersistentCache());
         this.invalidateCache();
+        return this;
     }
 
     public HashValue hashValue() {
@@ -364,19 +368,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         sb.add("projectType", projectType);
         sb.add("circuitType", circuitType);
         sb.add("frequency", frequency);
-        sb.add("xdim", xdim);
-        sb.add("ydim", ydim);
-        sb.add("xmin", xmin);
-        sb.add("ymin", ymin);
-
-        // @NOTE :
-        // removed from dump as they do not influence calculation
-        // (all information is bundled in xdim,...
-        //
-//        sb.add("xminFactor", xminFactor);
-//        sb.add("yminFactor", yminFactor);
-//        sb.add("heightFactor", heightFactor);
-//        sb.add("widthFactor", widthFactor);
+        sb.add("domain", domain);
 
         sb.add("firstBoxSpace", firstBoxSpace);
         sb.add("secondBoxSpace", secondBoxSpace);
@@ -386,6 +378,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         sb.add("modeFunctions", modeFunctionsDelegate.getBase());
         sb.add("modeFunctions.count", modeFunctionsMax);
         sb.add("sources", sources);
+        if(serialZs !=null){
+            sb.add("serialZs", serialZs);
+        }
         if(fractalScale!=0){
             sb.add("fractalScale", fractalScale);
         }
@@ -404,6 +399,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
         if (electricFieldEvaluator != null) {
             builders.put("electricField", electricFieldEvaluator);
+        }
+        if (farFieldEvaluator != null) {
+            builders.put("farField", farFieldEvaluator);
         }
         if (electricFieldFundamentalEvaluator != null) {
             builders.put("electricFieldFundamental", electricFieldFundamentalEvaluator);
@@ -449,7 +447,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return modeFunctionsMax;
     }
 
-    public void setModeFunctionsCount(int modeFunctionsMax) {
+    public MomStructure setModeFunctionsCount(int modeFunctionsMax) {
         int old = this.modeFunctionsMax;
         this.modeFunctionsMax = modeFunctionsMax;
         if (old != this.modeFunctionsMax) {
@@ -457,58 +455,25 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
         firePropertyChange("modeFunctionsMax", old, modeFunctionsMax);
         //cache_essai = null;
+        return this;
     }
 
     public int getFractalScale() {
         return fractalScale;
     }
 
-    public void setFractalScale(int fractalScale) {
+    public MomStructure setFractalScale(int fractalScale) {
         int old = this.fractalScale;
         this.fractalScale = fractalScale;
         firePropertyChange("fractalScale", old, fractalScale);
-    }
-
-    public double getYdim() {
-        return ydim;
-    }
-
-    public void setYdim(double ydim) {
-        double old = this.ydim;
-        this.ydim = ydim;
-
-        double old2 = this.heightFactor;
-        this.heightFactor = Double.NaN;
-
-        firePropertyChange("ydim", old, this.ydim);
-        firePropertyChange("heightFactor", old2, this.heightFactor);
-    }
-
-//    public int getTestFunctionsCount() {
-//        return testFunctionsCount;
-//    }
-//
-//    public void setTestFunctionsCount(int nbZoneEssai) {
-//        if (testFunctionsCount != nbZoneEssai) {
-//            this.testFunctionsCount = nbZoneEssai;
-//            invalidateCache();
-//        }
-//    }
-
-    public double getXdim() {
-        return xdim;
-    }
-
-    public MomStructure setXdim(double xdim) {
-        double old = this.xdim;
-        this.xdim = xdim;
-        firePropertyChange("xdim", old, this.xdim);
         return this;
     }
 
-    public void invalidateCache() {
+
+    public MomStructure invalidateCache() {
         rebuild = true;
         memoryCache.reset();
+        return this;
     }
 
     /**
@@ -524,18 +489,6 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
     }
 
     public void forceRebuild() {
-        if (!Double.isNaN(this.widthFactor)) {
-            this.xdim = lambda(frequency) * this.widthFactor;
-        }
-        if (!Double.isNaN(this.heightFactor)) {
-            this.ydim = this.xdim * this.heightFactor;
-        }
-        if (!Double.isNaN(this.xminFactor)) {
-            this.xmin = this.xdim * this.xminFactor;
-        }
-        if (!Double.isNaN(this.yminFactor)) {
-            this.ymin = this.ydim * this.yminFactor;
-        }
         if (ProjectType.WAVE_GUIDE.equals(projectType)) {
             if (BoxLimit.NOTHING.equals(firstBoxSpace.getLimit())) {
                 firstBoxSpace = BoxSpaceFactory.matchedLoad(firstBoxSpace.getEpsr(),firstBoxSpace.getElectricConductivity());
@@ -637,47 +590,6 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         }
     }
 
-    public double getXmin() {
-        return this.xmin;
-    }
-
-    public MomStructure setXmin(double x) {
-        double old_xmin = this.xmin;
-        double old_xminFactor = this.xminFactor;
-        this.xmin = x;
-        this.xminFactor = Double.NaN;
-        firePropertyChange("xmin", old_xmin, this.xmin);
-        firePropertyChange("xminFactor", old_xminFactor, this.xminFactor);
-        return this;
-    }
-
-//    protected MomStructure setXminFactor0(double x) {
-//        double old=this.xminFactor;
-//        this.xminFactor = x;
-//        firePropertyChange("xminFactor", old, this.xminFactor);
-//        return this;
-//    }
-//
-//    protected MomStructure setYminFactor0(double x) {
-//        double old=this.yminFactor;
-//        this.yminFactor = x;
-//        firePropertyChange("yminFactor", old, this.yminFactor);
-//        return this;
-//    }
-//
-//    protected MomStructure setXmin0(double x) {
-//        double old=this.xmin;
-//        this.xmin = x;
-//        firePropertyChange("xmin", old, this.xmin);
-//        return this;
-//    }
-//    protected MomStructure setYmin0(double x) {
-//        double old=this.ymin;
-//        this.ymin = x;
-//        firePropertyChange("ymin", old, this.ymin);
-//        return this;
-//    }
-
     public double getLambda() {
         return Physics.lambda(getFrequency());
     }
@@ -698,30 +610,29 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return setFrequency(f);
     }
 
-    /**
-     * updates frequency to reach a xdim over lambda of wol
-     *
-     * @param wol
-     */
-    public MomStructure setFrequencyByWOL(double wol) {
-        //width=C*wol/freq;
-        return setFrequency(Maths.C * wol / getXdim());
-    }
-
-    /**
-     * set xdim as fraction Width over WaveLength
-     *
-     * @param wol xdim over wavelength
-     */
-    public MomStructure setWidthByWOL(double wol) {
-        //freq * xdim/C=wol;
-        return setXdim(wol / getFrequency() * Maths.C);
-    }
+//    /**
+//     * updates frequency to reach a xdim over lambda of wol
+//     *
+//     * @param wol
+//     */
+//    public MomStructure setFrequencyByWOL(double wol) {
+//        //width=C*wol/freq;
+//        return setFrequency(Maths.C * wol / getXwidth());
+//    }
+//
+//    /**
+//     * set xdim as fraction Width over WaveLength
+//     *
+//     * @param wol xdim over wavelength
+//     */
+//    public MomStructure setWidthByWOL(double wol) {
+//        //freq * xdim/C=wol;
+//        return setXwidth(wol / getFrequency() * Maths.C);
+//    }
 
     @Override
     public String toString() {
-        return "a=lambda/" + (lambda(frequency) / xdim) + " ; k0*a=" + (K0(frequency) * xdim)
-                + " ; modesCount=" + modeFunctionsMax+((fractalScale!=0)?(" ; fractalScale=" + fractalScale):"");
+        return "modesCount=" + modeFunctionsMax+((fractalScale!=0)?(" ; fractalScale=" + fractalScale):"");
     }
 
 
@@ -849,6 +760,11 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return new DefaultElectricFieldBuilder(this, part);
     }
 
+    @Override
+    public FarFieldBuilder farField() {
+        return new DefaultFarFieldBuilder(this);
+    }
+
     public MagneticFieldBuilder magneticField() {
         build();
         return new DefaultMagneticFieldBuilder(this);
@@ -947,6 +863,15 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return builder;
     }
 
+    protected FarFieldEvaluator createFarFieldEvaluator() {
+        FarFieldEvaluator builder = farFieldEvaluator;
+        if (builder == null) {
+            //
+            builder = FarFieldEvaluatorPEC.INSTANCE;
+        }
+        return builder;
+    }
+
     protected ElectricFieldFundamentalEvaluator createElectricFieldFundamentalEvaluator() {
 
         return electricFieldFundamentalEvaluator == null ? ElectricFieldFundamentalSerialParallelEvaluator.INSTANCE : electricFieldFundamentalEvaluator;
@@ -997,117 +922,38 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 //            this.invalidateCache();
 //        }
     //    }
-    public void setModeFunctions(String wallBorders) {
+    public MomStructure setModeFunctions(String wallBorders) {
         setModeFunctions(ModeFunctionsFactory.createBox(wallBorders));
+        return this;
     }
 
-    public void setModeFunctions(WallBorders wallBorders) {
+    public MomStructure modeFunctions(String wallBorders) {
+        setModeFunctions(wallBorders);
+        return this;
+    }
+    public MomStructure modeFunctions(WallBorders wallBorders) {
+        setModeFunctions(wallBorders);
+        return this;
+    }
+
+    public MomStructure setModeFunctions(WallBorders wallBorders) {
         setModeFunctions(ModeFunctionsFactory.createBox(wallBorders));
-    }
-
-    public double getHeightFactor() {
-        return heightFactor;
-    }
-
-    public void setHeightFactor(double heightFactor) {
-        double old = this.heightFactor;
-        this.heightFactor = heightFactor;
-        firePropertyChange("heightFactor", old, this.heightFactor);
-    }
-
-    //    public int getSourceCountForDimensions() {
-//        build();
-//        PropagativeModeSelector s = getSources();
-//        if (s == null) {
-//            return ((int) (getA() / lambda(getFrequency()))) + 1;
-//        } else {
-//            return s.getSourceCountForDimensions(this);
-//        }
-//    }
-    //    public void updateSourceCountByDimension() {
-//        if (getSourceCountForDimensions() != nbSources) {
-////            double alamda = (getA() / lambda(getF()));
-////            System.out.println(System.identityHashCode(this) + " : Setting SourceCountByDimension : " + getSourceCountForDimensions() + " for a=" + alamda + "*lamda (was " + nbSources + ")");
-//            setNbSources(getSourceCountForDimensions());
-//        }
-//    }
-//
-//    public int getNbSources() {
-//        return nbSources;
-    //    }
-    public double getXminFactor() {
-        return xminFactor;
-    }
-
-    public void setXminFactor(double xMinFactor) {
-        double old = this.xminFactor;
-        this.xminFactor = xMinFactor;
-        firePropertyChange("xminFactor", old, this.xminFactor);
-    }
-
-    public double getYminFactor() {
-        return yminFactor;
-    }
-
-    public void setYminFactor(double yMinFactor) {
-        double old_yminFactor = this.yminFactor;
-        double old_ymin = this.ymin;
-        this.yminFactor = yMinFactor;
-        if (!Double.isNaN(yMinFactor)) {
-            ymin = Double.NaN;
-        }
-        firePropertyChange("ymin", old_ymin, this.ymin);
-        firePropertyChange("yminFactor", old_yminFactor, this.yminFactor);
-    }
-
-    protected Domain getDomainImpl() {
-        return Domain.forBounds(xmin, xmin + this.xdim, ymin, ymin + this.ydim);
+        return this;
     }
 
     public Domain getDomain() {
-        return getDomainImpl();
-//        build();
-//        Domain d = (Domain) memoryCache.get("domain");
-//        if(d!=null){
-//            return d;
-//        }
-//        d= getDomainImpl();
-//        memoryCache.set("domain", d);
-//        return d;
+        return domain;
     }
 
-    //    public File getFolder() {
-//        return persistentCache.getRootFolder();
-//    }
+    @Override
+    public Domain domain() {
+        return getDomain();
+    }
+
     public MomStructure setDomain(Domain newDomain) {
-
-        double old_ydim = this.ydim;
-        double old_xdim = this.xdim;
-        double old_xmin = this.xmin;
-        double old_ymin = this.ymin;
-        double old_xminFactor = this.xminFactor;
-        double old_yminFactor = this.yminFactor;
-        double old_heightFactor = this.heightFactor;
-        double old_widthFactor = this.widthFactor;
-
-        this.ydim = newDomain.ywidth();
-        this.xdim = newDomain.xwidth();
-        this.xmin = newDomain.xmin();
-        this.ymin = newDomain.ymin();
-        this.xminFactor = Double.NaN;
-        this.yminFactor = Double.NaN;
-        this.heightFactor = Double.NaN;
-        this.widthFactor = Double.NaN;
-
-
-        firePropertyChange("ydim", old_ydim, this.ydim);
-        firePropertyChange("xdim", old_xdim, this.xdim);
-        firePropertyChange("xmin", old_xmin, this.xmin);
-        firePropertyChange("ymin", old_ymin, this.ymin);
-        firePropertyChange("xminFactor", old_xminFactor, this.xminFactor);
-        firePropertyChange("yminFactor", old_yminFactor, this.yminFactor);
-        firePropertyChange("heightFactor", old_heightFactor, this.heightFactor);
-        firePropertyChange("widthFactor", old_widthFactor, this.widthFactor);
+        Domain old = this.domain;
+        this.domain=newDomain;
+        firePropertyChange("domain", old, this.domain);
         return this;
     }
 
@@ -1131,10 +977,16 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return this.modeFunctionsDelegate.getBase();
     }
 
-    public void setModeFunctions(ModeFunctions modeFunctions) {
+    public MomStructure modeFunctions(ModeFunctions modeFunctions) {
+        setModeFunctions(modeFunctions);
+        return this;
+    }
+
+    public MomStructure setModeFunctions(ModeFunctions modeFunctions) {
         ModeFunctions old = this.modeFunctionsDelegate.getBase();
         modeFunctionsDelegate.setBase(modeFunctions.clone());
         firePropertyChange("modeFunctions", old, this.modeFunctionsDelegate.getBase());
+        return this;
     }
 
     public TestFunctions getGpTestFunctionsTemplate() {
@@ -1162,6 +1014,10 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return this;
     }
 
+    public MomStructure setSource(Expr src) {
+        return setSources(src);
+    }
+
     public MomStructure setSources(Expr src) {
         return setSources(SourceFactory.createPlanarSource(src, Complex.valueOf(50)));
     }
@@ -1185,7 +1041,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
                 PlanarSources p = (PlanarSources) sources;
                 ArrayList<PlanarSource> n = new ArrayList<PlanarSource>(Arrays.asList(p.getPlanarSources()));
                 n.add((PlanarSource) src);
-                setSources(SourceFactory.createPlanarSources(n.toArray(new PlanarSource[n.size()])));
+                setSources(SourceFactory.createPlanarSources(n.toArray(new PlanarSource[0])));
             } else {
                 throw new IllegalArgumentException("Not supported");
             }
@@ -1193,6 +1049,10 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             throw new IllegalArgumentException("Not supported");
         }
         return this;
+    }
+
+    public MomStructure source(Expr src) {
+        return setSources(src);
     }
 
     public MomStructure sources(Expr src) {
@@ -1360,34 +1220,39 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return new SrcGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }
 
-    public TLog getLog() {
+    public ConsoleLogger getLog() {
         return log;
     }
 
-    public void setLog(TLog log) {
+    public MomStructure setLog(ConsoleLogger log) {
         this.log = log;
+        return this;
     }
 
-    public void setParameter(String name) {
+    public MomStructure setParameter(String name) {
         setParameter(name, Boolean.TRUE);
+        return this;
     }
 
-    public void setParameterNotNull(String name, Object value) {
+    public MomStructure setParameterNotNull(String name, Object value) {
         if (value == null) {
             removeParameter(name);
         } else {
             setParameter(name, value);
         }
+        return this;
     }
 
-    public void setParameter(String name, Object value) {
+    public MomStructure setParameter(String name, Object value) {
         parameters.put(name, value);
         invalidateCache();
+        return this;
     }
 
-    public void removeParameter(String name) {
+    public MomStructure removeParameter(String name) {
         parameters.remove(name);
         invalidateCache();
+        return this;
     }
 
     public Object getParameter(String name) {
@@ -1426,12 +1291,17 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return t == null ? ParamTarget.REFERENCE : t;
     }
 
-    public void setTarget(ParamTarget target) {
+    public MomStructure setTarget(ParamTarget target) {
         setUserObject("Target", target);
+        return this;
     }
 
     public CircuitType getCircuitType() {
         return circuitType;
+    }
+
+    public MomStructure circuitType(CircuitType circuitType) {
+        return setCircuitType(circuitType);
     }
 
     public MomStructure setCircuitType(CircuitType circuitType) {
@@ -1444,6 +1314,18 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return projectType;
     }
 
+    public MomStructure asPlanarStructure() {
+        return setProjectType(ProjectType.PLANAR_STRUCTURE);
+    }
+
+    public MomStructure asWaveguide() {
+        return setProjectType(ProjectType.WAVE_GUIDE);
+    }
+
+    public MomStructure projectType(ProjectType projectType) {
+        return setProjectType(projectType);
+    }
+
     public MomStructure setProjectType(ProjectType projectType) {
         this.projectType = projectType;
         invalidateCache();
@@ -1452,6 +1334,14 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     public BoxSpace getFirstBoxSpace() {
         return firstBoxSpace;
+    }
+
+    public MomStructure firstBoxSpace(BoxSpace firstBoxSpace) {
+        return setFirstBoxSpace(firstBoxSpace);
+    }
+
+    public MomStructure lastBoxSpace(BoxSpace secondBoxSpace) {
+        return setSecondBoxSpace(secondBoxSpace);
     }
 
     public MomStructure setFirstBoxSpace(BoxSpace firstBoxSpace) {
@@ -1470,14 +1360,8 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return this;
     }
 
-    public MomStructure setYmin(double yMin) {
-        this.ymin = yMin;
-        invalidateCache();
-        return this;
-    }
-
     protected void applyModeFunctionsChanges(ModeFunctions fn) {
-        fn.setDomain(getDomainImpl());
+        fn.setDomain(getDomain());
         fn.setMaxSize(getModeFunctionsCount());
         fn.setFirstBoxSpace(getFirstBoxSpace());
         fn.setSecondBoxSpace(getSecondBoxSpace());
@@ -1494,14 +1378,6 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
 
     public PersistenceCache getPersistentCache() {
         return persistentCache;
-    }
-
-    public MomStructure setWidthFactor(double widthFactor) {
-        if (this.widthFactor != widthFactor) {
-            this.widthFactor = widthFactor;
-            invalidateCache();
-        }
-        return this;
     }
 
     public void wdebug(String title, Throwable e) {
@@ -1559,8 +1435,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return userObjects.get(name);
     }
 
-    public void removeUserObject(String name) {
+    public MomStructure removeUserObject(String name) {
         userObjects.remove(name);
+        return this;
     }
 
     public MomStructure setUserObject(String name, Object value) {
@@ -1609,10 +1486,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
                 s.setProjectType(ProjectType.valueOf(val));
             } else if ("frequency".equals(property)) {
                 s.setFrequency(Double.valueOf(val));
-            } else if ("width".equals(property)) {
-                s.setXdim(Double.valueOf(val));
-            } else if ("height".equals(property)) {
-                s.setYdim(Double.valueOf(val));
+            } else if ("domain".equals(property)) {
+                //TODO!! FIX ME
+                //s.setDomain(Double.valueOf(val));
             }
             if (s.dump().equals(c.getDump())) {
                 found.add(mc);
@@ -1636,7 +1512,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return layers;
     }
 
-    public void setLayers(StrLayer[] couches) {
+    public MomStructure setLayers(StrLayer[] couches) {
         if (couches == null) {
             this.layers = StrLayer.NO_LAYERS;
         } else {
@@ -1646,6 +1522,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
             }
         }
         invalidateCache();
+        return this;
     }
 
 
@@ -1806,7 +1683,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         ModeInfo[] modes = getModes();
         Complex[] impedances = new Complex[modes.length];
         for (int i = 0; i < modes.length; i++) {
-            impedances[i] = modes[i].impedance;
+            impedances[i] = modes[i].impedance.impedanceValue();
         }
         return impedances;
     }
@@ -1842,24 +1719,27 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return testFieldEvaluator;
     }
 
-    public void setTestFieldEvaluator(TestFieldEvaluator testFieldEvaluator) {
+    public MomStructure setTestFieldEvaluator(TestFieldEvaluator testFieldEvaluator) {
         this.testFieldEvaluator = testFieldEvaluator;
+        return this;
     }
 
     public PoyntingVectorEvaluator getPoyntingVectorEvaluator() {
         return poyntingVectorEvaluator;
     }
 
-    public void setPoyntingVectorEvaluator(PoyntingVectorEvaluator poyntingVectorEvaluator) {
+    public MomStructure setPoyntingVectorEvaluator(PoyntingVectorEvaluator poyntingVectorEvaluator) {
         this.poyntingVectorEvaluator = poyntingVectorEvaluator;
+        return this;
     }
 
     public MagneticFieldEvaluator getMagneticFieldEvaluator() {
         return magneticFieldEvaluator;
     }
 
-    public void setMagneticFieldEvaluator(MagneticFieldEvaluator magneticFieldEvaluator) {
+    public MomStructure setMagneticFieldEvaluator(MagneticFieldEvaluator magneticFieldEvaluator) {
         this.magneticFieldEvaluator = magneticFieldEvaluator;
+        return this;
     }
 
     public ZinEvaluator getZinEvaluator() {
@@ -1884,8 +1764,9 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         return matrixBEvaluator;
     }
 
-    public void setMatrixBEvaluator(MatrixBEvaluator matrixBEvaluator) {
+    public MomStructure setMatrixBEvaluator(MatrixBEvaluator matrixBEvaluator) {
         this.matrixBEvaluator = matrixBEvaluator;
+        return this;
     }
 
     public MatrixUnknownEvaluator getMatrixUnknownEvaluator() {

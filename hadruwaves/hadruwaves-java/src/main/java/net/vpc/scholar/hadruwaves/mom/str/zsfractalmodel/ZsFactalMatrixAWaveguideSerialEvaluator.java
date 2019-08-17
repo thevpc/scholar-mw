@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -43,7 +43,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
-                        Complex zn = n.impedance;
+                        Complex zn = n.impedance.impedanceValue();
                         c = c.add(zn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
@@ -59,7 +59,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Domain zsdomain = opValue.getFn().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
-                        gzs[i] = (DoubleToVector) ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
+                        gzs[i] = ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain)).toDV();
                     }
                     TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {
@@ -115,7 +115,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
-                        c = c.add(n.impedance.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                        c = c.add(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
                 }
@@ -130,7 +130,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Domain zsdomain = opValue.getFn().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
-                        gzs[i] = (DoubleToVector) ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain));
+                        gzs[i] = ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain)).toDV();
                     }
                     TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
                     for (int p = 0; p < g.length; p++) {

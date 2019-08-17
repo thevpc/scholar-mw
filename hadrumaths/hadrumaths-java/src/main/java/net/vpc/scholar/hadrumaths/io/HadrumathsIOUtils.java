@@ -1,12 +1,17 @@
 package net.vpc.scholar.hadrumaths.io;
 
 import net.vpc.common.io.FileUtils;
-import net.vpc.common.strings.StringUtils;
-import net.vpc.common.util.mon.ProgressMonitorOutputStream;
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.mon.ProgressMonitor;
+import java.io.UncheckedIOException;
 
-import java.io.*;
+import net.vpc.common.io.IOUtils;
+import net.vpc.common.strings.StringUtils;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorOutputStream;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
@@ -23,9 +28,15 @@ public final class HadrumathsIOUtils {
       private static StringSerializer DEFAULT_STRING_SERIALIZER = new DefaultStringSerializer();
     public static final String WRITE_TEMP_EXT = ".temp";
 
-    
 
-   
+
+    public static void saveObject(String physicalName, Object object){
+        try {
+            IOUtils.saveObject(physicalName, object);
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
    
 
     public static boolean existsOrWaitIfStillWritingInto(File file) {
@@ -48,34 +59,34 @@ public final class HadrumathsIOUtils {
                     e.printStackTrace();
                 }
             }
-            throw new RuntimeIOException("File does not exist but an associated temp file failed to finish writing to " + file);
+            throw new UncheckedIOException(new IOException("File does not exist but an associated temp file failed to finish writing to " + file));
         }
         return false;
     }
 
 
 
-    public static String serializeObjectToString(Object object) throws RuntimeIOException {
+    public static String serializeObjectToString(Object object) throws UncheckedIOException {
         try {
             return DEFAULT_STRING_SERIALIZER.serialize(object);
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
-    public static Object deserializeObjectToString(String str) throws RuntimeIOException {
+    public static Object deserializeObjectToString(String str) throws UncheckedIOException {
         try {
             return DEFAULT_STRING_SERIALIZER.deserialize(str);
         } catch (IOException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
-    public static void saveZippedObject(String physicalName, Object object) throws RuntimeIOException {
+    public static void saveZippedObject(String physicalName, Object object) throws UncheckedIOException {
         saveZippedObject(physicalName, object, null, null);
     }
 
-    public static void saveZippedObject(HFile physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws RuntimeIOException {
+    public static void saveZippedObject(HFile physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
         try {
             if (monitor == null) {
                 ObjectOutputStream oos = null;
@@ -101,11 +112,11 @@ public final class HadrumathsIOUtils {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
-    public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws RuntimeIOException {
+    public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
         physicalName = FileUtils.expandPath(physicalName);
         String physicalNameTemp = physicalName + WRITE_TEMP_EXT;
         try {
@@ -116,7 +127,7 @@ public final class HadrumathsIOUtils {
                     oos.writeObject(object);
                     oos.close();
                     if (!new File(physicalNameTemp).renameTo(new File(physicalName))) {
-                        throw new RuntimeIOException("Unable to rename " + physicalNameTemp);
+                        throw new UncheckedIOException(new IOException("Unable to rename " + physicalNameTemp));
                     }
                 } finally {
                     if (oos != null) {
@@ -130,7 +141,7 @@ public final class HadrumathsIOUtils {
                     oos.writeObject(object);
                     oos.close();
                     if (!new File(physicalNameTemp).renameTo(new File(physicalName))) {
-                        throw new RuntimeIOException("Unable to rename " + physicalNameTemp);
+                        throw new UncheckedIOException(new IOException("Unable to rename " + physicalNameTemp));
                     }
                 } finally {
                     if (oos != null) {
@@ -139,7 +150,7 @@ public final class HadrumathsIOUtils {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -231,7 +242,7 @@ public final class HadrumathsIOUtils {
                 //
             }
             String version = p.getProperty("version");
-            if (!StringUtils.isEmpty(version)) {
+            if (!StringUtils.isBlank(version)) {
                 return version;
             }
         }

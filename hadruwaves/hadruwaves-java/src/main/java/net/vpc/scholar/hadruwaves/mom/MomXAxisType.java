@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 
-import net.vpc.scholar.hadrumaths.plot.console.params.XAxisType;
+import net.vpc.scholar.hadruplot.console.params.XAxisType;
 
 public class MomXAxisType extends XAxisType {
     public static final MomXAxisType ITERATE_A_FACTOR_BY_FREQ = new MomXAxisType("ITERATE_A_FACTOR_BY_FREQ");

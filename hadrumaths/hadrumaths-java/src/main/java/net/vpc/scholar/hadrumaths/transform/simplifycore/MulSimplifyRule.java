@@ -112,7 +112,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             }
             return RewriteResult.newVal(value);
         }
-        Expr m2 = Maths.mul(all.toArray(new Expr[all.size()]));
+        Expr m2 = Maths.mul(all.toArray(new Expr[0]));
         if (!updated && m2.equals(e)) {
             return RewriteResult.unmodified(e);
         }
@@ -135,7 +135,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
         if (all.size() < 2) {
             return new ArrayList<Expr>(all);
         }
-        Expr[] arr = all.toArray(new Expr[all.size()]);
+        Expr[] arr = all.toArray(new Expr[0]);
         boolean[] processed = new boolean[arr.length];
         List<Expr> ok = new ArrayList<Expr>();
         boolean optimized;

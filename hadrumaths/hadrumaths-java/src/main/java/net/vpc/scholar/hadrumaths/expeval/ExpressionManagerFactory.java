@@ -4,9 +4,10 @@
  */
 package net.vpc.scholar.hadrumaths.expeval;
 
-import net.vpc.common.jeep.*;
 import net.vpc.common.jeep.DefaultExpressionManager;
 import net.vpc.common.jeep.ExpressionManager;
+import net.vpc.common.jeep.PlatformHelper;
+import net.vpc.common.jeep.UtilClassExpressionEvaluatorResolver;
 import net.vpc.scholar.hadrumaths.Maths;
 
 /**
@@ -30,7 +31,8 @@ public final class ExpressionManagerFactory {
             , PlatformHelper2.class
     );
 
-    private static final UtilClassExpressionEvaluatorResolver PARSER = new UtilClassExpressionEvaluatorResolver(true, PlatformHelperAsExpr.class).addImportFields(Maths.class);
+    private static final UtilClassExpressionEvaluatorResolver PARSER = new UtilClassExpressionEvaluatorResolver(true,
+            PlatformHelperAsExpr.class).addImportFields(Maths.class);
 
     public static ExpressionManager createEvaluator() {
         DefaultExpressionManager e = new DefaultExpressionManager();
@@ -43,6 +45,9 @@ public final class ExpressionManagerFactory {
         DefaultExpressionManager e = new DefaultExpressionManager();
         e.addResolver(PARSER);
         e.addResolver(ExprNodeResolver.INSTANCE);
+        e.declareBinaryOperators("**", "->","+","-","*","/","^","%","<",">",">=","<=","==","=",",");
+        e.declareUnaryOperators("-","!", "~");
+        e.declareListOperator(",");
         return e;
     }
 

@@ -2,19 +2,19 @@ package net.vpc.scholar.hadruwaves.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.params.XParamSet;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadruwaves.mom.console.yaxis.PlotAxisSeries;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisSeries;
 
 @Deprecated
 public class PlotElectricFieldNoSources extends PlotAxisSeries implements Cloneable {
@@ -31,11 +31,11 @@ public class PlotElectricFieldNoSources extends PlotAxisSeries implements Clonea
         setPlotType(PlotType.HEATMAP);
     }
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
@@ -47,7 +47,7 @@ public class PlotElectricFieldNoSources extends PlotAxisSeries implements Clonea
         Complex[][] e = E.getComponent(axis).getValues()[0];
         Complex[][] r= ArrayUtils.add(e, s);
 //        emonitor.terminatem(getClass().getSimpleName());
-        return new NamedMatrix(r, x, y);
+        return new PlotMatrix(r, x, y);
     }
 
 }

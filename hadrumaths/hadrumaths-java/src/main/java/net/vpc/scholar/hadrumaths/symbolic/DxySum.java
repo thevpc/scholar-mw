@@ -33,7 +33,7 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
         if (a.size() == 0) {
             System.err.println("DxySum : 0 segments");
         }
-        this.segments = a.toArray(new DoubleToDouble[a.size()]);
+        this.segments = a.toArray(new DoubleToDouble[0]);
         double xmin = Double.NaN;
         double xmax = Double.NaN;
         double ymin = Double.NaN;
@@ -75,7 +75,7 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
         if (a.size() == 0) {
             System.err.println("DSumFunctionXY : 0 segments");
         }
-        this.segments = a.toArray(new DoubleToDouble[a.size()]);
+        this.segments = a.toArray(new DoubleToDouble[0]);
         double xmin = Double.NaN;
         double xmax = Double.NaN;
         double ymin = Double.NaN;
@@ -122,7 +122,7 @@ public class DxySum extends DDxyAbstractSum implements Cloneable {
 //        if (a.size() == 0) {
 //            return FunctionFactory.DZEROXY;
 //        }
-//        fct.setSegments(a.toArray(new DDxy[a.size()]));
+//        fct.setSegments(a.toArray(new DDxy[0]));
 //        return fct;
 //    }
 

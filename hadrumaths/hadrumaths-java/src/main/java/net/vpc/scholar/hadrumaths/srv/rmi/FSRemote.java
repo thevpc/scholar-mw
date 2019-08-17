@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.srv.rmi;
 
-import net.vpc.scholar.hadrumaths.srv.FSServlet;
 import net.vpc.scholar.hadrumaths.srv.FileStat;
 
 import java.rmi.RemoteException;

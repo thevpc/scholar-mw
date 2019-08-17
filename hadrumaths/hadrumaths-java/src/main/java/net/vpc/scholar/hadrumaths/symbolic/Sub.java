@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class Sub extends AbstractExprOperator implements Cloneable {
+public class Sub extends AbstractExprOperatorBinary implements Cloneable {
     private static final long serialVersionUID = 1L;
     private static Expressions.BinaryExprHelper<Sub> binaryExprHelper = new Expressions.BinaryExprHelper<Sub>() {
         @Override
@@ -65,6 +65,17 @@ public class Sub extends AbstractExprOperator implements Cloneable {
                 return zero;
             }
         }
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined || options.value2Defined;
+            if (def) {
+                Vector d = a.sub(b);
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
     };
 
     static {
@@ -86,6 +97,24 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     public Sub(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
         domainDim = Math.max(first.getDomainDimension(), second.getDomainDimension());
+
+    }
+
+    @Override
+    protected Expressions.BinaryExprHelper getBinaryExprHelper() {
+        return binaryExprHelper;
+    }
+
+    @Override
+    public int getComponentSize() {
+        int s = 1;
+        for (int i = 0; i < expressions.length; i++) {
+            int s2 = expressions[i].toDV().getComponentSize();
+            if (s2 > s) {
+                s = s2;
+            }
+        }
+        return s;
     }
 
     public boolean isZeroImpl() {
@@ -328,50 +357,6 @@ public class Sub extends AbstractExprOperator implements Cloneable {
     }
 
 
-    @Override
-    public double[] computeDouble(double[] x, Domain d0, Out<Range> range) {
-        return Expressions.computeDouble(this, binaryExprHelper, x, d0, range);
-    }
-
-    @Override
-    public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, binaryExprHelper, x, y, d0, ranges);
-    }
-
-    @Override
-    public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, binaryExprHelper, x, y, z, d0, ranges);
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, binaryExprHelper, x, y, d0, ranges);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, binaryExprHelper, x, d0, ranges);
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, binaryExprHelper, x, y, z, d0, ranges);
-    }
-
-    @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, binaryExprHelper, x, d0, ranges);
-    }
-
-    @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, binaryExprHelper, x, y, d0, ranges);
-    }
-
-    @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, binaryExprHelper, x, y, z, d0, ranges);
-    }
 
 
     @Override

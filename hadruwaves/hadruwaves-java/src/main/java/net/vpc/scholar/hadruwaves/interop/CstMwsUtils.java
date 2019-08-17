@@ -2,10 +2,7 @@ package net.vpc.scholar.hadruwaves.interop;
 
 import net.vpc.scholar.hadrumaths.DoubleArrayList;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import net.vpc.common.io.*;
@@ -17,7 +14,7 @@ public final class CstMwsUtils {
     private CstMwsUtils() {
     }
 
-    public static CstPlotDoubleTable loadCSTLinearPlot(File file) throws RuntimeIOException {
+    public static CstPlotDoubleTable loadCSTLinearPlot(File file) throws UncheckedIOException {
         try {
             BufferedReader r = new BufferedReader(new FileReader(file));
             String[] titles = parseTitles(r.readLine());
@@ -42,7 +39,7 @@ public final class CstMwsUtils {
             }
             return new CstPlotDoubleTable(columns);
         } catch (IOException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -116,6 +113,6 @@ public final class CstMwsUtils {
         if (s.length() > 0) {
             all.add(s);
         }
-        return all.toArray(new String[all.size()]);
+        return all.toArray(new String[0]);
     }
 }

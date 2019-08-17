@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -34,7 +34,8 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
                     TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
-                        Complex yn = n.impedance.inv();
+                        //TODO see serial!!
+                        Complex yn = n.impedance.admittanceValue();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
 //                        System.out.println(n+" ; yn = " + yn+" ; sp = " + sp1+" ; "+sp2);
@@ -55,7 +56,7 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
                     TVector<Complex> spq = sp.getRow(q);
                     MutableComplex c = MutableComplex.Zero();
                     for (ModeInfo n : n_eva) {
-                        Complex yn = n.impedance.inv();
+                        Complex yn = n.impedance.admittanceValue();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(q).conj();
                         c.addProduct(yn, sp1, sp2);

@@ -48,7 +48,7 @@
 //        if(p.isEmpty()){
 //            return FunctionFactory.CZEROXY;
 //        }
-//        return sum(p.toArray(new Expr[p.size()]));
+//        return sum(p.toArray(new Expr[0]));
 //    }
 //    @Override
 //    public int hashCode() {

@@ -335,7 +335,7 @@ public abstract class DDxyAbstractSum extends AbstractDoubleToDouble {
                 list.add(segment);
             }
         }
-        return list.toArray(new DoubleToDouble[list.size()]);
+        return list.toArray(new DoubleToDouble[0]);
     }
 
     public List<Expr> getSubExpressions() {

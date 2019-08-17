@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.*;
 import net.vpc.common.util.MapUtils;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.TList;
 import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
@@ -100,7 +103,7 @@ public class Rooftop extends Ref implements Cloneable {
                 m0 = (-1);
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(false, d1).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size()),
                                 "SequencePattern", "E"
@@ -112,7 +115,7 @@ public class Rooftop extends Ref implements Cloneable {
             while (m0 < nx) {
                 Domain d0 = Domain.forBounds(m0 / 2.0 * w + d.xmin(), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftop(true, false, d0).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "X"
@@ -125,7 +128,7 @@ public class Rooftop extends Ref implements Cloneable {
                 m0 = nx;
                 Domain d1 = Domain.forBounds((m0 / 2.0 * w + d.xmin()), ((m0 / 2.0 + 1) * w + d.xmin()), d.ymin(), d.ymax());
                 Expr rooftop = rooftopPartX(true, d1).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "E"
@@ -140,7 +143,7 @@ public class Rooftop extends Ref implements Cloneable {
                 m0 = (-1);
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(false, d1).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "N"
@@ -152,7 +155,7 @@ public class Rooftop extends Ref implements Cloneable {
             while (m0 < ny) {
                 Domain d0 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftop(false, true, d0).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "Y"
@@ -165,7 +168,7 @@ public class Rooftop extends Ref implements Cloneable {
                 m0 = ny;
                 Domain d1 = Domain.forBounds(d.xmin(), d.xmax(), (m0 / 2.0 * h + d.ymin()), ((m0 / 2.0 + 1) * h + d.ymin()));
                 Expr rooftop = rooftopPartY(true, d1).setProperties(
-                        MapUtils.<String, Object>linkedMap(
+                        MapUtils.<String, Object>linkedmap(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "S"

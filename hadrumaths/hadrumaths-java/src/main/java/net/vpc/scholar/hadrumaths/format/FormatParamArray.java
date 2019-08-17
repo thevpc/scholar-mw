@@ -62,7 +62,7 @@ public class FormatParamArray implements Cloneable {
     }
 
     public ObjectFormatParam[] toArray() {
-        return ((paramsTable == null || paramsTable.size() == 0) ? EMPTY_AA : paramsTable.values().toArray(new ObjectFormatParam[paramsTable.size()]));
+        return ((paramsTable == null || paramsTable.size() == 0) ? EMPTY_AA : paramsTable.values().toArray(new ObjectFormatParam[0]));
     }
 
     public FormatParamArray copy() {

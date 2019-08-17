@@ -9,7 +9,6 @@ import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +41,7 @@ public class MulDifferentiator implements FunctionDifferentiator {
 //        //a,bd
 //        List<Expr> a2 = new ArrayList<Expr>(a);
 //        a2.add(bd);
-//        return new Plus(new Mul(a2.toArray(new Expr[a2.size()])), new Mul(ad, b));
+//        return new Plus(new Mul(a2.toArray(new Expr[0])), new Mul(ad, b));
     }
 
     public Expr derive(Expr a, Expr b, Axis varIndex, FunctionDifferentiatorManager d) {

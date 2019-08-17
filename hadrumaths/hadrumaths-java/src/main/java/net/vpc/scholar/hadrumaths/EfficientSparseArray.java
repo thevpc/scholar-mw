@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 
-    public EfficientSparseArray(TypeReference<T> componentType, int length) {
+    public EfficientSparseArray(TypeName<T> componentType, int length) {
         int initialSize = Math.max(length, 10);
         if (initialSize > 10) {
             initialSize = 10;
@@ -19,7 +19,7 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return base.getComponentType();
     }
 

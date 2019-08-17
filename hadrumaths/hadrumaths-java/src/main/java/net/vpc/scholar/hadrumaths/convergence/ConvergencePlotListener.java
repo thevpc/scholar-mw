@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.convergence;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadruplot.Plot;
 
 import javax.swing.*;
 import java.awt.*;

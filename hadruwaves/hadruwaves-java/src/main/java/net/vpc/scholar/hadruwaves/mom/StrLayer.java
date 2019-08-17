@@ -4,33 +4,38 @@
  */
 package net.vpc.scholar.hadruwaves.mom;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadruwaves.Physics;
+import net.vpc.scholar.hadruwaves.util.Impedance;
 
 /**
  *
  * @author vpc
  */
-public class StrLayer implements Dumpable, Cloneable, Comparable<StrLayer> {
+public class StrLayer implements Dumpable, Cloneable {
 
     public static final StrLayer[] NO_LAYERS = new StrLayer[0];
-    public double minZ;
-    public double width;
-    public Complex impedance;
-    public String name="None";
+    private final double width;
+    private final Impedance impedance;
+    private final String name;
 
-    public StrLayer(double minZ, double width, Complex impedance) {
-        this.minZ = minZ;
+    public StrLayer(double width, Complex impedance) {
+        this(width,impedance,null);
+    }
+
+    public StrLayer(double width, Complex impedance,String name) {
         this.width = width;
-        this.impedance = impedance;
+        this.impedance = Physics.impedance(impedance);
+        this.name = name==null?"None":name;
     }
 
     public String dump() {
         Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        h.add("minZ", minZ);
         h.add("width", width);
         h.add("impedance", impedance);
         return h.toString();
@@ -46,52 +51,32 @@ public class StrLayer implements Dumpable, Cloneable, Comparable<StrLayer> {
         }
     }
 
-    public int compareTo(StrLayer o) {
-        double r = this.minZ - o.minZ;
-        if (r == 0) {
-            r = this.width - o.width;
-            if (r == 0) {
-                r = this.impedance.sub(o.impedance).absdbl();
-            }
-        }
-        return r<0?-1:r>0?1:0;
-    }
 
     @Override
-    public boolean equals(Object obj) {
-        return (obj instanceof StrLayer) &&  (compareTo((StrLayer)obj)==0);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StrLayer strLayer = (StrLayer) o;
+        return Double.compare(strLayer.width, width) == 0 &&
+                Objects.equals(impedance, strLayer.impedance) &&
+                Objects.equals(name, strLayer.name);
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + (int) (Double.doubleToLongBits(this.minZ) ^ (Double.doubleToLongBits(this.minZ) >>> 32));
-        hash = 17 * hash + (int) (Double.doubleToLongBits(this.width) ^ (Double.doubleToLongBits(this.width) >>> 32));
-        hash = 17 * hash + (this.impedance != null ? this.impedance.hashCode() : 0);
-        return hash;
+        return Objects.hash(width, impedance, name);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Complex getImpedance() {
+    public Impedance getImpedance() {
         return impedance;
-    }
-
-    public double getMinZ() {
-        return minZ;
     }
 
     public double getWidth() {
         return width;
     }
-    
-    
-
     
 }

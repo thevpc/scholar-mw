@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.integration.formal;
 
+import net.vpc.common.util.ClassMapList;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
@@ -8,7 +9,6 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.common.util.ClassMapList;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;

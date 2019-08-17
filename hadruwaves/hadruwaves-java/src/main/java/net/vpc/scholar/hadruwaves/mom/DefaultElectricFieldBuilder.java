@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractElectricFieldBuilder;
@@ -20,13 +20,7 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
         this.part = part;
     }
 
-    @Override
-    public MomStructure getStructure() {
-        return (MomStructure) super.getStructure();
-    }
-
-
-    public VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z,ProgressMonitor monitor) {
+    public VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z, ProgressMonitor monitor) {
         final double[] x0 = x == null ? new double[]{0} : x;
         final double[] y0 = y == null ? new double[]{0} : y;
         final double[] z0 = z == null ? new double[]{0} : z;
@@ -38,7 +32,8 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                     @Override
                     public VDiscrete compute(ObjectCache momCache) {
                         double progressValue = getMonitor().getProgressValue();
-                        return getStructure().createElectricFieldEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
+                        MomStructure momStructure = getStructure();
+                        return momStructure.createElectricFieldEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
                     }
                 }.computeCached();
             }
@@ -47,7 +42,8 @@ class DefaultElectricFieldBuilder extends AbstractElectricFieldBuilder {
                 return new StrSubCacheSupport<VDiscrete>(getStructure(), "electric-field-0", p.toString(),monitor) {
 
                     public VDiscrete compute(ObjectCache momCache) {
-                        return getStructure().createElectricFieldFundamentalEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
+                        MomStructure momStructure = getStructure();
+                        return momStructure.createElectricFieldFundamentalEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
                     }
                 }.computeCached();
             }

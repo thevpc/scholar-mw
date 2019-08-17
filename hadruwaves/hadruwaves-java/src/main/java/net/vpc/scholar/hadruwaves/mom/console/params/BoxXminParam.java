@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadrumaths.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 public class BoxXminParam extends AbstractParam implements Cloneable {
@@ -9,6 +9,7 @@ public class BoxXminParam extends AbstractParam implements Cloneable {
     }
 
     public void configure(Object source,Object value) {
-        ((MomStructure) source).setXmin((Double) value);
+        MomStructure s = (MomStructure) source;
+        s.setDomain(s.getDomain().replaceXmin((Double) value));
     }
 }

@@ -14,9 +14,9 @@ import net.vpc.scholar.hadrumaths.symbolic.AxisFunction;
 public class AxisFunctionDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         AxisFunction c = (AxisFunction) f;
-        String functionName = c.getFunctionName();
-        if (functionName.equals(varIndex.toString())) {
-            if(c.getDomain().isFull()){
+        Axis functionName = c.getAxis();
+        if (functionName == varIndex) {
+            if (c.getDomain().isFull()) {
                 return Complex.ONE;
             }
             return c.getDomain();//Maths.expr(c.getDomain());

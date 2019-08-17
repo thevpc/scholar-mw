@@ -5,10 +5,10 @@
     <artifactId>hadrumaths-scala-helloworld</artifactId>
     <name>net.vpc.scholar.hadrumaths-scala-helloworld</name>
     <packaging>jar</packaging>
-    <version>${scholar-version}</version>
+    <version>3.1.33</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.32</scholar-version>
+        <scholar-version>3.1.33</scholar-version>
     </properties>
     <dependencies>
         <dependency>
@@ -48,6 +48,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
                 <executions>
                     <execution>
                         <goals>

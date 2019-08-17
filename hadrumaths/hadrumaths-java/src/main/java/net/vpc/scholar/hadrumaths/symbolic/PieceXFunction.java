@@ -53,7 +53,7 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
 //                    domain.ymax,
 //                    vPatternX,
 //                    vPatternY));
-//            segments = segs.toArray(new DFunctionXY[segs.size()]);
+//            segments = segs.toArray(new DFunctionXY[0]);
 //            return;
 //        }
         double stepWidthX = periodWidthX / 2;
@@ -166,7 +166,7 @@ public abstract class PieceXFunction extends DDxyAbstractSum implements Cloneabl
         if (segs.size() == 0) {
             System.err.println("DPieceXFunctionXY : 0 segments");
         }
-        segments = segs.toArray(new DoubleToDouble[segs.size()]);
+        segments = segs.toArray(new DoubleToDouble[0]);
     }
 
     @Override

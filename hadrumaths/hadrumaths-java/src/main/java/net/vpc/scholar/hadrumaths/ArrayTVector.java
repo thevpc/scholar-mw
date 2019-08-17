@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
     private static final long serialVersionUID = 1L;
     private T[] elements;
     private transient VectorSpace<T> componentVectorSpace;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
     public ArrayTVector(TVector<T> other) throws IOException {
         super(other.isRow());
@@ -46,7 +46,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

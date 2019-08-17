@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
+import java.io.UncheckedIOException;
+
 import java.io.File;
 
 /**
@@ -405,7 +406,7 @@ public abstract class AbstractMatrixFactory implements MatrixFactory {
     }
 
     @Override
-    public Matrix load(File file) throws RuntimeIOException {
+    public Matrix load(File file) throws UncheckedIOException {
         Matrix m = newMatrix(1, 1);
         m.read(file);
         return m;
@@ -468,6 +469,46 @@ public abstract class AbstractMatrixFactory implements MatrixFactory {
         return m;
     }
 
+    @Override
+    public Matrix newMatrix(TMatrix[][] blocs) {
+        int rows = 0;
+        int cols = 0;
+        for (TMatrix[] subMatrixe : blocs) {
+            int r = 0;
+            int c = 0;
+            for (TMatrix aSubMatrixe : subMatrixe) {
+                c += aSubMatrixe.getColumnCount();
+                if (r == 0) {
+                    r = aSubMatrixe.getRowCount();
+                } else if (r != aSubMatrixe.getRowCount()) {
+                    throw new IllegalArgumentException("Column count does not match");
+                }
+            }
+            if (cols == 0) {
+                cols = c;
+            } else if (cols != c) {
+                throw new IllegalArgumentException("Column count does not match");
+            }
+            rows += r;
+        }
+        if (rows == 0 || cols == 0) {
+            throw new EmptyMatrixException();
+        }
+
+        Matrix m = newMatrix(rows, cols);
+
+        int row = 0;
+        int col;
+        for (TMatrix[] subMatrixe1 : blocs) {
+            col = 0;
+            for (TMatrix aSubMatrixe1 : subMatrixe1) {
+                m.set(row, col, (TMatrix<Complex>) aSubMatrixe1);
+                col += aSubMatrixe1.getColumnCount();
+            }
+            row += subMatrixe1[0].getRowCount();
+        }
+        return m;
+    }
     @Override
     public String toString() {
         return getId() + ":" + getClass().getSimpleName();

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DoubleToDoubleOneToManyHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,35 +13,26 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     private static final long serialVersionUID = 1L;
 
     protected Domain domain;
+    protected DoubleToDoubleOneToManyHelper helper;
 
     public AbstractDoubleToDouble(Domain domain) {
         this.domain = domain;
-    }
-
-    public double[] computeDouble(double x, double[] y, Domain d0) {
-        double[] r = new double[y.length];
-        Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(new double[]{x}, y);
-        if (abcd != null) {
-            int cy = abcd.ymin;
-            int dy = abcd.ymax;
-            for (int yIndex = cy; yIndex <= dy; yIndex++) {
-                r[yIndex] = computeDouble(x, y[yIndex]);
+        helper=new DoubleToDoubleOneToManyHelper(this) {
+            @Override
+            protected double computeDouble0(double x, BooleanMarker defined) {
+                return AbstractDoubleToDouble.this.computeDouble0(x, defined);
             }
-        }
-        return r;
-    }
 
-    public double[] computeDouble(double[] x, double y, Domain d0) {
-        double[] r = new double[x.length];
-        Range abcd = (d0 == null ? domain : domain.intersect(d0)).range(x, new double[]{y});
-        if (abcd != null) {
-            int cy = abcd.ymin;
-            int dy = abcd.ymax;
-            for (int xIndex = cy; xIndex <= dy; xIndex++) {
-                r[xIndex] = computeDouble(x[xIndex], y);
+            @Override
+            protected double computeDouble0(double x, double y, BooleanMarker defined) {
+                return AbstractDoubleToDouble.this.computeDouble0(x,y, defined);
             }
-        }
-        return r;
+
+            @Override
+            protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
+                return AbstractDoubleToDouble.this.computeDouble0(x, y,z,defined);
+            }
+        };
     }
 
     public Domain getDomainImpl() {
@@ -255,13 +247,6 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return isDouble();
     }
 
-    public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, x, y, d0, ranges);
-    }
-
-    public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this, x, y, d0, ranges);
-    }
 
     @Override
     public Matrix toMatrix() {
@@ -280,223 +265,66 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         }
         throw new RuntimeException("Unsupported yet toDouble in " + getClass().getName());
     }
-    //    public double computeDouble(double x, double y) {
-//        return Expressions.computeDouble(this, x, y);
-//    }
+
+    //////////////////////////////////////////////////////////////
+
+    public double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return helper.computeDouble(x, y, d0, ranges);
+    }
+
+    public double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return helper.computeDouble(x, y, d0, ranges);
+    }
 
     public double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        double[][][] r = new double[z.length][y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
-        if (currRange != null) {
-            int ax = currRange.xmin;
-            int bx = currRange.xmax;
-            int cy = currRange.ymin;
-            int dy = currRange.ymax;
-            int ez = currRange.zmin;
-            int fz = currRange.zmax;
-            BooleanArray3 d = currRange.setDefined3(x.length, y.length, z.length);
-            BooleanRef defined = BooleanMarker.ref();
-            for (int i = ez; i <= fz; i++) {
-                for (int j = cy; j <= dy; j++) {
-                    for (int k = ax; k <= bx; k++) {
-                        if (contains(x[k], y[j], z[i])) {
-                            defined.reset();
-                            double v = computeDouble0(x[k], y[j], z[i], defined);
-                            r[i][j][k] = v;
-                            if (defined.get()) {
-                                d.set(i, j, k);
-                            }
-                        }
-                    }
-                }
-            }
-            if (ranges != null) {
-                ranges.set(currRange);
-            }
-        }
-        return r;
+        return helper.computeDouble(x, y, z,d0, ranges);
     }
 
     public double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        double[][] r = new double[y.length][x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
-        if (currRange != null) {
-            int ax = currRange.xmin;
-            int bx = currRange.xmax;
-            int cy = currRange.ymin;
-            int dy = currRange.ymax;
-            BooleanArray2 d = currRange.setDefined2(x.length, y.length);
-            BooleanRef defined = BooleanMarker.ref();
-            for (int k = ax; k <= bx; k++) {
-                for (int j = cy; j <= dy; j++) {
-                    if (contains(x[k], y[j])) {
-                        defined.reset();
-                        double v = computeDouble0(x[k], y[j], defined);
-                        r[j][k] = v;
-                        if (defined.get()) {
-                            d.set(j, k);
-                        }
-                    }
-                }
-            }
-            if (ranges != null) {
-                ranges.set(currRange);
-            }
-        }
-        return r;
+        return helper.computeDouble(x, y,d0, ranges);
     }
 
     @Override
     public double[] computeDouble(double[] x, Domain d0, Out<Range> ranges) {
-        double[] r = new double[x.length];
-        Range currRange = (d0 == null ? domain : domain.intersect(d0)).range(x);
-        if (currRange != null) {
-            int ax = currRange.xmin;
-            int bx = currRange.xmax;
-            BooleanArray1 d = currRange.setDefined1(x.length);
-            BooleanRef defined = BooleanMarker.ref();
-            for (int xIndex = ax; xIndex <= bx; xIndex++) {
-                if (contains(x[xIndex])) {
-                    defined.reset();
-                    r[xIndex] = computeDouble0(x[xIndex], defined);
-                    if (defined.get()) {
-                        d.set(xIndex);
-                    }
-                } else {
-                    d.clear(xIndex);
-                }
-            }
-            if (ranges != null) {
-                ranges.set(currRange);
-            }
-        }
-        return r;
+        return helper.computeDouble(x, d0, ranges);
     }
 
-    //    @Override
     public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        double[][][] d = computeDouble(x, y, z, d0, ranges);
-        Complex[][][] m = new Complex[d.length][d[0].length][d[0][0].length];
-        for (int zi = 0; zi < m.length; zi++) {
-            for (int yi = 0; yi < m[zi].length; zi++) {
-                for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi] = Complex.valueOf(d[zi][yi][xi]);
-                }
-            }
-        }
-        return m;
+        return helper.computeComplex(x,y,z, d0, ranges);
     }
 
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        double[][][] d = computeDouble(x, y, z, d0, ranges);
-        Matrix[][][] m = new Matrix[d.length][d[0].length][d[0][0].length];
-        for (int zi = 0; zi < m.length; zi++) {
-            for (int yi = 0; yi < m[zi].length; zi++) {
-                for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi] = Maths.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
-                }
-            }
-        }
-        return m;
+        return helper.computeMatrix(x,y,z, d0, ranges);
     }
-
-//    @Override
-//    public final double computeDouble(double x) {
-//        return computeDouble(x, new BooleanMarker());
-//    }
 
     @Override
     public final double computeDouble(double x, BooleanMarker defined) {
-        if (contains(x)) {
-            return computeDouble0(x, defined);
-        }
-        return 0;
-//        switch (getDomainDimension()) {
-//            case 1: {
-//                if (contains(x)) {
-//                    return computeDouble0(x, defined);
-//                }
-//                return 0;
-//            }
-//        }
-//        throw new IllegalArgumentException("Missing y");
+        return helper.computeDouble(x,defined);
     }
 
-//    @Override
-//    public final double computeDouble(double x, double y, double z) {
-//        return computeDouble(x, y, z, new BooleanMarker());
-//    }
+    public double[] computeDouble(double x, double[] y, Domain d0) {
+        return helper.computeDouble(x, y, d0);
+    }
+
+    public double[] computeDouble(double[] x, double y, Domain d0) {
+        return helper.computeDouble(x, y, d0);
+    }
 
     @Override
     public final double computeDouble(double x, double y, double z, BooleanMarker defined) {
-        if (contains(x, y, z)) {
-            return computeDouble0(x, y, z, defined);
-        }
-//        switch (getDomainDimension()) {
-//            case 1: {
-//                if (contains(x)) {
-//                    return computeDouble0(x, defined);
-//                }
-//                return 0;
-//            }
-//            case 2: {
-//                if (contains(x, y)) {
-//                    return computeDouble0(x, y, defined);
-//                }
-//                return 0;
-//            }
-//            case 3: {
-//                if (contains(x, y, z)) {
-//                    return computeDouble0(x, y, z, defined);
-//                }
-//                return 0;
-//            }
-//        }
-//        throw new IllegalArgumentException("Invalid domain " + getDomainDimension());
-        return 0;
+        return helper.computeDouble(x, y, z,defined);
     }
-
-//    @Override
-//    public double computeDouble(double x, double y) {
-//        return computeDouble(x,y,new BooleanMarker());
-//    }
 
     @Override
     public double computeDouble(double x, double y, BooleanMarker defined) {
-        if (contains(x, y)) {
-            return computeDouble0(x, y, defined);
-        }
-        return 0;
-//        switch (getDomainDimension()) {
-//            case 1: {
-//                if (contains(x)) {
-//                    return computeDouble0(x, defined);
-//                }
-//                return 0;
-//            }
-//            case 2: {
-//                if (contains(x, y)) {
-//                    return computeDouble0(x, y, defined);
-//                }
-//                return 0;
-//            }
-//        }
-//        if (contains(x, y)) {
-//            return computeDouble0(x, y, defined);
-//        }
-//        return 0;
+        return helper.computeDouble(x, y, defined);
     }
 
-    public boolean contains(double x) {
-        return domain.contains(x);
-    }
+    //////////////////////////////////////////////////////////////
 
-    public boolean contains(double x, double y) {
-        return domain.contains(x, y);
-    }
-
-    public boolean contains(double x, double y, double z) {
-        return domain.contains(x, y, z);
+    @Override
+    public ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
     }
 
     protected abstract double computeDouble0(double x, BooleanMarker defined);
@@ -505,29 +333,5 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
     protected abstract double computeDouble0(double x, double y, double z, BooleanMarker defined);
 
-    @Override
-    public double[] computeDouble(double[] x) {
-        return computeDouble(x, (Domain) null, null);
-    }
-
-    @Override
-    public double[] computeDouble(double x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        return computeDouble(x, y, z, (Domain) null, null);
-    }
-
-    @Override
-    public double[][] computeDouble(double[] x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public ComponentDimension getComponentDimension() {
-        return ComponentDimension.SCALAR;
-    }
 
 }

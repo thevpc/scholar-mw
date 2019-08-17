@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
@@ -36,7 +36,7 @@ public class TransposedVector extends AbstractVector {
     }
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName<Complex> getComponentType() {
         return other.getComponentType();
     }
 

@@ -5,8 +5,8 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 

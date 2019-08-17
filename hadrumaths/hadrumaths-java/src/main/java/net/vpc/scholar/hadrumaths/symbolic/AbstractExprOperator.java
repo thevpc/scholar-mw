@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.*;
 /**
  * Created by vpc on 8/24/14.
  */
-public abstract class AbstractExprOperator extends AbstractVerboseExpr implements ExprOperator {
+public abstract class AbstractExprOperator extends AbstractPolymorphExpr implements ExprOperator {
     private static final long serialVersionUID = 1L;
 
     public Matrix computeMatrix(double x) {
@@ -237,38 +237,5 @@ public abstract class AbstractExprOperator extends AbstractVerboseExpr implement
         return true;
     }
 
-//    public boolean isDoubleExprImpl() {
-//        for (Expr e : getSubExpressions()) {
-//            if (!e.isDoubleExpr()) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x, y, z, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
 
 }

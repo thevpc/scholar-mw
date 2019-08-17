@@ -3,9 +3,9 @@ package net.vpc.scholar.hadruwaves.mom.modes;
 import net.vpc.common.util.CollectionFilter;
 import net.vpc.common.util.CollectionUtils;
 import net.vpc.common.util.Converter;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -276,7 +276,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             }
         }
         for (StrLayer couche : layers) {
-            ys.add(couche.impedance.inv());
+            ys.add(couche.getImpedance().admittanceValue());
         }
         ys.inv();
         Complex z = ys.toComplex();
@@ -431,7 +431,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         ModeInfo[] ind = getModes();
         Complex[] fn = new Complex[ind.length];
         for (int i = 0; i < fn.length; i++) {
-            fn[i] = ind[i].impedance;
+            fn[i] = ind[i].impedance.impedanceValue();
         }
         cachedZn = fn;
         return cachedZn;
@@ -445,7 +445,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
         ModeInfo[] ind = getModes();
         Complex[] fn = new Complex[ind.length];
         for (int i = 0; i < fn.length; i++) {
-            fn[i] = ind[i].impedance.inv();
+            fn[i] = ind[i].impedance.admittanceValue();
         }
         cachedYn = fn;
         return cachedYn;
@@ -462,7 +462,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                     i.add(indexes[n]);
                 }
             }
-            cachedModesEvanescents = i.toArray(new ModeInfo[i.size()]);
+            cachedModesEvanescents = i.toArray(new ModeInfo[0]);
         }
         return cachedModesEvanescents;
     }
@@ -481,7 +481,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                     i.add(indexes[n]);
                 }
             }
-            cachedModesPropagating = i.toArray(new ModeInfo[i.size()]);
+            cachedModesPropagating = i.toArray(new ModeInfo[0]);
         }
         return cachedModesPropagating;
     }
@@ -718,20 +718,20 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
              */
 
             ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, 2);
-            ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
+            final ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
             Comparator<ModeInfo> comparator = getModeInfoComparator();
             if (comparator != null) {
                 Arrays.sort(_cachedIndexes, comparator);
             }
-            int _cacheSize = _cachedIndexes.length;
+            final int _cacheSize = _cachedIndexes.length;
             for (int i = 0; i < _cacheSize; i++) {
                 _cachedIndexes[i].index = i;
             }
             ModeIndex[] propagativeModes = sources.getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount());
-            HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
-            ProgressMonitor mon2 = mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
-            String message = toString() + ", evaluate mode properties";
-            String str = toString();
+            final HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
+            final ProgressMonitor mon2 = mons[1];//ProgressMonitorFactory.createIncrementalMonitor(mons[1], _cacheSize);
+            final String message = toString() + ", evaluate mode properties";
+            final String str = toString();
             Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
                 @Override
                 public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -763,7 +763,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
                             properties.put("index", index.index);
                             properties.put("symmetry", (isXSymmetric(index.fn) ? "X" : "") + (isYSymmetric(index.fn) ? "Y" : ""));
                             properties.put("propagating", index.propagating);
-                            index.fn = (DoubleToVector) index.fn.setProperties(properties);
+                            index.fn = index.fn.setProperties(properties).toDV();
                         }
                         mon2.setProgress(i, _cacheSize, message);
                     }
@@ -804,7 +804,7 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
             System.err.println("[Warning] secondBoxSpaceGamma=" + index.secondBoxSpaceGamma + " for " + index.mode.mtype + index.mode.m + "," + index.mode.n + (" (f=" + frequency + ")"));
             getGammaImpl(index.mode, space2);
         }
-        index.impedance = getImpedanceImpl(index);
+        index.impedance = Physics.impedance(getImpedanceImpl(index));
 //        index.fn = Maths.vector(Complex.ONE);//getFnImplByHints(index.getMode());
         index.fn = getFnImplByHints(index.getMode());
     }

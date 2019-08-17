@@ -1,16 +1,16 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.Converter;
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.List;
 
 public interface VectorSpace<T> {
-    TypeReference<T> getItemType();
+    TypeName<T> getItemType();
 
-    <R> Converter<R, T> getConverterFrom(TypeReference<R> t);
+    <R> Converter<R, T> getConverterFrom(TypeName<R> t);
 
-    <R> Converter<T, R> getConverterTo(TypeReference<R> t);
+    <R> Converter<T, R> getConverterTo(TypeName<R> t);
 
     <R> Converter<R, T> getConverterFrom(Class<R> t);
 
@@ -24,7 +24,7 @@ public interface VectorSpace<T> {
 
     T convert(Complex d);
 
-    T convert(Matrix d);
+    T convert(TMatrix d);
 
     T zero();
 
@@ -48,6 +48,7 @@ public interface VectorSpace<T> {
     T mul(T a, T b);
 
     T div(T a, T b);
+    T rem(T a, T b);
 
     T real(T a);
 
@@ -56,6 +57,8 @@ public interface VectorSpace<T> {
     T abs(T a);
 
     double absdbl(T a);
+
+    double absdblsqr(T a);
 
     T abssqr(T a);
 
@@ -97,7 +100,7 @@ public interface VectorSpace<T> {
 
     boolean isZero(T a);
 
-    <R> boolean is(T value, TypeReference<R> type);
+    <R> boolean is(T value, TypeName<R> type);
 
     boolean isComplex(T a);
 
@@ -152,4 +155,70 @@ public interface VectorSpace<T> {
     T scalarProduct(T a, T b);
 
     T setParam(T a, String paramName, Object b);
+
+    Ops<T> ops();
+
+    interface Ops<T> {
+        ElementOp<T> real();
+
+        ElementOp<T> imag();
+
+        ElementOp<T> abs();
+
+        ElementOp<T> abssqr();
+
+        ElementOp<T> neg();
+
+        ElementOp<T> conj();
+
+        ElementOp<T> inv();
+
+        ElementOp<T> sin();
+
+        ElementOp<T> cos();
+
+        ElementOp<T> tan();
+
+        ElementOp<T> cotan();
+
+        ElementOp<T> sinh();
+
+        ElementOp<T> sincard();
+
+        ElementOp<T> cosh();
+
+        ElementOp<T> tanh();
+
+        ElementOp<T> cotanh();
+
+        ElementOp<T> asinh();
+
+        ElementOp<T> acosh();
+
+        ElementOp<T> asin();
+
+        ElementOp<T> acos();
+
+        ElementOp<T> atan();
+
+        ElementOp<T> arg();
+
+        ElementOp<T> acotan();
+
+        ElementOp<T> exp();
+
+        ElementOp<T> log();
+
+        ElementOp<T> log10();
+
+        ElementOp<T> db();
+
+        ElementOp<T> db2();
+
+        ElementOp<T> sqr();
+
+        ElementOp<T> sqrt();
+
+        ElementOp<T> not();
+    }
 }

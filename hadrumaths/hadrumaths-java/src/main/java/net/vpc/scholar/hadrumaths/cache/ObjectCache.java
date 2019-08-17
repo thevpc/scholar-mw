@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.io.HFile;
-import net.vpc.common.util.mon.ProgressMonitor;
 
 import java.util.concurrent.Callable;
 
@@ -37,7 +37,7 @@ public interface ObjectCache {
 
     long getStat(String statName);
 
-    <T> T evaluate(String cacheItemName, ProgressMonitor monitor, Evaluator2 evaluator, Object... args);
+    <T> T evaluate(String cacheItemName, ProgressMonitor monitor, CacheEvaluator evaluator, Object... args);
 
     boolean delete();
 

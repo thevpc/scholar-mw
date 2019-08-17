@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Collection;
 
@@ -9,16 +9,16 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     private static final long serialVersionUID = 1L;
     private TList<T> delegate;
     private TVectorModel<T> model;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public UpdatableTList(TypeReference<T> componentType, boolean row, TVectorModel<T> model) {
+    public UpdatableTList(TypeName<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.componentType = componentType;
         this.model = model;
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

@@ -18,3 +18,18 @@
 /hadruwaves-studio/hadruwaves-studio-standalone/assemble/
 /hadruwaves/hadruwaves-scala-examples-old/
 /hadruwaves/hadruwaves-java/target/
+/hadruwaves-studio/target/
+# Project exclude paths
+/hadrumaths/hadrumaths-java/target/
+/hadrumaths/hadrumaths-java-test/target/
+/hadruplot/target/
+/hadruwaves/hadruwaves-java-examples/target/
+/hadruwaves/hadruwaves-java-test/target/
+/hadruwaves/hadruwaves-puppets/target/
+/hadruwaves-studio/hadruwaves-studio-standalone/target/
+/tutorials/hadruwaves-tutorial/target/
+/hadruwaves/hadruwaves-scala-helloworld/target/
+/hadrumaths/hadrumaths-scala-helloworld/target/
+\.idea/
+
+*.iml

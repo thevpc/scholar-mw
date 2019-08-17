@@ -3,6 +3,7 @@ package net.vpc.scholar
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruplot.Plot
 
 object CustomFunctions {
   def main(args: Array[String]): Unit = {
@@ -21,8 +22,8 @@ object CustomFunctions {
     Plot.title("DCXY").asHeatMap().plot(DCXY(X,Y)*dom)
 
     val console = Plot.console()
-//    console.plotter().title("DDXY").asHeatMap().plot(DDXY(X+Y,Y)*dom)
-//    console.plotter().title("CCXY").asHeatMap().plot(CCXY(X,Y)*dom)
-//    console.plotter().title("DCXY").asHeatMap().plot(DCXY(X,Y)*dom)
+//    console.newPlot().title("DDXY").asHeatMap().plot(DDXY(X+Y,Y)*dom)
+//    console.newPlot().title("CCXY").asHeatMap().plot(CCXY(X,Y)*dom)
+//    console.newPlot().title("DCXY").asHeatMap().plot(DCXY(X,Y)*dom)
   }
 }

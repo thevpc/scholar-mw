@@ -3,30 +3,28 @@ package net.vpc.scholar.hadrumaths;
 import net.vpc.common.strings.StringConverter;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.util.*;
-import net.vpc.common.util.mon.LogProgressMonitor;
+import net.vpc.common.mon.LogProgressMonitor;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
 import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
 import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
 import net.vpc.scholar.hadrumaths.io.HFileSystem;
-import net.vpc.scholar.hadrumaths.plot.JColorArrayPalette;
-import net.vpc.scholar.hadrumaths.plot.JColorPalette;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
+import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
+import net.vpc.scholar.hadruplot.ColorPalette;
+import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 
-import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -78,42 +76,7 @@ public final class MathsConfig {
     private Map<ClassPair, Converter> converters = new HashMap<>();
     private Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
 
-    public static JColorPalette DEFAULT_PALETTE = new JColorArrayPalette("Array",new Color[]{
-            new Color(0xFF, 0x55, 0x55),
-            new Color(0x55, 0x55, 0xFF),
-            new Color(0x55, 0xFF, 0x55),
-            new Color(0xFF, 0xFF, 0x55),
-            new Color(0xFF, 0x55, 0xFF),
-            new Color(0x55, 0xFF, 0xFF),
-            Color.pink,
-            Color.gray,
-            new Color(0xc0, 0x00, 0x00),
-            new Color(0x00, 0x00, 0xC0),
-            new Color(0x00, 0xC0, 0x00),
-            new Color(0xC0, 0xC0, 0x00),
-            new Color(0xC0, 0x00, 0xC0),
-            new Color(0x00, 0xC0, 0xC0),
-            new Color(64, 64, 64),
-            new Color(0xFF, 0x40, 0x40),
-            new Color(0x40, 0x40, 0xFF),
-            new Color(0x40, 0xFF, 0x40),
-            new Color(0xFF, 0xFF, 0x40),
-            new Color(0xFF, 0x40, 0xFF),
-            new Color(0x40, 0xFF, 0xFF),
-            new Color(192, 192, 192),
-            new Color(0x80, 0x00, 0x00),
-            new Color(0x00, 0x00, 0x80),
-            new Color(0x00, 0x80, 0x00),
-            new Color(0x80, 0x80, 0x00),
-            new Color(0x80, 0x00, 0x80),
-            new Color(0x00, 0x80, 0x80),
-            new Color(0xFF, 0x80, 0x80),
-            new Color(0x80, 0x80, 0xFF),
-            new Color(0x80, 0xFF, 0x80),
-            new Color(0xFF, 0xFF, 0x80),
-            new Color(0x00, 0x80, 0x00),
-            new Color(0x80, 0xFF, 0xFF)
-    });
+    public static ColorPalette DEFAULT_PALETTE = PlotConfigManager.DEFAULT_PALETTE;
 
 
     private PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
@@ -123,14 +86,7 @@ public final class MathsConfig {
             return String.valueOf(value);
         }
     };
-    private DoubleFormat percentFormat = new DoubleFormat() {
-        private final DecimalFormat d = new DecimalFormat("0.00%");
-
-        @Override
-        public String formatDouble(double value) {
-            return d.format(value);
-        }
-    };
+    private DoubleFormat percentFormat = new DecimalDoubleFormat("0.00%");
 
     {
         registerConverter(Double.class, Complex.class, Maths.DOUBLE_TO_COMPLEX);
@@ -235,7 +191,7 @@ public final class MathsConfig {
         return converter;
     }
 
-    public <A, B> Converter<A, B> getConverter(TypeReference<A> a, TypeReference<B> b) {
+    public <A, B> Converter<A, B> getConverter(TypeName<A> a, TypeName<B> b) {
         return getConverter(a.getTypeClass(), b.getTypeClass());
     }
 
@@ -279,7 +235,7 @@ public final class MathsConfig {
         this.defaultMatrixFactory = defaultMatrixFactory;
     }
 
-    public <T> TMatrixFactory<T> getDefaultMatrixFactory(TypeReference<T> baseType) {
+    public <T> TMatrixFactory<T> getDefaultMatrixFactory(TypeName<T> baseType) {
         throw new IllegalArgumentException("Not Yet Supported");
     }
 

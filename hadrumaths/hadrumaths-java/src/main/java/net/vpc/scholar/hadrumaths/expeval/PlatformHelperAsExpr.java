@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.expeval;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DomainExpr;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.ParametrizedScalarProduct;
 
 

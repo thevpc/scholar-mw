@@ -41,7 +41,7 @@ public class PathItem {
     }
 
     public PathItem[] get() {
-        return children == null ? new PathItem[0] : children.values().toArray(new PathItem[children.size()]);
+        return children == null ? new PathItem[0] : children.values().toArray(new PathItem[0]);
     }
 
     public PathItem get(String name) {
@@ -55,7 +55,7 @@ public class PathItem {
             String n = st.nextToken();
             all.add(n);
         }
-        return all.toArray(new String[all.size()]);
+        return all.toArray(new String[0]);
     }
 
     public PathItem getPath(String path) {

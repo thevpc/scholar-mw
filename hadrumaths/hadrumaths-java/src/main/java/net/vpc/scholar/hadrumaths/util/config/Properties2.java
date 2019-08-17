@@ -666,7 +666,7 @@ public class Properties2 extends LinkedHashMap {
         if (metadata == null) {
             return new String[0];
         } else {
-            return (String[]) metadata.toArray(new String[metadata.size()]);
+            return (String[]) metadata.toArray(new String[0]);
         }
     }
 

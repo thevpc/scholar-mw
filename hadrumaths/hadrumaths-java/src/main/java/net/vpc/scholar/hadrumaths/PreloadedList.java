@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Collection;
 
@@ -11,9 +11,9 @@ public class PreloadedList<T> extends AbstractTList<T> {
 
     private static final long serialVersionUID = 1L;
     private final TList<T> cache;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public PreloadedList(TypeReference<T> componentType, boolean row, int size, TVectorCell<T> it) {
+    public PreloadedList(TypeName<T> componentType, boolean row, int size, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
         cache = Maths.list(componentType);
@@ -23,7 +23,7 @@ public class PreloadedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

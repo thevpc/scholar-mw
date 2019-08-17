@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCustom;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.ConsoleAction;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruwaves.console.PolygonPlotConsoleAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -23,7 +23,7 @@ public class PlotStructure extends PlotAxisCustom implements Cloneable {
         super("Structure", type);
     }
 
-    public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p){
+    public Iterator<ConsoleAction> createConsoleActionIterator(final ConsoleActionParams p){
         return Maths.invokeMonitoredAction(this, getName(), new MonitoredAction<Iterator<ConsoleAction>>() {
             @Override
             public Iterator<ConsoleAction> process(ProgressMonitor monitor, String messagePrefix) throws Exception {

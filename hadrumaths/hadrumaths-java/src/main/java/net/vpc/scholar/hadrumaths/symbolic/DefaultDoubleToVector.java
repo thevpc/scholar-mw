@@ -145,35 +145,35 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
         return components[row];
     }
 
-    @Override
-    public String getComponentTitle(int row, int col) {
-        checkComponent(row, col);
-        ComponentDimension d = getComponentDimension();
-        if (d.columns == 1) {
-            if (d.rows <= 3) {
-                switch (row) {
-                    case 0:
-                        return "X";
-                    case 1:
-                        return "Y";
-                    case 2:
-                        return "Z";
-                }
-            }
-        } else if (d.rows == 1) {
-            if (d.columns <= 3) {
-                switch (col) {
-                    case 0:
-                        return "X";
-                    case 1:
-                        return "Y";
-                    case 2:
-                        return "Z";
-                }
-            }
-        }
-        return "[" + (row + 1) + "," + (col + 1) + ")";
-    }
+//    @Override
+//    public String getComponentTitle(int row, int col) {
+//        checkComponent(row, col);
+//        ComponentDimension d = getComponentDimension();
+//        if (d.columns == 1) {
+//            if (d.rows <= 3) {
+//                switch (row) {
+//                    case 0:
+//                        return "X";
+//                    case 1:
+//                        return "Y";
+//                    case 2:
+//                        return "Z";
+//                }
+//            }
+//        } else if (d.rows == 1) {
+//            if (d.columns <= 3) {
+//                switch (col) {
+//                    case 0:
+//                        return "X";
+//                    case 1:
+//                        return "Y";
+//                    case 2:
+//                        return "Z";
+//                }
+//            }
+//        }
+//        return "[" + (row + 1) + "," + (col + 1) + ")";
+//    }
 
     public Domain getDomainImpl() {
         return domain;
@@ -389,4 +389,6 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
         }
         return new DefaultDoubleToVector(c2, components.length);
     }
+
+
 }

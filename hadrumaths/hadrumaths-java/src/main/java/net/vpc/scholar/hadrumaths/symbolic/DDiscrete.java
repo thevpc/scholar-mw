@@ -5,8 +5,13 @@ import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DMHelper;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.Samples;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,6 +52,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     private double dz;
     private int dimension;
     private Domain domain;
+    private DC2DMHelper dc2dm;
 
 
 //    public Cube(Complex value, int x, int y, int z) {
@@ -306,6 +312,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //    }
 
     private void init(Domain domain, double[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
+        this.dc2dm = new DC2DMHelper(this);
         this.domain = domain.toDomain(dim);
         this.dimension = dim;
         switch (dim) {
@@ -1156,7 +1163,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 
     @Override
     public DoubleToVector toDV() {
-        return Maths.vector(this);
+        return new DC2DV(this);
     }
 
     @Override
@@ -1166,8 +1173,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 
     @Override
     public DoubleToMatrix toDM() {
-        return toDV();
+        return new DC2DM(this);
     }
+
 
     @Override
     public boolean isZeroImpl() {
@@ -1649,63 +1657,4 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
         throw new IllegalArgumentException("Missing z");
     }
 
-//    @Override
-//    public Complex computeComplex(double x,BooleanMarker defined) {
-//        Out<Range> ranges = new Out<>();
-//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-//        defined.set(ranges.get().getDefined1().get(0));
-//        return complex;
-//    }
-
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        return computeComplex(x, y, z, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x) {
-        return computeComplex(x, (Domain) null, null);
-    }
-
-
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x, y, z, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
 }

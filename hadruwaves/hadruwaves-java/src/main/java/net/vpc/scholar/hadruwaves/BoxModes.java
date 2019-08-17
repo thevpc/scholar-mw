@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves;
 
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
 import java.util.ArrayList;
@@ -120,14 +120,14 @@ public abstract class BoxModes {
         return getModeFcts(max, null);
     }
 
-    public ModeFct[] getModeFcts(int max, ProgressMonitor monitor) {
+    public ModeFct[] getModeFcts(final int max, ProgressMonitor monitor) {
         Chronometer chrono = new Chronometer();
         chrono.start();
-        ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
-        ModeIterator iterator = iterator();
-        ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        final ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
+        final ModeIterator iterator = iterator();
+        final ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
-        String message = tostr + " {0,number,#}/{1,number,#}";
+        final String message = tostr + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
@@ -151,7 +151,7 @@ public abstract class BoxModes {
         );
 
         //System.out.println("found " + next.size()+" modes in "+chrono);
-        return next.toArray(new ModeFct[next.size()]);
+        return next.toArray(new ModeFct[0]);
     }
 
     public ModeIndex[] indexes(int max) {
@@ -197,14 +197,14 @@ public abstract class BoxModes {
         return getIndexes(max, monitor);
     }
 
-    public ModeIndex[] getIndexes(int max, ProgressMonitor monitor) {
+    public ModeIndex[] getIndexes(final int max, ProgressMonitor monitor) {
         Chronometer chrono = new Chronometer();
         chrono.start();
-        ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
-        ModeIterator iterator = iterator();
-        ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        final ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
+        final ModeIterator iterator = iterator();
+        final ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
         String tostr = borders + " modes, enumerate modes";
-        String message = tostr + ", {0,number,#}/{1,number,#}";
+        final String message = tostr + ", {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
@@ -225,7 +225,7 @@ public abstract class BoxModes {
                     }
                 });
         //System.out.println("found " + next.size()+" modes in "+chrono);
-        return next.toArray(new ModeIndex[next.size()]);
+        return next.toArray(new ModeIndex[0]);
     }
 
 

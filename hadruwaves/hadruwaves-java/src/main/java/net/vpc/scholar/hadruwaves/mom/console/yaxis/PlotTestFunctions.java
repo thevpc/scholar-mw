@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCustom;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.ConsoleAction;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadrumaths.plot.FunctionsXYPlotConsoleAction;
 
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -31,13 +31,13 @@ public class PlotTestFunctions extends PlotAxisCustom implements Cloneable {
                     str1.getTestFunctions().arr(),
                     d,
                     p.getPreferredPath(), getPlotType()
-                    ,getPreferredLibraries()
+                    ,getLibraries()
             ));
         }
         if (containsType(YType.MODELED)) {
             MomStructure str2 = (MomStructure)p.getStructure2();
             if (str2 != null) {
-                all.add(new FunctionsXYPlotConsoleAction("Test Functions", "Model Test Functions " + p.getSerieTitle().toString(), str2.getTestFunctions().arr(), str2.getDomain(), p.getPreferredPath(), getPlotType(),getPreferredLibraries()));
+                all.add(new FunctionsXYPlotConsoleAction("Test Functions", "Model Test Functions " + p.getSerieTitle().toString(), str2.getTestFunctions().arr(), str2.getDomain(), p.getPreferredPath(), getPlotType(),getLibraries()));
             }
         }
 //        mon.terminatem(getName());

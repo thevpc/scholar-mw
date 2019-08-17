@@ -1,10 +1,12 @@
 package net.vpc.scholar
 
 
+import net.vpc.common.swings.util.Chronometer
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator
+import net.vpc.scholar.hadruplot.Plot
 
 
 /**

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DMHelper;
 import net.vpc.scholar.hadrumaths.util.NonStateField;
 
 import java.io.Serializable;
@@ -17,8 +18,10 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     protected Expressions.BinaryExprHelper<GenericFunctionXY> exprHelper = new GenericFunctionXYBinaryExprHelperAnd();
     private Expr xargument;
     private Expr yargument;
+    private DC2DMHelper dc2dm;
 
     protected GenericFunctionXY() {
+        dc2dm=new DC2DMHelper(this);
     }
 
     protected GenericFunctionXY(Expr xargument, Expr yargument) {
@@ -40,6 +43,7 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         ComponentDimension cd = xargument.getComponentDimension().expand(yargument.getComponentDimension());
         this.xargument = Maths.expandComponentDimension(xargument, cd);
         this.yargument = Maths.expandComponentDimension(yargument, cd);
+        dc2dm=new DC2DMHelper(this);
         resetFunctionType(lowerFunctionType);
 //        if(this.functionType==FunctionType.MATRIX){
 //            System.out.println("Why");
@@ -193,6 +197,16 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     }
 
     @Override
+    public Vector computeVector(double x, double y) {
+        if (contains(x, y)) {
+            Vector xx = getXArgument().toDV().computeVector(x, y);
+            Vector yy = getYArgument().toDV().computeVector(x, y);
+            return evalVector(xx, yy);
+        }
+        return Complex.ZERO.toVector();
+    }
+
+    @Override
     public Matrix computeMatrix(double x, double y, double z) {
         if (contains(x, y, z)) {
             Matrix xx = getXArgument().toDM().computeMatrix(x, y, z);
@@ -200,6 +214,17 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             return evalMatrix(xx, yy);
         }
         return Complex.ZERO.toMatrix();
+    }
+
+
+    @Override
+    public Vector computeVector(double x, double y, double z) {
+        if (contains(x, y, z)) {
+            Vector xx = getXArgument().toDV().computeVector(x, y, z);
+            Vector yy = getYArgument().toDV().computeVector(x, y, z);
+            return evalVector(xx, yy);
+        }
+        return Complex.ZERO.toVector();
     }
 
 
@@ -214,8 +239,18 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
     }
 
     @Override
+    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, y, d0, ranges);
+    }
+
+    @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
+    }
+
+    @Override
+    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, d0, ranges);
     }
 
     @Override
@@ -223,34 +258,11 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
         return Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
     }
 
-    //    protected double evalCD(Complex x) {
-//        return evalComplex(x).toDouble();
-//    }
-//
-//    protected Complex evalDC(double x) {
-//        return evalComplex(Complex.valueOf(x));
-//    }
-//
-//    protected Complex evalMC(Matrix x) {
-//        return evalComplex(x.toComplex());
-//    }
-//
-//    protected Double evalMD(Matrix x) {
-//        return evalComplex(x.toComplex()).toDouble();
-//    }
-//
-//    protected Matrix evalDM(double x) {
-//        return evalComplex(Complex.valueOf(x)).toMatrix();
-//    }
-//
-//    protected Matrix evalCM(Complex x) {
-//        return evalComplex(x).toMatrix();
-//    }
-//
-//    public Matrix computeMatrix(Matrix c) {
-//        return evalMM(c);
-//    }
-//
+    @Override
+    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, y, z, d0, ranges);
+    }
+
     protected Matrix evalMatrix(Matrix x, Matrix y) {
         int columnCount = x.getColumnCount();
         int rowCount = x.getRowCount();
@@ -264,6 +276,20 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
             @Override
             public Complex get(int row, int column) {
                 return computeComplexArg(x.get(row, column), y.get(row, column), true, true, NoneOutBoolean.INSTANCE);
+            }
+        });
+    }
+    protected Vector evalVector(Vector x, Vector y) {
+        int columnCount = x.size();
+        if (
+                columnCount != y.size()
+                ) {
+            throw new IllegalArgumentException("Dimension mismatch");
+        }
+        return Maths.columnVector(columnCount, new VectorCell() {
+            @Override
+            public Complex get(int row) {
+                return computeComplexArg(x.get(row), y.get(row), true, true, NoneOutBoolean.INSTANCE);
             }
         });
     }
@@ -519,7 +545,18 @@ public abstract class GenericFunctionXY extends AbstractComposedFunction {
                 return zero;
             }
         }
-    }
 
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined && options.value2Defined;
+            if (def) {
+                Vector d = evalVector(a, b);
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
+    }
 
 }

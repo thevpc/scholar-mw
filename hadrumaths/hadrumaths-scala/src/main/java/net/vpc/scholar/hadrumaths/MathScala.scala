@@ -6,14 +6,15 @@
 package net.vpc.scholar.hadrumaths
 
 
-import net.vpc.common.util.mon.ProgressMonitor
+import net.vpc.common.mon.ProgressMonitor
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.symbolic._
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix
+import net.vpc.scholar.hadruplot.{AbsoluteSamples, Samples}
 //import java.util
 
 import net.vpc.scholar
-import net.vpc.scholar.hadrumaths.cache.{Evaluator, PersistenceCache}
+import net.vpc.scholar.hadrumaths.cache.{CacheEvaluator, PersistenceCache}
 import net.vpc.scholar.hadrumaths.geom.Geometry
 
 import scala.collection.{Iterable, Iterator}
@@ -38,9 +39,9 @@ object MathScala {
   type JPFloat = java.lang.Float;
   type JPBoolean = java.lang.Boolean;
 
-//  def arr(x: ToDoubleArrayAware): Array[Double] = x.toDoubleArray()
-//
-//  def arr(x: Array[Double]): ToDoubleArrayAware = new ToDoubleArrayAwareConstant(x)
+  //  def arr(x: ToDoubleArrayAware): Array[Double] = x.toDoubleArray()
+  //
+  //  def arr(x: Array[Double]): ToDoubleArrayAware = new ToDoubleArrayAwareConstant(x)
 
   def samples(x: ToDoubleArrayAware): Samples = Samples.absolute(x.toDoubleArray())
 
@@ -62,7 +63,7 @@ object MathScala {
 
   implicit def convertImplicitArrayComplexToExprList(x: Array[Complex]): TList[Complex] = Maths.clist(x: _*)
 
-  implicit def convertImplicitArrayComplexToVector(x: Array[Complex]): Vector = Maths.columnVector(x)
+  implicit def convertImplicitArrayComplexToVector(x: Array[Complex]): Vector = Maths.columnVector(x: _*)
 
   implicit def convertImplicitIntToComplex(x: Int): Complex = Complex.valueOf(x)
 
@@ -76,7 +77,7 @@ object MathScala {
     def iterator = convertii2id2(x.iterator);
   }
 
-  implicit def convertDoubleArrayToDList(x:Array[Double]): DoubleList = DoubleArrayList.column(x)
+  implicit def convertDoubleArrayToDList(x: Array[Double]): DoubleList = DoubleArrayList.column(x)
 
   implicit def convertii2id2(x: Iterator[(Int, Int)]): Iterator[(Double, Double)] = new Iterator[(Double, Double)] {
     def next() = {
@@ -126,54 +127,54 @@ object MathScala {
     Maths.elist(x: _*)
   }
 
-  implicit def convertImplicitRightArrowUplet2Double(x: Tuple2[Double,Double]):  net.vpc.scholar.hadrumaths.RightArrowUplet2.Double= {
-    return new net.vpc.scholar.hadrumaths.RightArrowUplet2.Double(x._1,x._2)
+  implicit def convertImplicitRightArrowUplet2Double(x: Tuple2[Double, Double]): net.vpc.scholar.hadrumaths.RightArrowUplet2.Double = {
+    return new net.vpc.scholar.hadrumaths.RightArrowUplet2.Double(x._1, x._2)
   }
 
-//  def II(xdomain: Tuple2[Double, Double]): Expr = {
-//    Maths.expr(Domain.forBounds(xdomain._1, xdomain._2))
-//  }
-//
-//  def IIe(xdomain: Tuple2[Expr, Expr]): Expr = {
-//    DomainExpr.forBounds(xdomain._1, xdomain._2)
-//  }
-//
-//  def IIe(xdomain: Tuple2[Expr, Expr], ydomain: Tuple2[Expr, Expr]): Expr = {
-//    DomainExpr.forBounds(xdomain._1, xdomain._2, ydomain._1, ydomain._2)
-//  }
-//
-//  def IIe(xdomain: Tuple2[Expr, Expr], ydomain: Tuple2[Expr, Expr], zdomain: Tuple2[Expr, Expr]): Expr = {
-//    DomainExpr.forBounds(xdomain._1, xdomain._2, ydomain._1, ydomain._2, zdomain._1, zdomain._2)
-//  }
+  //  def II(xdomain: Tuple2[Double, Double]): Expr = {
+  //    Maths.expr(Domain.forBounds(xdomain._1, xdomain._2))
+  //  }
+  //
+  //  def IIe(xdomain: Tuple2[Expr, Expr]): Expr = {
+  //    DomainExpr.forBounds(xdomain._1, xdomain._2)
+  //  }
+  //
+  //  def IIe(xdomain: Tuple2[Expr, Expr], ydomain: Tuple2[Expr, Expr]): Expr = {
+  //    DomainExpr.forBounds(xdomain._1, xdomain._2, ydomain._1, ydomain._2)
+  //  }
+  //
+  //  def IIe(xdomain: Tuple2[Expr, Expr], ydomain: Tuple2[Expr, Expr], zdomain: Tuple2[Expr, Expr]): Expr = {
+  //    DomainExpr.forBounds(xdomain._1, xdomain._2, ydomain._1, ydomain._2, zdomain._1, zdomain._2)
+  //  }
 
-//  def IIx(a: Tuple2[Double, Double]): Expr = {
-//    gateX(a._1, a._2)
-//  }
-//
-//  def IIy(a: Tuple2[Double, Double]): Expr = {
-//    gateY(a._1, a._2)
-//  }
-//
-//  def IIz(a: Tuple2[Double, Double]): Expr = {
-//    gateZ(a._1, a._2)
-//  }
+  //  def IIx(a: Tuple2[Double, Double]): Expr = {
+  //    gateX(a._1, a._2)
+  //  }
+  //
+  //  def IIy(a: Tuple2[Double, Double]): Expr = {
+  //    gateY(a._1, a._2)
+  //  }
+  //
+  //  def IIz(a: Tuple2[Double, Double]): Expr = {
+  //    gateZ(a._1, a._2)
+  //  }
 
 
-//  def II(a: Tuple2[Double, Double], b: Tuple2[Double, Double]): Expr = DoubleValue.valueOf(1, Domain.forBounds(a._1, a._2, b._1, b._2))
-//
-//  def II(a: Tuple2[Double, Double], b: Tuple2[Double, Double], c: Tuple2[Double, Double]): Expr = DoubleValue.valueOf(1, Domain.forBounds(a._1, a._2, b._1, b._2, c._1, c._2))
+  //  def II(a: Tuple2[Double, Double], b: Tuple2[Double, Double]): Expr = DoubleValue.valueOf(1, Domain.forBounds(a._1, a._2, b._1, b._2))
+  //
+  //  def II(a: Tuple2[Double, Double], b: Tuple2[Double, Double], c: Tuple2[Double, Double]): Expr = DoubleValue.valueOf(1, Domain.forBounds(a._1, a._2, b._1, b._2, c._1, c._2))
 
-//  def domain(a: Tuple2[Double, Double]): Domain = {
-//    Domain.forBounds(a._1, a._2);
-//  }
-//
-//  def domain(a: Tuple2[Double, Double], b: Tuple2[Double, Double]): Domain = {
-//    Domain.forBounds(a._1, a._2, b._1, b._2);
-//  }
-//
-//  def domain(a: Tuple2[Double, Double], b: Tuple2[Double, Double], c: Tuple2[Double, Double]): Domain = {
-//    Domain.forBounds(a._1, a._2, b._1, b._2, c._1, c._2);
-//  }
+  //  def domain(a: Tuple2[Double, Double]): Domain = {
+  //    Domain.forBounds(a._1, a._2);
+  //  }
+  //
+  //  def domain(a: Tuple2[Double, Double], b: Tuple2[Double, Double]): Domain = {
+  //    Domain.forBounds(a._1, a._2, b._1, b._2);
+  //  }
+  //
+  //  def domain(a: Tuple2[Double, Double], b: Tuple2[Double, Double], c: Tuple2[Double, Double]): Domain = {
+  //    Domain.forBounds(a._1, a._2, b._1, b._2, c._1, c._2);
+  //  }
 
   def mape(a: Array[Expr], f: (Int, Expr) => Expr): Expr = {
     scholar.hadrumaths.Maths.esum(a.length, (i: Int) => f(i, a(i)))
@@ -190,28 +191,28 @@ object MathScala {
 
     def **(v: TMatrix[Complex]): Complex = value.scalarProduct(v.toVector());
 
-//    def ***(v: TMatrix[Complex]): Complex = value.scalarProduct(true, v.toVector());
+    //    def ***(v: TMatrix[Complex]): Complex = value.scalarProduct(true, v.toVector());
 
 
     def **(v: Vector): Complex = value.scalarProduct(v)
 
-//    def ***(v: Vector): Complex = value.scalarProduct(true, v)
+    //    def ***(v: Vector): Complex = value.scalarProduct(true, v)
 
     def **(v: TList[Expr]): Expr = {
       v.scalarProduct(value.asInstanceOf[TVector[Expr]])
     }
 
-//    def ***(v: TList[Expr]): Expr = {
-//      v.scalarProduct(true, value.asInstanceOf[TVector[Expr]])
-//    }
+    //    def ***(v: TList[Expr]): Expr = {
+    //      v.scalarProduct(true, value.asInstanceOf[TVector[Expr]])
+    //    }
 
     def :**(v: java.util.List[Vector]): Vector = Maths.vector(value.vscalarProduct(v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
-//    def :***(v: java.util.List[Vector]): Vector = Maths.vector(value.vscalarProduct(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
+    //    def :***(v: java.util.List[Vector]): Vector = Maths.vector(value.vscalarProduct(true, v.toArray(Array.ofDim[Vector](v.size())): _ *))
 
     def :**(v: Array[TVector[Complex]]): Vector = Maths.vector(value.vscalarProduct(v: _ *))
 
-//    def :***(v: Array[TVector[Complex]]): Vector = Maths.vector(value.vscalarProduct(true, v: _ *))
+    //    def :***(v: Array[TVector[Complex]]): Vector = Maths.vector(value.vscalarProduct(true, v: _ *))
 
     def +(v: TVector[Complex]): Vector = Maths.vector(value.add(v))
 
@@ -224,6 +225,7 @@ object MathScala {
     def *(v: Complex): Vector = Maths.vector(value.mul(v))
 
     def /(v: Complex): Vector = Maths.vector(value.div(v))
+    def %(v: Complex): Vector = Maths.vector(value.rem(v))
 
     //    def ^ (v: Complex): Vector = value.pow(v)
 
@@ -273,9 +275,9 @@ object MathScala {
       return Maths.vscalarProduct(value.toVector.asInstanceOf[TVector[T]], v);
     }
 
-//    def :***[T](v: TVector[TVector[T]]): TVector[T] = {
-//      return Maths.vhscalarProduct(value.toVector.asInstanceOf[TVector[T]], v);
-//    }
+    //    def :***[T](v: TVector[TVector[T]]): TVector[T] = {
+    //      return Maths.vhscalarProduct(value.toVector.asInstanceOf[TVector[T]], v);
+    //    }
 
     def +(v: Matrix): Matrix = value.add(v)
 
@@ -314,51 +316,53 @@ object MathScala {
       value.scalarProduct(v)
     }
 
-//    def ***(v: Matrix): Complex = {
-//      value.scalarProduct(true, v)
-//    }
+    //    def ***(v: Matrix): Complex = {
+    //      value.scalarProduct(true, v)
+    //    }
 
     def **(v: Vector): Complex = {
       value.scalarProduct(v)
     }
 
-//    def ***(v: Vector): Complex = {
-//      value.scalarProduct(true, v)
-//    }
+    //    def ***(v: Vector): Complex = {
+    //      value.scalarProduct(true, v)
+    //    }
 
     def **(v: TList[Expr]): Expr = {
       v.scalarProduct(value.asInstanceOf[TMatrix[Expr]])
     }
 
-//    def ***(v: TList[Expr]): Expr = {
-//      v.scalarProduct(true, value.asInstanceOf[TMatrix[Expr]])
-//    }
+    //    def ***(v: TList[Expr]): Expr = {
+    //      v.scalarProduct(true, value.asInstanceOf[TMatrix[Expr]])
+    //    }
 
     def **(v: Tuple2[Vector, Vector]): Complex = {
-      value.toVector.scalarProductAll( Array(v._1, v._2): _*)
+      value.toVector.scalarProductAll(Array(v._1, v._2): _*)
     }
 
-//    def ***(v: Tuple2[Vector, Vector]): Complex = {
-//      value.toVector.scalarProductAll(true, Array(v._1, v._2): _*)
-//    }
+    //    def ***(v: Tuple2[Vector, Vector]): Complex = {
+    //      value.toVector.scalarProductAll(true, Array(v._1, v._2): _*)
+    //    }
 
     def **(v: Tuple3[Vector, Vector, Vector]): Complex = {
       value.toVector.scalarProductAll(Array(v._1, v._2, v._3): _*)
     }
 
-//    def ***(v: Tuple3[Vector, Vector, Vector]): Complex = {
-//      value.toVector.scalarProductAll(true, Array(v._1, v._2, v._3): _*)
-//    }
+    //    def ***(v: Tuple3[Vector, Vector, Vector]): Complex = {
+    //      value.toVector.scalarProductAll(true, Array(v._1, v._2, v._3): _*)
+    //    }
 
     def **(v: Tuple4[Vector, Vector, Vector, Vector]): Complex = {
       value.toVector.scalarProductAll(Array(v._1, v._2, v._3, v._4): _*)
     }
 
-//    def ***(v: Tuple4[Vector, Vector, Vector, Vector]): Complex = {
-//      value.toVector.scalarProductAll(true, Array(v._1, v._2, v._3, v._4): _*)
-//    }
+    //    def ***(v: Tuple4[Vector, Vector, Vector, Vector]): Complex = {
+    //      value.toVector.scalarProductAll(true, Array(v._1, v._2, v._3, v._4): _*)
+    //    }
 
     def /(v: Matrix): Matrix = value.div(v)
+
+    def %(v: Matrix): Matrix = value.rem(v)
 
     def /(v: Complex): Matrix = value.div(v)
 
@@ -371,6 +375,8 @@ object MathScala {
     def -(v: Vector): Matrix = value.sub(v.toMatrix)
 
     def /(v: Vector): Matrix = value.div(v.toMatrix)
+
+    def %(v: Vector): Matrix = value.rem(v.toMatrix)
 
     def :*(v: Vector): Matrix = value.dotmul(v.toMatrix)
 
@@ -388,7 +394,7 @@ object MathScala {
   }
 
 
-  implicit class SExpr(val value: Expr) extends Any(value,null,null) {
+  implicit class SExpr(val value: Expr) extends Any(value, null, null) {
 
     def +(v: Expr): Expr = add(Any.unwrap(v))
 
@@ -415,11 +421,11 @@ object MathScala {
 
     def **(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(value, v);
 
-//    def ***(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(true, value, v);
+    //    def ***(v: TVector[Expr]): Vector = scholar.hadrumaths.Maths.scalarProduct(true, value, v);
 
     def **(v: Expr): Expr = new ParametrizedScalarProduct(value, Any.unwrap(v));
 
-//    def ***(v: Expr): Expr = new ParametrizedScalarProduct(value, Any.unwrap(v), true);
+    //    def ***(v: Expr): Expr = new ParametrizedScalarProduct(value, Any.unwrap(v), true);
 
     def ^^(v: Expr): Expr = value.pow(Any.unwrap(v));
 
@@ -444,6 +450,7 @@ object MathScala {
     def ||(v: Expr): Expr = Maths.or(value, Any.unwrap(v));
 
     def /(v: Expr): Expr = div(Any.unwrap(v))
+    def %(v: Expr): Expr = rem(Any.unwrap(v))
 
     def apply(f: Tuple2[ParamExpr, Expr]): Expr = {
       value.setParam(f._1, Any.unwrap(f._2));
@@ -460,7 +467,7 @@ object MathScala {
     def apply(x: Array[Double], y: Array[Double]): Array[Array[Complex]] = value.computeComplex(x, y)
   }
 
-  implicit class SComplex(val value: Complex) extends Any(value,null,null) {
+  implicit class SComplex(val value: Complex) extends Any(value, null, null) {
 
     def +(v: Complex): Complex = value.add(v)
 
@@ -470,6 +477,8 @@ object MathScala {
 
     def /(v: Complex): Complex = value.div(v)
 
+    def %(v: Complex): Complex = value.rem(v)
+
     def +(v: Double): Complex = value.add(v)
 
     def -(v: Double): Complex = value.sub(v)
@@ -477,6 +486,7 @@ object MathScala {
     def *(v: Double): Complex = value.mul(v)
 
     def /(v: Double): Complex = value.div(v)
+    def %(v: Double): Complex = value.rem(v)
 
     def ^^(v: Expr): Expr = value.pow(v);
 
@@ -506,29 +516,30 @@ object MathScala {
     def ***(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(null, value, Any.unwrap(v));
 
     def /(v: Expr): Expr = div(Any.unwrap(v))
+    def %(v: Expr): Expr = rem(Any.unwrap(v))
 
     def apply(f: Tuple2[ParamExpr, Expr]): Expr = {
       value.setParam(f._1, Any.unwrap(f._2));
     }
   }
 
-  implicit class SObjectCacheManager(val value: PersistenceCache) {
-
-    def eval[T](key: String, monitor: ProgressMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
-      value.evaluate(key, monitor, new Evaluator {
-        override def evaluate(args: Array[Object]): Object = a(args)
-      }, anyParam: _*)
-    }
-
-    //    def process[T](key: String, old: T, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
-    //      if (old != null) {
-    //        return old;
-    //      }
-    //      value.evaluate(key, monitor, new Evaluator {
-    //        override def evaluate(args: Array[Object]): Object = a(args)
-    //      }, anyParam: _*)
-    //    }
-  }
+//  implicit class SObjectCacheManager(val value: PersistenceCache) {
+//
+//    def eval[T](key: String, monitor: ProgressMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
+//      value.evaluate(key, monitor, new CacheEvaluator {
+//        override def evaluate(args: Array[Object]): Object = a(args)
+//      }, anyParam: _*)
+//    }
+//
+//    //    def process[T](key: String, old: T, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
+//    //      if (old != null) {
+//    //        return old;
+//    //      }
+//    //      value.evaluate(key, monitor, new Evaluator {
+//    //        override def evaluate(args: Array[Object]): Object = a(args)
+//    //      }, anyParam: _*)
+//    //    }
+//  }
 
   implicit class SJList[T](val value: java.util.List[T]) {
     def transform[U](f: (Int, T) => U): java.util.List[U] = {
@@ -708,25 +719,25 @@ object MathScala {
       value.to($EXPR).scalarProductAll(expr(v._1), expr(v._2))
     }
 
-//    def ***[P1 <: Expr, P2 <: Expr](v: Tuple2[TVector[P1], TVector[P2]]): Expr = {
-//      value.scalarProductAll(true, expr(v._1), expr(v._2))
-//    }
+    //    def ***[P1 <: Expr, P2 <: Expr](v: Tuple2[TVector[P1], TVector[P2]]): Expr = {
+    //      value.scalarProductAll(true, expr(v._1), expr(v._2))
+    //    }
 
     def **[P1 <: Expr, P2 <: Expr, P3 <: Expr](v: Tuple3[TVector[P1], TVector[P2], TVector[P3]]): Expr = {
       value.scalarProductAll(Array(expr(v._1), expr(v._2), expr(v._3)): _*)
     }
 
-//    def ***[P1 <: Expr, P2 <: Expr, P3 <: Expr](v: Tuple3[TVector[P1], TVector[P2], TVector[P3]]): Expr = {
-//      value.scalarProductAll(true, Array(expr(v._1), expr(v._2), expr(v._3)): _*)
-//    }
+    //    def ***[P1 <: Expr, P2 <: Expr, P3 <: Expr](v: Tuple3[TVector[P1], TVector[P2], TVector[P3]]): Expr = {
+    //      value.scalarProductAll(true, Array(expr(v._1), expr(v._2), expr(v._3)): _*)
+    //    }
 
     def **[P1 <: Expr, P2 <: Expr, P3 <: Expr, P4 <: Expr](v: Tuple4[TVector[P1], TVector[P2], TVector[P3], TVector[P4]]): Expr = {
-      value.scalarProductAll( Array(expr(v._1), expr(v._2), expr(v._3), expr(v._4)): _*)
+      value.scalarProductAll(Array(expr(v._1), expr(v._2), expr(v._3), expr(v._4)): _*)
     }
 
-//    def ***[P1 <: Expr, P2 <: Expr, P3 <: Expr, P4 <: Expr](v: Tuple4[TVector[P1], TVector[P2], TVector[P3], TVector[P4]]): Expr = {
-//      value.scalarProductAll(true, Array(expr(v._1), expr(v._2), expr(v._3), expr(v._4)): _*)
-//    }
+    //    def ***[P1 <: Expr, P2 <: Expr, P3 <: Expr, P4 <: Expr](v: Tuple4[TVector[P1], TVector[P2], TVector[P3], TVector[P4]]): Expr = {
+    //      value.scalarProductAll(true, Array(expr(v._1), expr(v._2), expr(v._3), expr(v._4)): _*)
+    //    }
 
     def :*[P <: Expr](v: TVector[P]): TVector[Expr] = Maths.edotmul(value, v.asInstanceOf[TVector[Expr]]);
 
@@ -742,17 +753,17 @@ object MathScala {
       Maths.edotmul(value, v._1.asInstanceOf[TVector[Expr]], v._2.asInstanceOf[TVector[Expr]], v._3.asInstanceOf[TVector[Expr]], v._4.asInstanceOf[TVector[Expr]])
     }
 
-    def **[P1 <: Expr](v: Expr): TVector[Expr] = value.to($EXPR).scalarProduct( v);
+    def **[P1 <: Expr](v: Expr): TVector[Expr] = value.to($EXPR).scalarProduct(v);
 
-//    def ***[P1 <: Expr](v: Expr): TVector[Expr] = value.to($EXPR).scalarProduct(true, v);
+    //    def ***[P1 <: Expr](v: Expr): TVector[Expr] = value.to($EXPR).scalarProduct(true, v);
 
-    def **[P <: Expr](v: TVector[P]): Expr = value.to($EXPR).scalarProduct( v.to($EXPR));
+    def **[P <: Expr](v: TVector[P]): Expr = value.to($EXPR).scalarProduct(v.to($EXPR));
 
-//    def ***[P <: Expr](v: TVector[P]): Expr = value.to($EXPR).scalarProduct(true, v.to($EXPR));
+    //    def ***[P <: Expr](v: TVector[P]): Expr = value.to($EXPR).scalarProduct(true, v.to($EXPR));
 
-    def **[P <: Expr](v: TMatrix[P]): Expr = value.to($EXPR).scalarProduct( (v.toVector().to($EXPR)));
+    def **[P <: Expr](v: TMatrix[P]): Expr = value.to($EXPR).scalarProduct((v.toVector().to($EXPR)));
 
-//    def ***[P <: Expr](v: TMatrix[P]): Expr = value.to($EXPR).scalarProduct(true, expr(v.toVector()));
+    //    def ***[P <: Expr](v: TMatrix[P]): Expr = value.to($EXPR).scalarProduct(true, expr(v.toVector()));
 
     def :**[P1 <: Expr](v: TVector[P1]): TMatrix[Expr] = Maths.scalarProductMatrix(value, v.asInstanceOf[TVector[Expr]]).asInstanceOf[TMatrix[Expr]];
 
@@ -782,6 +793,8 @@ object MathScala {
     def *(v: Expr): TList[Expr] = Maths.mul(value, v)
 
     def /(v: Expr): TList[Expr] = scholar.hadrumaths.Maths.div(value, v)
+
+    def %(v: Expr): TList[Expr] = scholar.hadrumaths.Maths.rem(value, v)
 
     def !(): TList[Expr] = Maths.simplify(value)
 
@@ -888,6 +901,7 @@ object MathScala {
     def *(v: java.lang.Double): TList[java.lang.Double] = Maths.mul[java.lang.Double](value, v)
 
     def /(v: java.lang.Double): TList[java.lang.Double] = scholar.hadrumaths.Maths.div[java.lang.Double](value, v)
+    def %(v: java.lang.Double): TList[java.lang.Double] = scholar.hadrumaths.Maths.rem[java.lang.Double](value, v)
 
     def !!(): TList[java.lang.Double] = value;
 
@@ -945,13 +959,13 @@ object MathScala {
       list;
     }
 
-//    def foreachIndex(f: (Int, Expr) => Unit): Unit = {
-//      var i = 0;
-//      while (i < value.size()) {
-//        f(i, expr(value(i)));
-//        i = i + 1;
-//      }
-//    }
+    //    def foreachIndex(f: (Int, Expr) => Unit): Unit = {
+    //      var i = 0;
+    //      while (i < value.size()) {
+    //        f(i, expr(value(i)));
+    //        i = i + 1;
+    //      }
+    //    }
 
     def ::+(v: TList[java.lang.Double]): TList[java.lang.Double] = {
       Maths.concat(value, v)
@@ -1011,6 +1025,8 @@ object MathScala {
 
     def /(v: Complex): Complex = toComplex.div(v)
 
+    def %(v: Complex): Complex = toComplex.rem(v)
+
     def ^^(v: Complex): Complex = value.pow(v);
 
     def +(v: Expr): Expr = toComplex.add(v.value)
@@ -1020,6 +1036,7 @@ object MathScala {
     def *(v: Expr): Expr = toComplex.mul(v.value)
 
     def /(v: Expr): Expr = toComplex.div(v.value)
+    def %(v: Expr): Expr = toComplex.rem(v.value)
 
     def toComplex: Complex = Complex.valueOf(value)
   }
@@ -1032,6 +1049,7 @@ object MathScala {
     def *(v: Complex): Complex = toComplex.mul(v)
 
     def /(v: Complex): Complex = toComplex.div(v)
+    def %(v: Complex): Complex = toComplex.rem(v)
 
     def +(v: Expr): Expr = toComplex.add(v.value)
 
@@ -1040,6 +1058,7 @@ object MathScala {
     def *(v: Expr): Expr = toComplex.mul(v.value)
 
     def /(v: Expr): Expr = toComplex.div(v.value)
+    def %(v: Expr): Expr = toComplex.rem(v.value)
 
     def toComplex: Complex = Complex.valueOf(value)
   }

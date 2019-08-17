@@ -719,7 +719,7 @@ public class MomProjectEditor extends JPanel {
                 RunAction runAction = o.getRunAction();
                 if (runAction != null) {
                     double d = runAction.getProgressValue();
-                    long evolved = runAction.getEvolvedTime();
+                    long evolved = runAction.getDuration();
                     long remaining = runAction.getRemainingTimeEstimation();
                     progressBar.setIndeterminate(false);
                     progressBar.setValue((int) (d * 100));

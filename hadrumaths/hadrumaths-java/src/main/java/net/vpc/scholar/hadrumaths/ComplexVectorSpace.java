@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //    @Override
@@ -60,7 +60,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public Complex convert(Matrix d) {
+    public Complex convert(TMatrix d) {
         return d.toComplex();
     }
 
@@ -117,6 +117,11 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     @Override
     public double absdbl(Complex a) {
         return a.absdbl();
+    }
+
+    @Override
+    public double absdblsqr(Complex a) {
+        return a.absdblsqr();
     }
 
     @Override
@@ -290,7 +295,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public TypeReference<Complex> getItemType() {
+    public TypeName<Complex> getItemType() {
         return Maths.$COMPLEX;
     }
 
@@ -390,7 +395,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public <R> boolean is(Complex value, TypeReference<R> type) {
+    public <R> boolean is(Complex value, TypeName<R> type) {
         if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)) {
             return true;
         }
@@ -411,4 +416,8 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
         return a.abssqr();
     }
 
+    @Override
+    public Complex rem(Complex a, Complex b) {
+        return a.rem(b);
+    }
 }

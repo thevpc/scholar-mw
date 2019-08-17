@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.test.ignored;
 
 
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Plot;
-import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
+import net.vpc.scholar.hadruplot.Plot;
+import net.vpc.scholar.hadruplot.console.PlotConsole;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
@@ -20,9 +20,9 @@ public class TestPlot {
             items[i]=cos(dtimes(step, PI/2+step,5));
         }
         Matrix m=matrix(items);
-        PlotConsole c=Plot.console();
-        c.plotter().title("Une matrice").asMatrix().plot(m);
-        c.plotter().title("Une matrice").asMatrix().plot(cos(X));
+        PlotConsole c= Plot.console();
+        c.newPlot().title("Une matrice").asMatrix().plot(m);
+        c.newPlot().title("Une matrice").asMatrix().plot(cos(X));
     }
 
 }

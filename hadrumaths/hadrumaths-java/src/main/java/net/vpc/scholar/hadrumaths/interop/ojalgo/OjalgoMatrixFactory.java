@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.scholar.hadrumaths.*;
+import java.io.UncheckedIOException;
+import net.vpc.scholar.hadrumaths.AbstractMatrixFactory;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MatrixFactory;
+import net.vpc.scholar.hadrumaths.MemMatrixFactory;
 
 import java.io.File;
 
@@ -24,7 +27,7 @@ public class OjalgoMatrixFactory extends AbstractMatrixFactory {
     }
 
     @Override
-    public Matrix load(File file) throws RuntimeIOException {
+    public Matrix load(File file) throws UncheckedIOException {
         Matrix m = MemMatrixFactory.INSTANCE.newMatrix(1, 1);
         m.read(file);
         return newMatrix(m);

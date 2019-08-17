@@ -3,23 +3,18 @@ package net.vpc.scholar.hadruwaves.builders;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
-    protected MWStructure structure;
 
     public AbstractComplexBuilder(MWStructure structure) {
-        this.structure = structure;
-    }
-
-    public MWStructure getStructure() {
-        return structure;
+        super(structure);
     }
 
     protected abstract Matrix computeMatrixImpl();
@@ -42,7 +37,7 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeMatrixImplLog();
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImplLog();
@@ -57,7 +52,7 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeComplexImpl();
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Complex evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeComplexImpl();

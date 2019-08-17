@@ -1,7 +1,11 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
 import net.vpc.scholar.hadrumaths.util.IntValidator;
+import net.vpc.scholar.hadruplot.PlotCube;
+import net.vpc.scholar.hadruplot.PlotHyperCube;
+import net.vpc.scholar.hadruplot.Samples;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +14,7 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 18 juil. 2007 23:36:28
  */
-public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Normalizable {
+public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Normalizable, PlotHyperCube {
     private static final long serialVersionUID = 1L;
     private Discrete[] values;
     private Domain domain;
@@ -107,7 +111,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
 
-//    @Override
+    //    @Override
     public VDiscrete abssqr() {
         switch (componentDimension.rows) {
             case 1: {
@@ -122,6 +126,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
+
     public VDiscrete sqr() {
         switch (componentDimension.rows) {
             case 1: {
@@ -136,6 +141,7 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
     }
+
     public VDiscrete sqrt() {
         switch (componentDimension.rows) {
             case 1: {
@@ -519,21 +525,21 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         return componentDimension;
     }
 
-    @Override
-    public Expr getComponent(int row, int col) {
-        if (col == 0) {
-            return values[row];
-        }
-        throw new IllegalArgumentException("Invalid");
-    }
-
-    @Override
-    public String getComponentTitle(int row, int col) {
-        if (col == 0) {
-            return Axis.values()[row].toString();
-        }
-        throw new IllegalArgumentException("Invalid");
-    }
+//    @Override
+//    public Expr getComponent(int row, int col) {
+//        if (col == 0) {
+//            return values[row];
+//        }
+//        throw new IllegalArgumentException("Invalid");
+//    }
+//
+//    @Override
+//    public String getComponentTitle(int row, int col) {
+//        if (col == 0) {
+//            return Axis.values()[row].toString();
+//        }
+//        throw new IllegalArgumentException("Invalid");
+//    }
 
     @Override
     public Domain getDomainImpl() {
@@ -670,6 +676,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     }
 
     @Override
+    public DoubleToMatrix toDM() {
+        return new DV2DM(this);
+    }
+
+    @Override
     public int getComponentSize() {
         return values.length;
     }
@@ -754,5 +765,19 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
             }
         }
         throw new IllegalArgumentException("Invalid dimension " + values2.length);
+    }
+
+    @Override
+    public int getCubesCount() {
+        return componentDimension.rows;
+    }
+
+    @Override
+    public PlotCube getCube(int index) {
+        Discrete i = getComponent(Axis.values()[index]);
+        return new PlotCube(
+                i.getX(), i.getY(), i.getZ(),
+                i.getValues()
+        );
     }
 }

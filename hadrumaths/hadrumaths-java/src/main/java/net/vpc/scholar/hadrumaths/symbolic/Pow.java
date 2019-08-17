@@ -17,7 +17,7 @@ import java.util.List;
  * @author vpc
  */
 //TODO fix me like Mul plz!!! (pbm in compute, domain is no so valid)
-public class Pow extends AbstractExprOperator implements Cloneable {
+public class Pow extends AbstractExprOperatorBinary implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     static {
@@ -87,7 +87,23 @@ public class Pow extends AbstractExprOperator implements Cloneable {
                 return zero;
             }
         }
+        @Override
+        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+            boolean def = options.value1Defined && options.value2Defined;
+            if (def) {
+                Vector d = a.pow(b);
+                defined.set();
+                return d;
+            } else {
+                return zero;
+            }
+        }
     };
+
+    @Override
+    protected Expressions.BinaryExprHelper getBinaryExprHelper() {
+        return binaryExprHelper;
+    }
 
     public boolean isZeroImpl() {
         for (Expr expression : expressions) {

@@ -236,7 +236,7 @@ public final class ComplexR extends Complex implements DoubleToDouble {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (int) (Double.doubleToLongBits(0) ^ (Double.doubleToLongBits(0) >>> 32));
+        hash = 89 * hash ;//+ (int) (Double.doubleToLongBits(0) ^ (Double.doubleToLongBits(0) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.real) ^ (Double.doubleToLongBits(this.real) >>> 32));
         return hash;
     }

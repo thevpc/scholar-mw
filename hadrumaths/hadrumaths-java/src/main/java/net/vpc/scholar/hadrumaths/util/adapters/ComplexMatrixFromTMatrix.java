@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
 import net.vpc.common.util.Converter;
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.*;
 
 /**
@@ -42,12 +42,12 @@ public class ComplexMatrixFromTMatrix<R> extends AbstractMatrix implements Matri
     }
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 
     @Override
-    public <R> TMatrix<R> to(TypeReference<R> other) {
+    public <R> TMatrix<R> to(TypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (TMatrix<R>) this;
         }

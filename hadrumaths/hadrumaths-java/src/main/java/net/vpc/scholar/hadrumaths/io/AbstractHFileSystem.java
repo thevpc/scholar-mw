@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.io;
 
-import net.vpc.common.io.RuntimeIOException;
+import java.io.UncheckedIOException;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public abstract class AbstractHFileSystem implements HFileSystem {
             if (strategy == FailStrategy.FAIL_SAFE) {
                 return false;
             }
-            throw new RuntimeIOException("Folder not found " + folder);
+            throw new UncheckedIOException(new IOException("Folder not found " + folder));
         }
         HFile[] files = folder.listFiles(fileFilter);
         boolean ok = true;
@@ -71,7 +71,7 @@ public abstract class AbstractHFileSystem implements HFileSystem {
                 throw new RuntimeException(ex);
             }
         }
-        throw new RuntimeIOException("Unable to Delete Folder " + folder);
+        throw new UncheckedIOException(new IOException("Unable to Delete Folder " + folder));
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class AbstractHFileSystem implements HFileSystem {
                     e.printStackTrace();
                 }
             }
-            throw new RuntimeIOException("File does not exist but an associated temp file failed to finish writing to " + file);
+            throw new UncheckedIOException(new IOException("File does not exist but an associated temp file failed to finish writing to " + file));
         }
         return false;
     }
@@ -126,7 +126,7 @@ public abstract class AbstractHFileSystem implements HFileSystem {
                 out.write(buffer, 0, count);
             }
         } catch (IOException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
         return x;
     }

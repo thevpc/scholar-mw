@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by vpc on 4/30/14.
  */
-public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
+public abstract class AbstractComposedFunction extends AbstractPolymorphExpr {
     private static final long serialVersionUID = 1L;
 
     public AbstractComposedFunction() {
@@ -195,15 +195,6 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         throw new IllegalArgumentException("Illegal axis");
     }
 
-//    @Override
-//    public Complex computeComplex(double x,BooleanMarker defined) {
-//        Out<Range> ranges = new Out<>();
-//        Complex complex = computeComplex(new double[]{x}, null, ranges)[0];
-//        Range range = ranges.get();
-//        defined.set(range!=null && range.getDefined1().get(0));
-//        return complex;
-//    }
-
     @Override
     public boolean isInvariantImpl(Axis axis) {
         for (Expr e : getSubExpressions()) {
@@ -217,46 +208,7 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     @Override
     public boolean isDoubleImpl() {
         return false;
-//        for (Expr e : getSubExpressions()) {
-//            if (!e.isDouble()) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
-
-//    @Override
-//    public boolean isComplexImpl() {
-//        return false;
-////        for (Expr e : getSubExpressions()) {
-////            if (!e.isComplex()) {
-////                return false;
-////            }
-////        }
-////        return true;
-//    }
-
-//    @Override
-//    public boolean isDoubleExprImpl() {
-//        return false;
-////        for (Expr e : getSubExpressions()) {
-////            if (!e.isDoubleExpr()) {
-////                return false;
-////            }
-////        }
-////        return true;
-//    }
-
-//    @Override
-//    public boolean isMatrixImpl() {
-//        for (Expr e : getSubExpressions()) {
-//            if (!e.isMatrix()) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
 
     @Override
     public boolean isDCImpl() {
@@ -277,16 +229,6 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
         }
         return true;
     }
-
-//    @Override
-//    public boolean isDDx() {
-//        for (Expr e : getSubExpressions()) {
-//            if(!e.isDDx()){
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     @Override
     public boolean isDMImpl() {
@@ -310,13 +252,5 @@ public abstract class AbstractComposedFunction extends AbstractVerboseExpr {
     }
 
 
-//    @Override
-//    public boolean isScalarExpr() {
-//        for (Expr e : getSubExpressions()) {
-//            if(!e.isScalarExpr()){
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 /**
  * Created by vpc on 3/23/17.
@@ -47,7 +47,7 @@ public class EMatrixFromTMatrix<T extends Expr> extends AbstractTMatrix<Expr> {
     }
 
     @Override
-    public TypeReference<Expr> getComponentType() {
+    public TypeName<Expr> getComponentType() {
         return Maths.$EXPR;
     }
 }

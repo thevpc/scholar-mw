@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.cache;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 
 /**
@@ -55,7 +55,7 @@ public abstract class CacheSupport<T> {
                             //cache is disabled
                             return compute(null);
                         }
-                        return persistenceCache.evaluate(objCache, cacheItemName, monitor, new Evaluator2() {
+                        return persistenceCache.evaluate(objCache, cacheItemName, monitor, new CacheEvaluator() {
                             @Override
                             public void init() {
                                 CacheSupport.this.init();

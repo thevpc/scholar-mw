@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class DoubleArray2 extends ArrayTList<DoubleArray> {
     }
 
     public DoubleArray2(boolean row, int initialSize) {
-        super((TypeReference) Maths.$DLIST, row, initialSize);
+        super((TypeName) Maths.$DLIST2, row, initialSize);
     }
 
     public DoubleArray2(boolean row, List<List<Double>> values) {

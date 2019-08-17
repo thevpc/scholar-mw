@@ -8,6 +8,7 @@ import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
+import net.vpc.scholar.hadruplot.Samples;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.DoubleValidator;
 import net.vpc.scholar.hadrumaths.util.IntValidator;

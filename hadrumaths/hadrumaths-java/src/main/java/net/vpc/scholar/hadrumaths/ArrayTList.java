@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 /**
  * Created by vpc on 5/7/14.
@@ -16,22 +16,22 @@ public class ArrayTList<T> extends AbstractTList<T> {
     private static final long serialVersionUID = 1L;
 
     private ArrayList<T> values;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
     //    public ArrayTList(Class<T> componentType) {
 //
 //    }
-    public ArrayTList(TypeReference<T> componentType, boolean row, int initialSize) {
+    public ArrayTList(TypeName<T> componentType, boolean row, int initialSize) {
         super(row);
         this.componentType = componentType;
         values = new ArrayList<T>(initialSize);
     }
 
-    public ArrayTList(TypeReference<T> componentType, boolean row, T[] values) {
+    public ArrayTList(TypeName<T> componentType, boolean row, T[] values) {
         this(componentType, row, values.length);
         appendAll(Arrays.asList(values));
     }
-    public ArrayTList(TypeReference<T> componentType, boolean row, TVectorModel<T> values) {
+    public ArrayTList(TypeName<T> componentType, boolean row, TVectorModel<T> values) {
         this(componentType, row, values.size());
         int s=values.size();
         for (int i = 0; i < s; i++) {
@@ -40,7 +40,7 @@ public class ArrayTList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

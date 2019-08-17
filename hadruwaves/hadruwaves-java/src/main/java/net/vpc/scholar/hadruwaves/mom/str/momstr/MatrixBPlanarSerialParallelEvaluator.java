@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -17,19 +17,19 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
 public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
     public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        String monitorMessage = getClass().getSimpleName();
+        final String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         PlanarSources planarSources1 = (PlanarSources) str.getSources();
         if (planarSources1 == null) {
             throw new IllegalArgumentException("Missing Planar Sources");
         }
-        DoubleToVector[] _g = gpTestFunctions.arr();
-        DoubleToVector[] _src = planarSources1.getSourceFunctions();
+        final DoubleToVector[] _g = gpTestFunctions.arr();
+        final DoubleToVector[] _src = planarSources1.getSourceFunctions();
         if (_src.length != 1) {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
         }
         ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
-        TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
+        final TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
 
         ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
         return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<Matrix>() {

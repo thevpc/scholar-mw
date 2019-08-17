@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadrumaths.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractParam;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel.MomStructureFractalZop;
 

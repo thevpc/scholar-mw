@@ -8,7 +8,7 @@ import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadruplot.Plot;
 
 import javax.swing.*;
 import java.awt.*;
@@ -99,7 +99,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
             valuesMap.put(result.getLabel(), values);
         }
         values.add(result.getValue());
-        final String[] all = valuesMap.keySet().toArray(new String[valuesMap.size()]);
+        final String[] all = valuesMap.keySet().toArray(new String[0]);
         Arrays.sort(all);
         int max = 0;
         for (int i = 0; i < all.length; i++) {
@@ -132,7 +132,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
                             .yname(title)
                             .titles(all)
                             .nodisplay()
-                            .plotAll(x, dblValues).toComponent());
+                            .plot(x, dblValues).toComponent());
                     //valuesPanel.invalidate();
                     //getFrame().getContentPane().invalidate();
                     //valuesPanel.repaint();

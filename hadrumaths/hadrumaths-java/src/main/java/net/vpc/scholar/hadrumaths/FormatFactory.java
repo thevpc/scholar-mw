@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.ClassMap;
+import net.vpc.common.util.LRUMap;
+import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.common.util.LRUMap;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -30,6 +30,7 @@ public class FormatFactory extends AbstractFactory {
     public static YObjectFormatParam Y = new YObjectFormatParam("Y");
     public static ZObjectFormatParam Z = new ZObjectFormatParam("Z");
     public static RequireParenthesesObjectFormatParam REQUIRED_PARS = RequireParenthesesObjectFormatParam.INSTANCE;
+    public static RequireFloatFormatParam REQUIRED_FLOAT = RequireFloatFormatParam.INSTANCE;
     public static ComplexIObjectFormatParam I = ComplexIObjectFormatParam.I;
     public static ComplexIObjectFormatParam I_J = ComplexIObjectFormatParam.J;
     public static ComplexIObjectFormatParam I_HAT = ComplexIObjectFormatParam.I_HAT;
@@ -76,6 +77,7 @@ public class FormatFactory extends AbstractFactory {
         register(Pow.class, new PowObjectFormat());
         register(Mul.class, new MulObjectFormat());
         register(Div.class, new DivObjectFormat());
+        register(Reminder.class, new ReminderObjectFormat());
         register(Sub.class, new SubObjectFormat());
         register(Any.class, new AnyObjectFormat());
         register(DDx.class, new DDxObjectFormat());

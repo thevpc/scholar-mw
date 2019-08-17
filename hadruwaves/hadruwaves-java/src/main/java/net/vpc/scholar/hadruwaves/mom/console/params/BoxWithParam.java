@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadrumaths.AbstractParam;
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadruplot.console.params.AbstractParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -12,6 +13,8 @@ public class BoxWithParam extends AbstractParam implements Cloneable {
         super("boxWith");
     }
     public void configure(Object source,Object value) {
-        ((MomStructure) source).setXdim((Double) value);
+        MomStructure s = (MomStructure) source;
+        Domain d = s.getDomain();
+        s.setDomain(Domain.forWidth(d.xmin(),(Double) value,d.ymin(),d.ywidth()));
     }
 }

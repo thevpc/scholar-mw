@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * @author vpc
  */
-public class Neg extends AbstractUnaryExpOperator implements Cloneable {
+public class Neg extends AbstractExprOperatorUnary implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     static {
@@ -35,6 +35,24 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     @Override
     protected Neg newInstance(Expr e) {
         return new Neg(e);
+    }
+
+    public Expr getComponent(int row, int col) {
+        if (isDM()) {
+            if (isScalarExpr() && (row != col || col != 0)) {
+                return FunctionFactory.DZEROXY;
+            }
+            return new Neg(expression.toDM().getComponent(row, col));
+        } else {
+            throw new ClassCastException();
+        }
+    }
+
+    public boolean isZeroImpl() {
+        if (!expression.isZero()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -126,7 +144,14 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
     }
 
     @Override
-    protected Expressions.UnaryExprHelper<? extends AbstractUnaryExpOperator> getExprHelper() {
+    public Matrix computeMatrix(double x, double y, double z) {
+        Matrix matrix = expression.toDM().computeMatrix(x, y, z);
+        return matrix.neg();
+    }
+
+
+    @Override
+    protected Expressions.UnaryExprHelper getUnaryExprHelper() {
         return exprHelper;
     }
 
@@ -154,6 +179,11 @@ public class Neg extends AbstractUnaryExpOperator implements Cloneable {
         @Override
         public Matrix computeMatrix(Matrix x) {
             //defined.set();
+            return x.neg();
+        }
+
+        @Override
+        public Vector computeVector(Vector x) {
             return x.neg();
         }
     }

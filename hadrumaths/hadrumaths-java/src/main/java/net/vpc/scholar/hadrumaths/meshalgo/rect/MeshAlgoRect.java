@@ -149,7 +149,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         boolean changes = true;
         while (changes) {
             changes = false;
-            Geometry[] all2 = all.toArray(new Geometry[all.size()]);
+            Geometry[] all2 = all.toArray(new Geometry[0]);
             for (int i = 0; i < all2.length; i++) {
                 Geometry area = all2[i];
                 Geometry fusion = null;

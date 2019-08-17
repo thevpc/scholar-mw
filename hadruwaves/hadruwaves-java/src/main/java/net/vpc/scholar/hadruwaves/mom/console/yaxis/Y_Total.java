@@ -29,13 +29,13 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //
 //    protected abstract Complex computeComplexArg(AbstractStructure2D structure, ParamSet x);
 //
-//    public ConsoleAction createConsoleAction(ComputeTitle serieTitle, AbstractStructure2D direct, AbstractStructure2D modele, ConsoleAxis axis, PlotConsole plotter, WindowPath preferredPath) {
-//        NamedMatrix yvalues;
+//    public ConsoleAction createConsoleAction(ComputeTitle serieTitle, AbstractStructure2D direct, AbstractStructure2D modele, ConsoleAxis axis, PlotConsole newPlot, WindowPath preferredPath) {
+//        PlotMatrix yvalues;
 //        Chronometer chronometer = new Chronometer();
 //        chronometer.start();
 ////        x1values = getX(direct, modele, x_axis);
 ////        x2values = getY(direct, modele, x_axis);
-//        yvalues = compute(direct, modele, axis, plotter);
+//        yvalues = compute(direct, modele, axis, newPlot);
 //        chronometer.stop();
 //        String st = this.toString();
 //        if (st.length() > 0 && serieTitle.toString().length() > 0) {
@@ -111,26 +111,26 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //
 //    }
 //
-//    public NamedMatrix compute(AbstractStructure2D direct, AbstractStructure2D modele, ConsoleAxis axis, PlotConsole plotter) {
-//        NamedMatrix ret = null;
+//    public PlotMatrix compute(AbstractStructure2D direct, AbstractStructure2D modele, ConsoleAxis axis, PlotConsole newPlot) {
+//        PlotMatrix ret = null;
 //        switch (getType()) {
 //            case DIRECT: {
 //                factor = 1;
 //                progress = 0;
-//                ret = computeMatrix(direct, axis, plotter);
+//                ret = computeMatrix(direct, axis, newPlot);
 //                break;
 //            }
 //            case MODEL: {
 //                factor = 1;
 //                progress = 0;
-//                ret = modele == null ? null : computeMatrix(modele, axis, plotter);
+//                ret = modele == null ? null : computeMatrix(modele, axis, newPlot);
 //                break;
 //            }
 //            case ERREUR_RELATIVE: {
 //                factor = 2;
 //                progress = 0;
-//                NamedMatrix d0 = computeMatrix(direct, axis, plotter);
-//                NamedMatrix m0 = computeMatrix(modele, axis, plotter);
+//                PlotMatrix d0 = computeMatrix(direct, axis, newPlot);
+//                PlotMatrix m0 = computeMatrix(modele, axis, newPlot);
 //                Complex[][] d = d0.getMatrix();
 //                Complex[][] m = m0.getMatrix();
 //                Complex[][] c = new Complex[d.length][];
@@ -140,14 +140,14 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                        c[i][j] = (d[i][j].substract(m[i][j])).divide(d[i][j]).multiply(100);
 //                    }
 //                }
-//                ret = new NamedMatrix(c, d0.getColumnsDimension(), d0.getRowsDimension());
+//                ret = new PlotMatrix(c, d0.getColumnsDimension(), d0.getRowsDimension());
 //                break;
 //            }
 //            case ERREUR: {
 //                factor = 2;
 //                progress = 0;
-//                NamedMatrix d0 = computeMatrix(direct, axis, plotter);
-//                NamedMatrix m0 = computeMatrix(modele, axis, plotter);
+//                PlotMatrix d0 = computeMatrix(direct, axis, newPlot);
+//                PlotMatrix m0 = computeMatrix(modele, axis, newPlot);
 //                Complex[][] d = d0.getMatrix();
 //                Complex[][] m = m0.getMatrix();
 //                Complex[][] c = new Complex[d.length][];
@@ -157,7 +157,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                        c[i][j] = (d[i][j].substract(m[i][j]));
 //                    }
 //                }
-//                ret = new NamedMatrix(c, d0.getColumnsDimension(), d0.getRowsDimension());
+//                ret = new PlotMatrix(c, d0.getColumnsDimension(), d0.getRowsDimension());
 //                break;
 //            }
 //        }
@@ -167,7 +167,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //        return ret;
 //    }
 //
-//    protected NamedMatrix computeMatrix(AbstractStructure2D structure, ConsoleAxis axis, PlotConsole plotter) {
+//    protected PlotMatrix computeMatrix(AbstractStructure2D structure, ConsoleAxis axis, PlotConsole newPlot) {
 //        ParamSet x = axis.getX();
 //        XLabel xlabel = axis.getXLabel();
 //        Complex[] z = new Complex[x.getSize()];
@@ -188,7 +188,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //            progress += (100.0) / z.length;
 //            index++;
 //        }
-//        return new NamedMatrix(new Complex[][]{z}, xs, new double[]{1});
+//        return new PlotMatrix(new Complex[][]{z}, xs, new double[]{1});
 //    }
 //
 //

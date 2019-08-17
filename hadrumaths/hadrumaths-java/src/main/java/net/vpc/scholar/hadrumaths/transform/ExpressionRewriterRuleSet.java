@@ -10,10 +10,10 @@ import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 
 import java.util.*;
 
@@ -28,6 +28,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     public ClassMap<List<ExpressionRewriterRule>> mapRules = new ClassMap<List<ExpressionRewriterRule>>(Expr.class, (Class) List.class);
     public Map<Class, List<ExpressionRewriterRule>> cachedMapRules = new HashMap<Class, List<ExpressionRewriterRule>>();
     public int maxIterations = 100;
+    public ExpressionRewriterRule fallbackRule = null;
     private String name;
 
     public ExpressionRewriterRuleSet(String name) {
@@ -52,23 +53,31 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         if (rule == null) {
             return;
         }
+        boolean some=false;
         for (Class<? extends Expr> c : rule.getTypes()) {
-            if (c.isInterface()) {
-                throw new IllegalArgumentException("Cannot define Rule for interface " + c);
+            if(c.equals(Expr.class)){
+                fallbackRule=rule;
+            }else {
+                some=true;
+                if (c.isInterface()) {
+                    throw new IllegalArgumentException("Cannot define Rule for interface " + c);
+                }
+                List<ExpressionRewriterRule> list = mapRules.getExact(c);
+                if (list == null) {
+                    list = new ArrayList<ExpressionRewriterRule>();
+                    mapRules.put(c, list);
+                }
+                if (!list.contains(rule)) {
+                    list.add(rule);
+                }
+                ((ArrayList) list).trimToSize();
             }
-            List<ExpressionRewriterRule> list = mapRules.getExact(c);
-            if (list == null) {
-                list = new ArrayList<ExpressionRewriterRule>();
-                mapRules.put(c, list);
-            }
-            if (!list.contains(rule)) {
-                list.add(rule);
-            }
-            ((ArrayList) list).trimToSize();
         }
-        rules.add(rule);
-        ((ArrayList) rules).trimToSize();
-        cachedMapRules.clear();
+        if(some) {
+            rules.add(rule);
+            ((ArrayList) rules).trimToSize();
+            cachedMapRules.clear();
+        }
     }
 
     public void removeRule(ExpressionRewriterRule rule) {
@@ -142,6 +151,9 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 list.addAll(ruleList);
             }
             cachedMapRules.put(cls, list);
+        }
+        if(list.isEmpty() && fallbackRule!=null){
+            return Arrays.asList(fallbackRule);
         }
         return list;
     }

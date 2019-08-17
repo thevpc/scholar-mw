@@ -50,7 +50,7 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
                     (FunctionFactory.DZEROXY),
                     (expr(1.0 / Math.sqrt(a * b), domain))
             );
-            fn=(DoubleToVector) fn.setTitle("EMEM" + mode + m + "" + n);
+            fn= fn.setTitle("EMEM" + mode + m + "" + n).toDV();
         } else {
             double u = 1;
             if (m != 0 && n != 0) {
@@ -99,7 +99,7 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
             //    System.out.println("null for "+i);
             //}
             fn = Maths.vector(fx, fy);
-            fn=(DoubleToVector) fn.setTitle("EMEM" + m + "" + n);
+            fn= fn.setTitle("EMEM" + m + "" + n).toDV();
         }
         return fn;
     }

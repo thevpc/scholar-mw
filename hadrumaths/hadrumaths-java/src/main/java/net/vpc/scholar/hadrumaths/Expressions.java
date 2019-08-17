@@ -112,6 +112,7 @@ public class Expressions {
     public static Complex computeComplex(DoubleToComplex f, double x, double y, BooleanMarker defined) {
         Out<Range> ranges = new Out<>();
         Complex[][] r = f.computeComplex(new double[]{x}, new double[]{y}, null, ranges);
+        ExpressionsDebug.debug_check(r,ranges);
         if (ranges.get().getDefined2().get(0, 0)) {
             defined.set();
         }
@@ -120,11 +121,13 @@ public class Expressions {
 
     public static Complex[] computeComplex(DoubleToComplex f, double[] x, double y, Domain d0, Out<Range> ranges) {
         Complex[][] r = f.computeComplex(x, new double[]{y}, d0, ranges);
+        ExpressionsDebug.debug_check(r,ranges);
         return r[0];
     }
 
     public static Complex[] computeComplex(DoubleToComplex f, double x, double[] y, Domain d0, Out<Range> ranges) {
         Complex[][] r = f.computeComplex(new double[]{x}, y, d0, ranges);
+        ExpressionsDebug.debug_check(r,ranges);
         Complex[] v = new Complex[y.length];
         for (int i = 0; i < v.length; i++) {
             v[i] = r[i][0];
@@ -168,6 +171,7 @@ public class Expressions {
     public static Complex[][][] computeComplexFromXY(DoubleToComplex f, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         Out<Range> rangesxy = new Out<Range>();
         Complex[][] r = f.computeComplex(x, y, d0, rangesxy);
+        ExpressionsDebug.debug_check(r,rangesxy);
         Range zrange = f.getDomain().intersect(d0).getDomainZ().range(z);
         Range rangeOut = rangesxy.get();
         if (rangeOut != null) {
@@ -249,6 +253,48 @@ public class Expressions {
 //        return r[0];
 //    }
 
+    public static Vector computeVector(DoubleToVector f, double x) {
+        Vector[] r = f.computeVector(new double[]{x},(Domain) null, null);
+        return r[0];
+    }
+
+    public static Vector computeVector(DoubleToVector f, double x, double y) {
+        Vector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, null);
+        return r[0][0];
+    }
+
+    public static Vector computeVector(DoubleToVector f, double x, double y, double z) {
+        Vector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, null);
+        return r[0][0][0];
+    }
+
+    public static Vector computeVector(DoubleToVector f, double x,BooleanMarker defined) {
+        Out<Range> o = new Out<>();
+        Vector[] r = f.computeVector(new double[]{x},(Domain) null, o);
+        if(defined!=null && !o.get().isEmpty()){
+            defined.set();
+        }
+        return r[0];
+    }
+
+    public static Vector computeVector(DoubleToVector f, double x, double y,BooleanMarker defined) {
+        Out<Range> o = new Out<>();
+        Vector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, o);
+        if(defined!=null && !o.get().isEmpty()){
+            defined.set();
+        }
+        return r[0][0];
+    }
+
+    public static Vector computeVector(DoubleToVector f, double x, double y, double z,BooleanMarker defined) {
+        Out<Range> o = new Out<>();
+        Vector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, o);
+        if(defined!=null && !o.get().isEmpty()){
+            defined.set();
+        }
+        return r[0][0][0];
+    }
+
     public static Matrix computeMatrix(DoubleToMatrix f, double x, double y) {
         Matrix[][] r = f.computeMatrix(new double[]{x}, new double[]{y}, null, null);
         return r[0][0];
@@ -256,6 +302,7 @@ public class Expressions {
 
     public static Matrix[][] computeMatrixFromComplex(DoubleToComplex f, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Complex[][] c = f.computeComplex(x, y, d0, ranges);
+        ExpressionsDebug.debug_check(c,ranges);
         Matrix[][] t = new Matrix[c.length][c.length == 0 ? 0 : c[0].length];
         for (int i = 0; i < t.length; i++) {
             for (int j = 0; j < t[i].length; j++) {
@@ -346,10 +393,10 @@ public class Expressions {
                 return null;
             }
             case 1: {
-                return titles.toArray(new String[titles.size()])[0];
+                return titles.toArray(new String[0])[0];
             }
             default: {
-                return titles.toArray(new String[titles.size()])[0];
+                return titles.toArray(new String[0])[0];
             }
         }
     }
@@ -415,6 +462,8 @@ public class Expressions {
         Complex computeComplex(Complex x, BooleanMarker defined);
 
         Matrix computeMatrix(Matrix x);
+
+        Vector computeVector(Vector x);
     }
 
     public static double[] computeDouble(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> range) {
@@ -582,6 +631,47 @@ public class Expressions {
         }
     }
 
+    public static Vector[] computeVector(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+        Domain domainXY = base.getDomain();
+        Range r = Domain.range(domainXY, d0, x);
+        if (r != null) {
+            BooleanArray1 def0 = BooleanArrays.newArray(x.length);
+            r.setDefined(def0);
+
+            Out<Range> r2 = new Out<Range>();
+            Vector[] ret = h.getBaseExpr(base).toDV().computeVector(x, d0, r2);
+            Range d2 = r2.get();
+            if (d2 != null) {
+                BooleanArray1 def2 = d2.getDefined1();
+                ComponentDimension d = base.getComponentDimension();
+                Vector z = Maths.zerosColumnVector(d.rows);
+                for (int k = d2.xmin; k <= d2.xmax; k++) {
+                    if (def2 != null && def2.get(k)) {
+                        ret[k] = h.computeVector(ret[k]);
+                    } else {
+                        ret[k] = z;
+                    }
+                }
+                if (ranges != null) {
+                    ranges.set(r);
+                }
+            } else {
+                if (ranges != null) {
+                    ranges.set(null);
+                }
+            }
+            return ret;
+        } else {
+            ComponentDimension d = base.getComponentDimension();
+            Vector z = Maths.zerosColumnVector(d.rows);
+            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, z);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
     public static Matrix[][] computeMatrix(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x, y);
@@ -618,6 +708,48 @@ public class Expressions {
             ComponentDimension d = base.getComponentDimension();
             Matrix z = Maths.zerosMatrix(d.rows, d.columns);
             Matrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, z);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+    public static Vector[][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        Domain domainXY = base.getDomain();
+        Range r = Domain.range(domainXY, d0, x, y);
+        if (r != null) {
+            BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
+            r.setDefined(def0);
+            Out<Range> r2 = new Out<Range>();
+            Vector[][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, d0, r2);
+            Range d2 = r2.get();
+            if (d2 != null) {
+                ComponentDimension d = base.getComponentDimension();
+                Vector z = Maths.zerosColumnVector(d.rows);
+                BooleanArray2 def2 = d2.getDefined2();
+                for (int j = d2.ymin; j <= d2.ymax; j++) {
+                    for (int k = d2.xmin; k <= d2.xmax; k++) {
+                        if (def2 != null && def2.get(j, k)) {
+                            ret[j][k] = h.computeVector(ret[j][k]);
+                            def0.set(j, k);
+                        } else {
+                            ret[j][k] = z;
+                        }
+                    }
+                }
+                if (ranges != null) {
+                    ranges.set(r);
+                }
+            } else {
+                if (ranges != null) {
+                    ranges.set(null);
+                }
+            }
+            return ret;
+        } else {
+            ComponentDimension d = base.getComponentDimension();
+            Vector z = Maths.zerosColumnVector(d.rows);
+            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, z);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -664,6 +796,52 @@ public class Expressions {
             ComponentDimension d = base.getComponentDimension();
             Matrix zeros = Maths.zerosMatrix(d.rows, d.columns);
             Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zeros);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    public static Vector[][][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        Domain domainXY = base.getDomain();
+        Range r = Domain.range(domainXY, d0, x, y, z);
+        if (r != null) {
+            BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
+            r.setDefined(def0);
+
+            Out<Range> r2 = new Out<Range>();
+            Vector[][][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, z, d0, r2);
+            Range d2 = r2.get();
+            if (d2 != null) {
+                ComponentDimension d = base.getComponentDimension();
+                Vector zeros = Maths.zerosColumnVector(d.rows);
+                BooleanArray3 def2 = d2.getDefined3();
+                for (int t = d2.zmin; t <= d2.zmax; t++) {
+                    for (int j = d2.ymin; j <= d2.ymax; j++) {
+                        for (int k = d2.xmin; k <= d2.xmax; k++) {
+                            if (def2 != null && def2.get(t, j, k)) {
+                                ret[t][j][k] = h.computeVector(ret[t][j][k]);
+                                def0.set(t, j, k);
+                            } else {
+                                ret[t][j][k] = zeros;
+                            }
+                        }
+                    }
+                }
+                if (ranges != null) {
+                    ranges.set(r);
+                }
+            } else {
+                if (ranges != null) {
+                    ranges.set(null);
+                }
+            }
+            return ret;
+        } else {
+            ComponentDimension d = base.getComponentDimension();
+            Vector zeros = Maths.zerosColumnVector(d.rows);
+            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zeros);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -721,6 +899,7 @@ public class Expressions {
             BooleanArray2 def0 = r.setDefined2(x.length, y.length);
             Out<Range> r2 = new Out<Range>();
             Complex[][] ret = h.getBaseExpr(base).toDC().computeComplex(x, y, d0, r2);
+            ExpressionsDebug.debug_check(ret,r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 BooleanArray2 def2 = d2.getDefined2();
@@ -812,6 +991,8 @@ public class Expressions {
         Complex computeComplex(Complex a, Complex b, BooleanMarker defined, ComputeDefOptions options);
 
         Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
+
+        Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public interface TernaryExprHelper<T extends Expr> {
@@ -822,6 +1003,8 @@ public class Expressions {
         Complex computeComplex(Complex a, Complex b, Complex c, BooleanMarker defined, ComputeDefOptions options);
 
         Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
+
+        Vector computeVector(Vector a, Vector b, Vector c, Vector zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public static final class ComputeDefOptions {
@@ -865,7 +1048,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = def2 != null && def2.get(k);
-                        BooleanRef defined = BooleanRef.create();
+                        BooleanRef defined = BooleanRefs.create();
                         ret1[k] = h.computeDouble(ret1[k], val[k], defined, o);
                         def0.set(k, defined.get());
                     }
@@ -873,7 +1056,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = false;
-                        BooleanRef defined = BooleanRef.create();
+                        BooleanRef defined = BooleanRefs.create();
                         ret1[k] = h.computeDouble(ret1[k], 0, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -976,7 +1159,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            BooleanRef defined = BooleanRef.create();
+                            BooleanRef defined = BooleanRefs.create();
                             ret1[j][k] = h.computeDouble(ret1[j][k], val[j][k], defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -986,7 +1169,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = false;
-                            BooleanRef defined = BooleanRef.create();
+                            BooleanRef defined = BooleanRefs.create();
                             ret1[j][k] = h.computeDouble(ret1[j][k], 0, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1101,7 +1284,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = def2 != null && def2.get(i, j, k);
-                                BooleanRef defined = BooleanRef.create();
+                                BooleanRef defined = BooleanRefs.create();
                                 ret1[i][j][k] = h.computeDouble(ret1[i][j][k], val[i][j][k], defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1113,7 +1296,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = false;
-                                BooleanRef defined = BooleanRef.create();
+                                BooleanRef defined = BooleanRefs.create();
                                 ret1[i][j][k] = h.computeDouble(ret1[i][j][k], 0, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1300,6 +1483,7 @@ public class Expressions {
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
             Complex[][] ret1 = h.getBaseExpr(base, 0).toDC().computeComplex(x, y, d0, r1);
+            ExpressionsDebug.debug_check(ret1,r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -1310,6 +1494,7 @@ public class Expressions {
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
                 Complex[][] val = h.getBaseExpr(base, ii).toDC().computeComplex(x, y, d0, r2);
+                ExpressionsDebug.debug_check(val,r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray2 def2 = d2.getDefined2();
@@ -1317,7 +1502,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            BooleanRef defined = BooleanRef.create();
+                            BooleanRef defined = BooleanRefs.create();
                             ret1[j][k] = h.computeComplex(ret1[j][k], val[j][k], defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1347,6 +1532,7 @@ public class Expressions {
         }
     }
 
+
     public static Complex[][] computeComplex(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
@@ -1358,6 +1544,7 @@ public class Expressions {
 
             Out<Range> r1 = new Out<Range>();
             Complex[][] ret1 = h.getBaseExpr(base, 0).toDC().computeComplex(x, y, d0, r1);
+            ExpressionsDebug.debug_check(ret1,r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -1365,10 +1552,12 @@ public class Expressions {
             }
             Out<Range> r2 = new Out<Range>();
             Complex[][] ret2 = h.getBaseExpr(base, 1).toDC().computeComplex(x, y, d0, r2);
+            ExpressionsDebug.debug_check(ret2,r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
             Complex[][] ret3 = h.getBaseExpr(base, 2).toDC().computeComplex(x, y, d0, r3);
+            ExpressionsDebug.debug_check(ret3,r3);
             Range d3 = r2.get();
 
             BooleanArray2 def2 = d2 == null ? null : d2.getDefined2();
@@ -1549,7 +1738,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = def2 != null && def2.get(k);
-                        BooleanRef defined = BooleanRef.create();
+                        BooleanRef defined = BooleanRefs.create();
                         ret1[k] = h.computeMatrix(ret1[k], val[k], zero, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1557,7 +1746,7 @@ public class Expressions {
                     for (int k = r0.xmin; k <= r0.xmax; k++) {
                         o.value1Defined = def0 != null && def0.get(k);
                         o.value2Defined = false;
-                        BooleanRef defined = BooleanRef.create();
+                        BooleanRef defined = BooleanRefs.create();
                         ret1[k] = h.computeMatrix(ret1[k], zero, zero, defined, o);
                         def0.set(k, defined.get());
                     }
@@ -1569,6 +1758,60 @@ public class Expressions {
             return ret1;
         } else {
             Matrix[] ret = ArrayUtils.fillArray1Matrix(x.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    public static Vector[] computeVector(Expr base, BinaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosColumnVector(d.rows);
+        if (r0 != null) {
+            BooleanArray1 def0 = BooleanArrays.newArray(x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            int count = h.getBaseExprCount(base);
+            Vector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray1 def1 = d1.getDefined1();
+                def0.copyFrom(def1, r0);
+            }
+            for (int ii = 1; ii < count; ii++) {
+                Out<Range> r2 = new Out<Range>();
+                Vector[] val = h.getBaseExpr(base, ii).toDV().computeVector(x, d0, r2);
+                Range d2 = r2.get();
+                if (d2 != null) {
+                    BooleanArray1 def2 = d2.getDefined1();
+                    for (int k = r0.xmin; k <= r0.xmax; k++) {
+                        o.value1Defined = def0 != null && def0.get(k);
+                        o.value2Defined = def2 != null && def2.get(k);
+                        BooleanRef defined = BooleanRefs.create();
+                        ret1[k] = h.computeVector(ret1[k], val[k], zero, defined, o);
+                        def0.set(k, defined.get());
+                    }
+                } else {
+                    for (int k = r0.xmin; k <= r0.xmax; k++) {
+                        o.value1Defined = def0 != null && def0.get(k);
+                        o.value2Defined = false;
+                        BooleanRef defined = BooleanRefs.create();
+                        ret1[k] = h.computeVector(ret1[k], zero, zero, defined, o);
+                        def0.set(k, defined.get());
+                    }
+                }
+            }
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1625,6 +1868,55 @@ public class Expressions {
         }
     }
 
+    public static Vector[] computeVector(Expr base, TernaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosVector(d.rows);
+        if (r0 != null) {
+            BooleanArray1 def0 = BooleanArrays.newArray(x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            Vector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray1 def1 = d1.getDefined1();
+                def0.copyFrom(def1, r0);
+            }
+
+            Out<Range> r2 = new Out<Range>();
+            Vector[] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, d0, r2);
+            Range d2 = r2.get();
+
+            Out<Range> r3 = new Out<Range>();
+            Vector[] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, d0, r3);
+            Range d3 = r3.get();
+
+            BooleanArray1 def2 = d2 == null ? null : d2.getDefined1();
+            BooleanArray1 def3 = d3 == null ? null : d3.getDefined1();
+            for (int k = r0.xmin; k <= r0.xmax; k++) {
+                o.value1Defined = def0 != null && def0.get(k);
+                o.value2Defined = def2 != null && def2.get(k);
+                o.value3Defined = def3 != null && def3.get(k);
+                BooleanRef defined = BooleanMarker.ref();
+                ret1[k] = h.computeVector(ret1[k], ret2 == null ? zero : ret2[k], ret3 == null ? zero : ret3[k], zero, defined, o);
+                def0.set(k, defined.get());
+            }
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
     public static Matrix[][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
@@ -1658,7 +1950,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = def2 != null && def2.get(j, k);
-                            BooleanRef defined = BooleanRef.create();
+                            BooleanRef defined = BooleanRefs.create();
                             ret1[j][k] = h.computeMatrix(ret1[j][k], val[j][k], zero, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1668,7 +1960,7 @@ public class Expressions {
                         for (int k = r0.xmin; k <= r0.xmax; k++) {
                             o.value1Defined = def0 != null && def0.get(j, k);
                             o.value2Defined = false;
-                            BooleanRef defined = BooleanRef.create();
+                            BooleanRef defined = BooleanRefs.create();
                             ret1[j][k] = h.computeMatrix(ret1[j][k], zero, zero, defined, o);
                             def0.set(j, k, defined.get());
                         }
@@ -1681,6 +1973,69 @@ public class Expressions {
             return ret1;
         } else {
             Matrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    public static Vector[][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x, y);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosVector(d.rows);
+        if (r0 != null) {
+            BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            int count = h.getBaseExprCount(base);
+            Vector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray2 def1 = d1.getDefined2();
+//                for (int j = r0.ymin; j <= r0.ymax; j++) {
+//                    for (int k = r0.xmin; k <= r0.xmax; k++) {
+//                        def0[j][k] = def1[j][k];
+//                    }
+//                }
+                def0.copyFrom(def1, r0);
+            }
+            for (int ii = 1; ii < count; ii++) {
+                Out<Range> r2 = new Out<Range>();
+                Vector[][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, d0, r2);
+                Range d2 = r2.get();
+                if (d2 != null) {
+                    BooleanArray2 def2 = d2.getDefined2();
+                    for (int j = r0.ymin; j <= r0.ymax; j++) {
+                        for (int k = r0.xmin; k <= r0.xmax; k++) {
+                            o.value1Defined = def0 != null && def0.get(j, k);
+                            o.value2Defined = def2 != null && def2.get(j, k);
+                            BooleanRef defined = BooleanRefs.create();
+                            ret1[j][k] = h.computeVector(ret1[j][k], val[j][k], zero, defined, o);
+                            def0.set(j, k, defined.get());
+                        }
+                    }
+                } else {
+                    for (int j = r0.ymin; j <= r0.ymax; j++) {
+                        for (int k = r0.xmin; k <= r0.xmax; k++) {
+                            o.value1Defined = def0 != null && def0.get(j, k);
+                            o.value2Defined = false;
+                            BooleanRef defined = BooleanRefs.create();
+                            ret1[j][k] = h.computeVector(ret1[j][k], zero, zero, defined, o);
+                            def0.set(j, k, defined.get());
+                        }
+                    }
+                }
+            }
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1741,6 +2096,59 @@ public class Expressions {
     }
 
 
+    public static Vector[][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x, y);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosVector(d.rows);
+        if (r0 != null) {
+            BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            Vector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray2 def1 = d1.getDefined2();
+                def0.copyFrom(def1, r0);
+            }
+
+            Out<Range> r2 = new Out<Range>();
+            Vector[][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, d0, r2);
+            Range d2 = r2.get();
+
+            Out<Range> r3 = new Out<Range>();
+            Vector[][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, d0, r3);
+            Range d3 = r2.get();
+
+
+            BooleanArray2 def2 = d2 == null ? null : d2.getDefined2();
+            BooleanArray2 def3 = d3 == null ? null : d3.getDefined2();
+            for (int j = r0.ymin; j <= r0.ymax; j++) {
+                for (int k = r0.xmin; k <= r0.xmax; k++) {
+                    o.value1Defined = def0 != null && def0.get(j, k);
+                    o.value2Defined = def2 != null && def2.get(j, k);
+                    o.value3Defined = def3 != null && def3.get(j, k);
+                    BooleanRef defined = BooleanMarker.ref();
+                    ret1[j][k] = h.computeVector(ret1[j][k], ret2 == null ? zero : ret2[j][k], ret3 == null ? zero : ret3[j][k], zero, defined, o);
+                    def0.set(j, k, defined.get());
+                }
+            }
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+
     public static Matrix[][][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y, z);
@@ -1777,7 +2185,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = def2 != null && def2.get(i, j, k);
-                                BooleanRef defined = BooleanRef.create();
+                                BooleanRef defined = BooleanRefs.create();
                                 ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], val[i][j][k], zero, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1789,7 +2197,7 @@ public class Expressions {
                             for (int k = r0.xmin; k <= r0.xmax; k++) {
                                 o.value1Defined = def0 != null && def0.get(i, j, k);
                                 o.value2Defined = false;
-                                BooleanRef defined = BooleanRef.create();
+                                BooleanRef defined = BooleanRefs.create();
                                 ret1[i][j][k] = h.computeMatrix(ret1[i][j][k], zero, zero, defined, o);
                                 def0.set(i, j, k, defined.get());
                             }
@@ -1803,6 +2211,75 @@ public class Expressions {
             return ret1;
         } else {
             Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    public static Vector[][][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x, y, z);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosVector(d.rows);
+        if (r0 != null) {
+            BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            int count = h.getBaseExprCount(base);
+            Vector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray3 def1 = d1.getDefined3();
+//                for (int i = r0.ymin; i <= r0.ymax; i++) {
+//                    for (int j = r0.ymin; j <= r0.ymax; j++) {
+//                        for (int k = r0.xmin; k <= r0.xmax; k++) {
+//                            def0[i][j][k] = def1[i][j][k];
+//                        }
+//                    }
+//                }
+                def0.copyFrom(def1, r0);
+            }
+            for (int ii = 1; ii < count; ii++) {
+                Out<Range> r2 = new Out<Range>();
+                Vector[][][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, z, d0, r2);
+                Range d2 = r2.get();
+                if (d2 != null) {
+                    BooleanArray3 def2 = d2.getDefined3();
+                    for (int i = r0.zmin; i <= r0.zmax; i++) {
+                        for (int j = r0.ymin; j <= r0.ymax; j++) {
+                            for (int k = r0.xmin; k <= r0.xmax; k++) {
+                                o.value1Defined = def0 != null && def0.get(i, j, k);
+                                o.value2Defined = def2 != null && def2.get(i, j, k);
+                                BooleanRef defined = BooleanRefs.create();
+                                ret1[i][j][k] = h.computeVector(ret1[i][j][k], val[i][j][k], zero, defined, o);
+                                def0.set(i, j, k, defined.get());
+                            }
+                        }
+                    }
+                } else {
+                    for (int i = r0.zmin; i <= r0.zmax; i++) {
+                        for (int j = r0.ymin; j <= r0.ymax; j++) {
+                            for (int k = r0.xmin; k <= r0.xmax; k++) {
+                                o.value1Defined = def0 != null && def0.get(i, j, k);
+                                o.value2Defined = false;
+                                BooleanRef defined = BooleanRefs.create();
+                                ret1[i][j][k] = h.computeVector(ret1[i][j][k], zero, zero, defined, o);
+                                def0.set(i, j, k, defined.get());
+                            }
+                        }
+                    }
+                }
+            }
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1859,6 +2336,61 @@ public class Expressions {
             return ret1;
         } else {
             Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
+            if (ranges != null) {
+                ranges.set(null);
+            }
+            return ret;
+        }
+    }
+
+    public static Vector[][][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        d0 = base.getDomain().intersect(d0);
+        Range r0 = d0.range(x, y, z);
+        ComputeDefOptions o = new ComputeDefOptions();
+        ComponentDimension d = base.getComponentDimension();
+        Vector zero = Maths.zerosVector(d.rows);
+        if (r0 != null) {
+            BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
+            r0.setDefined(def0);
+
+            Out<Range> r1 = new Out<Range>();
+            Vector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
+            Range d1 = r1.get();
+            if (d1 != null) {
+                BooleanArray3 def1 = d1.getDefined3();
+                def0.copyFrom(def1, r0);
+            }
+
+            Out<Range> r2 = new Out<Range>();
+            Vector[][][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, z, d0, r2);
+            Range d2 = r2.get();
+
+            Out<Range> r3 = new Out<Range>();
+            Vector[][][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, z, d0, r3);
+            Range d3 = r3.get();
+
+            BooleanArray3 def2 = d2.getDefined3();
+            BooleanArray3 def3 = d3.getDefined3();
+            for (int i = r0.zmin; i <= r0.zmax; i++) {
+                for (int j = r0.ymin; j <= r0.ymax; j++) {
+                    for (int k = r0.xmin; k <= r0.xmax; k++) {
+                        o.value1Defined = def0 != null && def0.get(i, j, k);
+                        o.value2Defined = def2 != null && def2.get(i, j, k);
+                        o.value3Defined = def3 != null && def3.get(i, j, k);
+                        BooleanRef defined = BooleanMarker.ref();
+                        ret1[i][j][k] = h.computeVector(ret1[i][j][k], ret2 == null ? zero : ret2[i][j][k], ret3 == null ? zero : ret3[i][j][k], zero, defined, o);
+                        def0.set(i, j, k, defined.get());
+                    }
+                }
+            }
+
+
+            if (ranges != null) {
+                ranges.set(r0);
+            }
+            return ret1;
+        } else {
+            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }

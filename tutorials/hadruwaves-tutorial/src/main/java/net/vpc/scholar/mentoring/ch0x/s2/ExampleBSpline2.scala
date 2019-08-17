@@ -1,8 +1,9 @@
 package net.vpc.scholar.mentoring.ch0x.s2
 
 import net.vpc.scholar.hadrumaths.Maths.{X, domain, dtimes, elist}
-import net.vpc.scholar.hadrumaths.{Expr, Plot}
+import net.vpc.scholar.hadrumaths.Expr
 import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadruplot.Plot
 
 /**
   * Created by vpc on 5/27/17.

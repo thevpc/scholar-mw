@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadrumaths.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import static net.vpc.scholar.hadrumaths.Maths.C;
@@ -13,7 +13,7 @@ public class FrequencyByWidthFactorParam extends AbstractParam implements Clonea
 
     public void configure(Object source,Object value) {
         MomStructure str = (MomStructure) source;
-        str.setFrequency(((Double) value) * C / str.getXdim());
+        str.setFrequency(((Double) value) * C / str.getDomain().xwidth());
 //        p3Abstract.setAByLamdaFactor(getValueImpl());
 //        p3Abstract.setB();
     }

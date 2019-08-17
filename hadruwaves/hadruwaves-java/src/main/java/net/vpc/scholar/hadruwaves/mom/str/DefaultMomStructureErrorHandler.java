@@ -5,13 +5,13 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotModel;
-import net.vpc.scholar.hadrumaths.plot.ExpressionsPlotPanel;
-import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.PlotConsole;
+import net.vpc.scholar.hadrumaths.plot.*;
+import net.vpc.scholar.hadruplot.console.PlotConsole;
+import net.vpc.scholar.hadruplot.Plot;
+import net.vpc.scholar.hadruplot.PlotComponent;
+import net.vpc.scholar.hadruplot.PlotType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
@@ -20,7 +20,6 @@ import net.vpc.scholar.hadruwaves.str.MWStructure;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Set;
 
 /**
  * @author vpc
@@ -32,7 +31,6 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         if (PlotConsole.debugFramesCount > 3) {
             return;
         }
-        Set<ExternalLibrary> preferredLibraries = null;
         MomStructure str = (MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
         TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
@@ -46,7 +44,7 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
                 new ExpressionsPlotModel()
                         .setExpressions(str.getTestFunctions().arr())
                         .setPlotType(PlotType.CURVE)
-                        .setPreferredLibraries(null)
+                        .setLibraries(null)
                         .setTitle("gp")
                 , Plot.getDefaultWindowManager()).toComponent();
 
@@ -54,7 +52,7 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
                 new ExpressionsPlotModel()
                         .setExpressions(str.getModeFunctions().arr())
                         .setPlotType(PlotType.CURVE)
-                        .setPreferredLibraries(null)
+                        .setLibraries(null)
                         .setTitle("fn")
                 , Plot.getDefaultWindowManager()).toComponent();
 

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.PlatformUtils;
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import java.util.ArrayList;
@@ -11,12 +11,12 @@ import java.util.Queue;
 
 class MathsExpr {
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
-        TypeReference cls = arr[0].getComponentType();
+        TypeName cls = arr[0].getComponentType();
         for (int i = 0; i < arr.length; i++) {
             cls = PlatformUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
         }
         VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
-        return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
+        return new ReadOnlyTVector<Expr>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
             @Override
             public int size() {
                 return arr[0].size();
@@ -112,7 +112,7 @@ class MathsExpr {
         if (!complexExpr.equals(Maths.CONE)) {
             all.add(0, complexExpr);
         }
-        return new Mul(all.toArray(new Expr[all.size()]));
+        return new Mul(all.toArray(new Expr[0]));
     }
 
     public static Expr mul(Expr... e) {
@@ -206,7 +206,7 @@ class MathsExpr {
         return new Plus(all);
     }
 
-    public static <T> T sum(TypeReference<T> type, T... arr) {
+    public static <T> T sum(TypeName<T> type, T... arr) {
         if (Maths.$COMPLEX.isAssignableFrom(type)) {
             return (T) sum((Complex[]) arr);
         }
@@ -221,7 +221,7 @@ class MathsExpr {
         return a;
     }
 
-    public static <T> T sum(TypeReference<T> type, TVectorModel<T> arr) {
+    public static <T> T sum(TypeName<T> type, TVectorModel<T> arr) {
         if (Maths.$COMPLEX.isAssignableFrom(type)) {
             return (T) Maths.csum((TVectorModel<Complex>) arr);
         }
@@ -237,11 +237,11 @@ class MathsExpr {
         return a;
     }
 
-    public static <T> T sum(TypeReference<T> type, int size, TVectorCell<T> arr) {
+    public static <T> T sum(TypeName<T> type, int size, TVectorCell<T> arr) {
         return sum(type, new TVectorModelFromCell<>(size, arr));
     }
 
-    public static <T> T mul(TypeReference<T> type, T... arr) {
+    public static <T> T mul(TypeName<T> type, T... arr) {
         if (Maths.$COMPLEX.isAssignableFrom(type)) {
             return (T) mul((Complex[]) arr);
         }
@@ -256,7 +256,7 @@ class MathsExpr {
         return a;
     }
 
-    public static <T> T mul(TypeReference<T> type, TVectorModel<T> arr) {
+    public static <T> T mul(TypeName<T> type, TVectorModel<T> arr) {
         if (Maths.$COMPLEX.isAssignableFrom(type)) {
             return (T) cmul((TVectorModel<Complex>) arr);
         }

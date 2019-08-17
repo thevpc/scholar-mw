@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
+import net.vpc.scholar.hadrumaths.transform.IdentityExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 public class SimpleNumericScalarProductOperator extends AbstractScalarProductOperator {
@@ -68,7 +69,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 
     @Override
     public String toString() {
-        return "NumericScalarProductOperator{" +
+        return "SimpleNumericScalarProductOperator{" +
                 "integrator=" + integrator +
                 ",hermitian=" + isHermitian() +
                 '}';
@@ -93,7 +94,8 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 
     public ExpressionRewriter getExpressionRewriter() {
         if (simplifier == null) {
-            simplifier = new ExpressionRewriterRuleSet("NO_SIMPLIFY");
+            simplifier = new ExpressionRewriterRuleSet("SimpleNumericScalarProductNoSimplifyRuleSet");
+            simplifier.addRule(IdentityExpressionRewriterRule.INSTANCE);
             simplifier.setCacheEnabled(false);
         }
         return simplifier;

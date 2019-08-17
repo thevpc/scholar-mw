@@ -2,12 +2,15 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
 import net.vpc.scholar.hadrumaths.geom.IntPoint;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.RelativeSamples;
+import net.vpc.scholar.hadruplot.Samples;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -959,7 +962,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
 
     @Override
     public DoubleToMatrix toDM() {
-        return new VDiscrete(this);
+        return toDV().toDM();
     }
 
     @Override

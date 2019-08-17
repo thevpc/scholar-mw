@@ -76,7 +76,9 @@ public interface Expr extends Serializable {
      *
      * @return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
      */
-    Complex toComplex();
+    default Complex toComplex(){
+        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+    }
 
     /**
      * return double value if this expression is defined as a valid non param double value. It may have domain. Otherwise throws ClassCastException
@@ -85,15 +87,27 @@ public interface Expr extends Serializable {
      */
     double toDouble();
 
-    Matrix toMatrix();
+    default Matrix toMatrix(){
+        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
+    }
 
     boolean isDC();
 
-    DoubleToComplex toDC();
+    default DoubleToComplex toDC(){
+        if (!isDC()) {
+            throw new ClassCastException("Unable to Cast to DC :: " + getClass().getName() + " = " + toString());
+        }
+        return (DoubleToComplex)this;
+    }
 
     boolean isDD();
 
-    DoubleToDouble toDD();
+    default DoubleToDouble toDD(){
+        if (!isDD()) {
+            throw new ClassCastException("Unable to Cast to DD :: " + getClass().getName() + " = " + toString());
+        }
+        return (DoubleToDouble)this;
+    }
 
 //    boolean isDDx();
 
@@ -101,11 +115,21 @@ public interface Expr extends Serializable {
 
     boolean isDV();
 
-    DoubleToVector toDV();
+    default DoubleToVector toDV(){
+        if (!isDV()) {
+            throw new ClassCastException("Unable to Cast to DV :: " + getClass().getName() + " = " + toString());
+        }
+        return (DoubleToVector)this;
+    }
 
     boolean isDM();
 
-    DoubleToMatrix toDM();
+    default DoubleToMatrix toDM(){
+        if (!isDM()) {
+            throw new ClassCastException("Unable to Cast to DM :: " + getClass().getName() + " = " + toString());
+        }
+        return (DoubleToMatrix)this;
+    }
 
     boolean isZero();
 

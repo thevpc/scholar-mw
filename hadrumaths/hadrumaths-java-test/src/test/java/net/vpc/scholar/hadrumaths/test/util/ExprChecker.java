@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths.test.util;
 
 import junit.framework.Assert;
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.Samples;
 import net.vpc.scholar.hadrumaths.symbolic.DomainExpr;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
@@ -12,6 +14,8 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.common.io.*;
+import net.vpc.scholar.hadruplot.*;
+import net.vpc.scholar.hadrumaths.util.dump.*;
 
 import java.util.Arrays;
 

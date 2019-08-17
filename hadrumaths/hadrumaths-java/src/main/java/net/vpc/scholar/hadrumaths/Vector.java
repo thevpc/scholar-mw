@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
+import java.io.UncheckedIOException;
+
 import java.io.File;
 import java.io.PrintStream;
 
@@ -32,13 +33,13 @@ public interface Vector extends Normalizable, Iterable<Complex>, TVector<Complex
     int size();
 
 
-    void store(String file) throws RuntimeIOException;
+    void store(String file) throws UncheckedIOException;
 
-    void store(File file) throws RuntimeIOException;
+    void store(File file) throws UncheckedIOException;
 
-    void store(PrintStream stream) throws RuntimeIOException;
+    void store(PrintStream stream) throws UncheckedIOException;
 
-    void store(PrintStream stream, String commentsChar, String varName) throws RuntimeIOException;
+    void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException;
 
 
     Vector scalarProductToVector(Vector... other);
@@ -58,6 +59,7 @@ public interface Vector extends Normalizable, Iterable<Complex>, TVector<Complex
     Vector add(TVector<Complex> other);
 
     Vector sub(TVector<Complex> other);
+    Vector pow(TVector<Complex> other);
 
     Vector add(Complex other);
 
@@ -67,9 +69,13 @@ public interface Vector extends Normalizable, Iterable<Complex>, TVector<Complex
 
     Vector div(Complex other);
 
+    Vector rem(Complex other);
+
     Vector dotpow(Complex other);
 
     Vector inv();
+
+    Vector neg();
 
     Complex sum();
 

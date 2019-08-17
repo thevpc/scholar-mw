@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCubes;
-import net.vpc.scholar.hadrumaths.plot.console.params.XParamSet;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCubes;
+import net.vpc.scholar.hadruplot.console.params.XParamSet;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 
 public class PlotTestField3D extends PlotAxisCubes implements Cloneable {
     public PlotTestField3D(YType... type) {

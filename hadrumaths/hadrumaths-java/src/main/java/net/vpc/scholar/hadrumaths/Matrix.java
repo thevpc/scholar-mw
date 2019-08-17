@@ -5,11 +5,6 @@ package net.vpc.scholar.hadrumaths;
  */
 public interface Matrix extends Normalizable, TMatrix<Complex> {
 
-    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy);
-
-    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix);
-
-    DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero);
 
     /**
      * Get a submatrix.
@@ -78,6 +73,8 @@ public interface Matrix extends Normalizable, TMatrix<Complex> {
 
     //
     Matrix div(TMatrix<Complex> other);
+
+    Matrix rem(TMatrix<Complex> other);
 
     //
     Matrix mul(TMatrix<Complex> other);

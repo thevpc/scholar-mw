@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -21,24 +21,24 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
     public static final CurrentSerialEvaluator INSTANCE = new CurrentSerialEvaluator();
 
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
-        MomStructure str = (MomStructure) structure;
+    public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, ProgressMonitor monitor) {
+        final MomStructure str = (MomStructure) structure;
 //        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
-        String monMessage = getClass().getSimpleName();
+        final String monMessage = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, monMessage, new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
-                TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
+                final TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
                 Matrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
-                DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                Complex[] J = Testcoeff.getColumn(0).toArray();
-                ModeInfo[] indexes = str.getModes();
+                final Complex[] J = Testcoeff.getColumn(0).toArray();
+                final ModeInfo[] indexes = str.getModes();
 
-                MutableComplex[][] xCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
-                MutableComplex[][] yCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
-                ProgressMonitor mon2 = mon[2];
+                final MutableComplex[][] xCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
+                final MutableComplex[][] yCube = MutableComplex.createArray(Maths.CZERO, y.length, x.length);
+                final ProgressMonitor mon2 = mon[2];
                 Maths.invokeMonitoredAction(mon[2], monMessage, new VoidMonitoredAction() {
                     @Override
                     public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {

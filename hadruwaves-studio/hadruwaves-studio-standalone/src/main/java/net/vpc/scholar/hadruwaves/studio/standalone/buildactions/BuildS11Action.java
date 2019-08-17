@@ -28,7 +28,7 @@ public class BuildS11Action extends RunAction {
     }
 
     public Object run() {
-        Matrix s = jxy.computeS(net.vpc.common.util.mon.ProgressMonitorFactory.none());
+        Matrix s = jxy.computeS(net.vpc.common.mon.ProgressMonitorFactory.none());
         Log.trace("[S (f=" + jxy.getStructureConfig().getFrequency()+ " Hz)] S= " + s);
         return s;
     }

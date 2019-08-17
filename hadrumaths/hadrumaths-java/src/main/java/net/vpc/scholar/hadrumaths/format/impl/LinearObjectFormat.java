@@ -5,11 +5,12 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
-import net.vpc.scholar.hadrumaths.format.params.*;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.XObjectFormatParam;
+import net.vpc.scholar.hadrumaths.format.params.YObjectFormatParam;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
 
 /**
@@ -30,10 +31,10 @@ public class LinearObjectFormat implements ObjectFormat<Linear> {
         double a = o.getA();
         double b = o.getB();
         double c = o.getC();
-        XObjectFormatParam x = (XObjectFormatParam) format.getParam(FormatFactory.X);
-        YObjectFormatParam y = (YObjectFormatParam) format.getParam(FormatFactory.Y);
-        DoubleObjectFormatParam df = (DoubleObjectFormatParam) format.getParam(DoubleObjectFormatParam.class, false);
-        ProductObjectFormatParam pp = (ProductObjectFormatParam) format.getParam(FormatFactory.PRODUCT_STAR);
+        XObjectFormatParam x = format.getParam(FormatFactory.X);
+        YObjectFormatParam y = format.getParam(FormatFactory.Y);
+        DoubleObjectFormatParam df = format.getParam(DoubleObjectFormatParam.class, false);
+        ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
         String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
         int initialLength = sb.length();
 

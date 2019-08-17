@@ -9,11 +9,11 @@ package net.vpc.scholar.mentoring.ch0x.s4
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadrumaths.meshalgo.rect._
-import net.vpc.scholar.hadrumaths.plot.console.PlotData
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector
 import net.vpc.scholar.hadruwaves.Physics._
-import net.vpc.scholar.hadruwaves.mom._;import net.vpc.common.util.Chronometer;import net.vpc.common.util.mon.{ProgressMonitor, ProgressMonitorFactory}
+import net.vpc.scholar.hadruwaves.mom._
+import net.vpc.scholar.hadruplot.console.PlotData
+import net.vpc.scholar.hadruplot.Plot
 
 object MomMicrostripAntennaMoMExample5 {
 

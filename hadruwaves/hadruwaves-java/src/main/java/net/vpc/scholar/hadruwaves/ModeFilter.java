@@ -26,7 +26,7 @@ public final class ModeFilter implements ModeIndexFilter {
     }
 
     public ModeType[] getAcceptedModes(){
-        return cachedHintFnModeTypes.toArray(new ModeType[cachedHintFnModeTypes.size()]);
+        return cachedHintFnModeTypes.toArray(new ModeType[0]);
     }
 
     @Override

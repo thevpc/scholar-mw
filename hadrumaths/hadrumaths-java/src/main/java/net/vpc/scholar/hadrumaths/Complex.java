@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.IOException;
@@ -437,6 +439,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Complex.valueOf(getReal() / c, getImag() / c);
     }
 
+    public Complex rem(Complex other) {
+        return Complex.valueOf(toDouble()%other.toDouble());
+    }
+
     public Complex div(Complex other) {
         double a = getReal();
         double b = getImag();
@@ -525,7 +531,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public boolean equals(Complex c) {
-        return getReal() == c.getReal() && getImag() == c.getImag();
+        return
+                Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal()) &&
+                        Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag());
 //        return
 //                Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal())
 //                        && Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag())
@@ -534,7 +542,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public boolean equals(Object c) {
-        if (c != null && c instanceof Complex) {
+        if (c instanceof Complex) {
             return equals((Complex) c);
         }
         return false;
@@ -543,8 +551,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.getImag()) ^ (Double.doubleToLongBits(this.getImag()) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.getReal()) ^ (Double.doubleToLongBits(this.getReal()) >>> 32));
+        double imag = this.getImag();
+        double real = this.getReal();
+        hash = 89 * hash + (int) (Double.doubleToLongBits(imag) ^ (Double.doubleToLongBits(imag) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(real) ^ (Double.doubleToLongBits(real) >>> 32));
         return hash;
     }
 
@@ -913,7 +923,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 //    }
     @Override
     public DoubleToVector toDV() {
-        return DefaultDoubleToVector.create(this);
+        return new DC2DV(this);
     }
 
     public DoubleToDouble toDD() {
@@ -927,7 +937,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public DoubleToMatrix toDM() {
-        return DefaultDoubleToMatrix.create(this);
+        return new DC2DM(this);
     }
 
     public boolean isReal() {
@@ -992,6 +1002,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     @Override
     public Matrix toMatrix() {
         return Maths.Config.getMatrixFactory().newMatrix(new Complex[][]{{this}});
+    }
+
+    public Vector toVector() {
+        return Maths.columnVector(this);
     }
 
     @Override

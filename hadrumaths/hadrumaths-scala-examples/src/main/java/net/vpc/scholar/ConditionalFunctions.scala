@@ -3,6 +3,7 @@ package net.vpc.scholar
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruplot.Plot
 
 object ConditionalFunctions {
   def main(args: Array[String]): Unit = {
@@ -25,8 +26,8 @@ object ConditionalFunctions {
     println(gn_s(1))
     println(gn_s(1).computeComplex(2))
     val console = Plot.console()
-    console.plotter().title("fn_s").asCurve().domain(dom).plot(fn_s)
-    console.plotter().title("gn_s").asCurve().domain(dom).plot(gn_s)
+    console.newPlot().title("fn_s").asCurve().domain(dom).plot(fn_s)
+    console.newPlot().title("gn_s").asCurve().domain(dom).plot(gn_s)
   }
 
   def main2(): Unit = {
@@ -46,8 +47,8 @@ object ConditionalFunctions {
     println(gn_s(1))
     println(gn_s(1).computeComplex(2))
     val console = Plot.console()
-    console.plotter().title("fn_s").asCurve().domain(dom).plot(fn_s)
-    console.plotter().title("gn_s").asCurve().domain(dom).plot(gn_s)
+    console.newPlot().title("fn_s").asCurve().domain(dom).plot(fn_s)
+    console.newPlot().title("gn_s").asCurve().domain(dom).plot(gn_s)
   }
 
   def main3(): Unit = {

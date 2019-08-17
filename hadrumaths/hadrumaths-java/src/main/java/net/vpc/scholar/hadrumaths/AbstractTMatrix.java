@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.io.RuntimeIOException;
-import net.vpc.common.util.TypeReference;
+import java.io.UncheckedIOException;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix;
 import net.vpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromTMatrix;
@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.util.adapters.ExprMatrixFromTMatrix;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -478,6 +479,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         return mul(other.inv());
     }
 
+    public TMatrix<T> rem(TMatrix<T> other) {
+        return (TMatrix<T>) (toComplex().rem(other.toComplex()).toMatrix());
+    }
+
     public TMatrix<T> mul(TMatrix<T> other) {
         if (getColumnCount() != other.getRowCount()) {
             throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
@@ -640,9 +645,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, getComponentVectorSpace().asinh(get(i, j)));
+                X.set(i, j, ss.asinh(get(i, j)));
             }
         }
         return X;
@@ -652,9 +658,23 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, getComponentVectorSpace().sinh(get(i, j)));
+                X.set(i, j, ss.sinh(get(i, j)));
+            }
+        }
+        return X;
+    }
+
+    public TMatrix<T> sincard() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, ss.sincard(get(i, j)));
             }
         }
         return X;
@@ -842,9 +862,48 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, getComponentVectorSpace().acotan(get(i, j)));
+                X.set(i, j, ss.acotan(get(i, j)));
+            }
+        }
+        return X;
+    }
+    public TMatrix<T> sqr() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, ss.sqr(get(i, j)));
+            }
+        }
+        return X;
+    }
+
+    public TMatrix<T> sqrt() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, ss.sqrt(get(i, j)));
+            }
+        }
+        return X;
+    }
+
+    public TMatrix<T> sqrt(int n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, ss.sqrt(get(i, j),n));
             }
         }
         return X;
@@ -854,9 +913,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, getComponentVectorSpace().exp(get(i, j)));
+                X.set(i, j, ss.exp(get(i, j)));
             }
         }
         return X;
@@ -878,9 +938,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> ss = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, getComponentVectorSpace().log10(get(i, j)));
+                X.set(i, j, ss.log10(get(i, j)));
             }
         }
         return X;
@@ -1051,6 +1112,11 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         throw new IllegalArgumentException("No a valid vector");
     }
 
+    @Override
+    public T get(Enum anyEnum) {
+        return get(anyEnum.ordinal());
+    }
+
     public void add(int row, int col, T val) {
         set(row, col, getComponentVectorSpace().add(get(row, col), val));
     }
@@ -1088,7 +1154,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getRows() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class, getComponentType().getType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -1103,7 +1169,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getColumns() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeReference.of(TVector.class, getComponentType().getType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -1230,11 +1296,11 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     private T[] newT(int size) {
-        return ArrayUtils.newArray(getComponentType(), size);
+        return ArrayUtils.newArray(getComponentType().getTypeClass(), size);
     }
 
     private T[][] newT(int size1, int size2) {
-        return ArrayUtils.newArray(getComponentType(), size1, size2);
+        return ArrayUtils.newArray(getComponentType().getTypeClass(), size1, size2);
     }
 
     /**
@@ -1780,7 +1846,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -1801,7 +1867,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -1817,7 +1883,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -1899,7 +1965,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 
@@ -1954,7 +2020,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new UncheckedIOException(ex);
         }
 
         if (rows == l.size() && columns == cols) {
@@ -2035,9 +2101,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     public double[][] absdbls() {
         double[][] d = new double[getRowCount()][getColumnCount()];
+        VectorSpace<T> componentVectorSpace = getComponentVectorSpace();
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
-                d[i][j] = getComponentVectorSpace().absdbl(get(i, j));
+                d[i][j] = componentVectorSpace.absdbl(get(i, j));
             }
         }
         return d;
@@ -2047,9 +2114,24 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         int columns = getColumnCount();
         TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> componentVectorSpace = getComponentVectorSpace();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X.set(i, j, (getComponentVectorSpace().abs(get(i, j))));
+                X.set(i, j, (componentVectorSpace.abs(get(i, j))));
+            }
+        }
+        return X;
+    }
+
+    @Override
+    public TMatrix<T> abssqr() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        TMatrix<T> X = createMatrix(rows, columns);
+        VectorSpace<T> componentVectorSpace = getComponentVectorSpace();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, (componentVectorSpace.abssqr(get(i, j))));
             }
         }
         return X;
@@ -2069,14 +2151,15 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         double alpha;
         int rows = getRowCount();
         int cols = getColumnCount();
+        VectorSpace<T> componentVectorSpace = getComponentVectorSpace();
         for (int r = 0; r < rows; r++) {
             alpha = 0;
             for (int c = 0; c < cols; c++) {
-                alpha = alpha + Maths.sqr(getComponentVectorSpace().absdbl(get(r, c)));
+                alpha = alpha + Maths.sqr(componentVectorSpace.absdbl(get(r, c)));
             }
             x *= Maths.sqrt(alpha);
         }
-        return getComponentVectorSpace().absdbl(det) / x;
+        return componentVectorSpace.absdbl(det) / x;
     }
 
     public TMatrix<T> sparsify(double ceil) {
@@ -2084,9 +2167,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         double max = Double.NaN;
         int rows = getRowCount();
         int cols = getColumnCount();
+        VectorSpace<T> componentVectorSpace = getComponentVectorSpace();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                double d = getComponentVectorSpace().absdbl(get(r, c));
+                double d = componentVectorSpace.absdbl(get(r, c));
                 if (!Double.isNaN(d) && (Double.isNaN(max) || d > max)) {
                     max = d;
                 }
@@ -2096,11 +2180,11 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
                     T v = get(r, c);
-                    double d = getComponentVectorSpace().absdbl(v);
+                    double d = componentVectorSpace.absdbl(v);
                     if (!Double.isNaN(d)) {
                         d = d / max * 100;
                         if (d <= ceil) {
-                            v = getComponentVectorSpace().zero();
+                            v = componentVectorSpace.zero();
                         }
                     }
                     array.set(r, c, v);
@@ -2314,6 +2398,12 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         return get(vectorIndex);
     }
 
+    @Override
+    public T apply(Enum vectorIndex) {
+        return get(vectorIndex.ordinal());
+    }
+
+
     public Complex complexValue() {
         return (getRowCount() == 1 && getColumnCount() == 1) ? getComponentVectorSpace().toComplex(get(0, 0)) : Complex.NaN;
     }
@@ -2382,11 +2472,11 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+    public <R> boolean isConvertibleTo(TypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)
-                ) {
+        ) {
             return true;
         }
         if (other.isAssignableFrom(getComponentType())) {
@@ -2407,7 +2497,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     @Override
-    public <R> TMatrix<R> to(TypeReference<R> other) {
+    public <R> TMatrix<R> to(TypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (TMatrix<R>) this;
         }
@@ -2476,5 +2566,19 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         return isSquare() && equals(transpose());
     }
 
+
+    @Override
+    public Iterator<TVector<T>> iterator() {
+        return getRows().toJList().iterator();
+    }
+
+    @Override
+    public void set(T[][] elements) {
+        for (int i = 0; i < elements.length; i++) {
+            for (int j = 0; j < elements[i].length; j++) {
+                set(i,j,elements[i][j]);
+            }
+        }
+    }
 
 }

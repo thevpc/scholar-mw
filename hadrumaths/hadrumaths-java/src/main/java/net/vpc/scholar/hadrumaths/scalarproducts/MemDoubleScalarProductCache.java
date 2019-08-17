@@ -1,11 +1,13 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 import java.io.Serializable;
-import net.vpc.common.util.mon.*;
 
 public class MemDoubleScalarProductCache extends AbstractScalarProductCache implements Serializable, DoubleScalarProductCache {
     private double[/** p index **/][/** n index **/] cache = new double[0][0];

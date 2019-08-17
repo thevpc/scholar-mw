@@ -7,6 +7,11 @@ import net.vpc.scholar.hadrumaths.MutableComplex;
 import org.junit.Test;
 
 public class TestComplex2 {
+    public static void main(String[] args) {
+        Double d1=Double.NaN;
+        Double d2=Double.NaN;
+        System.out.println(d1.equals(d2));
+    }
 
     @Test
     public void testMul() {

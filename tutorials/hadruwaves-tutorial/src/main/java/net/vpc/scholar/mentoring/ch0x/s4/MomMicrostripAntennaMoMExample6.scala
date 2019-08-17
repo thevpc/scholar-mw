@@ -4,11 +4,12 @@ import net.vpc.scholar.hadrumaths.Domain._
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadrumaths.plot.PlotType._
+import net.vpc.scholar.hadruplot.PlotType._
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory.axis._
 import net.vpc.scholar.hadruwaves.mom.SourceFactory.createPlanarSource
-import net.vpc.scholar.hadruwaves.mom._;import net.vpc.common.util.Chronometer;import net.vpc.common.util.mon.{ProgressMonitor, ProgressMonitorFactory}
+import net.vpc.scholar.hadruwaves.mom._
+import net.vpc.scholar.hadruplot.{Plot, Samples}
 
 object MomMicrostripAntennaMoMExample6 {
   def main(args: Array[String]): Unit = {

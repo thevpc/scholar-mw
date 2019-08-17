@@ -2,12 +2,14 @@ package net.vpc.scholar
 
 import java.io.{File, PrintStream}
 
+import net.vpc.common.io.IOUtils
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.cache.ObjectCache
+import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
-import net.vpc.scholar.hadrumaths.util.IOUtils
+import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
 import net.vpc.scholar.hadruwaves.mom.{HintAxisType, MomStructure}
 import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIteratorFactory
@@ -130,7 +132,7 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
             val objectpath = "/structure.dump/3h/81/5z"
             val c2 = "/home/vpc/.cache/mathcache/3.1.2/" + objectpath + "/test-mode-scalar-products.cacheobj";
             //            val cc1 = ObjectCache.loadObject(new java.io.File("/").get(c1),null)
-            val cc2 = ObjectCache.loadObject(IOUtils.createHFile(c2), null).asInstanceOf[MemComplexScalarProductCache].toMatrix
+            val cc2 = IOUtils.loadObject(HadrumathsIOUtils.createHFile(c2).getName).asInstanceOf[MemComplexScalarProductCache].toMatrix
             cc2.store(new File("/home/vpc/cmp/sp.v321.m"))
             println("bye")
             //            Plot.asMatrix().plot(cc2)

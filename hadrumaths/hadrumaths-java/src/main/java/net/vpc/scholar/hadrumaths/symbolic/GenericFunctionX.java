@@ -186,13 +186,28 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
     }
 
     @Override
+    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, y, d0, ranges);
+    }
+
+    @Override
     public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
     }
 
     @Override
+    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, d0, ranges);
+    }
+
+    @Override
     public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
+    }
+
+    @Override
+    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return Expressions.computeVector(this, exprHelper, x, y, z, d0, ranges);
     }
 
     protected double evalCD(Complex x, BooleanMarker defined) {
@@ -231,6 +246,14 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
             }
         }
         return Maths.matrix(arrayCopy);
+    }
+
+    protected Vector evalVV(final Vector x) {
+        Complex[] arrayCopy = x.toArray();
+        for (int i = 0; i < arrayCopy.length; i++) {
+            arrayCopy[i] = computeComplexArg(arrayCopy[i], NoneOutBoolean.INSTANCE);
+        }
+        return Maths.columnVector(arrayCopy);
     }
 
     /**
@@ -443,6 +466,11 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         @Override
         public Matrix computeMatrix(Matrix x) {
             return evalMM(x);
+        }
+
+        @Override
+        public Vector computeVector(Vector x) {
+            return evalVV(x);
         }
     }
 

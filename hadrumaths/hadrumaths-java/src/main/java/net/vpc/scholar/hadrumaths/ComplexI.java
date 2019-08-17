@@ -220,7 +220,7 @@ public final class ComplexI extends Complex {
     public int hashCode() {
         int hash = 7;
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.imag) ^ (Double.doubleToLongBits(this.imag) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(0) ^ (Double.doubleToLongBits(0) >>> 32));
+        hash = 89 * hash ;//+ (int) (Double.doubleToLongBits(0) ^ (Double.doubleToLongBits(0) >>> 32));
         return hash;
     }
 

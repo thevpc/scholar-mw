@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.

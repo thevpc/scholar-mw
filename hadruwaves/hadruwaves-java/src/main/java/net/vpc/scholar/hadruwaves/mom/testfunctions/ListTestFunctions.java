@@ -14,8 +14,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -102,12 +102,12 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
 
     private List<DoubleToVector> linearizeFunctions(Object i){
         if(i instanceof Expr){
-            if(i instanceof DoubleToVector){
-                return Arrays.asList((DoubleToVector) i);
-            }else if(i instanceof DoubleToComplex){
-                return Arrays.asList(Maths.vector((DoubleToComplex) i));
-            }else if(i instanceof DoubleToDouble) {
-                return Arrays.asList(Maths.vector(((DoubleToDouble) i)));
+            if(((Expr) i).isDV()){
+                return Arrays.asList(((Expr) i).toDV());
+            }else if(((Expr) i).isDC()){
+                return Arrays.asList(Maths.vector(((Expr) i).toDC()));
+            }else if(((Expr) i).isDD()) {
+                return Arrays.asList(Maths.vector( ((Expr) i).toDD()));
             }else{
                 throw new IllegalArgumentException("Unsupported Expr "+i);
             }

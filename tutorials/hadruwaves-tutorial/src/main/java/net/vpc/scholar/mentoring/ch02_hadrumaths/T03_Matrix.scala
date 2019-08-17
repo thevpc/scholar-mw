@@ -4,6 +4,7 @@ package net.vpc.scholar.mentoring.ch02_hadrumaths
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._
 

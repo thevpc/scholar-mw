@@ -25,6 +25,15 @@ public class Range implements Serializable {
     public final int dimension;
     private Object defined;
 
+    public Range(int xmin, int xmax) {
+        this(xmin,xmax,-1,-1,-1,-1,1);
+    }
+    public Range(int xmin, int xmax, int ymin, int ymax) {
+        this(xmin,xmax,ymin,ymax,-1,-1,2);
+    }
+    public Range(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+        this(xmin,xmax,ymin,ymax, zmin,  zmax,3);
+    }
     public Range(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax, int dim) {
         this.dimension = dim;
         this.xmin = xmin;
@@ -77,6 +86,36 @@ public class Range implements Serializable {
         if (xwidth < 0 || ywidth < 0 || zwidth < 0) {
             throw new IllegalArgumentException("xwidth<0 || ywidth<0 || zwidth<0");
         }
+    }
+
+    public Range toDimension(int dim){
+        if(dim==this.dimension){
+            return this;
+        }
+        Range range = new Range(xmin, xmax, ymin, ymax, zmin, zmax, dim);
+        switch (this.dimension){
+            case 2:{
+                switch (dim){
+                    case 1:{
+                        range.setDefined(getDefined2().get(0));
+                        return range;
+                    }
+                }
+            }
+            case 3:{
+                switch (dim){
+                    case 1:{
+                        range.setDefined(getDefined3().get(0).get(0));
+                        return range;
+                    }
+                    case 2:{
+                        range.setDefined(getDefined3().get(0));
+                        return range;
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
     }
 
     public static Range empty1() {

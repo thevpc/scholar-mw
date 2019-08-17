@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 /**
@@ -44,7 +44,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
     private int[] piv;
     private VectorSpace<T> space;
     private TMatrixFactory<T> matrixFactory;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
     /*
      * ------------------------ Constructor ------------------------
      */

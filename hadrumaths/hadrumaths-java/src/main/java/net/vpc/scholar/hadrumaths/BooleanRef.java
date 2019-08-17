@@ -5,11 +5,6 @@ package net.vpc.scholar.hadrumaths;
  */
 public interface BooleanRef extends BooleanMarker {
 
-
-    static BooleanRef create() {
-        return new DefaultBooleanRef();
-    }
-
     void set(boolean t);
 
     boolean get();

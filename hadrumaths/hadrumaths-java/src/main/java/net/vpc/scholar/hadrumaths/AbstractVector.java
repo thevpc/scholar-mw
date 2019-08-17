@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -146,7 +146,16 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         }
         return new ArrayVector(all, isRow());
     }
-
+    @Override
+    public Vector pow(TVector<Complex> other) {
+        Complex n = other.toComplex();
+        Complex[] all = new Complex[size()];
+        VectorSpace<Complex> cs = getComponentVectorSpace();
+        for (int i = 0; i < all.length; i++) {
+            all[i] = cs.pow(get(i), n);
+        }
+        return new ArrayVector(all,isRow());
+    }
 
     @Override
     public Vector inv() {
@@ -198,6 +207,14 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         Complex[] all = new Complex[size()];
         for (int i = 0; i < all.length; i++) {
             all[i] = get(i).div(other);
+        }
+        return new ArrayVector(all, isRow());
+    }
+    @Override
+    public Vector rem(Complex other) {
+        Complex[] all = new Complex[size()];
+        for (int i = 0; i < all.length; i++) {
+            all[i] = get(i).rem(other);
         }
         return new ArrayVector(all, isRow());
     }
@@ -481,6 +498,14 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         return new ArrayVector(all, isRow());
     }
 
+    public Vector neg() {
+        Complex[] all = new Complex[size()];
+        for (int i = 0; i < all.length; i++) {
+            all[i] = get(i).neg();
+        }
+        return new ArrayVector(all, isRow());
+    }
+
     public Vector exp() {
         Complex[] all = new Complex[size()];
         for (int i = 0; i < all.length; i++) {
@@ -651,7 +676,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     }
 
     @Override
-    public TypeReference<Complex> getComponentType() {
+    public TypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 
@@ -680,7 +705,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
         });
     }
 
-    public <R> TVector<R> transform(TypeReference<R> toType, TTransform<Complex, R> op) {
+    public <R> TVector<R> transform(TypeName<R> toType, TTransform<Complex, R> op) {
         return new ReadOnlyTVector<R>(
                 toType, isRow(), new TVectorModel<R>() {
             @Override
@@ -698,7 +723,7 @@ public abstract class AbstractVector extends AbstractTVector<Complex> implements
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeReference<R> other) {
+    public <R> boolean isConvertibleTo(TypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)

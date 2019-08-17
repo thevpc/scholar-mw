@@ -21,11 +21,6 @@ public class CustomCCFunctionXExpr extends GenericFunctionX implements Cloneable
         return definition.getName();
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
     public Complex computeComplexArg(Complex c, BooleanMarker defined) {
         defined.set();
         return definition.getEval().evalComplex(c);

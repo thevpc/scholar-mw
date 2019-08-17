@@ -11,7 +11,7 @@ public interface BooleanMarker {
     }
 
     static BooleanRef ref() {
-        return BooleanRef.create();
+        return BooleanRefs.create();
     }
 
     static BooleanMarker none() {

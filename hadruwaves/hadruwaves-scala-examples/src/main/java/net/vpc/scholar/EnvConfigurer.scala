@@ -2,7 +2,8 @@ package net.vpc.scholar
 
 import java.util.Properties
 
-import net.vpc.scholar.hadrumaths.{Maths, Plot}
+import net.vpc.scholar.hadrumaths.Maths
+import net.vpc.scholar.hadruplot.Plot
 
 object EnvConfigurer {
   def getHadrumathsVersion(): String = {

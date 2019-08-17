@@ -50,7 +50,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList {
 
     public Expr[] toExprArray() {
         List<Expr> y = toExprJList();
-        return y.toArray(new Expr[y.size()]);
+        return y.toArray(new Expr[0]);
     }
 
     public List<Complex> toComplexList() {
@@ -66,7 +66,7 @@ public class ExprArrayList extends ArrayTList<Expr> implements ExprList {
 
     public Complex[] toComplexArray() {
         List<Complex> complexes = toComplexList();
-        return complexes.toArray(new Complex[complexes.size()]);
+        return complexes.toArray(new Complex[0]);
     }
 
     public List<Double> toDoubleList() {

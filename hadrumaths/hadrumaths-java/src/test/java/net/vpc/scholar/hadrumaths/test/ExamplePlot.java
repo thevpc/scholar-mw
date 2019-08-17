@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Plot;
+import net.vpc.scholar.hadruplot.Plot;
 
 import java.io.File;
 

@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.LRUMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
-import net.vpc.common.util.LRUMap;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.beans.PropertyChangeEvent;
@@ -134,7 +134,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
     public abstract RewriteResult rewriteImpl(Expr e);
 
     public ExprRewriteSuccessListener[] getRewriteSuccessListeners() {
-        return rewriteSuccessListeners.toArray(new ExprRewriteSuccessListener[rewriteSuccessListeners.size()]);
+        return rewriteSuccessListeners.toArray(new ExprRewriteSuccessListener[0]);
     }
 
     @Override
@@ -154,7 +154,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
     }
 
     public ExprRewriteFailListener[] getRewriteFailListeners() {
-        return rewriteFailListeners.toArray(new ExprRewriteFailListener[rewriteFailListeners.size()]);
+        return rewriteFailListeners.toArray(new ExprRewriteFailListener[0]);
     }
 
     @Override

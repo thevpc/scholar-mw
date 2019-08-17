@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.*;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.str.TestFieldEvaluator;
 
@@ -19,7 +19,7 @@ public class TestFieldSerialParallelEvaluator implements TestFieldEvaluator {
     public static final TestFieldSerialParallelEvaluator INSTANCE = new TestFieldSerialParallelEvaluator();
 
     @Override
-    public VDiscrete evaluate(MomStructure str, double[] x, double[] y, ProgressMonitor monitor) {
+    public VDiscrete evaluate(final MomStructure str, final double[] x, final double[] y, ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {

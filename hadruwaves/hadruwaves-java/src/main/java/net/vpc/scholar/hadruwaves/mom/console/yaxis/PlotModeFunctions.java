@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.FunctionsXYPlotConsoleAction;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.PlotAxisCustom;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadruplot.console.ConsoleAction;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadrumaths.plot.FunctionsXYPlotConsoleAction;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCustom;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -28,11 +28,11 @@ public class PlotModeFunctions extends PlotAxisCustom implements Cloneable {
             ModeFunctions base = str.getModeFunctions();
             DoubleToVector[] fn = base.arr();
             //WallBorders b = base.getBorders();
-            all.add(new FunctionsXYPlotConsoleAction("Mode Functions", "Direct Base Functions " + p.getSerieTitle().toString(), fn, null, p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
+            all.add(new FunctionsXYPlotConsoleAction("Mode Functions", "Direct Base Functions " + p.getSerieTitle().toString(), fn, null, p.getPreferredPath(), getPlotType(), getLibraries()));
         }
         MomStructure str2 = (MomStructure) p.getStructure2();
         if (containsType(YType.MODELED) && str2 != null) {
-            all.add(new FunctionsXYPlotConsoleAction("Mode Functions", "Model Base Functions" + p.getSerieTitle().toString(), str2.getModeFunctions().arr(), null, p.getPreferredPath(), getPlotType(), getPreferredLibraries()));
+            all.add(new FunctionsXYPlotConsoleAction("Mode Functions", "Model Base Functions" + p.getSerieTitle().toString(), str2.getModeFunctions().arr(), null, p.getPreferredPath(), getPlotType(), getLibraries()));
         }
 //        mon.terminatem(getName());
         return all.iterator();

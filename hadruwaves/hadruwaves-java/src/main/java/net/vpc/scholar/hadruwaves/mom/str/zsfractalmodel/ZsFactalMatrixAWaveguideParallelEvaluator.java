@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -38,7 +38,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                     TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
-                        Complex yn = n.impedance.inv();
+                        Complex yn = n.impedance.admittanceValue();
                         c = c.add(yn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
@@ -92,7 +92,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
                     TVector<Complex> spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
-                        c = c.add(n.impedance.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                        c = c.add(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
                 }

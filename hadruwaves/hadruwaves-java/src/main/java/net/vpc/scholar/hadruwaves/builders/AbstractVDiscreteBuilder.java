@@ -1,27 +1,43 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
+import net.vpc.scholar.hadruplot.Samples;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
-public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
-    protected MWStructure structure;
+public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder implements CartesianFieldBuilder {
+    @Override
+    public CartesianFieldBuilder monitor(ProgressMonitor monitor) {
+        return (CartesianFieldBuilder) super.monitor(monitor);
+    }
+
+    @Override
+    public CartesianFieldBuilder monitor(ProgressTaskMonitor monitor) {
+        return (CartesianFieldBuilder) super.monitor(monitor);
+    }
+
+    @Override
+    public CartesianFieldBuilder converge(ConvergenceEvaluator convergenceEvaluator) {
+        return (CartesianFieldBuilder) super.converge(convergenceEvaluator);
+    }
 
     public AbstractVDiscreteBuilder(MWStructure structure) {
-        this.structure = structure;
+        super(structure);
     }
 
     protected abstract VDiscrete computeVDiscreteImpl(double[] x, double[] y, double[] z, ProgressMonitor monitor);
 
-    private VDiscrete computeVDiscreteImplLog(double[] x, double[] y, double[] z, ProgressMonitor monitor) {
+    private VDiscrete computeVDiscreteImplLog(final double[] x, final double[] y, final double[] z, ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(
                 monitor, getClass().getName(),
                 new MonitoredAction<VDiscrete>() {
@@ -51,7 +67,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
@@ -65,7 +81,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
@@ -79,7 +95,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
@@ -91,19 +107,31 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
 
     public Matrix computeMatrix(final Axis axis, Samples samples) {
         AbsoluteSamples a = ((MomStructure) getStructure()).getDomain().toAbsolute(samples);
-        double[] z = a.getZ();
-        if (z == null || z.length == 0) {
-            z = new double[]{0};
-        }
-        double[] y = a.getY();
-        if (y == null || y.length == 0) {
-            y = new double[]{0};
-        }
         double[] x = a.getX();
-        if (z.length <= 1) {
-            return computeMatrix(axis, x, y, z[0]);
+        switch (a.getDimension()) {
+            case 1: {
+                return computeMatrix(axis, x, new double[]{0}, 0);
+            }
+            case 2: {
+                double[] y = a.getY();
+                if (y == null || y.length == 0) {
+                    y = new double[]{0};
+                }
+                return computeMatrix(axis, x, y, 0);
+            }
+            case 3: {
+                double[] y = a.getY();
+                if (y == null || y.length == 0) {
+                    y = new double[]{0};
+                }
+                double[] z = a.getZ();
+                if (z == null || z.length == 0) {
+                    z = new double[]{0};
+                }
+                return computeMatrix(axis, x, y, z[0]);
+            }
         }
-        throw new IllegalArgumentException("Not Supported count, not a Matrix");
+        throw new IllegalArgumentException("Not Supported dimension, not a Matrix");
     }
 
     public Vector computeVector(final Axis axis, Samples samples) {
@@ -139,7 +167,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
@@ -153,7 +181,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
@@ -168,7 +196,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
@@ -184,8 +212,8 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeVDiscreteImpl(samples, getMonitor());
         } else {
-            Samples finalSamples = samples;
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            final Samples finalSamples = samples;
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public VDiscrete evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVDiscreteImpl(finalSamples, monitor);
@@ -200,17 +228,13 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
         if (conv == null) {
             return computeVDiscreteImplLog(x, y, z, getMonitor());
         } else {
-            return storeConvergenceResult(conv.evaluate(structure, new ObjectEvaluator() {
+            return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public VDiscrete evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVDiscreteImplLog(x, y, z, monitor);
                 }
             }, getMonitor()));
         }
-    }
-
-    public MWStructure getStructure() {
-        return structure;
     }
 
     protected Matrix computeXYMatrixImpl(double[] x, double[] y, double z, Axis axis, ProgressMonitor monitor) {
@@ -228,6 +252,15 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder {
     public VDiscrete computeVDiscreteImpl(Samples samples, ProgressMonitor monitor) {
         AbsoluteSamples a = ((MomStructure) getStructure()).getDomain().toAbsolute(samples);
         return computeVDiscreteImplLog(a.getX(), a.getY(), a.getZ(), monitor);
+    }
+
+    @Override
+    public Expr expr() {
+        return new CartesianFieldBuilderExprDV(this,getStructure().domain());
+    }
+    @Override
+    public VDiscrete computeVDiscrete(double[] x, double[] y) {
+        return computeVDiscrete(x,y,new double[]{0});
     }
 
 }

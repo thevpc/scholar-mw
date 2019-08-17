@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
     private TMatrixModel<T> f;
 
-    public ReadOnlyTMatrix(TypeReference<T> componentType, TMatrixModel<T> f) {
+    public ReadOnlyTMatrix(TypeName<T> componentType, TMatrixModel<T> f) {
         this.componentType = componentType;
         this.f = f;
     }
@@ -45,7 +45,7 @@ public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 }

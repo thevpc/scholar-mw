@@ -10,25 +10,21 @@ public class XX extends AxisFunction implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     public XX(Domain domain) {
-        super(domain, "X");
+        super(domain, Axis.X);
     }
 
-    @Override
-    public String getFunctionName() {
-        return "X";
-    }
+//    @Override
+//    public String getFunctionName() {
+//        return "X";
+//    }
 
-    @Override
-    public Axis getAxis() {
-        return Axis.X;
-    }
 
-    @Override
-    public Expr newInstance(Expr... arguments) {
-        Expr xx = new XX(getDomain());
-        xx = Any.copyProperties(this, xx);
-        return xx;
-    }
+//    @Override
+//    public Expr newInstance(Expr... arguments) {
+//        Expr xx = new XX(getDomain());
+//        xx = Any.copyProperties(this, xx);
+//        return xx;
+//    }
 
 //    @Override
 //    public boolean isDDx() {
@@ -207,89 +203,173 @@ public class XX extends AxisFunction implements Cloneable {
         }
     }
 
-    @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
-        if (nonNullRanges != null) {
-            Matrix[][] cc = new Matrix[y.length][x.length];
-            ArrayUtils.fillArray2ZeroMatrix(cc, nonNullRanges, 1, 1);
-            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
-            nonNullRanges.setDefined(def);
-            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
-                Matrix v = Complex.valueOf(x[k]).toMatrix();
-                for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
-                    cc[j][k] = v;
-                    def.set(j, k);
-                }
-            }
-            if (ranges != null) {
-                ranges.set(nonNullRanges);
-            }
-            return cc;
-        } else {
-            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, Maths.zerosMatrix(1));
-            if (ranges != null) {
-                ranges.set(null);
-            }
-            return cc;
-        }
-    }
-
-    @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
-        if (nonNullRanges != null) {
-            Matrix[][][] cc = new Matrix[z.length][y.length][x.length];
-            ArrayUtils.fillArray3ZeroMatrix(cc, nonNullRanges, 1, 1);
-            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
-            nonNullRanges.setDefined(def);
-            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
-                Matrix v = Complex.valueOf(x[k]).toMatrix();
-                for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
-                    for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
-                        cc[t][j][k] = v;
-                        def.set(t, j, k);
-                    }
-                }
-            }
-            if (ranges != null) {
-                ranges.set(nonNullRanges);
-            }
-            return cc;
-        } else {
-            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, Maths.zerosMatrix(1));
-            if (ranges != null) {
-                ranges.set(null);
-            }
-            return cc;
-        }
-    }
-
-    @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
-        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x);
-        if (nonNullRanges != null) {
-            Matrix[] cc = new Matrix[x.length];
-            BooleanArray1 def = BooleanArrays.newArray(x.length);
-            nonNullRanges.setDefined(def);
-            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
-                Matrix v = Complex.valueOf(x[k]).toMatrix();
-                cc[k] = v;
-                def.set(k);
-            }
-            ArrayUtils.fillArray1ZeroMatrix(cc, nonNullRanges, -1, -1);
-            if (ranges != null) {
-                ranges.set(nonNullRanges);
-            }
-            return cc;
-        } else {
-            Matrix[] cc = ArrayUtils.fillArray1Matrix(x.length, Maths.zerosMatrix(1));
-            if (ranges != null) {
-                ranges.set(null);
-            }
-            return cc;
-        }
-    }
+//    @Override
+//    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
+//        if (nonNullRanges != null) {
+//            Matrix[][] cc = new Matrix[y.length][x.length];
+//            ArrayUtils.fillArray2ZeroMatrix(cc, nonNullRanges, 1, 1);
+//            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Matrix v = Complex.valueOf(x[k]).toMatrix();
+//                for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
+//                    cc[j][k] = v;
+//                    def.set(j, k);
+//                }
+//            }
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, Maths.zerosMatrix(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
+//
+//    @Override
+//    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y);
+//        if (nonNullRanges != null) {
+//            Vector[][] cc = new Vector[y.length][x.length];
+//            ArrayUtils.fillArray2ZeroVector(cc, nonNullRanges, 1);
+//            BooleanArray2 def = BooleanArrays.newArray(y.length, x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Vector v = Complex.valueOf(x[k]).toVector();
+//                for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
+//                    cc[j][k] = v;
+//                    def.set(j, k);
+//                }
+//            }
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Vector[][] cc = ArrayUtils.fillArray2Vector(x.length, y.length, Maths.zerosVector(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
+//
+//    @Override
+//    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
+//        if (nonNullRanges != null) {
+//            Matrix[][][] cc = new Matrix[z.length][y.length][x.length];
+//            ArrayUtils.fillArray3ZeroMatrix(cc, nonNullRanges, 1, 1);
+//            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Matrix v = Complex.valueOf(x[k]).toMatrix();
+//                for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
+//                    for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
+//                        cc[t][j][k] = v;
+//                        def.set(t, j, k);
+//                    }
+//                }
+//            }
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, Maths.zerosMatrix(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
+//
+//    @Override
+//    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x, y, z);
+//        if (nonNullRanges != null) {
+//            Vector[][][] cc = new Vector[z.length][y.length][x.length];
+//            ArrayUtils.fillArray3ZeroVector(cc, nonNullRanges, 1);
+//            BooleanArray3 def = BooleanArrays.newArray(z.length, y.length, x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Vector v = Complex.valueOf(x[k]).toVector();
+//                for (int t = nonNullRanges.zmin; t <= nonNullRanges.zmax; t++) {
+//                    for (int j = nonNullRanges.ymin; j <= nonNullRanges.ymax; j++) {
+//                        cc[t][j][k] = v;
+//                        def.set(t, j, k);
+//                    }
+//                }
+//            }
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, Maths.zerosVector(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
+//
+//    @Override
+//    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x);
+//        if (nonNullRanges != null) {
+//            Matrix[] cc = new Matrix[x.length];
+//            BooleanArray1 def = BooleanArrays.newArray(x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Matrix v = Complex.valueOf(x[k]).toMatrix();
+//                cc[k] = v;
+//                def.set(k);
+//            }
+//            ArrayUtils.fillArray1ZeroMatrix(cc, nonNullRanges, -1, -1);
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Matrix[] cc = ArrayUtils.fillArray1Matrix(x.length, Maths.zerosMatrix(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
+//
+//    @Override
+//    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+//        Range nonNullRanges = (d0 == null ? domain : domain.intersect(d0)).range(x);
+//        if (nonNullRanges != null) {
+//            Vector[] cc = new Vector[x.length];
+//            BooleanArray1 def = BooleanArrays.newArray(x.length);
+//            nonNullRanges.setDefined(def);
+//            for (int k = nonNullRanges.xmin; k <= nonNullRanges.xmax; k++) {
+//                Vector v = Complex.valueOf(x[k]).toVector();
+//                cc[k] = v;
+//                def.set(k);
+//            }
+//            ArrayUtils.fillArray1ZeroVector(cc, nonNullRanges, -1, -1);
+//            if (ranges != null) {
+//                ranges.set(nonNullRanges);
+//            }
+//            return cc;
+//        } else {
+//            Vector[] cc = ArrayUtils.fillArray1Vector(x.length, Maths.zerosVector(1));
+//            if (ranges != null) {
+//                ranges.set(null);
+//            }
+//            return cc;
+//        }
+//    }
 
     public Expr composeX(Expr xreplacement) {
         return xreplacement;
@@ -308,11 +388,15 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
 
-    @Override
-    public int getDomainDimension() {
-        return 1;
-    }
+//    @Override
+//    public int getDomainDimension() {
+//        return 1;
+//    }
 
+//    @Override
+//    public int getComponentSize() {
+//        return 1;
+//    }
 
     @Override
     public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
@@ -369,13 +453,13 @@ public class XX extends AxisFunction implements Cloneable {
     }
 
 
-    @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        if (contains(x, y, z)) {
-            return Complex.valueOf(x).toMatrix();
-        }
-        return Maths.identityMatrix(1);
-    }
+//    @Override
+//    public Matrix computeMatrix(double x, double y, double z) {
+//        if (contains(x, y, z)) {
+//            return Complex.valueOf(x).toMatrix();
+//        }
+//        return Maths.identityMatrix(1);
+//    }
 
 
     @Override

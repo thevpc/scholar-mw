@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.PlotMatrix;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisSeries;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -23,14 +23,14 @@ public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneab
         }
     }
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
+    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
         ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
 //        monitor.startm(getClass().getSimpleName());
-        NamedMatrix namedMatrix = new NamedMatrix(Maths.matrix(structure.getTestSourceScalarProducts(monitor)));
+        PlotMatrix namedMatrix = new PlotMatrix(structure.getTestSourceScalarProducts(monitor).getArray());
 //        monitor.terminatem(getClass().getSimpleName());
         return namedMatrix;
     }

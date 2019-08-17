@@ -12,7 +12,7 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public interface ExpressionRewriterRule {
 
-    public Class<? extends Expr>[] getTypes();
+    Class<? extends Expr>[] getTypes();
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset);
+    RewriteResult rewrite(Expr e, ExpressionRewriter ruleset);
 }

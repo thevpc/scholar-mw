@@ -1,9 +1,11 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.mon.*;
+import net.vpc.common.mon.*;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.io.*;
+import net.vpc.scholar.hadrumaths.io.DefaultCacheObjectSerializedForm;
+import net.vpc.scholar.hadrumaths.io.FailStrategy;
+import net.vpc.scholar.hadrumaths.io.HFile;
 
 import java.io.*;
 import java.util.Map;
@@ -49,7 +51,7 @@ public class DefaultObjectCache implements ObjectCache {
     public static Object loadObject(HFile file, Object defaultValue) throws IOException {
         if (file.existsOrWait()) {
             try {
-                //how to now it it is compressed?
+                //how to know if it is compressed?
                 boolean compressed = (Maths.Config.isCompressCache());
 
                 Object o1 = null;
@@ -72,7 +74,7 @@ public class DefaultObjectCache implements ObjectCache {
                 } finally {
                     if (ois != null) ois.close();
                 }
-                if (o1 != null && o1 instanceof CacheObjectSerializedForm) {
+                if (o1 instanceof CacheObjectSerializedForm) {
                     HFile serFile = file.getFs().get(file.getPath() + ".ser");
                     CacheObjectSerializedForm s = ((CacheObjectSerializedForm) o1);
                     o1 = s.deserialize(serFile);
@@ -330,7 +332,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     @Override
-    public <T> T evaluate(String cacheItemName, ProgressMonitor monitor, Evaluator2 evaluator, Object... args) {
+    public <T> T evaluate(String cacheItemName, ProgressMonitor monitor, CacheEvaluator evaluator, Object... args) {
         return persistenceCache.evaluate(this, cacheItemName, monitor, evaluator, args);
     }
 

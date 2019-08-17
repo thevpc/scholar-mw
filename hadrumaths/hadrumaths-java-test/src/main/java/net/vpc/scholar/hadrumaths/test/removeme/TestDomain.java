@@ -3,9 +3,11 @@ package net.vpc.scholar.hadrumaths.test.removeme;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
+import net.vpc.scholar.hadruplot.AbsoluteSamples;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadruplot.Plot;
 
 import java.util.HashMap;
 

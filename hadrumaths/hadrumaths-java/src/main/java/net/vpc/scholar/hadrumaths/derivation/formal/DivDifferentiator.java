@@ -6,7 +6,6 @@ import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.symbolic.Div;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.symbolic.Sub;
 
 /**

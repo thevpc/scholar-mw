@@ -1,20 +1,20 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 public class ReadOnlyTVector<T> extends AbstractTVector<T> {
     private static final long serialVersionUID = 1L;
     private TVectorModel<T> model;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public ReadOnlyTVector(TypeReference<T> componentType, boolean row, TVectorModel<T> model) {
+    public ReadOnlyTVector(TypeName<T> componentType, boolean row, TVectorModel<T> model) {
         super(row);
         this.model = model;
         this.componentType = componentType;
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

@@ -175,6 +175,10 @@ public final class FunctionFactory extends AbstractFactory {
         return new CosXCosY(amp, a, b, c, d - Maths.PI / 2, domain);
     }
 
+    public static CosXPlusY cosXPlusY(double amp, double a, double b, double c, Domain domain) {
+        return new CosXPlusY(amp, a, b, c, domain);
+    }
+
     public static CosXCosY sinXcosY(double amp, double a, double b, double c, double d, Domain domain) {
         return new CosXCosY(amp, a, b - Maths.PI / 2, c, d, domain);
     }

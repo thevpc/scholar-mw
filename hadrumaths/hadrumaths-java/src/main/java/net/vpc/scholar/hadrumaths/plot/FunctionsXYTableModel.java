@@ -3,9 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.scholar.hadrumaths.Expr;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -15,7 +13,9 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private Expr[] base;
     private String[] titles;
-    private boolean[] selected;
+//    private boolean[] selected;
+    private int maxSelected = 0;
+    private LinkedHashSet<Integer> selectionOrder=new LinkedHashSet<>();
 //    private PropertyChangeSupport support;
 
     public FunctionsXYTableModel(Expr[] base) {
@@ -43,14 +43,24 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         }
         orderedTitles.add("Selected");
         seenTitles.add("Selected");
-        titles = orderedTitles.toArray(new String[orderedTitles.size()]);
-        selected = new boolean[base.length];
+        titles = orderedTitles.toArray(new String[0]);
         int max = Math.min(50, base.length);
+        selectionOrder.clear();
         for (int i = 0; i < max; i++) {
-            selected[i] = true;
+            setSelected(i,true,false);
         }
         fireTableDataChanged();
 //        support=new PropertyChangeSupport(this);
+    }
+
+    public int getMaxSelected() {
+        return maxSelected;
+    }
+
+    public void setMaxSelected(int maxSelected) {
+        this.maxSelected = maxSelected;
+        rebuildSelectionOrder();
+        fireTableDataChanged();
     }
 
     @Override
@@ -73,7 +83,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
             if ("Name".equals(title)) {
                 return expr.getTitle();
             } else if ("Selected".equals(title)) {
-                return selected[rowIndex];
+                return isSelected(rowIndex);
             }
         }
         return values == null ? null : values.get(title);
@@ -107,11 +117,43 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         String title = titles[columnIndex];
         if ("Selected".equals(title)) {
-            selected[rowIndex] = (Boolean) aValue;
-            fireTableCellUpdated(rowIndex, columnIndex);
+            setSelected(rowIndex, (Boolean) aValue,true);
         }
     }
+    private synchronized boolean isSelected(int index){
+        return selectionOrder.contains(index);
+    }
 
+    private synchronized boolean setSelected(int index,boolean v,boolean fire){
+        if(index>=0 && index<base.length){
+            boolean old=isSelected(index);
+            if(old!=v) {
+                if(v){
+                    selectionOrder.add(index);
+                }else{
+                    selectionOrder.remove(index);
+                }
+                rebuildSelectionOrder();
+                if(fire){
+                    fireTableDataChanged();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private synchronized void rebuildSelectionOrder(){
+        if(maxSelected>0 && selectionOrder.size()>maxSelected){
+            for (Iterator<Integer> iterator = selectionOrder.iterator(); iterator.hasNext(); ) {
+                Integer p = iterator.next();
+                iterator.remove();
+                if(selectionOrder.size()<=maxSelected){
+                    break;
+                }
+            }
+        }
+    }
     public void setAllSelectedByCell(int c, int r, boolean value) {
         String title = titles[c];
         if ("Name".equals(title)) {
@@ -120,18 +162,20 @@ public class FunctionsXYTableModel extends AbstractTableModel {
             return;
         }
         Object v = base[r].getProperty(titles[c]);
-        for (int i = 0; i < selected.length; i++) {
+        boolean change=false;
+        for (int i = 0; i < base.length; i++) {
             Object v2 = base[i].getProperty(titles[c]);
             if (v == v2 || (v != null && v2 != null && v.equals(v2))) {
-                selected[i] = value;
+                change|=setSelected(i,value,false);
             }
         }
         fireTableDataChanged();
     }
 
     public void setAllSelected(boolean value) {
-        for (int i = 0; i < selected.length; i++) {
-            selected[i] = value;
+        boolean change=false;
+        for (int i = 0; i < base.length; i++) {
+            change|=setSelected(i,value,false);
         }
         fireTableDataChanged();
     }
@@ -139,17 +183,17 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     public Expr[] getSelectedFunctions() {
         ArrayList<Expr> selectedFunctions = new ArrayList<Expr>();
         for (int i = 0; i < base.length; i++) {
-            if (selected[i]) {
+            if (isSelected(i)) {
                 selectedFunctions.add(base[i]);
             }
         }
-        return selectedFunctions.toArray(new Expr[selectedFunctions.size()]);
+        return selectedFunctions.toArray(new Expr[0]);
     }
 
     public int[] getSelectedFunctionsIndexes() {
         ArrayList<Integer> selectedFunctions = new ArrayList<Integer>();
         for (int i = 0; i < base.length; i++) {
-            if (selected[i]) {
+            if (isSelected(i)) {
                 selectedFunctions.add(i);
             }
         }

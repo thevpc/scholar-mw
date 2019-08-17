@@ -5,13 +5,15 @@
     <groupId>net.vpc.scholar</groupId>
     <artifactId>scholar-mw</artifactId>
     <name>net.vpc.scholar</name>
-    <version>3.1.32</version>
+    <version>3.1.33</version>
     <packaging>pom</packaging>
     <modules>
+        <module>hadruplot</module>
         <module>hadrumaths/hadrumaths-java</module>
         <module>hadrumaths/hadrumaths-scala</module>
         <module>hadruwaves/hadruwaves-java</module>
         <module>hadruwaves/hadruwaves-scala</module>
+        <module>hadruwaves/hadruwaves-puppets</module>
 
         <module>hadrumaths/hadrumaths-java-test</module>
         <module>hadrumaths/hadrumaths-scala-examples</module>
@@ -20,10 +22,10 @@
         <module>hadruwaves/hadruwaves-java-test</module>
         <module>hadruwaves/hadruwaves-scala-examples</module>
         <module>hadruwaves/hadruwaves-scala-helloworld</module>
-        <module>hadruwaves/hadruwaves-puppets</module>
         <module>tutorials/hadruwaves-tutorial</module>
         <!--<module>hadruwaves-studio/hadruwaves-studio-core</module>-->
         <!--<module>hadruwaves-studio/hadruwaves-studio-standalone</module>-->
+        <module>hadruwaves-studio/hadruwaves-studio-standalone</module>
         <module>hadruwaves-studio</module>
 
     </modules>

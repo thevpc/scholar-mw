@@ -3,7 +3,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComponentDimension;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 
 import java.io.Serializable;
 
@@ -49,7 +50,7 @@ public abstract class AbstractDoubleToComplex extends AbstractExprPropertyAware 
 
     @Override
     public DoubleToVector toDV() {
-        return Maths.vector(this);
+        return new DC2DV(this);
     }
 
     public boolean isDMImpl() {
@@ -57,42 +58,7 @@ public abstract class AbstractDoubleToComplex extends AbstractExprPropertyAware 
     }
 
     public DoubleToMatrix toDM() {
-        return toDV();
+        return new DC2DM(this);
     }
 
-
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x, y, z, d0, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x, y, (Domain) null, null);
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
-    }
 }

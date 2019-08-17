@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.util.mon.MonitoredAction;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.MonitoredAction;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
@@ -21,9 +21,9 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
     public static final CurrentParallelEvaluator INSTANCE = new CurrentParallelEvaluator();
 
     @Override
-    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, ProgressMonitor monitor) {
+    public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, ProgressMonitor monitor) {
 //        ProgressMonitor emonitor=ProgressMonitorFactory.nonnull(monitor);
-        MomStructure str=(MomStructure) structure;
+        final MomStructure str=(MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -70,7 +70,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                     ProgressMonitorFactory.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
 //            monitor.setProgress((1.0 * i / (indexes.length)));
 //            System.out.println("progress = " + monitor.getProgressValue());
-                    zmnGammaZ = /*Complex.ONE.*/mode.impedance;
+                    zmnGammaZ = /*Complex.ONE.*/mode.impedance.impedanceValue();
                     TVector<Complex> spc = sp.getColumn(indexIndex);
                     for (int yi = 0; yi < y_length; yi++) {
                         for (int xi = 0; xi < x_length; xi++) {

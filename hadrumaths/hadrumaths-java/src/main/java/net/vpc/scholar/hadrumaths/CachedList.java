@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,9 +17,9 @@ public class CachedList<T> extends AbstractTList<T> {
     private List<T> cache = new ArrayList<>();
     private TVectorCell<T> it;
     private boolean updated = false;
-    private TypeReference<T> componentType;
+    private TypeName<T> componentType;
 
-    public CachedList(TypeReference<T> componentType, boolean row, int size, T[] cache, TVectorCell<T> it) {
+    public CachedList(TypeName<T> componentType, boolean row, int size, T[] cache, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
         this.size = size;
@@ -28,7 +28,7 @@ public class CachedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return componentType;
     }
 

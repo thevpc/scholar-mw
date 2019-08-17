@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,7 +79,7 @@ public class LongArrayList extends AbstractTList<Long> implements LongList {
     }
 
     @Override
-    public TypeReference<Long> getComponentType() {
+    public TypeName<Long> getComponentType() {
         return Maths.$LONG;
     }
 

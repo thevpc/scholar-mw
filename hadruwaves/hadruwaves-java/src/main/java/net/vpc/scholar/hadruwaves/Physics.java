@@ -1,26 +1,20 @@
 package net.vpc.scholar.hadruwaves;
 
-import net.vpc.common.mvn.PomId;
-import net.vpc.common.mvn.PomIdResolver;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.plot.PlotComponent;
-import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
-import net.vpc.scholar.hadrumaths.plot.PlotModel;
-import net.vpc.scholar.hadrumaths.plot.ValuesPlotModel;
-import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadruplot.Plot;
+import net.vpc.scholar.hadruplot.PlotComponent;
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
+import net.vpc.scholar.hadruwaves.mom.StrLayer;
 import net.vpc.scholar.hadruwaves.mom.modes.DefaultBoxModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.modes.ModeFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.modes.NonPeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.modes.PeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.CutOffModalSources;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import net.vpc.scholar.hadruwaves.util.AdmittanceValue;
+import net.vpc.scholar.hadruwaves.util.Impedance;
+import net.vpc.scholar.hadruwaves.util.ImpedanceValue;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
@@ -726,6 +720,47 @@ public final class Physics {
         }
         Plot.title("<fn,fn>").asMatrix().plot(matrix(gfps));//.display();
 
+    }
+
+    public static AdmittanceValue computeLayersAdmittance(StrLayer[] layers, Complex gamma1, Complex gamma2, Complex z0) {
+        AdmittanceValue yl = new AdmittanceValue(Complex.ZERO);
+        double l = 0;
+        for (StrLayer layer : layers) {
+            l+=layer.getWidth();
+            Complex gamma=l<0?gamma1:gamma2;
+            Complex zt = layer.getImpedance().impedanceValue();//
+            Complex z=z0.mul(
+                    zt.add(z0.mul(tanh(gamma.mul(l)))).div(
+                            z0.add(zt.mul(tanh(gamma.mul(l))))
+                    )
+            );
+            yl=yl.parallel(impedance(z));
+        }
+        return yl;
+    }
+
+    public static Complex addSerialImpedance(Complex impedance1, Complex impedance2) {
+        return impedance1.add(impedance2);
+    }
+
+    public static Complex addParallelImpedance(Complex impedance1, Complex impedance2) {
+        return (impedance1.inv().add(impedance2.inv())).inv();
+    }
+
+    public static Complex addParallelAdmittance(Complex admittance1, Complex admittance2) {
+        return admittance1.add(admittance2);
+    }
+
+    public static Complex addSerialAdmittance(Complex admittance1, Complex admittance2) {
+        return (admittance1.inv().add(admittance2.inv())).inv();
+    }
+
+    public static ImpedanceValue impedance(Complex c) {
+        return c == null ? null : new ImpedanceValue(c);
+    }
+
+    public static AdmittanceValue admittance(Complex c) {
+        return c == null ? null : new AdmittanceValue(c);
     }
 
     public static class Config {

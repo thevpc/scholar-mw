@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 
 /**
  * Created by vpc on 4/29/14.
@@ -12,10 +13,6 @@ public class DoubleParam extends ParamExpr implements Cloneable {
         super(name);
     }
 
-    @Override
-    public int getComponentSize() {
-        return 1;
-    }
 
     @Override
     public boolean isDCImpl() {
@@ -78,21 +75,21 @@ public class DoubleParam extends ParamExpr implements Cloneable {
         return ComponentDimension.SCALAR;
     }
 
-    @Override
-    public Expr getComponent(int row, int col) {
-        if (row == 0 && col == 0) {
-            return this;
-        }
-        return FunctionFactory.DZEROXY;
-    }
-
-    @Override
-    public DoubleToComplex getComponent(Axis a) {
-        if (a == Axis.X) {
-            return this;
-        }
-        return FunctionFactory.CZEROXY;
-    }
+//    @Override
+//    public Expr getComponent(int row, int col) {
+//        if (row == 0 && col == 0) {
+//            return this;
+//        }
+//        return FunctionFactory.DZEROXY;
+//    }
+//
+//    @Override
+//    public DoubleToComplex getComponent(Axis a) {
+//        if (a == Axis.X) {
+//            return this;
+//        }
+//        return FunctionFactory.CZEROXY;
+//    }
 
     @Override
     public Domain getDomainImpl() {
@@ -104,10 +101,10 @@ public class DoubleParam extends ParamExpr implements Cloneable {
         return this;
     }
 
-    @Override
-    public String getComponentTitle(int row, int col) {
-        return null;
-    }
+//    @Override
+//    public String getComponentTitle(int row, int col) {
+//        return null;
+//    }
 
 
     @Override
@@ -133,7 +130,7 @@ public class DoubleParam extends ParamExpr implements Cloneable {
 
     @Override
     public DoubleToVector toDV() {
-        return this;
+        return new DC2DV(this);
     }
 
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Expr convert(Matrix d) {
+    public Expr convert(TMatrix d) {
         return d.toComplex();
     }
 
@@ -110,13 +110,13 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
                 List<Expr> all = new ArrayList<>(aa.size() + bb.size());
                 all.addAll(aa);
                 all.addAll(bb);
-                return new Plus(all.toArray(new Expr[all.size()]));
+                return new Plus(all.toArray(new Expr[0]));
             } else {
                 List<Expr> aa = a.getSubExpressions();
                 List<Expr> all = new ArrayList<>(aa.size() + 1);
                 all.addAll(aa);
                 all.add(b);
-                return new Plus(all.toArray(new Expr[all.size()]));
+                return new Plus(all.toArray(new Expr[0]));
             }
         } else {
             if (b instanceof Plus) {
@@ -124,7 +124,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
                 List<Expr> all = new ArrayList<>(bb.size() + 1);
                 all.add(a);
                 all.addAll(bb);
-                return new Plus(all.toArray(new Expr[all.size()]));
+                return new Plus(all.toArray(new Expr[0]));
             } else {
                 return new Plus(a, b);
             }
@@ -156,6 +156,11 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
+    public Expr rem(Expr a, Expr b) {
+        return new Reminder(a, b);
+    }
+
+    @Override
     public Expr real(Expr a) {
         if (a.isDoubleExpr()) {
             return a;
@@ -184,6 +189,18 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         }
         if (a.isComplex()) {
             return (a.toComplex().absdbl());
+        }
+        throw new IllegalArgumentException("Not Supported Yet");
+    }
+
+    @Override
+    public double absdblsqr(Expr a) {
+        if (a.isDouble()) {
+            double d = a.toDouble();
+            return d * d;
+        }
+        if (a.isComplex()) {
+            return (a.toComplex().absdblsqr());
         }
         throw new IllegalArgumentException("Not Supported Yet");
     }
@@ -707,10 +724,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             return (e.toComplex().sqr());
         }
         if (e instanceof Discrete) {
-            return ((Discrete)e).sqr();
+            return ((Discrete) e).sqr();
         }
         if (e instanceof VDiscrete) {
-            return ((VDiscrete)e).sqr();
+            return ((VDiscrete) e).sqr();
         }
         return new Sqr(e);
     }
@@ -813,7 +830,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public TypeReference<Expr> getItemType() {
+    public TypeName<Expr> getItemType() {
         return Maths.$EXPR;
     }
 
@@ -878,7 +895,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (!complex.equals(Maths.CONE)) {
                 all.add(0, complex);
             }
-            return new Plus(all.toArray(new Expr[all.size()]));
+            return new Plus(all.toArray(new Expr[0]));
         }
     }
 
@@ -926,12 +943,12 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (!complex.equals(Maths.CONE)) {
                 all.add(0, complex);
             }
-            return new Mul(all.toArray(new Expr[all.size()]));
+            return new Mul(all.toArray(new Expr[0]));
         }
     }
 
     @Override
-    public <R> boolean is(Expr value, TypeReference<R> type) {
+    public <R> boolean is(Expr value, TypeName<R> type) {
         if (Maths.$EXPR.equals(type)) {
             return true;
         }

@@ -115,7 +115,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
 
 
     public Polygon(List<Point> p) {
-        this(p.toArray(new Point[p.size()]));
+        this(p.toArray(new Point[0]));
     }
 
     public Polygon(Point... p) {
@@ -164,7 +164,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
     public Polygon add(Point p) {
         ArrayList<Point> points = new ArrayList<Point>(getPoints());
         points.add(p);
-        return new Polygon(points.toArray(new Point[points.size()]));
+        return new Polygon(points.toArray(new Point[0]));
     }
 
     public List<Point> getPoints() {

@@ -1,12 +1,16 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.common.util.TypeReference;
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.common.util.TypeName;
+import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.symbolic.Range;
+import net.vpc.scholar.hadruplot.PlotDoubleConverter;
 
 import java.lang.reflect.Array;
 import java.util.*;
-import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
 
 public final class ArrayUtils {
 
@@ -15,44 +19,44 @@ public final class ArrayUtils {
     private ArrayUtils() {
     }
 
-    public static ComplexAsDouble resolveComplexAsDouble(Complex[][][] c) {
+    public static PlotDoubleConverter resolveComplexAsDouble(Complex[][][] c) {
         if (c == null) {
-            return ComplexAsDouble.REAL;
+            return PlotDoubleConverter.REAL;
         }
 
         for (Complex[][] d : c) {
-            ComplexAsDouble d2 = resolveComplexAsDouble(d);
-            if (d2 == ComplexAsDouble.ABS) {
+            PlotDoubleConverter d2 = resolveComplexAsDouble(d);
+            if (d2 == PlotDoubleConverter.ABS) {
                 return d2;
             }
         }
-        return ComplexAsDouble.REAL;
+        return PlotDoubleConverter.REAL;
     }
 
-    public static ComplexAsDouble resolveComplexAsDouble(Complex[][] c) {
+    public static PlotDoubleConverter resolveComplexAsDouble(Complex[][] c) {
         if (c == null) {
-            return ComplexAsDouble.REAL;
+            return PlotDoubleConverter.REAL;
         }
 
         for (Complex[] d : c) {
-            ComplexAsDouble d2 = resolveComplexAsDouble(d);
-            if (d2 == ComplexAsDouble.ABS) {
+            PlotDoubleConverter d2 = resolveComplexAsDouble(d);
+            if (d2 == PlotDoubleConverter.ABS) {
                 return d2;
             }
         }
-        return ComplexAsDouble.REAL;
+        return PlotDoubleConverter.REAL;
     }
 
-    public static ComplexAsDouble resolveComplexAsDouble(Complex[] c) {
+    public static PlotDoubleConverter resolveComplexAsDouble(Complex[] c) {
         if (c == null) {
-            return ComplexAsDouble.REAL;
+            return PlotDoubleConverter.REAL;
         }
         for (Complex d : c) {
             if (!d.isReal()) {
-                return ComplexAsDouble.ABS;
+                return PlotDoubleConverter.ABS;
             }
         }
-        return ComplexAsDouble.REAL;
+        return PlotDoubleConverter.REAL;
     }
 
     public static double[][] transpose(double[] c) {
@@ -73,61 +77,6 @@ public final class ArrayUtils {
         return r;
     }
 
-    public static Integer[] box(int[] c) {
-        Integer[] r = new Integer[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static int[] unbox(Integer[] c) {
-        int[] r = new int[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static Long[] boxLongArray(long[] c) {
-        Long[] r = new Long[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static long[] unbox(Long[] c) {
-        long[] r = new long[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static Double[] box(double[] c) {
-        Double[] r = new Double[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static double[] unboxDoubleList(List<Double> c) {
-        double[] r = new double[c.size()];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c.get(i);
-        }
-        return r;
-    }
-
-    public static int[] unboxIntegerList(List<Integer> c) {
-        int[] r = new int[c.size()];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c.get(i);
-        }
-        return r;
-    }
 
     public static double[] complexListToDoubleArray(List<Complex> c) {
         double[] r = new double[c.size()];
@@ -209,29 +158,6 @@ public final class ArrayUtils {
         return r;
     }
 
-    public static double[] unbox(Double[] c) {
-        double[] r = new double[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static Float[] box(float[] c) {
-        Float[] r = new Float[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
-
-    public static float[] unbox(Float[] c) {
-        float[] r = new float[c.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = c[i];
-        }
-        return r;
-    }
 
     public static double[] abs(double[] c) {
         double[] ret = new double[c.length];
@@ -258,9 +184,7 @@ public final class ArrayUtils {
     }
 
     public static double[] fill(double[] c, double value) {
-        for (int i = 0; i < c.length; i++) {
-            c[i] = value;
-        }
+        Arrays.fill(c,value);
         return c;
     }
 
@@ -651,7 +575,7 @@ public final class ArrayUtils {
         return c;
     }
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        System.out.println(Maths.chrono(new Runnable() {
 //            @Override
 //            public void run() {
@@ -733,7 +657,7 @@ public final class ArrayUtils {
         return c;
     }
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        Complex[][] rr = new Complex[3][2];
 //        fill(rr, Complex.ZERO);
 //        System.out.println(Arrays.deepToString(rr));
@@ -838,6 +762,33 @@ public final class ArrayUtils {
     }
 
     public static Matrix[][][] fill(Matrix[][][] arr, Matrix value) {
+        for (int zi = 0; zi < arr.length; zi++) {
+            for (int yi = 0; yi < arr[zi].length; yi++) {
+                for (int xi = 0; xi < arr[zi][yi].length; xi++) {
+                    arr[zi][yi][xi] = value;
+                }
+            }
+        }
+        return arr;
+    }
+
+    public static Vector[] fill(Vector[] c, Vector value) {
+        for (int i = 0, len = c.length; i < len; i++) {
+            c[i] = value;
+        }
+        return c;
+    }
+
+    public static Vector[][] fill(Vector[][] c, Vector value) {
+        for (int i = 0, len = c.length; i < len; i++) {
+            for (int j = 0, ilen = c[i].length; j < ilen; j++) {
+                c[i][j] = value;
+            }
+        }
+        return c;
+    }
+
+    public static Vector[][][] fill(Vector[][][] arr, Vector value) {
         for (int zi = 0; zi < arr.length; zi++) {
             for (int yi = 0; yi < arr[zi].length; yi++) {
                 for (int xi = 0; xi < arr[zi][yi].length; xi++) {
@@ -1499,6 +1450,31 @@ public final class ArrayUtils {
         }
     }
 
+    public static void fillArray1ZeroVector(Vector[] arr, Range nonNullRanges, int zeroRows, int zeroColumns) {
+        Vector zero = null;
+        if (zeroRows <= 0 && zeroColumns <= 0) {
+            for (Vector m : arr) {
+                if (m != null && !m.isScalar()) {
+                    zero = Maths.zerosVector(m.size());
+                    break;
+                }
+            }
+        }
+        if (zero == null) {
+            zero = Maths.zerosVector(1);
+        }
+        int i = 0;
+        while (i < nonNullRanges.xmin) {
+            arr[i] = zero;
+            i++;
+        }
+        i = nonNullRanges.xmax + 1;
+        while (i < arr.length) {
+            arr[i] = zero;
+            i++;
+        }
+    }
+
     public static void fillArray2ZeroComplex0(Complex[][] arr, Range nonNullRanges) {
         int i = 0;
         int rows = arr.length;
@@ -1547,7 +1523,7 @@ public final class ArrayUtils {
         fillMatrix(arr, nonNullRanges.xmax + 1, cols, nonNullRanges.ymin, nonNullRanges.ymax + 1, Complex.ZERO);
     }
 
-    public static void fillArray3ZeroMatrix(Matrix[][][] arr, Range nonNullRanges, int zeroColumns, int zeroRows) {
+    public static void fillArray3ZeroMatrix(Matrix[][][] arr, Range nonNullRanges, int zeroRows, int zeroColumns) {
         Matrix zero = Maths.zerosMatrix(zeroRows, zeroColumns);
         int i = 0;
         int zlen = arr.length;
@@ -1581,6 +1557,42 @@ public final class ArrayUtils {
         i = nonNullRanges.zmin;
         while (i < zlen) {
             fillArray2ZeroMatrix(arr[i], nonNullRanges, zeroRows, zeroColumns);
+        }
+    }
+    public static void fillArray3ZeroVector(Vector[][][] arr, Range nonNullRanges,int zeroRows) {
+        Vector zero = Maths.zerosVector(zeroRows);
+        int i = 0;
+        int zlen = arr.length;
+        int ylen = zlen == 0 ? 0 : arr[0].length;
+        int xlen = ylen == 0 ? 0 : arr[0][0].length;
+        while (i < nonNullRanges.zmin) {
+            int j = 0;
+            while (j < ylen) {
+                int k = 0;
+                while (j < xlen) {
+                    arr[i][j][k] = zero;
+                    k++;
+                }
+                j++;
+            }
+            i++;
+        }
+        i = nonNullRanges.zmax;
+        while (i < zlen) {
+            int j = 0;
+            while (j < ylen) {
+                int k = 0;
+                while (j < xlen) {
+                    arr[i][j][k] = zero;
+                    k++;
+                }
+                j++;
+            }
+            i++;
+        }
+        i = nonNullRanges.zmin;
+        while (i < zlen) {
+            fillArray2ZeroVector(arr[i], nonNullRanges, zeroRows);
         }
     }
 
@@ -1674,6 +1686,58 @@ public final class ArrayUtils {
             i++;
         }
     }
+    public static void fillArray2ZeroVector(Vector[][] arr, Range nonNullRanges, int zeroRows) {
+        Vector zero = null;
+        if (zeroRows <= 0 ) {
+            LOOP1:
+            for (Vector[] mm : arr) {
+                for (Vector m : mm) {
+                    if (m != null && !m.isScalar()) {
+                        zero = Maths.zerosVector(m.size());
+                        break LOOP1;
+                    }
+                }
+            }
+        }
+        if (zero == null) {
+            zero = Maths.zerosVector(1);
+        }
+        int i = 0;
+        int rows = arr.length;
+        int cols = rows == 0 ? 0 : arr[0].length;
+        while (i < nonNullRanges.ymin) {
+            int j = 0;
+            while (j < cols) {
+                arr[i][j] = zero;
+                j++;
+            }
+            i++;
+        }
+        i = nonNullRanges.ymax + 1;
+        while (i < rows) {
+            int j = 0;
+            while (j < cols) {
+                arr[i][j] = zero;
+                j++;
+            }
+            i++;
+        }
+
+        i = nonNullRanges.ymin;
+        while (i < nonNullRanges.ymax) {
+            int j = 0;
+            while (j < nonNullRanges.xmin) {
+                arr[i][j] = zero;
+                j++;
+            }
+            j = nonNullRanges.xmax + 1;
+            while (j < cols) {
+                arr[i][j] = zero;
+                j++;
+            }
+            i++;
+        }
+    }
 
     public static double[][][] fillArray3Double(int x, int y, int z, double c) {
         if (c == 0) {
@@ -1702,6 +1766,14 @@ public final class ArrayUtils {
         return ret;
     }
 
+    public static Vector[][][] fillArray3Vector(int x, int y, int z, Vector c) {
+        Vector[][][] ret = new Vector[z][][];
+        for (int i = 0; i < z; i++) {
+            ret[i] = fillArray2Vector(x, y, c);
+        }
+        return ret;
+    }
+
     public static Complex[] fillArray1Complex(int x, Complex c) {
         Complex[] firstRow = new Complex[x];
         for (int i = 0; i < x; i++) {
@@ -1710,6 +1782,13 @@ public final class ArrayUtils {
         return firstRow;
     }
 
+    public static Vector[] fillArray1Vector(int x, Vector c) {
+        Vector[] firstRow = new Vector[x];
+        for (int i = 0; i < x; i++) {
+            firstRow[i] = c;
+        }
+        return firstRow;
+    }
     public static Matrix[] fillArray1Matrix(int x, Matrix c) {
         Matrix[] firstRow = new Matrix[x];
         for (int i = 0; i < x; i++) {
@@ -1752,6 +1831,23 @@ public final class ArrayUtils {
         return r;
     }
 
+    public static Vector[][] fillArray2Vector(int columns, int rows, Vector c) {
+        Vector[] firstRow = new Vector[columns];
+        for (int i = 0; i < columns; i++) {
+            firstRow[i] = c;
+        }
+        Vector[][] r = new Vector[rows][];
+        if (r.length > 0) {
+            r[0] = firstRow;
+            for (int i = 1; i < r.length; i++) {
+                Vector[] nextRow = new Vector[columns];
+                System.arraycopy(firstRow, 0, nextRow, 0, columns);
+                r[i] = nextRow;
+            }
+        }
+        return r;
+    }
+
     public static int hashCode(Object[][] a) {
         if (a == null) {
             return 0;
@@ -1765,11 +1861,11 @@ public final class ArrayUtils {
         return result;
     }
 
-    public static <T> T[] newArray(TypeReference<T> type, int size) {
+    public static <T> T[] newArray(TypeName<T> type, int size) {
         return (T[]) Array.newInstance(type.getTypeClass(), size);
     }
 
-    public static <T> T[][] newArray(TypeReference<T> type, int size, int size2) {
+    public static <T> T[][] newArray(TypeName<T> type, int size, int size2) {
         return (T[][]) Array.newInstance(type.getTypeClass(), size, size2);
     }
 
@@ -1859,4 +1955,168 @@ public final class ArrayUtils {
         }
         return false;
     }
+
+    public static Complex[][] toComplex(Object[][] a) {
+        if (a == null) {
+            return null;
+        }
+        if (a instanceof Complex[][]) {
+            return (Complex[][]) a;
+        }
+        Complex[][] t = new Complex[a.length][];
+        for (int i = 0; i < a.length; i++) {
+            t[i] = toComplex(a[i]);
+        }
+        return t;
+    }
+
+    public static Complex[] toComplex(Object[] a) {
+        if (a == null) {
+            return null;
+        }
+        if (a instanceof Complex[]) {
+            return (Complex[]) a;
+        }
+        Complex[] t = new Complex[a.length];
+        for (int i = 0; i < a.length; i++) {
+            t[i] = toComplex(a[i]);
+        }
+        return t;
+    }
+
+    public static Complex toComplex(Object a) {
+        if (a == null) {
+            return null;
+        }
+        if (a instanceof Complex) {
+            return (Complex) a;
+        }
+        if (a instanceof Number) {
+            return Complex.valueOf(((Number) a).doubleValue());
+        }
+        return (Complex) a;
+    }
+
+    public static Matrix c2m(Complex c){
+        return Maths.matrix(new Complex[][]{{c}});
+    }
+
+    public static Vector c2v(Complex c){
+        return Maths.columnVector(new Complex[]{c});
+    }
+
+    public static Matrix[] c2m(Complex[] c){
+        Matrix[] a=new Matrix[c.length];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2m(c[i]);
+        }
+        return a;
+    }
+    public static Matrix[][] c2m(Complex[][] c){
+        Matrix[][] a=new Matrix[c.length][];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2m(c[i]);
+        }
+        return a;
+    }
+    public static Matrix[][][] c2m(Complex[][][] c){
+        Matrix[][][] a=new Matrix[c.length][][];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2m(c[i]);
+        }
+        return a;
+    }
+
+    public static Matrix c2m(Complex c1,Complex c2,Complex c3){
+        return c3==null?Maths.columnMatrix(c1,c2):
+                Maths.columnMatrix(c1,c2,c3);
+    }
+
+    public static Matrix[] c2m(Complex[] c1,Complex[] c2,Complex[] c3){
+        Matrix[] a=new Matrix[c1.length];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2m(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+    public static Matrix[][] c2m(Complex[][] c1,Complex[][] c2,Complex[][] c3){
+        Matrix[][] a=new Matrix[c1.length][];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2m(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+
+    public static Matrix[][][] c2m(Complex[][][] c1,Complex[][][] c2,Complex[][][] c3){
+        Matrix[][][] a=new Matrix[c1.length][][];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2m(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+    public static Vector c2v(Complex c1,Complex c2,Complex c3){
+        return c3==null?Maths.columnVector(c1,c2):
+                Maths.columnVector(c1,c2,c3);
+    }
+
+    public static Vector[] c2v(Complex[] c1,Complex[] c2,Complex[] c3){
+        Vector[] a=new Vector[c1.length];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2v(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+    public static Vector[][] c2v(Complex[][] c1,Complex[][] c2,Complex[][] c3){
+        Vector[][] a=new Vector[c1.length][];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2v(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+
+    public static Vector[][][] c2v(Complex[][][] c1,Complex[][][] c2,Complex[][][] c3){
+        Vector[][][] a=new Vector[c1.length][][];
+        for (int i = 0; i < c1.length; i++) {
+            a[i]=c2v(c1[i],c2[i],c3==null?null:c3[i]);
+        }
+        return a;
+    }
+
+//    public static Complex[] mul(Complex[] all, double v) {
+//        Complex[] a = new Complex[all.length];
+//        for (int i = 0; i < a.length; i++) {
+//            a[i] = all[i].mul(v);
+//        }
+//        return a;
+//    }
+
+    public static Vector[] c2v(Complex[] c){
+        Vector[] a=new Vector[c.length];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2v(c[i]);
+        }
+        return a;
+    }
+    public static Vector[][] c2v(Complex[][] c){
+        Vector[][] a=new Vector[c.length][];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2v(c[i]);
+        }
+        return a;
+    }
+    public static Vector[][][] c2v(Complex[][][] c){
+        Vector[][][] a=new Vector[c.length][][];
+        for (int i = 0; i < c.length; i++) {
+            a[i]=c2v(c[i]);
+        }
+        return a;
+    }
+
+
+
 }

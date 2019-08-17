@@ -8,8 +8,8 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DomainObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
@@ -30,15 +30,16 @@ public class DomainObjectFormat implements ObjectFormat<Domain> {
     }
 
     private static void format(StringBuilder sb, Domain o, Axis axis, DoubleObjectFormatParam df, String x, String y, String z, ObjectFormatParamSet format, String emptyValue) {
+        ObjectFormatParamSet format2 = format.add(FormatFactory.REQUIRED_FLOAT);
         switch (axis) {
             case X: {
                 if (!Double.isNaN(o.xmin()) && !Double.isNaN(o.xmax()) && o.isUnconstrainedX()) {
                     sb.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.xmin(), format);
+                FormatFactory.format(sb, o.xmin(), format2);
                 sb.append("->");
-                FormatFactory.format(sb, o.xmax(), format);
+                FormatFactory.format(sb, o.xmax(), format2);
                 return;
             }
             case Y: {
@@ -46,9 +47,9 @@ public class DomainObjectFormat implements ObjectFormat<Domain> {
                     sb.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.ymin(), format);
+                FormatFactory.format(sb, o.ymin(), format2);
                 sb.append("->");
-                FormatFactory.format(sb, o.ymax(), format);
+                FormatFactory.format(sb, o.ymax(), format2);
                 return;
             }
             case Z: {
@@ -56,9 +57,9 @@ public class DomainObjectFormat implements ObjectFormat<Domain> {
                     sb.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.zmin(), format);
+                FormatFactory.format(sb, o.zmin(), format2);
                 sb.append("->");
-                FormatFactory.format(sb, o.zmax(), format);
+                FormatFactory.format(sb, o.zmax(), format2);
                 return;
             }
         }
@@ -114,6 +115,5 @@ public class DomainObjectFormat implements ObjectFormat<Domain> {
                 return;
             }
         }
-        return;
     }
 }

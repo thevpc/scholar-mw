@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.plot.ComplexAsDouble;
+import net.vpc.scholar.hadruplot.PlotDoubleConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,228 +8,9 @@ import java.util.List;
 
 class MathsArrays {
 
-    static double[] subArray1(double[] values, int count, IndexSelectionStrategy sel) {
-        switch (sel) {
-            case BALANCED: {
-                int[] ints = Maths.itimes(0, values.length - 1, count);
-                double[] xx = new double[ints.length];
-                for (int i = 0; i < ints.length; i++) {
-                    xx[i] = values[ints[i]];
-                }
-                return xx;
-            }
-            case FIRST: {
-                double[] xx = new double[count];
-                System.arraycopy(values, 0, xx, 0, count);
-                return xx;
-            }
-            case LAST: {
-                double[] xx = new double[count];
-                System.arraycopy(values, values.length - count, xx, 0, count);
-                return xx;
-            }
-        }
-        return null;
-    }
 
-    static int[] subArray1(int[] values, int count, IndexSelectionStrategy sel) {
-        switch (sel) {
-            case BALANCED: {
-                int[] ints = Maths.itimes(0, values.length - 1, count);
-                int[] xx = new int[ints.length];
-                for (int i = 0; i < ints.length; i++) {
-                    xx[i] = values[ints[i]];
-                }
-                return xx;
-            }
-            case FIRST: {
-                int[] xx = new int[count];
-                System.arraycopy(values, 0, xx, 0, count);
-                return xx;
-            }
-            case LAST: {
-                int[] xx = new int[count];
-                System.arraycopy(values, values.length - count, xx, 0, count);
-                return xx;
-            }
-        }
-        return null;
-    }
 
-    public static double[] dtimes(double min, double max, int times) {
-        double[] d = new double[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            double step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
-    }
 
-    public static double[] dtimes(double min, double max, int times,DoubleFilter filter) {
-        if(filter==null){
-            return dtimes(min,max,times);
-        }
-        double[] d = new double[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            double step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                double v=min + i * step;
-                if(filter.accept(v)) {
-                    d[i] = v;
-                }
-            }
-        }
-        return d;
-    }
-
-    public static float[] ftimes(float min, float max, int times) {
-        float[] d = new float[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            float step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
-    }
-
-    public static long[] ltimes(long min, long max, int times) {
-        long[] d = new long[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            long step = (max - min) / (times - 1);
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-        }
-        return d;
-    }
-
-    public static long[] lsteps(long min, long max, long step) {
-        int times = (int) Math.abs((max - min) / step) + 1;
-        long[] d = new long[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
-    }
-
-    public static double dstepsLength(double min, double max, double step) {
-        if (step >= 0) {
-            if (max < min) {
-                return 0;
-            }
-            return (int) Math.abs((max - min) / step) + 1;
-        } else {
-            if (min < max) {
-                return 0;
-            }
-            return (int) Math.abs((max - min) / step) + 1;
-        }
-    }
-
-    public static double dstepsElement(double min, double max, double step, int index) {
-        if (step >= 0) {
-            if (max < min) {
-                throw new ArrayIndexOutOfBoundsException(index);
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            return min + index * step;
-        } else {
-            if (min < max) {
-                throw new ArrayIndexOutOfBoundsException(index);
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            return min + index * step;
-        }
-    }
-
-    public static double[] dsteps(double min, double max, double step) {
-        if (step >= 0) {
-            if (max < min) {
-                return new double[0];
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            double[] d = new double[times];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-            return d;
-        } else {
-            if (min < max) {
-                return new double[0];
-            }
-            int times = (int) Math.abs((max - min) / step) + 1;
-            double[] d = new double[times];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * step;
-            }
-            return d;
-        }
-    }
-
-    public static float[] fsteps(float min, float max, float step) {
-        if (max < min) {
-            return new float[0];
-        }
-        int times = (int) Math.abs((max - min) / step) + 1;
-        float[] d = new float[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
-    }
-
-    public static int[] isteps(int min, int max, int step) {
-        if (max < min) {
-            return new int[0];
-        }
-        int times = Math.abs((max - min) / step) + 1;
-        int[] d = new int[times];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = min + i * step;
-        }
-        return d;
-    }
-
-    public static int[] isteps(int min, int max, int step,IntFilter filter) {
-        if(filter==null){
-            return isteps(min,max,step);
-        }
-        if (max < min) {
-            return new int[0];
-        }
-        int times = Math.abs((max - min) / step) + 1;
-        IntArrayList d = new IntArrayList();
-        for (int i = 0; i < times; i++) {
-            int v = min + i * step;
-            if(filter.accept(v)) {
-                d.append(v);
-            }
-        }
-        return d.toIntArray();
-    }
-
-    public static int[] itimes(int min, int max, int times) {
-        int[] d = new int[times];
-        if (times == 1) {
-            d[0] = min;
-        } else {
-            for (int i = 0; i < d.length; i++) {
-                d[i] = min + i * (max - min) / (times - 1);
-            }
-        }
-        return d;
-    }
 
     /**
      * sqrt(a^2 + b^2) without under/overflow.
@@ -252,30 +33,30 @@ class MathsArrays {
         return r;
     }
 
-    public static double[][] toDouble(Complex[][] c, ComplexAsDouble complexAsDouble) {
+    public static double[][] toDouble(Complex[][] c, PlotDoubleConverter toDoubleConverter) {
         if (c == null) {
             return null;
         }
-        if (complexAsDouble == null) {
-            complexAsDouble = ComplexAsDouble.REAL;
+        if (toDoubleConverter == null) {
+            toDoubleConverter = PlotDoubleConverter.REAL;
         }
         double[][] z = new double[c.length][];
         for (int i = 0; i < z.length; i++) {
-            z[i] = toDouble(c[i], complexAsDouble);
+            z[i] = toDouble(c[i], toDoubleConverter);
         }
         return z;
     }
 
-    public static double[] toDouble(Complex[] c, ComplexAsDouble complexAsDouble) {
+    public static double[] toDouble(Complex[] c, PlotDoubleConverter toDoubleConverter) {
         if (c == null) {
             return null;
         }
-        if (complexAsDouble == null) {
-            complexAsDouble = ComplexAsDouble.REAL;
+        if (toDoubleConverter == null) {
+            toDoubleConverter = PlotDoubleConverter.REAL;
         }
         double[] z = new double[c.length];
         for (int i = 0; i < z.length; i++) {
-            z[i]=complexAsDouble.toDouble(c[i]);
+            z[i]= toDoubleConverter.toDouble(c[i]);
         }
         return z;
     }
@@ -406,7 +187,7 @@ class MathsArrays {
                 }
             }
         }
-        return r.toArray(new double[r.size()][]);
+        return r.toArray(new double[0][]);
     }
 
     public static int[][] cross(int[] x, int[] y) {

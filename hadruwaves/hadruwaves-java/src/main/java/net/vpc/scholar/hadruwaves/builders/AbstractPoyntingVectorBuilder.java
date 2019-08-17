@@ -1,7 +1,8 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -14,6 +15,11 @@ public abstract class AbstractPoyntingVectorBuilder extends AbstractVDiscreteBui
 
     @Override
     public PoyntingVectorBuilder monitor(ProgressMonitor monitor) {
+        return (PoyntingVectorBuilder) super.monitor(monitor);
+    }
+
+    @Override
+    public PoyntingVectorBuilder monitor(ProgressTaskMonitor monitor) {
         return (PoyntingVectorBuilder) super.monitor(monitor);
     }
 

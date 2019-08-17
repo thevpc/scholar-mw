@@ -2,6 +2,8 @@ package net.vpc.scholar.mentoring.ch02_hadrumaths
 
 import java.util
 
+import net.vpc.scholar.hadruplot.Plot
+
 //these are Main Mandatory Imports
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._

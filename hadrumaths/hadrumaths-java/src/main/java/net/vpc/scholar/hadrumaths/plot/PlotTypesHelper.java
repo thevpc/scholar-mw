@@ -2,12 +2,11 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.common.util.CollectionUtils;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.geom.Point;
 
-import java.io.File;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by vpc on 7/17/17.
@@ -22,223 +21,10 @@ public class PlotTypesHelper {
         return 0;
     }
 
-    private static boolean isSameCouple(String a, String b, String c, String d) {
-        if ((a.equals(c) && b.equals(d)) || (a.equals(d) && b.equals(c))) {
-            return true;
-        }
-        return false;
-    }
 
-    private static String resolveUmbrellaType(String type1, String type2) {
-        if (type1.equals(type2)) {
-            return type1;
-        }
-        if (type1.equals("object") || type2.equals("object")) {
-            return "object";
-        }
-        if (type1.equals("null")) {
-            return type2;
-        }
-        if (type2.equals("null")) {
-            return type1;
-        }
-        if (isSameCouple(type1, type2, "expr[][]", "complex[][]")) {
-            return "expr[][]";
-        }
-        if (isSameCouple(type1, type2, "complex[][]", "number[][]")) {
-            return "complex[][]";
-        }
-        if (isSameCouple(type1, type2, "expr[]", "complex[]")) {
-            return "expr[]";
-        }
-        if (isSameCouple(type1, type2, "complex[]", "number[]")) {
-            return "complex[]";
-        }
-
-        if (isSameCouple(type1, type2, "point[]", "null[]")) {
-            return "point[]";
-        }
-        if (isSameCouple(type1, type2, "expr[]", "null[]")) {
-            return "expr[]";
-        }
-        if (isSameCouple(type1, type2, "complex[]", "null[]")) {
-            return "complex[]";
-        }
-        if (isSameCouple(type1, type2, "number[]", "null[]")) {
-            return "number[]";
-        }
-        if (isSameCouple(type1, type2, "expr[][]", "null[][]")) {
-            return "expr[][]";
-        }
-        if (isSameCouple(type1, type2, "complex[][]", "null[][]")) {
-            return "complex[][]";
-        }
-        if (isSameCouple(type1, type2, "number[][]", "null[][]")) {
-            return "number[][]";
-        }
-        return "object";
-    }
-
-    public static boolean isComponentType(Object obj) {
-        if (obj.getClass().isArray()) {
-            return true;
-        } else if (obj instanceof TVector) {
-            return true;
-        } else if (obj instanceof Collection) {
-            return true;
-        } else if (obj instanceof Iterable) {
-            return true;
-        }
-        return false;
-    }
-
-    public static TypeAndValue resolveComponentType(Object obj) {
-        List initial = new ArrayList();
-        boolean column = false;
-        if (obj.getClass().isArray()) {
-            int l = Array.getLength(obj);
-            for (int i = 0; i < l; i++) {
-                initial.add(Array.get(obj, i));
-            }
-        } else if (obj instanceof TVector) {
-            TVector vv = (TVector) obj;
-            if (vv.isColumn()) {
-                column = true;
-            }
-            initial.addAll(Arrays.asList(vv.toArray()));
-        } else if (obj instanceof Collection) {
-            initial.addAll((Collection) obj);
-        } else if (obj instanceof Iterable) {
-            for (Object o : (Iterable) obj) {
-                initial.add(o);
-            }
-        } else {
-            return new TypeAndValue("object", obj);
-        }
-        String t = "null";
-        int l = initial.size();
-        List<Object> all = new ArrayList<>();
-        if (l == 0) {
-            return new TypeAndValue("null[]", all);
-        }
-        for (Object o : initial) {
-            TypeAndValue ii = resolveType(o);
-            String itm = ii.type;
-            all.add(ii.value);
-            if (t == null) {
-                t = itm;
-            } else {
-                t = resolveUmbrellaType(t, itm);
-            }
-        }
-        if (
-                t.equals("number") || t.equals("complex") || t.equals("point") || t.equals("expr")
-                        || t.equals("number[]") || t.equals("complex[]")
-                        || t.equals("null") || t.equals("null[]")
-                ) {
-            t = t + "[]";
-        } else {
-            t = "object";
-        }
-        TypeAndValue t1 = new TypeAndValue(t, all);
-        if (column) {
-            t1.props.put("column", "true");
-        }
-        return compress(t1);
-    }
 
     //should compress to  double[] or Complex[] if applicable!!
-    protected static TypeAndValue compress(TypeAndValue t) {
-        return t;
-    }
 
-    public static TypeAndValue resolveType(Object obj) {
-        if (obj == null) {
-            return new TypeAndValue("null", obj);
-        }
-        obj = Plot.Config.convert(obj);
-        if (obj instanceof Complex) {
-            return new TypeAndValue("complex", obj);
-        }
-        if (obj instanceof Expr && ((Expr) obj).isDouble()) {
-            return new TypeAndValue("number", ((Expr) obj).toDouble());
-        }
-        if (obj instanceof TMatrix) {
-            TMatrix m = (TMatrix) obj;
-            int c = m.getColumnCount();
-            int r = m.getRowCount();
-            if (c == 1) {
-                if (r == 1) {
-                    return resolveType(m.get(0, 0));
-                }
-                return resolveComponentType(m.getColumn(0));
-            }
-            for (Object o : m.getRows()) {
-                TypeAndValue typeAndValue = resolveType(o);
-                if (typeAndValue.type.equals("complex[]")) {
-                    TypeAndValue typeAndValue1 = new TypeAndValue("complex[][]", obj);
-                    typeAndValue1.props.put("matrix", "true");
-                    return typeAndValue1;
-                }
-            }
-            TypeAndValue typeAndValue = new TypeAndValue("number[][]", obj);
-            typeAndValue.props.put("matrix", "true");
-            return typeAndValue;
-        }
-        if (obj instanceof TVector) {
-            TVector vv = (TVector) obj;
-            if(TVector.class.isAssignableFrom(vv.getComponentType().getTypeClass())){
-                Object[] arr = vv.toArray();
-                return resolveType(arr);
-            }
-            if (vv.isConvertibleTo(Maths.$DOUBLE)) {
-                vv = vv.to(Maths.$DOUBLE);
-            } else if (vv.isConvertibleTo(Maths.$COMPLEX)) {
-                vv = vv.to(Maths.$COMPLEX);
-            } else if (vv.isConvertibleTo(Maths.$EXPR)) {
-                vv = vv.to(Maths.$EXPR);
-            }
-            String subType = "object";
-            if (vv.getComponentType().equals(Maths.$COMPLEX)) {
-                subType = "complex";
-            } else if (vv.getComponentType().equals(Maths.$EXPR)) {
-                subType = "expr";
-            } else if (vv.getComponentType().equals(Maths.$DOUBLE)) {
-                subType = "number";
-            } else if (vv.getComponentType().equals(Maths.$BOOLEAN)) {
-                subType = "boolean";
-            } else if (vv.getComponentType().equals(Maths.$POINT)) {
-                subType = "point";
-            } else if (vv.getComponentType().equals(Maths.$FILE)) {
-                subType = "file";
-            }
-            TypeAndValue typeAndValue = new TypeAndValue(subType + "[]", obj);
-            typeAndValue.props.put("column", String.valueOf(vv.isColumn()));
-            return typeAndValue;
-        }
-        if (obj instanceof ToDoubleArrayAware) {
-            return (new TypeAndValue("number[]", ((ToDoubleArrayAware) obj).toDoubleArray()));
-        }
-        if (obj instanceof ComplexArray) {
-            return (resolveType(((ComplexArray) obj).toComplexArray()));
-        }
-        if (obj instanceof Number) {
-            return new TypeAndValue("number", obj);
-        }
-        if (obj instanceof Expr) {
-            return new TypeAndValue("expr", obj);
-        }
-        if (obj instanceof Point) {
-            return new TypeAndValue("point", obj);
-        }
-        if (isComponentType(obj)) {
-            return resolveComponentType(obj);
-        }
-        if (obj instanceof File) {
-            return new TypeAndValue("file", obj);
-        }
-        return new TypeAndValue("object", obj);
-    }
 
     public static double toDouble(Object obj) {
         if (obj == null) {
@@ -263,13 +49,6 @@ public class PlotTypesHelper {
         throw new IllegalArgumentException("Not a Complex");
     }
 
-    public static Object[][] toColumn(Object[] obj, Class cls) {
-        Object[][] vals = (Object[][]) Array.newInstance(cls, obj.length, 1);
-        for (int i = 0; i < obj.length; i++) {
-            vals[i][0] = obj[i];
-        }
-        return vals;
-    }
 
     public static Complex[] toComplexArray(Object obj) {
         if (obj == null) {
@@ -354,8 +133,8 @@ public class PlotTypesHelper {
                 return m.getColumn(0).toArray();
             }
             throw new IllegalArgumentException("Not an Object Array");
-        } else if (obj instanceof Vector) {
-            return ((Vector) obj).toArray();
+        } else if (obj instanceof java.util.Vector) {
+            return ((java.util.Vector) obj).toArray();
         } else if (obj instanceof TVector) {
             return toObjectArray(((TVector) obj).toArray());
         } else if (obj instanceof Collection) {
@@ -382,8 +161,8 @@ public class PlotTypesHelper {
             return toComplexArray2(((Collection) obj).toArray());
         } else if (obj instanceof TMatrix) {
             return toComplexArray2(((TMatrix) obj).getArray());
-        } else if (obj instanceof Vector) {
-            return ((Vector) obj).toMatrix().getArray();
+        } else if (obj instanceof java.util.Vector) {
+            return ((net.vpc.scholar.hadrumaths.Vector) obj).toMatrix().getArray();
         }
         throw new IllegalArgumentException("Not an Complex[][]");
     }
@@ -465,15 +244,8 @@ public class PlotTypesHelper {
         throw new IllegalArgumentException("Not an double[][]");
     }
 
-    public static class TypeAndValue {
-        public String type;
-        public Object value;
-        public Map<String, String> props = new HashMap<>();
 
-        public TypeAndValue(String type, Object value) {
-            this.type = type;
-            this.value = value;
-        }
-    }
+
+
 
 }

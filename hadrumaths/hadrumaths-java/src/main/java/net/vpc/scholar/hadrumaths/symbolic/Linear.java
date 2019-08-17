@@ -4,6 +4,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
 /**
+ * a* X b * Y + c
  * User: taha
  * Date: 2 juil. 2003
  * Time: 11:51:13

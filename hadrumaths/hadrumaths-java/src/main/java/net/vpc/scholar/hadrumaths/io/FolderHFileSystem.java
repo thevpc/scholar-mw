@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.io;
 
-import net.vpc.common.io.RuntimeIOException;
+import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.concurrent.AppLock;
 import net.vpc.scholar.hadrumaths.concurrent.FileSystemLock;
 
@@ -41,7 +41,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         try {
             return new FileInputStream(resolveFile(file));
         } catch (FileNotFoundException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -50,7 +50,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         try {
             return new FileReader(resolveFile(file));
         } catch (FileNotFoundException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
                 };
             }
         } catch (FileNotFoundException e) {
-            throw new RuntimeIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -89,7 +89,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
         File file = resolveFile(path);
         boolean x = file.mkdirs();
         if (!x && (!file.isDirectory() || !file.exists())) {
-            throw new RuntimeIOException("Unable to mkdir " + path.getPath() + " as " + file.getPath());
+            throw new UncheckedIOException(new IOException("Unable to mkdir " + path.getPath() + " as " + file.getPath()));
         }
         return false;
     }
@@ -141,7 +141,7 @@ public class FolderHFileSystem extends AbstractHFileSystem {
             case FAIL_SAFE:
                 return false;
         }
-        throw new RuntimeIOException("Unable to delete " + file);
+        throw new UncheckedIOException(new IOException("Unable to delete " + file));
     }
 
     @Override

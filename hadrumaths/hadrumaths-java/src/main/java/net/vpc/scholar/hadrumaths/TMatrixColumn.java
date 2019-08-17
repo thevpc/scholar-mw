@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeReference;
+import net.vpc.common.util.TypeName;
 
 /**
  * Created by vpc on 3/23/17.
@@ -28,7 +28,7 @@ public class TMatrixColumn<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public TypeReference<T> getComponentType() {
+    public TypeName<T> getComponentType() {
         return matrix.getComponentType();
     }
 

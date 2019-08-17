@@ -2,27 +2,25 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.common.swings.*;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadruplot.*;
+import net.vpc.scholar.hadruplot.util.PlotSwingUtils;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
+
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 31 juil. 2005 10:41:53
@@ -54,6 +52,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     //    private Expr[] functions;
 //    private Map<String, Object> properties = new HashMap<String, Object>();
     private JCheckBox autoUpdate = prepareStatusCheck(true, "auto", "auto update");
+    private JCheckBox exclusive = prepareStatusCheck(false, "exclusive", "exclusive selection");
     //    private JCheckBox[] functionCheckBoxes;
     private JTextField yValueSliderText = new JTextField(10);
     private JSlider yValueSlider;
@@ -74,20 +73,17 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private JCheckBox fxAxisRadioButton = new JCheckBox("Fx(x,y)", true);
     private JCheckBox fyAxisRadioButton = new JCheckBox("Fy(x,y)", true);
-    private JRadioButton cadRealRadioButton = createJRadioButton("Real", ComplexAsDouble.REAL);
-    private JRadioButton cadImagRadioButton = createJRadioButton("Imag", ComplexAsDouble.IMG);
-    private JRadioButton cadDbRadioButton = createJRadioButton("DB", ComplexAsDouble.DB);
-    private JRadioButton cadDb2RadioButton = createJRadioButton("DB2", ComplexAsDouble.DB2);
-    private JRadioButton cadArgRadioButton = createJRadioButton("Arg", ComplexAsDouble.ARG);
-    private JRadioButton cadComplexRadioButton = createJRadioButton("Complex", "COMPLEX");
-    private JRadioButton cadAbsRadioButton = createJRadioButton("Abs", ComplexAsDouble.ABS);
-    private JRadioButton[] cadRadioButtons = {
-        cadRealRadioButton, cadImagRadioButton, cadDbRadioButton,
-        cadDb2RadioButton, cadArgRadioButton, cadComplexRadioButton,
-        cadAbsRadioButton
-    };
+    //    private JRadioButton cadRealRadioButton = createJRadioButton("Real", PlotDoubleConverter.REAL);
+//    private JRadioButton cadImagRadioButton = createJRadioButton("Imag", PlotDoubleConverter.IMG);
+//    private JRadioButton cadDbRadioButton = createJRadioButton("DB", PlotDoubleConverter.DB);
+//    private JRadioButton cadDb2RadioButton = createJRadioButton("DB2", PlotDoubleConverter.DB2);
+//    private JRadioButton cadArgRadioButton = createJRadioButton("Arg", PlotDoubleConverter.ARG);
+//    private JRadioButton cadComplexRadioButton = createJRadioButton("Complex", "COMPLEX");
+//    private JRadioButton cadAbsRadioButton = createJRadioButton("Abs", PlotDoubleConverter.ABS);
+    private java.util.List<JRadioButton> cadRadioButtons = new ArrayList<>();
 
     private JRadioButton[] plotTypeRadioButton;
+    private JRadioButton[] stacksRadioButton;
     //    private JRadioButton fx1DRadioButton = new JRadioButton("Curve F(x,y=cst)");
 //    private JRadioButton fy1DRadioButton = new JRadioButton("Curve F(x=cst,y)");
 //    private JRadioButton fyPolarRadioButton = new JRadioButton("Polar");
@@ -118,30 +114,33 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         }
     };
     private boolean disableUpdatePlot = false;
+    private boolean explodedMode = false;
+    private LinkedHashSet<String> selectedRows = new LinkedHashSet<>();
+
 //    private ActionListener updatePlotActionListener = new ActionListener() {
 //        public void actionPerformed(ActionEvent e) {
 //            updatePlot(false);
 //        }
     //    };
 
-//    public ExpressionsPlotPanel(String title, int xprec, int yprec, DoubleToComplex[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
-//        this(title, null, xprec, yprec, ComplexAsDouble.ABS, functions, showType, properties, windowManager);
+    //    public ExpressionsPlotPanel(String title, int xprec, int yprec, DoubleToComplex[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
+//        this(title, null, xprec, yprec, PlotDoubleConverter.ABS, functions, showType, properties, windowManager);
 //    }
 //
 //    public ExpressionsPlotPanel(String title, int xprec, int yprec, DoubleToVector[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
-//        this(title, null, xprec, yprec, ComplexAsDouble.ABS, functions, showType, properties, windowManager);
+//        this(title, null, xprec, yprec, PlotDoubleConverter.ABS, functions, showType, properties, windowManager);
 //    }
 //
 //    public ExpressionsPlotPanel(String title, int xprec, int yprec, DoubleToDouble[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
-//        this(title, null, xprec, yprec, ComplexAsDouble.REAL, convert(functions), showType, properties, windowManager);
+//        this(title, null, xprec, yprec, PlotDoubleConverter.REAL, convert(functions), showType, properties, windowManager);
 //    }
 //    public ExpressionsPlotPanel(String title, int xprec,int yprec,DFunctionVector2D[] functions, PlotWindowManager windowManager) {
-//        this(title, null, xprec,yprec,ComplexAsDouble.REAL, convert(functions), windowManager);
+//        this(title, null, xprec,yprec,PlotDoubleConverter.REAL, convert(functions), windowManager);
 //    }
-//    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, ComplexAsDouble complexAsDouble, DoubleToComplex[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
+//    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, PlotDoubleConverter complexAsDouble, DoubleToComplex[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
 //        this(title, domainXY, xprec, yprec, complexAsDouble, convert(functions), showType, properties, windowManager);
 //    }
-//    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, ComplexAsDouble complexAsDouble, Expr[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
+//    public ExpressionsPlotPanel(String title, Domain domainXY, int xprec, int yprec, PlotDoubleConverter complexAsDouble, Expr[] functions, ShowType showType, Map<String, Object> properties, PlotWindowManager windowManager) {
 //
 //    }
     private static JRadioButton createJRadioButton(String name, Object value) {
@@ -155,6 +154,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         if (model == null) {
             model = new ExpressionsPlotModel();
         }
+
+        for (PlotDoubleConverter value : PlotDoubleConverter.values()) {
+            cadRadioButtons.add(createJRadioButton(value.getName(), value));
+        }
+
+
         this.model = model;
         this.domainXY0 = null;
 
@@ -168,7 +173,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         fxRadioButton.setSelected(true);
         fyRadioButton.setSelected(false);
         fxRadioButton.addItemListener(updatePlotItemListener);
-        setComplexAsDouble(ComplexAsDouble.ABS);
+        setComplexAsDouble(PlotDoubleConverter.ABS);
         // check domain
 //        try {
 //            getDomain();
@@ -474,7 +479,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         return jTableHelper.getPane();
     }
 
-//    private static IVDCxy[] convert(DFunctionVector2D[] f) {
+    //    private static IVDCxy[] convert(DFunctionVector2D[] f) {
 //        IVDCxy[] g = new IVDCxy[f.length];
 //        for (int i = 0; i < g.length; i++) {
 //            g[i] = Maths.vector(f[i].fx, f[i].fy);
@@ -505,10 +510,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private JPanel createPrecisionPane() {
         JPanel south = new JPanel(new GridBagLayout2(
                 "[xValueTitleLabel<  ][xValueSlider          +=][xValueLabel         ->]\n"
-                + "[X               <  ][xPrecisionSlider      +=][xPrecisionLabel     ->]\n"
-                + "[yValueTitleLabel<  ][yValueSlider          +=][yValueLabel         ->]\n"
-                + "[Y               <  ][yPrecisionSlider      +=][yPrecisionLabel     ->]\n"
-                + ""
+                        + "[X               <  ][xPrecisionSlider      +=][xPrecisionLabel     ->]\n"
+                        + "[yValueTitleLabel<  ][yValueSlider          +=][yValueLabel         ->]\n"
+                        + "[Y               <  ][yPrecisionSlider      +=][yPrecisionLabel     ->]\n"
+                        + ""
         ));
         south.add(xValueTitleLabel, "xValueTitleLabel");
         south.add(xValueSlider, "xValueSlider");
@@ -532,121 +537,126 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         updateNow.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                updatePlot(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        updatePlot(true);
+                    }
+                }
         );
         selectAllFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectAll(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectAll(true);
+                    }
+                }
         );
         selectAllByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectByCell(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectByCell(true);
+                    }
+                }
         );
         selectNoneByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectByCell(false);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectByCell(false);
+                    }
+                }
         );
         selectNoneFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectAll(false);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectAll(false);
+                    }
+                }
         );
         showContent.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                showContent();
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        showContent();
+                    }
+                }
         );
-        ButtonGroup courbeGroup = new ButtonGroup();
         java.util.List<PlotType> allValue = new ArrayList<>();
         for (PlotType plotType : PlotType.values()) {
             if (plotType != PlotType.ALL && plotType != PlotType.AUTO) {
                 allValue.add(plotType);
             }
         }
-        plotTypeRadioButton = new JRadioButton[allValue.size()];
-        for (int i = 0; i < plotTypeRadioButton.length; i++) {
-            PlotType tt = allValue.get(i);
-            plotTypeRadioButton[i] = new JRadioButton(tt.name());
-            plotTypeRadioButton[i].putClientProperty(PlotType.class.getName(), tt);
-            plotTypeRadioButton[i].setSelected(i == 0);
-            courbeGroup.add(plotTypeRadioButton[i]);
-            plotTypeRadioButton[i].addItemListener(updatePlotItemListener);
+        JPanel plotTypePanel = null;
+        {
+            ButtonGroup courbeGroup = new ButtonGroup();
+            plotTypeRadioButton = new JRadioButton[allValue.size()];
+            for (int i = 0; i < plotTypeRadioButton.length; i++) {
+                PlotType tt = allValue.get(i);
+                plotTypeRadioButton[i] = PlotSwingUtils.createRadioButton(tt.name(), i == 0, PlotType.class.getName(), tt, courbeGroup, updatePlotItemListener);
+            }
+            plotTypePanel = PlotSwingUtils.createVerticalComponents("Plot Type", plotTypeRadioButton);
+        }
+        JPanel explodeStackPanel = null;
+        {
+            ButtonGroup group = new ButtonGroup();
+            java.util.List<Component> aa = new ArrayList<>();
+
+            stacksRadioButton = new JRadioButton[]{
+                    PlotSwingUtils.createRadioButton("Stack", true, "stackType", "stack", group, new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent e) {
+                            if(e.getStateChange()==ItemEvent.SELECTED) {
+                                explodedMode = false;
+                                updatePlotAsynch(true);
+                            }
+                        }
+                    }),
+                    PlotSwingUtils.createRadioButton("Explode", false, "stackType", "explode", group, new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent e) {
+                            if(e.getStateChange()==ItemEvent.SELECTED) {
+                                explodedMode = true;
+                                updatePlotAsynch(true);
+                            }
+                        }
+                    }),
+            };
+            aa.addAll(Arrays.asList(stacksRadioButton));
+            Box h = Box.createHorizontalBox();
+            h.add(new JLabel("Max Elements : "));
+            JSpinner spinner = new JSpinner(new SpinnerNumberModel(functionsTableModel.getMaxSelected(), 0, 8, 1));
+            spinner.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    JSpinner spinner = (JSpinner) e.getSource();
+                    functionsTableModel.setMaxSelected(((Integer) spinner.getValue()));
+                    updatePlotAsynch(true);
+                }
+            });
+            h.add(spinner);
+            aa.add(h);
+            explodeStackPanel = PlotSwingUtils.createVerticalComponents("Layout", aa.toArray(new Component[0]));
         }
 
-        JPanel f0 = new JPanel();
-        f0.setLayout(new BoxLayout(f0, BoxLayout.Y_AXIS));
-        for (int i = 0; i < plotTypeRadioButton.length; i++) {
-            f0.add(plotTypeRadioButton[i]);
-        }
-        JPanel f = new JPanel(new BorderLayout());
-        f.setBorder(BorderFactory.createTitledBorder("Plot Type"));
-        f.add(new JScrollPane(f0));
+        JPanel xy = PlotSwingUtils.createVerticalComponents("Components", new Component[]{
+                fxRadioButton, fyRadioButton, fxAxisRadioButton, fyAxisRadioButton
+        });
 
-        JPanel xy = new JPanel(new GridBagLayout2(
-                "[A1+<]\n"
-                + "[A2+<]\n"
-                + "[A3+<]\n"
-                + "[A4+<]\n"
-        ));
-        xy.add(fxRadioButton, "A1");
-        xy.add(fyRadioButton, "A2");
-        xy.add(fxAxisRadioButton, "A3");
-        xy.add(fyAxisRadioButton, "A4");
-        xy.setBorder(BorderFactory.createTitledBorder("Components"));
-
-        JPanel cad = new JPanel(new GridBagLayout2(
-                "[A1+<]\n"
-                + "[A2+<]\n"
-                + "[A3+<]\n"
-                + "[A4+<]\n"
-                + "[A5+<]\n"
-                + "[A6+<]\n"
-                + "[A7+<]\n"
-        ));
-        cad.add(cadAbsRadioButton, "A1");
-        cad.add(cadRealRadioButton, "A2");
-        cad.add(cadImagRadioButton, "A3");
-        cad.add(cadDbRadioButton, "A4");
-        cad.add(cadDb2RadioButton, "A5");
-        cad.add(cadArgRadioButton, "A6");
-        cad.add(cadComplexRadioButton, "A7");
         ButtonGroup cadGroup = new ButtonGroup();
-        cadGroup.add(cadAbsRadioButton);
-        cadGroup.add(cadDbRadioButton);
-        cadGroup.add(cadDb2RadioButton);
-        cadGroup.add(cadArgRadioButton);
-        cadGroup.add(cadImagRadioButton);
-        cadGroup.add(cadRealRadioButton);
-        cadGroup.add(cadComplexRadioButton);
-
-        cad.setBorder(BorderFactory.createTitledBorder("Conversion"));
+        JPanel cad = PlotSwingUtils.createVerticalComponents("Conversion", cadRadioButtons.toArray(new Component[0]));
+        for (JRadioButton b : cadRadioButtons) {
+            cadGroup.add(b);
+            b.addItemListener(updatePlotItemListener);
+        }
 
         JPanel all = new JPanel(new GridBagLayout2(
                 "[A1+<=$][A2+<=$][A3+<=$][A4+<=$]\n"));
-        all.add(f, "A1");
-        all.add(xy, "A2");
-        all.add(cad, "A3");
+        all.add(plotTypePanel, "A1");
+        all.add(explodeStackPanel, "A2");
+        all.add(xy, "A3");
+        all.add(cad, "A4");
         setPlotType(showType);
 //        fx1DRadioButton.addItemListener(updatePlotItemListener);
 //        fy1DRadioButton.addItemListener(updatePlotItemListener);
@@ -656,16 +666,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //        tableRadioButton.addItemListener(updatePlotItemListener);
         fxAxisRadioButton.addItemListener(updatePlotItemListener);
         fyAxisRadioButton.addItemListener(updatePlotItemListener);
-
-        cadAbsRadioButton.addItemListener(updatePlotItemListener);
-        cadDbRadioButton.addItemListener(updatePlotItemListener);
-        cadDb2RadioButton.addItemListener(updatePlotItemListener);
-        cadImagRadioButton.addItemListener(updatePlotItemListener);
-        cadRealRadioButton.addItemListener(updatePlotItemListener);
-
         return all;
 
     }
+
 
     private JComponent createStatusbar() {
         JPanel p = new JPanel(
@@ -684,9 +688,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private JComponent createStatusbar2() {
         JPanel p = new JPanel(
-                new GridBagLayout2("[<updatingProgressBar===-][auto<+][refresh]").setInsets(".*", new Insets(0, 0, 0, 0)));
+                new GridBagLayout2("[<updatingProgressBar===-][exclusive<+][auto<+][refresh]").setInsets(".*", new Insets(0, 0, 0, 0)));
         p.add(updatingProgressBar, "updatingProgressBar");
         p.add(autoUpdate, "auto");
+        p.add(exclusive, "exclusive");
         p.add(updateNow, "refresh");
         return p;
     }
@@ -1139,249 +1144,305 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         }
     }
 
-    public void updatePlotCurveFxAsync(PlotType plotType) {
-        mainPanel_removeAll();
-        Domain d = getDomainOrNull();
-        double[] x = resolveX();
-        for (CellPosition ax : getAxis()) {
-            ArrayList<Paint> colors = new ArrayList<Paint>();
-            Complex[][] yz;
-            yz = new Complex[selectedFunctions.length][];
+    private static class Exploded {
+        Expr[] fct;
+        int[] sels;
+        String name;
 
-            double y = getFunctionYValue();
-            String[] titles = new String[selectedFunctions.length];
-            ComplexAsDouble complexValue = ComplexAsDouble.REAL;
-            HashSet<String> title = new HashSet<String>();
-            for (int i = 0; i < selectedFunctions.length; i++) {
-                titles[i] = getAxisExpression(selectedFunctions[i], ax).getTitle();
-                if (titles[i] == null) {
-                    titles[i] = (String) selectedFunctions[i].getTitle();
-                }
-                if (titles[i] == null) {
-                    titles[i] = String.valueOf(i + 1);
-                }
-                DoubleToComplex f = getAxisExpression(selectedFunctions[i], ax);
-                yz[i] = f.computeComplex(x, new double[]{y})[0];
+        public Exploded(String name,Expr[] fct, int[] sels) {
+            this.name = name;
+            this.fct = fct;
+            this.sels = sels;
+        }
+    }
+
+    public Exploded[] explode() {
+        if(explodedMode && selectedFunctions.length>1){
+            Exploded[] ee=new Exploded[selectedFunctions.length];
+            int rowCount = functionsTableModel.getRowCount();
+            for (int i = 0; i < ee.length; i++) {
+                ee[i]=new Exploded(
+                        "Expression "+(selectedFunctionsIndexes[i]+1)+"/"+(rowCount),
+                        new Expr[]{selectedFunctions[i]},new int[]{selectedFunctionsIndexes[i]}
+                );
+            }
+            return ee;
+        }else {
+            return new Exploded[]{
+                    new Exploded(
+                            selectedFunctions.length>1?"Stacked":selectedFunctions.length==1?"Expression 1":"No Expression"
+                            ,selectedFunctions, selectedFunctionsIndexes)
+            };
+        }
+    }
+
+    public void updatePlotCurveFxAsync(PlotType plotType) {
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
+        Domain d = getDomainOrNull();
+
+        double[] x = resolveX();
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
+            for (CellPosition ax : axis) {
+                ArrayList<Paint> colors = new ArrayList<Paint>();
+                Complex[][] yz;
+                yz = new Complex[exprs.length][];
+
+                double y = getFunctionYValue();
+                String[] titles = new String[exprs.length];
+                PlotDoubleConverter complexValue = PlotDoubleConverter.REAL;
+                HashSet<String> title = new HashSet<String>();
+                for (int i = 0; i < exprs.length; i++) {
+                    titles[i] = getAxisExpression(exprs[i], ax).getTitle();
+                    if (titles[i] == null) {
+                        titles[i] = (String) exprs[i].getTitle();
+                    }
+                    if (titles[i] == null) {
+                        titles[i] = String.valueOf(i + 1);
+                    }
+                    DoubleToComplex f = getAxisExpression(exprs[i], ax);
+                    yz[i] = f.computeComplex(x, new double[]{y})[0];
 //                for (int j = 0; j < yz[i].length; j++) {
 //                    if (yz[i][j].getImag() != 0) {
-//                        complexValue = ComplexAsDouble.ABS;
+//                        complexValue = PlotDoubleConverter.ABS;
 //                    }
 //                }
-                complexValue = getComplexAsDouble();
-                colors.add(DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE[selectedFunctionsIndexes[i] % DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE.length]);
-                String t = selectedFunctions[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
-                if (t == null) {
-                    t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
+                    complexValue = getComplexAsDouble();
+                    colors.add(DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE[exp.sels[i] % DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE.length]);
+                    String t = exprs[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
+                    if (t == null) {
+                        t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
+                    }
+                    title.add(t);
                 }
-                title.add(t);
-            }
 
-            PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(title.toString()).titles(titles);
-            if (this.model.getProperties() != null) {
-                for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
-                    pb.param(ee.getKey(), ee.getValue());
+                PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(title.toString()).titles(titles);
+                if (this.model.getProperties() != null) {
+                    for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
+                        pb.param(ee.getKey(), ee.getValue());
+                    }
                 }
+                PlotComponent chartPanel = pb.samples(Samples.absolute(x)).plot(yz);
+                pp.add(wrapWithTitle(ax,chartPanel));
             }
-            PlotComponent chartPanel = pb.samples(Samples.absolute(x)).plot(yz);
-            mainPanel_add(chartPanel.toComponent());
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
+
+
         mainPanel_invalidate();
     }
 
     public void updatePlotCurveFyAsync(PlotType type) {
-        mainPanel_removeAll();
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
+
         Domain d = getDomainOrNull();
         double[] y = d == null ? new double[0] : Maths.dtimes(d.ymin(), d.ymax(), yPrecisionSlider.getValue());
         HashSet<String> title = new HashSet<String>();
-        for (CellPosition ax : getAxis()) {
-            Complex[][] yz;
-            yz = new Complex[selectedFunctions.length][];
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
+            for (CellPosition ax : axis) {
+                Complex[][] yz;
+                yz = new Complex[exprs.length][];
 
-            double x = getFunctionXValue();
-            String[] titles = new String[selectedFunctions.length];
-            for (int i = 0; i < selectedFunctions.length; i++) {
-                titles[i] = String.valueOf(i + 1);
-                DoubleToComplex f = getAxisExpression(selectedFunctions[i], ax);
-                yz[i] = f.computeComplex(x, y, null, null);
-                String t = selectedFunctions[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
-                if (t == null) {
-                    t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
+                double x = getFunctionXValue();
+                String[] titles = new String[exprs.length];
+                for (int i = 0; i < exprs.length; i++) {
+                    titles[i] = String.valueOf(i + 1);
+                    DoubleToComplex f = getAxisExpression(exprs[i], ax);
+                    yz[i] = f.computeComplex(x, y, null, null);
+                    String t = exprs[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
+                    if (t == null) {
+                        t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
+                    }
+                    title.add(t);
                 }
-                title.add(t);
-            }
-            ComplexAsDouble complexValue = getComplexAsDouble();
-            PlotBuilder pb = Plot.nodisplay().converter(complexValue).title(title.toString()).titles(titles).plotType(type);
-            if (this.model.getProperties() != null) {
-                for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
-                    pb.param(ee.getKey(), ee.getValue());
+                PlotDoubleConverter complexValue = getComplexAsDouble();
+                PlotBuilder pb = Plot.nodisplay().converter(complexValue).title(title.toString()).titles(titles).plotType(type);
+                if (this.model.getProperties() != null) {
+                    for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
+                        pb.param(ee.getKey(), ee.getValue());
+                    }
                 }
+                PlotComponent chartPanel = pb.samples(Samples.absolute(y)).plot(yz);
+                pp.add(wrapWithTitle(ax,chartPanel));
             }
-            PlotComponent chartPanel = pb.samples(Samples.absolute(y)).plot(yz);
-            mainPanel_add(chartPanel.toComponent());
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
         mainPanel_invalidate();
     }
-
-    public ComplexAsDouble getComplexAsDouble() {
-        for (JRadioButton r : cadRadioButtons) {
-            Object o = r.getClientProperty("Object");
-            if (o != null && o instanceof ComplexAsDouble) {
-                return (ComplexAsDouble) o;
-            }
-        }
-        return ComplexAsDouble.ABS;
-//        if (cadAbsRadioButton.isSelected()) {
-//            return ComplexAsDouble.ABS;
-//        }
-//        if (cadRealRadioButton.isSelected()) {
-//            return ComplexAsDouble.REAL;
-//        }
-//        if (cadImagRadioButton.isSelected()) {
-//            return ComplexAsDouble.IMG;
-//        }
-//        if (cadDbRadioButton.isSelected()) {
-//            return ComplexAsDouble.DB;
-//        }
-//        if (cadDb2RadioButton.isSelected()) {
-//            return ComplexAsDouble.DB2;
-//        }
-//        if (cadArgRadioButton.isSelected()) {
-//            return ComplexAsDouble.ARG;
-//        }
-//        if (cadComplexRadioButton.isSelected()) {
-//            return ComplexAsDouble.COMPLEX;
-//        }
-//        return ComplexAsDouble.ABS;
+    private JPanel wrapWithTitle(CellPosition cp,PlotComponent c){
+        return wrapWithTitle(cp,c.toComponent());
     }
 
-    public void setComplexAsDouble(ComplexAsDouble complexAsDouble) {
+    private JPanel wrapWithTitle(CellPosition cp,Component c){
+        JPanel p=new JPanel(new BorderLayout());
+        p.add(c);
+        p.setBorder(BorderFactory.createTitledBorder(cp.toString()));
+        return p;
+    }
+
+    public PlotDoubleConverter getComplexAsDouble() {
+        for (JRadioButton r : cadRadioButtons) {
+            if (r.isSelected()) {
+                Object o = r.getClientProperty("Object");
+                if (o instanceof PlotDoubleConverter) {
+                    return (PlotDoubleConverter) o;
+                }
+            }
+        }
+        return PlotDoubleConverter.ABS;
+    }
+
+    public void setComplexAsDouble(PlotDoubleConverter toDoubleConverter) {
         for (JRadioButton r : cadRadioButtons) {
             Object o = r.getClientProperty("Object");
-            if (o != null && o.equals(complexAsDouble)) {
+            if (o != null && o.equals(toDoubleConverter)) {
                 r.setSelected(true);
                 return;
             }
         }
-        cadComplexRadioButton.setSelected(true);
-//        switch (complexAsDouble) {
-//            case ABS: {
-//                cadAbsRadioButton.setSelected(true);
-//                break;
-//            }
-//            case DB: {
-//                cadDbRadioButton.setSelected(true);
-//                break;
-//            }
-//            case DB2: {
-//                cadDb2RadioButton.setSelected(true);
-//                break;
-//            }
-//            case ARG: {
-//                cadArgRadioButton.setSelected(true);
-//                break;
-//            }
-//            case REAL: {
-//                cadRealRadioButton.setSelected(true);
-//                break;
-//            }
-//            case IMG: {
-//                cadImagRadioButton.setSelected(true);
-//                break;
-//            }
-//            case COMPLEX: {
-//                cadComplexRadioButton.setSelected(true);
-//                break;
-//            }
-//        }
     }
 
     public synchronized void updatePlotSurfaceAsynch() {
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
         Domain d = getDomainOrNull();
         double[] x = resolveX();
         double[] y = resolveY();
-        mainPanel_removeAll();
-        for (CellPosition ax : getAxis()) {
-            Complex[][] yz = selectedFunctions.length == 0 ? new Complex[0][] : getAxisExpression(selectedFunctions[0], ax).computeComplex(x, y, d, null);
-            for (int i = 1; i < selectedFunctions.length; i++) {
-                Complex[][] yz0 = getAxisExpression(selectedFunctions[i], ax).computeComplex(x, y, d, null);
-                for (int j = 0; j < yz0.length; j++) {
-                    Complex[] complexes = yz0[j];
-                    for (int k = 0; k < complexes.length; k++) {
-                        yz[j][k] = yz[j][k].add(complexes[k]);
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
+
+            for (CellPosition ax : axis) {
+                Out<Range> r1 = new Out<>();
+                Complex[][] yz = exprs.length == 0 ? new Complex[0][] : getAxisExpression(exprs[0], ax).computeComplex(x, y, d, r1);
+                if(exprs.length>0) {
+                    try {
+                        ExpressionsDebug.debug_check(yz, r1);
+                    } catch (Exception ex) {
+                        yz = exprs.length == 0 ? new Complex[0][] : getAxisExpression(exprs[0], ax).computeComplex(x, y, d, r1);
                     }
                 }
+                for (int i = 1; i < exprs.length; i++) {
+                    Out<Range> r2 = new Out<>();
+                    Complex[][] yz0 = getAxisExpression(exprs[i], ax).computeComplex(x, y, d, r2);
+                    try {
+                        ExpressionsDebug.debug_check(yz0, r2);
+                    }catch (Exception ex){
+                        yz0 = getAxisExpression(exprs[i], ax).computeComplex(x, y, d, r2);
+                    }
+                    for (int j = 0; j < yz0.length; j++) {
+                        Complex[] complexes = yz0[j];
+                        for (int k = 0; k < complexes.length; k++) {
+                            yz[j][k] = yz[j][k].add(complexes[k]);
+                        }
+                    }
+                }
+                PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asHeatMap();
+                PlotComponent chartPanel = pb.xsamples(x).ysamples(y).plot(yz);
+                pp.add(wrapWithTitle(ax,chartPanel));
             }
-            PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asHeatMap();
-            JComponent jComponent = pb.xsamples(x).ysamples(y).plot(yz).toComponent();
-            mainPanel_add(jComponent);
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
         mainPanel_invalidate();
     }
 
     public synchronized void updatePlotMatrixAsynch() {
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
         Domain d = getDomainOrNull();
         double[] x = resolveX();
         double[] y = resolveY();
-        mainPanel_removeAll();
-        for (CellPosition ax : getAxis()) {
-            Complex[][] yz = selectedFunctions.length == 0 ? new Complex[0][] : getAxisExpression(selectedFunctions[0], ax).computeComplex(x, y, d, null);
-            for (int i = 1; i < selectedFunctions.length; i++) {
-                Complex[][] yz0 = getAxisExpression(selectedFunctions[i], ax).computeComplex(x, y, d, null);
-                for (int j = 0; j < yz0.length; j++) {
-                    Complex[] complexes = yz0[j];
-                    for (int k = 0; k < complexes.length; k++) {
-                        yz[j][k] = yz[j][k].add(complexes[k]);
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
+            for (CellPosition ax : axis) {
+                Out<Range> r1 = new Out<>();
+                Complex[][] yz = exprs.length == 0 ? new Complex[0][] : getAxisExpression(exprs[0], ax).computeComplex(x, y, d, r1);
+                ExpressionsDebug.debug_check(yz,r1);
+                for (int i = 1; i < exprs.length; i++) {
+                    Out<Range> r2 = new Out<>();
+                    Complex[][] yz0 = getAxisExpression(exprs[i], ax).computeComplex(x, y, d, r2);
+                    ExpressionsDebug.debug_check(yz0,r2);
+                    for (int j = 0; j < yz0.length; j++) {
+                        Complex[] complexes = yz0[j];
+                        for (int k = 0; k < complexes.length; k++) {
+                            yz[j][k] = yz[j][k].add(complexes[k]);
+                        }
                     }
                 }
-            }
 
-            ValuesPlotModel model2 = new ValuesPlotModel();
-            model2.setTitle(this.model.getTitle());
-            model2.setPlotType(PlotType.MATRIX);
-            model2.setXVector(x);
-            model2.setYVector(y);
-            model2.setZ(yz);
-            model2.setConverter(getComplexAsDouble());
-            PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asMatrix();
-            JComponent jComponent = pb.xsamples(x).ysamples(y).plot(yz).toComponent();
-            mainPanel_add(jComponent);
+                ValuesPlotModel model2 = new ValuesPlotModel();
+                model2.setTitle(this.model.getTitle());
+                model2.setPlotType(PlotType.MATRIX);
+                model2.setXVector(x);
+                model2.setYVector(y);
+                model2.setZ(yz);
+                model2.setConverter(getComplexAsDouble());
+                PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asMatrix();
+                PlotComponent chartPanel = pb.xsamples(x).ysamples(y).plot(yz);
+                pp.add(wrapWithTitle(ax,chartPanel));
+            }
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
         mainPanel_invalidate();
     }
 
     public synchronized void updatePlotTableAsynch() {
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
         Domain d = getDomainOrNull();
         double[] x = resolveX();
         double[] y = resolveY();
-        mainPanel_removeAll();
-        for (CellPosition ax : getAxis()) {
-            Complex[][] yz = selectedFunctions.length == 0 ? new Complex[0][] : getAxisExpression(selectedFunctions[0], ax).computeComplex(x, y, d, null);
-            for (int i = 1; i < selectedFunctions.length; i++) {
-                Complex[][] yz0 = getAxisExpression(selectedFunctions[i], ax).computeComplex(x, y, d, null);
-                for (int j = 0; j < yz0.length; j++) {
-                    Complex[] complexes = yz0[j];
-                    for (int k = 0; k < complexes.length; k++) {
-                        yz[j][k] = yz[j][k].add(complexes[k]);
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
+            for (CellPosition ax : axis) {
+                Out<Range> r1 = new Out<>();
+                Complex[][] yz = exprs.length == 0 ? new Complex[0][] : getAxisExpression(exprs[0], ax).computeComplex(x, y, d, r1);
+                ExpressionsDebug.debug_check(yz,r1);
+                for (int i = 1; i < exprs.length; i++) {
+                    Out<Range> r2 = new Out<>();
+                    Complex[][] yz0 = getAxisExpression(exprs[i], ax).computeComplex(x, y, d, r2);
+                    ExpressionsDebug.debug_check(yz0,r2);
+                    for (int j = 0; j < yz0.length; j++) {
+                        Complex[] complexes = yz0[j];
+                        for (int k = 0; k < complexes.length; k++) {
+                            yz[j][k] = yz[j][k].add(complexes[k]);
+                        }
                     }
                 }
+                PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asTable();
+                PlotComponent chartPanel = pb.xsamples(x).ysamples(y).plot(yz);
+                pp.add(wrapWithTitle(ax,chartPanel));
             }
-            PlotBuilder pb = Plot.nodisplay().asCurve().converter(getComplexAsDouble()).title(this.model.getTitle()).asTable();
-            JComponent jComponent = pb.xsamples(x).ysamples(y).plot(yz).toComponent();
-            mainPanel_add(jComponent);
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
         mainPanel_invalidate();
     }
 
-    //    private void mainPanel_add(PlotComponentPanel component,ValuesPlotModel model2) {
-//        JComponent jComponent = component.toComponent();
-//        Plot.buildJPopupMenu((PlotComponentPanel) component,new SimplePlotModelProvider(model2, jComponent));
-//        model2.addPropertyChangeListener(modelUpdatesListener);
-//        mainPanel_add(jComponent);
-//
-//    }
     private void mainPanel_add(final Component component) {
         try {
-            SwingUtilities3.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     mainPanel.add(component);
@@ -1392,12 +1453,26 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         }
     }
 
-    private void mainPanel_removeAll() {
+    private int isqrt(int count) {
+        int c = count;
+        if (c < 0) {
+            c = 1;
+        }
+        c = (int) Math.sqrt(c);
+        if (c == 0) {
+            c = 1;
+        }
+        return c;
+    }
+
+    private void mainPanel_reconfigure(int count) {
         try {
-            SwingUtilities3.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     if (mainPanel != null) {
+                        int c = isqrt(count);
+                        mainPanel.setLayout(new GridLayout(c, c));
                         mainPanel.removeAll();
                     }
                 }
@@ -1409,7 +1484,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     private void mainPanel_invalidate() {
         try {
-            SwingUtilities3.invokeAndWait(new Runnable() {
+            SwingUtilities3.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     if (mainPanel != null) {
@@ -1424,33 +1499,41 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public void updatePlotMeshAsynch() {
+        CellPosition[] axis = getAxis();
+        Exploded[] exploded = explode();
+        mainPanel_reconfigure(exploded.length);
+        int c = isqrt(axis.length);
         Domain d = getDomainOrNull();
         double[] x = resolveX();
         double[] y = resolveY();
+        for (Exploded exp : exploded) {
+            JPanel pp = new JPanel(new GridLayout(c, c));
+            Expr[] exprs = exp.fct;
 
-        mainPanel_removeAll();
-        for (CellPosition ax : getAxis()) {
-            if (selectedFunctions.length > 0) {
-                Complex[][] yz = getAxisExpression(selectedFunctions[0], ax).computeComplex(x, y);
-                for (int i = 1; i < selectedFunctions.length; i++) {
-                    Complex[][] yz0 = getAxisExpression(selectedFunctions[i], ax).computeComplex(x, y);
-                    for (int j = 0; j < yz0.length; j++) {
-                        Complex[] complexes = yz0[j];
-                        for (int k = 0; k < complexes.length; k++) {
-                            yz[j][k] = yz[j][k].add(complexes[k]);
+            for (CellPosition ax : axis) {
+                if (exprs.length > 0) {
+                    Complex[][] yz = getAxisExpression(exprs[0], ax).computeComplex(x, y);
+                    for (int i = 1; i < exprs.length; i++) {
+                        Complex[][] yz0 = getAxisExpression(exprs[i], ax).computeComplex(x, y);
+                        for (int j = 0; j < yz0.length; j++) {
+                            Complex[] complexes = yz0[j];
+                            for (int k = 0; k < complexes.length; k++) {
+                                yz[j][k] = yz[j][k].add(complexes[k]);
+                            }
                         }
                     }
+                    final ValuesPlotModel model = new ValuesPlotModel();
+                    model.setX(new double[][]{x});
+                    model.setY(new double[][]{y});
+                    model.setZ(yz);
+                    model.setConverter(getComplexAsDouble());
+                    model.setTitle(this.model.getTitle());
+                    PlotComponentPanel chartPanel = PlotBackendLibraries.createPlotComponentPanel(new DefaultPlotComponentContext(PlotType.MESH, model));
+                    pp.add(wrapWithTitle(ax,chartPanel.toComponent()));
                 }
-                final ValuesPlotModel model = new ValuesPlotModel();
-                model.setX(new double[][]{x});
-                model.setY(new double[][]{y});
-                model.setZ(yz);
-                model.setConverter(getComplexAsDouble());
-                model.setTitle(this.model.getTitle());
-                PlotComponentPanel mesh = ChartFactory.createMesh(model, null);
-                Plot.buildJPopupMenu(mesh, new SimplePlotModelProvider(model, mesh.toComponent()));
-                mainPanel_add(mesh.toComponent());
             }
+            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            mainPanel_add(pp);
         }
         mainPanel_invalidate();
     }
@@ -1507,7 +1590,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         if (axisOk.size() == 0) {
             axisOk.addAll(Arrays.asList(axisAvailable));
         }
-        return axisOk.toArray(new CellPosition[axisOk.size()]);
+        return axisOk.toArray(new CellPosition[0]);
 //        if (fxAxisRadioButton.isSelected() && fyAxisRadioButton.isSelected()) {
 //            return new int[]{VDCxy.X, VDCxy.Y};
 //        } else {
@@ -1601,7 +1684,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     }
 
-//    public enum ShowType {
+    //    public enum ShowType {
 //
 //        CURVE_FX,
 //        CURVE_FY,

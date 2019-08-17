@@ -1,16 +1,17 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.plot.PlotType;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleActionParams;
-import net.vpc.scholar.hadrumaths.plot.console.ConsoleAwareObject;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.NamedMatrix;
-import net.vpc.scholar.hadrumaths.plot.console.yaxis.YType;
-import net.vpc.common.util.mon.ProgressMonitor;
+import net.vpc.scholar.hadruplot.PlotMatrix;
+import net.vpc.scholar.hadruplot.PlotType;
+import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
+import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
+import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisSeries;
+import net.vpc.scholar.hadruplot.console.yaxis.YType;
+import net.vpc.common.mon.ProgressMonitor;
 
-import net.vpc.common.util.mon.MonitoredAction;
+import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 
@@ -27,14 +28,14 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
     }
 
     @Override
-    protected NamedMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
         return computeMatrix((MomStructure) structure, monitor, p);
     }
 
-    protected NamedMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        return Maths.invokeMonitoredAction(cmonitor, getClass().getSimpleName(), new MonitoredAction<NamedMatrix>() {
+    protected PlotMatrix computeMatrix(final MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
+        return Maths.invokeMonitoredAction(cmonitor, getClass().getSimpleName(), new MonitoredAction<PlotMatrix>() {
             @Override
-            public NamedMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 TestFunctions _testFunctions = structure.getTestFunctions();
                 Complex[][] gfps = new Complex[_testFunctions.count()][_testFunctions.count()];
                 int max = _testFunctions.count();
@@ -56,7 +57,7 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
                     }
                 }
-                NamedMatrix namedMatrix = new NamedMatrix(gfps);
+                PlotMatrix namedMatrix = new PlotMatrix(gfps);
                 return namedMatrix;
             }
         });

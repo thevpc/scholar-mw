@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.util.mon.ProgressMonitor;
-import net.vpc.common.util.mon.ProgressMonitorFactory;
-import net.vpc.common.util.mon.VoidMonitoredAction;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.*;
 import net.vpc.scholar.hadrumaths.scalarproducts.*;
@@ -213,15 +213,15 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 
     @Override
     public ModeInfo[] getIndexesImpl(ProgressMonitor par0) {
-        int max = getMaxSize();
+        final int max = getMaxSize();
         //System.out.println("lookup for "+max+" fn modes for "+this);
         Chronometer chrono = new Chronometer();
         chrono.start();
-        ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
-        ModeIterator iterator = getModeIteratorFactory().iterator(this);
+        final ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
+        final ModeIterator iterator = getModeIteratorFactory().iterator(this);
         ProgressMonitor monitor = ProgressMonitorFactory.createIncrementalMonitor(par0, max);
         String str = toString() + ", enumerate modes";
-        String message = str + " {0,number,#}/{1,number,#}";
+        final String message = str + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(monitor, str, new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -248,7 +248,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             }
         });
         //System.out.println("found " + next.size()+" modes in "+chrono);
-        return next.toArray(new ModeInfo[next.size()]);
+        return next.toArray(new ModeInfo[0]);
     }
 
     protected boolean doAcceptModeIndex(ModeIndex o) {
@@ -316,21 +316,17 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
     }
 
     @Override
-    public TVector<Complex> scalarProduct(Expr testFunction) {
-        boolean dd = testFunction.isDD() && modesDesc.getBorders()!=WallBorders.PPPP;
+    public TVector<Complex> scalarProduct(final Expr testFunction) {
+        final boolean dd = testFunction.isDD() && modesDesc.getBorders()!=WallBorders.PPPP;
         if(!Maths.Config.isCacheEnabled()){
             return scalarProduct0(dd,testFunction,arr());
         }
-        ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
+        final ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
         if(objectCache==null){
             return scalarProduct0(dd,testFunction,arr());
         }
-        int currentCount = count();
-        return objectCache.evaluate("test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
-            @Override
-            public void init() {
-
-            }
+        final int currentCount = count();
+        return objectCache.evaluate("test-mode-scalar-products-" + currentCount, null, new CacheEvaluator() {
 
             @Override
             public Object evaluate(Object[] args) {
@@ -344,7 +340,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
     }
 
     @Override
-    public TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor) {
+    public TMatrix<Complex> scalarProduct(final TList<Expr> testFunctions, final ProgressMonitor monitor) {
         if(!Maths.Config.isCacheEnabled()){
             return scalarProductCache0(testFunctions,monitor);
         }
@@ -360,12 +356,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             return scalarProductCache0(testFunctions, monitor);
         }
         int currentCount = count();
-        TMatrix<Complex> evaluated = objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new Evaluator2() {
-            @Override
-            public void init() {
-
-            }
-
+        TMatrix<Complex> evaluated = objectCache.evaluate("all-test-mode-scalar-products-" + currentCount, null, new CacheEvaluator() {
             @Override
             public Object evaluate(Object[] args) {
                 return scalarProductCache0(testFunctions, monitor);
@@ -454,7 +445,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
                     TList<Expr> list = list();
                     list=list.sublist(copy.size(),list.length());
 
-                    TVector<Complex> extra = scalarProduct0(dd,testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[list.length()]));
+                    TVector<Complex> extra = scalarProduct0(dd,testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[0]));
                     copy.appendAll(extra);
                     return copy;
                 }

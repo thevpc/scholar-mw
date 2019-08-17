@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.plot.console.params.YAxisType;
+import net.vpc.scholar.hadruplot.console.params.YAxisType;
 
 public class MoMYAxisType extends YAxisType {
     public static final MoMYAxisType Z_DIRECT = new MoMYAxisType("Z_DIRECT");

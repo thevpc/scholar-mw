@@ -5,6 +5,7 @@ import java.util
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
+import net.vpc.scholar.hadruplot.Plot
 
 /**
   * Created by vpc on 6/3/17.
@@ -22,6 +23,10 @@ object Roofop extends App{
 //  var tt2=itimes(1,8,4) // 1,3.33,5.66,8
 //  var tt=dsteps
 //  var tt=dtime
+   //isteps(min,ila,pas) // isteps(1,3)  == 1,2,3
+                         // isteps(1,6,2)  == 1,3,5
+   //itimes(min,ila,times)   //itimes(1,10,3) == 1,5,10
+   //dsteps(min,ila,pas)     //dtimes(1,10,4) == 1.0,4.0,7.0,10.0
 
   val g1 = isteps(1,2*xs.length-1).map(
     i => if(i%2==0) rooftop(xs(i/2)-(w/2),xs(i/2)+(w/2)) else rooftop(xs(i/2),xs(i/2)+w)
