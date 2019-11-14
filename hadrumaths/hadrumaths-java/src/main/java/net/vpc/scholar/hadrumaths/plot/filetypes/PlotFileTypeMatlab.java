@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PlotFileTypeMatlab implements PlotFileType {
@@ -34,7 +35,7 @@ public class PlotFileTypeMatlab implements PlotFileType {
             printStream = new PrintStream(new FileOutputStream(file), true);
             String lineSep = System.getProperty("line.separator");
             printStream.println(commentChar + " Plot data");
-            printStream.println(commentChar + " Last modified " + Maths.UNIVERSAL_DATE_TIME_FORMAT.format(new Date()));
+            printStream.println(commentChar + " Last modified " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             printStream.println(commentChar + " " + model.getTitle());
             printStream.println();
             printStream.println();

@@ -69,4 +69,20 @@ public interface DoubleToVector extends DoubleDomainExpr, Serializable, /*Double
         return computeVector(x, (Domain) null, null);
     }
 
+//    default Vector apply(double x) {
+//        return computeVector(x);
+//    }
+//
+//    default Vector[] apply(double[] x) {
+//        return computeVector(x);
+//    }
+//
+//    default Vector apply(double x, double y) {
+//        return computeVector(x, y);
+//    }
+//
+//    default Vector[][] apply(double[] x, double[] y) {
+//        return computeVector(x, y);
+//    }
+
 }

@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +57,7 @@ public class LockMonitor extends JPanel implements ActionListener, PlotConsoleTo
                                                            Object value, boolean isSelected, boolean hasFocus,
                                                            int row, int column) {
                 if (value instanceof Date) {
-                    value = Maths.UNIVERSAL_DATE_TIME_FORMAT.format(value);
+                    value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value);
                 }
                 return super.getTableCellRendererComponent(table, value, isSelected,
                         hasFocus, row, column);

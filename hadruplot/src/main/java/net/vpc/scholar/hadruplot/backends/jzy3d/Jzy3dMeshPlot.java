@@ -99,15 +99,23 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         org.jzy3d.plot3d.builder.Mapper mapper = new org.jzy3d.plot3d.builder.Mapper() {
             @Override
             public double f(double x, double y) {
-                return z[(int) y][(int) x];
+                int iy = (int) y;
+                if(iy>=z.length){
+                    iy=z.length-1;
+                }
+                int ix = (int) x;
+                return z[iy][ix];
             }
         };
 
         // Define range and precision for the function to plot
         Range xrange = new Range(0, x.length - 1);
         int xsteps = x.length;
-        Range yrange = new Range(0, y.length - 1);
         int ysteps = y.length;
+        if(ysteps<2){
+            ysteps=2;
+        }
+        Range yrange = new Range(0, ysteps - 1);
 
         // Create the object to represent the function over the given range.
         final org.jzy3d.plot3d.primitives.Shape surface = Builder.buildOrthonormal(new OrthonormalGrid(xrange, xsteps, yrange, ysteps), mapper);

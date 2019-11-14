@@ -94,24 +94,21 @@ public interface DoubleToComplex extends DoubleDomainExpr {
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-//    default double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeDouble(this, x, y, d0, ranges);
-//    }
-//
-//    default double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeDouble(this, x, y, d0, ranges);
-//    }
 
-//    default Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeMatrix(this, x, y, d0, ranges);
+//    default Complex apply(double x) {
+//        return computeComplex(x);
 //    }
 //
-//    default Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
-//        return Expressions.computeMatrix(this, x, y, d0, ranges);
+//    default Complex[] apply(double[] x) {
+//        return computeComplex(x);
 //    }
 //
-//    default Matrix computeMatrix(double x, double y) {
-//        return Expressions.computeMatrix(this, x, y);
+//    default Complex apply(double x, double y) {
+//        return computeComplex(x, y);
+//    }
+//
+//    default Complex[][] apply(double[] x, double[] y) {
+//        return computeComplex(x, y);
 //    }
 
 }

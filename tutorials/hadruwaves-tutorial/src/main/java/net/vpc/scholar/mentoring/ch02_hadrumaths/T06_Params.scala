@@ -4,16 +4,26 @@ package net.vpc.scholar.mentoring.ch02_hadrumaths
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadruwaves._
-import net.vpc.scholar.hadruwaves.Physics._
 
-object T06_Params {
-  var n = param("n")
+object T06_Params extends App{
+  var n=param("n")
+
+  //one param function
+  var f=(n+1)*X
+
+  var g=sin(n*X)
+  var f0=f(n->0.0)
+  var f1=f(n->1.0)
+  Plot.title("f0").plot(f0)
+  Plot.title("f1").plot(f1)
+  var all=seq(f,n,dsteps(5,20))
+  var f5=all(0)
+  all=all:+seq(g,n,dsteps(1,10))
+  Plot.title("f*").plot(all)
+
   var m = param("m")
   var t = param("p")
 
-  //one param function
-  var f = n * X
   var all_f = seq(f, n, 1, 5)
 
   var all_f_but_zero = seq(f, n, 5, (n:Int) => n > 0)

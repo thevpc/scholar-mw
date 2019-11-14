@@ -285,7 +285,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     protected Matrix createMatrix(int rows, int cols) {
         MatrixFactory f = getFactory();
         if (f == null) {
-            f = Maths.Config.getDefaultMatrixFactory();
+            f = MathsBase.Config.getDefaultMatrixFactory();
         }
         return f.newMatrix(rows, cols);
     }
@@ -1206,7 +1206,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     public Matrix invCond() {
-        return inv(Maths.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
+        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
     }
 
     public Matrix inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr) {
@@ -1224,22 +1224,22 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     public Matrix inv() {
-        return inv(Maths.Config.getDefaultMatrixInverseStrategy());
+        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
     }
 
     public Matrix inv(InverseStrategy st) {
         switch (st) {
             case DEFAULT: {
-                return inv(Maths.Config.getDefaultMatrixInverseStrategy());
+                return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
             }
             case BLOCK_SOLVE: {
-                return invBlock(InverseStrategy.SOLVE, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.SOLVE, MathsBase.Config.getMatrixBlockPrecision());
             }
             case BLOCK_ADJOINT: {
-                return invBlock(InverseStrategy.ADJOINT, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.ADJOINT, MathsBase.Config.getMatrixBlockPrecision());
             }
             case BLOCK_GAUSS: {
-                return invBlock(InverseStrategy.GAUSS, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.GAUSS, MathsBase.Config.getMatrixBlockPrecision());
             }
             case SOLVE: {
                 return invSolve();
@@ -1261,7 +1261,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     public Matrix invSolve() {
-        return solve(Maths.identityMatrix(getRowCount()));
+        return solve(MathsBase.identityMatrix(getRowCount()));
     }
 
     /**
@@ -1290,7 +1290,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
                 Complex DCABi = D.sub(C.mul(Ai).mul(B)).inv();
                 Complex mDCABi = DCABi.mul(-1);
                 Complex AiBmDCABi = AiB.mul(mDCABi);
-                return Maths.matrix(new Complex[][]{
+                return MathsBase.matrix(new Complex[][]{
                         {Ai.sub(AiBmDCABi.mul(CAi)), AiBmDCABi},
                         {mDCABi.mul(CAi), DCABi}
                 });
@@ -1485,7 +1485,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     public Matrix pow(int exp) {
         switch (exp) {
             case 0: {
-                return Maths.identityMatrix(this);
+                return MathsBase.identityMatrix(this);
             }
             case 1: {
                 return this;
@@ -1673,7 +1673,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
     }
 
     public Matrix solve(TMatrix<Complex> B) {
-        return solve(B, Maths.Config.getDefaultMatrixSolveStrategy());
+        return solve(B, MathsBase.Config.getDefaultMatrixSolveStrategy());
     }
 
     protected Matrix castToMatrix(TMatrix<Complex> a) {
@@ -1764,7 +1764,7 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
 //        return B;
     //    }
     public void store(String file) throws UncheckedIOException {
-        store(new File(Maths.Config.expandPath(file)));
+        store(new File(MathsBase.Config.expandPath(file)));
     }
 
     public void store(File file) throws UncheckedIOException {
@@ -2330,9 +2330,9 @@ public abstract class AbstractMatrix extends AbstractTMatrix<Complex> implements
             return factory;
         }
         if (factoryId != null) {
-            return factory = (MatrixFactory) Maths.Config.getTMatrixFactory(factoryId);
+            return factory = (MatrixFactory) MathsBase.Config.getTMatrixFactory(factoryId);
         }
-        MatrixFactory df = Maths.Config.getDefaultMatrixFactory();
+        MatrixFactory df = MathsBase.Config.getDefaultMatrixFactory();
         if (df == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }

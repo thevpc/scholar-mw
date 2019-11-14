@@ -80,7 +80,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
 
     @Override
     public TypeName<Boolean> getComponentType() {
-        return Maths.$BOOLEAN;
+        return MathsBase.$BOOLEAN;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class BooleanArrayList extends AbstractTList<Boolean> implements BooleanL
     public static class BooleanReadOnlyList extends ReadOnlyTList<Boolean> implements BooleanList {
 
         public BooleanReadOnlyList(boolean row, TVectorModel<Boolean> model) {
-            super(Maths.$BOOLEAN, row, model);
+            super(MathsBase.$BOOLEAN, row, model);
         }
 
         @Override

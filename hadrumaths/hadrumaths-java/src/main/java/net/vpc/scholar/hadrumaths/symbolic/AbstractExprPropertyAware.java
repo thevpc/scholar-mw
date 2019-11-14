@@ -133,7 +133,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
 
 
     public synchronized final boolean isDD() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDDImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDD)) {
@@ -145,7 +145,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isDC() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDCImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDC)) {
@@ -157,7 +157,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isDV() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDVImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDV)) {
@@ -169,7 +169,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isDM() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDMImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDM)) {
@@ -181,7 +181,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isNaN() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isNaNImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isNaN)) {
@@ -193,7 +193,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isInfinite() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isInfiniteImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isInfinite)) {
@@ -205,7 +205,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isDoubleExpr() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDoubleExprImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDoubleExpr)) {
@@ -217,7 +217,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized boolean isDouble() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isDoubleImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isDouble)) {
@@ -229,7 +229,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isComplex() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isComplexImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isComplex)) {
@@ -241,7 +241,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isZero() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isZeroImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isZero)) {
@@ -253,7 +253,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public synchronized final boolean isInvariant(Axis axis) {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             switch (axis) {
                 case X: {
                     return isInvariantImpl(axis);
@@ -299,7 +299,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public final boolean isMatrix() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isMatrixImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isMatrix)) {

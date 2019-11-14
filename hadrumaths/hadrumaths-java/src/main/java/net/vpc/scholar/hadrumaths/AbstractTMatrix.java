@@ -291,7 +291,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     protected TMatrix<T> createMatrix(int rows, int cols) {
         TMatrixFactory<T> f = getFactory();
         if (f == null) {
-            f = Maths.Config.getDefaultMatrixFactory(getComponentType());
+            f = MathsBase.Config.getDefaultMatrixFactory(getComponentType());
         }
         return f.newMatrix(rows, cols);
     }
@@ -1236,7 +1236,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     public TMatrix<T> invCond() {
-        return inv(Maths.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
+        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
     }
 
     public TMatrix<T> inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr) {
@@ -1254,22 +1254,22 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     public TMatrix<T> inv() {
-        return inv(Maths.Config.getDefaultMatrixInverseStrategy());
+        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
     }
 
     public TMatrix<T> inv(InverseStrategy st) {
         switch (st) {
             case DEFAULT: {
-                return inv(Maths.Config.getDefaultMatrixInverseStrategy());
+                return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
             }
             case BLOCK_SOLVE: {
-                return invBlock(InverseStrategy.SOLVE, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.SOLVE, MathsBase.Config.getMatrixBlockPrecision());
             }
             case BLOCK_ADJOINT: {
-                return invBlock(InverseStrategy.ADJOINT, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.ADJOINT, MathsBase.Config.getMatrixBlockPrecision());
             }
             case BLOCK_GAUSS: {
-                return invBlock(InverseStrategy.GAUSS, Maths.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.GAUSS, MathsBase.Config.getMatrixBlockPrecision());
             }
             case SOLVE: {
                 return invSolve();
@@ -1748,7 +1748,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     public TMatrix<T> solve(TMatrix<T> B) {
-        return solve(B, Maths.Config.getDefaultMatrixSolveStrategy());
+        return solve(B, MathsBase.Config.getDefaultMatrixSolveStrategy());
     }
 
     public TMatrix<T> solve(TMatrix<T> B, SolveStrategy solveStrategy) {
@@ -1832,7 +1832,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 //        return B;
     //    }
     public void store(String file) {
-        store(new File(Maths.Config.expandPath(file)));
+        store(new File(MathsBase.Config.expandPath(file)));
     }
 
     public void store(File file) {
@@ -2358,7 +2358,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     protected TMatrixFactory<T> createDefaultFactory() {
-        return Maths.Config.getDefaultMatrixFactory(getComponentType());
+        return MathsBase.Config.getDefaultMatrixFactory(getComponentType());
     }
 
     @Override
@@ -2367,7 +2367,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             return factory;
         }
         if (factoryId != null) {
-            return factory = Maths.Config.getTMatrixFactory(factoryId);
+            return factory = MathsBase.Config.getTMatrixFactory(factoryId);
         }
 
         TMatrixFactory<T> t = createDefaultFactory();

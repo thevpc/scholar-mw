@@ -4,7 +4,6 @@ import net.vpc.scholar.hadrumaths.*;
 
 import java.util.*;
 
-import static net.vpc.scholar.hadrumaths.Maths.CZERO;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 16:42:35
@@ -108,11 +107,11 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx) {
-        return new DefaultDoubleToVector(fx, new ComplexValue(CZERO, fx.getDomain()), new ComplexValue(CZERO, fx.getDomain()), 1);
+        return new DefaultDoubleToVector(fx, new ComplexValue(MathsBase.CZERO, fx.getDomain()), new ComplexValue(MathsBase.CZERO, fx.getDomain()), 1);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy) {
-        return new DefaultDoubleToVector(fx, fy, new ComplexValue(CZERO, fx.getDomain()), 2);
+        return new DefaultDoubleToVector(fx, fy, new ComplexValue(MathsBase.CZERO, fx.getDomain()), 2);
     }
 
     public static DefaultDoubleToVector create(DoubleToComplex fx, DoubleToComplex fy, DoubleToComplex fz) {

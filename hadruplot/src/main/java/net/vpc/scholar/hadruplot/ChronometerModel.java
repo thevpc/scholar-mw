@@ -37,13 +37,11 @@ public class ChronometerModel extends BasePlotModel implements PlotPanelFactory 
             addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentShown(ComponentEvent e) {
-                    System.out.println("componentShown");
                     createTimer();
                 }
 
                 @Override
                 public void componentHidden(ComponentEvent e) {
-                    System.out.println("componentHidden");
 //                        killTimer();
                 }
             });

@@ -89,17 +89,17 @@ public final class MathsConfig {
     private DoubleFormat percentFormat = new DecimalDoubleFormat("0.00%");
 
     {
-        registerConverter(Double.class, Complex.class, Maths.DOUBLE_TO_COMPLEX);
-        registerConverter(Complex.class, Double.class, Maths.COMPLEX_TO_DOUBLE);
-        registerConverter(Double.class, TVector.class, Maths.DOUBLE_TO_TVECTOR);
-        registerConverter(TVector.class, Double.class, Maths.TVECTOR_TO_DOUBLE);
-        registerConverter(Double.class, Expr.class, Maths.DOUBLE_TO_EXPR);
-        registerConverter(Expr.class, Double.class, Maths.EXPR_TO_DOUBLE);
+        registerConverter(Double.class, Complex.class, MathsBase.DOUBLE_TO_COMPLEX);
+        registerConverter(Complex.class, Double.class, MathsBase.COMPLEX_TO_DOUBLE);
+        registerConverter(Double.class, TVector.class, MathsBase.DOUBLE_TO_TVECTOR);
+        registerConverter(TVector.class, Double.class, MathsBase.TVECTOR_TO_DOUBLE);
+        registerConverter(Double.class, Expr.class, MathsBase.DOUBLE_TO_EXPR);
+        registerConverter(Expr.class, Double.class, MathsBase.EXPR_TO_DOUBLE);
 
-        registerConverter(Complex.class, TVector.class, Maths.COMPLEX_TO_TVECTOR);
-        registerConverter(TVector.class, Complex.class, Maths.TVECTOR_TO_COMPLEX);
-        registerConverter(Complex.class, Expr.class, Maths.COMPLEX_TO_EXPR);
-        registerConverter(Expr.class, Complex.class, Maths.EXPR_TO_COMPLEX);
+        registerConverter(Complex.class, TVector.class, MathsBase.COMPLEX_TO_TVECTOR);
+        registerConverter(TVector.class, Complex.class, MathsBase.TVECTOR_TO_COMPLEX);
+        registerConverter(Complex.class, Expr.class, MathsBase.COMPLEX_TO_EXPR);
+        registerConverter(Expr.class, Complex.class, MathsBase.EXPR_TO_COMPLEX);
     }
 
     public boolean isCompressCache() {

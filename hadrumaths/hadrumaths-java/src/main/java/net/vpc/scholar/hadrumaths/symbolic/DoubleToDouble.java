@@ -75,4 +75,19 @@ public interface DoubleToDouble extends DoubleDomainExpr {
     }
 
 
+//    default double apply(double x) {
+//        return computeDouble(x);
+//    }
+//
+//    default double[] apply(double[] x) {
+//        return computeDouble(x);
+//    }
+//
+//    default double apply(double x, double y) {
+//        return computeDouble(x, y);
+//    }
+//
+//    default double[][] apply(double[] x, double[] y) {
+//        return computeDouble(x, y);
+//    }
 }

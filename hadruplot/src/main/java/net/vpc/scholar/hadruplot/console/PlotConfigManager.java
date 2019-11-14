@@ -305,6 +305,7 @@ public class PlotConfigManager {
             PlotValue plotData = plotValueFactory.createPlotValue(any, builder);
             if (plotData != null) {
                 plottableData.add(plotData);
+                break; //TODO FIX ME
             }
         }
         Collections.sort(plottableData, new Comparator<PlotValue>() {

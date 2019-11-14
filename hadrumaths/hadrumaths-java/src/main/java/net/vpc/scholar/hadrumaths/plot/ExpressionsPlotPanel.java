@@ -1069,7 +1069,8 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     public double[] resolveX() {
         Domain d = getDomainOrNull();
         if (baseSamples == null) {
-            return d == null ? new double[0] : Maths.dtimes(d.xmin(), d.xmax(), getXPrecisionValue());
+            return d == null ? Maths.dtimes(0, 99,getXPrecisionValue())
+                    : Maths.dtimes(d.xmin(), d.xmax(), getXPrecisionValue());
         } else {
             if (d == null) {
                 if (baseSamples instanceof AbsoluteSamples) {
@@ -1195,32 +1196,29 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 double y = getFunctionYValue();
                 String[] titles = new String[exprs.length];
                 PlotDoubleConverter complexValue = PlotDoubleConverter.REAL;
-                HashSet<String> title = new HashSet<String>();
+                LinkedHashSet<String> title = new LinkedHashSet<String>();
                 for (int i = 0; i < exprs.length; i++) {
-                    titles[i] = getAxisExpression(exprs[i], ax).getTitle();
+                    DoubleToComplex expr = getAxisExpression(exprs[i], ax);
+                    titles[i] = expr.getTitle();
                     if (titles[i] == null) {
-                        titles[i] = (String) exprs[i].getTitle();
+                        titles[i] = exprs[i].getTitle();
                     }
                     if (titles[i] == null) {
-                        titles[i] = String.valueOf(i + 1);
+                        if(exprs.length==1){
+                            titles[i] = "Expr-"+ax;
+                        }else{
+                            titles[i] = "Expr-"+ (i + 1)+"-"+ax;
+                        }
                     }
-                    DoubleToComplex f = getAxisExpression(exprs[i], ax);
-                    yz[i] = f.computeComplex(x, new double[]{y})[0];
-//                for (int j = 0; j < yz[i].length; j++) {
-//                    if (yz[i][j].getImag() != 0) {
-//                        complexValue = PlotDoubleConverter.ABS;
-//                    }
-//                }
+                    yz[i] = expr.computeComplex(x, new double[]{y})[0];
                     complexValue = getComplexAsDouble();
                     colors.add(DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE[exp.sels[i] % DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE.length]);
-                    String t = exprs[i].toDM().getComponentTitle(ax.getRow(), ax.getColumn());
-                    if (t == null) {
-                        t = "[" + (ax.getRow() + 1) + "," + (ax.getColumn() + 1) + "]";
-                    }
-                    title.add(t);
+                    title.add(titles[i]);
                 }
 
-                PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(title.toString()).titles(titles);
+                PlotBuilder pb = Plot.nodisplay().plotType(plotType).converter(complexValue).title(
+                        String.join(",",title)
+                ).titles(titles);
                 if (this.model.getProperties() != null) {
                     for (Map.Entry<String, Object> ee : this.model.getProperties().entrySet()) {
                         pb.param(ee.getKey(), ee.getValue());
@@ -1611,6 +1609,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public DoubleToComplex getAxisExpression(Expr e, int r, int c) {
+        if(!e.isDM() && r==0 && c==0){
+            return e.toDC();
+        }
         DoubleToMatrix m = e.toDM();
         ComponentDimension d = m.getComponentDimension();
         if (d.rows > r && d.columns > c) {

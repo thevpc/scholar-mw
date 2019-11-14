@@ -72,7 +72,7 @@ public class CholeskyDecomposition implements java.io.Serializable {
             }
             d = A[j][j] - d;
             isspd = isspd && (d > 0.0);
-            L[j][j] = Maths.sqrt(Math.max(d, 0.0));
+            L[j][j] = MathsBase.sqrt(Math.max(d, 0.0));
             for (int k = j + 1; k < n; k++) {
                 L[j][k] = 0.0;
             }

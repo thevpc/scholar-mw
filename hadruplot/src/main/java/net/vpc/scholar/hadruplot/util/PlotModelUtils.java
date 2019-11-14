@@ -72,7 +72,12 @@ public class PlotModelUtils {
             if (!(builder.getSamples() instanceof AbsoluteSamples)) {
                 throw new IllegalArgumentException("Samples should be absolute");
             }
-            y = new double[][]{((AbsoluteSamples) builder.getSamples()).getY()};
+            AbsoluteSamples samples = (AbsoluteSamples) builder.getSamples();
+            if(samples.getDimension()==1){
+                y=new double[][]{{0}};
+            }else {
+                y = new double[][]{samples.getY()};
+            }
         }
         ValuesPlotModel mm = new ValuesPlotModel(builder.getTitle(), xtitle, ytitle, ztitle, builder.getTitles().toArray(new String[0]), x, y, z, zDoubleFunction, plotType, builder.getProperties())
                 .setLibraries(builder.getLibraries())
@@ -170,7 +175,7 @@ public class PlotModelUtils {
             aa = Samples.toAbsoluteSamples(builder.getSamples(), builder.getDomain());
         }
         double[] x = (aa == null ? null : aa.getX());
-        double[] y = (aa == null ? null : aa.getY());
+        double[] y = (aa == null || aa.getDimension()<2? null : aa.getY());
         PlotDoubleConverter c = builder.getConverter(PlotDoubleConverter.ABS);
         if (y == null) {
             y = new double[0];
@@ -283,5 +288,14 @@ public class PlotModelUtils {
                         ArrayUtils.box(z))));
         postConfigure(mm, builder);
         return mm;
+    }
+
+    public static double[] replaceInfinityWithNaN(double[] mul){
+        for (int i = 0; i < mul.length; i++) {
+            if(Double.isInfinite(mul[i])){
+                mul[i]=Double.NaN;
+            }
+        }
+        return mul;
     }
 }

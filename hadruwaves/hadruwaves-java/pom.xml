@@ -5,11 +5,11 @@
     <groupId>net.vpc.scholar</groupId>
     <artifactId>hadruwaves</artifactId>
     <name>net.vpc.scholar.hadruwaves</name>
-    <version>3.1.33</version>
+    <version>3.1.34</version>
     <packaging>jar</packaging>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.1.33</scholar-version>
+        <scholar-version>3.1.34</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>

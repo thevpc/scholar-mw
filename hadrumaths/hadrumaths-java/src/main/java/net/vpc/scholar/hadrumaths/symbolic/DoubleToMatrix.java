@@ -57,4 +57,19 @@ public interface DoubleToMatrix extends DoubleDomainExpr {
         return computeMatrix(x, y, z, (Domain) null, null);
     }
 
+//    default Matrix apply(double x) {
+//        return computeMatrix(x);
+//    }
+//
+//    default Matrix[] apply(double[] x) {
+//        return computeMatrix(x);
+//    }
+//
+//    default Matrix apply(double x, double y) {
+//        return computeMatrix(x, y);
+//    }
+//
+//    default Matrix[][] apply(double[] x, double[] y) {
+//        return computeMatrix(x, y);
+//    }
 }

@@ -155,6 +155,22 @@ class MathsArrays {
         return r;
     }
 
+    public static double[][] cross(double[] x, double[] y, Double2Filter filter) {
+        double[][] r = new double[x.length * y.length][2];
+        int p = 0;
+        for (double aX : x) {
+            for (double aY : y) {
+                if (filter == null || filter.accept(aX, aY)) {
+                    double[] v = r[p];
+                    v[0] = aX;
+                    v[1] = aY;
+                    p++;
+                }
+            }
+        }
+        return r;
+    }
+
     public static double[][] cross(double[] x, double[] y, double[] z) {
         double[][] r = new double[x.length * y.length * z.length][3];
         int p = 0;
@@ -177,11 +193,11 @@ class MathsArrays {
         for (double aX : x) {
             for (double aY : y) {
                 for (double aZ : z) {
-                    double[] v = new double[3];
-                    v[0] = aX;
-                    v[1] = aY;
-                    v[2] = aZ;
                     if (filter == null || filter.accept(aX, aY, aZ)) {
+                        double[] v = new double[3];
+                        v[0] = aX;
+                        v[1] = aY;
+                        v[2] = aZ;
                         r.add(v);
                     }
                 }

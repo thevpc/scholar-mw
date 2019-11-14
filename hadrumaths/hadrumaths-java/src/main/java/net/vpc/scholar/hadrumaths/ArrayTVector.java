@@ -62,9 +62,9 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
         if (rowType) {
             T[] e2 = ArrayUtils.newArray(getComponentType(), elements.length);
             System.arraycopy(elements, 0, e2, 0, e2.length);
-            return Maths.Config.getDefaultMatrixFactory(getComponentType()).newRowMatrix(e2);
+            return MathsBase.Config.getDefaultMatrixFactory(getComponentType()).newRowMatrix(e2);
         } else {
-            return Maths.Config.getDefaultMatrixFactory(getComponentType()).newColumnMatrix(elements);
+            return MathsBase.Config.getDefaultMatrixFactory(getComponentType()).newColumnMatrix(elements);
         }
     }
 
@@ -86,7 +86,7 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
 
 
     public void read(File file) throws IOException {
-        TMatrix<T> m = Maths.loadTMatrix(getComponentType(), file);
+        TMatrix<T> m = MathsBase.loadTMatrix(getComponentType(), file);
 
         elements = m.getColumnCount() == 0 ? m.getRow(0).toArray() : m.getColumn(0).toArray();
         rowType = m.getColumnCount() == 0;

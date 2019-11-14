@@ -491,6 +491,9 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         if (isScalarExpr() && (row != col || col != 0)) {
             return FunctionFactory.DZEROXY;
         }
+        if(row==0 && col==0 && !getArgument().isDM()){
+            return this;//getArgument();
+        }
         return newInstance(getArgument().toDM().getComponent(row, col));
     }
 

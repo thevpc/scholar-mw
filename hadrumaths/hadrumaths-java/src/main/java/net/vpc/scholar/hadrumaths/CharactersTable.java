@@ -62,6 +62,7 @@ public class CharactersTable {
     public static final String ν = nu;
     public static final String ο = omicron;
     public static final String ς = final_sigma;
+    public static final String λ = lambda;
 
     public static final String ϕ = PHI;
     public static final String Θ = THETA;

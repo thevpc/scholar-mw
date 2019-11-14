@@ -27,7 +27,7 @@ public class CopyImageToClipboardAction extends AbstractPlotAction implements Se
         BufferedImage image = Plot.getImage(plot);
         class MyClipboardOwner implements ClipboardOwner{
             public void lostOwnership( Clipboard clip, Transferable trans ) {
-                System.out.println( "Lost Clipboard Ownership" );
+
             }
         }
         MyClipboardOwner owner=new MyClipboardOwner();

@@ -6,11 +6,10 @@
 package net.vpc.scholar.hadrumaths
 
 
-import net.vpc.common.mon.ProgressMonitor
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.symbolic._
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix
-import net.vpc.scholar.hadruplot.{AbsoluteSamples, Samples}
+import net.vpc.scholar.hadruplot.{AbsoluteSamples, Plot, Samples}
 //import java.util
 
 import net.vpc.scholar
@@ -22,7 +21,6 @@ import scala.collection.{Iterable, Iterator}
 object MathScala {
 
   //  implicit def convertE[T](indexedSeq: IndexedSeq[T]): Array[T] = indexedSeq.toArray[T]
-
   type EMatrix = TMatrix[Expr];
   type EVector = TVector[Expr];
   type EList = TList[Expr];
@@ -42,6 +40,8 @@ object MathScala {
   //  def arr(x: ToDoubleArrayAware): Array[Double] = x.toDoubleArray()
   //
   //  def arr(x: Array[Double]): ToDoubleArrayAware = new ToDoubleArrayAwareConstant(x)
+
+  def Plot(): net.vpc.scholar.hadruplot.PlotBuilder = net.vpc.scholar.hadruplot.Plot.builder()
 
   def samples(x: ToDoubleArrayAware): Samples = Samples.absolute(x.toDoubleArray())
 
@@ -225,6 +225,7 @@ object MathScala {
     def *(v: Complex): Vector = Maths.vector(value.mul(v))
 
     def /(v: Complex): Vector = Maths.vector(value.div(v))
+
     def %(v: Complex): Vector = Maths.vector(value.rem(v))
 
     //    def ^ (v: Complex): Vector = value.pow(v)
@@ -408,6 +409,12 @@ object MathScala {
       e.appendAll(v)
       e;
     }
+    def ++(v: TList[Expr]): TList[Expr] = {
+      var e = Maths.elist();
+      e.append(Any.unwrap(value))
+      e.appendAll(v)
+      e;
+    }
 
     def -(v: Expr): Expr = sub(Any.unwrap(v))
 
@@ -450,6 +457,7 @@ object MathScala {
     def ||(v: Expr): Expr = Maths.or(value, Any.unwrap(v));
 
     def /(v: Expr): Expr = div(Any.unwrap(v))
+
     def %(v: Expr): Expr = rem(Any.unwrap(v))
 
     def apply(f: Tuple2[ParamExpr, Expr]): Expr = {
@@ -465,6 +473,16 @@ object MathScala {
     def apply(x: Double, y: Double): Complex = value.computeComplex(x, y)
 
     def apply(x: Array[Double], y: Array[Double]): Array[Array[Complex]] = value.computeComplex(x, y)
+  }
+
+  implicit class SDoubleToDouble(val value: DoubleToDouble) {
+    def apply(x: Double): Double = value.computeDouble(x)
+
+    def apply(x: Array[Double]): Array[Double] = value.computeDouble(x)
+
+    def apply(x: Double, y: Double): Double = value.computeDouble(x, y)
+
+    def apply(x: Array[Double], y: Array[Double]): Array[Array[Double]] = value.computeDouble(x, y)
   }
 
   implicit class SComplex(val value: Complex) extends Any(value, null, null) {
@@ -486,6 +504,7 @@ object MathScala {
     def *(v: Double): Complex = value.mul(v)
 
     def /(v: Double): Complex = value.div(v)
+
     def %(v: Double): Complex = value.rem(v)
 
     def ^^(v: Expr): Expr = value.pow(v);
@@ -497,6 +516,12 @@ object MathScala {
     def +(v: Expr): Expr = add(v)
 
     def :+(v: TList[Expr]): TList[Expr] = {
+      var e = Maths.elist();
+      e.append(value)
+      e.appendAll(v)
+      e;
+    }
+    def ++(v: TList[Expr]): TList[Expr] = {
       var e = Maths.elist();
       e.append(value)
       e.appendAll(v)
@@ -516,6 +541,7 @@ object MathScala {
     def ***(v: Expr): Complex = scholar.hadrumaths.Maths.scalarProduct(null, value, Any.unwrap(v));
 
     def /(v: Expr): Expr = div(Any.unwrap(v))
+
     def %(v: Expr): Expr = rem(Any.unwrap(v))
 
     def apply(f: Tuple2[ParamExpr, Expr]): Expr = {
@@ -523,23 +549,23 @@ object MathScala {
     }
   }
 
-//  implicit class SObjectCacheManager(val value: PersistenceCache) {
-//
-//    def eval[T](key: String, monitor: ProgressMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
-//      value.evaluate(key, monitor, new CacheEvaluator {
-//        override def evaluate(args: Array[Object]): Object = a(args)
-//      }, anyParam: _*)
-//    }
-//
-//    //    def process[T](key: String, old: T, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
-//    //      if (old != null) {
-//    //        return old;
-//    //      }
-//    //      value.evaluate(key, monitor, new Evaluator {
-//    //        override def evaluate(args: Array[Object]): Object = a(args)
-//    //      }, anyParam: _*)
-//    //    }
-//  }
+  //  implicit class SObjectCacheManager(val value: PersistenceCache) {
+  //
+  //    def eval[T](key: String, monitor: ProgressMonitor, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
+  //      value.evaluate(key, monitor, new CacheEvaluator {
+  //        override def evaluate(args: Array[Object]): Object = a(args)
+  //      }, anyParam: _*)
+  //    }
+  //
+  //    //    def process[T](key: String, old: T, a: (AnyRef *) => AnyRef, anyParam: Object*): T = {
+  //    //      if (old != null) {
+  //    //        return old;
+  //    //      }
+  //    //      value.evaluate(key, monitor, new Evaluator {
+  //    //        override def evaluate(args: Array[Object]): Object = a(args)
+  //    //      }, anyParam: _*)
+  //    //    }
+  //  }
 
   implicit class SJList[T](val value: java.util.List[T]) {
     def transform[U](f: (Int, T) => U): java.util.List[U] = {
@@ -712,6 +738,10 @@ object MathScala {
       //TODO FIX ME
       return value.concat(v).asInstanceOf[TList[T]]
     }
+    def ++(v: TList[T]): TList[T] = {
+      //TODO FIX ME
+      return value.concat(v).asInstanceOf[TList[T]]
+    }
   }
 
   implicit class STVectorExpr(value: TVector[Expr]) extends STVector[Expr](value) {
@@ -855,6 +885,18 @@ object MathScala {
       value
     }
 
+    def ++(v: TList[Expr]): TList[Expr] = {
+      var e = Maths.elist();
+      e.appendAll(value)
+      e.appendAll(v)
+      e;
+    }
+
+    def ++(v: Expr): TList[Expr] = {
+      value.append(v);
+      value
+    }
+
     def sumc = {
       var c = Complex.ZERO;
       var i = 0;
@@ -901,6 +943,7 @@ object MathScala {
     def *(v: java.lang.Double): TList[java.lang.Double] = Maths.mul[java.lang.Double](value, v)
 
     def /(v: java.lang.Double): TList[java.lang.Double] = scholar.hadrumaths.Maths.div[java.lang.Double](value, v)
+
     def %(v: java.lang.Double): TList[java.lang.Double] = scholar.hadrumaths.Maths.rem[java.lang.Double](value, v)
 
     def !!(): TList[java.lang.Double] = value;
@@ -913,8 +956,20 @@ object MathScala {
 
     }
 
+    def ++(v: java.lang.Double): TList[java.lang.Double] = {
+      value.append(v)
+      value
+    }
+    def ++(v: TList[java.lang.Double]): TList[java.lang.Double] = {
+      value.appendAll(v)
+      value
+    }
     def :+(v: java.lang.Double): TList[java.lang.Double] = {
       value.append(v)
+      value
+    }
+    def :+(v: TList[java.lang.Double]): TList[java.lang.Double] = {
+      value.appendAll(v)
       value
     }
 
@@ -923,10 +978,6 @@ object MathScala {
       value
     }
 
-    def :+(v: TList[java.lang.Double]): TList[java.lang.Double] = {
-      value.appendAll(v)
-      value
-    }
 
     def apply(row: Int): java.lang.Double = {
       value.get(row);
@@ -967,14 +1018,6 @@ object MathScala {
     //      }
     //    }
 
-    def ::+(v: TList[java.lang.Double]): TList[java.lang.Double] = {
-      Maths.concat(value, v)
-    }
-
-    def ::+(v: java.lang.Double): TList[java.lang.Double] = {
-      value.append(v);
-      value
-    }
 
     def sumc = {
       var c = Complex.ZERO;
@@ -1036,6 +1079,7 @@ object MathScala {
     def *(v: Expr): Expr = toComplex.mul(v.value)
 
     def /(v: Expr): Expr = toComplex.div(v.value)
+
     def %(v: Expr): Expr = toComplex.rem(v.value)
 
     def toComplex: Complex = Complex.valueOf(value)
@@ -1049,6 +1093,7 @@ object MathScala {
     def *(v: Complex): Complex = toComplex.mul(v)
 
     def /(v: Complex): Complex = toComplex.div(v)
+
     def %(v: Complex): Complex = toComplex.rem(v)
 
     def +(v: Expr): Expr = toComplex.add(v.value)
@@ -1058,6 +1103,7 @@ object MathScala {
     def *(v: Expr): Expr = toComplex.mul(v.value)
 
     def /(v: Expr): Expr = toComplex.div(v.value)
+
     def %(v: Expr): Expr = toComplex.rem(v.value)
 
     def toComplex: Complex = Complex.valueOf(value)

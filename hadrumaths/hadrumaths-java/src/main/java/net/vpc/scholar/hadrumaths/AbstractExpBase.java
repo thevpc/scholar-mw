@@ -190,43 +190,43 @@ public abstract class AbstractExpBase implements Expr {
         if (other.isComplexExpr()) {
             return mul(other.toComplex()).mul(other.getDomain());
         }
-        return Maths.mul(this, other);
+        return MathsBase.mul(this, other);
     }
 
     public Expr add(int other) {
-        return Maths.add(this, other);
+        return MathsBase.add(this, other);
     }
 
     public Expr add(double other) {
-        return Maths.add(this, other);
+        return MathsBase.add(this, other);
     }
 
     public Expr add(Expr other) {
-        return Maths.add(this, other);
+        return MathsBase.add(this, other);
     }
 
     public Expr div(int other) {
-        return Maths.div(this, other);
+        return MathsBase.div(this, other);
     }
 
     public Expr div(double other) {
-        return Maths.div(this, other);
+        return MathsBase.div(this, other);
     }
 
     public Expr div(Expr other) {
-        return Maths.div(this, other);
+        return MathsBase.div(this, other);
     }
 
     public Expr sub(int other) {
-        return Maths.sub(this, other);
+        return MathsBase.sub(this, other);
     }
 
     public Expr sub(double other) {
-        return Maths.sub(this, other);
+        return MathsBase.sub(this, other);
     }
 
     public Expr sub(Expr other) {
-        return Maths.sub(this, other);
+        return MathsBase.sub(this, other);
     }
 
 //    public Expr mul(Domain domain) {
@@ -235,7 +235,7 @@ public abstract class AbstractExpBase implements Expr {
 //    }
 
     public Expr mul(Geometry domain) {
-        return mul(Maths.expr(domain));
+        return mul(MathsBase.expr(domain));
     }
 
     public final Expr multiply(Domain domain) {
@@ -251,27 +251,27 @@ public abstract class AbstractExpBase implements Expr {
     }
 
     public Expr neg() {
-        return Maths.neg(this);
+        return MathsBase.neg(this);
     }
 
     @Override
     public Expr rdiv(double other) {
-        return Maths.expr(other).div(this);
+        return MathsBase.expr(other).div(this);
     }
 
     @Override
     public Expr rmul(double other) {
-        return Maths.expr(other).mul(this);
+        return MathsBase.expr(other).mul(this);
     }
 
     @Override
     public Expr radd(double other) {
-        return Maths.expr(other).add(this);
+        return MathsBase.expr(other).add(this);
     }
 
     @Override
     public Expr rsub(double other) {
-        return Maths.expr(other).sub(this);
+        return MathsBase.expr(other).sub(this);
     }
 
     @Override
@@ -284,12 +284,12 @@ public abstract class AbstractExpBase implements Expr {
         if (domain.isUnconstrained()) {
             return this;
         }
-        return Maths.mul(domain, this);
+        return MathsBase.mul(domain, this);
     }
 
     @Override
     public Expr mul(double other) {
-        return Maths.mul(DoubleValue.valueOf(other), this);
+        return MathsBase.mul(DoubleValue.valueOf(other), this);
     }
 
     @Override
@@ -297,7 +297,7 @@ public abstract class AbstractExpBase implements Expr {
         if (other.isDouble()) {
             return mul(other.getReal());
         }
-        return Maths.mul(other, this);
+        return MathsBase.mul(other, this);
     }
 
     @Override
@@ -322,12 +322,12 @@ public abstract class AbstractExpBase implements Expr {
 
     @Override
     public Expr simplify() {
-        return Maths.simplify(this);
+        return MathsBase.simplify(this);
     }
 
     @Override
     public Expr normalize() {
-        return Maths.normalize(this);
+        return MathsBase.normalize(this);
     }
 
     @Override

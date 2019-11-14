@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class DumpManager {
     private final DumpDelegate simpleArrayHandler = new ArrayDumpDelegate();
+    private final DumpDelegate primitiveArrayHandler = new PrimitiveArrayDumpDelegate();
     private DumpDelegate nullHandler = new NullDumpDelegate();
     private DumpDelegate defaultHandler = new ToStringDumpDelegate();
     private DumpDelegate arrayHandler = new ArrayDumpDelegate();
@@ -70,11 +71,22 @@ public class DumpManager {
         }
     }
 
+    public boolean isPrimitiveArray(Class c) {
+        if(c.isArray()){
+            Class p = c.getComponentType();
+            return p.isPrimitive() || isPrimitiveArray(p);
+        }
+        return false;
+    }
+
     public DumpDelegate getDumpDelegate(Object o, boolean simple) {
         if (o == null) {
             return nullHandler;
         }
         if (o.getClass().isArray()) {
+            if(isPrimitiveArray(o.getClass())){
+                return primitiveArrayHandler;
+            }
             if (simple) {
                 return simpleArrayHandler;
             }

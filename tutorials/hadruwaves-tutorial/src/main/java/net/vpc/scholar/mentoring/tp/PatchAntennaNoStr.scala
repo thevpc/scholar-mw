@@ -85,19 +85,19 @@ object PatchAntennaNoStr {
     var gpDef = ((cos((2 * p + 1) * PI * X / (2 * l)))  * lineDomain).setTitle("gl${p}")
     gp = seq(gpDef, p, 0,P - 1).map((i, e) => e.normalize()); //.setName("p=" + pp + ";" + "q=" + qq));
 
-    var fmnDef = If(t === TE, n / b, -m / a) *
+    val fmnDef = If(t === TE, n / b, -m / a) *
       sqrt(2 * If(m <> 0 && n <> 0, 2, 1) / (a * b * (sqr(n * PI / b) + sqr(m * PI / a)))) *
       sin((n * PI / b) * (Y - box.ymin)) * cos((m * PI / a) * (X - box.xmin)) * box
     fmn = seq(fmnDef, m, N - 1, n, N - 1, t, 1, (mm, nn, pp) => (pp == TE && (nn != 0)) || (pp == TM && (mm != 0 && nn != 0))) !!;
 
     zmn = columnVector(fmn.size, (i:Int)=>{
-      var mm = fmn(i).getIntProperty("m")
-      var nn = fmn(i).getIntProperty("n")
-      var t = fmn(i).getIntProperty("t")
-      var gammalomn = csqrt(sqr(mm * PI / a) + sqr(nn * PI / b) - sqr(k0) * 1)
-      var ylomn = if (t == TE) (gammalomn / (I * omega * U0)) else (I * omega * (EPS0 * 1) / gammalomn);
-      var gammaccmn = csqrt(sqr(mm * PI / a) + sqr(nn * PI / b) - sqr(k0) * epsr)
-      var yccmn = if (t == TE) (gammaccmn * cotanh(gammaccmn * ep) / (I * omega * U0)) else (I * omega * EPS0 * epsr) * cotanh(gammaccmn * ep) / gammaccmn;
+      val mm = fmn(i).getIntProperty("m")
+      val nn = fmn(i).getIntProperty("n")
+      val t = fmn(i).getIntProperty("t")
+      val gammalomn = csqrt(sqr(mm * PI / a) + sqr(nn * PI / b) - sqr(k0) * 1)
+      val ylomn = if (t == TE) (gammalomn / (I * omega * U0)) else (I * omega * (EPS0 * 1) / gammalomn);
+      val gammaccmn = csqrt(sqr(mm * PI / a) + sqr(nn * PI / b) - sqr(k0) * epsr)
+      val yccmn = if (t == TE) (gammaccmn * cotanh(gammaccmn * ep) / (I * omega * U0)) else (I * omega * EPS0 * epsr) * cotanh(gammaccmn * ep) / gammaccmn;
       val vzmn = complex(1 / (ylomn + yccmn))
       vzmn
     })

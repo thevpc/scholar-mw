@@ -600,7 +600,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
             return ONE;
         }
         if (isReal()) {
-            return Complex.valueOf(Maths.sincard(getReal()));
+            return Complex.valueOf(MathsBase.sincard(getReal()));
         }
         return sin().div(this);
     }

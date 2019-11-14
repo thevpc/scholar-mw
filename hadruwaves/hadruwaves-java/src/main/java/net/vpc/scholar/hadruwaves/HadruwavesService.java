@@ -6,6 +6,7 @@ import net.vpc.common.util.Converter;
 import net.vpc.scholar.hadrumaths.HadrumathsService;
 import net.vpc.scholar.hadrumaths.HadrumathsServiceDesc;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadruplot.Plot;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
@@ -28,7 +29,7 @@ public class HadruwavesService implements HadrumathsService {
     @Override
     public void installService() {
         log.log(Level.INFO, "Initializing Hadruwaves component...(hadruwaves version "+ getVersion()+")");
-        Maths.Config.addConfigChangeListener("cacheEnabled", new PropertyChangeListener() {
+        MathsBase.Config.addConfigChangeListener("cacheEnabled", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 ModeIndex.updateCache();

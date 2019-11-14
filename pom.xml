@@ -5,7 +5,7 @@
     <groupId>net.vpc.scholar</groupId>
     <artifactId>scholar-mw</artifactId>
     <name>net.vpc.scholar</name>
-    <version>3.1.33</version>
+    <version>3.1.34</version>
     <packaging>pom</packaging>
     <modules>
         <module>hadruplot</module>

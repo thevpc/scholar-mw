@@ -1,11 +1,14 @@
 package net.vpc.scholar.hadruplot;
 
 import net.vpc.common.strings.StringUtils;
+import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.DoubleArrayList;
 import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
+import net.vpc.scholar.hadruplot.console.PlotConsole;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -882,6 +885,37 @@ public class PlotBuilder {
 
     public String getUpdateName() {
         return updateName;
+    }
+
+    public  PlotConsole console() {
+        final PlotConsole plotConsole = new PlotConsole();
+        try {
+            SwingUtilities3.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    plotConsole.show();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return plotConsole;
+    }
+
+    public  PlotConsole console(boolean autoSave) {
+        return new PlotConsole(autoSave);
+    }
+
+    public  PlotConsole console(File folder, boolean autoSave) {
+        return new PlotConsole(folder, autoSave);
+    }
+
+    public  PlotConsole console(File folder) {
+        return new PlotConsole(folder);
+    }
+
+    public  PlotConsole console(String title, File folder) {
+        return new PlotConsole(title, folder);
     }
 
 }

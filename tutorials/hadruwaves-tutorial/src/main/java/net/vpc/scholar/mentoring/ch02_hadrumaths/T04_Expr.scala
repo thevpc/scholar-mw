@@ -12,17 +12,20 @@ import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._
 
 object T04_Expr extends App{
-//  println(java.util.Arrays.toString(dsteps(1,1,0.1)))
-//  if (true) System.exit(0)
-  var n=param("n")
-  var f=(n+1)*X
-  var g=sin(n*X)
-  var f0=f(n->0.0)
-  var f1=f(n->1.0)
-  Plot.title("f0").plot(f0)
-  Plot.title("f1").plot(f1)
-  var all=seq(f,n,dsteps(5,20))
-  var f5=all(0)
-  all=all:+seq(g,n,dsteps(1,10))
-  Plot.title("f*").plot(all)
+
+  var f=sin(X)
+  Plot.plot(f)
+
+//  var fx=X+î
+////  derive(fx,X,Y)
+//  var fxc=DC(fx) //Double To Complex
+//  println(fxc(3.5))
+//  println(fxc(3.5,3))
+//
+//  var fxy=X+Y
+//  var fxyd=DD(fx) //Double To Double
+////  println(fxyd(3.5))
+////  println(fxyd(3.5,3))
+//
+//  Plot.title("f").plot(fx)
 }

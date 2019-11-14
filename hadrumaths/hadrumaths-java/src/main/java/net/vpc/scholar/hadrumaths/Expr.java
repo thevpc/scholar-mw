@@ -76,7 +76,7 @@ public interface Expr extends Serializable {
      *
      * @return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
      */
-    default Complex toComplex(){
+    default Complex toComplex() {
         throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
     }
 
@@ -87,26 +87,26 @@ public interface Expr extends Serializable {
      */
     double toDouble();
 
-    default Matrix toMatrix(){
+    default Matrix toMatrix() {
         throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
     }
 
     boolean isDC();
 
-    default DoubleToComplex toDC(){
+    default DoubleToComplex toDC() {
         if (!isDC()) {
             throw new ClassCastException("Unable to Cast to DC :: " + getClass().getName() + " = " + toString());
         }
-        return (DoubleToComplex)this;
+        return (DoubleToComplex) this;
     }
 
     boolean isDD();
 
-    default DoubleToDouble toDD(){
+    default DoubleToDouble toDD() {
         if (!isDD()) {
             throw new ClassCastException("Unable to Cast to DD :: " + getClass().getName() + " = " + toString());
         }
-        return (DoubleToDouble)this;
+        return (DoubleToDouble) this;
     }
 
 //    boolean isDDx();
@@ -115,20 +115,20 @@ public interface Expr extends Serializable {
 
     boolean isDV();
 
-    default DoubleToVector toDV(){
+    default DoubleToVector toDV() {
         if (!isDV()) {
             throw new ClassCastException("Unable to Cast to DV :: " + getClass().getName() + " = " + toString());
         }
-        return (DoubleToVector)this;
+        return (DoubleToVector) this;
     }
 
     boolean isDM();
 
-    default DoubleToMatrix toDM(){
+    default DoubleToMatrix toDM() {
         if (!isDM()) {
             throw new ClassCastException("Unable to Cast to DM :: " + getClass().getName() + " = " + toString());
         }
-        return (DoubleToMatrix)this;
+        return (DoubleToMatrix) this;
     }
 
     boolean isZero();
@@ -276,4 +276,14 @@ public interface Expr extends Serializable {
 
     Expr rsub(double other);
 
+    default TList<Expr> asSeq(DoubleParamFromTo d) {
+        return MathsBase.seq(this, d.getParam(), d.values());
+    }
+
+    default TList<Expr> asSeq(DoubleParamFromTo2 d) {
+        return MathsBase.seq(this,
+                new DoubleParam[]{d.getParam1(), d.getParam2()},
+                d.values()
+        );
+    }
 }

@@ -1,11 +1,10 @@
 package net.vpc.scholar.mentoring.ch0x.s2
 
-import net.vpc.scholar.hadruplot.Plot
+import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadrumaths.Maths._
+import net.vpc.scholar.hadrumaths._
 
 object ExampleBSpline3 {
-  import net.vpc.scholar.hadrumaths.MathScala._
-  import net.vpc.scholar.hadrumaths.Maths._
-  import net.vpc.scholar.hadrumaths._
 
 
   def main(args: Array[String]): Unit = {

@@ -118,11 +118,11 @@ public class ArrayVector extends AbstractVector implements Serializable {
 
     @Override
     public TypeName<Complex> getComponentType() {
-        return Maths.$COMPLEX;
+        return MathsBase.$COMPLEX;
     }
 
     @Override
     public VectorSpace<Complex> getComponentVectorSpace() {
-        return Maths.COMPLEX_VECTOR_SPACE;
+        return MathsBase.COMPLEX_VECTOR_SPACE;
     }
 }

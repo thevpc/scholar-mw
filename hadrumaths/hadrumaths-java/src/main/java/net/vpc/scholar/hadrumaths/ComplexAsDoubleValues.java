@@ -83,6 +83,20 @@ public class ComplexAsDoubleValues {
         }
     };
 
+    public static final PlotDoubleConverter ARG_DEG = new PlotDoubleConverter.AbstractPlotDoubleConverter("ARG_DEG",true) {
+        @Override
+        public double toDouble(Object c) {
+            if(c==null){
+                return Double.NaN;
+            }
+            return ((Complex)c).argdbl()/Math.PI*180;
+        }
+        @Override
+        public Object toComplex(double d) {
+            return Complex.valueOf(d);
+        }
+    };
+
     public static void init(){
 
     }

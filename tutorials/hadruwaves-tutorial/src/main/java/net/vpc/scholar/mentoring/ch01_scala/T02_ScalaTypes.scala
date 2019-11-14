@@ -24,6 +24,7 @@ object T02_ScalaTypes extends App{
   // ARRAYS
   // int array of size 5 initialized with 1, ...5 values
   var b1 : Array[Int] =Array(1,2,3,4,5)
+  //int[] b1={1,2,3,4,5}
   println(b1(0)) // prints first element
   println(b1.length) // prints 5, le array length
   // b1(0)++  not allowed

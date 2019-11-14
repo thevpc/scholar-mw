@@ -42,7 +42,7 @@ public class DefaultPlotValueFactory implements PlotValueFactory {
         if (obj instanceof File) {
             return createPlotValue("file", obj);
         }
-        return createPlotValue("object", obj);
+        return  null;//createPlotValue("object", obj); //FIX ME
     }
 
 

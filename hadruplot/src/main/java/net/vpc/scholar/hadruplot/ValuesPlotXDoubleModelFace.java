@@ -52,7 +52,9 @@ public class ValuesPlotXDoubleModelFace {
                         initialIndexesList.add(i);
                         double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
                         double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
-                        yAxisList.add(PlotModelUtils.mul(yAxi, ymultiplier));
+                        //jfreechart does not accept infinity
+                        double[] mul = PlotModelUtils.replaceInfinityWithNaN(PlotModelUtils.mul(yAxi, ymultiplier));
+                        yAxisList.add(mul);
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                         if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxi.length) {
                             if (xAxisList.isEmpty() || yAxi.length != xAxisList.get(xAxisList.size() - 1).length) {
@@ -161,7 +163,7 @@ public class ValuesPlotXDoubleModelFace {
                             initialIndexesList.add(i);
                             double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
                             double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
-                            yAxisList.add(PlotModelUtils.mul(yAxi, ymultiplier));
+                            yAxisList.add(PlotModelUtils.replaceInfinityWithNaN(PlotModelUtils.mul(yAxi, ymultiplier)));
                             yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                             if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxi.length) {
                                 if (xAxisList.isEmpty() || yAxi.length != xAxisList.get(xAxisList.size() - 1).length) {

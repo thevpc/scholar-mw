@@ -415,7 +415,7 @@ public final class Plot {
 
         for (PlotFileType plotFileType : PlotConfigManager.getPlotFileTypes()) {
             for (String extension : plotFileType.getExtensions()) {
-                if (extension.equalsIgnoreCase(extension)) {
+                if (extension.equalsIgnoreCase(preferredExtension)) {
                     plotFileType.save(file, plotProvider);
                     return;
                 }
@@ -460,9 +460,6 @@ public final class Plot {
         }
     }
 
-    private static void saveDataFIGOBJ(File file, PlotModelProvider plotProvider) throws IOException {
-    }
-
     public static JPopupMenu buildJPopupMenu(PlotComponentPanel mainComponent, final PlotModelProvider modelProvider) {
         JPopupMenu popupMenu = mainComponent.getPopupMenu();
         if (popupMenu != null) {
@@ -494,11 +491,6 @@ public final class Plot {
     }
 
     public static JPopupMenu buildJPopupMenu(final JPopupMenu componentPopupMenu, final PlotModelProvider modelProvider) {
-        for (Component component : componentPopupMenu.getComponents()) {
-            if (component instanceof JMenuItem && ((JMenuItem) component).getText().equals("Configure Series")) {
-                System.out.println("Why");
-            }
-        }
         componentPopupMenu.addSeparator();
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         boolean enableViewMenu = true;

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.common.util.DoubleFilter;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 
@@ -133,4 +134,7 @@ public class DoubleParam extends ParamExpr implements Cloneable {
         return new DC2DV(this);
     }
 
+    public DoubleParamFromTo from(double from) {
+        return new DoubleParamFromTo(this, from,from,1,null);
+    }
 }
