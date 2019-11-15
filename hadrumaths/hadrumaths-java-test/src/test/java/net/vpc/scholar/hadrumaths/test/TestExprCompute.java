@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.test;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadruplot.Plot;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,13 +23,25 @@ public class TestExprCompute {
         Any three = any(3);
         Any a= (two.mul(n).add(one).div(two).mul(PI).mul(X).cos()).mul((three.mul(m).sub(one).div(two).mul(PI).mul(Y).sin()));
         Domain d=Domain.forPoints(0,0,Math.PI,Math.PI);
-        double[] xtimes = d.xtimes(50);
-        double[] ytimes = d.ytimes(50);
+        double[] xtimes = d.xtimes(150);
+        double[] ytimes = d.ytimes(150);
         double nn=1;
         double mm=1;
         double[][] val1 = a.setParam("n",nn).setParam("m",mm).computeDouble(xtimes, ytimes, d, null);
         double[][] val2 = compute(xtimes, ytimes, mm, nn, d);
-        Assert.assertArrayEquals(val1,val2);
+//        Plot.plot(val1);
+//        Plot.plot(val2);
+//        if(true){
+//            Object tt=new Object();
+//            synchronized (tt){
+//                try {
+//                    tt.wait();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        Assert.assertArrayEquals(pzero(val1),pzero(val2));
 //        Plot.asMatrix().plot(val1);
 //        Plot.asMatrix().plot(val2);
 //        Object o=new Object();
@@ -39,6 +52,17 @@ public class TestExprCompute {
 //                e.printStackTrace();
 //            }
 //        }
+    }
+    private double[][] pzero(double[][] r){
+        for (int i = 0; i < r.length; i++) {
+            for (int j = 0; j < r[i].length; j++) {
+                double v=r[i][j];
+                if(v==0 || -v==0){
+                    r[i][j]=0;
+                }
+            }
+        }
+        return r;
     }
 
     public double[][] compute(double[] x, double[] y, double n, double m,Domain d){

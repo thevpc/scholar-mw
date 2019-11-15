@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._
 
-object T07_ScalarProducts extends App{
+object T06_ScalarProducts extends App{
   var n=param("n")
   var f = seq(n * X, n, 1, 5) * II(0.0->10.0)
   var g = seq(sin(n * X), n, 1, 5)* II(0.0->10.0)

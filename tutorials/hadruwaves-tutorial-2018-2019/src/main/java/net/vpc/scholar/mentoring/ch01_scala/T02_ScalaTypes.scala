@@ -24,13 +24,14 @@ object T02_ScalaTypes extends App{
   // ARRAYS
   // int array of size 5 initialized with 1, ...5 values
   var b1 : Array[Int] =Array(1,2,3,4,5)
+  //int[] b1={1,2,3,4,5}
   println(b1(0)) // prints first element
   println(b1.length) // prints 5, le array length
   // b1(0)++  not allowed
   b1(0)=b1(0)+1 //increments the first element
 
   //-------------------------------
-  // MULTI DIMENTIONAL ARRAYS
+  // MULTI DIMENSIONAL ARRAYS
   // int array of size 5 initialized with 1, ...5 values
   var b2 : Array[Array[Double]] =Array.ofDim[Double](2,3)
   println(b2(0)(0)) // prints first element

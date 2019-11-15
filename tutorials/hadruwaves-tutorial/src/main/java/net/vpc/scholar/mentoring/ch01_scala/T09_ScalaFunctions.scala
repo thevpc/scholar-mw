@@ -1,7 +1,5 @@
 package net.vpc.scholar.mentoring.ch01_scala
 
-import net.vpc.scholar.mentoring.ch01_scala.T04_ScalaDataFlows.i
-
 object T09_ScalaFunctions {
 
   def main(args: Array[String]): Unit = {

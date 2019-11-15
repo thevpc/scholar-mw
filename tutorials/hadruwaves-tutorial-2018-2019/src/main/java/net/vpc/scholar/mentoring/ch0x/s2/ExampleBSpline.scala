@@ -10,7 +10,6 @@ import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadruplot.Plot
-
 object ExampleBSpline extends App{
   var d = domain(0.0 -> 10.0)
   var ksi = d.xtimes(10)

@@ -7,7 +7,8 @@
 package net.vpc.scholar.mentoring.ch0x.s3
 
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadrumaths.plot._
+import net.vpc.scholar.hadruplot._
+import net.vpc.scholar.hadrumaths.util.dump._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadruplot.{Plot, PlotComponent}
 

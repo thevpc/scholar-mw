@@ -11,6 +11,7 @@ import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadruplot._
 import net.vpc.scholar.hadrumaths.util.dump._
+import net.vpc.scholar.hadruplot.{Plot, PlotComponent}
 
 object ExampleFDTDYee {
   //solve g= -u''

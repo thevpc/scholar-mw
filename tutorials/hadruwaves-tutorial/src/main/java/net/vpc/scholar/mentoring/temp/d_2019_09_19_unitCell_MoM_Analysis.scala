@@ -63,7 +63,7 @@ object d_2019_09_19_unitCell_MoM_Analysis {
     Plot.title("Essai").domain(dCell).plot(essai)
 //    if(true)
 //    return
-// structure defintion: four periodic walls,
+// structure definition: four periodic walls,
     var str=MomStructure.PPPP(dCell,freq,MN,
       BoxSpaceFactory.matchedLoad(1),
       BoxSpaceFactory.matchedLoad(1))

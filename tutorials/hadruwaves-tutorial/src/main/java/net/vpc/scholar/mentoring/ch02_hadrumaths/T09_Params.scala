@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
 
-object T06_Params extends App{
+object T09_Params extends App{
   var n=param("n")
 
   //one param function

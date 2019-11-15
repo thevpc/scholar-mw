@@ -26,8 +26,8 @@ object Antenne1 extends App{
  var glxs=seq(glx,t,0,2)
  //concat !
  var g=gpxs ++ glxs
- Plot.title("Essai Patch").plot(gpxs)
- Plot.title("Essai Ligne").plot(glxs)
+// Plot.title("Essai Patch").plot(gpxs)
+// Plot.title("Essai Ligne").plot(glxs)
  val m=param("m")
  val n=param("n")
  //var u=1 si m=n=0 sinon u=2
@@ -39,7 +39,10 @@ object Antenne1 extends App{
  )
  var B=columnVector(g.size,(i: Int)=> complex(E0 ** g(i)))
 
- var A=matrix(g.size,(i: Int,j: Int )=> î)
+ var A=matrix(g.size,(i: Int,j: Int )=> î) //should complete me!
+
+ Plot.title("B").plot(B)
+ Plot.title("A").plot(A)
 
  var Jx=inv(A)*B
 

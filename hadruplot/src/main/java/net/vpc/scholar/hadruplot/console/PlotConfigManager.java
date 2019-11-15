@@ -6,10 +6,9 @@ import net.vpc.scholar.hadruplot.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
+
 import net.vpc.scholar.hadruplot.util.DefaultValuesPlotModelPopupFactory;
 
 public class PlotConfigManager {
@@ -305,7 +304,6 @@ public class PlotConfigManager {
             PlotValue plotData = plotValueFactory.createPlotValue(any, builder);
             if (plotData != null) {
                 plottableData.add(plotData);
-                break; //TODO FIX ME
             }
         }
         Collections.sort(plottableData, new Comparator<PlotValue>() {
@@ -314,6 +312,9 @@ public class PlotConfigManager {
                 return -Integer.compare(o1.getPriority(),o2.getPriority());
             }
         });
+        if(plottableData.size()>1){
+            return Arrays.asList(plottableData.get(0));
+        }
         return plottableData;
     }
 }

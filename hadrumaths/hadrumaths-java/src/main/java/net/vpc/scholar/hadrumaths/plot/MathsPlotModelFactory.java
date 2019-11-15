@@ -41,9 +41,21 @@ public class MathsPlotModelFactory implements PlotModelFactory {
             }
             case "number[][]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
-                builder.asReal();
                 boolean matrix = "true".equals(data.get("matrix"));
-                return PlotModelUtils._plotComplexArray2((Complex[][]) oo.toArray(data.getValue(), Complex[][].class), matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder,complexType);
+                Complex[][] z = (Complex[][]) oo.toArray(data.getValue(), Complex[][].class);
+                boolean real=true;
+                for (int i = 0; i < z.length; i++) {
+                    for (int j = 0; j < z[i].length; j++) {
+                        if(!z[i][j].isReal()){
+                            real=false;
+                            break;
+                        }
+                    }
+                }
+                if(real){
+                    builder.asReal();
+                }
+                return PlotModelUtils._plotComplexArray2(z, matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder,complexType);
             }
             case "expr[]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;

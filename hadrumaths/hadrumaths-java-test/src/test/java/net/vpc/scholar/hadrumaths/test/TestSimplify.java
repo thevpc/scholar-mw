@@ -40,7 +40,7 @@ public class TestSimplify {
         Expr e1 = cos(X.mul(3)).mul(domain(0, 1, 0, 1));
         Expr e21 = e1.simplify();
         System.out.println(e21);
-        Assert.assertEquals(("cos((3.0 * X * domain(0->1, 0->1)))"), e21.toString());
+        Assert.assertEquals(("cos((3.0 * X * domain(0.0->1.0, 0.0->1.0)))"), e21.toString());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TestSimplify {
         Expr e1 = cos(X.mul(3)).mul(cos(Y.mul(3))).mul(domain(0, 1, 0, 1));
         Expr e21 = Maths.Config.getIntegrationOperator().getExpressionRewriter().rewriteOrSame(e1);
         System.out.println(e21);
-        Assert.assertEquals(("cos(3.0 * X) * cos(3.0 * Y) * domain(0->1, 0->1)"),e21.toString());
+        Assert.assertEquals(("cos(3.0 * X) * cos(3.0 * Y) * domain(0.0->1.0, 0.0->1.0)"),e21.toString());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TestSimplify {
             }
         });
         Assert.assertEquals(3, count.getPartialModificationInvocationCount());
-        Assert.assertEquals(10, count.getUnmodifiedInvocationCount());
+        Assert.assertEquals(6, count.getUnmodifiedInvocationCount());
     }
 
     @Test
@@ -79,8 +79,9 @@ public class TestSimplify {
             }
         });
         System.out.println(count);
+        Assert.assertEquals(8, count.getTotalInvocationCount());
         Assert.assertEquals(3, count.getPartialModificationInvocationCount());
-        Assert.assertEquals(6, count.getUnmodifiedInvocationCount());
+        Assert.assertEquals(5, count.getUnmodifiedInvocationCount());
     }
 
 //    @Test

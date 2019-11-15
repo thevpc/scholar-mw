@@ -3,7 +3,6 @@ package net.vpc.scholar.mentoring.tp
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadruplot.Plot
 
 
 object PatchAntennaNoStr {

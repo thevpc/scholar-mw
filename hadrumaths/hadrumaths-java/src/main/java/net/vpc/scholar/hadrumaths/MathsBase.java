@@ -1667,6 +1667,13 @@ public final class MathsBase {
         return EXPR_VECTOR_SPACE.imag(e);
     }
 
+    public static Complex Complex(double e) {
+        return Complex.valueOf(e);
+    }
+    public static Complex Complex(Expr e) {
+        return e.simplify().toComplex();
+    }
+
     public static Complex complex(Expr e) {
         return e.simplify().toComplex();
     }

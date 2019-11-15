@@ -8,7 +8,4 @@ object T01_HelloScala extends App{
   //this is a global statement (do not need any method declaration
   // do not need sem-colons either.
   println("Hello from Scala")
-  println("Hello from Scala")
-  println("Hello from Scala")
-  println("Hello from Scala")
 }

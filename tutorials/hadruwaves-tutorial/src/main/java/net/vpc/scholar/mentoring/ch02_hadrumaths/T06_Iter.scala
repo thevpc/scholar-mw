@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._
 
-object T05_Iter extends App{
+object T06_Iter extends App{
   val a1: Array[Int] = isteps(5)
   println("-----------------------------------------------")
   println("println(a1):")

@@ -192,7 +192,7 @@ public class Sub extends AbstractExprOperatorBinary implements Cloneable {
     @Override
     public ComponentDimension getComponentDimension() {
         for (Expr expression : expressions) {
-            ComponentDimension d = expression.toDM().getComponentDimension();
+            ComponentDimension d = expression.getComponentDimension();
             if (d.rows != 1 || d.columns != 1) {
                 return d;
             }

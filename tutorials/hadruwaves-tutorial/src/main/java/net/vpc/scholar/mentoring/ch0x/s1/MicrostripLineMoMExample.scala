@@ -3,7 +3,6 @@ package net.vpc.scholar.mentoring.ch0x.s1
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.WallBorders
 

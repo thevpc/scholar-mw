@@ -40,179 +40,179 @@ import java.util.logging.Logger;
 public final class Maths {
 
     //<editor-fold desc="constants functions">
-    public static final double PI = Math.PI;
-    public static final double E = Math.E;
-    public static final DoubleToDouble DDZERO = MathsBase.DDZERO;
-    public static final DoubleToDouble DDNAN = MathsBase.DDNAN;
-    public static final DoubleToComplex DCZERO = MathsBase.DCZERO;
-    public static final DoubleToVector DVZERO3 = MathsBase.DVZERO3;
-    public static final Expr EZERO = MathsBase.EZERO;
-    public static final Expr EONE = MathsBase.EONE;
-    public static final Expr X = MathsBase.X;
-    public static final Expr Y = MathsBase.Y;
-    public static final Expr Z = MathsBase.Z;
-    public static final double HALF_PI = MathsBase.HALF_PI;
-    public static final Complex I = MathsBase.I;
-    public static final Complex CNaN = MathsBase.CNaN;
-    public static final Complex CONE = MathsBase.CONE;
-    public static final Complex CZERO = MathsBase.CZERO;//    public static boolean DEBUG = true;
-    public static final DoubleToVector DVZERO1 = MathsBase.DVZERO1;
-    public static final DoubleToVector DVZERO2 = MathsBase.DVZERO2;
-    public static final Complex î = MathsBase.î;
-    public static final Expr ê = MathsBase.ê;
-    public static final Complex ĉ = MathsBase.ĉ;
-    public static final double METER = MathsBase.METER;
-    public static final double HZ = MathsBase.HZ;
-    public static final long BYTE = MathsBase.BYTE;
-    public static final long MILLISECOND = MathsBase.MILLISECOND;
+    public static  final double PI = Math.PI;
+    public static  final double E = Math.E;
+    public static  final DoubleToDouble DDZERO = MathsBase.DDZERO;
+    public static  final DoubleToDouble DDNAN = MathsBase.DDNAN;
+    public static  final DoubleToComplex DCZERO = MathsBase.DCZERO;
+    public static  final DoubleToVector DVZERO3 = MathsBase.DVZERO3;
+    public static  final Expr EZERO = MathsBase.EZERO;
+    public static  final Expr EONE = MathsBase.EONE;
+    public static  final Expr X = MathsBase.X;
+    public static  final Expr Y = MathsBase.Y;
+    public static  final Expr Z = MathsBase.Z;
+    public static  final double HALF_PI = MathsBase.HALF_PI;
+    public static  final Complex I = MathsBase.I;
+    public static  final Complex CNaN = MathsBase.CNaN;
+    public static  final Complex CONE = MathsBase.CONE;
+    public static  final Complex CZERO = MathsBase.CZERO;//    public static  boolean DEBUG = true;
+    public static  final DoubleToVector DVZERO1 = MathsBase.DVZERO1;
+    public static  final DoubleToVector DVZERO2 = MathsBase.DVZERO2;
+    public static  final Complex î = MathsBase.î;
+    public static  final Expr ê = MathsBase.ê;
+    public static  final Complex ĉ = MathsBase.ĉ;
+    public static  final double METER = MathsBase.METER;
+    public static  final double HZ = MathsBase.HZ;
+    public static  final long BYTE = MathsBase.BYTE;
+    public static  final long MILLISECOND = MathsBase.MILLISECOND;
     /**
      * kibibyte
      */
-    public static final int KiBYTE = MathsBase.KiBYTE;
+    public static  final int KiBYTE = MathsBase.KiBYTE;
     /**
      * mibibyte
      */
-    public static final int MiBYTE = MathsBase.MiBYTE;
+    public static  final int MiBYTE = MathsBase.MiBYTE;
     /**
      * TEBI Byte
      */
-    public static final long GiBYTE = MathsBase.GiBYTE;
+    public static  final long GiBYTE = MathsBase.GiBYTE;
     /**
      * TEBI Byte
      */
-    public static final long TiBYTE = MathsBase.TiBYTE;
+    public static  final long TiBYTE = MathsBase.TiBYTE;
     /**
      * PEBI Byte
      */
-    public static final long PiBYTE = MathsBase.PiBYTE;
+    public static  final long PiBYTE = MathsBase.PiBYTE;
     /**
      * exbibyte
      */
-    public static final long EiBYTE = MathsBase.EiBYTE;
+    public static  final long EiBYTE = MathsBase.EiBYTE;
 
-    public static final double YOCTO = MathsBase.YOCTO;
-    public static final double ZEPTO = MathsBase.ZEPTO;
-    public static final double ATTO = MathsBase.ATTO;
-    public static final double FEMTO = MathsBase.FEMTO;
-    public static final double PICO = MathsBase.PICO;
-    public static final double NANO = MathsBase.NANO;
-    public static final double MICRO = MathsBase.MICRO;
-    public static final double MILLI = MathsBase.MILLI;
-    public static final double CENTI = MathsBase.CENTI;
-    public static final double DECI = MathsBase.DECI;
+    public static  final double YOCTO = MathsBase.YOCTO;
+    public static  final double ZEPTO = MathsBase.ZEPTO;
+    public static  final double ATTO = MathsBase.ATTO;
+    public static  final double FEMTO = MathsBase.FEMTO;
+    public static  final double PICO = MathsBase.PICO;
+    public static  final double NANO = MathsBase.NANO;
+    public static  final double MICRO = MathsBase.MICRO;
+    public static  final double MILLI = MathsBase.MILLI;
+    public static  final double CENTI = MathsBase.CENTI;
+    public static  final double DECI = MathsBase.DECI;
     /**
      * DECA
      */
-    public static final int DECA = MathsBase.DECA;
+    public static  final int DECA = MathsBase.DECA;
     /**
      * HECTO
      */
-    public static final int HECTO = MathsBase.HECTO;
+    public static  final int HECTO = MathsBase.HECTO;
 
     /**
      * KILO
      */
-    public static final int KILO = MathsBase.KILO;
+    public static  final int KILO = MathsBase.KILO;
     /**
      * MEGA
      */
-    public static final int MEGA = MathsBase.MEGA;
+    public static  final int MEGA = MathsBase.MEGA;
     /**
      * MEGA
      */
-    public static final long GIGA = MathsBase.GIGA;
+    public static  final long GIGA = MathsBase.GIGA;
     /**
      * TERA
      */
-    public static final long TERA = MathsBase.TERA;
+    public static  final long TERA = MathsBase.TERA;
     /**
      * PETA
      */
-    public static final long PETA = MathsBase.PETA;
+    public static  final long PETA = MathsBase.PETA;
     /**
      * EXA
      */
-    public static final long EXA = MathsBase.EXA;
+    public static  final long EXA = MathsBase.EXA;
     /**
      * ZETTA
      */
-    public static final long ZETTA = MathsBase.ZETTA;
+    public static  final long ZETTA = MathsBase.ZETTA;
     /**
      * YOTTA
      */
-    public static final long YOTTA = MathsBase.YOTTA;
-    public static final long SECOND = MathsBase.SECOND;
-    public static final long MINUTE = MathsBase.MINUTE;
-    public static final long HOUR = MathsBase.HOUR;
-    public static final long DAY = MathsBase.DAY;
-    public static final double KHZ = MathsBase.KHZ;
-    public static final double MHZ = MathsBase.MHZ;
-    public static final double GHZ = MathsBase.GHZ;
-    public static final double MILLIMETER = MathsBase.MILLIMETER;
-    public static final double MM = MathsBase.MM;
-    public static final double CM = MathsBase.CM;
-    public static final double CENTIMETER = MathsBase.CENTIMETER;
+    public static  final long YOTTA = MathsBase.YOTTA;
+    public static  final long SECOND = MathsBase.SECOND;
+    public static  final long MINUTE = MathsBase.MINUTE;
+    public static  final long HOUR = MathsBase.HOUR;
+    public static  final long DAY = MathsBase.DAY;
+    public static  final double KHZ = MathsBase.KHZ;
+    public static  final double MHZ = MathsBase.MHZ;
+    public static  final double GHZ = MathsBase.GHZ;
+    public static  final double MILLIMETER = MathsBase.MILLIMETER;
+    public static  final double MM = MathsBase.MM;
+    public static  final double CM = MathsBase.CM;
+    public static  final double CENTIMETER = MathsBase.CENTIMETER;
     /**
      * light celerity. speed of light in vacuum
      */
-//    public static final int C = 300000000;
-    public static final int C = MathsBase.C;//m.s^-1
+//    public static  final int C = 300000000;
+    public static  final int C = MathsBase.C;//m.s^-1
     /**
      * Newtonian constant of gravitation
      */
-    public static final double G = MathsBase.G; //m3·kg^−1·s^−2;
+    public static  final double G = MathsBase.G; //m3·kg^−1·s^−2;
     /**
      * Planck constant
      */
-    public static final double H = MathsBase.H; //J·s;
+    public static  final double H = MathsBase.H; //J·s;
     /**
      * Reduced Planck constant
      */
-    public static final double Hr = MathsBase.Hr; //J·s;
+    public static  final double Hr = MathsBase.Hr; //J·s;
     /**
      * magnetic constant (vacuum permeability)
      */
-    public static final double U0 = MathsBase.U0; //N·A−2
+    public static  final double U0 = MathsBase.U0; //N·A−2
     /**
      * electric constant (vacuum permittivity) =1/(u0*C^2)
      */
-    public static final double EPS0 = MathsBase.EPS0;//F·m−1
+    public static  final double EPS0 = MathsBase.EPS0;//F·m−1
     /**
      * characteristic impedance of vacuum =1/(u0*C)
      */
-    public static final double Z0 = MathsBase.Z0;//F·m−1
+    public static  final double Z0 = MathsBase.Z0;//F·m−1
     /**
      * Coulomb's constant
      */
-    public static final double Ke = MathsBase.Ke;//F·m−1
+    public static  final double Ke = MathsBase.Ke;//F·m−1
     /**
      * elementary charge
      */
-    public static final double Qe = MathsBase.Qe;//C
-    public static final VectorSpace<Complex> COMPLEX_VECTOR_SPACE = MathsBase.COMPLEX_VECTOR_SPACE;
-    public static final VectorSpace<Expr> EXPR_VECTOR_SPACE = MathsBase.EXPR_VECTOR_SPACE;
-    public static final VectorSpace<Double> DOUBLE_VECTOR_SPACE = MathsBase.DOUBLE_VECTOR_SPACE;
-    public static final int X_AXIS = MathsBase.X_AXIS;
-    public static final int Y_AXIS = MathsBase.Y_AXIS;
-    public static final int Z_AXIS = MathsBase.Z_AXIS;
-    public static final TStoreManager<Matrix> MATRIX_STORE_MANAGER = MathsBase.MATRIX_STORE_MANAGER;
-    public static final TStoreManager<TMatrix> TMATRIX_STORE_MANAGER = MathsBase.TMATRIX_STORE_MANAGER;
+    public static  final double Qe = MathsBase.Qe;//C
+    public static  final VectorSpace<Complex> COMPLEX_VECTOR_SPACE = MathsBase.COMPLEX_VECTOR_SPACE;
+    public static  final VectorSpace<Expr> EXPR_VECTOR_SPACE = MathsBase.EXPR_VECTOR_SPACE;
+    public static  final VectorSpace<Double> DOUBLE_VECTOR_SPACE = MathsBase.DOUBLE_VECTOR_SPACE;
+    public static  final int X_AXIS = MathsBase.X_AXIS;
+    public static  final int Y_AXIS = MathsBase.Y_AXIS;
+    public static  final int Z_AXIS = MathsBase.Z_AXIS;
+    public static  final TStoreManager<Matrix> MATRIX_STORE_MANAGER = MathsBase.MATRIX_STORE_MANAGER;
+    public static  final TStoreManager<TMatrix> TMATRIX_STORE_MANAGER = MathsBase.TMATRIX_STORE_MANAGER;
 
-    public static final TStoreManager<TVector> TVECTOR_STORE_MANAGER = MathsBase.TVECTOR_STORE_MANAGER;
+    public static  final TStoreManager<TVector> TVECTOR_STORE_MANAGER = MathsBase.TVECTOR_STORE_MANAGER;
 
-    public static final TStoreManager<Vector> VECTOR_STORE_MANAGER = MathsBase.VECTOR_STORE_MANAGER;
-    public static final Converter IDENTITY = MathsBase.IDENTITY;
-    public static final Converter<Complex, Double> COMPLEX_TO_DOUBLE = MathsBase.COMPLEX_TO_DOUBLE;
-    public static final Converter<Double, Complex> DOUBLE_TO_COMPLEX = MathsBase.DOUBLE_TO_COMPLEX;
-    public static final Converter<Double, TVector> DOUBLE_TO_TVECTOR = MathsBase.DOUBLE_TO_TVECTOR;
-    public static final Converter<TVector, Double> TVECTOR_TO_DOUBLE = MathsBase.TVECTOR_TO_DOUBLE;
-    public static final Converter<Complex, TVector> COMPLEX_TO_TVECTOR = MathsBase.COMPLEX_TO_TVECTOR;
-    public static final Converter<TVector, Complex> TVECTOR_TO_COMPLEX = MathsBase.TVECTOR_TO_COMPLEX;
-    public static final Converter<Complex, Expr> COMPLEX_TO_EXPR = MathsBase.COMPLEX_TO_EXPR;
-    public static final Converter<Expr, Complex> EXPR_TO_COMPLEX = MathsBase.EXPR_TO_COMPLEX;
-    public static final Converter<Double, Expr> DOUBLE_TO_EXPR = MathsBase.DOUBLE_TO_EXPR;
-    public static final Converter<Expr, Double> EXPR_TO_DOUBLE = MathsBase.EXPR_TO_DOUBLE;
-    //    public static String getAxisLabel(int axis){
+    public static  final TStoreManager<Vector> VECTOR_STORE_MANAGER = MathsBase.VECTOR_STORE_MANAGER;
+    public static  final Converter IDENTITY = MathsBase.IDENTITY;
+    public static  final Converter<Complex, Double> COMPLEX_TO_DOUBLE = MathsBase.COMPLEX_TO_DOUBLE;
+    public static  final Converter<Double, Complex> DOUBLE_TO_COMPLEX = MathsBase.DOUBLE_TO_COMPLEX;
+    public static  final Converter<Double, TVector> DOUBLE_TO_TVECTOR = MathsBase.DOUBLE_TO_TVECTOR;
+    public static  final Converter<TVector, Double> TVECTOR_TO_DOUBLE = MathsBase.TVECTOR_TO_DOUBLE;
+    public static  final Converter<Complex, TVector> COMPLEX_TO_TVECTOR = MathsBase.COMPLEX_TO_TVECTOR;
+    public static  final Converter<TVector, Complex> TVECTOR_TO_COMPLEX = MathsBase.TVECTOR_TO_COMPLEX;
+    public static  final Converter<Complex, Expr> COMPLEX_TO_EXPR = MathsBase.COMPLEX_TO_EXPR;
+    public static  final Converter<Expr, Complex> EXPR_TO_COMPLEX = MathsBase.EXPR_TO_COMPLEX;
+    public static  final Converter<Double, Expr> DOUBLE_TO_EXPR = MathsBase.DOUBLE_TO_EXPR;
+    public static  final Converter<Expr, Double> EXPR_TO_DOUBLE = MathsBase.EXPR_TO_DOUBLE;
+    //    public static  String getAxisLabel(int axis){
 //        switch(axis){
 //            case X_AXIS:return "X";
 //            case Y_AXIS:return "Y";
@@ -220,3975 +220,2856 @@ public final class Maths {
 //        }
 //        throw new IllegalArgumentException("Unknown Axis "+axis);
 //    }
-    public static final TypeName<String> $STRING = MathsBase.$STRING;
-    public static final TypeName<Complex> $COMPLEX = MathsBase.$COMPLEX;
-    public static final TypeName<Matrix> $MATRIX = MathsBase.$MATRIX;
-    public static final TypeName<Vector> $VECTOR = MathsBase.$VECTOR;
-    public static final TypeName<TMatrix<Complex>> $CMATRIX = MathsBase.$CMATRIX;
-    public static final TypeName<TVector<Complex>> $CVECTOR = MathsBase.$CVECTOR;
-    public static final TypeName<Double> $DOUBLE = MathsBase.$DOUBLE;
-    public static final TypeName<Boolean> $BOOLEAN = MathsBase.$BOOLEAN;
-    public static final TypeName<Point> $POINT = MathsBase.$POINT;
-    public static final TypeName<File> $FILE = MathsBase.$FILE;
+    public static  final TypeName<String> $STRING = MathsBase.$STRING;
+    public static  final TypeName<Complex> $COMPLEX = MathsBase.$COMPLEX;
+    public static  final TypeName<Matrix> $MATRIX = MathsBase.$MATRIX;
+    public static  final TypeName<Vector> $VECTOR = MathsBase.$VECTOR;
+    public static  final TypeName<TMatrix<Complex>> $CMATRIX = MathsBase.$CMATRIX;
+    public static  final TypeName<TVector<Complex>> $CVECTOR = MathsBase.$CVECTOR;
+    public static  final TypeName<Double> $DOUBLE = MathsBase.$DOUBLE;
+    public static  final TypeName<Boolean> $BOOLEAN = MathsBase.$BOOLEAN;
+    public static  final TypeName<Point> $POINT = MathsBase.$POINT;
+    public static  final TypeName<File> $FILE = MathsBase.$FILE;
     //</editor-fold>
-    public static final TypeName<Integer> $INTEGER = MathsBase.$INTEGER;
-    public static final TypeName<Long> $LONG = MathsBase.$LONG;
-    public static final TypeName<Expr> $EXPR = MathsBase.$EXPR;
-    public static final TypeName<TList<Complex>> $CLIST = MathsBase.$CLIST;
-    public static final TypeName<TList<Expr>> $ELIST = MathsBase.$ELIST;
-    public static final TypeName<TList<Double>> $DLIST = MathsBase.$DLIST;
-    public static final TypeName<TList<TList<Double>>> $DLIST2 = MathsBase.$DLIST2;
-    public static final TypeName<TList<Integer>> $ILIST = MathsBase.$ILIST;
-    public static final TypeName<TList<Boolean>> $BLIST = MathsBase.$BLIST;
-    public static final TypeName<TList<Matrix>> $MLIST = MathsBase.$MLIST;
-    public static final MathsConfig Config = MathsBase.Config;
-    public static DistanceStrategy<Double> DISTANCE_DOUBLE = MathsBase.DISTANCE_DOUBLE;
-    public static DistanceStrategy<Complex> DISTANCE_COMPLEX = MathsBase.DISTANCE_COMPLEX;
-    public static DistanceStrategy<Matrix> DISTANCE_MATRIX = MathsBase.DISTANCE_MATRIX;
-    public static DistanceStrategy<Vector> DISTANCE_VECTOR = MathsBase.DISTANCE_VECTOR;
+    public static  final TypeName<Integer> $INTEGER = MathsBase.$INTEGER;
+    public static  final TypeName<Long> $LONG = MathsBase.$LONG;
+    public static  final TypeName<Expr> $EXPR = MathsBase.$EXPR;
+    public static  final TypeName<TList<Complex>> $CLIST = MathsBase.$CLIST;
+    public static  final TypeName<TList<Expr>> $ELIST = MathsBase.$ELIST;
+    public static  final TypeName<TList<Double>> $DLIST = MathsBase.$DLIST;
+    public static  final TypeName<TList<TList<Double>>> $DLIST2 = MathsBase.$DLIST2;
+    public static  final TypeName<TList<Integer>> $ILIST = MathsBase.$ILIST;
+    public static  final TypeName<TList<Boolean>> $BLIST = MathsBase.$BLIST;
+    public static  final TypeName<TList<Matrix>> $MLIST = MathsBase.$MLIST;
+    public static  final MathsConfig Config = MathsBase.Config;
+    public static  DistanceStrategy<Double> DISTANCE_DOUBLE = MathsBase.DISTANCE_DOUBLE;
+    public static  DistanceStrategy<Complex> DISTANCE_COMPLEX = MathsBase.DISTANCE_COMPLEX;
+    public static  DistanceStrategy<Matrix> DISTANCE_MATRIX = MathsBase.DISTANCE_MATRIX;
+    public static  DistanceStrategy<Vector> DISTANCE_VECTOR = MathsBase.DISTANCE_VECTOR;
 
 
-    private Maths() {
+
+    public static  Domain xdomain(double min, double max) {
+        return  MathsBase.xdomain(min, max);
     }
 
-    public static Domain xdomain(double min, double max) {
-        return MathsBase.xdomain(min, max);
+    public static  Domain ydomain(double min, double max) {
+        return  MathsBase.ydomain(min, max);
     }
 
-    public static Domain ydomain(double min, double max) {
-        return MathsBase.ydomain(min,max);
+    public static  DomainExpr ydomain(DomainExpr min, DomainExpr max) {
+        return  MathsBase.ydomain(min, max);
     }
 
-    public static DomainExpr ydomain(DomainExpr min, DomainExpr max) {
-        return MathsBase.ydomain(min,max);
+    public static  Domain zdomain(double min, double max) {
+        return  MathsBase.zdomain(min, max);
     }
 
-    public static Domain zdomain(double min, double max) {
-        return MathsBase.zdomain(min,max);
+    public static  DomainExpr zdomain(Expr min, Expr max) {
+        return  MathsBase.zdomain(min, max);
     }
 
-    public static DomainExpr zdomain(Expr min, Expr max) {
-        return MathsBase.zdomain(min,max);
+    public static  Domain domain(RightArrowUplet2.Double u) {
+        return  MathsBase.domain(u);
     }
 
-    public static Domain domain(RightArrowUplet2.Double u) {
-        return MathsBase.domain(u);
+    public static  Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
+        return  MathsBase.domain(ux, uy);
     }
 
-    public static Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
-        return MathsBase.domain(ux,uy);
+    public static  Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
+        return  MathsBase.domain(ux, uy, uz);
     }
 
-    public static Domain domain(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
-        return MathsBase.domain(ux,uy,uz);
+    public static  Expr domain(RightArrowUplet2.Expr u) {
+        return  MathsBase.domain(u);
     }
 
-    public static Expr domain(RightArrowUplet2.Expr u) {
-        return MathsBase.domain(u);
+    public static  Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
+        return  MathsBase.domain(ux, uy);
     }
 
-    public static Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
-        return MathsBase.domain(ux,uy);
+    public static  Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
+        return  MathsBase.domain(ux, uy, uz);
     }
 
-    public static Expr domain(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
-        return MathsBase.domain(ux,uy,uz);
+    public static  DomainExpr domain(Expr min, Expr max) {
+        return  MathsBase.domain(min, max);
     }
 
-    public static DomainExpr domain(Expr min, Expr max) {
-        return MathsBase.domain(min,max);
+    public static  Domain domain(double min, double max) {
+        return  MathsBase.domain(min, max);
     }
 
-    public static Domain domain(double min, double max) {
-        return MathsBase.domain(min,max);
+    public static  Domain domain(double xmin, double xmax, double ymin, double ymax) {
+        return  MathsBase.domain(xmin, xmax, ymin, ymax);
     }
 
-    public static Domain domain(double xmin, double xmax, double ymin, double ymax) {
-        return MathsBase.domain(xmin,xmax,ymin,ymax);
+    public static  DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
+        return  MathsBase.domain(xmin, xmax, ymin, ymax);
     }
 
-    public static DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
-        return MathsBase.domain(xmin,xmax,ymin,ymax);
+    public static  Domain domain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+        return  MathsBase.domain(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
-    public static Domain domain(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
-        return MathsBase.domain(xmin,xmax,ymin,ymax,zmin,zmax);
+    public static  DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
+        return  MathsBase.domain(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
-    public static DomainExpr domain(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
-        return MathsBase.domain(xmin,xmax,ymin,ymax,zmin,zmax);
+    public static  Domain II(RightArrowUplet2.Double u) {
+        return  MathsBase.II(u);
     }
 
-    public static Domain II(RightArrowUplet2.Double u) {
-        return MathsBase.II(u);
+    public static  Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
+        return  MathsBase.II(ux, uy);
     }
 
-    public static Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy) {
-        return MathsBase.II(ux,uy);
+    public static  Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
+        return  MathsBase.II(ux, uy, uz);
     }
 
-    public static Domain II(RightArrowUplet2.Double ux, RightArrowUplet2.Double uy, RightArrowUplet2.Double uz) {
-        return MathsBase.II(ux,uy,uz);
+    public static  Expr II(RightArrowUplet2.Expr u) {
+        return  MathsBase.II(u);
     }
 
-    public static Expr II(RightArrowUplet2.Expr u) {
-        return MathsBase.II(u);
+    public static  Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
+        return  MathsBase.II(ux, uy);
     }
 
-    public static Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy) {
-        return MathsBase.II(ux);
-    }
-
-    public static Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
-        return MathsBase.II(ux,uy,uz);
+    public static  Expr II(RightArrowUplet2.Expr ux, RightArrowUplet2.Expr uy, RightArrowUplet2.Expr uz) {
+        return  MathsBase.II(ux, uy, uz);
     }
 
     public static DomainExpr II(Expr min, Expr max) {
-        return MathsBase.II(min,max);
+        return  MathsBase.II(min, max);
     }
 
     public static Domain II(double min, double max) {
-        return MathsBase.II(min,max);
+        return  MathsBase.II(min, max);
     }
 
     public static Domain II(double xmin, double xmax, double ymin, double ymax) {
-        return MathsBase.II(xmin,xmax,ymin,ymax);
+        return  MathsBase.II(xmin, xmax, ymin, ymax);
     }
 
     public static DomainExpr II(Expr xmin, Expr xmax, Expr ymin, Expr ymax) {
-        return MathsBase.II(xmin,xmax,ymin,ymax);
+        return  MathsBase.II(xmin, xmax, ymin, ymax);
     }
 
     public static Domain II(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
-        return MathsBase.II(xmin,xmax,ymin,ymax,zmin,zmax);
+        return  MathsBase.II(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
     public static DomainExpr II(Expr xmin, Expr xmax, Expr ymin, Expr ymax, Expr zmin, Expr zmax) {
-        return MathsBase.II(xmin,xmax,ymin,ymax,zmin,zmax);
+        return  MathsBase.II(xmin, xmax, ymin, ymax, zmin, zmax);
     }
 
-    //<editor-fold desc="parameters functions">
     public static DoubleParam param(String name) {
-        return MathsBase.param(name);
+        return  MathsBase.param(name);
     }
 
     public static DoubleArrayParamSet doubleParamSet(Param param) {
-        return MathsBase.doubleParamSet(param);
+        return  MathsBase.doubleParamSet(param);
     }
 
     public static DoubleArrayParamSet paramSet(Param param, double[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static FloatArrayParamSet paramSet(Param param, float[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static FloatArrayParamSet floatParamSet(Param param) {
-        return MathsBase.floatParamSet(param);
+        return  MathsBase.floatParamSet(param);
     }
 
     public static LongArrayParamSet paramSet(Param param, long[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static LongArrayParamSet longParamSet(Param param) {
-        return MathsBase.longParamSet(param);
+        return  MathsBase.longParamSet(param);
     }
 
     public static <T> ArrayParamSet<T> paramSet(Param param, T[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static <T> ArrayParamSet<T> objectParamSet(Param param) {
-        return MathsBase.objectParamSet(param);
+        return  MathsBase.objectParamSet(param);
     }
 
     public static IntArrayParamSet paramSet(Param param, int[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static IntArrayParamSet intParamSet(Param param) {
-        return MathsBase.intParamSet(param);
+        return  MathsBase.intParamSet(param);
     }
 
     public static BooleanArrayParamSet paramSet(Param param, boolean[] values) {
-        return MathsBase.paramSet(param,values);
+        return  MathsBase.paramSet(param, values);
     }
 
     public static BooleanArrayParamSet boolParamSet(Param param) {
-        return MathsBase.boolParamSet(param);
+        return  MathsBase.boolParamSet(param);
     }
 
     public static XParamSet xParamSet(int xsamples) {
-        return MathsBase.xParamSet(xsamples);
+        return  MathsBase.xParamSet(xsamples);
     }
 
     public static XParamSet xyParamSet(int xsamples, int ysamples) {
-        return MathsBase.xyParamSet(xsamples,ysamples);
+        return  MathsBase.xyParamSet(xsamples, ysamples);
     }
 
     public static XParamSet xyzParamSet(int xsamples, int ysamples, int zsamples) {
-        return MathsBase.xyzParamSet(xsamples,ysamples,zsamples);
+        return  MathsBase.xyzParamSet(xsamples, ysamples, zsamples);
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Matrix functions">
     public static Matrix zerosMatrix(Matrix other) {
-        return MathsBase.zerosMatrix(other);
+        return  MathsBase.zerosMatrix(other);
     }
 
     public static Matrix constantMatrix(int dim, Complex value) {
-        return MathsBase.constantMatrix(dim,value);
+        return  MathsBase.constantMatrix(dim, value);
     }
 
     public static Matrix onesMatrix(int dim) {
-        return MathsBase.onesMatrix(dim);
+        return  MathsBase.onesMatrix(dim);
     }
 
     public static Matrix onesMatrix(int rows, int cols) {
-        return MathsBase.onesMatrix(rows);
+        return  MathsBase.onesMatrix(rows, cols);
     }
 
     public static Matrix constantMatrix(int rows, int cols, Complex value) {
-        return Config.getDefaultMatrixFactory().newConstant(rows, cols, value);
+        return  MathsBase.constantMatrix(rows, cols, value);
     }
 
     public static Matrix zerosMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newZeros(dim);
+        return  MathsBase.zerosMatrix(dim);
     }
 
     public static Matrix I(Complex[][] iValue) {
-        return matrix(iValue).mul(I);
+        return  MathsBase.I(iValue);
     }
 
     public static Matrix zerosMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newZeros(rows, cols);
+        return  MathsBase.zerosMatrix(rows, cols);
     }
 
     public static Matrix identityMatrix(Matrix c) {
-        return Config.getDefaultMatrixFactory().newIdentity(c);
+        return  MathsBase.identityMatrix(c);
     }
 
     public static Matrix NaNMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newNaN(dim);
+        return  MathsBase.NaNMatrix(dim);
     }
 
     public static Matrix NaNMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newNaN(rows, cols);
+        return  MathsBase.NaNMatrix(rows, cols);
     }
 
     public static Matrix identityMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newIdentity(dim);
+        return  MathsBase.identityMatrix(dim);
     }
 
     public static Matrix identityMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newIdentity(rows, cols);
+        return  MathsBase.identityMatrix(rows, cols);
     }
 
     public static Matrix matrix(Matrix matrix) {
-        return Config.getDefaultMatrixFactory().newMatrix(matrix);
+        return  MathsBase.matrix(matrix);
     }
 
     public static Matrix matrix(String string) {
-        return Config.getDefaultMatrixFactory().newMatrix(string);
+        return  MathsBase.matrix(string);
     }
 
     public static Matrix matrix(Complex[][] complex) {
-        return Config.getDefaultMatrixFactory().newMatrix(complex);
+        return  MathsBase.matrix(complex);
     }
 
     public static Matrix matrix(double[][] complex) {
-        return Config.getDefaultMatrixFactory().newMatrix(complex);
+        return  MathsBase.matrix(complex);
     }
 
     public static Matrix matrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, cellFactory);
+        return  MathsBase.matrix(rows, cols, cellFactory);
     }
 
-    //    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
-//    }
     public static Matrix columnMatrix(final Complex... values) {
-        return Config.getDefaultMatrixFactory().newColumnMatrix(values);
+        return  MathsBase.columnMatrix(values);
     }
 
     public static Matrix columnMatrix(final double... values) {
-        Complex[] d = new Complex[values.length];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = Complex.valueOf(values[i]);
-        }
-        return Config.getDefaultMatrixFactory().newColumnMatrix(d);
+        return  MathsBase.columnMatrix(values);
     }
 
     public static Matrix rowMatrix(final double... values) {
-        Complex[] d = new Complex[values.length];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = Complex.valueOf(values[i]);
-        }
-        return Config.getDefaultMatrixFactory().newRowMatrix(d);
+        return  MathsBase.rowMatrix(values);
     }
 
     public static Matrix rowMatrix(final Complex... values) {
-        return Config.getDefaultMatrixFactory().newRowMatrix(values);
+        return  MathsBase.rowMatrix(values);
     }
 
     public static Matrix columnMatrix(int rows, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newColumnMatrix(rows, cellFactory);
+        return  MathsBase.columnMatrix(rows, cellFactory);
     }
 
     public static Matrix rowMatrix(int columns, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newRowMatrix(columns, cellFactory);
+        return  MathsBase.rowMatrix(columns, cellFactory);
     }
 
     public static Matrix symmetricMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newSymmetric(rows, cols, cellFactory);
+        return  MathsBase.symmetricMatrix(rows, cols, cellFactory);
     }
 
     public static Matrix hermitianMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newHermitian(rows, cols, cellFactory);
+        return  MathsBase.hermitianMatrix(rows, cols, cellFactory);
     }
 
     public static Matrix diagonalMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(rows, cols, cellFactory);
+        return  MathsBase.diagonalMatrix(rows, cols, cellFactory);
     }
 
     public static Matrix diagonalMatrix(int rows, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(rows, cellFactory);
+        return  MathsBase.diagonalMatrix(rows, cellFactory);
     }
 
     public static Matrix diagonalMatrix(final Complex... c) {
-        return Config.getDefaultMatrixFactory().newDiagonal(c);
+        return  MathsBase.diagonalMatrix(c);
     }
 
     public static Matrix matrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(dim, cellFactory);
+        return  MathsBase.matrix(dim, cellFactory);
     }
 
     public static Matrix matrix(int rows, int columns) {
-        return Config.getDefaultMatrixFactory().newMatrix(rows, columns);
+        return  MathsBase.matrix(rows, columns);
     }
 
     public static Matrix symmetricMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(dim, cellFactory);
+        return  MathsBase.symmetricMatrix(dim, cellFactory);
     }
 
     public static Matrix hermitianMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newHermitian(dim, cellFactory);
+        return  MathsBase.hermitianMatrix(dim, cellFactory);
     }
 
     public static Matrix diagonalMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(dim, cellFactory);
+        return  MathsBase.diagonalMatrix(dim, cellFactory);
     }
 
     public static Matrix randomRealMatrix(int m, int n) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n);
+        return  MathsBase.randomRealMatrix(m, n);
     }
 
     public static Matrix randomRealMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n, min, max);
+        return  MathsBase.randomRealMatrix(m, n, min, max);
     }
 
     public static Matrix randomRealMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n, min, max);
+        return  MathsBase.randomRealMatrix(m, n, min, max);
     }
 
     public static Matrix randomImagMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n, min, max);
+        return  MathsBase.randomImagMatrix(m, n, min, max);
     }
 
     public static Matrix randomImagMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n, min, max);
+        return  MathsBase.randomImagMatrix(m, n, min, max);
     }
 
     public static Matrix randomMatrix(int m, int n, int minReal, int maxReal, int minImag, int maxImag) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
+        return  MathsBase.randomMatrix(m, n, minReal, maxReal, minImag, maxImag);
     }
 
     public static Matrix randomMatrix(int m, int n, double minReal, double maxReal, double minImag, double maxImag) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
+        return  MathsBase.randomMatrix(m, n, minReal, maxReal, minImag, maxImag);
     }
 
     public static Matrix randomMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, min, max);
+        return  MathsBase.randomMatrix(m, n, min, max);
     }
 
     public static Matrix randomMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, min, max);
+        return  MathsBase.randomMatrix(m, n, min, max);
     }
 
     public static Matrix randomImagMatrix(int m, int n) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n);
+        return  MathsBase.randomImagMatrix(m, n);
     }
 
     public static <T> TMatrix<T> loadTMatrix(TypeName<T> componentType, File file) throws UncheckedIOException {
-        throw new IllegalArgumentException("TODO");
+        return  MathsBase.loadTMatrix(componentType, file);
     }
 
     public static Matrix loadMatrix(File file) throws UncheckedIOException {
-        return Config.getDefaultMatrixFactory().load(file);
+        return  MathsBase.loadMatrix(file);
     }
 
     public static Matrix matrix(File file) throws UncheckedIOException {
-        return Config.getDefaultMatrixFactory().load(file);
+        return  MathsBase.matrix(file);
     }
 
     public static void storeMatrix(Matrix m, String file) throws UncheckedIOException {
-        m.store(file == null ? (File) null : new File(Config.expandPath(file)));
+         MathsBase.storeMatrix(m, file);
     }
 
     public static void storeMatrix(Matrix m, File file) throws UncheckedIOException {
-        m.store(file);
+         MathsBase.storeMatrix(m, file);
     }
 
     public static Matrix loadOrEvalMatrix(String file, TItem<Matrix> item) throws UncheckedIOException {
-        return loadOrEvalMatrix(new File(Config.expandPath(file)), item);
+        return  MathsBase.loadOrEvalMatrix(file, item);
     }
 
     public static Vector loadOrEvalVector(String file, TItem<TVector<Complex>> item) throws UncheckedIOException {
-        return loadOrEvalVector(new File(Config.expandPath(file)), item);
+        return  MathsBase.loadOrEvalVector(file, item);
     }
 
     public static Matrix loadOrEvalMatrix(File file, TItem<Matrix> item) throws UncheckedIOException {
-        return loadOrEval($MATRIX, file, item);
+        return  MathsBase.loadOrEvalMatrix(file, item);
     }
 
     public static Vector loadOrEvalVector(File file, TItem<TVector<Complex>> item) throws UncheckedIOException {
-        return loadOrEval($VECTOR, file, (TItem) item);
+        return  MathsBase.loadOrEvalVector(file, item);
     }
 
     public static <T> TMatrix loadOrEvalTMatrix(String file, TItem<TMatrix<T>> item) throws UncheckedIOException {
-        return loadOrEvalTMatrix(new File(Config.expandPath(file)), item);
+        return  MathsBase.loadOrEvalTMatrix(file, item);
     }
 
     public static <T> TVector<T> loadOrEvalTVector(String file, TItem<TVector<T>> item) throws UncheckedIOException {
-        return loadOrEvalTVector(new File(Config.expandPath(file)), item);
+        return  MathsBase.loadOrEvalTVector(file, item);
     }
 
     public static <T> TMatrix<T> loadOrEvalTMatrix(File file, TItem<TMatrix<T>> item) throws UncheckedIOException {
-        return loadOrEval((TypeName) $CMATRIX, file, item);
+        return  MathsBase.loadOrEvalTMatrix(file, item);
     }
 
     public static <T> TVector loadOrEvalTVector(File file, TItem<TVector<T>> item) throws UncheckedIOException {
-        return loadOrEval($CVECTOR, file, (TItem) item);
+        return  MathsBase.loadOrEvalTVector(file, item);
     }
 
     public static <T> T loadOrEval(TypeName<T> type, File file, TItem<T> item) throws UncheckedIOException {
-        return MathsBase.loadOrEval(type, file, item);
+        return  MathsBase.loadOrEval(type, file, item);
     }
 
     public static Matrix loadMatrix(String file) throws UncheckedIOException {
-        return MathsBase.loadMatrix(file);
+        return  MathsBase.loadMatrix(file);
     }
 
     public static Matrix inv(Matrix c) {
-        return c.inv();
+        return  MathsBase.inv(c);
     }
 
     public static Matrix tr(Matrix c) {
-        return c.transpose();
+        return  MathsBase.tr(c);
     }
 
     public static Matrix trh(Matrix c) {
-        return c.transposeHermitian();
+        return  MathsBase.trh(c);
     }
 
     public static Matrix transpose(Matrix c) {
-        return c.transpose();
+        return  MathsBase.transpose(c);
     }
 
     public static Matrix transposeHermitian(Matrix c) {
-        return c.transposeHermitian();
+        return  MathsBase.transposeHermitian(c);
     }
 
-    //</editor-fold>
-    //<editor-fold desc="Vector functions">
     public static Vector rowVector(Complex[] elems) {
-        return ArrayVector.Row(elems);
+        return  MathsBase.rowVector(elems);
     }
 
     public static Vector constantColumnVector(int size, Complex c) {
-        Complex[] arr = new Complex[size];
-        for (int i = 0; i < size; i++) {
-            arr[i] = c;
-        }
-        return ArrayVector.Column(arr);
+        return  MathsBase.constantColumnVector(size, c);
     }
 
     public static Vector constantRowVector(int size, Complex c) {
-        Complex[] arr = new Complex[size];
-        for (int i = 0; i < size; i++) {
-            arr[i] = c;
-        }
-        return ArrayVector.Row(arr);
+        return  MathsBase.constantRowVector(size, c);
     }
 
     public static Vector zerosVector(int size) {
-        return zerosColumnVector(size);
+        return  MathsBase.zerosVector(size);
     }
 
     public static Vector zerosColumnVector(int size) {
-        return constantColumnVector(size, CZERO);
+        return  MathsBase.zerosColumnVector(size);
     }
 
     public static Vector zerosRowVector(int size) {
-        return constantRowVector(size, CZERO);
+        return  MathsBase.zerosRowVector(size);
     }
 
     public static Vector NaNColumnVector(int dim) {
-        return constantColumnVector(dim, Complex.NaN);
+        return  MathsBase.NaNColumnVector(dim);
     }
 
     public static Vector NaNRowVector(int dim) {
-        return constantRowVector(dim, Complex.NaN);
+        return  MathsBase.NaNRowVector(dim);
     }
 
     public static TVector<Expr> columnVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, false);
+        return  MathsBase.columnVector(expr);
     }
 
     public static TVector<Expr> rowVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, true);
+        return  MathsBase.rowVector(expr);
     }
 
     public static TVector<Expr> columnEVector(int rows, final TVectorCell<Expr> cellFactory) {
-        return columnTVector($EXPR, rows, cellFactory);
+        return  MathsBase.columnEVector(rows, cellFactory);
     }
 
     public static TVector<Expr> rowEVector(int rows, final TVectorCell<Expr> cellFactory) {
-        return rowTVector($EXPR, rows, cellFactory);
+        return  MathsBase.rowEVector(rows, cellFactory);
     }
 
     public static <T> TVector<T> updatableOf(TVector<T> vector) {
-        return new UpdatableTVector<T>(
-                vector.getComponentType(), new CachedTVectorUpdatableModel<T>(vector, vector.getComponentType()),
-                false
-        );
+        return  MathsBase.updatableOf(vector);
     }
 
     public static Complex[][] copyOf(Complex[][] val) {
-        if (val == null) {
-            return val;
-        }
-        Complex[][] val2 = new Complex[val.length][];
-        for (int i = 0; i < val2.length; i++) {
-            if (val[i] != null) {
-                val2[i] = Arrays.copyOf(val[i], val[i].length);
-            }
-        }
-        return val2;
+        return  MathsBase.copyOf(val);
     }
 
     public static Complex[] copyOf(Complex[] val) {
-        if (val == null) {
-            return val;
-        }
-        return Arrays.copyOf(val, val.length);
+        return  MathsBase.copyOf(val);
     }
 
     public static <T> TList<T> copyOf(TVector<T> vector) {
-        TList<T> ts = list(vector.getComponentType(), vector.isRow(), vector.size());
-        ts.appendAll(vector);
-        return ts;
+        return  MathsBase.copyOf(vector);
     }
 
     public static <T> TVector<T> columnTVector(TypeName<T> cls, final TVectorModel<T> cellFactory) {
-        return new ReadOnlyTVector<T>(
-                cls, false, cellFactory
-        );
-//        return new UpdatableTVector<>(
-//                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
-//                false
-//        );
+        return  MathsBase.columnTVector(cls, cellFactory);
     }
 
     public static <T> TVector<T> rowTVector(TypeName<T> cls, final TVectorModel<T> cellFactory) {
-        return new ReadOnlyTVector<>(
-                cls, true, cellFactory
-        );
-//        return new UpdatableTVector<>(
-//                cls,new CachedTVectorUpdatableModel<>(cellFactory,cls),
-//                true
-//        );
+        return  MathsBase.rowTVector(cls, cellFactory);
     }
 
     public static <T> TVector<T> columnTVector(TypeName<T> cls, int rows, final TVectorCell<T> cellFactory) {
-        return columnTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
+        return  MathsBase.columnTVector(cls, rows, cellFactory);
     }
 
     public static <T> TVector<T> rowTVector(TypeName<T> cls, int rows, final TVectorCell<T> cellFactory) {
-        return rowTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
+        return  MathsBase.rowTVector(cls, rows, cellFactory);
     }
 
     public static Vector columnVector(int rows, final VectorCell cellFactory) {
-        Complex[] arr = new Complex[rows];
-        for (int i = 0; i < rows; i++) {
-            arr[i] = cellFactory.get(i);
-        }
-        return columnVector(arr);
+        return  MathsBase.columnVector(rows, cellFactory);
     }
 
     public static Vector rowVector(int columns, final VectorCell cellFactory) {
-        Complex[] arr = new Complex[columns];
-        for (int i = 0; i < columns; i++) {
-            arr[i] = cellFactory.get(i);
-        }
-        return rowVector(arr);
+        return  MathsBase.rowVector(columns, cellFactory);
     }
 
     public static Vector columnVector(Complex... elems) {
-        return ArrayVector.Column(elems);
+        return  MathsBase.columnVector(elems);
     }
 
     public static Vector columnVector(double[] elems) {
-        return ArrayVector.Column(ArrayUtils.toComplex(elems));
+        return  MathsBase.columnVector(elems);
     }
 
     public static Vector rowVector(double[] elems) {
-        return ArrayVector.Row(ArrayUtils.toComplex(elems));
+        return  MathsBase.rowVector(elems);
     }
 
     public static Vector column(Complex[] elems) {
-        return ArrayVector.Column(elems);
+        return  MathsBase.column(elems);
     }
 
     public static Vector row(Complex[] elems) {
-        return ArrayVector.Row(elems);
+        return  MathsBase.row(elems);
     }
 
     public static Vector trh(Vector c) {
-        return c.transpose().conj();
+        return  MathsBase.trh(c);
     }
 
     public static Vector tr(Vector c) {
-        return c.transpose();
+        return  MathsBase.tr(c);
     }
 
-    //</editor-fold>
-    //<editor-fold desc="Complex functions">
     public static Complex I(double iValue) {
-        return Complex.I(iValue);
+        return  MathsBase.I(iValue);
     }
 
     public static Complex abs(Complex a) {
-        return (a.abs());
+        return  MathsBase.abs(a);
     }
 
     public static double absdbl(Complex a) {
-        return a.absdbl();
+        return  MathsBase.absdbl(a);
     }
-    //</editor-fold>
 
     public static double[] getColumn(double[][] a, int index) {
-        return MathsArrays.getColumn(a, index);
+        return  MathsBase.getColumn(a, index);
     }
 
-    /**
-     * iterates from 'min' to 'max' 'times' times, the step of descritisation is
-     * specified by maxTimes this is useful if we want to reuse older
-     * calculations so we do for instance dtimes(0, 10, 2, 10) ==> 0,10
-     * dtimes(0, 10, 4, 10) ==> 0,3,7,10 (reuse all from 0,1,2,3, ...,10)
-     * dtimes(0, 10, 9, 10) ==> 0,2,3,...,9,10 (reuse all from 0,1,2,3, ...,10)
-     *
-     * @param min
-     * @param max
-     * @param maxTimes
-     * @param times
-     * @param strategy
-     * @return
-     */
     public static double[] dtimes(double min, double max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return net.vpc.common.util.ArrayUtils.subArray1(dtimes(min, max, maxTimes), times, strategy);
+        return  MathsBase.dtimes(min, max, times, maxTimes, strategy);
     }
 
     public static double[] dtimes(double min, double max, int times) {
-        return net.vpc.common.util.ArrayUtils.dtimes(min, max, times);
+        return  MathsBase.dtimes(min, max, times);
     }
 
     public static float[] ftimes(float min, float max, int times) {
-        return net.vpc.common.util.ArrayUtils.ftimes(min, max, times);
+        return  MathsBase.ftimes(min, max, times);
     }
 
     public static long[] ltimes(long min, long max, int times) {
-        return net.vpc.common.util.ArrayUtils.ltimes(min, max, times);
+        return  MathsBase.ltimes(min, max, times);
     }
 
     public static long[] lsteps(long min, long max, long step) {
-        return net.vpc.common.util.ArrayUtils.lsteps(min, max, step);
+        return  MathsBase.lsteps(min, max, step);
     }
 
     public static int[] itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return net.vpc.common.util.ArrayUtils.itimes(min, max, times, maxTimes, strategy);
+        return  MathsBase.itimes(min, max, times, maxTimes, strategy);
     }
 
     public static double[] dsteps(int max) {
-        return dsteps(0, max, 1);
+        return  MathsBase.dsteps(max);
     }
 
     public static double[] dsteps(double min, double max) {
-        return dsteps(min, max, 1);
+        return  MathsBase.dsteps(min, max);
     }
 
     public static double dstepsLength(double min, double max, double step) {
-        return net.vpc.common.util.ArrayUtils.dstepsLength(min, max, step);
+        return  MathsBase.dstepsLength(min, max, step);
     }
 
     public static double dstepsElement(double min, double max, double step, int index) {
-        return net.vpc.common.util.ArrayUtils.dstepsElement(min, max, step, index);
+        return  MathsBase.dstepsElement(min, max, step, index);
     }
 
     public static double[] dsteps(double min, double max, double step) {
-        return net.vpc.common.util.ArrayUtils.dsteps(min, max, step);
+        return  MathsBase.dsteps(min, max, step);
     }
 
-    //
     public static float[] fsteps(float min, float max, float step) {
-        return net.vpc.common.util.ArrayUtils.fsteps(min, max, step);
+        return  MathsBase.fsteps(min, max, step);
     }
 
     public static int[] isteps(int min, int max, int step) {
-        return net.vpc.common.util.ArrayUtils.isteps(min, max, step);
+        return  MathsBase.isteps(min, max, step);
     }
 
     public static int[] isteps(int min, int max, int step, IntFilter filter) {
-        return net.vpc.common.util.ArrayUtils.isteps(min, max, step);
+        return  MathsBase.isteps(min, max, step, filter);
     }
 
     public static int[] itimes(int min, int max, int times) {
-        return net.vpc.common.util.ArrayUtils.itimes(min, max, times);
+        return  MathsBase.itimes(min, max, times);
     }
 
     public static int[] isteps(int max) {
-        return isteps(0, max, 1);
+        return  MathsBase.isteps(max);
     }
 
     public static int[] isteps(int min, int max) {
-        return isteps(min, max, 1);
+        return  MathsBase.isteps(min, max);
     }
 
     public static int[] itimes(int min, int max) {
-        return itimes(min, max, max - min + 1);
+        return  MathsBase.itimes(min, max);
     }
 
-    /**
-     * sqrt(a^2 + b^2) without under/overflow.
-     *
-     * @param a
-     * @param b
-     * @return
-     */
     public static double hypot(double a, double b) {
-        return MathsTrigo.hypot(a, b);
+        return  MathsBase.hypot(a, b);
     }
 
     public static Complex sqr(Complex d) {
-        return d.sqr();
+        return  MathsBase.sqr(d);
     }
 
-    //    public static int signOf(double d){
-//        return d<0?-1:d>0?1 : 0;
-//    }
     public static double sqr(double d) {
-        return d * d;
+        return  MathsBase.sqr(d);
     }
 
     public static int sqr(int d) {
-        return d * d;
+        return  MathsBase.sqr(d);
     }
 
     public static long sqr(long d) {
-        return d * d;
+        return  MathsBase.sqr(d);
     }
 
     public static float sqr(float d) {
-        return d * d;
+        return  MathsBase.sqr(d);
     }
 
     public static double sincard(double value) {
-        return value == 0 ? 1 : (sin2(value) / value);
+        return  MathsBase.sincard(value);
     }
 
     public static int minusOnePower(int pow) {
-        return (pow % 2 == 0) ? 1 : -1;
+        return  MathsBase.minusOnePower(pow);
     }
 
     public static Complex exp(Complex c) {
-        return c.exp();
+        return  MathsBase.exp(c);
     }
 
     public static Complex sin(Complex c) {
-        return c.sin();
+        return  MathsBase.sin(c);
     }
 
     public static Complex sinh(Complex c) {
-        return c.sinh();
+        return  MathsBase.sinh(c);
     }
 
     public static Complex cos(Complex c) {
-        return c.cos();
+        return  MathsBase.cos(c);
     }
 
     public static Complex log(Complex c) {
-        return c.log();
+        return  MathsBase.log(c);
     }
 
     public static Complex log10(Complex c) {
-        return c.log10();
+        return  MathsBase.log10(c);
     }
 
     public static double log10(double c) {
-        return Math.log10(c);
+        return  MathsBase.log10(c);
     }
 
     public static double log(double c) {
-        return Math.log(c);
+        return  MathsBase.log(c);
     }
 
     public static double acotan(double c) {
-        if (c == 0) {
-            return HALF_PI;
-        }
-        return Math.atan(1 / c);
+        return  MathsBase.acotan(c);
     }
 
     public static double exp(double c) {
-        return Math.exp(c);
+        return  MathsBase.exp(c);
     }
 
     public static double arg(double c) {
-        return 0;
+        return  MathsBase.arg(c);
     }
 
     public static Complex db(Complex c) {
-        return c.db();
+        return  MathsBase.db(c);
     }
 
     public static Complex db2(Complex c) {
-        return c.db2();
+        return  MathsBase.db2(c);
     }
 
     public static Complex cosh(Complex c) {
-        return c.cosh();
+        return  MathsBase.cosh(c);
     }
 
     public static Complex csum(Complex... c) {
-        MutableComplex x = new MutableComplex();
-        for (Complex c1 : c) {
-            x.add(c1);
-        }
-        return x.toComplex();
+        return  MathsBase.csum(c);
     }
 
     public static Complex sum(Complex... c) {
-        return csum(c);
+        return  MathsBase.sum(c);
     }
 
     public static Complex csum(TVectorModel<Complex> c) {
-        MutableComplex x = new MutableComplex();
-        int size = c.size();
-        for (int i = 0; i < size; i++) {
-            x.add(c.get(i));
-        }
-        return x.toComplex();
+        return  MathsBase.csum(c);
     }
 
     public static Complex csum(int size, TVectorCell<Complex> c) {
-        MutableComplex x = new MutableComplex();
-        for (int i = 0; i < size; i++) {
-            x.add(c.get(i));
-        }
-        return x.toComplex();
+        return  MathsBase.csum(size, c);
     }
 
-    /**
-     * ----------- from colt Evaluates the series of Chebyshev polynomials Ti at
-     * argument x/2. The series is given by
-     * <pre>
-     *        N-1
-     *         - '
-     *  y  =   >   coef[i] T (x/2)
-     *         -            i
-     *        i=0
-     * </pre> Coefficients are stored in reverse order, i.e. the zero order term
-     * is last in the array. Note N is the number of coefficients, not the
-     * order.
-     * <p>
-     * If coefficients are for the interval a to b, x must have been transformed
-     * to x -> 2(2x - b - a)/(b-a) before entering the routine. This maps x from
-     * (a, b) to (-1, 1), over which the Chebyshev polynomials are defined.
-     * <p>
-     * If the coefficients are for the inverted interval, in which (a, b) is
-     * mapped to (1/b, 1/a), the transformation required is x -> 2(2ab/x - b -
-     * a)/(b-a). If b is infinity, this becomes x -> 4a/x - 1.
-     * <p>
-     * SPEED:
-     * <p>
-     * Taking advantage of the recurrence properties of the Chebyshev
-     * polynomials, the routine requires one more addition per loop than
-     * evaluating a nested polynomial of the same degree.
-     *
-     * @param x    argument to the polynomial.
-     * @param coef the coefficients of the polynomial.
-     * @param N    the number of coefficients.
-     */
     public static double chbevl(double x, double[] coef, int N) throws ArithmeticException {
-        return MathsTrigo.chbevl(x, coef, N);
+        return  MathsBase.chbevl(x, coef, N);
     }
 
     public static long pgcd(long a, long b) {
-        return MathsAlgebra.pgcd(a, b);
+        return  MathsBase.pgcd(a, b);
     }
 
     public static int pgcd(int a, int b) {
-        return MathsAlgebra.pgcd(a, b);
+        return  MathsBase.pgcd(a, b);
     }
 
     public static double[][] toDouble(Complex[][] c, PlotDoubleConverter toDoubleConverter) {
-        return MathsArrays.toDouble(c, toDoubleConverter);
+        return  MathsBase.toDouble(c, toDoubleConverter);
     }
 
     public static double[] toDouble(Complex[] c, PlotDoubleConverter toDoubleConverter) {
-        return MathsArrays.toDouble(c, toDoubleConverter);
+        return  MathsBase.toDouble(c, toDoubleConverter);
     }
 
-    /**
-     * range closed min (inclusive) and closed max (inclusive)
-     *
-     * @param orderedValues array to look for range into. must be
-     *                      <strong>ordered</strong>
-     * @param min           min value accepted in range (inclusive)
-     * @param max           max value accepted in range (inclusive)
-     * @return array of two integers defining first and last indices (all
-     * inclusive) accepted in range
-     */
     public static int[] rangeCC(double[] orderedValues, double min, double max) {
-        return MathsArrays.rangeCC(orderedValues, min, max);
+        return  MathsBase.rangeCC(orderedValues, min, max);
     }
 
-    /**
-     * range closed min (inclusive) and open max (exclusive)
-     *
-     * @param orderedValues array to look for range into. must be
-     *                      <strong>ordered</strong>
-     * @param min           min value accepted in range (inclusive)
-     * @param max           max value accepted in range (exclusive)
-     * @return array of two integers defining first and last indices (all
-     * inclusive) accepted in range
-     */
     public static int[] rangeCO(double[] orderedValues, double min, double max) {
-        return MathsArrays.rangeCO(orderedValues, min, max);
+        return  MathsBase.rangeCO(orderedValues, min, max);
     }
 
     public static Complex csqrt(double d) {
-        return Complex.valueOf(d).sqrt();
+        return  MathsBase.csqrt(d);
     }
 
     public static Complex sqrt(Complex d) {
-        return d.sqrt();
+        return  MathsBase.sqrt(d);
     }
 
     public static double dsqrt(double d) {
-        return Math.sqrt(d);
+        return  MathsBase.dsqrt(d);
     }
 
     public static Complex cotanh(Complex c) {
-        return c.cotanh();
+        return  MathsBase.cotanh(c);
     }
 
     public static Complex tanh(Complex c) {
-        return c.tanh();
+        return  MathsBase.tanh(c);
     }
 
     public static Complex inv(Complex c) {
-        return c.inv();
+        return  MathsBase.inv(c);
     }
 
     public static Complex tan(Complex c) {
-        return c.tan();
+        return  MathsBase.tan(c);
     }
 
     public static Complex cotan(Complex c) {
-        return c.cotan();
+        return  MathsBase.cotan(c);
     }
 
     public static Vector vector(TVector v) {
-        v = v.to($COMPLEX);
-        if (v instanceof Vector) {
-            return (Vector) v;
-        }
-        TVector finalV = v;
-        return new ReadOnlyVector(new TVectorModel<Complex>() {
-            @Override
-            public int size() {
-                return finalV.size();
-            }
-
-            @Override
-            public Complex get(int index) {
-                return (Complex) finalV.get(index);
-            }
-        }, v.isRow());
+        return  MathsBase.vector(v);
     }
 
     public static Complex pow(Complex a, Complex b) {
-        return a.pow(b);
+        return  MathsBase.pow(a, b);
     }
 
     public static Complex div(Complex a, Complex b) {
-        return a.div(b);
+        return  MathsBase.div(a, b);
     }
 
     public static Complex add(Complex a, Complex b) {
-        return a.add(b);
+        return  MathsBase.add(a, b);
     }
 
     public static Complex sub(Complex a, Complex b) {
-        return a.sub(b);
+        return  MathsBase.sub(a, b);
     }
 
     public static double norm(Matrix a) {
-        return a.norm(NormStrategy.DEFAULT);
+        return  MathsBase.norm(a);
     }
 
     public static double norm(Vector a) {
-        return a.norm();
+        return  MathsBase.norm(a);
     }
 
     public static double norm1(Matrix a) {
-        return a.norm1();
+        return  MathsBase.norm1(a);
     }
 
     public static double norm2(Matrix a) {
-        return a.norm2();
+        return  MathsBase.norm2(a);
     }
 
     public static double norm3(Matrix a) {
-        return a.norm3();
+        return  MathsBase.norm3(a);
     }
 
     public static double normInf(Matrix a) {
-        return a.normInf();
+        return  MathsBase.normInf(a);
     }
 
     public static DoubleToComplex complex(DoubleToDouble fx) {
-        if (fx.isZero()) {
-            return DCZERO;
-        }
-        if (fx instanceof DoubleToComplex) {
-            return (DoubleToComplex) fx;
-        }
-        return DCxy.valueOf(fx);
+        return  MathsBase.complex(fx);
     }
 
     public static DoubleToComplex complex(DoubleToDouble fx, DoubleToDouble fy) {
-        return DCxy.valueOf(fx, fy);
+        return  MathsBase.complex(fx, fy);
     }
 
     public static double randomDouble(double value) {
-        return value * Math.random();
+        return  MathsBase.randomDouble(value);
     }
 
     public static double randomDouble(double min, double max) {
-        return min + ((max - min) * Math.random());
+        return  MathsBase.randomDouble(min, max);
     }
 
     public static int randomInt(int value) {
-        return (int) (value * Math.random());
+        return  MathsBase.randomInt(value);
     }
 
     public static int randomInt(int min, int max) {
-        return (int) (min + ((max - min) * Math.random()));
+        return  MathsBase.randomInt(min, max);
     }
 
     public static Complex randomComplex() {
-        double r = Math.random();
-        double p = Math.random() * 2 * PI;
-        return Complex.valueOf(r * Math.cos(r), r * sin(p));
+        return  MathsBase.randomComplex();
     }
 
     public static boolean randomBoolean() {
-        return Math.random() <= 0.5;
+        return  MathsBase.randomBoolean();
     }
 
     public static double[][] cross(double[] x, double[] y) {
-        return MathsArrays.cross(x, y);
+        return  MathsBase.cross(x, y);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z) {
-        return MathsArrays.cross(x, y, z);
+        return  MathsBase.cross(x, y, z);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z, Double3Filter filter) {
-        return MathsArrays.cross(x, y, z, filter);
+        return  MathsBase.cross(x, y, z, filter);
+    }
+
+    public static double[][] cross(double[] x, double[] y, Double2Filter filter) {
+        return  MathsBase.cross(x, y, filter);
     }
 
     public static int[][] cross(int[] x, int[] y) {
-        return MathsArrays.cross(x, y);
+        return  MathsBase.cross(x, y);
     }
 
     public static int[][] cross(int[] x, int[] y, int[] z) {
-        return MathsArrays.cross(x, y, z);
+        return  MathsBase.cross(x, y, z);
     }
 
     public static TList sineSeq(String borders, int m, int n, Domain domain) {
-        return sineSeq(borders, m, n, domain, PlaneAxis.XY);
+        return  MathsBase.sineSeq(borders, m, n, domain);
     }
 
     public static TList sineSeq(String borders, int m, int n, Domain domain, PlaneAxis plane) {
-        DoubleParam mm = new DoubleParam("m");
-        DoubleParam nn = new DoubleParam("n");
-        switch (plane) {
-            case XY: {
-                return ParamExprList.create(false, new SinSeqXY(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
-            }
-            case XZ: {
-                return ParamExprList.create(false, new SinSeqXZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
-            }
-            case YZ: {
-                return ParamExprList.create(false, new SinSeqYZ(borders, mm, nn, domain), new DoubleParam[]{mm, nn}, new int[]{m, n});
-            }
-        }
-        throw new IllegalArgumentException("Unsupported Plane " + plane);
+        return  MathsBase.sineSeq(borders, m, n, domain, plane);
     }
 
     public static Expr sineSeq(String borders, DoubleParam m, DoubleParam n, Domain domain) {
-        return new SinSeqXY(borders, m, n, domain);
+        return  MathsBase.sineSeq(borders, m, n, domain);
     }
 
     public static Expr rooftop(String borders, int nx, int ny, Domain domain) {
-        return new Rooftop(borders, nx, ny, domain);
+        return  MathsBase.rooftop(borders, nx, ny, domain);
     }
 
     public static Any any(double e) {
-        return any(expr(e));
+        return  MathsBase.any(e);
     }
 
     public static Any any(Expr e) {
-        return Any.wrap(e);
+        return  MathsBase.any(e);
     }
 
     public static Any any(Double e) {
-        return any(expr(e));
+        return  MathsBase.any(e);
     }
 
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, Int2Filter filter) {
-        double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax));
-        if (filter != null) {
-            List<double[]> list = new ArrayList<>();
-            for (double[] cros : cross) {
-                if (filter.accept((int) cros[0], (int) cros[1])) {
-                    list.add(cros);
-                }
-            }
-            double[][] cross2 = new double[list.size()][];
-            for (int i = 0; i < list.size(); i++) {
-                cross2[i] = list.get(i);
-            }
-            cross = cross2;
-        }
-        return seq(pattern, m, n, cross);
+        return  MathsBase.seq(pattern, m, mmax, n, nmax, filter);
     }
 
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int max, IntFilter filter) {
-        if (filter != null) {
-            DoubleArrayList list = new DoubleArrayList();
-            double[] mm = dsteps(0, max);
-            for (double cros : mm) {
-                if (filter.accept((int) cros)) {
-                    list.add(cros);
-                }
-            }
-            return seq(pattern, m, list.toDoubleArray());
-        }
-        return seq(pattern, m, 0, max);
+        return  MathsBase.seq(pattern, m, max, filter);
     }
 
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, DoubleParam p, int pmax, Int3Filter filter) {
-        double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax), dsteps(0, pmax), filter == null ? null : new Double3Filter() {
-            @Override
-            public boolean accept(double a, double b, double c) {
-                return filter.accept((int) a, (int) b, (int) c);
-            }
-        });
-        return seq(pattern, m, n, p, cross);
+        return  MathsBase.seq(pattern, m, mmax, n, nmax, p, pmax, filter);
     }
 
     public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax) {
-        return seq(pattern, m, n, cross(dsteps(0, mmax), dsteps(0, nmax)));
+        return  MathsBase.seq(pattern, m, mmax, n, nmax);
     }
 
     public static TList<Expr> seq(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
-        return seq(pattern, m, n, cross(mvalues, nvalues));
+        return  MathsBase.seq(pattern, m, mvalues, n, nvalues);
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern));
+        return  MathsBase.seq(pattern, m, n, values);
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final DoubleParam p, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length,
-                new SimpleSeqMulti(pattern, new DoubleParam[]{m, n, p}, values)
-        );
+        return  MathsBase.seq(pattern, m, n, p, values);
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam[] m, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values));
+        return  MathsBase.seq(pattern, m, values);
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, int min, int max) {
-        return seq(pattern, m, dsteps(min, max, 1));
+        return  MathsBase.seq(pattern, m, min, max);
     }
 
     public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final double[] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
+        return  MathsBase.seq(pattern, m, values);
     }
 
     public static ExprMatrix2 matrix(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues) {
-        return Config.getExprMatrixFactory().newUnmodifiableMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
+        return  MathsBase.matrix(pattern, m, mvalues, n, nvalues);
     }
 
     public static ExprCube cube(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues, final DoubleParam p, final double[] pvalues) {
-        return Config.getExprCubeFactory().newUnmodifiableCube(mvalues.length, nvalues.length, pvalues.length, new SimpleSeq3b(pattern, m, mvalues, n, nvalues, p, pvalues));
+        return  MathsBase.cube(pattern, m, mvalues, n, nvalues, p, pvalues);
     }
 
     public static Expr derive(Expr f, Axis axis) {
-        return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
+        return  MathsBase.derive(f, axis);
     }
 
     public static boolean isReal(Expr e) {
-        if (e.isDD()) {
-            return true;
-        }
-        if (e.isDC()) {
-            return e.toDC().getImagDD().isZero();
-        }
-        if (e.isDM()) {
-            ComponentDimension cd = e.getComponentDimension();
-            for (int i = 0; i < cd.rows; i++) {
-                for (int j = 0; j < cd.columns; j++) {
-                    if (!isReal(e.toDM().getComponent(i, j))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return false;
-        //return e.toDC().getImagDD().isZero();
+        return  MathsBase.isReal(e);
     }
 
     public static boolean isImag(Expr e) {
-//        if (e.isZero()) {
-//            return false;
-//        }
-        return !isReal(e);
+        return  MathsBase.isImag(e);
     }
 
     public static Expr abs(Expr e) {
-        return EXPR_VECTOR_SPACE.abs(e);
+        return  MathsBase.abs(e);
     }
 
     public static Expr db(Expr e) {
-        return EXPR_VECTOR_SPACE.db(e);
+        return  MathsBase.db(e);
     }
 
     public static Expr db2(Expr e) {
-        return EXPR_VECTOR_SPACE.db2(e);
+        return  MathsBase.db2(e);
     }
 
     public static Complex complex(int e) {
-        return Complex.valueOf(e);
+        return  MathsBase.complex(e);
     }
 
     public static Complex complex(double e) {
-        return Complex.valueOf(e);
+        return  MathsBase.complex(e);
     }
 
     public static Complex complex(double a, double b) {
-        return Complex.valueOf(a, b);
+        return  MathsBase.complex(a, b);
     }
 
     public static double Double(Expr e) {
-        return e.simplify().toDouble();
+        return  MathsBase.Double(e);
     }
 
     public static Expr real(Expr e) {
-        return EXPR_VECTOR_SPACE.real(e);
+        return  MathsBase.real(e);
     }
 
     public static Expr imag(Expr e) {
-        return EXPR_VECTOR_SPACE.imag(e);
+        return  MathsBase.imag(e);
+    }
+
+    public static Complex Complex(Expr e) {
+        return  MathsBase.Complex(e);
+    }
+
+    public static Complex Complex(double e) {
+        return  MathsBase.Complex(e);
     }
 
     public static Complex complex(Expr e) {
-        return e.simplify().toComplex();
+        return  MathsBase.complex(e);
     }
 
     public static double doubleValue(Expr e) {
-        return e.simplify().toDouble();
+        return  MathsBase.doubleValue(e);
     }
 
     public static Discrete discrete(Domain domain, Complex[][][] model, double[] x, double[] y, double[] z, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3) {
-        return Discrete.create(domain, model, x, y, z, dx, dy, dz, axis1, axis2, axis3);
+        return  MathsBase.discrete(domain, model, x, y, z, dx, dy, dz, axis1, axis2, axis3);
     }
 
     public static Discrete discrete(Domain domain, Complex[][][] model, double[] x, double[] y, double[] z, double dx, double dy, double dz) {
-        return Discrete.create(domain, model, x, y, z, dx, dy, dz);
+        return  MathsBase.discrete(domain, model, x, y, z, dx, dy, dz);
     }
 
     public static Discrete discrete(Domain domain, Complex[][][] model, double[] x, double[] y, double[] z) {
-        return Discrete.create(domain, model, x, y, z);
+        return  MathsBase.discrete(domain, model, x, y, z);
     }
 
     public static Discrete discrete(Domain domain, Complex[][][] model, double dx, double dy, double dz) {
-        return Discrete.create(domain, model, dx, dy, dz);
+        return  MathsBase.discrete(domain, model, dx, dy, dz);
     }
 
     public static Discrete discrete(Complex[][][] model, double[] x, double[] y, double[] z) {
-        return Discrete.create(model, x, y, z);
+        return  MathsBase.discrete(model, x, y, z);
     }
 
     public static Discrete discrete(Complex[][] model, double[] x, double[] y) {
-        return Discrete.create(model, x, y);
+        return  MathsBase.discrete(model, x, y);
     }
 
     public static Expr discrete(Expr expr, double[] xsamples, double[] ysamples, double[] zsamples) {
-        return discrete(expr, Samples.absolute(xsamples, ysamples, zsamples));
+        return  MathsBase.discrete(expr, xsamples, ysamples, zsamples);
     }
 
     public static Expr discrete(Expr expr, Samples samples) {
-        return MathsSampler.discrete(expr, samples);
+        return  MathsBase.discrete(expr, samples);
     }
 
     public static Expr abssqr(Expr e) {
-        return getVectorSpace($EXPR).abssqr(e);
+        return  MathsBase.abssqr(e);
     }
 
     public static AdaptiveResult1 adaptiveEval(Expr expr, AdaptiveConfig config) {
-        Domain domain = expr.getDomain();
-        switch (domain.getDimension()) {
-            case 1: {
-                if (expr.isDD()) {
-                    return adaptiveEval(new AdaptiveFunction1<Double>() {
-                        @Override
-                        public Double eval(double x) {
-                            return expr.toDD().computeDouble(x);
-                        }
-                    }, DISTANCE_DOUBLE, (DomainX) expr.getDomain().getDomainX(), config);
-                }
-                if (expr.isDC()) {
-                    return adaptiveEval(new AdaptiveFunction1<Complex>() {
-                        @Override
-                        public Complex eval(double x) {
-                            return expr.toDC().computeComplex(x);
-                        }
-                    }, Complex.DISTANCE, (DomainX) expr.getDomain().getDomainX(), config);
-                }
-            }
-        }
-        throw new IllegalArgumentException("Unsupported Dimension " + domain.getDimension());
+        return  MathsBase.adaptiveEval(expr, config);
     }
 
     public static <T> AdaptiveResult1 adaptiveEval(AdaptiveFunction1<T> expr, DistanceStrategy<T> distance, DomainX domain, AdaptiveConfig config) {
-        return MathsSampler.adaptiveEval(expr, distance, domain, config);
+        return  MathsBase.adaptiveEval(expr, distance, domain, config);
     }
 
     public static Discrete discrete(Expr expr) {
-        return MathsSampler.discrete(expr);
+        return  MathsBase.discrete(expr);
     }
 
     public static VDiscrete vdiscrete(Expr expr) {
-        return MathsSampler.vdiscrete(expr);
+        return  MathsBase.vdiscrete(expr);
     }
 
     public static Expr discrete(Expr expr, int xSamples) {
-        return MathsSampler.discrete(expr, xSamples);
+        return  MathsBase.discrete(expr, xSamples);
     }
 
     public static Expr discrete(Expr expr, int xSamples, int ySamples) {
-        return MathsSampler.discrete(expr, xSamples, ySamples);
+        return  MathsBase.discrete(expr, xSamples, ySamples);
     }
 
     public static Expr discrete(Expr expr, int xSamples, int ySamples, int zSamples) {
-        return MathsSampler.discrete(expr, xSamples, ySamples, zSamples);
+        return  MathsBase.discrete(expr, xSamples, ySamples, zSamples);
     }
 
     public static AxisFunction axis(Axis e) {
-        if (e == null) {
-            return null;
-        }
-        switch (e) {
-            case X:
-                return (AxisFunction) X;
-            case Y:
-                return (AxisFunction) Y;
-            case Z:
-                return (AxisFunction) Z;
-        }
-        throw new IllegalArgumentException("Unsupported");
+        return  MathsBase.axis(e);
     }
 
     public static Expr transformAxis(Expr e, AxisFunction a1, AxisFunction a2, AxisFunction a3) {
-        return transformAxis(e, a1.getAxis(), a2.getAxis(), a3.getAxis());
+        return  MathsBase.transformAxis(e, a1, a2, a3);
     }
 
     public static Expr transformAxis(Expr e, Axis a1, Axis a2, Axis a3) {
-        return new AxisTransform(e, new Axis[]{a1, a2, a3}, 3);
+        return  MathsBase.transformAxis(e, a1, a2, a3);
     }
 
     public static Expr transformAxis(Expr e, AxisFunction a1, AxisFunction a2) {
-        return transformAxis(e, a1.getAxis(), a2.getAxis());
+        return  MathsBase.transformAxis(e, a1, a2);
     }
 
     public static Expr transformAxis(Expr e, Axis a1, Axis a2) {
-        EnumSet<Axis> found = EnumSet.copyOf(Arrays.asList(Axis.values()));
-        found.remove(a1);
-        found.remove(a2);
-        Axis a3 = found.toArray(new Axis[0])[0];
-        if (a3 == Axis.Z) {
-            return new AxisTransform(e, new Axis[]{a1, a2, a3}, 2);
-        } else {
-            return new AxisTransform(e, new Axis[]{a1, a2, a3}, 3);
-        }
+        return  MathsBase.transformAxis(e, a1, a2);
     }
 
     public static double sin2(double d) {
-        return MathsTrigo.sin2(d);
+        return  MathsBase.sin2(d);
     }
 
     public static double cos2(double d) {
-        return MathsTrigo.cos2(d);
+        return  MathsBase.cos2(d);
     }
 
     public static boolean isInt(double d) {
-        return net.vpc.common.util.PlatformUtils.isInt(d);
+        return  MathsBase.isInt(d);
     }
 
-    /**
-     * lenient cast
-     *
-     * @param o    instance
-     * @param type cast to
-     * @param <T>  type
-     * @return
-     */
     public static <T> T lcast(Object o, Class<T> type) {
-        return o == null ? null : type.isInstance(o) ? (T) o : null;
+        return  MathsBase.lcast(o, type);
     }
 
-    /**
-     * return a string representation (dump) of the given object. dump is
-     * evaluated as follows : first
-     *
-     * @param o object to dump
-     * @return string dump of the object
-     */
     public static String dump(Object o) {
-        return Config.getDumpManager().getDumpDelegate(o, false).getDumpString(o);
+        return  MathsBase.dump(o);
     }
 
     public static String dumpSimple(Object o) {
-        return Config.getDumpManager().getDumpDelegate(o, true).getDumpString(o);
+        return  MathsBase.dumpSimple(o);
     }
 
     public static DoubleToDouble expr(double value, Geometry geometry) {
-        if (geometry == null) {
-            geometry = Domain.FULLXY.toGeometry();
-        }
-        if (geometry.isRectangular()) {
-            return DoubleValue.valueOf(value, geometry.getDomain());
-        }
-        return new Shape2D(value, geometry);
+        return  MathsBase.expr(value, geometry);
     }
 
     public static DoubleToDouble expr(double value, Domain geometry) {
-        if (geometry == null) {
-            geometry = Domain.FULLXY;
-        }
-//        return geometry.toDD();
-        if (geometry.isRectangular()) {
-            return DoubleValue.valueOf(value, geometry.getDomain());
-        }
-        return new Shape2D(value, geometry);
+        return  MathsBase.expr(value, geometry);
     }
 
     public static DoubleToDouble expr(Domain domain) {
-        return domain.toDD();
+        return  MathsBase.expr(domain);
     }
 
     public static DoubleToDouble expr(Geometry domain) {
-        return expr(1, domain);
+        return  MathsBase.expr(domain);
     }
 
     public static Expr expr(Complex a, Geometry geometry) {
-        if (geometry == null) {
-            geometry = Domain.FULLXY.toGeometry();
-        }
-        if (a.isReal()) {
-            return expr(a.getReal(), geometry);
-        }
-        if (geometry.isRectangular()) {
-            return new ComplexValue(a, geometry.getDomain());
-        } else {
-            throw new IllegalArgumentException("Not supported yet geometry with complex value");
-        }
+        return  MathsBase.expr(a, geometry);
     }
 
     public static Expr expr(Complex a, Domain geometry) {
-        if (geometry == null) {
-            geometry = Domain.FULLXY;
-        }
-        if (a.isReal()) {
-            return expr(a.getReal(), geometry);
-        }
-        if (geometry.isRectangular()) {
-            return new ComplexValue(a, geometry.getDomain());
-        } else {
-            throw new IllegalArgumentException("Not supported yet geometry with complex value");
-        }
+        return  MathsBase.expr(a, geometry);
     }
 
     public static <T extends Expr> TList<T> preload(TList<T> list) {
-        return DefaultExprSequenceFactory.INSTANCE.newPreloadedSequence(list.length(), list);
+        return  MathsBase.preload(list);
     }
 
     public static <T extends Expr> TList<T> withCache(TList<T> list) {
-        //DefaultExprSequenceFactory.INSTANCE.newCachedSequence(length(), this);
-        return DefaultExprSequenceFactory.INSTANCE.newCachedSequence(list.length(), list);
+        return  MathsBase.withCache(list);
     }
 
-    //    public static <T extends Expr> TList<T> simplify(TList<T> list) {
-//        //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(length(), new SimplifiedSeq(this));
-//        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(list.length(), new SimplifiedSeq(list));
-//    }
     public static <T> TList<T> abs(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.abs(e);
-            }
-        });
+        return  MathsBase.abs(a);
     }
 
     public static <T> TList<T> db(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.db(e);
-            }
-        });
+        return  MathsBase.db(a);
     }
 
     public static <T> TList<T> db2(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.db2(e);
-            }
-        });
+        return  MathsBase.db2(a);
     }
 
     public static <T> TList<T> real(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.real(e);
-            }
-        });
+        return  MathsBase.real(a);
     }
 
     public static <T> TList<T> imag(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.imag(e);
-            }
-        });
+        return  MathsBase.imag(a);
     }
 
     public static double real(Complex a) {
-        return a.getReal();
+        return  MathsBase.real(a);
     }
 
     public static double imag(Complex a) {
-        return a.getImag();
+        return  MathsBase.imag(a);
     }
 
     public static boolean almostEqualRelative(float a, float b, float maxRelativeError) {
-        if (a == b) {
-            return true;
-        }
-        float relativeError = b == 0 ? a : ((a - b) / b);
-        if (relativeError < 0) {
-            relativeError = 0.0F - relativeError;
-        }
-        return relativeError <= maxRelativeError;
+        return  MathsBase.almostEqualRelative(a, b, maxRelativeError);
     }
 
     public static boolean almostEqualRelative(double a, double b, double maxRelativeError) {
-        if (a == b) {
-            return true;
-        }
-        double relativeError = b == 0 ? a : ((a - b) / b);
-        if (relativeError < 0) {
-            relativeError = 0.0D - relativeError;
-        }
-        return relativeError <= maxRelativeError;
+        return  MathsBase.almostEqualRelative(a, b, maxRelativeError);
     }
 
     public static boolean almostEqualRelative(Complex a, Complex b, double maxRelativeError) {
-        if (a == b) {
-            return true;
-        }
-        double relativeError = (b.isZero() ? a : ((a.sub(b)).div(b))).norm();
-        return relativeError <= maxRelativeError;
+        return  MathsBase.almostEqualRelative(a, b, maxRelativeError);
     }
 
     public static DoubleArrayParamSet dtimes(Param param, double min, double max, int times) {
-        return new DoubleArrayParamSet(param, min, max, times);
+        return  MathsBase.dtimes(param, min, max, times);
     }
 
     public static DoubleArrayParamSet dsteps(Param param, double min, double max, double step) {
-        return new DoubleArrayParamSet(param, min, max, step);
+        return  MathsBase.dsteps(param, min, max, step);
     }
 
     public static IntArrayParamSet itimes(Param param, int min, int max, int times) {
-        return new IntArrayParamSet(param, min, max, times);
+        return  MathsBase.itimes(param, min, max, times);
     }
 
     public static IntArrayParamSet isteps(Param param, int min, int max, int step) {
-        return new IntArrayParamSet(param, min, max, (double) step);
+        return  MathsBase.isteps(param, min, max, step);
     }
 
     public static FloatArrayParamSet ftimes(Param param, int min, int max, int times) {
-        return new FloatArrayParamSet(param, min, max, times);
+        return  MathsBase.ftimes(param, min, max, times);
     }
 
     public static FloatArrayParamSet fsteps(Param param, int min, int max, int step) {
-        return new FloatArrayParamSet(param, min, max, (float) step);
+        return  MathsBase.fsteps(param, min, max, step);
     }
 
     public static LongArrayParamSet ltimes(Param param, int min, int max, int times) {
-        return new LongArrayParamSet(param, min, max, times);
+        return  MathsBase.ltimes(param, min, max, times);
     }
 
     public static LongArrayParamSet lsteps(Param param, int min, int max, long step) {
-        return new LongArrayParamSet(param, min, max, step);
+        return  MathsBase.lsteps(param, min, max, step);
     }
 
     public static Vector sin(Vector v) {
-        return v.sin();
+        return  MathsBase.sin(v);
     }
 
     public static Vector cos(Vector v) {
-        return v.cos();
+        return  MathsBase.cos(v);
     }
 
     public static Vector tan(Vector v) {
-        return v.tan();
+        return  MathsBase.tan(v);
     }
 
     public static Vector cotan(Vector v) {
-        return v.cotan();
+        return  MathsBase.cotan(v);
     }
 
     public static Vector tanh(Vector v) {
-        return v.tanh();
+        return  MathsBase.tanh(v);
     }
 
     public static Vector cotanh(Vector v) {
-        return v.cotanh();
+        return  MathsBase.cotanh(v);
     }
 
     public static Vector cosh(Vector v) {
-        return v.cosh();
+        return  MathsBase.cosh(v);
     }
 
     public static Vector sinh(Vector v) {
-        return v.sinh();
+        return  MathsBase.sinh(v);
     }
 
     public static Vector log(Vector v) {
-        return v.log();
+        return  MathsBase.log(v);
     }
 
     public static Vector log10(Vector v) {
-        return v.log10();
+        return  MathsBase.log10(v);
     }
 
     public static Vector db(Vector v) {
-        return v.db();
+        return  MathsBase.db(v);
     }
 
     public static Vector exp(Vector v) {
-        return v.exp();
+        return  MathsBase.exp(v);
     }
 
     public static Vector acosh(Vector v) {
-        return v.acosh();
+        return  MathsBase.acosh(v);
     }
 
     public static Vector acos(Vector v) {
-        return v.acos();
+        return  MathsBase.acos(v);
     }
 
     public static Vector asinh(Vector v) {
-        return v.asinh();
+        return  MathsBase.asinh(v);
     }
 
     public static Vector asin(Vector v) {
-        return v.asin();
+        return  MathsBase.asin(v);
     }
 
     public static Vector atan(Vector v) {
-        return v.atan();
+        return  MathsBase.atan(v);
     }
 
     public static Vector acotan(Vector v) {
-        return v.acotan();
+        return  MathsBase.acotan(v);
     }
 
     public static Vector imag(Vector v) {
-        return v.imag();
+        return  MathsBase.imag(v);
     }
 
     public static Vector real(Vector v) {
-        return v.real();
+        return  MathsBase.real(v);
     }
 
     public static Vector abs(Vector v) {
-        return v.abs();
+        return  MathsBase.abs(v);
     }
 
     public static Complex[] abs(Complex[] v) {
-        Complex[] r = new Complex[v.length];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = (v[i].abs());
-        }
-        return r;
+        return  MathsBase.abs(v);
     }
 
     public static Complex avg(Vector v) {
-        return v.avg();
+        return  MathsBase.avg(v);
     }
 
     public static Complex sum(Vector v) {
-        return v.sum();
+        return  MathsBase.sum(v);
     }
 
     public static Complex prod(Vector v) {
-        return v.prod();
+        return  MathsBase.prod(v);
     }
 
     public static Matrix abs(Matrix v) {
-        return v.abs();
+        return  MathsBase.abs(v);
     }
 
     public static Matrix sin(Matrix v) {
-        return v.sin();
+        return  MathsBase.sin(v);
     }
 
     public static Matrix cos(Matrix v) {
-        return v.cos();
+        return  MathsBase.cos(v);
     }
 
     public static Matrix tan(Matrix v) {
-        return v.tan();
+        return  MathsBase.tan(v);
     }
 
     public static Matrix cotan(Matrix v) {
-        return v.cotan();
+        return  MathsBase.cotan(v);
     }
 
     public static Matrix tanh(Matrix v) {
-        return v.tanh();
+        return  MathsBase.tanh(v);
     }
 
     public static Matrix cotanh(Matrix v) {
-        return v.cotanh();
+        return  MathsBase.cotanh(v);
     }
 
     public static Matrix cosh(Matrix v) {
-        return v.cosh();
+        return  MathsBase.cosh(v);
     }
 
     public static Matrix sinh(Matrix v) {
-        return v.sinh();
+        return  MathsBase.sinh(v);
     }
 
     public static Matrix log(Matrix v) {
-        return v.log();
+        return  MathsBase.log(v);
     }
 
     public static Matrix log10(Matrix v) {
-        return v.log10();
+        return  MathsBase.log10(v);
     }
 
     public static Matrix db(Matrix v) {
-        return v.db();
+        return  MathsBase.db(v);
     }
 
     public static Matrix exp(Matrix v) {
-        return v.exp();
+        return  MathsBase.exp(v);
     }
 
-    //
     public static Matrix acosh(Matrix v) {
-        return v.acosh();
+        return  MathsBase.acosh(v);
     }
 
     public static Matrix acos(Matrix v) {
-        return v.acos();
+        return  MathsBase.acos(v);
     }
 
     public static Matrix asinh(Matrix v) {
-        return v.asinh();
+        return  MathsBase.asinh(v);
     }
 
     public static Matrix asin(Matrix v) {
-        return v.asin();
+        return  MathsBase.asin(v);
     }
 
     public static Matrix atan(Matrix v) {
-        return v.atan();
+        return  MathsBase.atan(v);
     }
 
     public static Matrix acotan(Matrix v) {
-        return v.acotan();
+        return  MathsBase.acotan(v);
     }
 
     public static Matrix imag(Matrix v) {
-        return v.imag();
+        return  MathsBase.imag(v);
     }
 
     public static Matrix real(Matrix v) {
-        return v.real();
+        return  MathsBase.real(v);
     }
 
     public static Complex[] real(Complex[] v) {
-        Complex[] values = new Complex[v.length];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = (v[i].real());
-        }
-        return values;
+        return  MathsBase.real(v);
     }
 
     public static double[] realdbl(Complex[] v) {
-        double[] values = new double[v.length];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = v[i].realdbl();
-        }
-        return values;
+        return  MathsBase.realdbl(v);
     }
 
     public static Complex[] imag(Complex[] v) {
-        Complex[] values = new Complex[v.length];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = (v[i].imag());
-        }
-        return values;
+        return  MathsBase.imag(v);
     }
 
     public static double[] imagdbl(Complex[] v) {
-        double[] values = new double[v.length];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = v[i].imagdbl();
-        }
-        return values;
+        return  MathsBase.imagdbl(v);
     }
 
     public static Complex avg(Matrix v) {
-        return v.avg();
+        return  MathsBase.avg(v);
     }
 
     public static Complex sum(Matrix v) {
-        return v.sum();
+        return  MathsBase.sum(v);
     }
 
     public static Complex prod(Matrix v) {
-        return v.prod();
+        return  MathsBase.prod(v);
     }
 
     public static boolean roundEquals(double a, double b, double epsilon) {
-        return Math.abs(a - b) < epsilon;
+        return  MathsBase.roundEquals(a, b, epsilon);
     }
 
     public static double round(double val, double precision) {
-        return (Math.round(val / precision)) * precision;
+        return  MathsBase.round(val, precision);
     }
 
-    /////////////////////////////////////////////////////////////////
-    // sample region functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="sample region functions">
-//</editor-fold>
-    /////////////////////////////////////////////////////////////////
-    // double functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="double functions">
     public static double sqrt(double v, int n) {
-        return n == 0 ? 1 : pow(v, 1.0 / n);
+        return  MathsBase.sqrt(v, n);
     }
 
     public static double pow(double v, double n) {
-        return Math.pow(v, n);
+        return  MathsBase.pow(v, n);
     }
 
     public static double db(double x) {
-        return 10 * Math.log10(x);
+        return  MathsBase.db(x);
     }
 
     public static double acosh(double x) {
-        return Math.log(x + Math.sqrt(x * x - 1));
+        return  MathsBase.acosh(x);
     }
 
     public static double atanh(double x) {
-        return Math.log((1 + x) / (1 - x)) / 2;
+        return  MathsBase.atanh(x);
     }
 
     public static double acotanh(double x) {
-        if (true) {
-            throw new IllegalArgumentException("TODO : Check me");
-        }
-        return 1 / atanh(1 / x);
+        return  MathsBase.acotanh(x);
     }
 
     public static double asinh(double x) {
-        if (x == Double.NEGATIVE_INFINITY) {
-            return x;
-        } else {
-            return Math.log(x + Math.sqrt(x * x + 1));
-        }
+        return  MathsBase.asinh(x);
     }
 
     public static double db2(double nbr) {
-        return 20 * Math.log10(nbr);
+        return  MathsBase.db2(nbr);
     }
 
     public static double sqrt(double nbr) {
-        return Math.sqrt(nbr);
+        return  MathsBase.sqrt(nbr);
     }
 
-    /**
-     * erturn 1/x
-     *
-     * @param x
-     * @return
-     */
     public static double inv(double x) {
-        return 1.0 / x;
+        return  MathsBase.inv(x);
     }
 
-    /**
-     * return x
-     *
-     * @param x
-     * @return
-     */
     public static double conj(double x) {
-        return x;
+        return  MathsBase.conj(x);
     }
-//</editor-fold>
 
-    /////////////////////////////////////////////////////////////////
-    // double[] functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="double[] functions">
     public static double[] sin2(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = sin2(x[i]);
-        }
-        return y;
+        return  MathsBase.sin2(x);
     }
 
     public static double[] cos2(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = cos2(x[i]);
-        }
-        return y;
+        return  MathsBase.cos2(x);
     }
 
     public static double[] sin(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.sin(x[i]);
-        }
-        return y;
+        return  MathsBase.sin(x);
     }
 
     public static double[] cos(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.cos(x[i]);
-        }
-        return y;
+        return  MathsBase.cos(x);
     }
 
     public static double[] tan(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.tan(x[i]);
-        }
-        return y;
+        return  MathsBase.tan(x);
     }
 
     public static double[] cotan(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = 1 / Math.tan(x[i]);
-        }
-        return y;
+        return  MathsBase.cotan(x);
     }
 
     public static double[] sinh(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.sinh(x[i]);
-        }
-        return y;
+        return  MathsBase.sinh(x);
     }
 
     public static double[] cosh(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.cosh(x[i]);
-        }
-        return y;
+        return  MathsBase.cosh(x);
     }
 
     public static double[] tanh(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = Math.tanh(x[i]);
-        }
-        return y;
+        return  MathsBase.tanh(x);
     }
 
     public static double[] cotanh(double[] x) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = 1 / Math.tanh(x[i]);
-        }
-        return y;
+        return  MathsBase.cotanh(x);
     }
 
     public static double max(double a, double b) {
-        return a > b ? a : b;
+        return  MathsBase.max(a, b);
     }
 
     public static int max(int a, int b) {
-        return a > b ? a : b;
+        return  MathsBase.max(a, b);
     }
 
     public static long max(long a, long b) {
-        return a > b ? a : b;
+        return  MathsBase.max(a, b);
     }
 
     public static double min(double a, double b) {
-        return a < b ? a : b;
+        return  MathsBase.min(a, b);
     }
 
     public static double min(double[] arr) {
-        return MathsArrays.min(arr);
+        return  MathsBase.min(arr);
     }
 
     public static double max(double[] arr) {
-        return MathsArrays.max(arr);
+        return  MathsBase.max(arr);
     }
 
     public static double avg(double[] arr) {
-        return MathsArrays.avg(arr);
+        return  MathsBase.avg(arr);
     }
 
     public static int min(int a, int b) {
-        return a < b ? a : b;
+        return  MathsBase.min(a, b);
     }
 
     public static Complex min(Complex a, Complex b) {
-        int i = a.compareTo(b);
-        return i <= 0 ? a : b;
+        return  MathsBase.min(a, b);
     }
 
     public static Complex max(Complex a, Complex b) {
-        int i = a.compareTo(b);
-        return i >= 0 ? a : b;
+        return  MathsBase.max(a, b);
     }
 
     public static long min(long a, long b) {
-        return a < b ? a : b;
+        return  MathsBase.min(a, b);
     }
 
     public static double[] minMax(double[] a) {
-        return MathsArrays.minMax(a);
+        return  MathsBase.minMax(a);
     }
 
     public static double[] minMaxAbs(double[] a) {
-        return MathsArrays.minMaxAbs(a);
+        return  MathsBase.minMaxAbs(a);
     }
 
     public static double[] minMaxAbsNonInfinite(double[] a) {
-        return MathsArrays.minMaxAbsNonInfinite(a);
+        return  MathsBase.minMaxAbsNonInfinite(a);
     }
 
     public static double avgAbs(double[] arr) {
-        return MathsArrays.avgAbs(arr);
+        return  MathsBase.avgAbs(arr);
     }
 
     public static double[] distances(double[] arr) {
-        return MathsArrays.distances(arr);
+        return  MathsBase.distances(arr);
     }
 
     public static double[] div(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] / b[i];
-        }
-        return ret;
+        return  MathsBase.div(a, b);
     }
 
     public static double[] mul(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] * b[i];
-        }
-        return ret;
+        return  MathsBase.mul(a, b);
     }
 
     public static double[] sub(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] - b[i];
-        }
-        return ret;
+        return  MathsBase.sub(a, b);
     }
 
     public static double[] sub(double[] a, double b) {
-        int max = a.length;
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] - b;
-        }
-        return ret;
+        return  MathsBase.sub(a, b);
     }
 
     public static double[] add(double[] a, double[] b) {
-        int max = Math.max(a.length, b.length);
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] + b[i];
-        }
-        return ret;
+        return  MathsBase.add(a, b);
     }
 
     public static double[] db(double[] a) {
-        double[] ret = new double[a.length];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = db(a[i]);
-        }
-        return ret;
+        return  MathsBase.db(a);
     }
 
     public static double[][] sin(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = sin(r[i]);
-        }
-        return r;
+        return  MathsBase.sin(c);
     }
 
     public static double[][] sin2(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = sin2(r[i]);
-        }
-        return r;
+        return  MathsBase.sin2(c);
     }
-    //</editor-fold>
 
-    /////////////////////////////////////////////////////////////////
-    // double functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="double functions">
     public static double sin(double x) {
-        return Math.sin(x);
+        return  MathsBase.sin(x);
     }
 
     public static double cos(double x) {
-        return Math.cos(x);
+        return  MathsBase.cos(x);
     }
 
     public static double tan(double x) {
-        return Math.tan(x);
+        return  MathsBase.tan(x);
     }
 
     public static double cotan(double x) {
-        return 1 / Math.tan(x);
+        return  MathsBase.cotan(x);
     }
 
     public static double sinh(double x) {
-        return Math.sinh(x);
-//        return (Math.exp(x) - Math.exp(-x)) / 2;
+        return  MathsBase.sinh(x);
     }
 
     public static double cosh(double x) {
-        return Math.cosh(x);
-//        return (Math.exp(x) + Math.exp(-x)) / 2;
+        return  MathsBase.cosh(x);
     }
 
     public static double tanh(double x) {
-        return Math.tanh(x);
-//        double a = Math.exp(+x);
-//        double b = Math.exp(-x);
-//        return a == Double.POSITIVE_INFINITY ? 1 : b == Double.POSITIVE_INFINITY ? -1 : (a - b) / (a + b);
+        return  MathsBase.tanh(x);
     }
 
     public static double abs(double a) {
-        return Math.abs(a);
+        return  MathsBase.abs(a);
     }
 
     public static int abs(int a) {
-        return Math.abs(a);
+        return  MathsBase.abs(a);
     }
 
     public static double cotanh(double x) {
-        return 1 / Math.tanh(x);
+        return  MathsBase.cotanh(x);
     }
 
     public static double acos(double x) {
-        return Math.acos(x);
+        return  MathsBase.acos(x);
     }
 
     public static double asin(double x) {
-        return Math.asin(x);
+        return  MathsBase.asin(x);
     }
 
     public static double atan(double x) {
-        return Math.atan(x);
+        return  MathsBase.atan(x);
     }
-    //</editor-fold>
 
-    /////////////////////////////////////////////////////////////////
-    // double[] functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="double[] functions">
     public static double sum(double... c) {
-        double x = 0;
-        for (int i = 0; i < c.length; i++) {
-            x += c[i];
-        }
-        return x;
+        return  MathsBase.sum(c);
     }
 
     public static double[] mul(double[] a, double b) {
-        int max = a.length;
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] * b;
-        }
-        return ret;
+        return  MathsBase.mul(a, b);
     }
 
     public static double[] mulSelf(double[] x, double v) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] = x[i] * v;
-        }
-        return x;
+        return  MathsBase.mulSelf(x, v);
     }
 
     public static double[] div(double[] a, double b) {
-        int max = a.length;
-        double[] ret = new double[max];
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] / b;
-        }
-        return ret;
+        return  MathsBase.div(a, b);
     }
 
     public static double[] divSelf(double[] x, double v) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] = x[i] / v;
-        }
-        return x;
+        return  MathsBase.divSelf(x, v);
     }
 
     public static double[] add(double[] x, double v) {
-        double[] y = new double[x.length];
-        for (int i = 0; i < y.length; i++) {
-            y[i] = x[i] + v;
-        }
-        return y;
+        return  MathsBase.add(x, v);
     }
 
     public static double[] addSelf(double[] x, double v) {
-        for (int i = 0; i < x.length; i++) {
-            x[i] = x[i] + v;
-        }
-        return x;
+        return  MathsBase.addSelf(x, v);
     }
-    //</editor-fold>
 
-    /////////////////////////////////////////////////////////////////
-    // double[][] functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="double[][] functions">
     public static double[][] cos(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = cos(r[i]);
-        }
-        return r;
+        return  MathsBase.cos(c);
     }
 
     public static double[][] tan(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = tan(r[i]);
-        }
-        return r;
+        return  MathsBase.tan(c);
     }
 
     public static double[][] cotan(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = cotan(r[i]);
-        }
-        return r;
+        return  MathsBase.cotan(c);
     }
 
     public static double[][] sinh(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = sinh(r[i]);
-        }
-        return r;
+        return  MathsBase.sinh(c);
     }
 
     public static double[][] cosh(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = cosh(r[i]);
-        }
-        return r;
+        return  MathsBase.cosh(c);
     }
 
     public static double[][] tanh(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = tanh(r[i]);
-        }
-        return r;
+        return  MathsBase.tanh(c);
     }
 
     public static double[][] cotanh(double[][] c) {
-        double[][] r = new double[c.length][];
-        for (int i = 0; i < r.length; i++) {
-            r[i] = tanh(r[i]);
-        }
-        return r;
+        return  MathsBase.cotanh(c);
     }
 
     public static double[][] add(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
-        double[][] ret = new double[maxi][maxj];
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
-                ret[i][j] = a[i][j] + b[i][j];
-            }
-        }
-        return ret;
+        return  MathsBase.add(a, b);
     }
 
     public static double[][] sub(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
-        double[][] ret = new double[maxi][maxj];
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
-                ret[i][j] = a[i][j] - b[i][j];
-            }
-        }
-        return ret;
+        return  MathsBase.sub(a, b);
     }
 
     public static double[][] div(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
-        double[][] ret = new double[maxi][maxj];
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
-                ret[i][j] = a[i][j] / b[i][j];
-            }
-        }
-        return ret;
+        return  MathsBase.div(a, b);
     }
 
     public static double[][] mul(double[][] a, double[][] b) {
-        int maxi = Math.max(a.length, b.length);
-        int maxj = Math.max(a.length == 0 ? 0 : a[0].length, b.length == 0 ? 0 : b[0].length);
-        double[][] ret = new double[maxi][maxj];
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
-                ret[i][j] = a[i][j] * b[i][j];
-            }
-        }
-        return ret;
+        return  MathsBase.mul(a, b);
     }
 
     public static double[][] db(double[][] a) {
-        double[][] ret = new double[a.length][];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = new double[a[i].length];
-            for (int j = 0; j < ret[i].length; j++) {
-                ret[i][j] = db(a[i][j]);
-            }
-        }
-        return ret;
+        return  MathsBase.db(a);
     }
 
     public static double[][] db2(double[][] a) {
-        double[][] ret = new double[a.length][];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = new double[a[i].length];
-            for (int j = 0; j < ret[i].length; j++) {
-                ret[i][j] = db2(a[i][j]);
-            }
-        }
-        return ret;
+        return  MathsBase.db2(a);
     }
-    //</editor-fold>
 
-    /////////////////////////////////////////////////////////////////
-    // expression functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="expression functions">
     public static Expr If(Expr cond, Expr exp1, Expr exp2) {
-        return EXPR_VECTOR_SPACE.If(cond, exp1, exp2);
+        return  MathsBase.If(cond, exp1, exp2);
     }
 
     public static Expr or(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.or(a, b);
+        return  MathsBase.or(a, b);
     }
 
     public static Expr and(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.and(a, b);
+        return  MathsBase.and(a, b);
     }
 
     public static Expr not(Expr a) {
-        return EXPR_VECTOR_SPACE.not(a);
+        return  MathsBase.not(a);
     }
 
     public static Expr eq(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.eq(a, b);
+        return  MathsBase.eq(a, b);
     }
 
     public static Expr ne(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.ne(a, b);
+        return  MathsBase.ne(a, b);
     }
 
     public static Expr gte(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.gte(a, b);
+        return  MathsBase.gte(a, b);
     }
 
     public static Expr gt(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.gt(a, b);
+        return  MathsBase.gt(a, b);
     }
 
     public static Expr lte(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.lte(a, b);
+        return  MathsBase.lte(a, b);
     }
 
     public static Expr lt(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.lt(a, b);
+        return  MathsBase.lt(a, b);
     }
 
     public static Expr cos(Expr e) {
-        return EXPR_VECTOR_SPACE.cos(e);
+        return  MathsBase.cos(e);
     }
 
     public static Expr cosh(Expr e) {
-        return EXPR_VECTOR_SPACE.cosh(e);
+        return  MathsBase.cosh(e);
     }
 
     public static Expr sin(Expr e) {
-        return EXPR_VECTOR_SPACE.sin(e);
+        return  MathsBase.sin(e);
     }
 
     public static Expr sincard(Expr e) {
-        return EXPR_VECTOR_SPACE.sincard(e);
+        return  MathsBase.sincard(e);
     }
 
     public static Expr sinh(Expr e) {
-        return EXPR_VECTOR_SPACE.sinh(e);
+        return  MathsBase.sinh(e);
     }
 
     public static Expr tan(Expr e) {
-        return EXPR_VECTOR_SPACE.tan(e);
+        return  MathsBase.tan(e);
     }
 
     public static Expr tanh(Expr e) {
-        return EXPR_VECTOR_SPACE.tanh(e);
+        return  MathsBase.tanh(e);
     }
 
     public static Expr cotan(Expr e) {
-        return EXPR_VECTOR_SPACE.cotan(e);
+        return  MathsBase.cotan(e);
     }
 
     public static Expr cotanh(Expr e) {
-        return EXPR_VECTOR_SPACE.cotanh(e);
+        return  MathsBase.cotanh(e);
     }
 
     public static Expr sqr(Expr e) {
-        return EXPR_VECTOR_SPACE.sqr(e);
+        return  MathsBase.sqr(e);
     }
 
     public static Expr sqrt(Expr e) {
-        return EXPR_VECTOR_SPACE.sqrt(e);
+        return  MathsBase.sqrt(e);
     }
 
     public static Expr inv(Expr e) {
-        return EXPR_VECTOR_SPACE.inv(e);
+        return  MathsBase.inv(e);
     }
 
     public static Expr neg(Expr e) {
-        return EXPR_VECTOR_SPACE.neg(e);
+        return  MathsBase.neg(e);
     }
 
     public static Expr exp(Expr e) {
-        return EXPR_VECTOR_SPACE.exp(e);
+        return  MathsBase.exp(e);
     }
 
     public static Expr atan(Expr e) {
-        return EXPR_VECTOR_SPACE.atan(e);
+        return  MathsBase.atan(e);
     }
 
     public static Expr acotan(Expr e) {
-        return EXPR_VECTOR_SPACE.acotan(e);
+        return  MathsBase.acotan(e);
     }
 
     public static Expr acos(Expr e) {
-        return EXPR_VECTOR_SPACE.acos(e);
+        return  MathsBase.acos(e);
     }
 
     public static Expr asin(Expr e) {
-        return EXPR_VECTOR_SPACE.asin(e);
+        return  MathsBase.asin(e);
     }
 
     public static Complex integrate(Expr e) {
-        return integrate(e, null);
+        return  MathsBase.integrate(e);
     }
 
     public static Complex integrate(Expr e, Domain domain) {
-        return Config.getIntegrationOperator().eval(domain, e);
+        return  MathsBase.integrate(e, domain);
     }
 
     public static Expr esum(int size, TVectorCell<Expr> f) {
-        return Maths.esum(seq(size, f));
+        return  MathsBase.esum(size, f);
     }
 
     public static Expr esum(int size1, int size2, TMatrixCell<Expr> e) {
-        RepeatableOp<Expr> c = EXPR_VECTOR_SPACE.addRepeatableOp();
-        for (int i = 0; i < size1; i++) {
-            for (int j = 0; j < size2; j++) {
-                c.append(e.get(i, j));
-            }
-        }
-        return c.eval();
+        return  MathsBase.esum(size1, size2, e);
     }
 
     public static Complex csum(int size1, int size2, TMatrixCell<Complex> e) {
-        MutableComplex c = new MutableComplex();
-        for (int i = 0; i < size1; i++) {
-            for (int j = 0; j < size2; j++) {
-                c.add(e.get(i, j));
-            }
-        }
-        return c.toComplex();
+        return  MathsBase.csum(size1, size2, e);
     }
 
     public static TVector<Expr> seq(int size1, TVectorCell<Expr> f) {
-        return new ReadOnlyTVector<Expr>($EXPR, false, new TVectorModelFromCell(size1, f));
+        return  MathsBase.seq(size1, f);
     }
 
     public static TVector<Expr> seq(int size1, int size2, TMatrixCell<Expr> f) {
-        int sizeFull = size1 * size2;
-        TVectorModel<Expr> tVectorModel = new TVectorModel<Expr>() {
-            @Override
-            public int size() {
-                return sizeFull;
-            }
-
-            @Override
-            public Expr get(int index) {
-                return f.get(index / size2, index % size2);
-            }
-        };
-        return new ReadOnlyTVector<Expr>($EXPR, false, tVectorModel);
-    }
-
-    private static TMatrix<Complex> resolveBestScalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ScalarProductOperator sp, ProgressMonitor monitor) {
-        int rows = gp.length;
-        int columns = fn.length;
-
-//        if (doSimplifyAll) {
-//            Expr[] finalFn = fn;
-//            Expr[] finalGp = gp;
-//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
-//                @Override
-//                public Expr[][] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-//                    Expr[][] fg = new Expr[2][];
-//                    fg[0] = simplifyAll(finalFn, hmon[0]);
-//
-//                    fg[1] = simplifyAll(finalGp, hmon[1]);
-//                    return fg;
-//                }
-//            });
-//            fn = fg[0];
-//            gp = fg[1];
-//        }
-        boolean doubleValue = true;
-        boolean scalarValue = true;
-//        int maxF = fn.length;
-//        int maxG = gp.length;
-        for (Expr expr : fn) {
-            if (!expr.isScalarExpr()) {
-                scalarValue = false;
-                break;
-            }
-        }
-        if (scalarValue) {
-            for (Expr expr : gp) {
-                if (!expr.isScalarExpr()) {
-                    scalarValue = false;
-                    break;
-                }
-            }
-        }
-        for (Expr expr : fn) {
-            if (!expr.isDoubleTyped()) {
-                doubleValue = false;
-                break;
-            }
-        }
-        if (doubleValue) {
-            for (Expr expr : gp) {
-                if (!expr.isDoubleTyped()) {
-                    doubleValue = false;
-                    break;
-                }
-            }
-        }
-
-        if (!Config.memoryCanStores(24L * rows * columns)) {
-            return new MatrixScalarProductCache(Config.getLargeMatrixFactory()).evaluate(sp, fn, gp, axis, monitor).toMatrix();
-        }
-        if (doubleValue) {
-            return new MemDoubleScalarProductCache(scalarValue).evaluate(sp, fn, gp, axis, monitor).toMatrix();
-        }
-        return new MemComplexScalarProductCache(sp.isHermitian(), doubleValue, scalarValue).evaluate(sp, fn, gp, axis, monitor).toMatrix();
+        return  MathsBase.seq(size1, size2, f);
     }
 
     public static TMatrix<Complex> scalarProductCache(Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
+        return  MathsBase.scalarProductCache(gp, fn, monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(gp, fn, AxisXY.XY, Config.getScalarProductOperator(), monitor);
+        return  MathsBase.scalarProductCache(sp, gp, fn, monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(ScalarProductOperator sp, Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(gp, fn, axis, sp, monitor);
+        return  MathsBase.scalarProductCache(sp, gp, fn, axis, monitor);
     }
 
     public static TMatrix<Complex> scalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ProgressMonitor monitor) {
-        return resolveBestScalarProductCache(gp, fn, axis, Config.getScalarProductOperator(), monitor);
+        return  MathsBase.scalarProductCache(gp, fn, axis, monitor);
     }
 
     public static Expr gate(Axis axis, double a, double b) {
-        switch (axis) {
-            case X:
-                return gateX(a, b);
-            case Y:
-                return gateY(a, b);
-            case Z:
-                return gateZ(a, b);
-        }
-        throw new IllegalArgumentException("Unsupported axis " + axis);
+        return  MathsBase.gate(axis, a, b);
     }
 
     public static Expr gate(Expr axis, double a, double b) {
-        if (X.equals(axis)) {
-            return gateX(a, b);
-        }
-        if (Y.equals(axis)) {
-            return gateY(a, b);
-        }
-        if (Z.equals(axis)) {
-            return gateZ(a, b);
-        }
-        throw new IllegalArgumentException("Insupported axis " + axis);
+        return  MathsBase.gate(axis, a, b);
     }
 
     public static Expr gateX(double a, double b) {
-        return DoubleValue.valueOf(1, Domain.forBounds(a, b));
+        return  MathsBase.gateX(a, b);
     }
 
     public static Expr gateY(double a, double b) {
-        return DoubleValue.valueOf(1, Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, a, b));
+        return  MathsBase.gateY(a, b);
     }
 
     public static Expr gateZ(double a, double b) {
-        return DoubleValue.valueOf(1, Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, a, b));
+        return  MathsBase.gateZ(a, b);
     }
 
     public static double scalarProduct(DoubleToDouble f1, DoubleToDouble f2) {
-        return Config.getScalarProductOperator().evalDD(null, f1, f2);
+        return  MathsBase.scalarProduct(f1, f2);
     }
 
     public static Vector scalarProduct(Expr f1, TVector<Expr> f2) {
-        VectorCell spfact = new VectorCell() {
-            @Override
-            public Complex get(int index) {
-                return scalarProduct(f1, f2.get(index));
-            }
-        };
-        return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
+        return  MathsBase.scalarProduct(f1, f2);
     }
 
     public static Matrix scalarProduct(Expr f1, TMatrix<Expr> f2) {
-        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
-            @Override
-            public Complex get(int row, int column) {
-                return scalarProduct(f1, f2.get(row, column));
-            }
-        });
+        return  MathsBase.scalarProduct(f1, f2);
     }
 
     public static Vector scalarProduct(TVector<Expr> f2, Expr f1) {
-        VectorCell spfact = new VectorCell() {
-            @Override
-            public Complex get(int index) {
-                return scalarProduct(f2.get(index), f1);
-            }
-        };
-        return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
+        return  MathsBase.scalarProduct(f2, f1);
     }
 
     public static Matrix scalarProduct(TMatrix<Expr> f2, Expr f1) {
-        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
-            @Override
-            public Complex get(int row, int column) {
-                return scalarProduct(f2.get(row, column), f1);
-            }
-        });
+        return  MathsBase.scalarProduct(f2, f1);
     }
 
     public static Complex scalarProduct(Domain domain, Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(domain, f1, f2);
+        return  MathsBase.scalarProduct(domain, f1, f2);
     }
 
     public static Complex scalarProduct(Expr f1, Expr f2) {
-        return Config.getScalarProductOperator().eval(f1, f2);
+        return  MathsBase.scalarProduct(f1, f2);
     }
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
-        return matrix(Config.getScalarProductOperator().eval(g, f, null));
+        return  MathsBase.scalarProductMatrix(g, f);
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f) {
-        return Config.getScalarProductOperator().eval(g, f, null);
+        return  MathsBase.scalarProduct(g, f);
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(g, f, monitor);
+        return  MathsBase.scalarProduct(g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
+        return  MathsBase.scalarProductMatrix(g, f, monitor);
     }
 
     public static TMatrix<Complex> scalarProduct(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(g, f, axis, monitor);
+        return  MathsBase.scalarProduct(g, f, axis, monitor);
     }
 
     public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
-        return (Matrix) Config.getScalarProductOperator().eval(g, f, null).to($COMPLEX);
+        return  MathsBase.scalarProductMatrix(g, f);
     }
 
     public static Complex scalarProduct(Matrix g, Matrix f) {
-        return g.scalarProduct(f);
+        return  MathsBase.scalarProduct(g, f);
     }
 
     public static Expr scalarProduct(Matrix g, TVector<Expr> f) {
-        return f.scalarProduct(g.to($EXPR));
+        return  MathsBase.scalarProduct(g, f);
     }
 
     public static Expr scalarProductAll(Matrix g, TVector<Expr>... f) {
-        return g.toVector().to($EXPR).scalarProductAll((TVector[]) f);
+        return  MathsBase.scalarProductAll(g, f);
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f) {
-        return Config.getScalarProductOperator().eval(g, f, null);
+        return  MathsBase.scalarProduct(g, f);
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(g, f, monitor);
+        return  MathsBase.scalarProduct(g, f, monitor);
     }
 
     public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
+        return  MathsBase.scalarProductMatrix(g, f, monitor);
     }
 
     public static TMatrix<Complex> scalarProduct(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return Config.getScalarProductOperator().eval(g, f, axis, monitor);
+        return  MathsBase.scalarProduct(g, f, axis, monitor);
     }
 
-    //    public static String scalarProductToMatlabString(DFunctionXY f1, DFunctionXY f2, DomainXY domain0, ToMatlabStringParam... format) {
-//        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
-//    }
-//
-//    public static String scalarProductToMatlabString(DomainXY domain0,CFunctionXY f1, CFunctionXY f2, ToMatlabStringParam... format) {
-//        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
-//    }
     public static ExprList elist(int size) {
-        return new ExprArrayList(false, size);
+        return  MathsBase.elist(size);
     }
 
     public static ExprList elist(boolean row, int size) {
-        return new ExprArrayList(row, size);
+        return  MathsBase.elist(row, size);
     }
 
     public static ExprList elist(Expr... vector) {
-        return new ExprArrayList(false, vector);
+        return  MathsBase.elist(vector);
     }
 
     public static ExprList elist(TVector<Complex> vector) {
-        return new ExprArrayList(false, vector);
+        return  MathsBase.elist(vector);
     }
 
     public static TList<Complex> clist(TVector<Expr> vector) {
-        return new ArrayTList<Complex>($COMPLEX, false, new TVectorModel<Complex>() {
-            @Override
-            public int size() {
-                return vector.size();
-            }
-
-            @Override
-            public Complex get(int index) {
-                return vector.get(index).simplify().toComplex();
-            }
-        });
+        return  MathsBase.clist(vector);
     }
 
     public static TList<Complex> clist() {
-        return new ArrayTList<>($COMPLEX, false, 0);
+        return  MathsBase.clist();
     }
 
     public static TList<Complex> clist(int size) {
-        return new ArrayTList<>($COMPLEX, false, size);
+        return  MathsBase.clist(size);
     }
 
     public static TList<Complex> clist(Complex... vector) {
-        return new ArrayTList<>($COMPLEX, false, vector);
+        return  MathsBase.clist(vector);
     }
 
     public static TList<Matrix> mlist() {
-        return Maths.list($MATRIX, false, 0);
+        return  MathsBase.mlist();
     }
 
     public static TList<Matrix> mlist(int size) {
-        return Maths.list($MATRIX, false, size);
+        return  MathsBase.mlist(size);
     }
 
     public static TList<Matrix> mlist(Matrix... items) {
-        TList<Matrix> list = Maths.list($MATRIX, false, items.length);
-        list.appendAll(Arrays.asList(items));
-        return list;
+        return  MathsBase.mlist(items);
     }
 
     public static TList<TList<Complex>> clist2() {
-        return list($CLIST, false, 0);
+        return  MathsBase.clist2();
     }
 
     public static TList<TList<Expr>> elist2() {
-        return Maths.list($ELIST, false, 0);
+        return  MathsBase.elist2();
     }
 
     public static TList<TList<Double>> dlist2() {
-        return Maths.list($DLIST, false, 0);
+        return  MathsBase.dlist2();
     }
 
     public static TList<TList<Integer>> ilist2() {
-        return Maths.list($ILIST, false, 0);
+        return  MathsBase.ilist2();
     }
 
     public static TList<TList<Matrix>> mlist2() {
-        return Maths.list($MLIST, false, 0);
+        return  MathsBase.mlist2();
     }
 
     public static TList<TList<Boolean>> blist2() {
-        return list($BLIST, false, 0);
+        return  MathsBase.blist2();
     }
 
     public static <T> TList<T> list(TypeName<T> type) {
-        return list(type, false, 0);
+        return  MathsBase.list(type);
     }
 
     public static <T> TList<T> list(TypeName<T> type, int initialSize) {
-        return list(type, false, initialSize);
+        return  MathsBase.list(type, initialSize);
     }
 
     public static <T> TList<T> listro(TypeName<T> type, boolean row, TVectorModel<T> model) {
-        if (type.equals(Maths.$DOUBLE)) {
-            return (TList<T>) new DoubleArrayList.DoubleReadOnlyList(row, (TVectorModel<Double>) model);
-        }
-        if (type.equals(Maths.$INTEGER)) {
-            return (TList<T>) new IntArrayList.IntReadOnlyList(row, (TVectorModel<Integer>) model);
-        }
-        if (type.equals(Maths.$LONG)) {
-            return (TList<T>) new LongArrayList.LongReadOnlyList(row, (TVectorModel<Long>) model);
-        }
-        if (type.equals(Maths.$BOOLEAN)) {
-            return (TList<T>) new BooleanArrayList.BooleanReadOnlyList(row, (TVectorModel<Boolean>) model);
-        }
-        return new ReadOnlyTList<T>(type, row, model);
+        return  MathsBase.listro(type, row, model);
     }
 
     public static <T> TList<T> list(TypeName<T> type, boolean row, int initialSize) {
-        if (type.equals($EXPR)) {
-            return (TList<T>) elist(row, initialSize);
-        }
-        if (type.equals($DOUBLE)) {
-            return (TList<T>) dlist(row, initialSize);
-        }
-        if (type.equals($INTEGER)) {
-            return (TList<T>) ilist(row, initialSize);
-        }
-        if (type.equals($LONG)) {
-            return (TList<T>) llist(row, initialSize);
-        }
-        if (type.equals($BOOLEAN)) {
-            return (TList<T>) blist(row, initialSize);
-        }
-        return new ArrayTList<T>(type, row, initialSize);
+        return  MathsBase.list(type, row, initialSize);
     }
 
     public static <T> TList<T> list(TVector<T> vector) {
-        TList<T> exprs = list(vector.getComponentType());
-        for (T o : vector) {
-            exprs.append(o);
-        }
-        return exprs;
+        return  MathsBase.list(vector);
     }
 
     public static ExprList elist(Matrix vector) {
-        Vector complexes = vector.toVector();
-        ExprList exprs = elist(complexes.size());
-        exprs.appendAll((TVector) complexes);
-        return exprs;
+        return  MathsBase.elist(vector);
     }
 
-    public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> vectors) {
-        return vector.vscalarProduct(vectors.toArray(new TVector[0]));
+    public static <T> TVector<T> vscalarProduct(TVector<T> vector, TVector<TVector<T>> tVectors) {
+        return  MathsBase.vscalarProduct(vector, tVectors);
     }
 
     public static TList<Expr> elist() {
-        return new ExprArrayList(false, 0);
+        return  MathsBase.elist();
     }
 
     public static <T> TList<T> concat(TList<T>... a) {
-        TList<T> ts = list(a[0].getComponentType());
-        for (TList<T> t : a) {
-            ts.appendAll(t);
-        }
-        return ts;
+        return  MathsBase.concat(a);
     }
 
     public static TList<Double> dlist() {
-        return new DoubleArrayList();
+        return  MathsBase.dlist();
     }
 
     public static TList<Double> dlist(ToDoubleArrayAware items) {
-        return dlist(items.toDoubleArray());
+        return  MathsBase.dlist(items);
     }
 
     public static TList<Double> dlist(double[] items) {
-        DoubleList doubles = new DoubleArrayList(items.length);
-        doubles.appendAll(items);
-        return doubles;
+        return  MathsBase.dlist(items);
     }
 
     public static TList<Double> dlist(boolean row, int size) {
-        return new DoubleArrayList(row, size);
+        return  MathsBase.dlist(row, size);
     }
 
     public static TList<Double> dlist(int size) {
-        return new DoubleArrayList(size);
+        return  MathsBase.dlist(size);
     }
 
     public static TList<String> slist() {
-        return new ArrayTList<String>($STRING, false, 0);
+        return  MathsBase.slist();
     }
 
     public static TList<String> slist(String[] items) {
-        TList<String> doubles = new ArrayTList<String>($STRING, false, items.length);
-        for (String item : items) {
-            doubles.append(item);
-        }
-        return doubles;
+        return  MathsBase.slist(items);
     }
 
     public static TList<String> slist(boolean row, int size) {
-        return new ArrayTList<String>($STRING, row, size);
+        return  MathsBase.slist(row, size);
     }
 
     public static TList<String> slist(int size) {
-        return new ArrayTList<String>($STRING, false, size);
+        return  MathsBase.slist(size);
     }
 
     public static TList<Boolean> blist() {
-        return new BooleanArrayList(false, 0);
+        return  MathsBase.blist();
     }
 
     public static TList<Boolean> dlist(boolean[] items) {
-        TList<Boolean> doubles = new BooleanArrayList(false, items.length);
-        for (boolean item : items) {
-            doubles.append(item);
-        }
-        return doubles;
+        return  MathsBase.dlist(items);
     }
 
     public static TList<Boolean> blist(boolean row, int size) {
-        return new BooleanArrayList(row, size);
+        return  MathsBase.blist(row, size);
     }
 
     public static TList<Boolean> blist(int size) {
-        return new BooleanArrayList(false, size);
+        return  MathsBase.blist(size);
     }
 
     public static IntList ilist() {
-        return new IntArrayList(false, 0);
+        return  MathsBase.ilist();
     }
 
     public static TList<Integer> ilist(int[] items) {
-        TList<Integer> doubles = new IntArrayList(false, items.length);
-        for (int item : items) {
-            doubles.append(item);
-        }
-        return doubles;
+        return  MathsBase.ilist(items);
     }
 
     public static TList<Integer> ilist(int size) {
-        return new IntArrayList(false, size);
+        return  MathsBase.ilist(size);
     }
 
     public static TList<Integer> ilist(boolean row, int size) {
-        return new IntArrayList(row, size);
+        return  MathsBase.ilist(row, size);
     }
 
     public static LongList llist() {
-        return new LongArrayList(false, 0);
+        return  MathsBase.llist();
     }
 
     public static TList<Long> llist(long[] items) {
-        TList<Long> doubles = new LongArrayList(false, items.length);
-        for (long item : items) {
-            doubles.append(item);
-        }
-        return doubles;
+        return  MathsBase.llist(items);
     }
 
     public static TList<Long> llist(int size) {
-        return new LongArrayList(false, size);
+        return  MathsBase.llist(size);
     }
 
     public static TList<Long> llist(boolean row, int size) {
-        return new LongArrayList(row, size);
+        return  MathsBase.llist(row, size);
     }
 
     public static <T> T sum(TypeName<T> type, T... arr) {
-        return MathsExpr.sum(type, arr);
+        return  MathsBase.sum(type, arr);
     }
 
     public static <T> T sum(TypeName<T> type, TVectorModel<T> arr) {
-        return MathsExpr.sum(type, arr);
+        return  MathsBase.sum(type, arr);
     }
 
     public static <T> T sum(TypeName<T> type, int size, TVectorCell<T> arr) {
-        return MathsExpr.sum(type, size, arr);
+        return  MathsBase.sum(type, size, arr);
     }
 
     public static <T> T mul(TypeName<T> type, T... arr) {
-        return MathsExpr.mul(type, arr);
+        return  MathsBase.mul(type, arr);
     }
 
     public static <T> T mul(TypeName<T> type, TVectorModel<T> arr) {
-        return MathsExpr.mul(type, arr);
+        return  MathsBase.mul(type, arr);
     }
 
     public static Complex avg(Discrete d) {
-        return MathsSampler.avg(d);
+        return  MathsBase.avg(d);
     }
 
     public static DoubleToVector vsum(VDiscrete d) {
-        return MathsSampler.vsum(d);
+        return  MathsBase.vsum(d);
     }
 
     public static DoubleToVector vavg(VDiscrete d) {
-        return MathsSampler.vavg(d);
+        return  MathsBase.vavg(d);
     }
 
     public static Complex avg(VDiscrete d) {
-        return MathsSampler.avg(d);
+        return  MathsBase.avg(d);
     }
 
     public static Expr sum(Expr... arr) {
-        return MathsExpr.sum(arr);
+        return  MathsBase.sum(arr);
     }
 
     public static Expr esum(TVectorModel<Expr> arr) {
-        return MathsExpr.esum(arr);
+        return  MathsBase.esum(arr);
     }
 
     public static <T> TMatrix<T> mul(TMatrix<T> a, TMatrix<T> b) {
-        return a.mul(b);
+        return  MathsBase.mul(a, b);
     }
 
     public static Matrix mul(Matrix a, Matrix b) {
-        return a.mul(b);
+        return  MathsBase.mul(a, b);
     }
 
     public static Expr mul(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.mul(a, b);
+        return  MathsBase.mul(a, b);
     }
 
     public static TVector<Expr> edotmul(TVector<Expr>... arr) {
-        return MathsExpr.edotmul(arr);
+        return  MathsBase.edotmul(arr);
     }
 
     public static TVector<Expr> edotdiv(TVector<Expr>... arr) {
-        return MathsExpr.edotdiv(arr);
+        return  MathsBase.edotdiv(arr);
     }
 
     public static Complex cmul(TVectorModel<Complex> arr) {
-        return MathsExpr.cmul(arr);
+        return  MathsBase.cmul(arr);
     }
 
     public static Expr emul(TVectorModel<Expr> arr) {
-        return MathsExpr.emul(arr);
+        return  MathsBase.emul(arr);
     }
 
     public static Expr mul(Expr... e) {
-        return MathsExpr.mul(e);
+        return  MathsBase.mul(e);
     }
 
     public static Expr pow(Expr a, Expr b) {
-        return new Pow(a, b);
+        return  MathsBase.pow(a, b);
     }
 
     public static Expr sub(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.sub(a, b);
+        return  MathsBase.sub(a, b);
     }
 
     public static Expr add(Expr a, double b) {
-        return add(a, Complex.valueOf(b));
+        return  MathsBase.add(a, b);
     }
 
     public static Expr mul(Expr a, double b) {
-        return mul(a, Complex.valueOf(b));
+        return  MathsBase.mul(a, b);
     }
 
     public static Expr sub(Expr a, double b) {
-        return sub(a, Complex.valueOf(b));
+        return  MathsBase.sub(a, b);
     }
 
     public static Expr div(Expr a, double b) {
-        return div(a, Complex.valueOf(b));
+        return  MathsBase.div(a, b);
     }
 
     public static Expr add(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.add(a, b);
+        return  MathsBase.add(a, b);
     }
 
     public static Expr add(Expr... a) {
-        return MathsExpr.add(a);
+        return  MathsBase.add(a);
     }
 
     public static Expr div(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.div(a, b);
+        return  MathsBase.div(a, b);
     }
 
     public static Expr rem(Expr a, Expr b) {
-        return EXPR_VECTOR_SPACE.rem(a, b);
+        return  MathsBase.rem(a, b);
     }
 
     public static Expr expr(double value) {
-        return DoubleValue.valueOf(value, Domain.FULLX);
+        return  MathsBase.expr(value);
     }
 
     public static <T> TVector<Expr> expr(TVector<T> vector) {
-        return vector.to($EXPR);
+        return  MathsBase.expr(vector);
     }
 
     public static TMatrix<Expr> expr(TMatrix<Complex> matrix) {
-        return new ReadOnlyTMatrix<Expr>($EXPR, new TMatrixModel<Expr>() {
-            @Override
-            public Expr get(int row, int column) {
-                return matrix.get(row, column);
-            }
-
-            @Override
-            public int getColumnCount() {
-                return matrix.getColumnCount();
-            }
-
-            @Override
-            public int getRowCount() {
-                return matrix.getRowCount();
-            }
-        });
+        return  MathsBase.expr(matrix);
     }
 
     public static <T> TMatrix<T> tmatrix(TypeName<T> type, TMatrixModel<T> model) {
-        return new ReadOnlyTMatrix<T>(type, model);
+        return  MathsBase.tmatrix(type, model);
     }
 
     public static <T> TMatrix<T> tmatrix(TypeName<T> type, int rows, int columns, TMatrixCell<T> model) {
-        return tmatrix(type, new TMatrixCellToModel<>(rows, columns, model));
+        return  MathsBase.tmatrix(type, rows, columns, model);
     }
 
-    //    public static Expr expr(Domain d) {
-//        return DoubleValue.valueOf(1, d);
-//    }
     public static <T> T simplify(T a) {
-        if (a instanceof Expr) {
-            return (T) simplify((Expr) a);
-        }
-        if (a instanceof TList) {
-            return (T) simplify((TList) a);
-        }
-        if (a instanceof TVector) {
-            return (T) simplify((TVector) a);
-        }
-        return a;
+        return  MathsBase.simplify(a);
     }
 
     public static Expr simplify(Expr a) {
-        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(a);
+        return  MathsBase.simplify(a);
     }
 
     public static double norm(Expr a) {
-        //TODO conjugate a
-        Expr aCong = a;
-        Complex c = Config.getScalarProductOperator().eval(a, aCong);
-        return sqrt(c).absdbl();
+        return  MathsBase.norm(a);
     }
 
     public static <T> TList<T> normalize(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                Expr n = normalize((Expr) e).simplify();
-                return (T) n;
-            }
-        });
+        return  MathsBase.normalize(a);
     }
 
     public static Expr normalize(Geometry a) {
-        return normalize(expr(a));
+        return  MathsBase.normalize(a);
     }
 
     public static Expr normalize(Expr a) {
-        Complex n = Complex.valueOf(1.0 / norm(a));
-        if (n.equals(Maths.CONE)) {
-            return a;
-        }
-        Expr mul = mul(a, n);
-        //preserve names and properties
-        mul = Any.copyProperties(a, mul);
-        return mul;
+        return  MathsBase.normalize(a);
     }
 
     public static DoubleToVector vector(Expr fx, Expr fy) {
-        if (fx.isZero() && fy.isZero()) {
-            return DVZERO2;
-        }
-        return DefaultDoubleToVector.create(fx.toDC(), fy.toDC());
+        return  MathsBase.vector(fx, fy);
     }
 
     public static DoubleToVector vector(Expr fx) {
-        if (fx.isZero()) {
-            return DVZERO1;
-        }
-        return DefaultDoubleToVector.create(fx.toDC());
+        return  MathsBase.vector(fx);
     }
 
     public static DoubleToVector vector(Expr fx, Expr fy, Expr fz) {
-        if (fx.isZero() && fy.isZero() && fz.isZero()) {
-            return DVZERO3;
-        }
-        return DefaultDoubleToVector.create(fx.toDC(), fy.toDC(), fz.toDC());
+        return  MathsBase.vector(fx, fy, fz);
     }
 
     public static <T> TVector<T> cos(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().cos());
+        return  MathsBase.cos(a);
     }
 
     public static <T> TVector<T> cosh(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().cosh());
+        return  MathsBase.cosh(a);
     }
 
     public static <T> TVector<T> sin(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().sin());
+        return  MathsBase.sin(a);
     }
 
     public static <T> TVector<T> sinh(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().sinh());
+        return  MathsBase.sinh(a);
     }
 
     public static <T> TVector<T> tan(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().tan());
+        return  MathsBase.tan(a);
     }
 
     public static <T> TVector<T> tanh(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().tanh());
+        return  MathsBase.tanh(a);
     }
 
     public static <T> TVector<T> cotan(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().cotan());
+        return  MathsBase.cotan(a);
     }
 
     public static <T> TVector<T> cotanh(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().cotanh());
+        return  MathsBase.cotanh(a);
     }
 
     public static <T> TVector<T> sqr(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().sqr());
+        return  MathsBase.sqr(a);
     }
 
     public static <T> TVector<T> sqrt(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().sqrt());
+        return  MathsBase.sqrt(a);
     }
 
     public static <T> TVector<T> inv(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().inv());
+        return  MathsBase.inv(a);
     }
 
     public static <T> TVector<T> neg(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().neg());
+        return  MathsBase.neg(a);
     }
 
     public static <T> TVector<T> exp(TVector<T> a) {
-        return a.eval(getVectorSpace(a.getComponentType()).ops().exp());
+        return  MathsBase.exp(a);
     }
 
     public static <T> TVector<T> simplify(TVector<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                return (T) simplify(e);
-            }
-        });
+        return  MathsBase.simplify(a);
     }
 
     public static <T> TList<T> simplify(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                return (T) simplify((Expr) e);
-            }
-        });
+        return  MathsBase.simplify(a);
     }
 
     public static <T> TList<T> addAll(TList<T> e, T... expressions) {
-        TypeName<T> st = e.getComponentType();
-        TList<T> n = list(st);
-        VectorSpace<T> s = getVectorSpace(st);
-        for (T x : e) {
-            T t = sum(st, expressions);
-            n.append((T) s.add(x, t));
-        }
-        return n;
+        return  MathsBase.addAll(e, expressions);
     }
 
     public static <T> TList<T> mulAll(TList<T> e, T... expressions) {
-        TypeName<T> st = e.getComponentType();
-        TList<T> n = list(st);
-        VectorSpace<T> s = getVectorSpace(st);
-        for (T x : e) {
-            T t = mul(st, expressions);
-            n.append((T) s.mul(x, t));
-        }
-        return n;
+        return  MathsBase.mulAll(e, expressions);
     }
 
     public static <T> TList<T> pow(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.pow(e, b);
-            }
-        });
+        return  MathsBase.pow(a, b);
     }
 
     public static <T> TList<T> sub(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.sub(e, b);
-            }
-        });
+        return  MathsBase.sub(a, b);
     }
 
     public static <T> TList<T> div(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.div(e, b);
-            }
-        });
+        return  MathsBase.div(a, b);
     }
 
     public static <T> TList<T> rem(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.rem(e, b);
-            }
-        });
+        return  MathsBase.rem(a, b);
     }
 
     public static <T> TList<T> add(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.add(e, b);
-            }
-        });
+        return  MathsBase.add(a, b);
     }
 
     public static <T> TList<T> mul(TList<T> a, T b) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                VectorSpace<T> vectorSpace = (VectorSpace<T>) getVectorSpace(a.getComponentType());
-                return (T) vectorSpace.mul(e, b);
-            }
-        });
+        return  MathsBase.mul(a, b);
     }
 
-    //</editor-fold>
-    /////////////////////////////////////////////////////////////////
-    // general purpose functions
-    /////////////////////////////////////////////////////////////////
-    //<editor-fold desc="general purpose functions">
     public static void loopOver(Object[][] values, LoopAction action) {
-        int[] indexes = new int[values.length];
-        for (int i = 0; i < indexes.length; i++) {
-            if (values[i].length == 0) {
-                return;
-            }
-            indexes[i] = 0;
-        }
-        while (true) {
-            Object[] uplet = new Object[indexes.length];
-            for (int i = 0; i < uplet.length; i++) {
-//                try {
-                uplet[i] = values[i][indexes[i]];
-//                } catch (ArrayIndexOutOfBoundsException ex) {
-//                    System.out.println("");
-//                }
-            }
-            action.next(uplet);
-
-            int depth = 0;
-            while (depth < indexes.length) {
-                indexes[depth]++;
-                if (indexes[depth] >= values[depth].length) {
-                    indexes[depth] = 0;
-                    depth++;
-                } else {
-                    break;
-                }
-            }
-            if (depth >= indexes.length) {
-                break;
-            }
-        }
+         MathsBase.loopOver(values, action);
     }
 
     public static void loopOver(Loop[] values, LoopAction action) {
-//        int[] indexes=new int[values.length];
-        for (int i = 0; i < values.length; i++) {
-            if (!values[i].hasNext()) {
-                return;
-            }
-            values[i].reset();
-        }
-        while (true) {
-            Object[] uplet = new Object[values.length];
-            for (int i = 0; i < uplet.length; i++) {
-                uplet[i] = values[i].get();
-            }
-
-            action.next(uplet);
-
-            int depth = 0;
-            while (depth < values.length) {
-                values[depth].next();
-                if (!values[depth].hasNext()) {
-                    values[depth].reset();
-                    depth++;
-                } else {
-                    break;
-                }
-            }
-            if (depth >= values.length) {
-                break;
-            }
-        }
+         MathsBase.loopOver(values, action);
     }
 
     public static String formatMemory() {
-        return memoryInfo().toString();
+        return  MathsBase.formatMemory();
     }
 
     public static String formatMetric(double value) {
-        return Config.getMetricFormatter().format(value);
+        return  MathsBase.formatMetric(value);
     }
 
     public static MemoryInfo memoryInfo() {
-        return new MemoryInfo();
+        return  MathsBase.memoryInfo();
     }
 
     public static MemoryMeter memoryMeter() {
-        return new MemoryMeter();
+        return  MathsBase.memoryMeter();
     }
 
     public static long inUseMemory() {
-        Runtime rt = Runtime.getRuntime();
-        return (rt.totalMemory() - rt.freeMemory());
+        return  MathsBase.inUseMemory();
     }
 
     public static long maxFreeMemory() {
-        Runtime rt = Runtime.getRuntime();
-        return rt.maxMemory() - (rt.totalMemory() - rt.freeMemory());
+        return  MathsBase.maxFreeMemory();
     }
 
     public static String formatMemory(long bytes) {
-        return Config.getMemorySizeFormatter().format(bytes);
+        return  MathsBase.formatMemory(bytes);
     }
 
     public static String formatFrequency(double frequency) {
-        return Config.getFrequencyFormatter().format(frequency);
+        return  MathsBase.formatFrequency(frequency);
     }
 
     public static String formatDimension(double dimension) {
-        return Config.getMetricFormatter().format(dimension);
+        return  MathsBase.formatDimension(dimension);
     }
 
     public static String formatPeriodNanos(long period) {
-        return Config.getTimePeriodFormat().formatNanos(period);
+        return  MathsBase.formatPeriodNanos(period);
     }
 
     public static String formatPeriodMillis(long period) {
-        return Config.getTimePeriodFormat().formatMillis(period);
+        return  MathsBase.formatPeriodMillis(period);
     }
 
     public static int sizeOf(Class src) {
-        return MathsBase.sizeOf(src);
+        return  MathsBase.sizeOf(src);
     }
 
     public static <T> T invokeMonitoredAction(ProgressMonitor mon, String messagePrefix, MonitoredAction<T> run) {
-        return MathsBase.invokeMonitoredAction(mon,messagePrefix,run);
+        return  MathsBase.invokeMonitoredAction(mon, messagePrefix, run);
     }
 
     public static Chronometer chrono() {
-        return MathsBase.chrono();
+        return  MathsBase.chrono();
     }
 
     public static Chronometer chrono(String name) {
-        return MathsBase.chrono(name);
+        return  MathsBase.chrono(name);
     }
 
     public static Chronometer chrono(String name, Runnable r) {
-        return MathsBase.chrono(name,r);
+        return  MathsBase.chrono(name, r);
     }
 
     public static <V> V chrono(String name, Callable<V> r) {
-        return MathsBase.chrono(name,r);
+        return  MathsBase.chrono(name, r);
     }
 
     public static SolverExecutorService solverExecutorService(int threads) {
-        return MathsBase.solverExecutorService(threads);
+        return  MathsBase.solverExecutorService(threads);
     }
 
     public static Chronometer chrono(Runnable r) {
-        return MathsBase.chrono(r);
+        return  MathsBase.chrono(r);
     }
 
     public static DoubleFormat percentFormat() {
-        return Config.getPercentFormat();
+        return  MathsBase.percentFormat();
     }
 
     public static DoubleFormat frequencyFormat() {
-        return Config.getFrequencyFormatter();
+        return  MathsBase.frequencyFormat();
     }
 
     public static DoubleFormat metricFormat() {
-        return Config.getMetricFormatter();
+        return  MathsBase.metricFormat();
     }
 
     public static DoubleFormat memoryFormat() {
-        return Config.getMemorySizeFormatter();
+        return  MathsBase.memoryFormat();
     }
 
     public static DoubleFormat dblformat(String format) {
-        return DoubleFormatterFactory.create(format);
+        return  MathsBase.dblformat(format);
     }
 
     public static double[] resizePickFirst(double[] array, int newSize) {
-        return MathsArrays.resizePickFirst(array, newSize);
+        return  MathsBase.resizePickFirst(array, newSize);
     }
 
     public static double[] resizePickAverage(double[] array, int newSize) {
-        return MathsArrays.resizePickAverage(array, newSize);
+        return  MathsBase.resizePickAverage(array, newSize);
     }
 
     public static <T> T[] toArray(Class<T> t, Collection<T> coll) {
-        return (T[]) coll.toArray((T[]) Array.newInstance(t, coll.size()));
+        return  MathsBase.toArray(t, coll);
     }
 
     public static <T> T[] toArray(TypeName<T> t, Collection<T> coll) {
-        return (T[]) coll.toArray((T[]) Array.newInstance(t.getTypeClass(), coll.size()));
+        return  MathsBase.toArray(t, coll);
     }
 
     public static double rerr(double a, double b) {
-        return MathsArrays.rerr(a, b);
+        return  MathsBase.rerr(a, b);
     }
 
     public static double rerr(Complex a, Complex b) {
-        return MathsArrays.rerr(a, b);
+        return  MathsBase.rerr(a, b);
     }
 
     public static CustomCCFunctionXDefinition define(String name, CustomCCFunctionX f) {
-        return new CustomCCFunctionXDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static CustomDCFunctionXDefinition define(String name, CustomDCFunctionX f) {
-        return new CustomDCFunctionXDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static CustomDDFunctionXDefinition define(String name, CustomDDFunctionX f) {
-        return new CustomDDFunctionXDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static CustomDDFunctionXYDefinition define(String name, CustomDDFunctionXY f) {
-        return new CustomDDFunctionXYDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static CustomDCFunctionXYDefinition define(String name, CustomDCFunctionXY f) {
-        return new CustomDCFunctionXYDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static CustomCCFunctionXYDefinition define(String name, CustomCCFunctionXY f) {
-        return new CustomCCFunctionXYDefinition(name, f);
+        return  MathsBase.define(name, f);
     }
 
     public static double rerr(Matrix a, Matrix b) {
-        return b.getError(a);
+        return  MathsBase.rerr(a, b);
     }
 
     public static <T extends Expr> DoubleList toDoubleArray(TList<T> c) {
-        DoubleList a = new DoubleArrayList(c.size());
-        for (T o : c) {
-            a.append(o.toDouble());
-        }
-        return a;
+        return  MathsBase.toDoubleArray(c);
     }
 
     public static double toDouble(Complex c, PlotDoubleConverter d) {
-        if (d == null) {
-            return c.absdbl();
-        }
-        return d.toDouble(c);
+        return  MathsBase.toDouble(c, d);
     }
 
     public static Expr conj(Expr e) {
-        if (e.isDD()) {
-            return e;
-        }
-        if (e.isComplex()) {
-            return e.toComplex().conj();
-        }
-        return new Conj(e);
+        return  MathsBase.conj(e);
     }
 
     public static Complex complex(TMatrix t) {
-        return t.toComplex();
+        return  MathsBase.complex(t);
     }
 
     public static Matrix matrix(TMatrix t) {
-        return (Matrix) t.to($COMPLEX);
+        return  MathsBase.matrix(t);
     }
 
     public static TMatrix<Expr> ematrix(TMatrix t) {
-        return new EMatrixFromTMatrix(t);
+        return  MathsBase.ematrix(t);
     }
-    //</editor-fold>
 
     public static <T> VectorSpace<T> getVectorSpace(TypeName<T> cls) {
-        return MathsBase.getVectorSpace(cls);
+        return  MathsBase.getVectorSpace(cls);
     }
 
     public static DoubleList refineSamples(TList<Double> values, int n) {
-        return MathsBase.refineSamples(values,n);
+        return  MathsBase.refineSamples(values, n);
     }
 
-    /**
-     * adds n points between each 2 points
-     *
-     * @param values initial sample
-     * @return
-     */
     public static double[] refineSamples(double[] values, int n) {
-        return MathsBase.refineSamples(values,n);
+        return  MathsBase.refineSamples(values, n);
     }
 
     public static String getHadrumathsVersion() {
-        return MathsBase.getHadrumathsVersion();
+        return  MathsBase.getHadrumathsVersion();
     }
 
     public static ComponentDimension expandComponentDimension(ComponentDimension d1, ComponentDimension d2) {
-        return MathsBase.expandComponentDimension(d1,d2);
+        return  MathsBase.expandComponentDimension(d1, d2);
     }
 
     public static Expr expandComponentDimension(Expr e, ComponentDimension d) {
-        return MathsBase.expandComponentDimension(e,d);
+        return  MathsBase.expandComponentDimension(e, d);
     }
 
     public static double atan2(double y, double x) {
-        return Math.atan2(y, x);
+        return  MathsBase.atan2(y, x);
     }
 
     public static double ceil(double a) {
-        return Math.ceil(a);
+        return  MathsBase.ceil(a);
     }
 
     public static double floor(double a) {
-        return Math.floor(a);
+        return  MathsBase.floor(a);
     }
 
     public static long round(double a) {
-        return Math.round(a);
+        return  MathsBase.round(a);
     }
 
     public static int round(float a) {
-        return Math.round(a);
+        return  MathsBase.round(a);
     }
 
     public static double random() {
-        return Math.random();
+        return  MathsBase.random();
     }
 
     public static <A, B> RightArrowUplet2<A, B> rightArrow(A a, B b) {
-        return new RightArrowUplet2<A, B>(a, b);
+        return  MathsBase.rightArrow(a, b);
     }
 
     public static RightArrowUplet2.Double rightArrow(double a, double b) {
-        return new RightArrowUplet2.Double(a, b);
+        return  MathsBase.rightArrow(a, b);
     }
 
     public static RightArrowUplet2.Complex rightArrow(Complex a, Complex b) {
-        return new RightArrowUplet2.Complex(a, b);
+        return  MathsBase.rightArrow(a, b);
     }
 
     public static RightArrowUplet2.Expr rightArrow(Expr a, Expr b) {
-        return new RightArrowUplet2.Expr(a, b);
+        return  MathsBase.rightArrow(a, b);
     }
 
     public static Expr parseExpression(String expression) {
-        ExpressionManager m = createExpressionParser();
-        Object evaluated = m.createEvaluator(expression).evaluate();
-        if (evaluated instanceof Expr) {
-            return (Expr) evaluated;
-        }
-        if (evaluated instanceof Number) {
-            return expr(((Number) evaluated).doubleValue());
-        }
-        return (Expr) evaluated;
+        return  MathsBase.parseExpression(expression);
     }
 
     public static ExpressionManager createExpressionEvaluator() {
-        return ExpressionManagerFactory.createEvaluator();
+        return  MathsBase.createExpressionEvaluator();
     }
 
     public static ExpressionManager createExpressionParser() {
-        return ExpressionManagerFactory.createParser();
+        return  MathsBase.createExpressionParser();
     }
 
     public static Expr evalExpression(String expression) {
-        ExpressionManager m = createExpressionEvaluator();
-        Object evaluated = m.createEvaluator(expression).evaluate();
-        if (evaluated instanceof Expr) {
-            return (Expr) evaluated;
-        }
-        if (evaluated instanceof Number) {
-            return expr(((Number) evaluated).doubleValue());
-        }
-        return (Expr) evaluated;
+        return  MathsBase.evalExpression(expression);
     }
 
     public static double toRadians(double a) {
-        return Math.toRadians(a);
+        return  MathsBase.toRadians(a);
     }
 
     public static double[] toRadians(double[] a) {
-        double[] b = new double[a.length];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = Math.toRadians(a[i]);
-        }
-        return b;
+        return  MathsBase.toRadians(a);
     }
 
     public static Complex det(Matrix m) {
-        return m.det();
-
+        return  MathsBase.det(m);
     }
 
-
     public static int toInt(Object o) {
-        return toInt(o, null);
+        return  MathsBase.toInt(o);
     }
 
     public static int toInt(Object o, Integer defaultValue) {
-        if (o == null) {
-            if (defaultValue != null) {
-                return defaultValue.intValue();
-            }
-            throw new NullPointerException();
-        }
-        try {
-            if (o instanceof Number) {
-                Number s = (Number) o;
-                return (int) s.intValue();
-            }
-            if (o instanceof String) {
-                String s = (String) o;
-                if (s.contains(".")) {
-
-                    return (int) Double.parseDouble(s);
-                }
-                return Integer.parseInt(s);
-            }
-            if (o instanceof Expr) {
-                Expr s = (Expr) o;
-                s = s.simplify();
-                Complex c = (Complex) s;
-                return (int) c.toDouble();
-            }
-        } catch (RuntimeException ex) {
-            if (defaultValue != null) {
-                return defaultValue;
-            }
-            throw ex;
-        }
-        if (defaultValue != null) {
-            return defaultValue;
-        }
-        throw new ClassCastException();
+        return  MathsBase.toInt(o, defaultValue);
     }
 
-
     public static long toLong(Object o) {
-        return toLong(o, null);
+        return  MathsBase.toLong(o);
     }
 
     public static long toLong(Object o, Long defaultValue) {
-        if (o == null) {
-            if (defaultValue != null) {
-                return defaultValue.intValue();
-            }
-            throw new NullPointerException();
-        }
-        try {
-            if (o instanceof Number) {
-                Number s = (Number) o;
-                return (int) s.intValue();
-            }
-            if (o instanceof String) {
-                String s = (String) o;
-                if (s.contains(".")) {
-
-                    return (long) Double.parseDouble(s);
-                }
-                return Long.parseLong(s);
-            }
-            if (o instanceof Expr) {
-                Expr s = (Expr) o;
-                s = s.simplify();
-                Complex c = (Complex) s;
-                return (long) c.toDouble();
-            }
-        } catch (RuntimeException ex) {
-            if (defaultValue != null) {
-                return defaultValue;
-            }
-            throw ex;
-        }
-        if (defaultValue != null) {
-            return defaultValue;
-        }
-        throw new ClassCastException();
+        return  MathsBase.toLong(o, defaultValue);
     }
 
     public static double toDouble(Object o) {
-        return MathsBase.toDouble(o);
+        return  MathsBase.toDouble(o);
     }
 
     public static double toDouble(Object o, Double defaultValue) {
-        return MathsBase.toDouble(o,defaultValue);
+        return  MathsBase.toDouble(o, defaultValue);
     }
 
     public static float toFloat(Object o) {
-        return MathsBase.toFloat(o);
+        return  MathsBase.toFloat(o);
     }
 
     public static float toFloat(Object o, Float defaultValue) {
-        return MathsBase.toFloat(o,defaultValue);
+        return  MathsBase.toFloat(o, defaultValue);
     }
 
     public static DoubleToComplex DC(Expr e) {
-        return MathsBase.DC(e);
+        return  MathsBase.DC(e);
     }
 
     public static DoubleToDouble DD(Expr e) {
-        return MathsBase.DD(e);
+        return  MathsBase.DD(e);
     }
 
     public static DoubleToVector DV(Expr e) {
-        return MathsBase.DV(e);
+        return  MathsBase.DV(e);
     }
 
     public static DoubleToMatrix DM(Expr e) {
-        return MathsBase.DM(e);
+        return  MathsBase.DM(e);
     }
 
     public static Matrix matrix(Expr e) {
         return MathsBase.matrix(e);
     }
+
+    private Maths() {
+    }
+
 }

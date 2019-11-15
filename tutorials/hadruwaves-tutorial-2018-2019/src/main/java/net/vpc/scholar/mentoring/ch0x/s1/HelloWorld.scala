@@ -11,6 +11,7 @@ import net.vpc.scholar.hadruplot.Plot
   */
 object HelloWorld extends App {
   println("Hello world")
-  val f = cos(X) * cos(Y) * domain(0.0 -> 2 * PI, 0.0 -> 2 * PI)
-  Plot.console().newPlot().title("Mon Titre").asPolar().asAbs().plot(f)
+  val f = cos(X) * cos(Y) * II(0.0 -> 2 * PI, 0.0 -> 2 * PI)
+  Plot.title("Mon Titre").asPolar().asAbs().plot(f)
+  Plot.plot(f)
 }

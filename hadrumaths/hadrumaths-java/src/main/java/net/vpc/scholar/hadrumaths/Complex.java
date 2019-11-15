@@ -439,6 +439,10 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         return Complex.valueOf(getReal() / c, getImag() / c);
     }
 
+    public Complex rem(double other) {
+        return Complex.valueOf(toDouble()%other);
+    }
+
     public Complex rem(Complex other) {
         return Complex.valueOf(toDouble()%other.toDouble());
     }

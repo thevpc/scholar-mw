@@ -191,6 +191,10 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         return this;
     }
 
+    public PlotBuilder Plot() {
+        return newPlot();
+    }
+
     public PlotBuilder newPlot() {
         return new PlotBuilder()
 //                .cd("/" + Plot.Config.getDefaultWindowTitle())

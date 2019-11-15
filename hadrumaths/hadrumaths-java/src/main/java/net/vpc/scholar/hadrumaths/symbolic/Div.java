@@ -462,7 +462,7 @@ public class Div extends AbstractExprOperatorBinary implements Cloneable {
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
         expr2[0] = expr2[0].mul(other);
-        return new Mul(expr2[0], expr2[1]);
+        return new Div(expr2[0], expr2[1]);
     }
 
     @Override
@@ -475,7 +475,7 @@ public class Div extends AbstractExprOperatorBinary implements Cloneable {
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
         expr2[0] = expr2[0].mul(other);
-        return new Mul(expr2[0], expr2[1]);
+        return new Div(expr2[0], expr2[1]);
     }
 
     @Override

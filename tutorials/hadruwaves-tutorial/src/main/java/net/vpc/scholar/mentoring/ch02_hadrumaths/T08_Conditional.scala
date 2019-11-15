@@ -4,7 +4,7 @@ package net.vpc.scholar.mentoring.ch02_hadrumaths
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.Maths._
 
-object T06_Conditional extends App{
+object T08_Conditional extends App{
   var n=param("n")
 
   //one param function

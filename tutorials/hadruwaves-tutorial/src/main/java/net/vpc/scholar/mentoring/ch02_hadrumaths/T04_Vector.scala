@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadruplot.Plot
 
-object T03_Vector extends App {
+object T04_Vector extends App {
   var cv = columnVector(10, (i: Int) => 0 * î + 3 * i)
   var cv2 = columnVector(10, (i: Int) => complex(3 * i))
   println(cv2(3))

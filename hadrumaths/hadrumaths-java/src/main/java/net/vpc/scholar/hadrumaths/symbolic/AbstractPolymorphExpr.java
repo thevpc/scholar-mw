@@ -30,7 +30,7 @@ public abstract class AbstractPolymorphExpr extends AbstractExprPropertyAware
 //    @Override
 //    public int getComponentSize() {
 //        if (isDV()) {
-//            ComponentDimension d = toDM().getComponentDimension();
+//            ComponentDimension d = getComponentDimension();
 //            return d.rows;
 //        }
 //        throw new ClassCastException();

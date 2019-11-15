@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._
 
-object T04_Expr extends App{
+object T05_Expr extends App{
 
   var f=sin(X)
   Plot.plot(f)
