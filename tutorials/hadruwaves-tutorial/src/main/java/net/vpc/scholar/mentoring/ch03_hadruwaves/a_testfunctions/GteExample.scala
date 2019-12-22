@@ -1,6 +1,6 @@
 package net.vpc.scholar.mentoring.ch03_hadruwaves.a_testfunctions
 
-import net.vpc.scholar.hadrumaths.MathScala.{C, PI, Plot, Y, columnMatrix, complex, cos, domain, normalize, param}
+import net.vpc.scholar.hadrumaths.MathScala._
 
 object GteExample extends App {
     val f =3 *GHZ

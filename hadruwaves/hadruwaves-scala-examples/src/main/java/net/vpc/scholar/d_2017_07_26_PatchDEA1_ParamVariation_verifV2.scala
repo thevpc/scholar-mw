@@ -73,19 +73,19 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
     gp :+= normalize(testX.inflate(p.in(0,PLine - 1).and(q.in(0, PLine - 1))));
     gp :+= normalize(essaiPatchX.inflate(p.in(1, PPatch - 1).and(q.in(0,PPatch - 1))));
     var count = 0
-    var dimX = a * 3.25 //dtimes(a, a * 10, 5)
-    var dimY = b * 3.25d // dtimes(b, b * 10, 5)
+    val dimX = a * 3.25 //dtimes(a, a * 10, 5)
+    val dimY = b * 3.25d // dtimes(b, b * 10, 5)
 
-    var dBox = domain(0.0 -> dimX, -dimY / 2 -> dimY / 2)
-    var E0 = normalize(dSource)
+    val dBox = domain(0.0 -> dimX, -dimY / 2 -> dimY / 2)
+    val E0 = normalize(dSource)
     st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(epsr, ep), matchedLoad(1.0))
     st.getHintsManager.setHintAxisType(HintAxisType.X_ONLY);
     st.setSources(E0, 50)
     st.setTestFunctions(gp)
     st.setFrequency(fr0);
-    var tst = vector((sin((828.1878700148839 * X) + (-4.71238898038469)) * cos((1049.1209395858382 * Y) + 3.1415926535897927) * (171.30368691960348 * domain(0.005690000000000001 -> 0.028450000000000003, -0.0029945 -> 0.0029945))), 0);
+    val tst = vector((sin((828.1878700148839 * X) + (-4.71238898038469)) * cos((1049.1209395858382 * Y) + 3.1415926535897927) * (171.30368691960348 * domain(0.005690000000000001 -> 0.028450000000000003, -0.0029945 -> 0.0029945))), 0);
     val fnn = st.getModeFunctions.fn()
-    var ps = columnVector(fnn.length, (i: Int) => complex(tst ** fnn(i)))
+    val ps = columnVector(fnn.length, (i: Int) => complex(tst ** fnn(i)))
     Plot.title(String.valueOf(fr0)).plot(ps.transpose())
     ps;
   }
