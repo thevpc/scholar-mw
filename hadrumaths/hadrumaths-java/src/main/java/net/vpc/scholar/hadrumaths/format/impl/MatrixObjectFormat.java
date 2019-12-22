@@ -7,19 +7,19 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 
 /**
  * @author vpc
  */
-public class MatrixObjectFormat implements ObjectFormat<Matrix> {
+public class MatrixObjectFormat implements ObjectFormat<ComplexMatrix> {
     public MatrixObjectFormat() {
     }
 
     @Override
-    public String format(Matrix o, ObjectFormatParamSet format) {
+    public String format(ComplexMatrix o, ObjectFormatParamSet format) {
         StringBuilder sb = new StringBuilder();
         format(sb, o, format);
         return sb.toString();
@@ -27,7 +27,7 @@ public class MatrixObjectFormat implements ObjectFormat<Matrix> {
     }
 
     @Override
-    public void format(StringBuilder sb, Matrix o, ObjectFormatParamSet format) {
+    public void format(StringBuilder sb, ComplexMatrix o, ObjectFormatParamSet format) {
         Complex[][] elements = o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {

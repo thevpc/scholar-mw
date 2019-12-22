@@ -21,7 +21,7 @@ public class TestCosXPlusY {
 
     @Test
     public void testCosCosVsCosXPlusY() {
-        Maths.Config.setCacheExpressionPropertiesEnabled(false);
+        MathsBase.Config.setCacheExpressionPropertiesEnabled(false);
         System.out.println("testCosCosVsCosXPlusY");
         //problems
         // cos(((0.9169317480222497 * X) + (0.8897143110485595 * Y)) + 0.10546599924098332) ** cos((0.9091685583092961 * X) + 0.979857203027707) * cos((0 * Y) + 0.9945462742048392)    :: Domain(x=0.0->47.62612253690951;y=0.0->30.5050548874369)

@@ -81,9 +81,9 @@ public class MomConvergenceManager {
                 b[p][n] = spc.get(p).neg();
             }
         }
-        Matrix B = Maths.matrix(b);
+        ComplexMatrix B = Maths.matrix(b);
 
-        Matrix oldJ = null;
+        ComplexMatrix oldJ = null;
 
         Complex[][] a = new Complex[_g.length][_g.length];
         for (int p = 0; p < _g.length; p++) {
@@ -107,9 +107,9 @@ public class MomConvergenceManager {
                 }
                 n++;
             }
-            Matrix A = Maths.matrix(a);
+            ComplexMatrix A = Maths.matrix(a);
 
-            Matrix newJ = null;
+            ComplexMatrix newJ = null;
             try {
                 newJ = A.solve(B);
                 if (oldJ != null) {

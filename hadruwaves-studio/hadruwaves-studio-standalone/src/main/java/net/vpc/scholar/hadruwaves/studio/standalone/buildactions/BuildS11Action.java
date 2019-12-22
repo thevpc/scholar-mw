@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 
 import net.vpc.common.log.Log;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 
@@ -23,12 +23,12 @@ public class BuildS11Action extends RunAction {
         return 1;
     }
 
-    public Matrix go0() {
-        return (Matrix) go();
+    public ComplexMatrix go0() {
+        return (ComplexMatrix) go();
     }
 
     public Object run() {
-        Matrix s = jxy.computeS(net.vpc.common.mon.ProgressMonitorFactory.none());
+        ComplexMatrix s = jxy.computeS(net.vpc.common.mon.ProgressMonitorFactory.none());
         Log.trace("[S (f=" + jxy.getStructureConfig().getFrequency()+ " Hz)] S= " + s);
         return s;
     }

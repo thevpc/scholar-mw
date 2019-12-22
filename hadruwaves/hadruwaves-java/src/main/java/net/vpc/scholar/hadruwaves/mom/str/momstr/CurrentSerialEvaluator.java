@@ -30,7 +30,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
                 final TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
-                Matrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();

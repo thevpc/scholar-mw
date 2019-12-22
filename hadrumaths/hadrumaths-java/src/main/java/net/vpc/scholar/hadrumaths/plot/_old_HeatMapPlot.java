@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ class _old_HeatMapPlot extends JComponent {
     private int current_j = -1;
 
 
-    public _old_HeatMapPlot(Matrix matrix, int preferredDimension) {
+    public _old_HeatMapPlot(ComplexMatrix matrix, int preferredDimension) {
         this(toAbs(matrix), preferredDimension);
     }
 
@@ -155,15 +155,15 @@ class _old_HeatMapPlot extends JComponent {
                 float f = 1 - (float) matrix[line][column];
                 Color baseColor = new Color(Color.HSBtoRGB(H * (f), S, B));
                 g.setColor(baseColor);
-                int xx = (int) Maths.round(column * x);
-                int yy = (int) Maths.round(line * y);
+                int xx = (int) MathsBase.round(column * x);
+                int yy = (int) MathsBase.round(line * y);
                 int ixx = ix;
                 int iyy = iy;
-                if (column > 0 && (xx > ((int) Maths.round((column - 1) * x)))) {
+                if (column > 0 && (xx > ((int) MathsBase.round((column - 1) * x)))) {
                     xx--;
                     ixx += 2;
                 }
-                if (line > 0 && (yy > ((int) Maths.round((line - 1) * y)))) {
+                if (line > 0 && (yy > ((int) MathsBase.round((line - 1) * y)))) {
                     yy--;
                     iyy += 2;
                 }
@@ -183,7 +183,7 @@ class _old_HeatMapPlot extends JComponent {
         }
     }
 
-    private static double[][] toAbs(Matrix m) {
+    private static double[][] toAbs(ComplexMatrix m) {
         double[][] d = new double[m.getRowCount()][m.getColumnCount()];
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.interop;
 
-import net.vpc.scholar.hadrumaths.DoubleArrayList;
-import net.vpc.scholar.hadrumaths.DoubleList;
+import net.vpc.scholar.hadrumaths.ArrayDoubleVector;
+import net.vpc.scholar.hadrumaths.DoubleVector;
 
 public class CstPlotDoubleColumn {
     private String title;
@@ -27,7 +27,7 @@ public class CstPlotDoubleColumn {
     public double[] getValues() {
         return values;
     }
-    public DoubleList getDoubleList() {
-        return DoubleArrayList.column(values);
+    public DoubleVector getDoubleList() {
+        return ArrayDoubleVector.column(values);
     }
 }

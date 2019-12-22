@@ -53,7 +53,7 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                 return ArrayUtils.getReal(complexes);
             }
             case MATRIX: {
-                Matrix[][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, d0, ranges);
+                ComplexMatrix[][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
         }
@@ -71,7 +71,7 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                 return ArrayUtils.getReal(complexes);
             }
             case MATRIX: {
-                Matrix[][][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
+                ComplexMatrix[][][] complexes = Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
         }
@@ -89,7 +89,7 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                 return ArrayUtils.getReal(complexes);
             }
             case MATRIX: {
-                Matrix[] complexes = Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
+                ComplexMatrix[] complexes = Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
                 return ArrayUtils.getReal(complexes);
             }
         }
@@ -113,8 +113,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? 0 : 1;
                 }
@@ -140,8 +140,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x, y/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x, y/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x, y/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x, y/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? 0 : 1;
                 }
@@ -167,8 +167,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? 0 : 1;
                 }
@@ -190,8 +190,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined);
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? Complex.ZERO : Complex.ONE;
                 }
@@ -213,8 +213,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined);
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x, y/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x, y/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x, y/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x, y/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? Complex.ZERO : Complex.ONE;
                 }
@@ -236,8 +236,8 @@ public abstract class ComparatorExpr extends GenericFunctionXY {
                     return computeComplexArg(a, b, ydefined.get(), xdefined.get(), defined);
                 }
                 case MATRIX: {
-                    Matrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
-                    Matrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    ComplexMatrix a = getXArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
+                    ComplexMatrix b = getYArgument().toDM().computeMatrix(x, y, z/*, xdefined*/);
 //                    return evalMatrix(a, b, ydefined.get(), xdefined.get(), defined).getReal();
                     return evalMatrix(a, b).isZero() ? Complex.ZERO : Complex.ONE;
                 }

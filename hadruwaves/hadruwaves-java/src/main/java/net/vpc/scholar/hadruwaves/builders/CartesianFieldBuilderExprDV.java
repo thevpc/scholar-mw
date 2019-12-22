@@ -2,7 +2,6 @@ package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DMHelper3;
 import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DVHelper3;
 import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
 
@@ -115,32 +114,32 @@ public class CartesianFieldBuilderExprDV extends AbstractExprPropertyAware imple
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return dc2dv.computeVector(x, y, z, d0, ranges);
     }
 
     @Override
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return dc2dv.computeVector(x,y,d0,ranges);
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return dc2dv.computeVector(x,d0,ranges);
     }
 
     @Override
-    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
         return dc2dv.computeVector(x,y,defined);
     }
 
     @Override
-    public Vector computeVector(double x, double y, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
         return dc2dv.computeVector(x,y,defined);
     }
 
     @Override
-    public Vector computeVector(double x, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
         return dc2dv.computeVector(x,defined);
     }
 }

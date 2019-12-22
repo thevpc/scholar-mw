@@ -143,13 +143,13 @@ public abstract class DoubleToDoubleOneToManyHelper {
         return m;
     }
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] d = computeDouble(x, y, z, d0, ranges);
-        Matrix[][][] m = new Matrix[d.length][d[0].length][d[0][0].length];
+        ComplexMatrix[][][] m = new ComplexMatrix[d.length][d[0].length][d[0][0].length];
         for (int zi = 0; zi < m.length; zi++) {
             for (int yi = 0; yi < m[zi].length; zi++) {
                 for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi] = Maths.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
+                    m[zi][yi][xi] = MathsBase.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
                 }
             }
         }

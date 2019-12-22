@@ -20,7 +20,7 @@ public class ValuesPlotXYDoubleModelFace {
     private DoubleFormat yformat;
     private DoubleFormat zformat;
 
-    public ValuesPlotXYDoubleModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
+    public ValuesPlotXYDoubleModelFace(ValuesPlotModel model, PlotViewConfig plotViewConfig) {
         double[][] x0 = model.getX();
         double[][] y0 = model.getY();
         Object[][] z0 = model.getZ();
@@ -28,11 +28,11 @@ public class ValuesPlotXYDoubleModelFace {
         yformat = model.getYformat();
         zformat = model.getZformat();
         List<Integer> initialIndexesList = new ArrayList<>();
-        if (plotConfig == null) {
-            plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig = PlotConfig.copy(plotConfig).validate(z0.length);
+        if (plotViewConfig == null) {
+            plotViewConfig = (PlotViewConfig) model.getProperty("config", null);
+            plotViewConfig = PlotViewConfig.copy(plotViewConfig).validate(z0.length);
         }
-        double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+        double defaultXMultiplier = plotViewConfig.getDefaultXMultiplier(1);
 
         this.x = PlotModelUtils.mul(PlotUtils.toValidOneDimArray(x0, (z == null || z.length == 0) ? -1 : z[0].length), defaultXMultiplier);
         PlotDoubleConverter converter = model.getConverter();
@@ -54,7 +54,7 @@ public class ValuesPlotXYDoubleModelFace {
         List<String> ys = new ArrayList<>(this.y.length);
         List<DoubleArrayList> zl = new ArrayList<>(this.y.length);
         for (int i = 0; i < this.y.length; i++) {
-            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+            double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
             double v = this.y[i] * ymultiplier;
             if (model.getYVisible(i)) {
                 initialIndexesList.add(i);

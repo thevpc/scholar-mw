@@ -12,16 +12,16 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //            return (R) value;
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}});
+//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}});
 //        }
 //        if(t.equals(TMatrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}});
+//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
 //        }
 //        if(t.equals(TVector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -141,7 +141,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double sin(Double a) {
-        return Maths.sin(a);
+        return MathsBase.sin(a);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cotan(Double a) {
-        return Maths.cotan(a);
+        return MathsBase.cotan(a);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double sincard(Double a) {
-        return Maths.sincard(a);
+        return MathsBase.sincard(a);
     }
 
     @Override
@@ -181,22 +181,22 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cotanh(Double a) {
-        return Maths.cotanh(a);
+        return MathsBase.cotanh(a);
     }
 
     @Override
     public Double asinh(Double a) {
-        return Maths.asinh(a);
+        return MathsBase.asinh(a);
     }
 
     @Override
     public Double acosh(Double a) {
-        return Maths.acosh(a);
+        return MathsBase.acosh(a);
     }
 
     @Override
     public Double asin(Double a) {
-        return Maths.asinh(a);
+        return MathsBase.asinh(a);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double arg(Double a) {
-        return Maths.arg(a);
+        return MathsBase.arg(a);
     }
 
     @Override
@@ -231,7 +231,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double acotan(Double a) {
-        return Maths.acotan(a);
+        return MathsBase.acotan(a);
     }
 
     @Override
@@ -251,42 +251,42 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double db(Double a) {
-        return Maths.db(a);
+        return MathsBase.db(a);
     }
 
     @Override
     public Double db2(Double a) {
-        return Maths.db2(a);
+        return MathsBase.db2(a);
     }
 
     @Override
     public Double sqr(Double a) {
-        return Maths.sqr(a);
+        return MathsBase.sqr(a);
     }
 
     @Override
     public Double sqrt(Double a) {
-        return Maths.sqrt(a);
+        return MathsBase.sqrt(a);
     }
 
     @Override
     public Double sqrt(Double a, int n) {
-        return Maths.sqrt(n);
+        return MathsBase.sqrt(n);
     }
 
     @Override
     public Double pow(Double a, Double b) {
-        return Maths.pow(a, b);
+        return MathsBase.pow(a, b);
     }
 
     @Override
     public Double pow(Double a, double b) {
-        return Maths.pow(a, b);
+        return MathsBase.pow(a, b);
     }
 
     @Override
     public Double npow(Double a, int n) {
-        return Maths.pow(a, n);
+        return MathsBase.pow(a, n);
     }
 
     @Override
@@ -296,7 +296,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public TypeName<Double> getItemType() {
-        return Maths.$DOUBLE;
+        return MathsBase.$DOUBLE;
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.expeval;
 import net.vpc.common.jeep.*;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
@@ -25,7 +26,7 @@ public class ExprNodeResolver extends AbstractExpressionEvaluatorResolver {
                     new AbstractExpressionEvaluatorConverter(Double.class, DoubleValue.class) {
                         @Override
                         public Object convert(Object value) {
-                            return Maths.expr((Double) value);
+                            return MathsBase.expr((Double) value);
                         }
                     }
             };
@@ -52,7 +53,7 @@ public class ExprNodeResolver extends AbstractExpressionEvaluatorResolver {
 
             @Override
             public Object getValue(ExpressionEvaluator evaluator) {
-                return Maths.param(name);
+                return MathsBase.param(name);
             }
         };
     }

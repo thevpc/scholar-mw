@@ -9,15 +9,21 @@ public class ExprMatrixFromTMatrix<T> extends TMatrixAdapter<T, Expr> implements
     private static final long serialVersionUID = 1L;
 
     public ExprMatrixFromTMatrix(TMatrix<T> matrix) {
-        super(matrix, Maths.$EXPR);
+        super(matrix, MathsBase.$EXPR);
+    }
+
+
+    @Override
+    public ExprMatrix simplify() {
+        return simplify(null);
     }
 
     @Override
-    public TMatrix<Expr> simplify() {
-        return Maths.Config.getDefaultMatrixFactory(Maths.$EXPR).newMatrix(getRowCount(), getColumnCount(), new TMatrixCell<Expr>() {
+    public ExprMatrix simplify(SimplifyOptions options) {
+        return (ExprMatrix) MathsBase.Config.getComplexMatrixFactory(MathsBase.$EXPR).newMatrix(getRowCount(), getColumnCount(), new TMatrixCell<Expr>() {
             @Override
             public Expr get(int row, int column) {
-                return ExprMatrixFromTMatrix.this.get(row, column).simplify();
+                return ExprMatrixFromTMatrix.this.get(row, column).simplify(options);
             }
         });
     }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SimpleSeq2b implements ExprCellIterator {
+class SimpleSeq2b implements TMatrixCell<Expr> {
     private final Expr pattern;
     private final DoubleParam m;
     private final DoubleParam n;

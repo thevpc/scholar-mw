@@ -1,19 +1,17 @@
 package net.vpc.scholar
 
 
-import net.vpc.common.swings.util.Chronometer
 import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator
 import net.vpc.scholar.hadruplot.Plot
 
 
 /**
-  * Created by imen on 7/15/2017.
-  * to compare with matlab code to validate our method
-  * patch antenna dea box EEEE without attach function
-  */
+ * Created by imen on 7/15/2017.
+ * to compare with matlab code to validate our method
+ * patch antenna dea box EEEE without attach function
+ */
 object PatchComparisonMatlab1_article_nostr_old {
 
   EnvConfigurer.configure(getClass.getName)
@@ -57,23 +55,24 @@ object PatchComparisonMatlab1_article_nostr_old {
   var m = param("m")
   var n = param("n")
   var t = param("t")
-  var A, B, sp: Matrix = null;
+  var A, B, sp: ComplexMatrix = null;
   var gp, zmn, ymn1, ymn2, fmnx: EList = null;
 
   def build(plot: Boolean): Boolean = {
     Maths.Config.setCacheEnabled(false)
-    var cr = new Chronometer
+    var cr = chrono()
     gp = elist();
     var testX = ((cos((2 * p + 1) * PI * X / (2 * (l + l / 1.2))) * cos(q * PI / d * (Y + d / 2))) * dLine).setTitle("gl${p}${q}")
     val essaiPatchX = ((sin(p * PI * (X - l) / L) * cos(q * PI * (Y + W / 2) / W)) * dPatch).setTitle("gp${p}${q}")
-    gp :+= seq(testX, p, PLine - 1, q, PLine - 1).map((i, e) => e.normalize()); //.setName("p=" + pp + ";" + "q=" + qq));
-    gp :+= seq(essaiPatchX, p, PPatch - 1, q, PPatch - 1, (pp, qq) => pp != 0).map((i, e) => e.normalize());
+    gp :+= testX.inflate(p.in(0, PLine - 1).and(q.in(0, PLine - 1))).normalize(); //.setName("p=" + pp + ";" + "q=" + qq));
+    gp :+= essaiPatchX.inflate(p.in(1, PPatch - 1).and(q.in(0, PPatch - 1))).normalize();
 
-    var fmnxdef = If(t === TE, n / b, -m / a) *
+    var fmnxdef = If(t === TE).Then(n / b).Else(-m / a) *
       sqrt(2 * If(m <> 0 && n <> 0, 2, 1) / (a * b * (sqr(n * PI / b) + sqr(m * PI / a)))) *
       //      sqrt(2 * If(m <> 0 && n <> 0, 2, 1) / (a * b * (sqr(n / b) + sqr(m / a)))) *
       sin((n * PI / b) * (Y - dBox.ymin)) * cos((m * PI / a) * (X - dBox.xmin)) * dBox
-    fmnx = seq(fmnxdef, m, N - 1, n, N - 1, t, 1, (mm, nn, pp) => (pp == TE && (nn != 0)) || (pp == TM && (mm != 0 && nn != 0))) !!;
+    fmnx = fmnxdef.inflate(m.in(0, N - 1).and(n.in(0, N - 1)).and(t.in(0,1))
+        .where((p === TE && (n <> 0)) || (p === TM && (m <> 0 && n <> 0))))!!;
     //    println(fmnx.size())
     //    fmnx.forEach(tt=>{
     //      println((if (TE==tt.getIntProperty("t")) "TE" else "TM") +" "+ tt.getIntProperty("m") +" "+tt.getIntProperty("n") +" "+ tt)
@@ -89,7 +88,7 @@ object PatchComparisonMatlab1_article_nostr_old {
     val g0 = gp(0) !!;
     println(f0);
     println(g0);
-    val expr = (f0 ** g0)!!;
+    val expr = (f0 ** g0) !!;
     println(expr);
 
     val f0r = ScalarProductOperatorFactory.formal().asInstanceOf[FormalScalarProductOperator].getExpressionRewriter.rewrite(f0)
@@ -97,11 +96,11 @@ object PatchComparisonMatlab1_article_nostr_old {
     println(f0r);
     println(g0r);
     println(g0);
-//    if (true) {
-//      return false;
-//    }
+    //    if (true) {
+    //      return false;
+    //    }
     //    ymn1=exprList()
-    zmn = fmnx.map((i, fmn) => {
+    zmn = fmnx.transform((i, fmn) => {
       var mm = fmn.getIntProperty("m")
       var nn = fmn.getIntProperty("n")
       var t = fmn.getIntProperty("t")
@@ -113,7 +112,7 @@ object PatchComparisonMatlab1_article_nostr_old {
       //      println(vzmn)
       vzmn
     })
-    ymn1 = fmnx.map((i, fmn) => {
+    ymn1 = fmnx.transform((i, fmn) => {
       var mm = fmn.getIntProperty("m")
       var nn = fmn.getIntProperty("n")
       var t = fmn.getIntProperty("t")
@@ -123,7 +122,7 @@ object PatchComparisonMatlab1_article_nostr_old {
       var y2 = if (t == TE) (gamma2 * cotanh(gamma2 * ep) / (I * omega * U0)) else (I * omega * EPS0 * epsr) * cotanh(gamma2 * ep) / gamma2;
       y1
     })
-    ymn2 = fmnx.map((i, fmn) => {
+    ymn2 = fmnx.transform((i, fmn) => {
       var mm = fmn.getIntProperty("m")
       var nn = fmn.getIntProperty("n")
       var t = fmn.getIntProperty("t")

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.derivation.formal;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.symbolic.DDxyAbstractSum;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -20,6 +21,6 @@ public class DAbstractSumFunctionXYDerivator {
         for (int i = 0; i < s.length; i++) {
             s2[i] = d.derive(s[i], varIndex).toDD();
         }
-        return Maths.sum(s2);
+        return MathsBase.sum(s2);
     }
 }

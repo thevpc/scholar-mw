@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.*;
 
 public interface ScalarProductCache {
 
-    Matrix toMatrix();
+    ComplexMatrix toMatrix();
 
     TVector<Complex> column(int column);
 

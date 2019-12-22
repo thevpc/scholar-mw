@@ -125,11 +125,11 @@ public class MomParamFactory extends AbstractFactory {
             return new PlotValueMatrix(name, value, plotType);
         }
 
-        public static PlotAxis matrix(String name, Matrix value, PlotType plotType) {
+        public static PlotAxis matrix(String name, ComplexMatrix value, PlotType plotType) {
             return new PlotConstantMatrix(name, new PlotMatrix(value.getArray()), plotType);
         }
 
-        public static PlotAxis matrix(String name, final PlotEvaluator<Matrix> value, PlotType plotType) {
+        public static PlotAxis matrix(String name, final PlotEvaluator<ComplexMatrix> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
                 public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
@@ -138,26 +138,26 @@ public class MomParamFactory extends AbstractFactory {
             }, plotType);
         }
 
-        public static PlotAxis vector(String name, Vector value, PlotType plotType) {
+        public static PlotAxis vector(String name, ComplexVector value, PlotType plotType) {
             return new PlotConstantMatrix(name, new PlotMatrix(value.toMatrix().getArray()), plotType);
         }
 
-        public static PlotAxis vector(String name, Vector value) {
+        public static PlotAxis vector(String name, ComplexVector value) {
             if (value.isColumn()) {
                 value = value.transpose();
             }
             return new PlotConstantMatrix(name, new PlotMatrix(value.toMatrix().getArray()), PlotType.CURVE);
         }
 
-        public static PlotAxis vector(String name, final PlotEvaluator<Vector> value, PlotType plotType) {
+        public static PlotAxis vector(String name, final PlotEvaluator<ComplexVector> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
                 public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
-                    Vector vector = value.computeValue(source, monitor, p);
-                    if (vector.isColumn()) {
-                        vector = vector.transpose();
+                    ComplexVector complexVector = value.computeValue(source, monitor, p);
+                    if (complexVector.isColumn()) {
+                        complexVector = complexVector.transpose();
                     }
-                    return new PlotMatrix(vector.toMatrix().getArray());
+                    return new PlotMatrix(complexVector.toMatrix().getArray());
                 }
             }, plotType);
         }
@@ -416,7 +416,7 @@ public class MomParamFactory extends AbstractFactory {
 //            return new TestFunctionsCountPlotParam();
 //        }
 
-        public static IntArrayParamSet<IntArrayParamSet> modeFunctionsCount() {
+        public static IntArrayParamSet modeFunctionsCount() {
             return Maths.intParamSet(params.modesCount());
         }
 

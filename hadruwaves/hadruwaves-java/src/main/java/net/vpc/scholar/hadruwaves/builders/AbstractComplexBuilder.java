@@ -17,12 +17,12 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         super(structure);
     }
 
-    protected abstract Matrix computeMatrixImpl();
+    protected abstract ComplexMatrix computeMatrixImpl();
 
-    protected final Matrix computeMatrixImplLog(){
-        return Maths.invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Matrix>() {
+    protected final ComplexMatrix computeMatrixImplLog(){
+        return Maths.invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
             @Override
-            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 return computeMatrixImpl();
             }
         });
@@ -32,14 +32,14 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         return computeMatrixImplLog().toComplex();
     }
 
-    public Matrix computeMatrix() {
+    public ComplexMatrix computeMatrix() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeMatrixImplLog();
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImplLog();
                 }
             }, getMonitor()));

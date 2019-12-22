@@ -295,7 +295,7 @@ public class PlotConfigManager {
 
     public static PlotValue createPlotValue(Object any,PlotBuilder builder){
         List<PlotValue> p = createPlotValues(any, builder);
-        return p.get(0);
+        return p.isEmpty()?null:p.get(0);
     }
 
     public static List<PlotValue> createPlotValues(Object any,PlotBuilder builder){

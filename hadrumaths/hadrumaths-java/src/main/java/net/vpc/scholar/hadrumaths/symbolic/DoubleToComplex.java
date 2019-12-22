@@ -22,10 +22,6 @@ public interface DoubleToComplex extends DoubleDomainExpr {
 
     Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges);
 
-//    Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges);
-//
-//    Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges);
-
     Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges);
 
     Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);

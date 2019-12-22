@@ -9,6 +9,7 @@ import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.scholar.hadruplot.PlotConfig;
 import net.vpc.scholar.hadruplot.console.params.ParamSet;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadruplot.*;
@@ -188,6 +189,10 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 
     public PlotConsole setDefaultPlotManager() {
         Plot.Config.setManager(this);
+        return this;
+    }
+    public PlotConsole setDefaultWindowManager(){
+        Plot.setDefaultWindowManager(this);
         return this;
     }
 
@@ -887,6 +892,11 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
     @Override
     public ProgressMonitor createMonitor(String name, String description) {
         return taskMonitor().createMonitor(name,description);
+    }
+
+    public PlotConsole setDisposing(boolean disposing) {
+        this.disposing = disposing;
+        return this;
     }
 
     //    public JInternalFrameHelper getLogFrame() {

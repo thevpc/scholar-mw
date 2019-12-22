@@ -16,7 +16,7 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
  */
 public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         final String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         PlanarSources planarSources1 = (PlanarSources) str.getSources();
@@ -32,9 +32,9 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         final TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
 
         ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
-        return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<Matrix>() {
+        return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<ComplexMatrix>() {
             @Override
-            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] b = new Complex[_g.length][_src.length];
                 for (int n = 0; n < _src.length; n++) {
                     TVector<Complex> cc = sp.getColumn(n);

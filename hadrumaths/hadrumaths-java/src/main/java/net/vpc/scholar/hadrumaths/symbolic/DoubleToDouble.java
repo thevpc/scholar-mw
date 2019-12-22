@@ -49,15 +49,6 @@ public interface DoubleToDouble extends DoubleDomainExpr {
         return computeDouble(x, y, z, NoneOutBoolean.INSTANCE);
     }
 
-//    double[] computeDouble(double[] x);
-//
-//    double[][] computeDouble(double[] x, double[] y);
-//
-//    double[] computeDouble(double x, double[] y);
-//
-//    double[][][] computeDouble(double[] x, double[] y, double[] z);
-
-
     default double[] computeDouble(double[] x) {
         return computeDouble(x, (Domain) null, null);
     }

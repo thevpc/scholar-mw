@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Sub;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -33,7 +33,7 @@ public class SubSimplifyRule implements ExpressionRewriterRule {
         Sub ee = (Sub) e;
         Expr a = ruleset.rewriteOrSame(ee.getFirst());
         Expr b = ruleset.rewriteOrSame(ee.getSecond());
-        RewriteResult rewrite = ruleset.rewrite(Maths.sum(a, Maths.mul(b, Complex.MINUS_ONE)));
+        RewriteResult rewrite = ruleset.rewrite(MathsBase.sum(a, MathsBase.mul(b, Complex.MINUS_ONE)));
         return RewriteResult.newVal(rewrite.getValue());
     }
 

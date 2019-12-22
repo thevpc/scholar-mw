@@ -21,7 +21,7 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable {
     }
 
     public Shape2D(Domain domain) {
-        this(Maths.sqrt(domain.xwidth() * domain.ywidth()), new Polygon(domain));
+        this(MathsBase.sqrt(domain.xwidth() * domain.ywidth()), new Polygon(domain));
     }
 
     public Shape2D(double cst, Geometry geometry) {
@@ -116,7 +116,7 @@ public final class Shape2D extends AbstractDoubleToDouble implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return toComplex().toMatrix();
     }
 

@@ -305,10 +305,10 @@ public class Bessel {
         if (x < 0) x = -x;
         if (x <= 8.0) {
             y = (x / 2.0) - 2.0;
-            return (Math.exp(x) * Maths.chbevl(y, A_i0, 30));
+            return (Math.exp(x) * MathsBase.chbevl(y, A_i0, 30));
         }
 
-        return (Math.exp(x) * Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
+        return (Math.exp(x) * MathsBase.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -325,10 +325,10 @@ public class Bessel {
         if (x < 0) x = -x;
         if (x <= 8.0) {
             y = (x / 2.0) - 2.0;
-            return (Maths.chbevl(y, A_i0, 30));
+            return (MathsBase.chbevl(y, A_i0, 30));
         }
 
-        return (Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
+        return (MathsBase.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -349,9 +349,9 @@ public class Bessel {
         z = Math.abs(x);
         if (z <= 8.0) {
             y = (z / 2.0) - 2.0;
-            z = Maths.chbevl(y, A_i1, 29) * z * Math.exp(z);
+            z = MathsBase.chbevl(y, A_i1, 29) * z * Math.exp(z);
         } else {
-            z = Math.exp(z) * Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
+            z = Math.exp(z) * MathsBase.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
         }
         if (x < 0.0)
             z = -z;
@@ -372,9 +372,9 @@ public class Bessel {
         z = Math.abs(x);
         if (z <= 8.0) {
             y = (z / 2.0) - 2.0;
-            z = Maths.chbevl(y, A_i1, 29) * z;
+            z = MathsBase.chbevl(y, A_i1, 29) * z;
         } else {
-            z = Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
+            z = MathsBase.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
         }
         if (x < 0.0)
             z = -z;
@@ -520,12 +520,12 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
+            y = MathsBase.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
             return (y);
         }
 
         z = 8.0 / x - 2.0;
-        y = Math.exp(-x) * Maths.chbevl(z, B_k0, 25) / Math.sqrt(x);
+        y = Math.exp(-x) * MathsBase.chbevl(z, B_k0, 25) / Math.sqrt(x);
         return (y);
     }
 
@@ -541,11 +541,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
+            y = MathsBase.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
             return (y * Math.exp(x));
         }
 
-        y = Maths.chbevl(8.0 / x - 2.0, B_k0, 25) / Math.sqrt(x);
+        y = MathsBase.chbevl(8.0 / x - 2.0, B_k0, 25) / Math.sqrt(x);
         return (y);
     }
 
@@ -566,11 +566,11 @@ public class Bessel {
         if (z <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Math.log(z) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
+            y = Math.log(z) * i1(x) + MathsBase.chbevl(y, A_k1, 11) / x;
             return (y);
         }
 
-        return (Math.exp(-x) * Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
+        return (Math.exp(-x) * MathsBase.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
     }
 
     /**
@@ -587,11 +587,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Math.log(0.5 * x) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
+            y = Math.log(0.5 * x) * i1(x) + MathsBase.chbevl(y, A_k1, 11) / x;
             return (y * Math.exp(x));
         }
 
-        return (Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
+        return (MathsBase.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
     }
 
     /**

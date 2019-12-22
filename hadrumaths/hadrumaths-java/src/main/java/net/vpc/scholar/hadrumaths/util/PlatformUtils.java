@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -65,35 +65,35 @@ public class PlatformUtils {
 
 
     public static long gc2() {
-        long before = Maths.inUseMemory();
+        long before = MathsBase.inUseMemory();
         Runtime rt = Runtime.getRuntime();
         long lastFreed = 0;
         int iterations = 0;
         for (int i = 0; i < 10; i++) {
-            long before1 = Maths.inUseMemory();
+            long before1 = MathsBase.inUseMemory();
             rt.gc();
-            long after1 = Maths.inUseMemory();
+            long after1 = MathsBase.inUseMemory();
             long freed1 = before1 - after1;
             long freed = before - after1;
             iterations++;
             long deltaFreed = (freed1 > lastFreed) ? (freed1 - lastFreed) : (lastFreed - freed1);
             lastFreed = freed1;
-//            System.out.println("\tfreed : "+Maths.formatMemory(freed1) +" : "+Maths.formatMemory(freed));
+//            System.out.println("\tfreed : "+MathsBase.formatMemory(freed1) +" : "+MathsBase.formatMemory(freed));
             if (deltaFreed < 1024) break;
         }
-        long after = Maths.inUseMemory();
+        long after = MathsBase.inUseMemory();
         long freed = before - after;
-//        System.out.println("freed in "+iterations+" iterations : "+Maths.formatMemory(freed));
+//        System.out.println("freed in "+iterations+" iterations : "+MathsBase.formatMemory(freed));
         return freed;
     }
 
 //    public static long gc() {
-//        long before1 = Maths.inUseMemory();
+//        long before1 = MathsBase.inUseMemory();
 //        Runtime rt = Runtime.getRuntime();
 //        rt.gc();
-//        long after1 = Maths.inUseMemory();
+//        long after1 = MathsBase.inUseMemory();
 //        long freed1 = before1-after1;
-//        System.out.println("freed : "+Maths.formatMemory(freed1));
+//        System.out.println("freed : "+MathsBase.formatMemory(freed1));
 //        return freed1;
 //    }
 
@@ -101,7 +101,7 @@ public class PlatformUtils {
 //        for (int i = 0; i < 100; i++) {
 ////            boolean[] o=new boolean[100000];
 //            gc2();
-////            System.out.println(Maths.formatMemory(gc2()));
+////            System.out.println(MathsBase.formatMemory(gc2()));
 //        }
 //    }
 

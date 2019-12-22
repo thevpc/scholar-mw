@@ -124,7 +124,7 @@ public class MomStructureFractalZop extends MomStructure {
         throw new IllegalArgumentException("Impossible");
     }
 
-    Matrix getAMatrix(Matrix ZopValue) {
+    ComplexMatrix getAMatrix(ComplexMatrix ZopValue) {
         TestFunctions gpTestFunctions = getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
         Complex[][] b = new Complex[g.length][g.length];
@@ -171,7 +171,7 @@ public class MomStructureFractalZop extends MomStructure {
         return Maths.matrix(b);
     }
 
-    Matrix Bevan() {
+    ComplexMatrix Bevan() {
         TestFunctions gpTestFunctions = getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
         Complex[][] b = new Complex[g.length][g.length];
@@ -256,7 +256,7 @@ public class MomStructureFractalZop extends MomStructure {
         return this;
     }
 
-    public Matrix resolveNextPointFixe(Matrix Zinit, int kInit) {
+    public ComplexMatrix resolveNextPointFixe(ComplexMatrix Zinit, int kInit) {
         getLog().debug(1.2337139917695478E-4 / 4.11237997256516E-5);
         double a = getDomain().getXwidth();
         setFractalScale(1);
@@ -267,11 +267,11 @@ public class MomStructureFractalZop extends MomStructure {
             double metalQuotient = 1.0 / 3;
             Domain d = getDomain();
             setDomain(Domain.forWidth(d.xmin(),a * Math.pow(metalQuotient, (kInit - ki)),d.xmin(),d.ywidth()));
-            Matrix A_ = getAMatrix(Zinit);
-            Matrix B_ = matrixB().computeMatrix();
-            Matrix ZinCond;
+            ComplexMatrix A_ = getAMatrix(Zinit);
+            ComplexMatrix B_ = matrixB().computeMatrix();
+            ComplexMatrix ZinCond;
             try {
-                Matrix aInv = A_.inv(this.getInvStrategy(), this.getCondStrategy(), this.getNormStrategy());
+                ComplexMatrix aInv = A_.inv(this.getInvStrategy(), this.getCondStrategy(), this.getNormStrategy());
                 //should use conjugate transpose
 //                ZinCond = B_.transpose().multiply(aInv).multiply(B_).inv();
                 ZinCond = B_.transposeHermitian().mul(aInv).mul(B_).inv();
@@ -428,7 +428,7 @@ public class MomStructureFractalZop extends MomStructure {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
 //                System.out.println("op : " + DumpStringUtils.dump(str));
-                Matrix cMatrix;
+                ComplexMatrix cMatrix;
                 if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT, true)) {
                     cMatrix = ops[0].getMatrix();
                 } else {
@@ -494,7 +494,7 @@ public class MomStructureFractalZop extends MomStructure {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
 //                System.out.println("op : " + DumpStringUtils.dump(str));
-                Matrix cMatrix;
+                ComplexMatrix cMatrix;
                 if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT, true)) {
                     cMatrix = ops[0].getMatrix();
                 } else {

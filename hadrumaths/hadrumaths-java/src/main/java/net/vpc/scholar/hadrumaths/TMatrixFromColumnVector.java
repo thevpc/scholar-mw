@@ -38,7 +38,7 @@ public class TMatrixFromColumnVector<T> extends AbstractTMatrix<T> {
 
     @Override
     protected TMatrixFactory<T> createDefaultFactory() {
-        return Maths.Config.getDefaultMatrixFactory(vector.getComponentType());
+        return MathsBase.Config.getComplexMatrixFactory(vector.getComponentType());
     }
 
     @Override

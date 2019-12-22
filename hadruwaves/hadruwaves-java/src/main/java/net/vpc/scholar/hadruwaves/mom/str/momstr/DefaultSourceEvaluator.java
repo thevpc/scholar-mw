@@ -18,7 +18,7 @@ import net.vpc.scholar.hadruwaves.str.SourceEvaluator;
 public class DefaultSourceEvaluator implements SourceEvaluator {
     public static final DefaultSourceEvaluator INSTANCE = new DefaultSourceEvaluator();
 
-    public Matrix computePlanarSources(MWStructure structure, final double[] x, final double[] y, final Axis axis, ProgressMonitor monitor) {
+    public ComplexMatrix computePlanarSources(MWStructure structure, final double[] x, final double[] y, final Axis axis, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
         final ProgressMonitor mon = ProgressMonitorFactory.nonnull(monitor);
         final Sources ss = str.getSources();
@@ -26,9 +26,9 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
             throw new IllegalArgumentException();
         }
         final String monName = getClass().getSimpleName();
-        return Maths.invokeMonitoredAction(mon, monName, new MonitoredAction<Matrix>() {
+        return Maths.invokeMonitoredAction(mon, monName, new MonitoredAction<ComplexMatrix>() {
             @Override
-            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] ret = null;
                 DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
                 for (int i = 0; i < _g.length; i++) {

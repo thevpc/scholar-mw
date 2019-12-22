@@ -168,16 +168,16 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex exp() {
-        double e = Maths.exp(real);
-        return Complex.valueOf(e * Maths.cos2(imag), e * Maths.sin2(imag));
+        double e = MathsBase.exp(real);
+        return Complex.valueOf(e * MathsBase.cos2(imag), e * MathsBase.sin2(imag));
     }
 
     public Complex abs() {
-        return Complex.valueOf(Maths.sqrt(real * real + imag * imag));
+        return Complex.valueOf(MathsBase.sqrt(real * real + imag * imag));
     }
 
     public double absdbl() {
-        return Maths.sqrt(real * real + imag * imag);
+        return MathsBase.sqrt(real * real + imag * imag);
     }
 
     public double absdblsqr() {
@@ -284,14 +284,14 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex sin() {
-        return Complex.valueOf(Maths.sin2(real) * Math.cosh(imag), Maths.cos2(real) * Math.sinh(imag));
+        return Complex.valueOf(MathsBase.sin2(real) * Math.cosh(imag), MathsBase.cos2(real) * Math.sinh(imag));
     }
 
     public Complex cos() {
         if (imag == 0) {
-            return Complex.valueOf(Maths.cos2(real));
+            return Complex.valueOf(MathsBase.cos2(real));
         }
-        return Complex.valueOf(Maths.cos2(real) * Math.cosh(imag), -Maths.sin2(real) * Math.sinh(imag));
+        return Complex.valueOf(MathsBase.cos2(real) * Math.cosh(imag), -MathsBase.sin2(real) * Math.sinh(imag));
     }
 
     public Complex tan() {
@@ -339,7 +339,7 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(Maths.atan2(getImag(), getReal()));
+        return Complex.valueOf(MathsBase.atan2(getImag(), getReal()));
     }
 
     public Complex asin() {
@@ -437,11 +437,11 @@ public final class ComplexRI extends Complex {
 //    public Complex angle() {
 //        //workaround
 ////        if(real==0){
-////            return imag>=0?Maths.PI/2:-Maths.PI/2;
+////            return imag>=0?MathsBase.PI/2:-MathsBase.PI/2;
 ////        }else if(imag==0){
-////            return real>=0?0:Maths.PI;
+////            return real>=0?0:MathsBase.PI;
 ////        }
-//        return Complex.valueOf(Maths.atan2(imag, real));
+//        return Complex.valueOf(MathsBase.atan2(imag, real));
 //    }
 
     public Complex sqr() {
@@ -451,7 +451,7 @@ public final class ComplexRI extends Complex {
     public double dsqrt() {
         if (imag == 0) {
             if (real >= 0) {
-                return Maths.sqrt(real);
+                return MathsBase.sqrt(real);
             } else {
                 return Double.NaN;
             }
@@ -462,11 +462,11 @@ public final class ComplexRI extends Complex {
 
     public Complex sqrt() {
         if (imag == 0) {
-            return real >= 0 ? Complex.valueOf(Maths.sqrt(real), 0) : Complex.valueOf(0, Maths.sqrt(-real));
+            return real >= 0 ? Complex.valueOf(MathsBase.sqrt(real), 0) : Complex.valueOf(0, MathsBase.sqrt(-real));
         } else {
-            double r = Maths.sqrt(absdbl());
+            double r = MathsBase.sqrt(absdbl());
             double theta = arg().toDouble() / 2;
-            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
         }
     }
 
@@ -492,17 +492,17 @@ public final class ComplexRI extends Complex {
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(Maths.pow(real, power), 0) : new Complex(0, Maths.pow(-real, power));
+//            return real >= 0 ? new Complex(MathsBase.pow(real, power), 0) : new Complex(0, MathsBase.pow(-real, power));
         } else if (power >= 0) {
-            double r = Maths.pow(absdbl(), power);
+            double r = MathsBase.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
-            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
         } else { //n<0
             power = -power;
-            double r = Maths.pow(absdbl(), power);
+            double r = MathsBase.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            Complex c = Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
             return c.inv();
         }
     }

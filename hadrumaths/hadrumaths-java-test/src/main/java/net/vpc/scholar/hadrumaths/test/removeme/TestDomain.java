@@ -56,12 +56,9 @@ public class TestDomain {
         AbsoluteSamples times = domain.times(50);
         double[] x = times.getX();
         double[] y = times.getY();
-        Matrix c = matrix(30, 30, new MatrixCell() {
-            @Override
-            public Complex get(int row, int column) {
-                return Complex.valueOf(Maths.sin(row*Maths.PI/10) * Maths.cos(column*Maths.PI/10));
+        ComplexMatrix c = matrix(30, 30, (row, column) -> {
+            return Complex.valueOf(Maths.sin(row*Maths.PI/10) * Maths.cos(column*Maths.PI/10));
 //                return new Complex((row*Math.PI/10) * (column*Math.PI/10));
-            }
         });
         System.out.println(c);
 //        DoubleToDouble b = a.toDD();

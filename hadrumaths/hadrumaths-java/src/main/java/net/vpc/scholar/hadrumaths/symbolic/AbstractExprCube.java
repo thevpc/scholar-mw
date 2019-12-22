@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.SimplifyOptions;
 
 /**
  * Created by vpc on 2/14/15.
@@ -33,6 +34,11 @@ public abstract class AbstractExprCube implements ExprCube {
 
     @Override
     public ExprCube simplify() {
+        return simplify(null);
+    }
+
+    @Override
+    public ExprCube simplify(SimplifyOptions options) {
         return DefaultExprCubeFactory.INSTANCE.newUnmodifiableCube(
                 getRowsDimension(),
                 getColumnsDimension(),
@@ -40,7 +46,7 @@ public abstract class AbstractExprCube implements ExprCube {
                 new ExprCubeCellIterator() {
                     @Override
                     public Expr get(int row, int col, int h) {
-                        return AbstractExprCube.this.get(row, col, h).simplify();
+                        return AbstractExprCube.this.get(row, col, h).simplify(options);
                     }
                 }
         );

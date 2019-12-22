@@ -110,7 +110,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     h += d[k] * d[k];
                 }
                 double f = d[i - 1];
-                double g = Maths.sqrt(h);
+                double g = MathsBase.sqrt(h);
                 if (f > 0) {
                     g = -g;
                 }
@@ -203,7 +203,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
         double f = 0.0;
         double tst1 = 0.0;
-        double eps = Maths.pow(2.0, -52.0);
+        double eps = MathsBase.pow(2.0, -52.0);
         for (int l = 0; l < n; l++) {
 
             // Find small subdiagonal element
@@ -229,7 +229,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
                     double g = d[l];
                     double p = (d[l + 1] - g) / (2.0 * e[l]);
-                    double r = Maths.hypot(p, 1.0);
+                    double r = MathsBase.hypot(p, 1.0);
                     if (p < 0) {
                         r = -r;
                     }
@@ -257,7 +257,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                         s2 = s;
                         g = c * e[i];
                         h = c * p;
-                        r = Maths.hypot(p, e[i]);
+                        r = MathsBase.hypot(p, e[i]);
                         e[i + 1] = s * r;
                         s = e[i] / r;
                         c = p / r;
@@ -336,7 +336,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     ort[i] = H[i][m - 1] / scale;
                     h += ort[i] * ort[i];
                 }
-                double g = Maths.sqrt(h);
+                double g = MathsBase.sqrt(h);
                 if (ort[m] > 0) {
                     g = -g;
                 }
@@ -436,7 +436,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
         int n = nn - 1;
         int low = 0;
         int high = nn - 1;
-        double eps = Maths.pow(2.0, -52.0);
+        double eps = MathsBase.pow(2.0, -52.0);
         double exshift = 0.0;
         double p = 0, q = 0, r = 0, s = 0, z = 0, t, w, x, y;
 
@@ -512,7 +512,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     s = Math.abs(x) + Math.abs(z);
                     p = x / s;
                     q = z / s;
-                    r = Maths.sqrt(p * p + q * q);
+                    r = MathsBase.sqrt(p * p + q * q);
                     p = p / r;
                     q = q / r;
 

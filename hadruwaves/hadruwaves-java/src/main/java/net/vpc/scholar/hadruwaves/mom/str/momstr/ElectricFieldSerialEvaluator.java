@@ -56,7 +56,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        this.invalidateCache();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                Matrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
 
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -162,7 +162,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        this.invalidateCache();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                Matrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
 
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();

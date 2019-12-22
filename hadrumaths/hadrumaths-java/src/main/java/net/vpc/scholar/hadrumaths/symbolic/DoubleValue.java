@@ -35,7 +35,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
 
     public DoubleValue(Domain domain) {
         this(
-                domain.dimension() == 1 ? domain.xwidth() : domain.dimension() == 2 ? Maths.sqrt(domain.xwidth() * domain.ywidth()) : Maths.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth()), domain);
+                domain.dimension() == 1 ? domain.xwidth() : domain.dimension() == 2 ? MathsBase.sqrt(domain.xwidth() * domain.ywidth()) : MathsBase.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth()), domain);
     }
 
     public DoubleValue(double cst, Domain domain) {
@@ -184,12 +184,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         return this;
     }
 
@@ -294,7 +289,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     public DoubleToDouble add(DoubleToDouble... others) {
-        return Maths.sum(this, Maths.sum(others)).toDD();
+        return MathsBase.sum(this, MathsBase.sum(others)).toDD();
     }
 
     public DoubleToDouble getSymmetricX(Domain newDomain) {
@@ -314,6 +309,10 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     public DoubleToDouble simplify() {
+        return this;
+    }
+
+    public DoubleToDouble simplify(SimplifyOptions options) {
         return this;
     }
 
@@ -375,7 +374,7 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return toComplex().toMatrix();
     }
 
@@ -478,13 +477,13 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
         return m;
     }
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         double[][][] d = computeDouble(x, y, z, d0, ranges);
-        Matrix[][][] m = new Matrix[d.length][d[0].length][d[0][0].length];
+        ComplexMatrix[][][] m = new ComplexMatrix[d.length][d[0].length][d[0][0].length];
         for (int zi = 0; zi < m.length; zi++) {
             for (int yi = 0; yi < m[zi].length; zi++) {
                 for (int xi = 0; xi < m[zi][yi].length; xi++) {
-                    m[zi][yi][xi] = Maths.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
+                    m[zi][yi][xi] = MathsBase.constantMatrix(1, Complex.valueOf(d[zi][yi][xi]));
                 }
             }
         }
@@ -543,9 +542,9 @@ public final class DoubleValue extends AbstractExpBase implements Cloneable, ICo
             case 1:
                 return DoubleValue.valueOf(1.0 / domain.xwidth(), domain);
             case 2:
-                return DoubleValue.valueOf(1.0 / Maths.sqrt(domain.xwidth() * domain.ywidth()), domain);
+                return DoubleValue.valueOf(1.0 / MathsBase.sqrt(domain.xwidth() * domain.ywidth()), domain);
             case 3:
-                return DoubleValue.valueOf(1.0 / Maths.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth(), 3), domain);
+                return DoubleValue.valueOf(1.0 / MathsBase.sqrt(domain.xwidth() * domain.ywidth() * domain.zwidth(), 3), domain);
         }
         throw new IllegalArgumentException("Unsupported domain dimension " + domain);
     }

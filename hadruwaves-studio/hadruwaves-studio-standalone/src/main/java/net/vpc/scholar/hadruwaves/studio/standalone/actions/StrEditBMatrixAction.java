@@ -5,7 +5,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 
 import javax.swing.*;
 import net.vpc.lib.pheromone.application.swing.JOptionPane2;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
@@ -24,7 +24,7 @@ public class StrEditBMatrixAction extends StructureAction {
     protected void configure(RunningProjectThread thread) {
         CMatrixTableModel model;
         MomStrHelper jxy = thread.getHelper(true);
-        Matrix b = null;
+        ComplexMatrix b = null;
         try {
             jxy.checkBuildIsRequired();
             b = jxy.computeBMatrix(ProgressMonitorFactory.none());

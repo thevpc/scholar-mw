@@ -34,7 +34,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
             @Override
             public Expr simplify(Expr a, Expr b, Domain domain, PlusSimplifyRule plusSimplifyRule) {
                 if (a.equals(b)) {
-                    return Maths.mul(Complex.TWO, a);
+                    return MathsBase.mul(Complex.TWO, a);
                 }
                 return null;
             }
@@ -169,10 +169,10 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                     IConstantValue b1 = Expressions.toComplexValue(bbs.get(0));
                     IConstantValue b2 = Expressions.toComplexValue(bbs.get(1));
                     if (b1 != null && a.equals(bbs.get(1))) {
-                        return Maths.mul(simplifyXY(Complex.ONE, b1, domain), a);
+                        return MathsBase.mul(simplifyXY(Complex.ONE, b1, domain), a);
                     }
                     if (b2 != null && a.equals(bbs.get(0))) {
-                        return Maths.mul(simplifyXY(Complex.ONE, b2, domain), a);
+                        return MathsBase.mul(simplifyXY(Complex.ONE, b2, domain), a);
                     }
                 }
                 return null;
@@ -187,11 +187,11 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 if (aas.size() == 2) {
                     IConstantValue a1 = Expressions.toComplexValue(aas.get(0));
                     if (a1 != null && b.equals(aas.get(1))) {
-                        return Maths.mul(simplifyXY(Complex.ONE, a1, domain), b);
+                        return MathsBase.mul(simplifyXY(Complex.ONE, a1, domain), b);
                     }
                     IConstantValue a2 = Expressions.toComplexValue(aas.get(1));
                     if (a2 != null && a.equals(aas.get(0))) {
-                        return Maths.mul(simplifyXY(Complex.ONE, a2, domain), b);
+                        return MathsBase.mul(simplifyXY(Complex.ONE, a2, domain), b);
                     }
                 }
                 return null;
@@ -231,7 +231,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                     }
 
                     if (an != null && bn != null && ax.equals(bx)) {
-                        return Maths.mul(simplifyXY(an, bn, domain), ax);
+                        return MathsBase.mul(simplifyXY(an, bn, domain), ax);
                     }
                 }
                 return null;
@@ -307,7 +307,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //            }
 //            grouped.domainx.clear();
             if (!grouped.complex.isZero()) {
-                grouped.addxy(Maths.expr(grouped.complex, Domain.FULL(ee.getDomainDimension())));
+                grouped.addxy(MathsBase.expr(grouped.complex, Domain.FULL(ee.getDomainDimension())));
             }
             List<RewriteResult> all = new ArrayList<RewriteResult>();
             for (Domain domain : grouped.domainxy.keySet().toArray(new Domain[0])) {
@@ -329,7 +329,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
                 }
                 exprs.add(all.get(i).getValue());
             }
-            Expr newVal = Maths.sum(exprs.toArray(new Expr[0]));
+            Expr newVal = MathsBase.sum(exprs.toArray(new Expr[0]));
             if (newVal.equals(e)) {
                 return RewriteResult.unmodified(e);
             }
@@ -353,7 +353,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //            if (all.size() == 1) {
 //                return all.get(0);
 //            }
-//            return Maths.sum(all.toArray(new Expr[all.size()]));
+//            return MathsBase.sum(all.toArray(new Expr[all.size()]));
         } else {
             return RewriteResult.bestEffort(grouped.complex);
         }
@@ -503,7 +503,7 @@ public class PlusSimplifyRule implements ExpressionRewriterRule {
 //            if (b instanceof DDxIntegralX) {
 //                DDxIntegralX fb = (DDxIntegralX) b;
 //                if (fb.getX0() == fa.getX0() && fa.getIntegral().equals(fb.getIntegral())) {
-//                    return new DDxIntegralX(Maths.sum(fa.getBase(), fb.getBase()).toDDx(), fa.getIntegral(), fa.getX0());
+//                    return new DDxIntegralX(MathsBase.sum(fa.getBase(), fb.getBase()).toDDx(), fa.getIntegral(), fa.getX0());
 //                }
 //            }
 //        } else if (b instanceof DoubleX) {

@@ -45,7 +45,7 @@ public class DC2DVHelper3 {
         return zz;
     }
 
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, z, d0, ranges),
                 yy.computeComplex(x, y, z, d0, ranges),
@@ -53,7 +53,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -61,7 +61,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, d0, ranges)
                 , yy.computeComplex(x, d0, ranges)
@@ -69,7 +69,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[] computeVector(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, double y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -77,7 +77,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[] computeVector(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double x, double[] y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -85,14 +85,14 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector computeVector(double x) {
+    public ComplexVector computeVector(double x) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x)
                 , yy.computeComplex(x)
                 , zz == null ? null : zz.computeComplex(x)
         );
     }
-    public Vector computeVector(double x,BooleanMarker defined) {
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x,defined)
                 , yy.computeComplex(x,defined)
@@ -100,7 +100,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector computeVector(double x, double y) {
+    public ComplexVector computeVector(double x, double y) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y)
                 , yy.computeComplex(x, y)
@@ -108,7 +108,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector computeVector(double x, double y,BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y,defined)
                 , yy.computeComplex(x, y,defined)
@@ -116,7 +116,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector computeVector(double x, double y, double z) {
+    public ComplexVector computeVector(double x, double y, double z) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, z)
                 , yy.computeComplex(x, y, z)
@@ -124,7 +124,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector computeVector(double x, double y, double z,BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, z,defined)
                 , yy.computeComplex(x, y, z,defined)
@@ -166,7 +166,7 @@ public class DC2DVHelper3 {
         throw new IllegalArgumentException("Invalid row,column " + row + "," + col);
     }
 
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y, z)
                 , yy.computeComplex(x, y, z)
@@ -174,7 +174,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[][] computeVector(double[] x, double[] y) {
+    public ComplexVector[][] computeVector(double[] x, double[] y) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x, y)
                 , yy.computeComplex(x, y)
@@ -182,7 +182,7 @@ public class DC2DVHelper3 {
         );
     }
 
-    public Vector[] computeVector(double[] x) {
+    public ComplexVector[] computeVector(double[] x) {
         return ArrayUtils.c2v(
                 xx.computeComplex(x)
                 , yy.computeComplex(x)

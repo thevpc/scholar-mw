@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.MutableComplexMatrix;
@@ -16,15 +16,15 @@ public class OjalgoConverter {
         return ComplexNumber.makeRectangular(complex.getReal(), complex.getImag());
     }
 
-    public static Matrix toVpcCMatrix(BasicMatrix complexDouble) {
+    public static ComplexMatrix toVpcCMatrix(BasicMatrix complexDouble) {
         if (complexDouble instanceof MutableComplexMatrix) {
-            return new OjalgoMatrix((MutableComplexMatrix) complexDouble);
+            return new OjalgoComplexMatrix((MutableComplexMatrix) complexDouble);
         }
         throw new IllegalArgumentException("Unsupported");
     }
 
     public static MutableComplexMatrix fromVpcCMatrix(TMatrix<Complex> matrix) {
-        OjalgoMatrix m = (OjalgoMatrix) OjalgoMatrixFactory.INSTANCE.newMatrix(matrix);
+        OjalgoComplexMatrix m = (OjalgoComplexMatrix) OjalgoComplexMatrixFactory.INSTANCE.newMatrix(matrix);
         return m.getBase();
     }
 }

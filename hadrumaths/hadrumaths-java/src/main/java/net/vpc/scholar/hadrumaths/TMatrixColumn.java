@@ -22,9 +22,9 @@ public class TMatrixColumn<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public void set(int i, T complex) {
+    public TVector<T> set(int i, T complex) {
         matrix.set(i, column, complex);
-
+        return this;
     }
 
     @Override

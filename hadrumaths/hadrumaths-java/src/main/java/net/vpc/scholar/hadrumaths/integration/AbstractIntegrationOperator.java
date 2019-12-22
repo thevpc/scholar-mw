@@ -122,7 +122,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     }
 
 //    public TMatrix<Complex> eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-//        return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
+//        return MathsBase.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
 //    }
 //
 //    public Complex[] eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {

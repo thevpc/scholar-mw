@@ -71,8 +71,8 @@
 //    }
 //
 ////    @Override
-////    public DCxy simplify() {
-////        return isZero()?FunctionFactory.CZEROXY: new DCxy(this.imag.simplify(), this.real.simplify());
+////    public DD2DC simplify() {
+////        return isZero()?FunctionFactory.CZEROXY: new DD2DC(this.imag.simplify(), this.real.simplify());
 ////    }
 //    private void linearize(IDCxy[] sum, ArrayList<IDCxy> putInto) {
 //        for (int i = 0; i < sum.length; i++) {

@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 import net.vpc.common.mon.ProgressMonitor;
@@ -78,8 +76,8 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable{
         return this;
     }
 
-    public TList<Expr> toList(){
-        TList<Expr> found=Maths.elist();
+    public TVector<Expr> toList(){
+        TVector<Expr> found=Maths.elist();
         for (Object expr : list) {
             found.appendAll(linearizeFunctions(expr));
         }

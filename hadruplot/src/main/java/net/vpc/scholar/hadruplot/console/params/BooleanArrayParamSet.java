@@ -5,13 +5,13 @@ package net.vpc.scholar.hadruplot.console.params;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2005 10:23:32
  */
-public class BooleanArrayParamSet<T> extends ParamSet implements Cloneable {
+public class BooleanArrayParamSet extends ParamSet<Boolean> implements Cloneable {
     private boolean[] values;
     private int index = -1;
 
-    public T init(boolean... values) {
+    public BooleanArrayParamSet init(boolean... values) {
         this.values = values;
-        return (T) this;
+        return this;
     }
 
     public BooleanArrayParamSet(Param configurator, boolean... values) {

@@ -28,7 +28,7 @@ public class MatlabFactory extends AbstractFactory {
     private static final ClassMap<ToMatlabString> map = new ClassMap<ToMatlabString>(Object.class, ToMatlabString.class, 12);
 
     static {
-        register(Matrix.class, new MatrixToMatlabString());
+        register(ComplexMatrix.class, new MatrixToMatlabString());
         register(DoubleToComplex.class, new CFunctionXYToMatlabString());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYToMatlabString());
         register(Plus.class, new PlusExprToMatlabString());
@@ -236,10 +236,10 @@ public class MatlabFactory extends AbstractFactory {
         for (int i = 0; i < sum.length; i++) {
             DoubleToComplex cFunctionXY = sum[i];
             if (cFunctionXY.getRealDD() != FunctionFactory.DZEROXY) {
-                putInto.add(Maths.complex(cFunctionXY.getRealDD(), FunctionFactory.DZEROXY));
+                putInto.add(MathsBase.complex(cFunctionXY.getRealDD(), FunctionFactory.DZEROXY));
             }
             if (cFunctionXY.getImagDD() != FunctionFactory.DZEROXY) {
-                putInto.add(Maths.complex(FunctionFactory.DZEROXY, cFunctionXY.getImagDD()));
+                putInto.add(MathsBase.complex(FunctionFactory.DZEROXY, cFunctionXY.getImagDD()));
             }
         }
         return putInto;

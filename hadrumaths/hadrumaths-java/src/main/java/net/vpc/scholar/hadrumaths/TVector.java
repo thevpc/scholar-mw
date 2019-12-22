@@ -1,15 +1,186 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.io.UncheckedIOException;
 import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.symbolic.TParam;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
+import java.util.Collection;
 import java.util.List;
 
+/**
+ * Created by vpc on 5/30/14.
+ */
 public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, Serializable {
+
+    int length();
+
+    TVector<T> eval(ElementOp<T> op);
+
+    <R> TVector<R> transform(TypeName<R> toType, TTransform<T, R> op);
+
+    TVector<T> copy();
+
+    TVector<T> setParam(TParam param, Object value);
+
+    TVector<T> setParam(String name, Object value);
+
+    TVector<T> transpose();
+
+
+    TVector<T> scalarProduct(T other);
+
+
+    TVector<T> rscalarProduct(T other);
+
+
+    <R> TVector<R> to(TypeName<R> other);
+
+
+    TVector<T> vscalarProduct(TVector<T>... other);
+
+
+    TVector<T> dotmul(TVector<T> other);
+
+
+    TVector<T> dotdiv(TVector<T> other);
+
+
+    TVector<T> dotpow(TVector<T> other);
+
+
+    TVector<T> add(TVector<T> other);
+
+
+    TVector<T> sub(TVector<T> other);
+
+
+    TVector<T> add(T other);
+
+
+    TVector<T> sub(T other);
+
+
+    TVector<T> mul(T other);
+
+
+    TVector<T> div(T other);
+
+
+    TVector<T> rem(T other);
+
+
+    TVector<T> dotpow(T other);
+
+
+    TVector<T> conj();
+
+
+    TVector<T> cos();
+
+
+    TVector<T> cosh();
+
+
+    TVector<T> sin();
+
+
+    TVector<T> sinh();
+
+
+    TVector<T> tan();
+
+
+    TVector<T> tanh();
+
+
+    TVector<T> cotan();
+
+
+    TVector<T> cotanh();
+
+
+    TVector<T> getReal();
+
+
+    TVector<T> real();
+
+
+    TVector<T> getImag();
+
+
+    TVector<T> imag();
+
+
+    TVector<T> db();
+
+
+    TVector<T> db2();
+
+
+    TVector<T> abs();
+
+
+    TVector<T> abssqr();
+
+
+    TVector<T> log();
+
+
+    TVector<T> log10();
+
+
+    TVector<T> exp();
+
+
+    TVector<T> sqrt();
+
+
+    TVector<T> sqr();
+
+
+    TVector<T> acosh();
+
+
+    TVector<T> acos();
+
+
+    TVector<T> asinh();
+
+
+    TVector<T> asin();
+
+
+    TVector<T> atan();
+
+
+    TVector<T> acotan();
+
+    TVector<T> filter(TFilter<T> filter);
+
+    TVector<T> transform(TTransform<T, T> op);
+
+    TVector<T> append(T e);
+
+    TVector<T> appendAll(Collection<? extends T> e);
+
+    TVector<T> appendAll(TVector<T> e);
+
+    TVector<T> sublist(int fromIndex, int toIndex);
+
+    TVector<T> sort();
+
+    TVector<T> removeDuplicates();
+
+    TVector<T> concat(T e);
+
+    TVector<T> concat(TVector<T> e);
+
+
+    /////
+
 
     TypeName<T> getComponentType();
 
@@ -35,13 +206,13 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     T apply(Enum i);
 
-    void set(int i, T value);
+    TVector<T> set(int i, T value);
 
-    void set(Enum i, T value);
+    TVector<T> set(Enum i, T value);
 
-    void update(int i, T value);
+    TVector<T> update(int i, T value);
 
-    void update(Enum i, T value);
+    TVector<T> update(Enum i, T value);
 
     <R> R[] toArray(Class<R> type);
 
@@ -53,7 +224,6 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     int size();
 
-    int length();
 
     void store(String file) throws UncheckedIOException;
 
@@ -66,43 +236,15 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     T scalarProduct(TMatrix<T> v);
 
-    TVector<T> scalarProduct(T other);
-
-    TVector<T> rscalarProduct(T other);
-
     T scalarProduct(TVector<T> other);
 
     T scalarProductAll(TVector<T>... other);
 
-    <R> TVector<R> to(TypeName<R> other);
-
     <R> boolean isConvertibleTo(TypeName<R> other);
 
-    TVector<T> vscalarProduct(TVector<T>... other);
-
-    TVector<T> dotmul(TVector<T> other);
-
-    TVector<T> dotdiv(TVector<T> other);
-
-    TVector<T> dotpow(TVector<T> other);
-
-    TVector<T> add(TVector<T> other);
-
-    TVector<T> sub(TVector<T> other);
-
-    TVector<T> add(T other);
-
-    TVector<T> sub(T other);
-
-    TVector<T> mul(T other);
-
-    TVector<T> div(T other);
-
-    TVector<T> rem(T other);
 
     TVector<T> rem(TVector<T> other);
 
-    TVector<T> dotpow(T other);
 
     TVector<T> inv();
 
@@ -116,96 +258,31 @@ public interface TVector<T> extends Normalizable, Iterable<T>, TVectorModel<T>, 
 
     double minAbs();
 
-    TVector<T> transpose();
 
     TVector<T> neg();
 
-    TVector<T> conj();
 
-    TVector<T> cos();
-
-    TVector<T> cosh();
-
-    TVector<T> sin();
-
-    TVector<T> sinh();
     TVector<T> sincard();
 
-    TVector<T> tan();
 
-    TVector<T> tanh();
-
-    TVector<T> cotan();
-
-    TVector<T> cotanh();
-
-    TVector<T> getReal();
-
-    TVector<T> real();
-
-    TVector<T> getImag();
-
-    TVector<T> imag();
-
-    TVector<T> db();
-
-    TVector<T> db2();
-
-    TVector<T> abs();
-
-    TVector<T> abssqr();
-
-    //    /**
-//     * double absdbl square
-//     *
-//     * @return
-//     */
-//    double[] absdbl();
-//
-//    double[] absdblsqr();
-    TVector<T> log();
-
-    TVector<T> log10();
-
-    TVector<T> exp();
-
-    TVector<T> sqrt();
     TVector<T> sqrt(int n);
+
     TVector<T> pow(TVector<T> b);
+
     TVector<T> pow(double n);
 
-    TVector<T> sqr();
-
-    TVector<T> acosh();
-
-    TVector<T> acos();
-
-    TVector<T> asinh();
-
-    TVector<T> asin();
-
-    TVector<T> atan();
     TVector<T> arg();
 
-    TVector<T> acotan();
 
     boolean isDouble();
+
     boolean isZero();
 
-    TVector<T> eval(ElementOp<T> op);
-
-    <R> TVector<R> transform(TypeName<R> toType, TTransform<T, R> op);
 
     <R> boolean acceptsType(TypeName<R> type);
 
-    TVector<T> setParam(TParam param, Object value);
-
-    TVector<T> setParam(String name, Object value);
-
-    TVector<T> copy();
 
     void forEachIndex(TVectorItemAction<T> action);
 
-
-
+    void rangeCopy(int srcPos,TVector<T> dest,int destPos,int length);
 }

@@ -137,19 +137,19 @@ public abstract class AbstractScalarProductOperator implements ScalarProductOper
     }
 
     public TMatrix<Complex> eval(Expr[] g, Expr[] f, ProgressMonitor monitor) {
-        return Maths.scalarProductCache(this, g, f, monitor);
+        return MathsBase.scalarProductCache(this, g, f, monitor);
     }
 
     public TMatrix<Complex> eval(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
-        return Maths.scalarProductCache(this, g.toArray(), f.toArray(), monitor);
+        return MathsBase.scalarProductCache(this, g.toArray(), f.toArray(), monitor);
     }
 
     public TMatrix<Complex> eval(TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-        return Maths.scalarProductCache(this, g.toArray(), f.toArray(), axis, monitor);
+        return MathsBase.scalarProductCache(this, g.toArray(), f.toArray(), axis, monitor);
     }
 
     public TMatrix<Complex> eval(Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-        return Maths.scalarProductCache(this, g, f, axis, monitor);
+        return MathsBase.scalarProductCache(this, g, f, axis, monitor);
     }
 
     public Complex evalDC(Domain domain, DoubleToComplex f1, DoubleToComplex f2) {

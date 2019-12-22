@@ -10,7 +10,7 @@
 // * change this template use File | Settings | File Templates.
 // */
 //@Deprecated
-//public abstract class DCxyAbstractSum extends DCxy implements Cloneable {
+//public abstract class DCxyAbstractSum extends DD2DC implements Cloneable {
 //
 //    private static final long serialVersionUID = -1010101010101001006L;
 //    protected IDCxy[] segments;

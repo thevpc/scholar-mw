@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
 import net.vpc.scholar.hadrumaths.symbolic.Div;
@@ -46,13 +46,13 @@ public class DivSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.newVal(new ComplexValue(ac0.getComplexConstant().div(bc0.getComplexConstant()), ac0.getDomain().intersect(bc0.getDomain())));
         }
         if (bc0 != null) {
-            return RewriteResult.newVal(Maths.mul(ar.getValue(), new ComplexValue(bc0.getComplexConstant().inv(), bc0.getDomain())));
+            return RewriteResult.newVal(MathsBase.mul(ar.getValue(), new ComplexValue(bc0.getComplexConstant().inv(), bc0.getDomain())));
         }
         if (!ar.isRewritten() && !br.isRewritten()) {
             return RewriteResult.unmodified(e);
         }
 
-        Expr eee = Maths.div(ar.getValue(), br.getValue());
+        Expr eee = MathsBase.div(ar.getValue(), br.getValue());
         eee = Any.copyProperties(e, eee);
         return (ar.isBestEffort() && br.isBestEffort()) ? RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
     }

@@ -25,47 +25,47 @@ public interface DoubleToVector extends DoubleDomainExpr, Serializable, /*Double
     }
 
 
-    Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
+    ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
 
-    Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges);
+    ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges);
 
-    Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges);
+    ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges);
 
-    Vector computeVector(double x, double y, double z, BooleanMarker defined);
+    ComplexVector computeVector(double x, double y, double z, BooleanMarker defined);
 
-    Vector computeVector(double x, double y, BooleanMarker defined);
+    ComplexVector computeVector(double x, double y, BooleanMarker defined);
 
-    Vector computeVector(double x, BooleanMarker defined);
+    ComplexVector computeVector(double x, BooleanMarker defined);
 
-    default Vector computeVector(double x) {
+    default ComplexVector computeVector(double x) {
         return computeVector(x, BooleanMarker.none());
     }
 
-    default Vector computeVector(double x, double y) {
+    default ComplexVector computeVector(double x, double y) {
         return computeVector(x, y, BooleanMarker.none());
     }
 
-    default Vector computeVector(double x, double y, double z) {
+    default ComplexVector computeVector(double x, double y, double z) {
         return computeVector(x, y, z, BooleanMarker.none());
     }
 
-    default Vector[] computeVector(double[] x, double y, Domain d0, Out<Range> ranges) {
+    default ComplexVector[] computeVector(double[] x, double y, Domain d0, Out<Range> ranges) {
         return computeVector(x, new double[]{y}, d0, ranges)[0];
     }
 
-    default Vector[] computeVector(double x, double[] y, Domain d0, Out<Range> ranges) {
+    default ComplexVector[] computeVector(double x, double[] y, Domain d0, Out<Range> ranges) {
         return computeVector(new double[]{x}, y, d0, ranges)[0];
     }
 
-    default Vector[][][] computeVector(double[] x, double[] y, double[] z) {
+    default ComplexVector[][][] computeVector(double[] x, double[] y, double[] z) {
         return computeVector(x, y, z, null, null);
     }
 
-    default Vector[][] computeVector(double[] x, double[] y) {
+    default ComplexVector[][] computeVector(double[] x, double[] y) {
         return computeVector(x, y, null, null);
     }
 
-    default Vector[] computeVector(double[] x) {
+    default ComplexVector[] computeVector(double[] x) {
         return computeVector(x, (Domain) null, null);
     }
 

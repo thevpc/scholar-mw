@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.canonicalrules;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Cos;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.Linear;
@@ -36,10 +36,10 @@ public class CosXCosYSymbolRule implements ExpressionRewriterRule {
 
         CosXCosY ee = (CosXCosY) e;
         Domain domainxy = ee.getDomain();
-        return RewriteResult.newVal(Maths.mul(
+        return RewriteResult.newVal(MathsBase.mul(
                 new Cos(new Linear(ee.getA(), 0, ee.getB(), domainxy)),
                 new Cos(new Linear(0, ee.getC(), ee.getD(), domainxy)),
-                Maths.expr(ee.getAmp(), domainxy)
+                MathsBase.expr(ee.getAmp(), domainxy)
         ));
     }
 

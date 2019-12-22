@@ -24,6 +24,10 @@ public class BoxSpaceFactory extends AbstractFactory{
         return new BoxSpace(BoxLimit.OPEN, epsr,width,electricConductivity);
     }
 
+    public static BoxSpace matchedLoad(){
+        return matchedLoad(1);
+    }
+
     public static BoxSpace matchedLoad(double epsr){
         return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN,0);
     }

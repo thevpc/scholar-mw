@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Created by vpc on 4/29/14.
  */
-public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/TParam, DoubleToDouble, DoubleToComplex{
+public abstract class ParamExpr extends AbstractExprPropertyAware implements /*IDDx,*/TParam, DoubleToDouble, DoubleToComplex {
     private static final long serialVersionUID = 1L;
     private String paramName;
 
@@ -172,8 +172,6 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -193,12 +191,7 @@ public abstract class ParamExpr extends AbstractExprPropertyAware implements /*I
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
+    public Expr compose(Axis axis, Expr xreplacement) {
         return this;
     }
 

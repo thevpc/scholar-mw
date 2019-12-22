@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.ParametrizedScalarProduct;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -32,7 +32,7 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
             RewriteResult rxa = ruleset.rewrite(c.getXArgument());
             RewriteResult rya = ruleset.rewrite(c.getYArgument());
             if (!rxa.getValue().hasParams() && !rya.getValue().hasParams()) {
-                return RewriteResult.bestEffort(Maths.scalarProduct(rxa.getValue(), rya.getValue()));
+                return RewriteResult.bestEffort(MathsBase.scalarProduct(rxa.getValue(), rya.getValue()));
             }
             Expr xa = rxa.getValue();
             Expr ya = rya.getValue();

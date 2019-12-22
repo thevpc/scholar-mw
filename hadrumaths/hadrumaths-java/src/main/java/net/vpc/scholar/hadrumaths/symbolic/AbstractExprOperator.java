@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
 
 /**
  * Created by vpc on 8/24/14.
@@ -8,7 +10,7 @@ import net.vpc.scholar.hadrumaths.*;
 public abstract class AbstractExprOperator extends AbstractPolymorphExpr implements ExprOperator {
     private static final long serialVersionUID = 1L;
 
-    public Matrix computeMatrix(double x) {
+    public ComplexMatrix computeMatrix(double x) {
         return Expressions.computeMatrix(this, x);
     }
 
@@ -109,12 +111,21 @@ public abstract class AbstractExprOperator extends AbstractPolymorphExpr impleme
 //        return this;
 //    }
 
-    public DoubleToMatrix toDM() {
-        if (!isDM()) {
-            throw new ClassCastException();
-        }
-        return this;
-    }
+//    public DoubleToMatrix toDM() {
+//        if (!isDM()) {
+//            if (isDV()) {
+//                return new DV2DM(toDV());
+//            }
+//            if (isDC()) {
+//                return new DC2DM(toDC());
+//            }
+//            if (isDD()) {
+//                return new DD2DC(toDD()).toDM();
+//            }
+//            throw new ClassCastException();
+//        }
+//        return this;
+//    }
 
     protected boolean isNaNImpl() {
         for (Expr expression : getSubExpressions()) {
@@ -146,15 +157,15 @@ public abstract class AbstractExprOperator extends AbstractPolymorphExpr impleme
 //        return Expressions.computeComplexArg(this, x, y);
 //    }
 
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         return Expressions.computeMatrix(this, x, y);
     }
 

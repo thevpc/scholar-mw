@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.symbolic.ExprMatrix2;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -63,7 +65,7 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newHermitian(int rows, int cols, TMatrixCell<T> cellFactory);
 
-    TMatrix<T> newDiagonal(int rows, int cols, TMatrixCell<T> cellFactory);
+//    TMatrix<T> newDiagonal(int rows, int cols, TMatrixCell<T> cellFactory);
 
     TMatrix<T> newDiagonal(int rows, TVectorCell<T> cellFactory);
 
@@ -75,7 +77,7 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newHermitian(int dim, TMatrixCell<T> cellFactory);
 
-    TMatrix<T> newDiagonal(int dim, TMatrixCell<T> cellFactory);
+//    TMatrix<T> newDiagonal(int dim, TMatrixCell<T> cellFactory);
 
 //    TMatrix<T> newRandomReal(int m, int n);
 //
@@ -123,7 +125,7 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newImmutableHermitian(int rows, int cols, TMatrixCell<T> cellFactory);
 
-    TMatrix<T> newImmutableDiagonal(int rows, int cols, TMatrixCell<T> cellFactory);
+//    TMatrix<T> newImmutableDiagonal(int rows, int cols, TMatrixCell<T> cellFactory);
 
     TMatrix<T> newImmutableDiagonal(int rows, TVectorCell<T> cellFactory);
 
@@ -135,7 +137,7 @@ public interface TMatrixFactory<T> {
 
     TMatrix<T> newImmutableHermitian(int dim, TMatrixCell<T> cellFactory);
 
-    TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory);
+//    TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory);
 
     TMatrix<T> newImmutableIdentity(int rows, int cols);
 

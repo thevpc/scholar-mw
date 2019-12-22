@@ -22,7 +22,6 @@ public class PlotTypesHelper {
     }
 
 
-
     //should compress to  double[] or Complex[] if applicable!!
 
 
@@ -30,10 +29,15 @@ public class PlotTypesHelper {
         if (obj == null) {
             return Double.NaN;
         }
-        if (obj instanceof Number) {
+        if (obj instanceof Expr) {
+            Expr e = ((Expr) obj).simplify();
+            if (e.isDouble()) {
+                return e.toDouble();
+            }
+        } else if (obj instanceof Number) {
             return ((Number) obj).doubleValue();
         }
-        throw new IllegalArgumentException("Not a Complex");
+        throw new IllegalArgumentException("Not a Double");
     }
 
     public static Complex toComplex(Object obj) {
@@ -127,8 +131,8 @@ public class PlotTypesHelper {
                 arr[i] = (Array.get(obj, i));
             }
             return arr;
-        } else if (obj instanceof Matrix) {
-            Matrix m = (Matrix) obj;
+        } else if (obj instanceof ComplexMatrix) {
+            ComplexMatrix m = (ComplexMatrix) obj;
             if (m.isColumn() && m.getColumnCount() == 1) {
                 return m.getColumn(0).toArray();
             }
@@ -162,7 +166,7 @@ public class PlotTypesHelper {
         } else if (obj instanceof TMatrix) {
             return toComplexArray2(((TMatrix) obj).getArray());
         } else if (obj instanceof java.util.Vector) {
-            return ((net.vpc.scholar.hadrumaths.Vector) obj).toMatrix().getArray();
+            return ((ComplexVector) obj).toMatrix().getArray();
         }
         throw new IllegalArgumentException("Not an Complex[][]");
     }
@@ -243,9 +247,6 @@ public class PlotTypesHelper {
         }
         throw new IllegalArgumentException("Not an double[][]");
     }
-
-
-
 
 
 }

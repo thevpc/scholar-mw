@@ -20,42 +20,42 @@ public class DC2DM extends AdaptedExpr implements DoubleToMatrix {
 
     //DC2DM START
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return dc2dm.computeMatrix(x,y,z,d0,ranges);
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return dc2dm.computeMatrix(x,y,d0,ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return dc2dm.computeMatrix(x,d0,ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return dc2dm.computeMatrix(x,y,d0,ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return dc2dm.computeMatrix(x,y,d0,ranges);
     }
 
     @Override
-    public Matrix computeMatrix(double x) {
+    public ComplexMatrix computeMatrix(double x) {
         return dc2dm.computeMatrix(x);
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         return dc2dm.computeMatrix(x,y);
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         return dc2dm.computeMatrix(x,y,z);
     }
 

@@ -30,12 +30,12 @@ public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
 
 //    @Override
 //    public <R> Converter<R, T> getConverterFrom(TypeReference<R> t) {
-//        return Maths.Config.getConverter(t,getItemType());
+//        return MathsBase.Config.getConverter(t,getItemType());
 //    }
 //
 //    @Override
 //    public <R> Converter<T, R> getConverterTo(TypeReference<R> t) {
-//        return Maths.Config.getConverter(getItemType(),t);
+//        return MathsBase.Config.getConverter(getItemType(),t);
 //    }
 
     @Override

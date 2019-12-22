@@ -4,7 +4,7 @@ import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.ExpressionRewriterFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter.MulAddLinerizeRule;
@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static net.vpc.scholar.hadrumaths.Maths.chrono;
+import static net.vpc.scholar.hadrumaths.MathsBase.chrono;
 
 public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
@@ -200,7 +200,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     }
 
 //    public static void main(String[] args) {
-//        Maths.Config.setCacheEnabled(false);
+//        MathsBase.Config.setCacheEnabled(false);
 ////        Expr f1=cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193)));
 ////        Expr f2=mul(cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193))) , cos(add(mul(complex(0) , X) ,complex(0))) , cos(add(mul(complex(0), Y) ,complex(0.08808395516141376))));
 //        Expr f1=cos(add(mul(complex(0.5561038709368364) , X) , mul(CZERO , Y), CZERO));
@@ -218,13 +218,13 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 //                    expressionRewriter.rewriteOrSame(f2).toDD()
 //            };
 //        }
-        Expr m = Maths.mul(f1, f2);
+        Expr m = MathsBase.mul(f1, f2);
         Chronometer c = chrono();
         DoubleToDouble f1opt = expressionRewriter.rewriteOrSame(m).toDD();
         if (f1opt instanceof Mul) {
             List<Expr> subExpressions = f1opt.getSubExpressions();
             if (subExpressions.size() == 1) {
-                return new DoubleToDouble[]{subExpressions.get(0).toDD(), Maths.expr(m.getDomain())};
+                return new DoubleToDouble[]{subExpressions.get(0).toDD(), MathsBase.expr(m.getDomain())};
             }
             if (subExpressions.size() == 2) {
                 return new DoubleToDouble[]{subExpressions.get(0).toDD(), subExpressions.get(1).toDD()};
@@ -234,7 +234,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         if (getScalarProduct0(f1opt.getClass(), DoubleValue.class, 1) != null) {
             return new DoubleToDouble[]{
                     f1opt.toDD(),
-                    Maths.expr(m.getDomain())
+                    MathsBase.expr(m.getDomain())
             };
         }
         return new DoubleToDouble[]{

@@ -22,19 +22,19 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
 //    }
 //
 //    public VDCxy(String name, IDoubleToDouble fx, IDoubleToDouble fy) {
-//        this(name, new DCxy(fx), new DCxy(fy), null);
+//        this(name, new DD2DC(fx), new DD2DC(fy), null);
 //    }
 //
 //    public VDCxy(String name, IDoubleToDouble fx, IDoubleToComplex fy) {
-//        this(name, new DCxy(fx), fy, null);
+//        this(name, new DD2DC(fx), fy, null);
 //    }
 //
 //    public VDCxy(String name, IDoubleToComplex fx, IDoubleToDouble fy) {
-//        this(name, fx, new DCxy(fy), null);
+//        this(name, fx, new DD2DC(fy), null);
 //    }
 //
 //    public VDCxy(IDoubleToDouble fx, IDoubleToDouble fy) {
-//        this(null, fx == null ? null : new DCxy(fx), fy == null ? null : new DCxy(fy), null);
+//        this(null, fx == null ? null : new DD2DC(fx), fy == null ? null : new DD2DC(fy), null);
 //    }
 //
 //    public VDCxy(String name, IDoubleToComplex fx, IDoubleToComplex fy) {
@@ -78,7 +78,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
 
     @Deprecated
     public static DoubleToVector add(DoubleToVector one, DoubleToVector another) {
-        DoubleToVector vector2D = Maths.vector(Maths.sum(one.getComponent(Axis.X), another.getComponent(Axis.X)), Maths.sum(one.getComponent(Axis.Y), another.getComponent(Axis.Y)));
+        DoubleToVector vector2D = MathsBase.vector(MathsBase.sum(one.getComponent(Axis.X), another.getComponent(Axis.X)), MathsBase.sum(one.getComponent(Axis.Y), another.getComponent(Axis.Y)));
         Map<String, Object> map = new HashMap<String, Object>();
         TreeSet<String> k = new TreeSet<String>();
         if (one.hasProperties()) {
@@ -200,11 +200,11 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
 //    }
 
     public Complex scalarProduct(boolean hemitian, DoubleToVector other) {
-        return Maths.scalarProduct(this, other);
+        return MathsBase.scalarProduct(this, other);
     }
 
     public DoubleToVector add(DoubleToVector other) {
-        DoubleToVector vector2D = Maths.vector(Maths.sum(getComponent(Axis.X), other.getComponent(Axis.X)), Maths.sum(getComponent(Axis.Y), other.getComponent(Axis.Y)));
+        DoubleToVector vector2D = MathsBase.vector(MathsBase.sum(getComponent(Axis.X), other.getComponent(Axis.X)), MathsBase.sum(getComponent(Axis.Y), other.getComponent(Axis.Y)));
         HashMap<String, Object> map = new HashMap<String, Object>();
         TreeSet<String> k = new TreeSet<String>();
         if (this.hasProperties()) {
@@ -275,15 +275,15 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
             Expr e = null;
             switch (updated.length) {
                 case 1: {
-                    e = Maths.vector(updated[0].toDC());
+                    e = MathsBase.vector(updated[0].toDC());
                     break;
                 }
                 case 2: {
-                    e = Maths.vector(updated[0].toDC(), updated[1].toDC());
+                    e = MathsBase.vector(updated[0].toDC(), updated[1].toDC());
                     break;
                 }
                 case 3: {
-                    e = Maths.vector(updated[0].toDC(), updated[1].toDC(), updated[2].toDC());
+                    e = MathsBase.vector(updated[0].toDC(), updated[1].toDC(), updated[2].toDC());
                     break;
                 }
                 default: {
@@ -297,39 +297,19 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector implements Clo
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         Expr[] updated = new Expr[components.length];
         boolean changed = false;
         for (int i = 0; i < updated.length; i++) {
             Expr s1 = components[i];
-            Expr s2 = s1.composeX(xreplacement);
+            Expr s2 = s1.compose(axis,xreplacement);
             if (s1 != s2) {
                 changed = true;
             }
             updated[i] = s2;
         }
         if (changed) {
-            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
-            e = Any.copyProperties(this, e);
-            return e;
-        }
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr[] updated = new Expr[components.length];
-        boolean changed = false;
-        for (int i = 0; i < updated.length; i++) {
-            Expr s1 = components[i];
-            Expr s2 = s1.composeY(yreplacement);
-            if (s1 != s2) {
-                changed = true;
-            }
-            updated[i] = s2;
-        }
-        if (changed) {
-            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
+            Expr e = MathsBase.vector(updated[0].toDC(), updated[0].toDC());
             e = Any.copyProperties(this, e);
             return e;
         }

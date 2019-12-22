@@ -5,8 +5,8 @@
 package net.vpc.scholar.hadrumaths.convergence;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruplot.Plot;
 
 import javax.swing.*;
@@ -40,12 +40,12 @@ public class ConvergencePlotListener implements ConvergenceListener {
         valuesPanel.removeAll();
         errorsPanel.removeAll();
 
-        double[] x = Maths.dsteps(0.0, errors.size(), 1);
+        double[] x = MathsBase.dsteps(0.0, errors.size(), 1);
         double[] dblValues = new double[values.size()];
         double[] dblErrors = new double[values.size()];
         for (int i = 0; i < dblValues.length; i++) {
             Object o = values.get(i);
-            dblValues[i] = (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof Matrix) ? ((Matrix) o).norm1() : ((Number) o).doubleValue();
+            dblValues[i] = (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof ComplexMatrix) ? ((ComplexMatrix) o).norm1() : ((Number) o).doubleValue();
             dblErrors[i] = errors.get(i);
         }
 

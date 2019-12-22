@@ -1384,7 +1384,7 @@ public class MomStructure implements MWStructure, Serializable, Cloneable, Dumpa
         wdebug(title, e, null);
     }
 
-    public void wdebug(String title, Throwable e, Matrix m) {
+    public void wdebug(String title, Throwable e, ComplexMatrix m) {
         if (errorHandler != null) {
             errorHandler.showError(title, e, m, this);
         }

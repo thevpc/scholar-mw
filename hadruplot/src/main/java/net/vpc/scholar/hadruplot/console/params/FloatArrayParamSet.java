@@ -6,7 +6,7 @@ import net.vpc.common.util.ArrayUtils;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2005 10:23:32
  */
-public class FloatArrayParamSet extends ParamSet implements Cloneable {
+public class FloatArrayParamSet extends ParamSet<Float> implements Cloneable {
     private float[] values;
     private int index = -1;
 

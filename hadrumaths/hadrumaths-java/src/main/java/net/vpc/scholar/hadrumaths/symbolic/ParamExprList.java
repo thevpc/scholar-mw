@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Created by vpc on 5/30/14.
  */
-public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Cloneable {
+public class ParamExprList extends AbstractTVector<Expr> implements Dumpable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     private double[][] values;
@@ -65,7 +65,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
                 break;
             }
             case 2: {
-                values = Maths.cross(Maths.dsteps(0, max[0] - 1, 1), Maths.dsteps(0, max[1] - 1, 1));
+                values = MathsBase.cross(MathsBase.dsteps(0, max[0] - 1, 1), MathsBase.dsteps(0, max[1] - 1, 1));
                 break;
             }
             default: {
@@ -76,17 +76,17 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
     }
 
     public static ParamExprList create(boolean row, Expr pattern, DoubleParam[] vars, double[][] values) {
-        return new ParamExprList(row, pattern, vars, values, Maths.dump(values));
+        return new ParamExprList(row, pattern, vars, values, MathsBase.dump(values));
     }
 
     @Override
     public TypeName<Expr> getComponentType() {
-        return Maths.$EXPR;
+        return MathsBase.$EXPR;
     }
 
     //    @Override
-    public ExprList toList() {
-        ExprArrayList list = new ExprArrayList(isRow(), values.length);
+    public ExprVector toList() {
+        ArrayExprVector list = new ArrayExprVector(isRow(), values.length);
         String[] vname = new String[vars.length];
         for (int i = 0; i < vname.length; i++) {
             vname[i] = vars[i].getParamName();
@@ -142,7 +142,7 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
     }
 
     @Override
-    public void set(int index, Expr e) {
+    public TVector<Expr> set(int index, Expr e) {
         throw new IllegalArgumentException("Unmodifiable");
     }
 
@@ -179,12 +179,12 @@ public class ParamExprList extends AbstractTList<Expr> implements Dumpable, Clon
 //        }
 //    }
     @Override
-    public TList<Expr> sort() {
+    public TVector<Expr> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<Expr> removeDuplicates() {
+    public TVector<Expr> removeDuplicates() {
         return copy().removeDuplicates();
     }
 }

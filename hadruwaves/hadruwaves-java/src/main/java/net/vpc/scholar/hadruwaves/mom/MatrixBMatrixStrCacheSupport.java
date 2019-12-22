@@ -1,14 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class MatrixBMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
+class MatrixBMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     private DefaultMomMatrixBBuilder defaultMomMatrixBBuilder;
     private final ProgressMonitor[] mon;
@@ -24,9 +23,9 @@ class MatrixBMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public Matrix compute(ObjectCache momCache) {
+    public ComplexMatrix compute(ObjectCache momCache) {
         MomStructure momStructure = defaultMomMatrixBBuilder.getStructure();
-        Matrix matrix = momStructure.createMatrixBEvaluator().evaluate(momStructure, mon[1]);
+        ComplexMatrix matrix = momStructure.createMatrixBEvaluator().evaluate(momStructure, mon[1]);
         Number ceil = momStructure.getHintsManager().getHintBMatrixSparsify();
         if (ceil != null) {
             matrix = matrix.sparsify(ceil.doubleValue());

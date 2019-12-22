@@ -78,7 +78,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
     }
 
     @Override
-    public TList<Expr> list() {
+    public TVector<Expr> list() {
         return Maths.elist(arr());
     }
 
@@ -426,7 +426,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
 
     @Override
-    public synchronized TList<Expr> toList() {
+    public synchronized TVector<Expr> toList() {
         return list();
     }
 

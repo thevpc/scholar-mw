@@ -74,10 +74,10 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+        public ComplexMatrix computeMatrix(ComplexMatrix a, ComplexMatrix b, ComplexMatrix zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
-                Matrix d = a.add(b);
+                ComplexMatrix d = a.add(b);
                 defined.set();
                 return d;
             } else {
@@ -85,10 +85,10 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
             }
         }
         @Override
-        public Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
+        public ComplexVector computeVector(ComplexVector a, ComplexVector b, ComplexVector zero, BooleanMarker defined, Expressions.ComputeDefOptions options) {
             boolean def = options.value1Defined || options.value2Defined;
             if (def) {
-                Vector d = a.add(b);
+                ComplexVector d = a.add(b);
                 defined.set();
                 return d;
             } else {
@@ -189,7 +189,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
 
     @Override
     public final Domain getDomain() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return getDomainImpl();
         }
         if (_cache_domain == null) {
@@ -297,15 +297,15 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         return Expressions.computeComplex(this, x, y, d0, ranges);
     }
 
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         return Expressions.computeMatrix(this, x, y);
     }
 
@@ -341,7 +341,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         return d;
     }
 
-    public Matrix computeMatrix(double x) {
+    public ComplexMatrix computeMatrix(double x) {
         return Expressions.computeMatrix(this, x);
     }
 
@@ -369,8 +369,8 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
-        Matrix c = expressions[0].toMatrix();
+    public ComplexMatrix toMatrix() {
+        ComplexMatrix c = expressions[0].toMatrix();
         for (int i = 1; i < expressions.length; i++) {
             c = c.add(expressions[i].toMatrix());
         }
@@ -390,7 +390,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
             updated[i] = s2;
         }
         if (changed) {
-            Expr e = Maths.sum(updated);
+            Expr e = MathsBase.sum(updated);
             e = Any.copyProperties(this, e);
             return Any.updateTitleVars(e, name, value);
         }
@@ -398,12 +398,12 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         Expr[] updated = new Expr[expressions.length];
         boolean changed = false;
         for (int i = 0; i < updated.length; i++) {
             Expr s1 = expressions[i];
-            Expr s2 = s1.composeX(xreplacement);
+            Expr s2 = s1.compose(axis,xreplacement);
             if (s1 != s2) {
                 changed = true;
             }
@@ -416,40 +416,6 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         }
         return this;
     }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr[] updated = new Expr[expressions.length];
-        boolean changed = false;
-        for (int i = 0; i < updated.length; i++) {
-            Expr s1 = expressions[i];
-            Expr s2 = s1.composeY(yreplacement);
-            if (s1 != s2) {
-                changed = true;
-            }
-            updated[i] = s2;
-        }
-        if (changed) {
-            Expr e = Maths.sum(updated);
-            e = Any.copyProperties(this, e);
-            return e;
-        }
-        return this;
-    }
-
-    //    @Override
-//    public String toString() {
-//        String op = "+";
-//        StringBuilder sb = new StringBuilder();
-//        for (Expression expression : getSubExpressions()) {
-//            if (sb.length() > 0) {
-//                sb.append(op);
-//            }
-//            sb.append("(").append(expression).append(")");
-//        }
-//        return sb.toString();
-//    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -538,8 +504,8 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
 
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        Matrix c = expressions[0].toDM().computeMatrix(x, y, z);
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
+        ComplexMatrix c = expressions[0].toDM().computeMatrix(x, y, z);
         for (int i = 1; i < expressions.length; i++) {
             c = c.add(expressions[i].toDM().computeMatrix(x, y, z));
         }
@@ -570,7 +536,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         for (int i = 0; i < expressions.length; i++) {
             expressions2[i] = expressions[i].toDC().getImagDD();
         }
-        return Maths.sum(expressions2).toDD();
+        return MathsBase.sum(expressions2).toDD();
     }
 
     public DoubleToDouble getRealDD() {
@@ -588,7 +554,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
         for (int i = 0; i < expressions.length; i++) {
             expressions2[i] = expressions[i].toDC().getRealDD();
         }
-        return Maths.sum(expressions2).toDD();
+        return MathsBase.sum(expressions2).toDD();
     }
 
     @Override
@@ -622,17 +588,17 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, binaryExprHelper, x, d0, ranges);
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, binaryExprHelper, x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, binaryExprHelper, x, y, z, d0, ranges);
     }
 
@@ -648,7 +614,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     @Override
     public Expr mul(double other) {
         if (other == 0) {
-            return Maths.DDZERO;
+            return MathsBase.DDZERO;
         }
         Expr[] expr2 = ArrayUtils.copy(expressions);
         for (int i = 0; i < expr2.length; i++) {
@@ -660,7 +626,7 @@ public class Plus extends AbstractExprOperatorBinary implements Cloneable {
     @Override
     public Expr mul(Complex other) {
         if (other.isZero()) {
-            return Maths.DDZERO;
+            return MathsBase.DDZERO;
         }
         if (other.isReal()) {
             return mul(other.toDouble());

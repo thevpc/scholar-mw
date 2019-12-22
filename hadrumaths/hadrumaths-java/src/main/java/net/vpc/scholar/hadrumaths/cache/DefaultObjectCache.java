@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.cache;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.mon.*;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.io.DefaultCacheObjectSerializedForm;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.HFile;
@@ -52,7 +53,7 @@ public class DefaultObjectCache implements ObjectCache {
         if (file.existsOrWait()) {
             try {
                 //how to know if it is compressed?
-                boolean compressed = (Maths.Config.isCompressCache());
+                boolean compressed = (MathsBase.Config.isCompressCache());
 
                 Object o1 = null;
                 ObjectInputStream ois = null;
@@ -63,7 +64,7 @@ public class DefaultObjectCache implements ObjectCache {
                     if (length > 10000) {
                         theIs = new ProgressMonitorInputStream2(fis, length,
                                 new DialogProgressMonitor(null,
-                                        "Reading (" + Maths.formatMemory(length) + ") " + file
+                                        "Reading (" + MathsBase.formatMemory(length) + ") " + file
                                 )
                         );
                     } else {
@@ -98,7 +99,7 @@ public class DefaultObjectCache implements ObjectCache {
                 throw new IOException("CacheObjectSerializedForm could not be null");
             }
         }
-        if (Maths.Config.isCompressCache()) {
+        if (MathsBase.Config.isCompressCache()) {
             if (monitor == null) {
                 ObjectOutputStream oos = null;
                 try {
@@ -162,7 +163,7 @@ public class DefaultObjectCache implements ObjectCache {
     public void store(String name, Object o, ProgressMonitor computationMonitor) {
         ProgressMonitor m = ProgressMonitorFactory.nonnull(computationMonitor);
         String message = "store " + name;
-        Maths.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
+        MathsBase.invokeMonitoredAction(computationMonitor, message, new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws IOException {
                 DumpCacheFile file = getObjectCacheFile(name);

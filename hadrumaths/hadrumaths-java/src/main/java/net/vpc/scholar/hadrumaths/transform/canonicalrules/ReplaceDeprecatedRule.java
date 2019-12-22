@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.canonicalrules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.DDxyAbstractSum;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -28,7 +28,7 @@ public class ReplaceDeprecatedRule implements ExpressionRewriterRule {
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
         if ((e instanceof DDxyAbstractSum)) {
             DDxyAbstractSum f = (DDxyAbstractSum) e;
-            return RewriteResult.newVal(Maths.sum(f.getSegments()));
+            return RewriteResult.newVal(MathsBase.sum(f.getSegments()));
         }
         return RewriteResult.unmodified(e);
     }

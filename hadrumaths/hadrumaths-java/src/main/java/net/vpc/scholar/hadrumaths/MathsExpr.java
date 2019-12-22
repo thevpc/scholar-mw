@@ -15,8 +15,8 @@ class MathsExpr {
         for (int i = 0; i < arr.length; i++) {
             cls = PlatformUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
         }
-        VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
-        return new ReadOnlyTVector<Expr>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
+        VectorSpace<Expr> componentVectorSpace = MathsBase.getVectorSpace(cls);
+        return new ReadOnlyTList<Expr>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
             @Override
             public int size() {
                 return arr[0].size();
@@ -36,7 +36,7 @@ class MathsExpr {
 
     public static TVector<Expr> edotdiv(TVector<Expr>... arr) {
         VectorSpace<Expr> componentVectorSpace = arr[0].getComponentVectorSpace();
-        return new ReadOnlyTVector<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
+        return new ReadOnlyTList<>(arr[0].getComponentType(), arr[0].isRow(), new TVectorModel<Expr>() {
             @Override
             public int size() {
                 return arr[0].size();
@@ -57,13 +57,13 @@ class MathsExpr {
     public static Complex cmul(TVectorModel<Complex> arr) {
         int len = arr.size();
         if (len == 0) {
-            return Maths.CZERO;
+            return MathsBase.CZERO;
         }
         MutableComplex c = new MutableComplex(1, 0);
         for (int i = 0; i < len; i++) {
             Complex complex = arr.get(i);
             if (complex.isZero()) {
-                return Maths.CZERO;
+                return MathsBase.CZERO;
             }
             c.mul(complex);
         }
@@ -73,7 +73,7 @@ class MathsExpr {
     public static Expr emul(TVectorModel<Expr> arr) {
         int len = arr.size();
         if (len == 0) {
-            return Maths.CZERO;
+            return MathsBase.CZERO;
         }
         List<Expr> all = new ArrayList<>();
         Domain d = null;
@@ -90,7 +90,7 @@ class MathsExpr {
                     if (e2.isComplexExpr()) {
                         Complex v = e2.toComplex();
                         if (c.isZero()) {
-                            return Maths.CZERO;
+                            return MathsBase.CZERO;
                         }
                         c.mul(v);
                         if (d == null) {
@@ -109,7 +109,7 @@ class MathsExpr {
         if (all.isEmpty()) {
             return complexExpr;
         }
-        if (!complexExpr.equals(Maths.CONE)) {
+        if (!complexExpr.equals(MathsBase.CONE)) {
             all.add(0, complexExpr);
         }
         return new Mul(all.toArray(new Expr[0]));
@@ -131,7 +131,7 @@ class MathsExpr {
     public static Expr esum(TVectorModel<Expr> arr) {
         int len = arr.size();
         if (len == 0) {
-            return Maths.CZERO;
+            return MathsBase.CZERO;
         }
         List<Expr> all = new ArrayList<>();
         MutableComplex c = new MutableComplex();
@@ -164,7 +164,7 @@ class MathsExpr {
     public static Expr sum(Expr... arr) {
         int len = arr.length;
         if (len == 0) {
-            return Maths.CZERO;
+            return MathsBase.CZERO;
         }
         if(arr.length==1){
             if(arr[0] instanceof Discrete){
@@ -207,13 +207,13 @@ class MathsExpr {
     }
 
     public static <T> T sum(TypeName<T> type, T... arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+        if (MathsBase.$COMPLEX.isAssignableFrom(type)) {
             return (T) sum((Complex[]) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (MathsBase.$EXPR.isAssignableFrom(type)) {
             return (T) sum((Expr[]) arr);
         }
-        VectorSpace<T> s = Maths.getVectorSpace(type);
+        VectorSpace<T> s = MathsBase.getVectorSpace(type);
         T a = s.zero();
         for (int i = 0; i < arr.length; i++) {
             a = s.add(a, arr[i]);
@@ -222,13 +222,13 @@ class MathsExpr {
     }
 
     public static <T> T sum(TypeName<T> type, TVectorModel<T> arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
-            return (T) Maths.csum((TVectorModel<Complex>) arr);
+        if (MathsBase.$COMPLEX.isAssignableFrom(type)) {
+            return (T) MathsBase.csum((TVectorModel<Complex>) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (MathsBase.$EXPR.isAssignableFrom(type)) {
             return (T) esum((TVectorModel<Expr>) arr);
         }
-        VectorSpace<T> s = Maths.getVectorSpace(type);
+        VectorSpace<T> s = MathsBase.getVectorSpace(type);
         T a = s.zero();
         int size = arr.size();
         for (int i = 0; i < size; i++) {
@@ -242,13 +242,13 @@ class MathsExpr {
     }
 
     public static <T> T mul(TypeName<T> type, T... arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+        if (MathsBase.$COMPLEX.isAssignableFrom(type)) {
             return (T) mul((Complex[]) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (MathsBase.$EXPR.isAssignableFrom(type)) {
             return (T) mul((Expr[]) arr);
         }
-        VectorSpace<T> s = Maths.getVectorSpace(type);
+        VectorSpace<T> s = MathsBase.getVectorSpace(type);
         T a = s.one();
         for (int i = 0; i < arr.length; i++) {
             a = s.mul(a, arr[i]);
@@ -257,13 +257,13 @@ class MathsExpr {
     }
 
     public static <T> T mul(TypeName<T> type, TVectorModel<T> arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+        if (MathsBase.$COMPLEX.isAssignableFrom(type)) {
             return (T) cmul((TVectorModel<Complex>) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (MathsBase.$EXPR.isAssignableFrom(type)) {
             return (T) emul((TVectorModel<Expr>) arr);
         }
-        VectorSpace<T> s = Maths.getVectorSpace(type);
+        VectorSpace<T> s = MathsBase.getVectorSpace(type);
         T a = s.one();
         int size = arr.size();
         for (int i = 0; i < size; i++) {

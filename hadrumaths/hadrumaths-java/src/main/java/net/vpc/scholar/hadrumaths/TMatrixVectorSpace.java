@@ -21,16 +21,16 @@ public class TMatrixVectorSpace<T> extends AbstractVectorSpace<TMatrix<T>> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(TMatrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        if(t.equals(TVector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -60,12 +60,12 @@ public class TMatrixVectorSpace<T> extends AbstractVectorSpace<TMatrix<T>> {
 
     @Override
     public TMatrix<T> convert(double d) {
-        return (TMatrix<T>) Maths.matrix(new double[][]{{d}}).to(tr);
+        return (TMatrix<T>) MathsBase.matrix(new double[][]{{d}}).to(tr);
     }
 
     @Override
     public TMatrix<T> convert(Complex d) {
-        return (TMatrix<T>) Maths.matrix(new Complex[][]{{d}}).to(tr);
+        return (TMatrix<T>) MathsBase.matrix(new Complex[][]{{d}}).to(tr);
     }
 
     @Override

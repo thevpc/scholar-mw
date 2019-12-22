@@ -56,12 +56,12 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
         ComponentDimension cd = xmin.getComponentDimension().expand(xmax.getComponentDimension())
                 .expand(ymin.getComponentDimension()).expand(ymax.getComponentDimension())
                 .expand(zmin.getComponentDimension()).expand(zmax.getComponentDimension());
-        this.xmin = Maths.expandComponentDimension(xmin, cd);
-        this.xmax = Maths.expandComponentDimension(xmax, cd);
-        this.ymin = Maths.expandComponentDimension(ymin, cd);
-        this.ymax = Maths.expandComponentDimension(ymax, cd);
-        this.zmin = Maths.expandComponentDimension(zmin, cd);
-        this.zmax = Maths.expandComponentDimension(zmax, cd);
+        this.xmin = MathsBase.expandComponentDimension(xmin, cd);
+        this.xmax = MathsBase.expandComponentDimension(xmax, cd);
+        this.ymin = MathsBase.expandComponentDimension(ymin, cd);
+        this.ymax = MathsBase.expandComponentDimension(ymax, cd);
+        this.zmin = MathsBase.expandComponentDimension(zmin, cd);
+        this.zmax = MathsBase.expandComponentDimension(zmax, cd);
         check(xmin);
         check(xmax);
         check(ymin);
@@ -368,28 +368,15 @@ public class DomainExpr extends AbstractExprPropertyAware implements /*IDDx,*/Do
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         return new DomainExpr(
 
-                xmin.composeX(xreplacement),
-                xmax.composeX(xreplacement),
-                ymin.composeX(xreplacement),
-                ymax.composeX(xreplacement),
-                zmin.composeX(xreplacement),
-                zmax.composeX(xreplacement),
-                dimension
-        );
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        return new DomainExpr(
-                xmin.composeY(yreplacement),
-                xmax.composeY(yreplacement),
-                ymin.composeY(yreplacement),
-                ymax.composeY(yreplacement),
-                zmin.composeY(yreplacement),
-                zmax.composeY(yreplacement),
+                xmin.compose(axis,xreplacement),
+                xmax.compose(axis,xreplacement),
+                ymin.compose(axis,xreplacement),
+                ymax.compose(axis,xreplacement),
+                zmin.compose(axis,xreplacement),
+                zmax.compose(axis,xreplacement),
                 dimension
         );
     }

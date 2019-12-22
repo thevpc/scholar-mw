@@ -97,7 +97,7 @@ class MathsTrigo {
             return 0.0;
         }
         double f = d / Math.PI;
-        if (Maths.isInt(f)) {
+        if (MathsBase.isInt(f)) {
             return 0;
         }
         return Math.sin(d);
@@ -108,7 +108,7 @@ class MathsTrigo {
             return 1;
         }
         double f = d / (Math.PI / 2);
-        if (Maths.isInt(f)) {
+        if (MathsBase.isInt(f)) {
             int r = ((int) Math.floor(Math.abs(f))) % 4;
             switch (r) {
                 case 0: {

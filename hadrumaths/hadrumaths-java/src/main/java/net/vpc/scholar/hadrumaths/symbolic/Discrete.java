@@ -28,7 +28,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
             @Override
             public void format(StringBuilder sb, Discrete o, ObjectFormatParamSet format) {
                 sb.append("Discrete(");
-                sb.append(Maths.dump(o.values));
+                sb.append(MathsBase.dump(o.values));
                 sb.append(")");
             }
         });
@@ -84,9 +84,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
     
     public static Discrete create(Complex[][][] model) {
-        double[] x = Maths.dsteps(0, model[0][0].length - 1, 1);
-        double[] y = Maths.dsteps(0, model[0].length - 1, 1);
-        double[] z = Maths.dsteps(0, model.length - 1, 1);
+        double[] x = MathsBase.dsteps(0, model[0][0].length - 1, 1);
+        double[] y = MathsBase.dsteps(0, model[0].length - 1, 1);
+        double[] z = MathsBase.dsteps(0, model.length - 1, 1);
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, model, x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
@@ -97,9 +97,9 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     public static Discrete create(double[][][] model) {
-        double[] x = Maths.dsteps(0, model[0][0].length - 1, 1);
-        double[] y = Maths.dsteps(0, model[0].length - 1, 1);
-        double[] z = Maths.dsteps(0, model.length - 1, 1);
+        double[] x = MathsBase.dsteps(0, model[0][0].length - 1, 1);
+        double[] y = MathsBase.dsteps(0, model[0].length - 1, 1);
+        double[] z = MathsBase.dsteps(0, model.length - 1, 1);
         Domain domain = Domain.forArray(x, y, z);
         return new Discrete(domain, ArrayUtils.toComplex(model), x, y, z, -1, -1, -1, Axis.X, Axis.Y, Axis.Z, 3);
     }
@@ -129,12 +129,12 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     }
 
     public String dump() {
-        return Maths.dump(values);
+        return MathsBase.dump(values);
     }
 
 //    @Override
 //    public String toString() {
-//        return Maths.dump(values);
+//        return MathsBase.dump(values);
 //    }
 
     private void init(Domain domain, Complex[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
@@ -496,7 +496,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                     Complex b = other.values[i][j][k];
                     Complex c;
                     if (a.equals(b) || (a.isNaN() && b.isNaN()) || (a.isInfinite() && b.isInfinite())) {
-                        c = Maths.CZERO;
+                        c = MathsBase.CZERO;
 //                    } else if (b.isNaN() || b.isInfinite() || b.equals(Math2.CZERO)) {
 //                        c[i][j] = (a.substract(b));
                     } else {
@@ -659,7 +659,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         return -1;
     }
 
-    public Vector getVector(Axis axis) {
+    public ComplexVector getVector(Axis axis) {
         switch (axis) {
             case X: {
                 return getVector(Axis.X, Axis.Y, 0, Axis.Z, 0);
@@ -674,7 +674,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         throw new IllegalArgumentException("Invalid Axis " + axis);
     }
 
-    public Vector getVector(Axis axis, Axis fixedAxis1, int index1, Axis fixedAxis2, int index2) {
+    public ComplexVector getVector(Axis axis, Axis fixedAxis1, int index1, Axis fixedAxis2, int index2) {
         switch (axis) {
             case X: {
                 Integer y = null;
@@ -705,7 +705,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 for (int x = 0; x < r.length; x++) {
                     r[x] = values[z][y][x];
                 }
-                return Maths.columnVector(r);
+                return MathsBase.columnVector(r);
             }
             case Y: {
                 Integer x = null;
@@ -736,7 +736,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 for (int y = 0; y < r.length; y++) {
                     r[y] = values[z][y][x];
                 }
-                return Maths.columnVector(r);
+                return MathsBase.columnVector(r);
             }
             case Z: {
                 Integer x = null;
@@ -767,7 +767,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
                 for (int z = 0; z < r.length; z++) {
                     r[z] = values[z][y][x];
                 }
-                return Maths.columnVector(r);
+                return MathsBase.columnVector(r);
             }
         }
         throw new IllegalArgumentException("Invalid axis");
@@ -818,12 +818,12 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         return 0;
     }
 
-    public Matrix getMatrix(PlaneAxis plane, int index) {
-        return Maths.matrix(getArray(plane, index));
+    public ComplexMatrix getMatrix(PlaneAxis plane, int index) {
+        return MathsBase.matrix(getArray(plane, index));
     }
 
-    public Matrix getMatrix(Axis fixedAxis, int index) {
-        return Maths.matrix(getArray(fixedAxis, index));
+    public ComplexMatrix getMatrix(Axis fixedAxis, int index) {
+        return MathsBase.matrix(getArray(fixedAxis, index));
     }
 
     public Complex[][] getArray(PlaneAxis plane, int index) {
@@ -862,7 +862,7 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
     public double norm() {
         double f = 0;
         for (int j = 0; j < values.length; j++) {
-            f = Math.max(f, Maths.matrix(values[j]).norm1());
+            f = Math.max(f, MathsBase.matrix(values[j]).norm1());
         }
         return f;
     }
@@ -1984,6 +1984,6 @@ public class Discrete extends AbstractDoubleToComplex implements Dumpable, Clone
         if (other instanceof DoubleToDouble) {
             return mul((DoubleToDouble) other);
         }
-        return Maths.mul(this, other);
+        return MathsBase.mul(this, other);
     }
 }

@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.Out;
 
 
@@ -70,22 +70,22 @@ public class PiecewiseSineXFunctionXY extends PieceXFunction implements Cloneabl
             switch (axis) {
                 case X: {
                     double w = maxx - minx;
-                    double fac2 = factor * Maths.HALF_PI / w;
-                    double amp2 = autoAmp ? Maths.sin2(fac2 * w / 2) : amp;
+                    double fac2 = factor * MathsBase.HALF_PI / w;
+                    double amp2 = autoAmp ? MathsBase.sin2(fac2 * w / 2) : amp;
                     if (oddX) {
-                        return new CosXCosY(amp2, fac2, -fac2 * (minx) - (Maths.HALF_PI), 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
+                        return new CosXCosY(amp2, fac2, -fac2 * (minx) - (MathsBase.HALF_PI), 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
                     } else {
-                        return new CosXCosY(amp2, -fac2, fac2 * (minx + w) - (Maths.HALF_PI), 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
+                        return new CosXCosY(amp2, -fac2, fac2 * (minx + w) - (MathsBase.HALF_PI), 0, 0, Domain.forBounds(minx, maxx, miny, maxy));
                     }
                 }
                 case Y: {
                     double w = maxy - miny;
-                    double fac2 = factor * Maths.HALF_PI / w;
-                    double amp2 = autoAmp ? Maths.sin2(fac2 * w / 2) : amp;
+                    double fac2 = factor * MathsBase.HALF_PI / w;
+                    double amp2 = autoAmp ? MathsBase.sin2(fac2 * w / 2) : amp;
                     if (oddY) {
-                        return new CosXCosY(amp2, 0, 0, fac2, -fac2 * (miny) - (Maths.HALF_PI), Domain.forBounds(minx, maxx, miny, maxy));
+                        return new CosXCosY(amp2, 0, 0, fac2, -fac2 * (miny) - (MathsBase.HALF_PI), Domain.forBounds(minx, maxx, miny, maxy));
                     } else {
-                        return new CosXCosY(amp2, 0, 0, -fac2, fac2 * (miny + w) - (Maths.HALF_PI), Domain.forBounds(minx, maxx, miny, maxy));
+                        return new CosXCosY(amp2, 0, 0, -fac2, fac2 * (miny + w) - (MathsBase.HALF_PI), Domain.forBounds(minx, maxx, miny, maxy));
                     }
                 }
             }

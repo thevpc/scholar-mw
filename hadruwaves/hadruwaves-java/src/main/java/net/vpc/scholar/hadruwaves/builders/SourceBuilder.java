@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
@@ -14,7 +14,7 @@ public interface SourceBuilder extends ValueBuilder{
     SourceBuilder monitor(ProgressMonitor monitor);
     SourceBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
 
-    Matrix computeMatrix(Axis axis, double[] x, double[] y, double z);
+    ComplexMatrix computeMatrix(Axis axis, double[] x, double[] y, double z);
 
 //    VDiscrete computeVDiscrete(Samples samples);
 //

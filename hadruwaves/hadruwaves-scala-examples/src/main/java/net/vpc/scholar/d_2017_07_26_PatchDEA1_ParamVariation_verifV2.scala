@@ -1,9 +1,7 @@
 package net.vpc.scholar
 
 import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
 import net.vpc.scholar.hadruwaves.mom._
 
@@ -56,9 +54,9 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
   var st: MomStructure = null;
 
   def main(args: Array[String]): Unit = {
-    Maths.Config.setDefaultMatrixInverseStrategy(InverseStrategy.SOLVE)
-    Maths.Config.setMaxMemoryThreshold(0);
-    Maths.Config.setCacheEnabled(false);
+    Config.setDefaultMatrixInverseStrategy(InverseStrategy.SOLVE)
+    Config.setMaxMemoryThreshold(0);
+    Config.setCacheEnabled(false);
     //isteps(0,10).foreach(i=>println(i+" : "+((5+i)*(5+i-1)+(3+i)*(3+i))));
     //    if(true) System.exit(0)
     val m1 = prepareStructure(1, 4.203125E9)
@@ -66,14 +64,14 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
     //Plot.title("m1").plot(m2)
   }
 
-  def prepareStructure(PIncrement: Int, fr0: Double): Vector = {
+  def prepareStructure(PIncrement: Int, fr0: Double): ComplexVector = {
     PPatch = 5 + PIncrement
     PLine = 3 + PIncrement
     var gp = elist()
     var testX = ((cos((2 * p + 1) * π * X / (2 * (l + l / 1.2))) * cos(q * π / d * (Y + d / 2))) * dLine)
     val essaiPatchX = ((sin(p * π * (X - l) / L) * cos(q * π * (Y + W / 2) / W)) * dPatch);
-    gp :+= normalize(seq(testX, p, PLine - 1, q, PLine - 1));
-    gp :+= normalize(seq(essaiPatchX, p, PPatch - 1, q, PPatch - 1, (pp, qq) => pp != 0))
+    gp :+= normalize(testX.inflate(p.in(0,PLine - 1).and(q.in(0, PLine - 1))));
+    gp :+= normalize(essaiPatchX.inflate(p.in(1, PPatch - 1).and(q.in(0,PPatch - 1))));
     var count = 0
     var dimX = a * 3.25 //dtimes(a, a * 10, 5)
     var dimY = b * 3.25d // dtimes(b, b * 10, 5)

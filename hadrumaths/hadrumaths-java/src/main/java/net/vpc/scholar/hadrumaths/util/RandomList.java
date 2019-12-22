@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.common.util.ObjectFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class RandomList<T> {
     }
 
     public T random() {
-        double v = Maths.randomDouble(x);
+        double v = MathsBase.randomDouble(x);
         double[] indexes = getIndexes();
         for (int i = 0; i < indexes.length; i++) {
             if (v < indexes[i]) {

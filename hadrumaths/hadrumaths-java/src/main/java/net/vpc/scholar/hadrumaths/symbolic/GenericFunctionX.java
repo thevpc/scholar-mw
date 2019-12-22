@@ -73,7 +73,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 //    }
     @Override
     public final Domain getDomain() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return getDomainImpl();
         }
         if (_cache_domain == null) {
@@ -158,18 +158,18 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
 //    }
 
     @Override
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         if (contains(x, y)) {
-            Matrix cc = getArgument().toDM().computeMatrix(x, y);
+            ComplexMatrix cc = getArgument().toDM().computeMatrix(x, y);
             return evalMM(cc);
         }
         return Complex.ZERO.toMatrix();
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         if (contains(x, y, z)) {
-            Matrix cc = getArgument().toDM().computeMatrix(x, y, z);
+            ComplexMatrix cc = getArgument().toDM().computeMatrix(x, y, z);
             return evalMM(cc);
         }
         return Complex.ZERO.toMatrix();
@@ -181,32 +181,32 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, y, d0, ranges);
     }
 
     @Override
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, exprHelper, x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, d0, ranges);
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, exprHelper, x, d0, ranges);
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, exprHelper, x, y, z, d0, ranges);
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, exprHelper, x, y, z, d0, ranges);
     }
 
@@ -218,42 +218,42 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         return computeComplexArg(Complex.valueOf(x), defined);
     }
 
-    protected Complex evalMC(Matrix x) {
+    protected Complex evalMC(ComplexMatrix x) {
         return computeComplexArg(x.toComplex(), NoneOutBoolean.INSTANCE);
     }
 
-    protected Double evalMD(Matrix x) {
+    protected Double evalMD(ComplexMatrix x) {
         return computeComplexArg(x.toComplex(), NoneOutBoolean.INSTANCE).toDouble();
     }
 
-    protected Matrix evalDM(double x) {
+    protected ComplexMatrix evalDM(double x) {
         return computeComplexArg(Complex.valueOf(x), NoneOutBoolean.INSTANCE).toMatrix();
     }
 
-    protected Matrix evalCM(Complex x) {
+    protected ComplexMatrix evalCM(Complex x) {
         return computeComplexArg(x, NoneOutBoolean.INSTANCE).toMatrix();
     }
 
-    public Matrix computeMatrix(Matrix c) {
+    public ComplexMatrix computeMatrix(ComplexMatrix c) {
         return evalMM(c);
     }
 
-    protected Matrix evalMM(final Matrix x) {
+    protected ComplexMatrix evalMM(final ComplexMatrix x) {
         Complex[][] arrayCopy = x.getArrayCopy();
         for (int i = 0; i < arrayCopy.length; i++) {
             for (int j = 0; j < arrayCopy[i].length; j++) {
                 arrayCopy[i][j] = computeComplexArg(arrayCopy[i][j], NoneOutBoolean.INSTANCE);
             }
         }
-        return Maths.matrix(arrayCopy);
+        return MathsBase.matrix(arrayCopy);
     }
 
-    protected Vector evalVV(final Vector x) {
+    protected ComplexVector evalVV(final ComplexVector x) {
         Complex[] arrayCopy = x.toArray();
         for (int i = 0; i < arrayCopy.length; i++) {
             arrayCopy[i] = computeComplexArg(arrayCopy[i], NoneOutBoolean.INSTANCE);
         }
-        return Maths.columnVector(arrayCopy);
+        return MathsBase.columnVector(arrayCopy);
     }
 
     /**
@@ -430,7 +430,7 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         if (!isMatrix()) {
             throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
         }
@@ -464,12 +464,12 @@ public abstract class GenericFunctionX extends AbstractComposedFunction {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix x) {
+        public ComplexMatrix computeMatrix(ComplexMatrix x) {
             return evalMM(x);
         }
 
         @Override
-        public Vector computeVector(Vector x) {
+        public ComplexVector computeVector(ComplexVector x) {
             return evalVV(x);
         }
     }

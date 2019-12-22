@@ -34,7 +34,7 @@ public class PathFS {
         }
     }
 
-    public void print(PathItem t, PrintStream out) {
+    private void print(PathItem t, PrintStream out) {
         out.print(t.getPath());
         for (PathItem tt : t.get()) {
             print(tt, out);

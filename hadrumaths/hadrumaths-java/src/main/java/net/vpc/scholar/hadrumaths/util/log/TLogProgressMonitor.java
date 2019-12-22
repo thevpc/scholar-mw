@@ -4,6 +4,7 @@ import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.mon.BaseProgressMonitor;
 import net.vpc.common.mon.ProgressMessage;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class TLogProgressMonitor extends BaseProgressMonitor {
     }
 
     public void setProgressImpl(double progress, ProgressMessage message) {
-        DoubleFormat sdf = Maths.Config.getPercentFormat();
+        DoubleFormat sdf = MathsBase.Config.getPercentFormat();
         this.progress = progress;
         this.message = message;
         long newd = System.currentTimeMillis();

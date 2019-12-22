@@ -49,7 +49,7 @@ public class CLUDecomposition implements java.io.Serializable {
      *
      * @param A Rectangular matrix return Structure to access L, U and piv.
      */
-    public CLUDecomposition(Matrix A) {
+    public CLUDecomposition(ComplexMatrix A) {
 
         // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
 
@@ -174,8 +174,8 @@ public class CLUDecomposition implements java.io.Serializable {
      *
      * @return L
      */
-    public Matrix getL() {
-        Matrix X = Maths.matrix(m, n);
+    public ComplexMatrix getL() {
+        ComplexMatrix X = MathsBase.matrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (i > j) {
@@ -195,7 +195,7 @@ public class CLUDecomposition implements java.io.Serializable {
      *
      * @return U
      */
-    public Matrix getU() {
+    public ComplexMatrix getU() {
         Complex[][] U = new Complex[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -206,7 +206,7 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return Maths.matrix(U);
+        return MathsBase.matrix(U);
     }
 
     /**
@@ -260,7 +260,7 @@ public class CLUDecomposition implements java.io.Serializable {
      * @throws IllegalArgumentException Matrix row dimensions must agree.
      * @throws RuntimeException         Matrix is singular.
      */
-    public Matrix solve(Matrix B) {
+    public ComplexMatrix solve(ComplexMatrix B) {
         if (B.getRowCount() != m) {
             throw new IllegalArgumentException("Matrix row dimensions must agree.");
         }
@@ -298,6 +298,6 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return Maths.matrix(X);
+        return MathsBase.matrix(X);
     }
 }

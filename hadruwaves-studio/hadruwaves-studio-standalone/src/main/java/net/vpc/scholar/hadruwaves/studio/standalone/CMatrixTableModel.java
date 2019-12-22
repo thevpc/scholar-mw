@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone;
 
 import javax.swing.table.AbstractTableModel;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 
 
@@ -13,9 +13,9 @@ import net.vpc.scholar.hadrumaths.Matrix;
  * Time: 10:31:44
  */
 public class CMatrixTableModel extends AbstractTableModel {
-    private Matrix matrix;
+    private ComplexMatrix matrix;
 
-    public CMatrixTableModel(Matrix matrix) {
+    public CMatrixTableModel(ComplexMatrix matrix) {
         this.matrix = matrix;
     }
 
@@ -80,11 +80,11 @@ public class CMatrixTableModel extends AbstractTableModel {
         fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
-    public Matrix getMatrix() {
+    public ComplexMatrix getMatrix() {
         return matrix;
     }
 
-    public void setMatrix(Matrix matrix) {
+    public void setMatrix(ComplexMatrix matrix) {
         this.matrix = matrix;
     }
 }

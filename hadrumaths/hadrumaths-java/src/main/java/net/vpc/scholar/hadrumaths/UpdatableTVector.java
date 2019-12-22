@@ -24,8 +24,9 @@ public class UpdatableTVector<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public void set(int i, T value) {
+    public TVector<T> set(int i, T value) {
         model.set(i, value);
+        return this;
     }
 
     @Override

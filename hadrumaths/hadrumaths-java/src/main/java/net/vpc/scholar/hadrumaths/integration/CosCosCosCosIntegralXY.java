@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.integration;
 
 import net.vpc.scholar.hadrumaths.Domain;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
+import static net.vpc.scholar.hadrumaths.MathsBase.cos2;
+import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
 
 /**
  * User: taha

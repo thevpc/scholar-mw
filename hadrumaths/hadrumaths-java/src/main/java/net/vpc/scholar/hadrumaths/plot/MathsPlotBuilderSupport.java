@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.common.util.TypeName;
-import net.vpc.scholar.hadrumaths.DoubleList;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.DoubleVector;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.TVector;
 import net.vpc.scholar.hadruplot.PlotBuilder;
 import net.vpc.scholar.hadruplot.PlotBuilderSupport;
 
@@ -14,8 +14,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean xsamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TList) {
-            TList lxvalue = (TList) xvalue;
+        if (xvalue instanceof TVector) {
+            TVector lxvalue = (TVector) xvalue;
             if (lxvalue.length() == 0) {
                 builder.xsamples(new double[0]);
                 return true;
@@ -23,7 +23,7 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
             TypeName componentType = lxvalue.getComponentType();
             if (componentType.getTypeClass().equals(Double.TYPE)
                     || componentType.getTypeClass().equals(Double.class)) {
-                DoubleList to = (DoubleList) lxvalue.to(Maths.$DOUBLE);
+                DoubleVector to = (DoubleVector) lxvalue.to(MathsBase.$DOUBLE);
                 builder.xsamples(to.toDoubleArray());
             } else {
                 builder.samples(null);
@@ -36,8 +36,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean ysamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TList) {
-            DoubleList to = (DoubleList) ((TList) xvalue).to(Maths.$DOUBLE);
+        if (xvalue instanceof TVector) {
+            DoubleVector to = (DoubleVector) ((TVector) xvalue).to(MathsBase.$DOUBLE);
             builder.ysamples(to.toDoubleArray());
             return true;
         }
@@ -46,8 +46,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean zsamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TList) {
-            DoubleList to = (DoubleList) ((TList) xvalue).to(Maths.$DOUBLE);
+        if (xvalue instanceof TVector) {
+            DoubleVector to = (DoubleVector) ((TVector) xvalue).to(MathsBase.$DOUBLE);
             builder.zsamples(to.toDoubleArray());
             return true;
         }

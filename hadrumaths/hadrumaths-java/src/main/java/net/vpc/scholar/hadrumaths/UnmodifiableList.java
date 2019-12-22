@@ -5,7 +5,7 @@ import net.vpc.common.util.TypeName;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
+public class UnmodifiableList<T> extends AbstractTVector<T> implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     private final int size;
@@ -35,17 +35,17 @@ public class UnmodifiableList<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public void set(int index, T e) {
+    public TVector<T> set(int index, T e) {
         throw new IllegalArgumentException("Unmodifiable");
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 

@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 public class CustomDDFunctionXYDefinition implements CustomFunctionDefinition {
     private static final long serialVersionUID = 1L;
@@ -20,8 +21,11 @@ public class CustomDDFunctionXYDefinition implements CustomFunctionDefinition {
         return eval;
     }
 
-    public Expr apply(Expr xexpr, Expr yexpr) {
-        return new CustomDDFunctionXYExpr(xexpr.toDD(), yexpr.toDD(), this);
+    public CustomDDFunctionXYExpr fct() {
+        return compose(MathsBase.X,MathsBase.Y);
+    }
+    public CustomDDFunctionXYExpr compose(Expr xexpr, Expr yexpr) {
+        return new DefaultCustomDDFunctionXYExpr(xexpr.toDD(), yexpr.toDD(), this);
     }
 
     @Override

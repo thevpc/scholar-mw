@@ -1,4 +1,5 @@
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadruwaves.Physics;
 import net.vpc.scholar.hadruwaves.WallBorders;
 
@@ -20,7 +21,7 @@ public class ShowModes {
 //        for (WallBorders wallBorders : WallBorders.values()) {
 //            show(wallBorders.toString(), 0, -50/2 * Maths.MILLIMETER, 850 * Maths.MILLIMETER, 50 * Maths.MILLIMETER, 4.79 * Maths.GHZ);
 //        }
-        Maths.Config.setCacheExpressionPropertiesEnabled(false);
+        MathsBase.Config.setCacheExpressionPropertiesEnabled(false);
         Physics.plotWallBorders(WallBorders.PPPP);
 //        Physics.plotWallBorders(WallBorders.EEME, 0, -50 / 2 * Maths.MILLIMETER, 850 * Maths.MILLIMETER, 50 * Maths.MILLIMETER, 4.79 * Maths.GHZ);
 

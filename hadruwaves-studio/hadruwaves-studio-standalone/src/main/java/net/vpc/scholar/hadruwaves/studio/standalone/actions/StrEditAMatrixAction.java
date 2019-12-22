@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone.actions;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 
 import javax.swing.*;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
@@ -21,7 +21,7 @@ public class StrEditAMatrixAction extends StructureAction {
 
     protected void configure(RunningProjectThread thread) {
         MomStrHelper jxy = thread.getHelper(true);
-        Matrix a = null;
+        ComplexMatrix a = null;
         try {
             jxy.checkBuildIsRequired();
             a = jxy.computeAMatrix(ProgressMonitorFactory.none());
@@ -33,7 +33,7 @@ public class StrEditAMatrixAction extends StructureAction {
             }
             a = jxy.computeAMatrix(ProgressMonitorFactory.none());
         }
-        Matrix m = showMatrix(a);
+        ComplexMatrix m = showMatrix(a);
         if (m != null) {
 //            HashMap map = new HashMap();
 //            map.put("Matrix", m);

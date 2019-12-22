@@ -6,17 +6,17 @@
 package net.vpc.scholar.hadrumaths.interop.derive;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 /**
  * @author vpc
  */
-public class ComplexToDeriveString implements ToDeriveString<Matrix> {
+public class ComplexToDeriveString implements ToDeriveString<ComplexMatrix> {
     public ComplexToDeriveString() {
     }
 
     @Override
-    public String toDeriveString(Matrix o, ToDeriveStringParam... format) {
+    public String toDeriveString(ComplexMatrix o, ToDeriveStringParam... format) {
         Complex[][] elements = o.getArray();
         StringBuilder sb = new StringBuilder();
 //        String lineSep=System.getProperty("line.separator");

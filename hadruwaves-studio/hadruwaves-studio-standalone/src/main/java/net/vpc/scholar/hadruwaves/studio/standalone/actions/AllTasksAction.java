@@ -5,7 +5,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.PlotConfigData;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.PlotConfigEditor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadruwaves.mom.project.MomProject;
@@ -63,7 +63,7 @@ public class AllTasksAction extends StructureAction {
 
         // Jcoeffs
         setTitle("Coefficients de J (" + getEditor().getProjectName() + ")");
-        Matrix j = thread.getHelper(true).computeTestcoeff(ProgressMonitorFactory.none());
+        ComplexMatrix j = thread.getHelper(true).computeTestcoeff(ProgressMonitorFactory.none());
         Complex[] c = j.getColumn(0).toArray();
         double[] indices = Maths.dsteps(1, c.length, 1.0);
         showPlotComplex(indices, c);

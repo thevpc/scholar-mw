@@ -195,9 +195,9 @@ public class MathsPlotModelFactory implements PlotModelFactory {
 
     private TVector toTVectorD(Object any) {
         if (any instanceof double[]) {
-            return DoubleArrayList.row((double[]) any);
+            return ArrayDoubleVector.row((double[]) any);
         } else if (any instanceof int[]) {
-            return new IntArrayList(true, (int[]) any);
+            return new ArrayIntVector(true, (int[]) any);
         } else if (any instanceof double[][]) {
             double[][] d = (double[][]) any;
             double[] d2 = new double[d.length];
@@ -207,7 +207,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 }
                 d2[i] = d[i][0];
             }
-            return DoubleArrayList.column((double[]) d2);
+            return ArrayDoubleVector.column((double[]) d2);
         } else if (any instanceof int[][]) {
             int[][] d = (int[][]) any;
             int[] d2 = new int[d.length];
@@ -217,7 +217,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 }
                 d2[i] = d[i][0];
             }
-            return new IntArrayList(false, (int[]) d2);
+            return new ArrayIntVector(false, (int[]) d2);
         }
         return null;
     }
@@ -231,7 +231,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 update(updateName0);
             }
             Object[] ref = new Object[1];
-            Maths.adaptiveEval(expressions[0], new AdaptiveConfig()
+            MathsBase.adaptiveEval(expressions[0], new AdaptiveConfig()
                     .setError(adaptiveSamples.getError())
                     .setMinimumXSamples(adaptiveSamples.getMinimumXSamples())
                     .setMaximumXSamples(adaptiveSamples.getMaximumXSamples())
@@ -262,24 +262,24 @@ public class MathsPlotModelFactory implements PlotModelFactory {
             } else if (expression.getDomainDimension() == 3) {
                 if (expression.isScalarExpr()) {
                     if (builder.getSamples() != null) {
-                        Discrete discretized = (Discrete) Maths.discrete(expression, builder.getSamples());
+                        Discrete discretized = (Discrete) MathsBase.discrete(expression, builder.getSamples());
                         discretes.add(new VDiscrete(discretized));
                     } else {
                         int xs = builder.getXsamples() <= 0 ? 10 : builder.getXsamples();
                         int ys = builder.getYsamples() <= 0 ? 10 : builder.getYsamples();
                         int zs = builder.getZsamples() <= 0 ? 10 : builder.getZsamples();
-                        Discrete discretized = (Discrete) Maths.discrete(expression, xs, ys, zs);
+                        Discrete discretized = (Discrete) MathsBase.discrete(expression, xs, ys, zs);
                         discretes.add(new VDiscrete(discretized));
                     }
                 } else {
                     if (builder.getSamples() != null) {
-                        Expr discretized = Maths.discrete(expression, builder.getSamples());
+                        Expr discretized = MathsBase.discrete(expression, builder.getSamples());
                         discretes.add((VDiscrete) discretized);
                     } else {
                         int xs = builder.getXsamples() <= 0 ? 10 : builder.getXsamples();
                         int ys = builder.getYsamples() <= 0 ? 10 : builder.getYsamples();
                         int zs = builder.getZsamples() <= 0 ? 10 : builder.getZsamples();
-                        Expr discretized = Maths.discrete(expression, xs, ys, zs);
+                        Expr discretized = MathsBase.discrete(expression, xs, ys, zs);
                         discretes.add((VDiscrete) discretized);
                     }
                 }

@@ -7,16 +7,16 @@ import java.util.Collection;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-public class PreloadedList<T> extends AbstractTList<T> {
+public class PreloadedList<T> extends AbstractTVector<T> {
 
     private static final long serialVersionUID = 1L;
-    private final TList<T> cache;
+    private final TVector<T> cache;
     private TypeName<T> componentType;
 
     public PreloadedList(TypeName<T> componentType, boolean row, int size, TVectorCell<T> it) {
         super(row);
         this.componentType = componentType;
-        cache = Maths.list(componentType);
+        cache = MathsBase.list(componentType);
         for (int i = 0; i < size; i++) {
             cache.append(it.get(i));
         }
@@ -38,23 +38,24 @@ public class PreloadedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public void set(int index, T e) {
+    public TVector<T> set(int index, T e) {
         cache.set(index, e);
+        return this;
     }
 
     @Override
-    public void appendAll(TVector<T> e) {
-        cache.appendAll(e);
+    public TVector<T> appendAll(TVector<T> e) {
+        return cache.appendAll(e);
     }
 
     @Override
-    public void append(T e) {
-        cache.append(e);
+    public TVector<T> append(T e) {
+        return cache.append(e);
     }
 
     @Override
-    public void appendAll(Collection<? extends T> e) {
-        cache.appendAll(e);
+    public TVector<T> appendAll(Collection<? extends T> e) {
+        return cache.appendAll(e);
     }
 
     @Override
@@ -65,12 +66,12 @@ public class PreloadedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 

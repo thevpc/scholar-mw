@@ -21,8 +21,9 @@ public class TTransposedVector<T> extends AbstractTVector<T> {
     }
 
     @Override
-    public void set(int i, T complex) {
+    public TVector<T> set(int i, T complex) {
         other.set(i, complex);
+        return this;
     }
 
     @Override

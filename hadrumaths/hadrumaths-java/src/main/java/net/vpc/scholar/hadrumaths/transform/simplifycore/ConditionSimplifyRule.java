@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.NoneOutBoolean;
 import net.vpc.scholar.hadrumaths.symbolic.ComparatorExpr;
-import net.vpc.scholar.hadrumaths.symbolic.IfThenElse;
+import net.vpc.scholar.hadrumaths.symbolic.IfExpr;
 import net.vpc.scholar.hadrumaths.symbolic.NotExpr;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -21,7 +21,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 public class ConditionSimplifyRule implements ExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ConditionSimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{ComparatorExpr.class, NotExpr.class, IfThenElse.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{ComparatorExpr.class, NotExpr.class, IfExpr.class};
 
 
     @Override
@@ -66,8 +66,8 @@ public class ConditionSimplifyRule implements ExpressionRewriterRule {
             }
 
         }
-        if (e instanceof IfThenElse) {
-            IfThenElse c = (IfThenElse) e;
+        if (e instanceof IfExpr) {
+            IfExpr c = (IfExpr) e;
             RewriteResult rxa = ruleset.rewrite(c.getXArgument());
             RewriteResult rya = ruleset.rewrite(c.getYArgument());
             RewriteResult rza = ruleset.rewrite(c.getZArgument());

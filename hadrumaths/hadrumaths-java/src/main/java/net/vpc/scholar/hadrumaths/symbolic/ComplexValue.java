@@ -35,8 +35,8 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
     }
 
     public ComplexValue(Complex value, Domain domain) {
-        this.real = Maths.expr(value.getReal(), domain);
-        this.imag = Maths.expr(value.getImag(), domain);
+        this.real = MathsBase.expr(value.getReal(), domain);
+        this.imag = MathsBase.expr(value.getImag(), domain);
         this.value = value;
         this.domain = value.isZero() ? Domain.ZERO(domain == null ? 1 : domain.getDimension()) : domain == null ? Domain.FULLX : domain;
     }
@@ -141,15 +141,15 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
 //    }
 
     public DoubleToComplex add(DoubleToComplex other) {
-        return Maths.sum(this, other).toDC();
-//        return new DCxy(real.add(other.real), imag.add(other.imag));
+        return MathsBase.sum(this, other).toDC();
+//        return new DD2DC(real.add(other.real), imag.add(other.imag));
     }
 
-    //    public DCxy simplify() {
-//        return new DCxy(real.simplify(), imag.simplify());
+    //    public DD2DC simplify() {
+//        return new DD2DC(real.simplify(), imag.simplify());
 //    }
-//    public DCxy multiply(DCxy other) {
-//        return new DCxy(
+//    public DD2DC multiply(DD2DC other) {
+//        return new DD2DC(
 //                new DDxyProduct(real, other.real).add(new DDxyProduct(imag.multiply(-1, null), other.imag)),
 //                new DDxyProduct(real, other.imag).add(new DDxyProduct(imag, other.real))
 //        );
@@ -287,7 +287,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return toComplex().toMatrix();
     }
 
@@ -308,12 +308,7 @@ public class ComplexValue extends AbstractDoubleToComplex implements Cloneable, 
 
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         return this;
     }
 

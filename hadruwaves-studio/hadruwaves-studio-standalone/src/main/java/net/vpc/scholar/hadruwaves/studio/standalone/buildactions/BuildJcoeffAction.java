@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 
-import net.vpc.scholar.hadrumaths.Vector;
+import net.vpc.scholar.hadrumaths.ComplexVector;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 
@@ -16,8 +16,8 @@ public class BuildJcoeffAction extends RunAction{
         this.jxy = jxy;
     }
 
-    public Vector go0() {
-        return (Vector) go();
+    public ComplexVector go0() {
+        return (ComplexVector) go();
     }
 
     @Override

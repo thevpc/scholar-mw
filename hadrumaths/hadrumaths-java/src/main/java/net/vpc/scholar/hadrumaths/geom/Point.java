@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.geom;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.io.Serializable;
 
@@ -112,16 +112,16 @@ public class Point implements Serializable, Cloneable {
         }
         switch (dimension) {
             case 1: {
-                return Maths.roundEquals(x, p.x, epsilon);
+                return MathsBase.roundEquals(x, p.x, epsilon);
             }
             case 2: {
-                return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon);
+                return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon);
             }
             case 3: {
-                return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon) && Maths.roundEquals(z, p.z, epsilon);
+                return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon) && MathsBase.roundEquals(z, p.z, epsilon);
             }
         }
-        return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon) && Maths.roundEquals(z, p.z, epsilon);
+        return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon) && MathsBase.roundEquals(z, p.z, epsilon);
     }
 
     public String toString() {

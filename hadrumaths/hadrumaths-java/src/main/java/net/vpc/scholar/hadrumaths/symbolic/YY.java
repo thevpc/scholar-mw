@@ -188,7 +188,7 @@ public class YY extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, Maths.zerosMatrix(1));
+//            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -216,7 +216,7 @@ public class YY extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[][] cc = ArrayUtils.fillArray2Vector(x.length, y.length, Maths.zerosVector(1));
+//            Vector[][] cc = ArrayUtils.fillArray2Vector(x.length, y.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -247,7 +247,7 @@ public class YY extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, Maths.zerosMatrix(1));
+//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -279,7 +279,7 @@ public class YY extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, Maths.zerosVector(1));
+//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }

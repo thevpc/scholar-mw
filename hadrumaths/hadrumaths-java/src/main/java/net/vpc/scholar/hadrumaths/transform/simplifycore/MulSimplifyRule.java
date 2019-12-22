@@ -8,7 +8,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -112,7 +112,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             }
             return RewriteResult.newVal(value);
         }
-        Expr m2 = Maths.mul(all.toArray(new Expr[0]));
+        Expr m2 = MathsBase.mul(all.toArray(new Expr[0]));
         if (!updated && m2.equals(e)) {
             return RewriteResult.unmodified(e);
         }
@@ -205,7 +205,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             Domain theDomain = fullDomain.intersect(b.getDomain());
             boolean domainChanged = !theDomain.equals(b.getDomain());
             if (!domainChanged) {
-                if (cst.equals(Maths.CONE)) {
+                if (cst.equals(MathsBase.CONE)) {
                     return b;
                 }
             }
@@ -225,10 +225,10 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             XX ac = (XX) a;
             if (b instanceof XX) {
                 XX f = (XX) b;
-                return Maths.pow(new XX(ac.getDomain().intersect(f.getDomain())), Maths.expr(2));
+                return MathsBase.pow(new XX(ac.getDomain().intersect(f.getDomain())), MathsBase.expr(2));
             } else if (b instanceof Pow && ((Pow) b).getFirst() instanceof XX) {
                 XX f = (XX) ((Pow) b).getFirst();
-                return Maths.pow(new XX(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), Maths.sum(((Pow) b).getSecond(), Maths.expr(1)));
+                return MathsBase.pow(new XX(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), MathsBase.sum(((Pow) b).getSecond(), MathsBase.expr(1)));
             } else {
                 return null;
             }
@@ -236,10 +236,10 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             YY ac = (YY) a;
             if (b instanceof YY) {
                 YY f = (YY) b;
-                return Maths.pow(new YY(ac.getDomain().intersect(f.getDomain())), Maths.expr(2));
+                return MathsBase.pow(new YY(ac.getDomain().intersect(f.getDomain())), MathsBase.expr(2));
             } else if (b instanceof Pow && ((Pow) b).getFirst() instanceof YY) {
                 YY f = (YY) ((Pow) b).getFirst();
-                return Maths.pow(new YY(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), Maths.sum(((Pow) b).getSecond(), Maths.expr(1)));
+                return MathsBase.pow(new YY(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), MathsBase.sum(((Pow) b).getSecond(), MathsBase.expr(1)));
             } else {
                 return null;
             }
@@ -249,7 +249,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
             CosXCosY bb = (CosXCosY) b;
             if (aa.getA() == 0 && bb.getC() == 0) {
                 return new CosXCosY(
-                        aa.getAmp() * bb.getAmp() * Maths.cos2(aa.getB()) * Maths.cos2(bb.getD()),
+                        aa.getAmp() * bb.getAmp() * MathsBase.cos2(aa.getB()) * MathsBase.cos2(bb.getD()),
                         bb.getA(),
                         bb.getB(),
                         aa.getC(),
@@ -258,7 +258,7 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
                 );
             } else if (aa.getC() == 0 && bb.getA() == 0) {
                 return new CosXCosY(
-                        aa.getAmp() * bb.getAmp() * Maths.cos2(aa.getD()) * Maths.cos2(bb.getB()),
+                        aa.getAmp() * bb.getAmp() * MathsBase.cos2(aa.getD()) * MathsBase.cos2(bb.getB()),
                         aa.getA(),
                         aa.getB(),
                         bb.getC(),

@@ -1,11 +1,10 @@
 package net.vpc.scholar.hadruwaves.interop;
 
-import net.vpc.scholar.hadrumaths.DoubleArrayList;
+import net.vpc.scholar.hadrumaths.ArrayDoubleVector;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import net.vpc.common.io.*;
 
 import net.vpc.common.strings.StringBuilder2;
 
@@ -21,9 +20,9 @@ public final class CstMwsUtils {
             String dashes = r.readLine();
             int count = titles.length;
             CstPlotDoubleColumn[] columns = new CstPlotDoubleColumn[count];
-            DoubleArrayList[] rowsData = new DoubleArrayList[count];
+            ArrayDoubleVector[] rowsData = new ArrayDoubleVector[count];
             for (int i = 0; i < count; i++) {
-                rowsData[i] = new DoubleArrayList();
+                rowsData[i] = new ArrayDoubleVector();
             }
             String line = null;
             while ((line = r.readLine()) != null) {

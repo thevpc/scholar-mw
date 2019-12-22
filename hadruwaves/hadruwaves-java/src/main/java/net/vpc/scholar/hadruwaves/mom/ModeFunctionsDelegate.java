@@ -119,7 +119,7 @@ public class ModeFunctionsDelegate implements ModeFunctions {
         return base.setSize(maxSize);
     }
 
-    public TList<Expr> list() {
+    public TVector<Expr> list() {
         return base.list();
     }
 
@@ -131,7 +131,7 @@ public class ModeFunctionsDelegate implements ModeFunctions {
         return base.apply(index);
     }
 
-    public TList<Expr> toList() {
+    public TVector<Expr> toList() {
         return base.toList();
     }
 
@@ -391,7 +391,7 @@ public class ModeFunctionsDelegate implements ModeFunctions {
         return base.scalarProduct(testFunction);
     }
 
-    public TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor) {
+    public TMatrix<Complex> scalarProduct(TVector<Expr> testFunctions, ProgressMonitor monitor) {
         return base.scalarProduct(testFunctions, monitor);
     }
 

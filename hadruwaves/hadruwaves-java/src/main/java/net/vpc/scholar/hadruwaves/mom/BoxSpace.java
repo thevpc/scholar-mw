@@ -16,13 +16,30 @@ public final class BoxSpace implements Dumpable {
     private final double electricConductivity;
 
     public BoxSpace(BoxLimit limit, double epsr, double width,double electricConductivity) {
+        if(limit==null){
+            throw new IllegalArgumentException("Null Box Limit");
+        }
         this.limit = limit;
         this.epsr = epsr;
         this.width = width;
         this.electricConductivity = electricConductivity;
     }
 
-    
+    public BoxSpace setLimit(BoxLimit limit) {
+        return new BoxSpace(limit,epsr,width,electricConductivity);
+    }
+
+    public BoxSpace setWidth(double width) {
+        return new BoxSpace(limit,epsr,width,electricConductivity);
+    }
+
+    public BoxSpace setEpsr(double epsr) {
+        return new BoxSpace(limit,epsr,width,electricConductivity);
+    }
+
+    public BoxSpace setElectricConductivity(double electricConductivity) {
+        return new BoxSpace(limit,epsr,width,electricConductivity);
+    }
 
     public String dump() {
         Dumper h=new Dumper(getClass().getSimpleName(),Dumper.Type.SIMPLE);

@@ -9,8 +9,8 @@ import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
 import net.vpc.scholar.hadrumaths.integration.IntegrationOperator;
-import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
-import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoMatrixFactory;
+import net.vpc.scholar.hadrumaths.interop.jblas.JBlasComplexMatrixFactory;
+import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoComplexMatrixFactory;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
 import net.vpc.scholar.hadrumaths.io.HFileSystem;
@@ -41,7 +41,7 @@ public final class MathsConfig {
 
     private final DumpManager dumpManager = new DumpManager();
     private final String defaultRootCachePath = "${user.home}/.cache/mathcache";
-    private MatrixFactory defaultLargeMatrixFactory = null;
+    private ComplexMatrixFactory defaultLargeComplexMatrixFactory = null;
     private String largeMatrixCachePath = "${cache.folder}/large-matrix";
     private int simplifierCacheSize = 2000;
     //        private  float largeMatrixThreshold = 0.7f;
@@ -53,12 +53,12 @@ public final class MathsConfig {
     private MetricFormat metricFormatter = new MetricFormat();
     private net.vpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
     private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
-    private ExprMatrixFactory exprMatrixFactory = DefaultExprMatrixFactory.INSTANCE;
     private ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
     private SolveStrategy defaultMatrixSolveStrategy = SolveStrategy.DEFAULT;
-    private MatrixFactory defaultMatrixFactory = SmartMatrixFactory.INSTANCE;
+    private ComplexMatrixFactory complexMatrixFactory = SmartComplexMatrixFactory.INSTANCE;
+    private ExprMatrixFactory exprMatrixFactory = MemExprMatrixFactory.INSTANCE;
     private CacheMode persistenceCacheMode = CacheMode.ENABLED;
     private boolean cacheEnabled = true;
     private boolean expressionWriterCacheEnabled = true;
@@ -115,7 +115,7 @@ public final class MathsConfig {
         if (maxMemoryThreshold <= 0) {
             return true;
         }
-        return (bytesToStore <= (Maths.maxFreeMemory() * ((double) maxMemoryThreshold)));
+        return (bytesToStore <= (MathsBase.maxFreeMemory() * ((double) maxMemoryThreshold)));
     }
 
     public float getMaxMemoryThreshold() {
@@ -129,25 +129,25 @@ public final class MathsConfig {
     public TMatrixFactory getTMatrixFactory(String id) {
         TMatrixFactory fac = matrixFactories.get(id);
         if (fac == null) {
-            if (SmartMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(SmartMatrixFactory.INSTANCE);
-                return SmartMatrixFactory.INSTANCE;
+            if (SmartComplexMatrixFactory.INSTANCE.getId().equals(id)) {
+                registerTMatrixFactory(SmartComplexMatrixFactory.INSTANCE);
+                return SmartComplexMatrixFactory.INSTANCE;
             }
-            if (MemMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(MemMatrixFactory.INSTANCE);
-                return MemMatrixFactory.INSTANCE;
+            if (MemComplexMatrixFactory.INSTANCE.getId().equals(id)) {
+                registerTMatrixFactory(MemComplexMatrixFactory.INSTANCE);
+                return MemComplexMatrixFactory.INSTANCE;
             }
-            if (OjalgoMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(OjalgoMatrixFactory.INSTANCE);
-                return OjalgoMatrixFactory.INSTANCE;
+            if (OjalgoComplexMatrixFactory.INSTANCE.getId().equals(id)) {
+                registerTMatrixFactory(OjalgoComplexMatrixFactory.INSTANCE);
+                return OjalgoComplexMatrixFactory.INSTANCE;
             }
-            if (JBlasMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(JBlasMatrixFactory.INSTANCE);
-                return JBlasMatrixFactory.INSTANCE;
+            if (JBlasComplexMatrixFactory.INSTANCE.getId().equals(id)) {
+                registerTMatrixFactory(JBlasComplexMatrixFactory.INSTANCE);
+                return JBlasComplexMatrixFactory.INSTANCE;
             }
-            String id1 = DBLargeMatrixFactory.createId(id);
+            String id1 = DBLargeComplexMatrixFactory.createId(id);
             if (id1 != null) {
-                DBLargeMatrixFactory dbLargeMatrixFactory = new DBLargeMatrixFactory(id);
+                DBLargeComplexMatrixFactory dbLargeMatrixFactory = new DBLargeComplexMatrixFactory(id);
                 registerTMatrixFactory(dbLargeMatrixFactory);
                 return dbLargeMatrixFactory;
             }
@@ -182,7 +182,7 @@ public final class MathsConfig {
 
     public <A, B> Converter<A, B> getConverter(Class<A> a, Class<B> b) {
         if (a.equals(b)) {
-            return Maths.IDENTITY;
+            return MathsBase.IDENTITY;
         }
         Converter converter = getRegisteredConverter(a, b);
         if (converter == null) {
@@ -227,16 +227,33 @@ public final class MathsConfig {
         this.metricFormatter = metricFormatter;
     }
 
-    public MatrixFactory getDefaultMatrixFactory() {
-        return defaultMatrixFactory;
+    public ComplexMatrixFactory getComplexMatrixFactory() {
+        return complexMatrixFactory;
     }
 
-    public void setDefaultMatrixFactory(MatrixFactory defaultMatrixFactory) {
-        this.defaultMatrixFactory = defaultMatrixFactory;
+    public void setComplexMatrixFactory(ComplexMatrixFactory defaultComplexMatrixFactory) {
+        this.complexMatrixFactory = defaultComplexMatrixFactory;
     }
 
-    public <T> TMatrixFactory<T> getDefaultMatrixFactory(TypeName<T> baseType) {
-        throw new IllegalArgumentException("Not Yet Supported");
+    public ExprMatrixFactory getExprMatrixFactory() {
+        return exprMatrixFactory;
+    }
+
+    public void setExprMatrixFactory(ExprMatrixFactory factory) {
+        this.exprMatrixFactory = factory;
+    }
+
+    public <T> TMatrixFactory<T> getComplexMatrixFactory(TypeName<T> baseType) {
+        TMatrixFactory<T> r = null;
+        if (baseType == MathsBase.$EXPR) {
+            r = (TMatrixFactory<T>) exprMatrixFactory;
+        } else if (baseType == MathsBase.$COMPLEX) {
+            r = (TMatrixFactory<T>) complexMatrixFactory;
+        }
+        if (r == null) {
+            throw new IllegalArgumentException("Not Supported Matrices for " + baseType);
+        }
+        return r;
     }
 
     public String getRootCachePath(boolean expand) {
@@ -280,7 +297,7 @@ public final class MathsConfig {
                         && !folder.startsWith("..\\")
                         && !folder.equals(".")
                         && !folder.equals("..")
-                ) {//folder.indexOf('/') < 0 && folder.indexOf('\\') < 0
+        ) {//folder.indexOf('/') < 0 && folder.indexOf('\\') < 0
             return (baseCacheFolder + "/" + folder);
         } else {
             return (folder);
@@ -417,31 +434,28 @@ public final class MathsConfig {
         largeMatrixCachePath = largeMatrixPath;
     }
 
-    public MatrixFactory getMatrixFactory() {
-        return defaultMatrixFactory;
-    }
 
-    public MatrixFactory getLargeMatrixFactory() {
-        if (defaultLargeMatrixFactory == null) {
-            synchronized (Maths.class) {
-                if (defaultLargeMatrixFactory == null) {
-                    LargeMatrixFactory s = (LargeMatrixFactory) getTMatrixFactory(
-                            DBLargeMatrixFactory.createLocalId(this.getLargeMatrixCachePath(false), true, null)
+    public ComplexMatrixFactory getLargeMatrixFactory() {
+        if (defaultLargeComplexMatrixFactory == null) {
+            synchronized (MathsConfig.class) {
+                if (defaultLargeComplexMatrixFactory == null) {
+                    LargeComplexMatrixFactory s = (LargeComplexMatrixFactory) getTMatrixFactory(
+                            DBLargeComplexMatrixFactory.createLocalId(this.getLargeMatrixCachePath(false), true, null)
                     );
                     s.setResetOnClose(true);
-                    defaultLargeMatrixFactory = s;
+                    defaultLargeComplexMatrixFactory = s;
                 }
             }
         }
-        return defaultLargeMatrixFactory;
+        return defaultLargeComplexMatrixFactory;
     }
 
-    public void setLargeMatrixFactory(MatrixFactory m) {
-        synchronized (Maths.class) {
-            if (defaultLargeMatrixFactory != null) {
-                defaultLargeMatrixFactory.close();
+    public void setLargeMatrixFactory(ComplexMatrixFactory m) {
+        synchronized (MathsConfig.class) {
+            if (defaultLargeComplexMatrixFactory != null) {
+                defaultLargeComplexMatrixFactory.close();
             }
-            defaultLargeMatrixFactory = m;
+            defaultLargeComplexMatrixFactory = m;
         }
     }
 
@@ -575,10 +589,6 @@ public final class MathsConfig {
         return exprSequenceFactory;
     }
 
-    public ExprMatrixFactory getExprMatrixFactory() {
-        return exprMatrixFactory;
-    }
-
     public ExprCubeFactory getExprCubeFactory() {
         return exprCubeFactory;
     }
@@ -597,9 +607,9 @@ public final class MathsConfig {
     }
 
     public void close() {
-        if (defaultLargeMatrixFactory != null) {
+        if (defaultLargeComplexMatrixFactory != null) {
             try {
-                defaultLargeMatrixFactory.close();
+                defaultLargeComplexMatrixFactory.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

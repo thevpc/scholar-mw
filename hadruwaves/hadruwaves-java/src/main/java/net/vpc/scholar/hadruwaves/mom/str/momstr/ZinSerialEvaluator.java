@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -16,14 +16,14 @@ import net.vpc.scholar.hadruwaves.mom.ProjectType;
  */
 public class ZinSerialEvaluator implements ZinEvaluator {
     public static final ZinSerialEvaluator INSTANCE=new ZinSerialEvaluator();
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         //Z= inv(Bt.inv(A).B)
         ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, new double[]{1, 4});
-        Matrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
-        Matrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
-        Matrix ZinPaire=null;
-        Matrix cMatrix = null;
-        Matrix aInv=null;
+        ComplexMatrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
+        ComplexMatrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
+        ComplexMatrix ZinPaire=null;
+        ComplexMatrix cMatrix = null;
+        ComplexMatrix aInv=null;
         try {
             aInv = A_.inv(str.getInvStrategy(), str.getCondStrategy(), str.getNormStrategy());
             //should use conjugate transpose
@@ -48,7 +48,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         }
         boolean useZParity =str.getProjectType()== ProjectType.WAVE_GUIDE;
         //TODO pourquoi paire ?
-        Matrix cMatrix1 = useZParity ?ZinPaire.div(2):ZinPaire;
+        ComplexMatrix cMatrix1 = useZParity ?ZinPaire.div(2):ZinPaire;
 //        System.out.println("["+str.getName()+ "] Zin = " + cMatrix1);
 //        System.out.println(str.getClass().getSimpleName()+":w="+str.getWidth()+":f="+str.getFrequency()+":l="+str.getLambda()+":w/l="+(str.getWidth()/str.getLambda()) +":zin"+ cMatrix1);
         return cMatrix1;

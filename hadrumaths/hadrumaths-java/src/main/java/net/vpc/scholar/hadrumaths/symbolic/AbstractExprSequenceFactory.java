@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.TVector;
 
 /**
  * Created by vpc on 2/14/15.
@@ -11,10 +11,10 @@ import net.vpc.scholar.hadrumaths.TList;
 public abstract class AbstractExprSequenceFactory<T extends Expr> implements ExprSequenceFactory<T> {
     @Override
     public TypeName<T> getComponentType() {
-        return (TypeName<T>) Maths.$EXPR;
+        return (TypeName<T>) MathsBase.$EXPR;
     }
 
-    public TList<T> newSequence(T pattern, DoubleParam[] vars, int[] max) {
+    public TVector<T> newSequence(T pattern, DoubleParam[] vars, int[] max) {
         StringBuilder valuesDesc = new StringBuilder();
         if (vars.length < 1) {
             throw new IllegalArgumentException("Missing vars");
@@ -45,18 +45,18 @@ public abstract class AbstractExprSequenceFactory<T extends Expr> implements Exp
                 break;
             }
             case 2: {
-                values = Maths.cross(Maths.dsteps(0, max[0] - 1, 1), Maths.dsteps(0, max[1] - 1, 1));
+                values = MathsBase.cross(MathsBase.dsteps(0, max[0] - 1, 1), MathsBase.dsteps(0, max[1] - 1, 1));
                 break;
             }
             default: {
                 throw new IllegalArgumentException("Too many vars " + vars.length + ">2, unsupported yet");
             }
         }
-        return (TList<T>) new ParamExprList(false, pattern, vars, values, valuesDesc.toString());
+        return (TVector<T>) new ParamExprList(false, pattern, vars, values, valuesDesc.toString());
     }
 
-    public TList<Expr> newSequence(Expr pattern, DoubleParam[] vars, double[][] values) {
-        return new ParamExprList(false, pattern, vars, values, Maths.dump(values));
+    public TVector<Expr> newSequence(Expr pattern, DoubleParam[] vars, double[][] values) {
+        return new ParamExprList(false, pattern, vars, values, MathsBase.dump(values));
     }
 
 }

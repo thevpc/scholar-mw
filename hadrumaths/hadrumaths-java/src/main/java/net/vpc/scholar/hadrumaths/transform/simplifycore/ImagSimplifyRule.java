@@ -41,7 +41,7 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
         if (rbase.getValue().isDD()) {
             return RewriteResult.bestEffort(FunctionFactory.DZERO(rbase.getValue().getDomainDimension()));
         }
-        if (Maths.isReal(rbase.getValue())) {
+        if (MathsBase.isReal(rbase.getValue())) {
             return RewriteResult.bestEffort(FunctionFactory.DZEROXY);
         }
         if (rbase.getValue() instanceof Mul) {
@@ -51,12 +51,12 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
             List<Expr> e1 = rbase.getValue().getSubExpressions();
             List<Expr> e2 = new ArrayList<Expr>();
             for (Expr expr : e1) {
-                e2.add(Maths.imag(expr));
+                e2.add(MathsBase.imag(expr));
             }
-            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[0])));
+            return RewriteResult.newVal(MathsBase.sum(e2.toArray(new Expr[0])));
         }
         if (rbase.getValue() instanceof Sub) {
-            return RewriteResult.newVal(new Sub(Maths.imag(((Sub) rbase.getValue()).getFirst()), Maths.imag(((Sub) rbase.getValue()).getSecond())));
+            return RewriteResult.newVal(new Sub(MathsBase.imag(((Sub) rbase.getValue()).getFirst()), MathsBase.imag(((Sub) rbase.getValue()).getSecond())));
         }
         if (rbase.getValue() instanceof Div) {
             Expr first = ((Div) rbase.getValue()).getFirst();
@@ -81,7 +81,7 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
         }
 //        if(rbase instanceof Inv){
 //            Expr a = ((Inv) rbase).getExpression();
-//            if(Maths.isReal(a)){
+//            if(MathsBase.isReal(a)){
 //                return rbase;
 //            }
 //        }

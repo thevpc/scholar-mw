@@ -4,10 +4,10 @@ import net.vpc.common.util.TypeName;
 
 import java.util.Collection;
 
-public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
+public class UpdatableTList<T> extends AbstractTVector<T> implements Cloneable {
 
     private static final long serialVersionUID = 1L;
-    private TList<T> delegate;
+    private TVector<T> delegate;
     private TVectorModel<T> model;
     private TypeName<T> componentType;
 
@@ -39,27 +39,30 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public void appendAll(TVector<T> e) {
+    public TVector<T> appendAll(TVector<T> e) {
         prepareDelegate(e.size());
         delegate.appendAll(e);
+        return this;
     }
 
     @Override
-    public void append(T e) {
+    public TVector<T> append(T e) {
         prepareDelegate(1);
         delegate.append(e);
+        return this;
     }
 
     @Override
-    public void appendAll(Collection<? extends T> e) {
+    public TVector<T> appendAll(Collection<? extends T> e) {
         prepareDelegate(e.size());
         delegate.appendAll(e);
+        return this;
     }
 
     protected void prepareDelegate(int count) {
         if (delegate == null) {
             int initialSize = model.size();
-            delegate = Maths.list(getComponentType(), initialSize + count);
+            delegate = MathsBase.list(getComponentType(), initialSize + count);
             for (int i = 0; i < initialSize; i++) {
                 delegate.append(model.get(i));
             }
@@ -67,12 +70,12 @@ public class UpdatableTList<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 

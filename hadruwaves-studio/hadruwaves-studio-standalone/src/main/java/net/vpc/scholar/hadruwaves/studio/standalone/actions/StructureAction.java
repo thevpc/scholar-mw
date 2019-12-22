@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import net.vpc.common.log.Log;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
@@ -35,7 +35,7 @@ public abstract class StructureAction extends TmwlabAction {
         this.jxyBuildRequired = jxyBuildRequired;
     }
 
-    public static Matrix showMatrix(Matrix matrix) {
+    public static ComplexMatrix showMatrix(ComplexMatrix matrix) {
         CMatrixTableModel model;
         JTable table = new JTable(model = new CMatrixTableModel(Maths.matrix(matrix)));
         JPanel p = new JPanel(new BorderLayout());

@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.symbolic.Plus;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -83,7 +83,7 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
             return new Plus(n.toArray(new Expr[0]));
         }
 //        return new Mul(a, b);
-        return Maths.mul(a, b);
+        return MathsBase.mul(a, b);
     }
 
     @Override

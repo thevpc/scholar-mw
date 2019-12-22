@@ -1,20 +1,20 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 
 import java.io.Serializable;
 
 public class Yoperator implements Serializable {
-    private Matrix matrix;
+    private ComplexMatrix matrix;
     private ModeFunctions modeFunctions;
 
-    public Yoperator(Matrix matrix, ModeFunctions modeFunctions) {
+    public Yoperator(ComplexMatrix matrix, ModeFunctions modeFunctions) {
         this.matrix = matrix;
         this.modeFunctions = modeFunctions;
     }
 
-    public Matrix getMatrix(){
+    public ComplexMatrix getMatrix(){
         return matrix;
     }
 

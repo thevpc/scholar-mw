@@ -4,7 +4,7 @@
 // */
 //package net.vpc.scholar.hadrumaths.interop.ojalgo;
 //
-//import net.vpc.scholar.hadrumaths.Maths;
+//import net.vpc.scholar.hadrumaths.MathsBase;
 //import net.vpc.scholar.hadrumaths.Matrix;
 //import org.ojalgo.matrix.BasicMatrix;
 //import org.ojalgo.matrix.ComplexMatrix;
@@ -66,7 +66,7 @@
 //                ret[i][j] = Complex.valueOf(cn.getReal(), cn.getImaginary());
 //            }
 //        }
-//        return Maths.matrix(ret);
+//        return MathsBase.matrix(ret);
 //    }
 //
 //}

@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruplot.PlotDoubleComplex;
 import net.vpc.scholar.hadruplot.PlotDoubleConverter;
 import net.vpc.scholar.hadruplot.PlotNumbers;
@@ -19,8 +19,8 @@ public class MathsPlotNumbers implements PlotNumbers {
             d = 0;
         } else if (o instanceof Complex) {
             d = ((Complex) o).absdbl();
-        } else if (o instanceof Matrix) {
-            d = ((Matrix) o).norm1();
+        } else if (o instanceof ComplexMatrix) {
+            d = ((ComplexMatrix) o).norm1();
         } else if (o instanceof DMatrix) {
             d = ((DMatrix) o).norm1();
         } else {
@@ -40,8 +40,8 @@ public class MathsPlotNumbers implements PlotNumbers {
             return new BigDecimal((BigInteger) o).multiply(new BigDecimal(b));
         } else if (o instanceof Complex) {
             return ((Complex) o).mul(b);
-        } else if (o instanceof Matrix) {
-            return ((Matrix) o).mul(b);
+        } else if (o instanceof ComplexMatrix) {
+            return ((ComplexMatrix) o).mul(b);
         } else if (o instanceof DMatrix) {
             return ((DMatrix) o).mul(b);
         } else if (o instanceof Number) {
@@ -59,8 +59,8 @@ public class MathsPlotNumbers implements PlotNumbers {
                     ((Complex) o).getReal(),
                     ((Complex) o).getImag()
             );
-        } else if (o instanceof Matrix) {
-            Matrix m = (Matrix) o;
+        } else if (o instanceof ComplexMatrix) {
+            ComplexMatrix m = (ComplexMatrix) o;
             if (m.getColumnCount() == 1 && m.getRowCount() == 1) {
                 return toDoubleComplex(m.get(0, 0));
             }
@@ -99,7 +99,7 @@ public class MathsPlotNumbers implements PlotNumbers {
         Complex b = (Complex) bb;
         if (a.equals(b) || (a.isNaN() && b.isNaN()) || (a.isInfinite() && b.isInfinite())) {
             return 0;
-        } else if (a.isNaN() || b.isInfinite() || b.equals(Maths.CZERO)) {
+        } else if (a.isNaN() || b.isInfinite() || b.equals(MathsBase.CZERO)) {
             return (a.sub(b)).absdbl();
         } else {
             return (((a.sub(b)).absdbl() * 100 / (a.absdbl())));

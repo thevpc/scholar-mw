@@ -194,7 +194,7 @@ public abstract class AxisFunction extends AbstractExpBase implements DoubleToDo
 
     @Override
     public DoubleToDouble getImagDD() {
-        return Maths.DDZERO;
+        return MathsBase.DDZERO;
     }
 
     @Override
@@ -233,13 +233,11 @@ public abstract class AxisFunction extends AbstractExpBase implements DoubleToDo
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return xreplacement;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        return yreplacement;
+    public Expr compose(Axis axis, Expr xreplacement) {
+        if(axis==getAxis()){
+            return xreplacement;
+        }
+        return this;
     }
 
     @Override

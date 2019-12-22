@@ -6,7 +6,7 @@
 //package net.vpc.scholar.math.eval.canonicalrules;
 //
 //import net.vpc.scholar.math.Expr;
-//import net.vpc.scholar.math.Maths;
+//import net.vpc.scholar.math.MathsBase;
 //import net.vpc.scholar.math.functions.Domain;
 //import net.vpc.scholar.math.functions.FunctionFactory;
 //import net.vpc.scholar.math.functions.dfx.DDxPolynome;
@@ -16,7 +16,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static net.vpc.scholar.math.Maths.*;
+//import static net.vpc.scholar.math.MathsBase.*;
 //
 ///**
 // *
@@ -47,9 +47,9 @@
 //            if(i==0){
 //                p.add(FunctionFactory.cst(v, domain));
 //            }else if(i==1){
-//                p.add(mul(FunctionFactory.cst(v, domain), Maths.X));
+//                p.add(mul(FunctionFactory.cst(v, domain), MathsBase.X));
 //            }else{
-//                p.add(mul(FunctionFactory.cst(v, domain), Maths.pow(Maths.X, FunctionFactory.cst(v, domain))));
+//                p.add(mul(FunctionFactory.cst(v, domain), MathsBase.pow(MathsBase.X, FunctionFactory.cst(v, domain))));
 //            }
 //        }
 //        if(p.isEmpty()){

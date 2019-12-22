@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -12,12 +12,12 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
 public class DefaultMatrixUnknownEvaluator implements MatrixUnknownEvaluator {
     public static final DefaultMatrixUnknownEvaluator INSTANCE=new DefaultMatrixUnknownEvaluator();
     @Override
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         ProgressMonitor[] mons = ProgressMonitorFactory.split(monitor, new double[]{1, 4}, new boolean[]{true, true});
-        Matrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
-        Matrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
+        ComplexMatrix B_ = str.matrixB().monitor(mons[0]).computeMatrix();
+        ComplexMatrix A_ = str.matrixA().monitor(mons[1]).computeMatrix();
 
-        Matrix Testcoeff;
+        ComplexMatrix Testcoeff;
 
         try {
             Testcoeff = A_.solve(B_);

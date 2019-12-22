@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
-import static net.vpc.scholar.hadrumaths.Maths.sin;
+import static net.vpc.scholar.hadrumaths.MathsBase.sin;
 
 /**
  * User: taha

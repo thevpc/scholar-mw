@@ -19,21 +19,21 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
 
     private static Expr[] simplifyAll(Expr[] e, ProgressMonitor mon) {
         Expr[] all = new Expr[e.length];
-        Maths.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
+        MathsBase.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 int length = all.length;
                 for (int i = 0; i < length; i++) {
                     mon.setProgress(i, length, messagePrefix + " {0}/{1}", (i + 1), length);
-                    all[i] = Maths.simplify(e[i]);
+                    all[i] = e[i].simplify();
                 }
             }
         });
         return all;
     }
 
-    public Matrix toMatrix() {
-        return (Matrix) new DMatrix(cache, true).to(Maths.$COMPLEX);
+    public ComplexMatrix toMatrix() {
+        return (ComplexMatrix) new DMatrix(cache, true).to(MathsBase.$COMPLEX);
     }
 
     public TVector<Complex> getColumn(int column) {
@@ -41,14 +41,14 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
         for (int i = 0; i < vmatrix.length; i++) {
             vmatrix[i] = Complex.valueOf(cache[i][column]);
         }
-        return Maths.columnVector(vmatrix);
+        return MathsBase.columnVector(vmatrix);
     }
 
     public TVector<Complex> getRow(int row) {
 //        Complex[] vmatrix = new Complex[cache[0].length];
 //        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
-//        return Maths.columnVector(vmatrix);
-        return Maths.columnVector(cache[row]);
+//        return MathsBase.columnVector(vmatrix);
+        return MathsBase.columnVector(cache[row]);
     }
 
     public double[][] toArray() {
@@ -82,7 +82,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
     public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
-            sp = Maths.Config.getScalarProductOperator();
+            sp = MathsBase.Config.getScalarProductOperator();
         }
         int maxF = fn.length;
         double[][] gfps = new double[gp.length][maxF];
@@ -94,7 +94,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             DoubleToDouble[] df = new DoubleToDouble[maxF];
@@ -128,7 +128,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
                     Expr[] finalGp2 = gp;
                     ScalarProductOperator finalSp1 = sp;
                     Expr[] finalFn1 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -156,7 +156,7 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             DoubleToVector[] df = new DoubleToVector[maxF];

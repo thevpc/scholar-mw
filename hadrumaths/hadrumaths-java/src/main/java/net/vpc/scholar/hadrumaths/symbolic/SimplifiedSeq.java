@@ -1,9 +1,6 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TVector;
-import net.vpc.scholar.hadrumaths.TVectorCell;
+import net.vpc.scholar.hadrumaths.*;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
@@ -18,7 +15,7 @@ public class SimplifiedSeq<T extends Expr> implements TVectorCell<Expr> {
 
     @Override
     public Expr get(int row) {
-        return Maths.simplify(sequence.get(row));
+        return sequence.get(row).simplify();
     }
 
     @Override

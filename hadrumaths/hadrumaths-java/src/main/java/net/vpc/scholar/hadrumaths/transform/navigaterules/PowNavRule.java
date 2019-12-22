@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Pow;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -33,7 +33,7 @@ public class PowNavRule implements ExpressionRewriterRule {
         if (a.isUnmodified() && b.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
-        Expr eee = Maths.pow(a.getValue(), b.getValue());
+        Expr eee = MathsBase.pow(a.getValue(), b.getValue());
         eee = Any.copyProperties(e, eee);
         return RewriteResult.bestEffort(eee);
     }

@@ -48,16 +48,16 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, x, y, d0, ranges);
     }
 
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0) {
         return computeMatrix(x, y, d0, null);
     }
 
@@ -113,7 +113,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][] values = new Complex[componentDimension.rows][componentDimension.columns];
         for (int[] i : componentDimension.iterate()) {
@@ -121,11 +121,11 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             int c = i[1];
             values[r][c] = getComponent(r, c).toDC().computeComplex(x, y);
         }
-        return Maths.matrix(values);
+        return MathsBase.matrix(values);
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][] values = new Complex[componentDimension.rows][componentDimension.columns];
         for (int[] ii : componentDimension.iterate()) {
@@ -133,11 +133,11 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             int c = ii[1];
             values[r][c] = getComponent(r, c).toDC().computeComplex(x, y, z);
         }
-        return Maths.matrix(values);
+        return MathsBase.matrix(values);
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][][][] values = new Complex[componentDimension.rows][componentDimension.columns][][][];
         Range rangeOut = Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1);
@@ -158,7 +158,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             }
 //            }
         }
-        Matrix[][][] ret = new Matrix[z.length][y.length][x.length];
+        ComplexMatrix[][][] ret = new ComplexMatrix[z.length][y.length][x.length];
         for (int t = 0; t < z.length; t++) {
             for (int i = 0; i < y.length; i++) {
                 for (int j = 0; j < x.length; j++) {
@@ -168,7 +168,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
                             values2[rr][cc] = values[rr][cc][t][i][j];
                         }
                     }
-                    ret[t][i][j] = Maths.matrix(values2);
+                    ret[t][i][j] = MathsBase.matrix(values2);
                 }
             }
         }
@@ -177,7 +177,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][] values = new Complex[componentDimension.rows][componentDimension.columns][];
         Range rangeOut = Range.forBounds(0, x.length - 1);
@@ -199,7 +199,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
             }
 //            }
         }
-        Matrix[] ret = new Matrix[x.length];
+        ComplexMatrix[] ret = new ComplexMatrix[x.length];
         for (int j = 0; j < x.length; j++) {
             Complex[][] values2 = new Complex[componentDimension.rows][componentDimension.columns];
             for (int rr = 0; rr < componentDimension.rows; rr++) {
@@ -207,7 +207,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
                     values2[rr][cc] = values[rr][cc][j];
                 }
             }
-            ret[j] = Maths.matrix(values2);
+            ret[j] = MathsBase.matrix(values2);
         }
         ranges.set(rangeOut);
         return ret;
@@ -255,7 +255,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
         return true;
     }
 
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         ComponentDimension componentDimension = getComponentDimension();
         Complex[][][][] values = new Complex[componentDimension.rows][componentDimension.columns][][];
         Range rangeOut = Range.forBounds(0, x.length - 1, 0, y.length - 1);
@@ -277,7 +277,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
                 }
             }
         }
-        Matrix[][] ret = new Matrix[y.length][x.length];
+        ComplexMatrix[][] ret = new ComplexMatrix[y.length][x.length];
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x.length; j++) {
                 Complex[][] values2 = new Complex[componentDimension.rows][componentDimension.columns];
@@ -286,7 +286,7 @@ public abstract class AbstractDoubleToMatrix extends AbstractExprPropertyAware i
                         values2[rr][cc] = values[rr][cc][i][j];
                     }
                 }
-                ret[i][j] = Maths.matrix(values2);
+                ret[i][j] = MathsBase.matrix(values2);
             }
         }
         ranges.set(rangeOut);

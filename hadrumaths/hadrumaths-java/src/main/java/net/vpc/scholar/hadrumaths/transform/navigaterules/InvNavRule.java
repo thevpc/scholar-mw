@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Inv;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -30,7 +30,7 @@ public class InvNavRule implements ExpressionRewriterRule {
         Inv ee = (Inv) e;
         RewriteResult a = ruleset.rewrite(ee.getExpression());
         if (a.isRewritten()) {
-            Expr eee = Maths.inv(a.getValue());
+            Expr eee = MathsBase.inv(a.getValue());
             eee = Any.copyProperties(e, eee);
             if (a.isBestEffort()) {
                 return RewriteResult.bestEffort(eee);

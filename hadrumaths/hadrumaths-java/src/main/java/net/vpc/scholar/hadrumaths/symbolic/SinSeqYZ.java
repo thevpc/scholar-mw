@@ -2,10 +2,10 @@ package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
-import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.vpc.scholar.hadrumaths.MathsBase.*;
 
 /**
  * Created by vpc on 5/7/14.
@@ -82,44 +82,44 @@ public class SinSeqYZ extends Ref implements Cloneable {
         Expr height = expr(domain.zwidth());
         Expr ymin = expr(domain.ymin());
         Expr zmin = expr(domain.zmin());
-        Expr pibyw = Maths.div(pi, width);
-        Expr pibyh = Maths.div(pi, height);
+        Expr pibyw = MathsBase.div(pi, width);
+        Expr pibyh = MathsBase.div(pi, height);
         if (maxWest) {
             if (maxEast) {
                 //cos(2 * m * (pi / width) * (X-min))
-                fy = cos(Maths.mul(two, m, pibyw, Maths.sub(Y, ymin))); //ok
+                fy = cos(MathsBase.mul(two, m, pibyw, MathsBase.sub(Y, ymin))); //ok
             } else {
                 //cos((m * 2+1)/2 * pi / width * (X-min))
-                fy = cos(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.sub(Y, ymin))); //ok
+                fy = cos(MathsBase.mul(MathsBase.div(MathsBase.sum(MathsBase.mul(two, m), one), two), pibyw, MathsBase.sub(Y, ymin))); //ok
             }
         } else {
             if (maxEast) {
                 //fx = sin(((2 * m + 1) / 2 * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.sub(Y, ymin))); //ok
+                fy = sin(MathsBase.mul(MathsBase.div(MathsBase.sum(MathsBase.mul(two, m), one), two), pibyw, MathsBase.sub(Y, ymin))); //ok
             } else {
 //                fx = sin(((m+1) * PI / domain.width) * (X - domain.xmin)); //ok
-                fy = sin(Maths.mul(Maths.sum(m, one), pibyw, Maths.sub(Y, ymin))); //ok
+                fy = sin(MathsBase.mul(MathsBase.sum(m, one), pibyw, MathsBase.sub(Y, ymin))); //ok
             }
         }
         Expr fz = null;
         if (maxNorth) {
             if (maxSouth) {
 //                fy = cos((n * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(Maths.mul(n, pibyh, Maths.sub(Z, zmin))); //ok
+                fz = cos(MathsBase.mul(n, pibyh, MathsBase.sub(Z, zmin))); //ok
             } else {
 //                fy = cos(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.sub(Z, zmin))); //ok
+                fz = cos(MathsBase.mul(MathsBase.div(MathsBase.sum(MathsBase.mul(two, n), one), two), pibyh, MathsBase.sub(Z, zmin))); //ok
             }
         } else {
             if (maxSouth) {
                 //fy = sin(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = sin(Maths.mul(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.sub(Z, zmin))); //ok
+                fz = sin(MathsBase.mul(MathsBase.div(MathsBase.sum(MathsBase.mul(two, n), one), two), pibyh, MathsBase.sub(Z, zmin))); //ok
             } else {
                 //fy = sin(((n+1) * PI / domain.Height) * (Y - domain.Ymin)); //ok
-                fz = cos(Maths.mul(Maths.sum(n, one), pibyh, Maths.sub(Z, zmin))); //ok
+                fz = cos(MathsBase.mul(MathsBase.sum(n, one), pibyh, MathsBase.sub(Z, zmin))); //ok
             }
         }
-        init(Maths.mul(fy, fz, Maths.expr(domain)));
+        init(MathsBase.mul(fy, fz, MathsBase.expr(domain)));
     }
 
     public boolean isMaxEast() {

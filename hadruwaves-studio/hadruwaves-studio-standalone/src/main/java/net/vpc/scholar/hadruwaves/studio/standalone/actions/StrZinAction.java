@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone.actions;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 import net.vpc.scholar.hadruwaves.studio.standalone.MatrixDialog;
 import net.vpc.scholar.hadruwaves.studio.standalone.buildactions.BuildZinAction;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 
 /**
@@ -17,12 +17,12 @@ public class StrZinAction extends StructureAction {
     }
 
     public void execute(RunningProjectThread thread) throws Exception {
-        Matrix zin = new BuildZinAction(thread.getHelper(true)).go0();
+        ComplexMatrix zin = new BuildZinAction(thread.getHelper(true)).go0();
         thread.getProperties().put("zin", zin);
     }
 
     protected void terminateProcess(RunningProjectThread thread) {
-        Matrix zin = (Matrix) thread.getProperties().get("zin");
+        ComplexMatrix zin = (ComplexMatrix) thread.getProperties().get("zin");
         MatrixDialog.showMatrix(getResources().get("displayZin.title", getEditor().getProjectName()),zin);
     }
 }

@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractSParametersBuilder;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -18,10 +18,10 @@ class DefaultSParametersBuilder extends AbstractSParametersBuilder {
         super(momStructure);
     }
 
-    public Matrix computeMatrixImpl() {
+    public ComplexMatrix computeMatrixImpl() {
         MomStructure momStructure=(MomStructure) getStructure();
-        Matrix z = momStructure.inputImpedance().monitor(getMonitor()).computeMatrix();
-        Matrix z0 = null;
+        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).computeMatrix();
+        ComplexMatrix z0 = null;
         switch (momStructure.getProjectType()) {
             case WAVE_GUIDE: {
                 z0 = Maths.matrix(new Complex[][]{{momStructure.getModeFunctions().getPropagatingModes()[0].impedance.impedanceValue()}});
@@ -32,9 +32,9 @@ class DefaultSParametersBuilder extends AbstractSParametersBuilder {
                 break;
             }
         }
-        Matrix x = z.div(z0);
+        ComplexMatrix x = z.div(z0);
 
-        Matrix id = Maths.identityMatrix(x);
+        ComplexMatrix id = Maths.identityMatrix(x);
 
         return (x.sub(id)).div(x.add(id));
     }

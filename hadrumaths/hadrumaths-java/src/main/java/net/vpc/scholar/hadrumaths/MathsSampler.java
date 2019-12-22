@@ -13,9 +13,9 @@ import java.util.Collections;
 import java.util.List;
 
 class MathsSampler {
-    public static DoubleList refineSamples(TList<Double> values, int n) {
-        DoubleList values2 = (DoubleList) values.to(Maths.$DOUBLE);
-        return (DoubleList) Maths.dlist(refineSamples(values2.toDoubleArray(), n));
+    public static DoubleVector refineSamples(TVector<Double> values, int n) {
+        DoubleVector values2 = (DoubleVector) values.to(MathsBase.$DOUBLE);
+        return (DoubleVector) MathsBase.dlist(refineSamples(values2.toDoubleArray(), n));
     }
 
     /**
@@ -31,7 +31,7 @@ class MathsSampler {
         double[] d2 = new double[values.length + n * (values.length - 1)];
         for (int i = 0; i < values.length - 1; i++) {
             int s = i * (1 + n);
-            double[] d3 = Maths.dtimes(values[i], values[i + 1], n + 2);
+            double[] d3 = MathsBase.dtimes(values[i], values[i + 1], n + 2);
             System.arraycopy(d3, 0, d2, s, d3.length - 1);
         }
         d2[d2.length - 1] = values[values.length - 1];
@@ -48,7 +48,7 @@ class MathsSampler {
         int maxSamples = config.getMaximumXSamples();
         double err = config.getError();
         SamplifyListener listener = config.getListener();
-        double[] dsteps = Maths.dtimes(xmin, xmax, minSteps);
+        double[] dsteps = MathsBase.dtimes(xmin, xmax, minSteps);
         if (err <= 0) {
             err = 0.1;
         }

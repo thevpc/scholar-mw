@@ -1,7 +1,7 @@
 package ${{packageName(ProjectGroup)}}
 
 import net.vpc.scholar.hadrumaths.Maths
-import net.vpc.scholar.hadrumaths.Maths._
+
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadruwaves._
 import net.vpc.scholar.hadruwaves.Physics._

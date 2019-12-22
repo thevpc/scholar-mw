@@ -28,7 +28,7 @@ public abstract class DCxyToDDxy extends AbstractDoubleToDouble {
     }
 
     public DoubleToComplex toDC() {
-        return Maths.complex(this);
+        return MathsBase.complex(this);
     }
 
     public boolean isDDImpl() {

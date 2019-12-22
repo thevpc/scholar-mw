@@ -6,8 +6,8 @@ class TMatrixCellToModel<T> implements TMatrixModel<T> {
     private final TMatrixCell<T> model;
 
     public TMatrixCellToModel(int rows, int columns, TMatrixCell<T> model) {
-        this.rows = rows;
-        this.columns = columns;
+        this.rows = (model instanceof TMatrixModel) ? ((TMatrixModel<T>) model).getRowCount() : rows;
+        this.columns = (model instanceof TMatrixModel) ? ((TMatrixModel<T>) model).getColumnCount() : columns;
         this.model = model;
     }
 

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util.dump;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.lang.reflect.Array;
 
@@ -21,7 +21,7 @@ public class PrimitiveArrayDumpDelegate implements DumpDelegate {
             if(i>0){
                 sb.append(",");
             }
-            sb.append(Maths.dump(Array.get(object, i)));
+            sb.append(MathsBase.dump(Array.get(object, i)));
         }
         sb.append("]");
         return sb.toString();

@@ -5,7 +5,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.buildactions.BuildS11Action;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.PlotConfigData;
 import net.vpc.scholar.hadruwaves.studio.standalone.editors.PlotConfigEditor;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 
 /**
@@ -33,7 +33,7 @@ public class StrS11Action extends StructureAction {
     public void execute(RunningProjectThread thread) throws Exception {
         PlotConfigData params = (PlotConfigData) thread.getProperties().get("config");
 
-        Matrix s11 = new BuildS11Action(thread.getHelper(true)).go0();
+        ComplexMatrix s11 = new BuildS11Action(thread.getHelper(true)).go0();
         MatrixDialog.showMatrix(thread.getResources().get("displayS11.title", getEditor().getProjectName()), s11);
     }
 }

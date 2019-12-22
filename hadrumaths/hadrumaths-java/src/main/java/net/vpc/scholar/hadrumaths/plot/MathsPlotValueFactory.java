@@ -49,25 +49,25 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
                 Object[] arr = vv.toArray();
                 return createPlotValue(arr, builder);
             }
-            if (vv.isConvertibleTo(Maths.$DOUBLE)) {
-                vv = vv.to(Maths.$DOUBLE);
-            } else if (vv.isConvertibleTo(Maths.$COMPLEX)) {
-                vv = vv.to(Maths.$COMPLEX);
-            } else if (vv.isConvertibleTo(Maths.$EXPR)) {
-                vv = vv.to(Maths.$EXPR);
+            if (vv.isConvertibleTo(MathsBase.$DOUBLE)) {
+                vv = vv.to(MathsBase.$DOUBLE);
+            } else if (vv.isConvertibleTo(MathsBase.$COMPLEX)) {
+                vv = vv.to(MathsBase.$COMPLEX);
+            } else if (vv.isConvertibleTo(MathsBase.$EXPR)) {
+                vv = vv.to(MathsBase.$EXPR);
             }
             String subType = "object";
-            if (vv.getComponentType().equals(Maths.$COMPLEX)) {
+            if (vv.getComponentType().equals(MathsBase.$COMPLEX)) {
                 subType = "complex";
-            } else if (vv.getComponentType().equals(Maths.$EXPR)) {
+            } else if (vv.getComponentType().equals(MathsBase.$EXPR)) {
                 subType = "expr";
-            } else if (vv.getComponentType().equals(Maths.$DOUBLE)) {
+            } else if (vv.getComponentType().equals(MathsBase.$DOUBLE)) {
                 subType = "number";
-            } else if (vv.getComponentType().equals(Maths.$BOOLEAN)) {
+            } else if (vv.getComponentType().equals(MathsBase.$BOOLEAN)) {
                 subType = "boolean";
-            } else if (vv.getComponentType().equals(Maths.$POINT)) {
+            } else if (vv.getComponentType().equals(MathsBase.$POINT)) {
                 subType = "point";
-            } else if (vv.getComponentType().equals(Maths.$FILE)) {
+            } else if (vv.getComponentType().equals(MathsBase.$FILE)) {
                 subType = "file";
             }
             PlotValue typeAndValue = createPlotValue(subType + "[]", obj);

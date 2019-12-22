@@ -17,7 +17,7 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
 public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator {
 
     @Override
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         final String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
@@ -47,7 +47,7 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
 
 
 
-        Matrix cMatrix = Maths.matrix(b);
+        ComplexMatrix cMatrix = Maths.matrix(b);
         double norm = cMatrix.norm1();
         if (norm == 0 || Double.isNaN(norm) || Double.isInfinite(norm)) {
             emonitor.setMessage("MatrixB is badly normed : " + norm);

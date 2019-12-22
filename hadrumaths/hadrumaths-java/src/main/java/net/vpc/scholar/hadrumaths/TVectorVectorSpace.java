@@ -21,16 +21,16 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(TMatrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//        if(t.equals(TList.class)){
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -52,20 +52,20 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
 //        if(t.equals(Vector.class)){
 //            return (Complex) ((Vector)value).toComplex();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (Complex) ((TVector)value).toComplex();
+//        if(t.equals(TList.class)){
+//            return (Complex) ((TList)value).toComplex();
 //        }
 //        throw new ClassCastException();
 //    }
 
     @Override
     public TVector<T> convert(double d) {
-        return (TVector<T>) Maths.matrix(new double[][]{{d}}).to(tr);
+        return (TVector<T>) MathsBase.matrix(new double[][]{{d}}).to(tr);
     }
 
     @Override
     public TVector<T> convert(Complex d) {
-        return (TVector<T>) Maths.matrix(new Complex[][]{{d}}).to(tr);
+        return (TVector<T>) MathsBase.matrix(new Complex[][]{{d}}).to(tr);
     }
 
     @Override
@@ -312,7 +312,7 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
     @Override
     public TVector<T> lt(TVector<T> a, TVector<T> b) {
         int rows = Math.max(a.length(),b.length());
-        TVector<T> m=new ArrayTList<T>(tr,a.isRow(),rows);
+        TVector<T> m=new ArrayTVector<T>(tr,a.isRow(),rows);
         for (int i = 0; i < rows; i++) {
             m.set(i,vs.lt(a.get(i),b.get(i)));
         }
@@ -322,7 +322,7 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
     @Override
     public TVector<T> lte(TVector<T> a, TVector<T> b) {
         int rows = Math.max(a.length(),b.length());
-        TVector<T> m=new ArrayTList<T>(tr,a.isRow(),rows);
+        TVector<T> m=new ArrayTVector<T>(tr,a.isRow(),rows);
         for (int i = 0; i < rows; i++) {
             m.set(i,vs.lte(a.get(i),b.get(i)));
         }
@@ -332,7 +332,7 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
     @Override
     public TVector<T> gt(TVector<T> a, TVector<T> b) {
         int rows = Math.max(a.length(),b.length());
-        TVector<T> m=new ArrayTList<T>(tr,a.isRow(),rows);
+        TVector<T> m=new ArrayTVector<T>(tr,a.isRow(),rows);
         for (int i = 0; i < rows; i++) {
             m.set(i,vs.gt(a.get(i),b.get(i)));
         }
@@ -342,7 +342,7 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
     @Override
     public TVector<T> gte(TVector<T> a, TVector<T> b) {
         int rows = Math.max(a.length(),b.length());
-        TVector<T> m=new ArrayTList<T>(tr,a.isRow(),rows);
+        TVector<T> m=new ArrayTVector<T>(tr,a.isRow(),rows);
         for (int i = 0; i < rows; i++) {
             m.set(i,vs.gte(a.get(i),b.get(i)));
         }
@@ -383,7 +383,7 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
     @Override
     public TVector<T> scalarProduct(TVector<T> a, TVector<T> b) {
         //return hermitian ? a.mul(b) : a.conj().mul(b);
-        ArrayTList<T> ts = new ArrayTList<>(tr, a.isRow(), 1);
+        ArrayTVector<T> ts = new ArrayTVector<>(tr, a.isRow(), 1);
         ts.add(a.scalarProduct(b));
         return ts;
     }
@@ -400,14 +400,14 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
 
             @Override
             public void append(TVector<T> item) {
-                c=new ArrayTList<>(tr, c.isRow(), c.length());
+                c=new ArrayTVector<>(tr, c.isRow(), c.length());
                 c.add(item);
             }
 
             @Override
             public TVector<T> eval() {
                 if(c==null) {
-                    c=new ArrayTList<T>(tr, false, 1);
+                    c=new ArrayTVector<T>(tr, false, 1);
                     c.set(0,vs.zero());
                 }
                 return c;
@@ -422,14 +422,14 @@ public class TVectorVectorSpace<T> extends AbstractVectorSpace<TVector<T>> {
 
             @Override
             public void append(TVector<T> item) {
-                c=new ArrayTList<>(tr, c.isRow(), c.length());
+                c=new ArrayTVector<>(tr, c.isRow(), c.length());
                 c.add(item);
             }
 
             @Override
             public TVector<T> eval() {
                 if(c==null) {
-                    c=new ArrayTList<T>(tr, false, 1);
+                    c=new ArrayTVector<T>(tr, false, 1);
                     c.set(0,vs.one());
                 }
                 return c;

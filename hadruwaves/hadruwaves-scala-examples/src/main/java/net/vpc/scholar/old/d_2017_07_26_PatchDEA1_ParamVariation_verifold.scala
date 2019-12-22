@@ -4,9 +4,7 @@ import java.io.{File, PrintStream}
 
 import net.vpc.common.io.IOUtils
 import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadrumaths.cache.ObjectCache
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
 import net.vpc.scholar.hadruplot.Plot
@@ -16,10 +14,10 @@ import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIteratorFactory
 
 
 /**
-  * Created by imen on 7/15/2017.
-  * to compare with matlab code to validate our method
-  * patch antenna dea box EEEE without attach function
-  */
+ * Created by imen on 7/15/2017.
+ * to compare with matlab code to validate our method
+ * patch antenna dea box EEEE without attach function
+ */
 object d_2017_07_26_PatchDEA1_ParamVariation_verif {
   Maths.Config.setSimplifierCacheSize(1000000);
   Maths.Config.setAppCacheName("3.1.2")
@@ -71,8 +69,8 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
 
     refineFrequencies.foreach(refineIndex => {
       println("============ Raffinement " + (refineIndex) + "  => " + frequencies)
-      var zinEssaiList = new java.util.ArrayList[TList[Expr]]();
-      var zinModeList = new java.util.ArrayList[TList[Expr]]();
+      var zinEssaiList = new java.util.ArrayList[TVector[Expr]]();
+      var zinModeList = new java.util.ArrayList[TVector[Expr]]();
       var zinTitles = new java.util.ArrayList[String]();
       refineEssai.foreach(PIncrement => {
         PPatch = 5 + PIncrement
@@ -81,9 +79,9 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
         var gp = elist()
         var testX = ((cos((2 * p + 1) * π * X / (2 * (l + l / 1.2))) * cos(q * π / d * (Y + d / 2))) * dLine)
         val essaiPatchX = ((sin(p * π * (X - l) / L) * cos(q * π * (Y + W / 2) / W)) * dPatch);
-        gp :+= normalize(seq(testX, p, PLine - 1, q, PLine - 1));
-        gp :+= normalize(seq(essaiPatchX, p, PPatch - 1, q, PPatch - 1, (pp, qq) => pp != 0))
-        gp = simplify(gp)
+        gp :+= normalize(testX.inflate(p.to(PLine - 1).cross(q.to(PLine - 1))));
+        gp :+= normalize(essaiPatchX.inflate(p.to(PPatch - 1).cross(q.to(PPatch - 1)).where(p !== 0)));
+        gp = simplify(gp);
         //        Plot.title("test functions " + PIncrement).domain(dPlot).plot(gp)
         // src dimensions variation:
         var count = 0

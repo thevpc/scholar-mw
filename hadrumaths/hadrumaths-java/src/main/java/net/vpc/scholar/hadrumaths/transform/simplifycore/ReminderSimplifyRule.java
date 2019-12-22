@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
 import net.vpc.scholar.hadrumaths.symbolic.IConstantValue;
@@ -49,7 +49,7 @@ public class ReminderSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.unmodified(e);
         }
 
-        Expr eee = Maths.rem(ar.getValue(), br.getValue());
+        Expr eee = MathsBase.rem(ar.getValue(), br.getValue());
         eee = Any.copyProperties(e, eee);
         return (ar.isBestEffort() && br.isBestEffort()) ? RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
     }

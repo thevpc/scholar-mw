@@ -60,6 +60,7 @@ public final class Plot {
     public static final String JFB_FILE_EXTENSION = "jfb";
     private static PlotWindowManager defaultWindowManager = PlotWindowManagerFactory.createScatteredFrames();
     private static Map<String, PlotComponent> cachedPlotComponent = new LinkedHashMap<>();
+    public static final PlotConfig Config = new PlotConfig();
 
     static {
         ServiceLoader<HadruplotService> loader = ServiceLoader.load(HadruplotService.class);
@@ -570,9 +571,9 @@ public final class Plot {
                             .addLine("[<polarOffsetLabel][polarOffsetText -][<clockwiseCheckBox  ]")
                             .setInsets(".*", new Insets(3, 3, 3, 3))
             );
-            PlotConfig config = (PlotConfig) model.getProperty("config", null);
+            PlotViewConfig config = (PlotViewConfig) model.getProperty("config", null);
             if (config == null) {
-                config = new PlotConfig();
+                config = new PlotViewConfig();
                 model.setProperty("config", config);
             }
             final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend.get(true));
@@ -637,7 +638,7 @@ public final class Plot {
                 lines[i] = new ModelSeriesItem();
                 lines[i].setIndex(i);
                 lines[i].setTitle(ytitles[i]);
-                PlotConfig lineConfig = config.children.get(i);
+                PlotViewConfig lineConfig = config.children.get(i);
                 Color col = (Color) lineConfig.color;
                 if (col == null) {
                     col = defaultPaintArray.getColor(((float) i) / ytitles.length);
@@ -703,7 +704,7 @@ public final class Plot {
 
                 for (int i = 0; i < ytitles.length; i++) {
                     model.setYVisible(i, lines[i].isVisible());
-                    PlotConfig lineConfig = config.children.get(i);
+                    PlotViewConfig lineConfig = config.children.get(i);
                     lineConfig.lineType.set(lines[i].getLineType());
                     lineConfig.nodeType.set(lines[i].getNodeType());
                     lineConfig.xmultiplier.set(lines[i].getXmultiplier().doubleValue());
@@ -762,175 +763,6 @@ public final class Plot {
 
     public static PlotBuilder cd(String path) {
         return builder().cd(path);
-    }
-
-    //    private static class DoubleABSAction extends ValuesModelAction implements Serializable {
-//
-//        public DoubleABSAction(PlotModelProvider modelProvider) {
-//            super("Abs", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.ABS);
-//        }
-//    }
-//
-//    private static class DoubleREALAction extends ValuesModelAction implements Serializable {
-//
-//        public DoubleREALAction(PlotModelProvider modelProvider) {
-//            super("Real", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.REAL);
-//        }
-//    }
-//
-//    private static class DoubleIMAGAction extends ValuesModelAction implements Serializable {
-//
-//        public DoubleIMAGAction(PlotModelProvider modelProvider) {
-//            super("Imag", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.IMG);
-//        }
-//    }
-//
-//    private static class DoubleDBAction extends ValuesModelAction implements Serializable {
-//
-//        public DoubleDBAction(PlotModelProvider modelProvider) {
-//            super("DB", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.DB);
-//        }
-//    }
-//
-//    private static class DoubleDB2Action extends ValuesModelAction implements Serializable {
-//
-//        public DoubleDB2Action(PlotModelProvider modelProvider) {
-//            super("DB2", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.DB2);
-//        }
-//    }
-//
-//    private static class DoubleArgAction extends ValuesModelAction implements Serializable {
-//
-//        public DoubleArgAction(PlotModelProvider modelProvider) {
-//            super("Arg", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.ARG);
-//        }
-//    }
-//
-//    private static class ComplexAction extends ValuesModelAction implements Serializable {
-//
-//        public ComplexAction(PlotModelProvider modelProvider) {
-//            super("Complex", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setConverter(PlotDoubleConverter.COMPLEX);
-//        }
-//    }
-//    private static class PlotCourbeAction extends ValuesModelAction implements Serializable {
-//
-//        public PlotCourbeAction(PlotModelProvider modelProvider) {
-//            super("Curves", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setPlotType(PlotType.CURVE);
-//        }
-//    }
-//
-//    private static class PlotHeatMapAction extends ValuesModelAction implements Serializable {
-//
-//        public PlotHeatMapAction(PlotModelProvider modelProvider) {
-//            super("Heat Map", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setPlotType(PlotType.HEATMAP);
-//        }
-//    }
-//
-//    private static class PlotTableAction extends ValuesModelAction implements Serializable {
-//
-//        public PlotTableAction(PlotModelProvider modelProvider) {
-//            super("Table", modelProvider);
-//        }
-//
-//
-//        public void actionPerformed(ActionEvent e) {
-//            getModel().setPlotType(PlotType.TABLE);
-//        }
-//    }
-    public static class Config {
-
-        private static int maxLegendCount = 20;
-        private static String defaultWindowTitle = "Hadrumaths Plot";
-        private static ClassMap<Converter> objectConverters = new ClassMap<Converter>(Object.class, Converter.class);
-        private static PlotManager manager = null;
-
-        public static PlotManager getManager() {
-            return manager;
-        }
-
-        public static void setManager(PlotManager manager) {
-            Config.manager = manager;
-        }
-
-        public static int getMaxLegendCount() {
-            return maxLegendCount;
-        }
-
-        public static void setMaxLegendCount(int maxLegendCount) {
-            Config.maxLegendCount = maxLegendCount;
-        }
-
-        public static String getDefaultWindowTitle() {
-            return defaultWindowTitle;
-        }
-
-        public static void setDefaultWindowTitle(String defaultWindowTitle) {
-            Config.defaultWindowTitle = defaultWindowTitle;
-        }
-
-        public static Object convert(Object object) {
-            if (object == null) {
-                return null;
-            }
-            Converter converter = objectConverters.get(object.getClass());
-            if (converter != null) {
-                return converter.convert(object);
-            }
-            return object;
-        }
-
-        public static void registerConverter(Class cls, Converter converter) {
-            objectConverters.put(cls, converter);
-        }
-
-        public static void unregisterConverter(Class cls) {
-            objectConverters.remove(cls);
-        }
     }
 
     public static class DoubleTypeAction extends ValuesModelAction implements Serializable {

@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Mul;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -54,7 +54,7 @@ public class MulNavRule implements ExpressionRewriterRule {
             }
         }
         if (changed) {
-            Expr e2 = Maths.mul(updated);
+            Expr e2 = MathsBase.mul(updated);
             e2 = Any.copyProperties(e, e2);
             if (bestEfforts == size) {
                 return RewriteResult.bestEffort(e2);

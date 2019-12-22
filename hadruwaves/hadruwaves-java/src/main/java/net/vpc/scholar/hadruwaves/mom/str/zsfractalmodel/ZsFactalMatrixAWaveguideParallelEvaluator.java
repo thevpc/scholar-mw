@@ -20,7 +20,7 @@ import java.io.PrintStream;
  * @creationtime 24 mai 2007 21:55:23
  */
 public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop str2 = (MomStructureFractalZop) str;
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();

@@ -21,7 +21,7 @@ import java.io.PrintStream;
  */
 public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
     @Override
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop str2 = (MomStructureFractalZop) str;
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();

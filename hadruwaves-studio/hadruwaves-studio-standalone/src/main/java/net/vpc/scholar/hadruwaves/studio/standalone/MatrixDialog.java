@@ -7,14 +7,14 @@ import net.vpc.lib.pheromone.application.swing.Swings;
 import javax.swing.*;
 import java.awt.*;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 
 /**
  * @author Taha Ben Salah (thevpc@walla.com)
  * @creationtime 24 mai 2007 23:20:01
  */
 public class MatrixDialog {
-    public static Matrix showMatrix(String title, Matrix matrix) {
+    public static ComplexMatrix showMatrix(String title, ComplexMatrix matrix) {
         CMatrixTableModel model;
         JTable table = new JTable(model = new CMatrixTableModel(Maths.matrix(matrix)));
         JPanel p = new JPanel(new BorderLayout());

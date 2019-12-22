@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.str.ElectricFieldEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -30,7 +30,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
-                Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();

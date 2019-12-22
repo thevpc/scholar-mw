@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 public class SolverExecutorService implements Closeable {
     //    public static void main(String[] args) {
 //        try {
-//            Maths.solverExecutorService(1)
+//            MathsBase.solverExecutorService(1)
 //                    .submit(new Runnable() {
 //                        @Override
 //                        public void run() {

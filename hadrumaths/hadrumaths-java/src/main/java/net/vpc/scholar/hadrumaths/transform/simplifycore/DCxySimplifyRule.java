@@ -7,9 +7,9 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.DCxy;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -22,7 +22,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 public class DCxySimplifyRule implements ExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new DCxySimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{DCxy.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{DD2DC.class};
 
 
     @Override
@@ -31,7 +31,7 @@ public class DCxySimplifyRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        DCxy ee = (DCxy) e;
+        DD2DC ee = (DD2DC) e;
         DoubleToDouble real = ee.getRealDD();
         DoubleToDouble imag = ee.getImagDD();
         RewriteResult exreal = ruleset.rewrite(real);
@@ -50,7 +50,7 @@ public class DCxySimplifyRule implements ExpressionRewriterRule {
         if (exreal.isUnmodified() && eximag.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
-        return RewriteResult.bestEffort(Maths.complex(real, imag));
+        return RewriteResult.bestEffort(MathsBase.complex(real, imag));
     }
 
     @Override

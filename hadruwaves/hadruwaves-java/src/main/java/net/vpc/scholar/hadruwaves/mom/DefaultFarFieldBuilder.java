@@ -2,8 +2,8 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.builders.AbstractFarFieldBuilder;

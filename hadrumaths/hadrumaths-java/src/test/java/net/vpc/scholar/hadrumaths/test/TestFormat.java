@@ -24,7 +24,7 @@
 //                - abs(new CosXCosY(8,8,9,9,8,xdomain(1,9)))
 //                + new ComplexValue(î,domain(1,9,-1,9))
 ////                + new CExp(-5,-2,-3,domain(1,9,-1,9))
-//                * new DCxy(expr(2).toDD(),expr(2).toDD())
+//                * new DD2DC(expr(2).toDD(),expr(2).toDD())
 //                ;
 ////        Expr e = new CosXCosY(8,0,0,9,8,xdomain(1,9))
 //                ;

@@ -157,7 +157,7 @@ public final class ComplexI extends Complex {
 
     public Complex exp() {
         double e = 1;
-        return Complex.valueOf(e * Maths.cos2(imag), e * Maths.sin2(imag));
+        return Complex.valueOf(e * MathsBase.cos2(imag), e * MathsBase.sin2(imag));
     }
 
     public Complex abs() {
@@ -412,7 +412,7 @@ public final class ComplexI extends Complex {
     public Complex sqrt() {
         double r = Math.sqrt(absdbl());
         double theta = arg().toDouble() / 2;
-        return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+        return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
     }
 
     public Complex sqrt(int n) {
@@ -442,12 +442,12 @@ public final class ComplexI extends Complex {
             double r = Math.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
-            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            Complex c = Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
             return c.inv();
         }
     }
@@ -519,16 +519,16 @@ public final class ComplexI extends Complex {
 
     @Override
     public DoubleToDouble getRealDD() {
-        return Maths.DDZERO;
+        return MathsBase.DDZERO;
 //        double real = getReal();
-//        return real==0?Maths.DDZERO : new DoubleValue(real,Domain.FULLX);
+//        return real==0?MathsBase.DDZERO : new DoubleValue(real,Domain.FULLX);
     }
 
     @Override
     public DoubleToDouble getImagDD() {
         //never zero
 //        double imag = getImag();
-//        return imag==0?Maths.DDZERO : new DoubleValue(imag,Domain.FULLX);
+//        return imag==0?MathsBase.DDZERO : new DoubleValue(imag,Domain.FULLX);
         return new DoubleValue(imag, Domain.FULLX);
     }
 

@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -39,7 +39,7 @@ public class PowSimplifyRule implements ExpressionRewriterRule {
         if (bc0 != null && bc0.getComplexConstant().isReal()) {
             double value = bc0.getComplexConstant().toDouble();
             if (value == 1) {
-                return RewriteResult.newVal(Maths.mul(a.getValue(), DoubleValue.valueOf(1, bc0.getDomain())));
+                return RewriteResult.newVal(MathsBase.mul(a.getValue(), DoubleValue.valueOf(1, bc0.getDomain())));
             } else if (value == 0) {
                 if (a.getValue().isScalarExpr() || a.getValue().isDD() || a.getValue().isDC()) {
                     return RewriteResult.newVal(DoubleValue.valueOf(1, a.getValue().toDD().getDomain().intersect(bc0.getDomain())));

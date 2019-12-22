@@ -15,6 +15,7 @@ import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import net.vpc.scholar.hadruplot.*;
@@ -194,15 +195,15 @@ public final class MathsBase {
     public static final int X_AXIS = 0;
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
-    public static final TStoreManager<Matrix> MATRIX_STORE_MANAGER = new TStoreManager<Matrix>() {
+    public static final TStoreManager<ComplexMatrix> MATRIX_STORE_MANAGER = new TStoreManager<ComplexMatrix>() {
         @Override
-        public void store(Matrix item, File file) {
+        public void store(ComplexMatrix item, File file) {
             item.store(file);
         }
 
         @Override
-        public Matrix load(File file) {
-            return Config.getDefaultMatrixFactory().load(file);
+        public ComplexMatrix load(File file) {
+            return Config.getComplexMatrixFactory().load(file);
         }
     };
     public static final TStoreManager<TMatrix> TMATRIX_STORE_MANAGER = new TStoreManager<TMatrix>() {
@@ -213,7 +214,7 @@ public final class MathsBase {
 
         @Override
         public TMatrix load(File file) {
-            return Config.getDefaultMatrixFactory().load(file);
+            return Config.getComplexMatrixFactory().load(file);
         }
     };
 
@@ -225,19 +226,19 @@ public final class MathsBase {
 
         @Override
         public TVector load(File file) {
-            return Config.getDefaultMatrixFactory().load(file).toVector();
+            return Config.getComplexMatrixFactory().load(file).toVector();
         }
     };
 
-    public static final TStoreManager<Vector> VECTOR_STORE_MANAGER = new TStoreManager<Vector>() {
+    public static final TStoreManager<ComplexVector> VECTOR_STORE_MANAGER = new TStoreManager<ComplexVector>() {
         @Override
-        public void store(Vector item, File file) {
+        public void store(ComplexVector item, File file) {
             item.store(file);
         }
 
         @Override
-        public Vector load(File file) {
-            return Config.getDefaultMatrixFactory().load(file).toVector();
+        public ComplexVector load(File file) {
+            return Config.getComplexMatrixFactory().load(file).toVector();
         }
     };
     public static final Converter IDENTITY = new IdentityConverter();
@@ -261,8 +262,8 @@ public final class MathsBase {
 //    }
     public static final TypeName<String> $STRING = new TypeName(String.class.getName());
     public static final TypeName<Complex> $COMPLEX = new TypeName(Complex.class.getName());
-    public static final TypeName<Matrix> $MATRIX = new TypeName(Matrix.class.getName());
-    public static final TypeName<Vector> $VECTOR = new TypeName(Vector.class.getName());
+    public static final TypeName<ComplexMatrix> $MATRIX = new TypeName(ComplexMatrix.class.getName());
+    public static final TypeName<ComplexVector> $VECTOR = new TypeName(ComplexVector.class.getName());
     public static final TypeName<TMatrix<Complex>> $CMATRIX = new TypeName(TMatrix.class.getName(), $COMPLEX);
     public static final TypeName<TVector<Complex>> $CVECTOR = new TypeName(TVector.class.getName(), $COMPLEX);
     public static final TypeName<Double> $DOUBLE = new TypeName(Double.class.getName());
@@ -273,13 +274,13 @@ public final class MathsBase {
     public static final TypeName<Integer> $INTEGER = new TypeName(Integer.class.getName());
     public static final TypeName<Long> $LONG = new TypeName(Long.class.getName());
     public static final TypeName<Expr> $EXPR = new TypeName(Expr.class.getName());
-    public static final TypeName<TList<Complex>> $CLIST = new TypeName(TList.class.getName(), $COMPLEX);
-    public static final TypeName<TList<Expr>> $ELIST = new TypeName(TList.class.getName(), $EXPR);
-    public static final TypeName<TList<Double>> $DLIST = new TypeName(TList.class.getName(), $DOUBLE);
-    public static final TypeName<TList<TList<Double>>> $DLIST2 = new TypeName(TList.class.getName(), $DLIST);
-    public static final TypeName<TList<Integer>> $ILIST = new TypeName(TList.class.getName(), $INTEGER);
-    public static final TypeName<TList<Boolean>> $BLIST = new TypeName(TList.class.getName(), $BOOLEAN);
-    public static final TypeName<TList<Matrix>> $MLIST = new TypeName(TList.class.getName(), $MATRIX);
+    public static final TypeName<TVector<Complex>> $CLIST = new TypeName(TVector.class.getName(), $COMPLEX);
+    public static final TypeName<TVector<Expr>> $ELIST = new TypeName(TVector.class.getName(), $EXPR);
+    public static final TypeName<TVector<Double>> $DLIST = new TypeName(TVector.class.getName(), $DOUBLE);
+    public static final TypeName<TVector<TVector<Double>>> $DLIST2 = new TypeName(TVector.class.getName(), $DLIST);
+    public static final TypeName<TVector<Integer>> $ILIST = new TypeName(TVector.class.getName(), $INTEGER);
+    public static final TypeName<TVector<Boolean>> $BLIST = new TypeName(TVector.class.getName(), $BOOLEAN);
+    public static final TypeName<TVector<ComplexMatrix>> $MLIST = new TypeName(TVector.class.getName(), $MATRIX);
     public static final SimpleDateFormat UNIVERSAL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final int ARCH_MODEL_BITS = Integer.valueOf(
             System.getProperty("sun.arch.data.model") != null ? System.getProperty("sun.arch.data.model")
@@ -297,15 +298,15 @@ public final class MathsBase {
         }
     };
     public static DistanceStrategy<Complex> DISTANCE_COMPLEX = Complex.DISTANCE;
-    public static DistanceStrategy<Matrix> DISTANCE_MATRIX = new DistanceStrategy<Matrix>() {
+    public static DistanceStrategy<ComplexMatrix> DISTANCE_MATRIX = new DistanceStrategy<ComplexMatrix>() {
         @Override
-        public double distance(Matrix a, Matrix b) {
+        public double distance(ComplexMatrix a, ComplexMatrix b) {
             return a.getError(b);
         }
     };
-    public static DistanceStrategy<Vector> DISTANCE_VECTOR = new DistanceStrategy<Vector>() {
+    public static DistanceStrategy<ComplexVector> DISTANCE_VECTOR = new DistanceStrategy<ComplexVector>() {
         @Override
-        public double distance(Vector a, Vector b) {
+        public double distance(ComplexVector a, ComplexVector b) {
             return a.toMatrix().getError(b.toMatrix());
         }
     };
@@ -565,226 +566,223 @@ public final class MathsBase {
     //</editor-fold>
 
     //<editor-fold desc="Matrix functions">
-    public static Matrix zerosMatrix(Matrix other) {
-        return Config.getDefaultMatrixFactory().newZeros(other);
+    public static ComplexMatrix zerosMatrix(ComplexMatrix other) {
+        return Config.getComplexMatrixFactory().newZeros(other);
     }
 
-    public static Matrix constantMatrix(int dim, Complex value) {
-        return Config.getDefaultMatrixFactory().newConstant(dim, value);
+    public static ComplexMatrix constantMatrix(int dim, Complex value) {
+        return Config.getComplexMatrixFactory().newConstant(dim, value);
     }
 
-    public static Matrix onesMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newOnes(dim);
+    public static ComplexMatrix onesMatrix(int dim) {
+        return Config.getComplexMatrixFactory().newOnes(dim);
     }
 
-    public static Matrix onesMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newOnes(rows, cols);
+    public static ComplexMatrix onesMatrix(int rows, int cols) {
+        return Config.getComplexMatrixFactory().newOnes(rows, cols);
     }
 
-    public static Matrix constantMatrix(int rows, int cols, Complex value) {
-        return Config.getDefaultMatrixFactory().newConstant(rows, cols, value);
+    public static ComplexMatrix constantMatrix(int rows, int cols, Complex value) {
+        return Config.getComplexMatrixFactory().newConstant(rows, cols, value);
     }
 
-    public static Matrix zerosMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newZeros(dim);
+    public static ComplexMatrix zerosMatrix(int dim) {
+        return Config.getComplexMatrixFactory().newZeros(dim);
     }
 
-    public static Matrix I(Complex[][] iValue) {
+    public static ComplexMatrix I(Complex[][] iValue) {
         return matrix(iValue).mul(I);
     }
 
-    public static Matrix zerosMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newZeros(rows, cols);
+    public static ComplexMatrix zerosMatrix(int rows, int cols) {
+        return Config.getComplexMatrixFactory().newZeros(rows, cols);
     }
 
-    public static Matrix identityMatrix(Matrix c) {
-        return Config.getDefaultMatrixFactory().newIdentity(c);
+    public static ComplexMatrix identityMatrix(ComplexMatrix c) {
+        return Config.getComplexMatrixFactory().newIdentity(c);
     }
 
-    public static Matrix NaNMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newNaN(dim);
+    public static ComplexMatrix NaNMatrix(int dim) {
+        return Config.getComplexMatrixFactory().newNaN(dim);
     }
 
-    public static Matrix NaNMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newNaN(rows, cols);
+    public static ComplexMatrix NaNMatrix(int rows, int cols) {
+        return Config.getComplexMatrixFactory().newNaN(rows, cols);
     }
 
-    public static Matrix identityMatrix(int dim) {
-        return Config.getDefaultMatrixFactory().newIdentity(dim);
+    public static ComplexMatrix identityMatrix(int dim) {
+        return Config.getComplexMatrixFactory().newIdentity(dim);
     }
 
-    public static Matrix identityMatrix(int rows, int cols) {
-        return Config.getDefaultMatrixFactory().newIdentity(rows, cols);
+    public static ComplexMatrix identityMatrix(int rows, int cols) {
+        return Config.getComplexMatrixFactory().newIdentity(rows, cols);
     }
 
-    public static Matrix matrix(Matrix matrix) {
-        return Config.getDefaultMatrixFactory().newMatrix(matrix);
+    public static ComplexMatrix matrix(ComplexMatrix matrix) {
+        return Config.getComplexMatrixFactory().newMatrix(matrix);
     }
 
-    public static Matrix matrix(String string) {
-        return Config.getDefaultMatrixFactory().newMatrix(string);
+    public static ComplexMatrix matrix(String string) {
+        return Config.getComplexMatrixFactory().newMatrix(string);
     }
 
-    public static Matrix matrix(Complex[][] complex) {
-        return Config.getDefaultMatrixFactory().newMatrix(complex);
+    public static ComplexMatrix matrix(Complex[][] complex) {
+        return Config.getComplexMatrixFactory().newMatrix(complex);
     }
 
-    public static Matrix matrix(double[][] complex) {
-        return Config.getDefaultMatrixFactory().newMatrix(complex);
+    public static ComplexMatrix matrix(double[][] complex) {
+        return Config.getComplexMatrixFactory().newMatrix(complex);
     }
 
-    public static Matrix matrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, cellFactory);
+    public static ComplexMatrix matrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newMatrix(rows, cols, cellFactory);
     }
 
     //    public static Matrix matrix(int rows, int cols, Int2ToComplex cellFactory) {
-//        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, new I2ToComplexMatrixCell(cellFactory));
+//        return Config.getDefaultMatrixFactory().newMatrix(rows, cols, new I2ToTMatrixCell<Complex>(cellFactory));
 //    }
-    public static Matrix columnMatrix(final Complex... values) {
-        return Config.getDefaultMatrixFactory().newColumnMatrix(values);
+    public static ComplexMatrix columnMatrix(Complex... values) {
+        return Config.getComplexMatrixFactory().newColumnMatrix(values);
     }
 
-    public static Matrix columnMatrix(final double... values) {
+    public static ComplexMatrix columnMatrix(double... values) {
         Complex[] d = new Complex[values.length];
         for (int i = 0; i < d.length; i++) {
             d[i] = Complex.valueOf(values[i]);
         }
-        return Config.getDefaultMatrixFactory().newColumnMatrix(d);
+        return Config.getComplexMatrixFactory().newColumnMatrix(d);
     }
 
-    public static Matrix rowMatrix(final double... values) {
+    public static ComplexMatrix rowMatrix(double... values) {
         Complex[] d = new Complex[values.length];
         for (int i = 0; i < d.length; i++) {
             d[i] = Complex.valueOf(values[i]);
         }
-        return Config.getDefaultMatrixFactory().newRowMatrix(d);
+        return Config.getComplexMatrixFactory().newRowMatrix(d);
     }
 
-    public static Matrix rowMatrix(final Complex... values) {
-        return Config.getDefaultMatrixFactory().newRowMatrix(values);
+    public static ComplexMatrix rowMatrix(Complex... values) {
+        return Config.getComplexMatrixFactory().newRowMatrix(values);
     }
 
-    public static Matrix columnMatrix(int rows, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newColumnMatrix(rows, cellFactory);
+    public static ComplexMatrix columnMatrix(int rows, TVectorCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newColumnMatrix(rows, cellFactory);
     }
 
-    public static Matrix rowMatrix(int columns, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newRowMatrix(columns, cellFactory);
+    public static ComplexMatrix rowMatrix(int columns, TVectorCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newRowMatrix(columns, cellFactory);
     }
 
-    public static Matrix symmetricMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newSymmetric(rows, cols, cellFactory);
+    public static ComplexMatrix symmetricMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newSymmetric(rows, cols, cellFactory);
     }
 
-    public static Matrix hermitianMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newHermitian(rows, cols, cellFactory);
+    public static ComplexMatrix hermitianMatrix(int rows, int cols, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newHermitian(rows, cols, cellFactory);
     }
 
-    public static Matrix diagonalMatrix(int rows, int cols, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(rows, cols, cellFactory);
+    public static ComplexMatrix diagonalMatrix(int dim, TVectorCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newDiagonal(dim, cellFactory);
     }
 
-    public static Matrix diagonalMatrix(int rows, final VectorCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(rows, cellFactory);
+    public static ComplexMatrix diagonalMatrix(Complex... c) {
+        return Config.getComplexMatrixFactory().newDiagonal(c);
     }
 
-    public static Matrix diagonalMatrix(final Complex... c) {
-        return Config.getDefaultMatrixFactory().newDiagonal(c);
+    public static ComplexMatrix matrix(int dim, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newMatrix(dim, cellFactory);
     }
 
-    public static Matrix matrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(dim, cellFactory);
+    public static ComplexMatrix matrix(int rows, int columns) {
+        return Config.getComplexMatrixFactory().newMatrix(rows, columns);
     }
 
-    public static Matrix matrix(int rows, int columns) {
-        return Config.getDefaultMatrixFactory().newMatrix(rows, columns);
+    public static ComplexMatrix symmetricMatrix(int dim, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newMatrix(dim, cellFactory);
     }
 
-    public static Matrix symmetricMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newMatrix(dim, cellFactory);
+    public static ComplexMatrix hermitianMatrix(int dim, TMatrixCell<Complex> cellFactory) {
+        return Config.getComplexMatrixFactory().newHermitian(dim, cellFactory);
     }
 
-    public static Matrix hermitianMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newHermitian(dim, cellFactory);
+
+
+    public static ComplexMatrix randomRealMatrix(int m, int n) {
+        return Config.getComplexMatrixFactory().newRandomReal(m, n);
     }
 
-    public static Matrix diagonalMatrix(int dim, MatrixCell cellFactory) {
-        return Config.getDefaultMatrixFactory().newDiagonal(dim, cellFactory);
+    public static ComplexMatrix randomRealMatrix(int m, int n, int min, int max) {
+        return Config.getComplexMatrixFactory().newRandomReal(m, n, min, max);
     }
 
-    public static Matrix randomRealMatrix(int m, int n) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n);
+    public static ComplexMatrix randomRealMatrix(int m, int n, double min, double max) {
+        return Config.getComplexMatrixFactory().newRandomReal(m, n, min, max);
     }
 
-    public static Matrix randomRealMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n, min, max);
+    public static ComplexMatrix randomImagMatrix(int m, int n, double min, double max) {
+        return Config.getComplexMatrixFactory().newRandomImag(m, n, min, max);
     }
 
-    public static Matrix randomRealMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandomReal(m, n, min, max);
+    public static ComplexMatrix randomImagMatrix(int m, int n, int min, int max) {
+        return Config.getComplexMatrixFactory().newRandomImag(m, n, min, max);
     }
 
-    public static Matrix randomImagMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n, min, max);
+    public static ComplexMatrix randomMatrix(int m, int n, int minReal, int maxReal, int minImag, int maxImag) {
+        return Config.getComplexMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
     }
 
-    public static Matrix randomImagMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n, min, max);
+    public static ComplexMatrix randomMatrix(int m, int n, double minReal, double maxReal, double minImag, double maxImag) {
+        return Config.getComplexMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
     }
 
-    public static Matrix randomMatrix(int m, int n, int minReal, int maxReal, int minImag, int maxImag) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
+    public static ComplexMatrix randomMatrix(int m, int n, double min, double max) {
+        return Config.getComplexMatrixFactory().newRandom(m, n, min, max);
     }
 
-    public static Matrix randomMatrix(int m, int n, double minReal, double maxReal, double minImag, double maxImag) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, minReal, maxReal, minImag, maxImag);
+    public static ComplexMatrix randomMatrix(int m, int n, int min, int max) {
+        return Config.getComplexMatrixFactory().newRandom(m, n, min, max);
     }
 
-    public static Matrix randomMatrix(int m, int n, double min, double max) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, min, max);
-    }
-
-    public static Matrix randomMatrix(int m, int n, int min, int max) {
-        return Config.getDefaultMatrixFactory().newRandom(m, n, min, max);
-    }
-
-    public static Matrix randomImagMatrix(int m, int n) {
-        return Config.getDefaultMatrixFactory().newRandomImag(m, n);
+    public static ComplexMatrix randomImagMatrix(int m, int n) {
+        return Config.getComplexMatrixFactory().newRandomImag(m, n);
     }
 
     public static <T> TMatrix<T> loadTMatrix(TypeName<T> componentType, File file) throws UncheckedIOException {
-        throw new IllegalArgumentException("TODO");
+        if(componentType.equals($COMPLEX)){
+            return (TMatrix<T>) Config.getComplexMatrixFactory().load(file);
+        }
+        throw new IllegalArgumentException("Unsupported Load for type "+componentType);
     }
 
-    public static Matrix loadMatrix(File file) throws UncheckedIOException {
-        return Config.getDefaultMatrixFactory().load(file);
+    public static ComplexMatrix loadMatrix(File file) throws UncheckedIOException {
+        return Config.getComplexMatrixFactory().load(file);
     }
 
-    public static Matrix matrix(File file) throws UncheckedIOException {
-        return Config.getDefaultMatrixFactory().load(file);
+    public static ComplexMatrix matrix(File file) throws UncheckedIOException {
+        return Config.getComplexMatrixFactory().load(file);
     }
 
-    public static void storeMatrix(Matrix m, String file) throws UncheckedIOException {
+    public static void storeMatrix(ComplexMatrix m, String file) throws UncheckedIOException {
         m.store(file == null ? (File) null : new File(Config.expandPath(file)));
     }
 
-    public static void storeMatrix(Matrix m, File file) throws UncheckedIOException {
+    public static void storeMatrix(ComplexMatrix m, File file) throws UncheckedIOException {
         m.store(file);
     }
 
-    public static Matrix loadOrEvalMatrix(String file, TItem<Matrix> item) throws UncheckedIOException {
+    public static ComplexMatrix loadOrEvalMatrix(String file, TItem<ComplexMatrix> item) throws UncheckedIOException {
         return loadOrEvalMatrix(new File(Config.expandPath(file)), item);
     }
 
-    public static Vector loadOrEvalVector(String file, TItem<TVector<Complex>> item) throws UncheckedIOException {
+    public static ComplexVector loadOrEvalVector(String file, TItem<TVector<Complex>> item) throws UncheckedIOException {
         return loadOrEvalVector(new File(Config.expandPath(file)), item);
     }
 
-    public static Matrix loadOrEvalMatrix(File file, TItem<Matrix> item) throws UncheckedIOException {
+    public static ComplexMatrix loadOrEvalMatrix(File file, TItem<ComplexMatrix> item) throws UncheckedIOException {
         return loadOrEval($MATRIX, file, item);
     }
 
-    public static Vector loadOrEvalVector(File file, TItem<TVector<Complex>> item) throws UncheckedIOException {
+    public static ComplexVector loadOrEvalVector(File file, TItem<TVector<Complex>> item) throws UncheckedIOException {
         return loadOrEval($VECTOR, file, (TItem) item);
     }
 
@@ -822,86 +820,86 @@ public final class MathsBase {
         }
     }
 
-    public static Matrix loadMatrix(String file) throws UncheckedIOException {
-        return Config.getDefaultMatrixFactory().load(new File(Config.expandPath(file)));
+    public static ComplexMatrix loadMatrix(String file) throws UncheckedIOException {
+        return Config.getComplexMatrixFactory().load(new File(Config.expandPath(file)));
     }
 
-    public static Matrix inv(Matrix c) {
+    public static ComplexMatrix inv(ComplexMatrix c) {
         return c.inv();
     }
 
-    public static Matrix tr(Matrix c) {
+    public static ComplexMatrix tr(ComplexMatrix c) {
         return c.transpose();
     }
 
-    public static Matrix trh(Matrix c) {
+    public static ComplexMatrix trh(ComplexMatrix c) {
         return c.transposeHermitian();
     }
 
-    public static Matrix transpose(Matrix c) {
+    public static ComplexMatrix transpose(ComplexMatrix c) {
         return c.transpose();
     }
 
-    public static Matrix transposeHermitian(Matrix c) {
+    public static ComplexMatrix transposeHermitian(ComplexMatrix c) {
         return c.transposeHermitian();
     }
 
     //</editor-fold>
     //<editor-fold desc="Vector functions">
-    public static Vector rowVector(Complex[] elems) {
-        return ArrayVector.Row(elems);
+    public static ComplexVector rowVector(Complex[] elems) {
+        return ArrayComplexVector.Row(elems);
     }
 
-    public static Vector constantColumnVector(int size, Complex c) {
+    public static ComplexVector constantColumnVector(int size, Complex c) {
         Complex[] arr = new Complex[size];
         for (int i = 0; i < size; i++) {
             arr[i] = c;
         }
-        return ArrayVector.Column(arr);
+        return ArrayComplexVector.Column(arr);
     }
 
-    public static Vector constantRowVector(int size, Complex c) {
+    public static ComplexVector constantRowVector(int size, Complex c) {
         Complex[] arr = new Complex[size];
         for (int i = 0; i < size; i++) {
             arr[i] = c;
         }
-        return ArrayVector.Row(arr);
+        return ArrayComplexVector.Row(arr);
     }
 
-    public static Vector zerosVector(int size) {
+    public static ComplexVector zerosVector(int size) {
         return zerosColumnVector(size);
     }
 
-    public static Vector zerosColumnVector(int size) {
+    public static ComplexVector zerosColumnVector(int size) {
         return constantColumnVector(size, CZERO);
     }
 
-    public static Vector zerosRowVector(int size) {
+    public static ComplexVector zerosRowVector(int size) {
         return constantRowVector(size, CZERO);
     }
 
-    public static Vector NaNColumnVector(int dim) {
+    public static ComplexVector NaNColumnVector(int dim) {
         return constantColumnVector(dim, Complex.NaN);
     }
 
-    public static Vector NaNRowVector(int dim) {
+    public static ComplexVector NaNRowVector(int dim) {
         return constantRowVector(dim, Complex.NaN);
     }
 
-    public static TVector<Expr> columnVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, false);
+    public static ExprVector columnVector(Expr... expr) {
+        return new ArrayExprVector(false, expr);
     }
 
-    public static TVector<Expr> rowVector(Expr[] expr) {
-        return new ArrayTVector<Expr>(EXPR_VECTOR_SPACE, expr, true);
+    public static ExprVector rowVector(Expr... expr) {
+        return new ArrayExprVector(true, expr);
     }
 
-    public static TVector<Expr> columnEVector(int rows, final TVectorCell<Expr> cellFactory) {
-        return columnTVector($EXPR, rows, cellFactory);
+    public static ExprVector columnEVector(int rows, TVectorCell<Expr> cellFactory) {
+        return new ArrayExprVector(false, rows, cellFactory);
     }
 
-    public static TVector<Expr> rowEVector(int rows, final TVectorCell<Expr> cellFactory) {
-        return rowTVector($EXPR, rows, cellFactory);
+    public static ExprVector rowEVector(int rows, TVectorCell<Expr> cellFactory) {
+        return new ArrayExprVector(true, rows, cellFactory);
     }
 
     public static <T> TVector<T> updatableOf(TVector<T> vector) {
@@ -931,14 +929,30 @@ public final class MathsBase {
         return Arrays.copyOf(val, val.length);
     }
 
-    public static <T> TList<T> copyOf(TVector<T> vector) {
-        TList<T> ts = list(vector.getComponentType(), vector.isRow(), vector.size());
+    public static <T> TVector<T> copyOf(TVector<T> vector) {
+        TVector<T> ts = list(vector.getComponentType(), vector.isRow(), vector.size());
         ts.appendAll(vector);
         return ts;
     }
 
-    public static <T> TVector<T> columnTVector(TypeName<T> cls, final TVectorModel<T> cellFactory) {
-        return new ReadOnlyTVector<T>(
+    public static <T> TVector<T> columnTVector(TypeName<T> cls, T... elements) {
+        return new ReadOnlyTList<T>(
+                cls, false, new TVectorModel<T>() {
+            @Override
+            public int size() {
+                return elements.length;
+            }
+
+            @Override
+            public T get(int index) {
+                return elements[index];
+            }
+        }
+        );
+    }
+
+    public static <T> TVector<T> columnTVector(TypeName<T> cls, TVectorModel<T> cellFactory) {
+        return new ReadOnlyTList<T>(
                 cls, false, cellFactory
         );
 //        return new UpdatableTVector<>(
@@ -947,8 +961,8 @@ public final class MathsBase {
 //        );
     }
 
-    public static <T> TVector<T> rowTVector(TypeName<T> cls, final TVectorModel<T> cellFactory) {
-        return new ReadOnlyTVector<>(
+    public static <T> TVector<T> rowTVector(TypeName<T> cls, TVectorModel<T> cellFactory) {
+        return new ReadOnlyTList<>(
                 cls, true, cellFactory
         );
 //        return new UpdatableTVector<>(
@@ -957,15 +971,15 @@ public final class MathsBase {
 //        );
     }
 
-    public static <T> TVector<T> columnTVector(TypeName<T> cls, int rows, final TVectorCell<T> cellFactory) {
+    public static <T> TVector<T> columnTVector(TypeName<T> cls, int rows, TVectorCell<T> cellFactory) {
         return columnTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
     }
 
-    public static <T> TVector<T> rowTVector(TypeName<T> cls, int rows, final TVectorCell<T> cellFactory) {
+    public static <T> TVector<T> rowTVector(TypeName<T> cls, int rows, TVectorCell<T> cellFactory) {
         return rowTVector(cls, new TVectorModelFromCell<>(rows, cellFactory));
     }
 
-    public static Vector columnVector(int rows, final VectorCell cellFactory) {
+    public static ComplexVector columnVector(int rows, TVectorCell<Complex> cellFactory) {
         Complex[] arr = new Complex[rows];
         for (int i = 0; i < rows; i++) {
             arr[i] = cellFactory.get(i);
@@ -973,7 +987,7 @@ public final class MathsBase {
         return columnVector(arr);
     }
 
-    public static Vector rowVector(int columns, final VectorCell cellFactory) {
+    public static ComplexVector rowVector(int columns, TVectorCell<Complex> cellFactory) {
         Complex[] arr = new Complex[columns];
         for (int i = 0; i < columns; i++) {
             arr[i] = cellFactory.get(i);
@@ -981,31 +995,31 @@ public final class MathsBase {
         return rowVector(arr);
     }
 
-    public static Vector columnVector(Complex... elems) {
-        return ArrayVector.Column(elems);
+    public static ComplexVector columnVector(Complex... elems) {
+        return ArrayComplexVector.Column(elems);
     }
 
-    public static Vector columnVector(double[] elems) {
-        return ArrayVector.Column(ArrayUtils.toComplex(elems));
+    public static ComplexVector columnVector(double[] elems) {
+        return ArrayComplexVector.Column(ArrayUtils.toComplex(elems));
     }
 
-    public static Vector rowVector(double[] elems) {
-        return ArrayVector.Row(ArrayUtils.toComplex(elems));
+    public static ComplexVector rowVector(double[] elems) {
+        return ArrayComplexVector.Row(ArrayUtils.toComplex(elems));
     }
 
-    public static Vector column(Complex[] elems) {
-        return ArrayVector.Column(elems);
+    public static ComplexVector column(Complex[] elems) {
+        return ArrayComplexVector.Column(elems);
     }
 
-    public static Vector row(Complex[] elems) {
-        return ArrayVector.Row(elems);
+    public static ComplexVector row(Complex[] elems) {
+        return ArrayComplexVector.Row(elems);
     }
 
-    public static Vector trh(Vector c) {
+    public static ComplexVector trh(ComplexVector c) {
         return c.transpose().conj();
     }
 
-    public static Vector tr(Vector c) {
+    public static ComplexVector tr(ComplexVector c) {
         return c.transpose();
     }
 
@@ -1356,13 +1370,13 @@ public final class MathsBase {
         return c.cotan();
     }
 
-    public static Vector vector(TVector v) {
+    public static ComplexVector vector(TVector v) {
         v = v.to($COMPLEX);
-        if (v instanceof Vector) {
-            return (Vector) v;
+        if (v instanceof ComplexVector) {
+            return (ComplexVector) v;
         }
         TVector finalV = v;
-        return new ReadOnlyVector(new TVectorModel<Complex>() {
+        return new ReadOnlyComplexVector(new TVectorModel<Complex>() {
             @Override
             public int size() {
                 return finalV.size();
@@ -1391,27 +1405,27 @@ public final class MathsBase {
         return a.sub(b);
     }
 
-    public static double norm(Matrix a) {
+    public static double norm(ComplexMatrix a) {
         return a.norm(NormStrategy.DEFAULT);
     }
 
-    public static double norm(Vector a) {
+    public static double norm(ComplexVector a) {
         return a.norm();
     }
 
-    public static double norm1(Matrix a) {
+    public static double norm1(ComplexMatrix a) {
         return a.norm1();
     }
 
-    public static double norm2(Matrix a) {
+    public static double norm2(ComplexMatrix a) {
         return a.norm2();
     }
 
-    public static double norm3(Matrix a) {
+    public static double norm3(ComplexMatrix a) {
         return a.norm3();
     }
 
-    public static double normInf(Matrix a) {
+    public static double normInf(ComplexMatrix a) {
         return a.normInf();
     }
 
@@ -1422,11 +1436,11 @@ public final class MathsBase {
         if (fx instanceof DoubleToComplex) {
             return (DoubleToComplex) fx;
         }
-        return DCxy.valueOf(fx);
+        return DD2DC.valueOf(fx);
     }
 
     public static DoubleToComplex complex(DoubleToDouble fx, DoubleToDouble fy) {
-        return DCxy.valueOf(fx, fy);
+        return DD2DC.valueOf(fx, fy);
     }
 
     public static double randomDouble(double value) {
@@ -1466,6 +1480,7 @@ public final class MathsBase {
     public static double[][] cross(double[] x, double[] y, double[] z, Double3Filter filter) {
         return MathsArrays.cross(x, y, z, filter);
     }
+
     public static double[][] cross(double[] x, double[] y, Double2Filter filter) {
         return MathsArrays.cross(x, y, filter);
     }
@@ -1478,11 +1493,11 @@ public final class MathsBase {
         return MathsArrays.cross(x, y, z);
     }
 
-    public static TList sineSeq(String borders, int m, int n, Domain domain) {
+    public static TVector sineSeq(String borders, int m, int n, Domain domain) {
         return sineSeq(borders, m, n, domain, PlaneAxis.XY);
     }
 
-    public static TList sineSeq(String borders, int m, int n, Domain domain, PlaneAxis plane) {
+    public static TVector sineSeq(String borders, int m, int n, Domain domain, PlaneAxis plane) {
         DoubleParam mm = new DoubleParam("m");
         DoubleParam nn = new DoubleParam("n");
         switch (plane) {
@@ -1519,7 +1534,8 @@ public final class MathsBase {
         return any(expr(e));
     }
 
-    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, Int2Filter filter) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double mmax, DoubleParam n, double nmax, Double2Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax));
         if (filter != null) {
             List<double[]> list = new ArrayList<>();
@@ -1537,9 +1553,10 @@ public final class MathsBase {
         return seq(pattern, m, n, cross);
     }
 
-    public static TList<Expr> seq(Expr pattern, DoubleParam m, int max, IntFilter filter) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double max, DoubleFilter filter) {
         if (filter != null) {
-            DoubleArrayList list = new DoubleArrayList();
+            ArrayDoubleVector list = new ArrayDoubleVector();
             double[] mm = dsteps(0, max);
             for (double cros : mm) {
                 if (filter.accept((int) cros)) {
@@ -1551,7 +1568,8 @@ public final class MathsBase {
         return seq(pattern, m, 0, max);
     }
 
-    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax, DoubleParam p, int pmax, Int3Filter filter) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double mmax, DoubleParam n, double nmax, DoubleParam p, double pmax, Double3Filter filter) {
         double[][] cross = cross(dsteps(0, mmax), dsteps(0, nmax), dsteps(0, pmax), filter == null ? null : new Double3Filter() {
             @Override
             public boolean accept(double a, double b, double c) {
@@ -1561,41 +1579,48 @@ public final class MathsBase {
         return seq(pattern, m, n, p, cross);
     }
 
-    public static TList<Expr> seq(Expr pattern, DoubleParam m, int mmax, DoubleParam n, int nmax) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double mmax, DoubleParam n, double nmax) {
         return seq(pattern, m, n, cross(dsteps(0, mmax), dsteps(0, nmax)));
     }
 
-    public static TList<Expr> seq(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
         return seq(pattern, m, n, cross(mvalues, nvalues));
     }
 
-    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern));
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, DoubleParam n, double[][] values) {
+        return elist(Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq2(values, m, n, pattern)));
     }
 
-    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final DoubleParam n, final DoubleParam p, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length,
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, DoubleParam n, DoubleParam p, double[][] values) {
+        return elist(Config.getExprSequenceFactory().newUnmodifiableSequence(values.length,
                 new SimpleSeqMulti(pattern, new DoubleParam[]{m, n, p}, values)
-        );
+        ));
     }
 
-    public static TList<Expr> seq(final Expr pattern, final DoubleParam[] m, final double[][] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values));
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam[] m, double[][] values) {
+        return elist(Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeqMulti(pattern, m, values)));
     }
 
-    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, int min, int max) {
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double min, double max) {
         return seq(pattern, m, dsteps(min, max, 1));
     }
 
-    public static TList<Expr> seq(final Expr pattern, final DoubleParam m, final double[] values) {
-        return Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern));
+    @Deprecated
+    public static ExprVector seq(Expr pattern, DoubleParam m, double[] values) {
+        return elist(Config.getExprSequenceFactory().newUnmodifiableSequence(values.length, new SimpleSeq1(values, m, pattern)));
     }
 
-    public static ExprMatrix2 matrix(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues) {
-        return Config.getExprMatrixFactory().newUnmodifiableMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
+    public static ExprMatrix matrix(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues) {
+        return Config.getExprMatrixFactory().newMatrix(mvalues.length, nvalues.length, new SimpleSeq2b(pattern, m, mvalues, n, nvalues));
     }
 
-    public static ExprCube cube(final Expr pattern, final DoubleParam m, final double[] mvalues, final DoubleParam n, final double[] nvalues, final DoubleParam p, final double[] pvalues) {
+    public static ExprCube cube(Expr pattern, DoubleParam m, double[] mvalues, DoubleParam n, double[] nvalues, DoubleParam p, double[] pvalues) {
         return Config.getExprCubeFactory().newUnmodifiableCube(mvalues.length, nvalues.length, pvalues.length, new SimpleSeq3b(pattern, m, mvalues, n, nvalues, p, pvalues));
     }
 
@@ -1670,6 +1695,7 @@ public final class MathsBase {
     public static Complex Complex(double e) {
         return Complex.valueOf(e);
     }
+
     public static Complex Complex(Expr e) {
         return e.simplify().toComplex();
     }
@@ -1902,11 +1928,11 @@ public final class MathsBase {
         }
     }
 
-    public static <T extends Expr> TList<T> preload(TList<T> list) {
+    public static <T extends Expr> TVector<T> preload(TVector<T> list) {
         return DefaultExprSequenceFactory.INSTANCE.newPreloadedSequence(list.length(), list);
     }
 
-    public static <T extends Expr> TList<T> withCache(TList<T> list) {
+    public static <T extends Expr> TVector<T> withCache(TVector<T> list) {
         //DefaultExprSequenceFactory.INSTANCE.newCachedSequence(length(), this);
         return DefaultExprSequenceFactory.INSTANCE.newCachedSequence(list.length(), list);
     }
@@ -1915,7 +1941,7 @@ public final class MathsBase {
 //        //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(length(), new SimplifiedSeq(this));
 //        return DefaultExprSequenceFactory.INSTANCE.newUnmodifiableSequence(list.length(), new SimplifiedSeq(list));
 //    }
-    public static <T> TList<T> abs(TList<T> a) {
+    public static <T> TVector<T> abs(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -1925,7 +1951,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> db(TList<T> a) {
+    public static <T> TVector<T> db(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -1935,7 +1961,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> db2(TList<T> a) {
+    public static <T> TVector<T> db2(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -1945,7 +1971,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> real(TList<T> a) {
+    public static <T> TVector<T> real(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -1955,7 +1981,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> imag(TList<T> a) {
+    public static <T> TVector<T> imag(TVector<T> a) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -2035,87 +2061,87 @@ public final class MathsBase {
         return new LongArrayParamSet(param, min, max, step);
     }
 
-    public static Vector sin(Vector v) {
+    public static ComplexVector sin(ComplexVector v) {
         return v.sin();
     }
 
-    public static Vector cos(Vector v) {
+    public static ComplexVector cos(ComplexVector v) {
         return v.cos();
     }
 
-    public static Vector tan(Vector v) {
+    public static ComplexVector tan(ComplexVector v) {
         return v.tan();
     }
 
-    public static Vector cotan(Vector v) {
+    public static ComplexVector cotan(ComplexVector v) {
         return v.cotan();
     }
 
-    public static Vector tanh(Vector v) {
+    public static ComplexVector tanh(ComplexVector v) {
         return v.tanh();
     }
 
-    public static Vector cotanh(Vector v) {
+    public static ComplexVector cotanh(ComplexVector v) {
         return v.cotanh();
     }
 
-    public static Vector cosh(Vector v) {
+    public static ComplexVector cosh(ComplexVector v) {
         return v.cosh();
     }
 
-    public static Vector sinh(Vector v) {
+    public static ComplexVector sinh(ComplexVector v) {
         return v.sinh();
     }
 
-    public static Vector log(Vector v) {
+    public static ComplexVector log(ComplexVector v) {
         return v.log();
     }
 
-    public static Vector log10(Vector v) {
+    public static ComplexVector log10(ComplexVector v) {
         return v.log10();
     }
 
-    public static Vector db(Vector v) {
+    public static ComplexVector db(ComplexVector v) {
         return v.db();
     }
 
-    public static Vector exp(Vector v) {
+    public static ComplexVector exp(ComplexVector v) {
         return v.exp();
     }
 
-    public static Vector acosh(Vector v) {
+    public static ComplexVector acosh(ComplexVector v) {
         return v.acosh();
     }
 
-    public static Vector acos(Vector v) {
+    public static ComplexVector acos(ComplexVector v) {
         return v.acos();
     }
 
-    public static Vector asinh(Vector v) {
+    public static ComplexVector asinh(ComplexVector v) {
         return v.asinh();
     }
 
-    public static Vector asin(Vector v) {
+    public static ComplexVector asin(ComplexVector v) {
         return v.asin();
     }
 
-    public static Vector atan(Vector v) {
+    public static ComplexVector atan(ComplexVector v) {
         return v.atan();
     }
 
-    public static Vector acotan(Vector v) {
+    public static ComplexVector acotan(ComplexVector v) {
         return v.acotan();
     }
 
-    public static Vector imag(Vector v) {
+    public static ComplexVector imag(ComplexVector v) {
         return v.imag();
     }
 
-    public static Vector real(Vector v) {
+    public static ComplexVector real(ComplexVector v) {
         return v.real();
     }
 
-    public static Vector abs(Vector v) {
+    public static ComplexVector abs(ComplexVector v) {
         return v.abs();
     }
 
@@ -2127,100 +2153,100 @@ public final class MathsBase {
         return r;
     }
 
-    public static Complex avg(Vector v) {
+    public static Complex avg(ComplexVector v) {
         return v.avg();
     }
 
-    public static Complex sum(Vector v) {
+    public static Complex sum(ComplexVector v) {
         return v.sum();
     }
 
-    public static Complex prod(Vector v) {
+    public static Complex prod(ComplexVector v) {
         return v.prod();
     }
 
-    public static Matrix abs(Matrix v) {
+    public static ComplexMatrix abs(ComplexMatrix v) {
         return v.abs();
     }
 
-    public static Matrix sin(Matrix v) {
+    public static ComplexMatrix sin(ComplexMatrix v) {
         return v.sin();
     }
 
-    public static Matrix cos(Matrix v) {
+    public static ComplexMatrix cos(ComplexMatrix v) {
         return v.cos();
     }
 
-    public static Matrix tan(Matrix v) {
+    public static ComplexMatrix tan(ComplexMatrix v) {
         return v.tan();
     }
 
-    public static Matrix cotan(Matrix v) {
+    public static ComplexMatrix cotan(ComplexMatrix v) {
         return v.cotan();
     }
 
-    public static Matrix tanh(Matrix v) {
+    public static ComplexMatrix tanh(ComplexMatrix v) {
         return v.tanh();
     }
 
-    public static Matrix cotanh(Matrix v) {
+    public static ComplexMatrix cotanh(ComplexMatrix v) {
         return v.cotanh();
     }
 
-    public static Matrix cosh(Matrix v) {
+    public static ComplexMatrix cosh(ComplexMatrix v) {
         return v.cosh();
     }
 
-    public static Matrix sinh(Matrix v) {
+    public static ComplexMatrix sinh(ComplexMatrix v) {
         return v.sinh();
     }
 
-    public static Matrix log(Matrix v) {
+    public static ComplexMatrix log(ComplexMatrix v) {
         return v.log();
     }
 
-    public static Matrix log10(Matrix v) {
+    public static ComplexMatrix log10(ComplexMatrix v) {
         return v.log10();
     }
 
-    public static Matrix db(Matrix v) {
+    public static ComplexMatrix db(ComplexMatrix v) {
         return v.db();
     }
 
-    public static Matrix exp(Matrix v) {
+    public static ComplexMatrix exp(ComplexMatrix v) {
         return v.exp();
     }
 
     //
-    public static Matrix acosh(Matrix v) {
+    public static ComplexMatrix acosh(ComplexMatrix v) {
         return v.acosh();
     }
 
-    public static Matrix acos(Matrix v) {
+    public static ComplexMatrix acos(ComplexMatrix v) {
         return v.acos();
     }
 
-    public static Matrix asinh(Matrix v) {
+    public static ComplexMatrix asinh(ComplexMatrix v) {
         return v.asinh();
     }
 
-    public static Matrix asin(Matrix v) {
+    public static ComplexMatrix asin(ComplexMatrix v) {
         return v.asin();
     }
 
-    public static Matrix atan(Matrix v) {
+    public static ComplexMatrix atan(ComplexMatrix v) {
         return v.atan();
     }
 
-    public static Matrix acotan(Matrix v) {
+    public static ComplexMatrix acotan(ComplexMatrix v) {
         return v.acotan();
     }
 
-    public static Matrix imag(Matrix v) {
+    public static ComplexMatrix imag(ComplexMatrix v) {
         return v.imag();
     }
 
-    public static Matrix real(Matrix v) {
+    public static ComplexMatrix real(ComplexMatrix v) {
         return v.real();
     }
 
@@ -2256,15 +2282,15 @@ public final class MathsBase {
         return values;
     }
 
-    public static Complex avg(Matrix v) {
+    public static Complex avg(ComplexMatrix v) {
         return v.avg();
     }
 
-    public static Complex sum(Matrix v) {
+    public static Complex sum(ComplexMatrix v) {
         return v.sum();
     }
 
-    public static Complex prod(Matrix v) {
+    public static Complex prod(ComplexMatrix v) {
         return v.prod();
     }
 
@@ -2826,8 +2852,16 @@ public final class MathsBase {
     // expression functions
     /////////////////////////////////////////////////////////////////
     //<editor-fold desc="expression functions">
-    public static Expr If(Expr cond, Expr exp1, Expr exp2) {
-        return EXPR_VECTOR_SPACE.If(cond, exp1, exp2);
+    public static IfExpr If(Expr cond, Expr exp1, Expr exp2) {
+        return (IfExpr) EXPR_VECTOR_SPACE.If(cond, exp1, exp2);
+    }
+
+    public static IfExpr If(Expr cond) {
+        return (IfExpr) EXPR_VECTOR_SPACE.If(cond, null, null);
+    }
+
+    public static IfExpr If(Expr cond, Expr exp1) {
+        return (IfExpr) EXPR_VECTOR_SPACE.If(cond, exp1, null);
     }
 
     public static Expr or(Expr a, Expr b) {
@@ -2971,7 +3005,7 @@ public final class MathsBase {
     }
 
     public static TVector<Expr> seq(int size1, TVectorCell<Expr> f) {
-        return new ReadOnlyTVector<Expr>($EXPR, false, new TVectorModelFromCell(size1, f));
+        return new ReadOnlyTList<Expr>($EXPR, false, new TVectorModelFromCell(size1, f));
     }
 
     public static TVector<Expr> seq(int size1, int size2, TMatrixCell<Expr> f) {
@@ -2987,7 +3021,7 @@ public final class MathsBase {
                 return f.get(index / size2, index % size2);
             }
         };
-        return new ReadOnlyTVector<Expr>($EXPR, false, tVectorModel);
+        return new ReadOnlyTList<Expr>($EXPR, false, tVectorModel);
     }
 
     private static TMatrix<Complex> resolveBestScalarProductCache(Expr[] gp, Expr[] fn, AxisXY axis, ScalarProductOperator sp, ProgressMonitor monitor) {
@@ -2997,7 +3031,7 @@ public final class MathsBase {
 //        if (doSimplifyAll) {
 //            Expr[] finalFn = fn;
 //            Expr[] finalGp = gp;
-//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
+//            Expr[][] fg = MathsBase.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
 //                @Override
 //                public Expr[][] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
 //                    Expr[][] fg = new Expr[2][];
@@ -3109,8 +3143,8 @@ public final class MathsBase {
         return Config.getScalarProductOperator().evalDD(null, f1, f2);
     }
 
-    public static Vector scalarProduct(Expr f1, TVector<Expr> f2) {
-        VectorCell spfact = new VectorCell() {
+    public static ComplexVector scalarProduct(Expr f1, TVector<Expr> f2) {
+        TVectorCell<Complex> spfact = new TVectorCell<Complex>() {
             @Override
             public Complex get(int index) {
                 return scalarProduct(f1, f2.get(index));
@@ -3119,8 +3153,8 @@ public final class MathsBase {
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(Expr f1, TMatrix<Expr> f2) {
-        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
+    public static ComplexMatrix scalarProduct(Expr f1, TMatrix<Expr> f2) {
+        return matrix(f2.getRowCount(), f2.getColumnCount(), new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
                 return scalarProduct(f1, f2.get(row, column));
@@ -3128,8 +3162,8 @@ public final class MathsBase {
         });
     }
 
-    public static Vector scalarProduct(TVector<Expr> f2, Expr f1) {
-        VectorCell spfact = new VectorCell() {
+    public static ComplexVector scalarProduct(TVector<Expr> f2, Expr f1) {
+        TVectorCell<Complex> spfact = new TVectorCell<Complex>() {
             @Override
             public Complex get(int index) {
                 return scalarProduct(f2.get(index), f1);
@@ -3138,8 +3172,8 @@ public final class MathsBase {
         return f2.isColumn() ? columnVector(f2.size(), spfact) : rowVector(f2.size(), spfact);
     }
 
-    public static Matrix scalarProduct(TMatrix<Expr> f2, Expr f1) {
-        return matrix(f2.getRowCount(), f2.getColumnCount(), new MatrixCell() {
+    public static ComplexMatrix scalarProduct(TMatrix<Expr> f2, Expr f1) {
+        return matrix(f2.getRowCount(), f2.getColumnCount(), new TMatrixCell<Complex>() {
             @Override
             public Complex get(int row, int column) {
                 return scalarProduct(f2.get(row, column), f1);
@@ -3155,7 +3189,7 @@ public final class MathsBase {
         return Config.getScalarProductOperator().eval(f1, f2);
     }
 
-    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
+    public static ComplexMatrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f) {
         return matrix(Config.getScalarProductOperator().eval(g, f, null));
     }
 
@@ -3167,7 +3201,7 @@ public final class MathsBase {
         return Config.getScalarProductOperator().eval(g, f, monitor);
     }
 
-    public static Matrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
+    public static ComplexMatrix scalarProductMatrix(TVector<Expr> g, TVector<Expr> f, ProgressMonitor monitor) {
         return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
     }
 
@@ -3175,19 +3209,19 @@ public final class MathsBase {
         return Config.getScalarProductOperator().eval(g, f, axis, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f) {
-        return (Matrix) Config.getScalarProductOperator().eval(g, f, null).to($COMPLEX);
+    public static ComplexMatrix scalarProductMatrix(Expr[] g, Expr[] f) {
+        return (ComplexMatrix) Config.getScalarProductOperator().eval(g, f, null).to($COMPLEX);
     }
 
-    public static Complex scalarProduct(Matrix g, Matrix f) {
+    public static Complex scalarProduct(ComplexMatrix g, ComplexMatrix f) {
         return g.scalarProduct(f);
     }
 
-    public static Expr scalarProduct(Matrix g, TVector<Expr> f) {
+    public static Expr scalarProduct(ComplexMatrix g, TVector<Expr> f) {
         return f.scalarProduct(g.to($EXPR));
     }
 
-    public static Expr scalarProductAll(Matrix g, TVector<Expr>... f) {
+    public static Expr scalarProductAll(ComplexMatrix g, TVector<Expr>... f) {
         return g.toVector().to($EXPR).scalarProductAll((TVector[]) f);
     }
 
@@ -3199,7 +3233,7 @@ public final class MathsBase {
         return Config.getScalarProductOperator().eval(g, f, monitor);
     }
 
-    public static Matrix scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
+    public static ComplexMatrix scalarProductMatrix(Expr[] g, Expr[] f, ProgressMonitor monitor) {
         return matrix(Config.getScalarProductOperator().eval(g, f, monitor));
     }
 
@@ -3214,24 +3248,24 @@ public final class MathsBase {
 //    public static String scalarProductToMatlabString(DomainXY domain0,CFunctionXY f1, CFunctionXY f2, ToMatlabStringParam... format) {
 //        return defaultScalarProduct.scalarProductToMatlabString(domain0, f1, f2, format) ;
 //    }
-    public static ExprList elist(int size) {
-        return new ExprArrayList(false, size);
+    public static ExprVector elist(int size) {
+        return new ArrayExprVector(false, size);
     }
 
-    public static ExprList elist(boolean row, int size) {
-        return new ExprArrayList(row, size);
+    public static ExprVector elist(boolean row, int size) {
+        return new ArrayExprVector(row, size);
     }
 
-    public static ExprList elist(Expr... vector) {
-        return new ExprArrayList(false, vector);
+    public static ExprVector elist(Expr... vector) {
+        return new ArrayExprVector(false, vector);
     }
 
-    public static ExprList elist(TVector<Complex> vector) {
-        return new ExprArrayList(false, vector);
+    public static ExprVector elist(TVector<Complex> vector) {
+        return new ArrayExprVector(false, vector);
     }
 
-    public static TList<Complex> clist(TVector<Expr> vector) {
-        return new ArrayTList<Complex>($COMPLEX, false, new TVectorModel<Complex>() {
+    public static TVector<Complex> clist(TVector<Expr> vector) {
+        return new ArrayTVector<Complex>($COMPLEX, false, new TVectorModel<Complex>() {
             @Override
             public int size() {
                 return vector.size();
@@ -3244,110 +3278,110 @@ public final class MathsBase {
         });
     }
 
-    public static TList<Complex> clist() {
-        return new ArrayTList<>($COMPLEX, false, 0);
+    public static TVector<Complex> clist() {
+        return new ArrayTVector<>($COMPLEX, false, 0);
     }
 
-    public static TList<Complex> clist(int size) {
-        return new ArrayTList<>($COMPLEX, false, size);
+    public static TVector<Complex> clist(int size) {
+        return new ArrayTVector<>($COMPLEX, false, size);
     }
 
-    public static TList<Complex> clist(Complex... vector) {
-        return new ArrayTList<>($COMPLEX, false, vector);
+    public static TVector<Complex> clist(Complex... vector) {
+        return new ArrayTVector<>($COMPLEX, false, vector);
     }
 
-    public static TList<Matrix> mlist() {
+    public static TVector<ComplexMatrix> mlist() {
         return MathsBase.list($MATRIX, false, 0);
     }
 
-    public static TList<Matrix> mlist(int size) {
+    public static TVector<ComplexMatrix> mlist(int size) {
         return MathsBase.list($MATRIX, false, size);
     }
 
-    public static TList<Matrix> mlist(Matrix... items) {
-        TList<Matrix> list = MathsBase.list($MATRIX, false, items.length);
+    public static TVector<ComplexMatrix> mlist(ComplexMatrix... items) {
+        TVector<ComplexMatrix> list = MathsBase.list($MATRIX, false, items.length);
         list.appendAll(Arrays.asList(items));
         return list;
     }
 
-    public static TList<TList<Complex>> clist2() {
+    public static TVector<TVector<Complex>> clist2() {
         return list($CLIST, false, 0);
     }
 
-    public static TList<TList<Expr>> elist2() {
+    public static TVector<TVector<Expr>> elist2() {
         return MathsBase.list($ELIST, false, 0);
     }
 
-    public static TList<TList<Double>> dlist2() {
+    public static TVector<TVector<Double>> dlist2() {
         return MathsBase.list($DLIST, false, 0);
     }
 
-    public static TList<TList<Integer>> ilist2() {
+    public static TVector<TVector<Integer>> ilist2() {
         return MathsBase.list($ILIST, false, 0);
     }
 
-    public static TList<TList<Matrix>> mlist2() {
+    public static TVector<TVector<ComplexMatrix>> mlist2() {
         return MathsBase.list($MLIST, false, 0);
     }
 
-    public static TList<TList<Boolean>> blist2() {
+    public static TVector<TVector<Boolean>> blist2() {
         return list($BLIST, false, 0);
     }
 
-    public static <T> TList<T> list(TypeName<T> type) {
-        return list(type, false, 0);
+    public static <T> TVector<T> list(TypeName<T> typeName) {
+        return list(typeName, false, 0);
     }
 
-    public static <T> TList<T> list(TypeName<T> type, int initialSize) {
-        return list(type, false, initialSize);
+    public static <T> TVector<T> list(TypeName<T> typeName, int initialSize) {
+        return list(typeName, false, initialSize);
     }
 
-    public static <T> TList<T> listro(TypeName<T> type, boolean row, TVectorModel<T> model) {
-        if (type.equals(MathsBase.$DOUBLE)) {
-            return (TList<T>) new DoubleArrayList.DoubleReadOnlyList(row, (TVectorModel<Double>) model);
+    public static <T> TVector<T> listro(TypeName<T> typeName, boolean row, TVectorModel<T> model) {
+        if (typeName.equals(MathsBase.$DOUBLE)) {
+            return (TVector<T>) new ArrayDoubleVector.ReadOnlyDoubleVector(row, (TVectorModel<Double>) model);
         }
-        if (type.equals(MathsBase.$INTEGER)) {
-            return (TList<T>) new IntArrayList.IntReadOnlyList(row, (TVectorModel<Integer>) model);
+        if (typeName.equals(MathsBase.$INTEGER)) {
+            return (TVector<T>) new ArrayIntVector.ReadOnlyIntVector(row, (TVectorModel<Integer>) model);
         }
-        if (type.equals(MathsBase.$LONG)) {
-            return (TList<T>) new LongArrayList.LongReadOnlyList(row, (TVectorModel<Long>) model);
+        if (typeName.equals(MathsBase.$LONG)) {
+            return (TVector<T>) new ArrayLongVector.ReadOnlyLongVector(row, (TVectorModel<Long>) model);
         }
-        if (type.equals(MathsBase.$BOOLEAN)) {
-            return (TList<T>) new BooleanArrayList.BooleanReadOnlyList(row, (TVectorModel<Boolean>) model);
+        if (typeName.equals(MathsBase.$BOOLEAN)) {
+            return (TVector<T>) new ArrayBooleanVector.ReadOnlyBooleanVector(row, (TVectorModel<Boolean>) model);
         }
-        return new ReadOnlyTList<T>(type, row, model);
+        return new ReadOnlyTList<T>(typeName, row, model);
     }
 
-    public static <T> TList<T> list(TypeName<T> type, boolean row, int initialSize) {
-        if (type.equals($EXPR)) {
-            return (TList<T>) elist(row, initialSize);
+    public static <T> TVector<T> list(TypeName<T> typeName, boolean row, int initialSize) {
+        if (typeName.equals($EXPR)) {
+            return (TVector<T>) elist(row, initialSize);
         }
-        if (type.equals($DOUBLE)) {
-            return (TList<T>) dlist(row, initialSize);
+        if (typeName.equals($DOUBLE)) {
+            return (TVector<T>) dlist(row, initialSize);
         }
-        if (type.equals($INTEGER)) {
-            return (TList<T>) ilist(row, initialSize);
+        if (typeName.equals($INTEGER)) {
+            return (TVector<T>) ilist(row, initialSize);
         }
-        if (type.equals($LONG)) {
-            return (TList<T>) llist(row, initialSize);
+        if (typeName.equals($LONG)) {
+            return (TVector<T>) llist(row, initialSize);
         }
-        if (type.equals($BOOLEAN)) {
-            return (TList<T>) blist(row, initialSize);
+        if (typeName.equals($BOOLEAN)) {
+            return (TVector<T>) blist(row, initialSize);
         }
-        return new ArrayTList<T>(type, row, initialSize);
+        return new ArrayTVector<T>(typeName, row, initialSize);
     }
 
-    public static <T> TList<T> list(TVector<T> vector) {
-        TList<T> exprs = list(vector.getComponentType());
+    public static <T> TVector<T> list(TVector<T> vector) {
+        TVector<T> exprs = list(vector.getComponentType());
         for (T o : vector) {
             exprs.append(o);
         }
         return exprs;
     }
 
-    public static ExprList elist(Matrix vector) {
-        Vector complexes = vector.toVector();
-        ExprList exprs = elist(complexes.size());
+    public static ExprVector elist(ComplexMatrix vector) {
+        ComplexVector complexes = vector.toVector();
+        ExprVector exprs = elist(complexes.size());
         exprs.appendAll((TVector) complexes);
         return exprs;
     }
@@ -3356,118 +3390,118 @@ public final class MathsBase {
         return vector.vscalarProduct(vectors.toArray(new TVector[0]));
     }
 
-    public static TList<Expr> elist() {
-        return new ExprArrayList(false, 0);
+    public static ExprVector elist() {
+        return new ArrayExprVector(false, 0);
     }
 
-    public static <T> TList<T> concat(TList<T>... a) {
-        TList<T> ts = list(a[0].getComponentType());
-        for (TList<T> t : a) {
+    public static <T> TVector<T> concat(TVector<T>... a) {
+        TVector<T> ts = list(a[0].getComponentType());
+        for (TVector<T> t : a) {
             ts.appendAll(t);
         }
         return ts;
     }
 
-    public static TList<Double> dlist() {
-        return new DoubleArrayList();
+    public static TVector<Double> dlist() {
+        return new ArrayDoubleVector();
     }
 
-    public static TList<Double> dlist(ToDoubleArrayAware items) {
+    public static TVector<Double> dlist(ToDoubleArrayAware items) {
         return dlist(items.toDoubleArray());
     }
 
-    public static TList<Double> dlist(double[] items) {
-        DoubleList doubles = new DoubleArrayList(items.length);
+    public static TVector<Double> dlist(double[] items) {
+        DoubleVector doubles = new ArrayDoubleVector(items.length);
         doubles.appendAll(items);
         return doubles;
     }
 
-    public static TList<Double> dlist(boolean row, int size) {
-        return new DoubleArrayList(row, size);
+    public static TVector<Double> dlist(boolean row, int size) {
+        return new ArrayDoubleVector(row, size);
     }
 
-    public static TList<Double> dlist(int size) {
-        return new DoubleArrayList(size);
+    public static TVector<Double> dlist(int size) {
+        return new ArrayDoubleVector(size);
     }
 
-    public static TList<String> slist() {
-        return new ArrayTList<String>($STRING, false, 0);
+    public static TVector<String> slist() {
+        return new ArrayTVector<String>($STRING, false, 0);
     }
 
-    public static TList<String> slist(String[] items) {
-        TList<String> doubles = new ArrayTList<String>($STRING, false, items.length);
+    public static TVector<String> slist(String[] items) {
+        TVector<String> doubles = new ArrayTVector<String>($STRING, false, items.length);
         for (String item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<String> slist(boolean row, int size) {
-        return new ArrayTList<String>($STRING, row, size);
+    public static TVector<String> slist(boolean row, int size) {
+        return new ArrayTVector<String>($STRING, row, size);
     }
 
-    public static TList<String> slist(int size) {
-        return new ArrayTList<String>($STRING, false, size);
+    public static TVector<String> slist(int size) {
+        return new ArrayTVector<String>($STRING, false, size);
     }
 
-    public static TList<Boolean> blist() {
-        return new BooleanArrayList(false, 0);
+    public static TVector<Boolean> blist() {
+        return new ArrayBooleanVector(false, 0);
     }
 
-    public static TList<Boolean> dlist(boolean[] items) {
-        TList<Boolean> doubles = new BooleanArrayList(false, items.length);
+    public static TVector<Boolean> dlist(boolean[] items) {
+        TVector<Boolean> doubles = new ArrayBooleanVector(false, items.length);
         for (boolean item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<Boolean> blist(boolean row, int size) {
-        return new BooleanArrayList(row, size);
+    public static TVector<Boolean> blist(boolean row, int size) {
+        return new ArrayBooleanVector(row, size);
     }
 
-    public static TList<Boolean> blist(int size) {
-        return new BooleanArrayList(false, size);
+    public static TVector<Boolean> blist(int size) {
+        return new ArrayBooleanVector(false, size);
     }
 
-    public static IntList ilist() {
-        return new IntArrayList(false, 0);
+    public static IntVector ilist() {
+        return new ArrayIntVector(false, 0);
     }
 
-    public static TList<Integer> ilist(int[] items) {
-        TList<Integer> doubles = new IntArrayList(false, items.length);
+    public static TVector<Integer> ilist(int[] items) {
+        TVector<Integer> doubles = new ArrayIntVector(false, items.length);
         for (int item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<Integer> ilist(int size) {
-        return new IntArrayList(false, size);
+    public static TVector<Integer> ilist(int size) {
+        return new ArrayIntVector(false, size);
     }
 
-    public static TList<Integer> ilist(boolean row, int size) {
-        return new IntArrayList(row, size);
+    public static TVector<Integer> ilist(boolean row, int size) {
+        return new ArrayIntVector(row, size);
     }
 
-    public static LongList llist() {
-        return new LongArrayList(false, 0);
+    public static LongVector llist() {
+        return new ArrayLongVector(false, 0);
     }
 
-    public static TList<Long> llist(long[] items) {
-        TList<Long> doubles = new LongArrayList(false, items.length);
+    public static TVector<Long> llist(long[] items) {
+        TVector<Long> doubles = new ArrayLongVector(false, items.length);
         for (long item : items) {
             doubles.append(item);
         }
         return doubles;
     }
 
-    public static TList<Long> llist(int size) {
-        return new LongArrayList(false, size);
+    public static TVector<Long> llist(int size) {
+        return new ArrayLongVector(false, size);
     }
 
-    public static TList<Long> llist(boolean row, int size) {
-        return new LongArrayList(row, size);
+    public static TVector<Long> llist(boolean row, int size) {
+        return new ArrayLongVector(row, size);
     }
 
     public static <T> T sum(TypeName<T> type, T... arr) {
@@ -3518,7 +3552,7 @@ public final class MathsBase {
         return a.mul(b);
     }
 
-    public static Matrix mul(Matrix a, Matrix b) {
+    public static ComplexMatrix mul(ComplexMatrix a, ComplexMatrix b) {
         return a.mul(b);
     }
 
@@ -3625,20 +3659,28 @@ public final class MathsBase {
 //        return DoubleValue.valueOf(1, d);
 //    }
     public static <T> T simplify(T a) {
+        return simplify(a, null);
+    }
+
+    public static <T> T simplify(T a, SimplifyOptions simplifyOptions) {
         if (a instanceof Expr) {
-            return (T) simplify((Expr) a);
+            return (T) ((Expr) a).simplify(simplifyOptions);
         }
-        if (a instanceof TList) {
-            return (T) simplify((TList) a);
+        if (a instanceof ExprVector) {
+            return (T) ((ExprVector) a).simplify(simplifyOptions);
         }
         if (a instanceof TVector) {
-            return (T) simplify((TVector) a);
+            return (T) simplify((TVector) a, simplifyOptions);
         }
         return a;
     }
 
     public static Expr simplify(Expr a) {
-        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(a);
+        return a.simplify();
+    }
+
+    public static Expr simplify(Expr a, SimplifyOptions simplifyOptions) {
+        return a.simplify(simplifyOptions);
     }
 
     public static double norm(Expr a) {
@@ -3648,7 +3690,10 @@ public final class MathsBase {
         return sqrt(c).absdbl();
     }
 
-    public static <T> TList<T> normalize(TList<T> a) {
+    public static <T> TVector<T> normalize(TVector<T> a) {
+        if(a instanceof ExprVector){
+            return (TVector<T>) ((ExprVector) a).normalize();
+        }
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3747,26 +3792,21 @@ public final class MathsBase {
     }
 
     public static <T> TVector<T> simplify(TVector<T> a) {
+        return simplify(a, null);
+    }
+
+    public static <T> TVector<T> simplify(TVector<T> a, SimplifyOptions options) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) simplify(e);
+                return (T) simplify(e, options);
             }
         });
     }
 
-    public static <T> TList<T> simplify(TList<T> a) {
-        return a.eval(new ElementOp<T>() {
-            @Override
-            public T eval(int index, T e) {
-                return (T) simplify((Expr) e);
-            }
-        });
-    }
-
-    public static <T> TList<T> addAll(TList<T> e, T... expressions) {
+    public static <T> TVector<T> addAll(TVector<T> e, T... expressions) {
         TypeName<T> st = e.getComponentType();
-        TList<T> n = list(st);
+        TVector<T> n = list(st);
         VectorSpace<T> s = getVectorSpace(st);
         for (T x : e) {
             T t = sum(st, expressions);
@@ -3775,9 +3815,9 @@ public final class MathsBase {
         return n;
     }
 
-    public static <T> TList<T> mulAll(TList<T> e, T... expressions) {
+    public static <T> TVector<T> mulAll(TVector<T> e, T... expressions) {
         TypeName<T> st = e.getComponentType();
-        TList<T> n = list(st);
+        TVector<T> n = list(st);
         VectorSpace<T> s = getVectorSpace(st);
         for (T x : e) {
             T t = mul(st, expressions);
@@ -3786,7 +3826,7 @@ public final class MathsBase {
         return n;
     }
 
-    public static <T> TList<T> pow(TList<T> a, T b) {
+    public static <T> TVector<T> pow(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3796,7 +3836,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> sub(TList<T> a, T b) {
+    public static <T> TVector<T> sub(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3806,7 +3846,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> div(TList<T> a, T b) {
+    public static <T> TVector<T> div(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3816,7 +3856,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> rem(TList<T> a, T b) {
+    public static <T> TVector<T> rem(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3826,7 +3866,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> add(TList<T> a, T b) {
+    public static <T> TVector<T> add(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -3836,7 +3876,7 @@ public final class MathsBase {
         });
     }
 
-    public static <T> TList<T> mul(TList<T> a, T b) {
+    public static <T> TVector<T> mul(TVector<T> a, T b) {
         return a.eval(new ElementOp<T>() {
             @Override
             public T eval(int index, T e) {
@@ -4095,36 +4135,36 @@ public final class MathsBase {
         return MathsArrays.rerr(a, b);
     }
 
-    public static CustomCCFunctionXDefinition define(String name, CustomCCFunctionX f) {
-        return new CustomCCFunctionXDefinition(name, f);
+    public static CustomCCFunctionXExpr define(String name, CustomCCFunctionX f) {
+        return new CustomCCFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDCFunctionXDefinition define(String name, CustomDCFunctionX f) {
-        return new CustomDCFunctionXDefinition(name, f);
+    public static CustomDCFunctionXExpr define(String name, CustomDCFunctionX f) {
+        return new CustomDCFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDDFunctionXDefinition define(String name, CustomDDFunctionX f) {
-        return new CustomDDFunctionXDefinition(name, f);
+    public static CustomDDFunctionXExpr define(String name, CustomDDFunctionX f) {
+        return new CustomDDFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDDFunctionXYDefinition define(String name, CustomDDFunctionXY f) {
-        return new CustomDDFunctionXYDefinition(name, f);
+    public static CustomDDFunctionXYExpr define(String name, CustomDDFunctionXY f) {
+        return new CustomDDFunctionXYDefinition(name, f).fct();
     }
 
-    public static CustomDCFunctionXYDefinition define(String name, CustomDCFunctionXY f) {
-        return new CustomDCFunctionXYDefinition(name, f);
+    public static CustomDCFunctionXYExpr define(String name, CustomDCFunctionXY f) {
+        return new CustomDCFunctionXYDefinition(name, f).fct();
     }
 
-    public static CustomCCFunctionXYDefinition define(String name, CustomCCFunctionXY f) {
-        return new CustomCCFunctionXYDefinition(name, f);
+    public static CustomCCFunctionXYExpr define(String name, CustomCCFunctionXY f) {
+        return new CustomCCFunctionXYDefinition(name, f).fct();
     }
 
-    public static double rerr(Matrix a, Matrix b) {
+    public static double rerr(ComplexMatrix a, ComplexMatrix b) {
         return b.getError(a);
     }
 
-    public static <T extends Expr> DoubleList toDoubleArray(TList<T> c) {
-        DoubleList a = new DoubleArrayList(c.size());
+    public static <T extends Expr> DoubleVector toDoubleArray(TVector<T> c) {
+        DoubleVector a = new ArrayDoubleVector(c.size());
         for (T o : c) {
             a.append(o.toDouble());
         }
@@ -4152,8 +4192,8 @@ public final class MathsBase {
         return t.toComplex();
     }
 
-    public static Matrix matrix(TMatrix t) {
-        return (Matrix) t.to($COMPLEX);
+    public static ComplexMatrix matrix(TMatrix t) {
+        return (ComplexMatrix) t.to($COMPLEX);
     }
 
     public static TMatrix<Expr> ematrix(TMatrix t) {
@@ -4178,7 +4218,7 @@ public final class MathsBase {
         throw new NoSuchElementException("Vector space Not yet supported for " + cls);
     }
 
-    public static DoubleList refineSamples(TList<Double> values, int n) {
+    public static DoubleVector refineSamples(TVector<Double> values, int n) {
         return MathsSampler.refineSamples(values, n);
     }
 
@@ -4292,7 +4332,7 @@ public final class MathsBase {
 //    private static class TMatrixTypeReference extends TypeName<TMatrix<Complex>> {
 //    }
 //
-//    private static class TVectorTypeReference extends TypeName<TVector<Complex>> {
+//    private static class TVectorTypeReference extends TypeName<TList<Complex>> {
 //    }
 //
 //    private static class ComplexTypeReference extends TypeName<Complex> {
@@ -4451,7 +4491,7 @@ public final class MathsBase {
         return b;
     }
 
-    public static Complex det(Matrix m) {
+    public static Complex det(ComplexMatrix m) {
         return m.det();
 
     }
@@ -4634,7 +4674,7 @@ public final class MathsBase {
         return e == null ? null : e.toDM();
     }
 
-    public static Matrix matrix(Expr e) {
+    public static ComplexMatrix matrix(Expr e) {
         return e == null ? null : e.toMatrix();
     }
 }

@@ -39,17 +39,17 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return object.toDV().computeVector(x, y, z,d0, ranges);
     }
 
     @Override
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return object.toDV().computeVector(x, y, d0, ranges);
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return object.toDV().computeVector(x, d0, ranges);
     }
 
@@ -189,22 +189,22 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return object.toDM().computeMatrix(x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return object.toDM().computeMatrix(x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return object.toDM().computeMatrix(x, y, d0, ranges);
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         return object.toDM().computeMatrix(x, y);
     }
 
@@ -266,7 +266,7 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return object.toMatrix();
     }
 
@@ -341,20 +341,9 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return (object.composeX(xreplacement));
+    public Expr compose(Axis axis,Expr xreplacement) {
+        return (object.compose(axis,xreplacement));
     }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        return (object.composeY(yreplacement));
-    }
-
-//    @Override
-//    public Expr setTitle(String title) {
-//        getProperties().put("title", title);
-//        return this;
-//    }
 
     @Override
     public boolean isScalarExprImpl() {
@@ -391,7 +380,7 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return object.toDM().computeMatrix(x, y, z, d0, ranges);
     }
 
@@ -426,17 +415,17 @@ public abstract class Ref extends AbstractPolymorphExpr implements Cloneable {
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         return object.toDM().computeMatrix(x, y, z);
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return object.toDM().computeMatrix(x, d0, ranges);
     }
 
     @Override
-    public Matrix computeMatrix(double x) {
+    public ComplexMatrix computeMatrix(double x) {
         return object.toDM().computeMatrix(x);
     }
 

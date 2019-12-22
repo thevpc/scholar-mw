@@ -12,16 +12,16 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(TMatrix.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}});
+//            return (R) MathsBase.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        if(t.equals(TVector.class)){
-//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -296,7 +296,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 
     @Override
     public TypeName<Complex> getItemType() {
-        return Maths.$COMPLEX;
+        return MathsBase.$COMPLEX;
     }
 
     @Override
@@ -396,16 +396,16 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 
     @Override
     public <R> boolean is(Complex value, TypeName<R> type) {
-        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)) {
+        if (MathsBase.$COMPLEX.equals(type) || MathsBase.$EXPR.equals(type)) {
             return true;
         }
-        if (Maths.$DOUBLE.equals(type)) {
+        if (MathsBase.$DOUBLE.equals(type)) {
             return value.isDouble();
         }
-        if (Maths.$INTEGER.equals(type)) {
+        if (MathsBase.$INTEGER.equals(type)) {
             return value.isDouble() && value.toDouble() == (int) value.toDouble();
         }
-        if (Maths.$LONG.equals(type)) {
+        if (MathsBase.$LONG.equals(type)) {
             return value.isDouble() && value.toDouble() == (long) value.toDouble();
         }
         return false;

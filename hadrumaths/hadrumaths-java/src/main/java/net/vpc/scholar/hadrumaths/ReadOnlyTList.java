@@ -4,7 +4,7 @@ import net.vpc.common.util.TypeName;
 
 import java.util.Collection;
 
-public class ReadOnlyTList<T> extends AbstractTList<T> implements Cloneable {
+public class ReadOnlyTList<T> extends AbstractTVector<T> implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     private TVectorModel<T> model;
@@ -32,28 +32,34 @@ public class ReadOnlyTList<T> extends AbstractTList<T> implements Cloneable {
     }
 
     @Override
-    public void appendAll(TVector<T> e) {
-        throw new IllegalArgumentException("Unmodifiable List");
+    public TVector<T> appendAll(TVector<T> e) {
+        throwUnmodifiable();
+        return this;
     }
 
     @Override
-    public void append(T e) {
-        throw new IllegalArgumentException("Unmodifiable List");
+    public TVector<T> append(T e) {
+        throwUnmodifiable();
+        return this;
     }
 
     @Override
-    public void appendAll(Collection<? extends T> e) {
-        throw new IllegalArgumentException("Unmodifiable List");
+    public TVector<T> appendAll(Collection<? extends T> e) {
+        throwUnmodifiable();
+        return this;
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 
+    protected void throwUnmodifiable(){
+        throw new IllegalArgumentException("Unmodifiable Vector");
+    }
 }

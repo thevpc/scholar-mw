@@ -4,8 +4,6 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 5/14/16.
  */
 public class AxisDomain {
-    //    private long R=10000000000000000000000000000000000L;
-//    private long R=1000000000000000000L;
     private Axis axis;
     private Domain domainX;
 

@@ -5,12 +5,12 @@ import net.vpc.common.util.TypeName;
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
  */
-public class TTransposedList<T> extends AbstractTList<T> {
+public class TTransposedList<T> extends AbstractTVector<T> {
 
     private static final long serialVersionUID = 1L;
-    private TList<T> other;
+    private TVector<T> other;
 
-    public TTransposedList(TList<T> other) {
+    public TTransposedList(TVector<T> other) {
         super(!other.isRow());
         this.other = other;
     }
@@ -21,8 +21,9 @@ public class TTransposedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public void set(int i, T complex) {
+    public TVector<T> set(int i, T complex) {
         other.set(i, complex);
+        return this;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class TTransposedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TList<T> transpose() {
+    public TVector<T> transpose() {
         return other;
     }
 
@@ -46,12 +47,12 @@ public class TTransposedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 

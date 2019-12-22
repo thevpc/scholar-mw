@@ -5,7 +5,7 @@
  */
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadruplot.HadruplotService;
 import net.vpc.scholar.hadruplot.HadruplotServiceDesc;
 
@@ -18,8 +18,8 @@ public class HadrumathsHadruplotService implements HadruplotService {
 
     @Override
     public void installService() {
-        //just to load Maths
-        Maths.getHadrumathsVersion();
+        //just to load MathsBase
+        MathsBase.getHadrumathsVersion();
     }
 
 }

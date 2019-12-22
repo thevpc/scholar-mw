@@ -4,6 +4,7 @@ import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -42,7 +43,7 @@ public abstract class CacheSupport<T> {
     }
 
     public T computeCached(HashValue dump, T oldValue) {
-        return Maths.invokeMonitoredAction(
+        return MathsBase.invokeMonitoredAction(
                 monitor, cacheItemName,
                 new MonitoredAction<T>() {
                     @Override

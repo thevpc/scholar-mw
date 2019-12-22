@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.dump;
 
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -144,7 +144,7 @@ public class Dumper {
                 sb.append("  ");
             }
         }
-        String str = (type == Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
+        String str = (type == Type.SIMPLE) ? MathsBase.dumpSimple(value) : MathsBase.dump(value);
         sb.ensureCapacity(sb.length()+str.length());
         StringTokenizer stok = new StringTokenizer(str, "\r\n");
         if(stok.hasMoreTokens()){

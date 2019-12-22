@@ -6,8 +6,8 @@ package net.vpc.scholar.hadrumaths.convergence;
 
 import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruplot.Plot;
 
 import javax.swing.*;
@@ -107,7 +107,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         }
 
 
-        double[] x0 = Maths.dsteps(0.0, max - 1, 1);
+        double[] x0 = MathsBase.dsteps(0.0, max - 1, 1);
         final double[][] x = new double[all.length][];
         final double[][] dblValues = new double[all.length][max];
 
@@ -147,7 +147,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
     }
 
     public double toDouble(Object o) {
-        return (o == null) ? 0 : (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof Matrix) ? ((Matrix) o).norm1() : ((Number) o).doubleValue();
+        return (o == null) ? 0 : (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof ComplexMatrix) ? ((ComplexMatrix) o).norm1() : ((Number) o).doubleValue();
     }
 
     public void setWindowManager(WindowManager windowManager) {

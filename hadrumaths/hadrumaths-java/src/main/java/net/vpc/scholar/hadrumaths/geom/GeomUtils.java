@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.geom;
 
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -237,16 +237,16 @@ public final class GeomUtils {
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
-                    d.moveTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision));
+                    d.moveTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision));
                     break;
                 case PathIterator.SEG_LINETO:
-                    d.lineTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision));
+                    d.lineTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision));
                     break;
                 case PathIterator.SEG_QUADTO:
-                    d.quadTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision), Maths.round(coords[2], xprecision), Maths.round(coords[3], yprecision));
+                    d.quadTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision), MathsBase.round(coords[2], xprecision), MathsBase.round(coords[3], yprecision));
                     break;
                 case PathIterator.SEG_CUBICTO:
-                    d.curveTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision), Maths.round(coords[2], xprecision), Maths.round(coords[3], yprecision), Maths.round(coords[4], xprecision), Maths.round(coords[5], yprecision));
+                    d.curveTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision), MathsBase.round(coords[2], xprecision), MathsBase.round(coords[3], yprecision), MathsBase.round(coords[4], xprecision), MathsBase.round(coords[5], yprecision));
                     break;
                 case PathIterator.SEG_CLOSE:
                     d.closePath();

@@ -49,13 +49,13 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
     @Deprecated
     ModeFunctions setSize(int maxSize);
 
-    TList<Expr> list();
+    TVector<Expr> list();
 
     DoubleToVector get(int index);
 
     DoubleToVector apply(int index);
 
-    TList<Expr> toList();
+    TVector<Expr> toList();
 
     DoubleToVector[] toArray();
 
@@ -186,7 +186,7 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     TVector<Complex> scalarProduct(Expr testFunction);
 
-    TMatrix<Complex> scalarProduct(TList<Expr> testFunctions, ProgressMonitor monitor);
+    TMatrix<Complex> scalarProduct(TVector<Expr> testFunctions, ProgressMonitor monitor);
 
     void setObjectCacheResolver(ObjectCacheResolver cacheResolver);
 }

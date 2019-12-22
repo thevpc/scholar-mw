@@ -35,46 +35,46 @@ public abstract class AbstractExprOperatorBinary extends AbstractExprOperator{
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getBinaryExprHelper(), x, d0, ranges);
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getBinaryExprHelper(), x, y, d0, ranges);
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getBinaryExprHelper(), x, y, z, d0, ranges);
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getBinaryExprHelper(), x, d0, ranges);
     }
 
     @Override
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getBinaryExprHelper(), x, y, d0, ranges);
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getBinaryExprHelper(), x, y, z, d0, ranges);
     }
     @Override
-    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
         return Expressions.computeVector(this,x,y,z,defined);
     }
 
     @Override
-    public Vector computeVector(double x, double y, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
         return Expressions.computeVector(this,x,y,defined);
     }
 
     @Override
-    public Vector computeVector(double x, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
         return Expressions.computeVector(this,x,defined);
     }
 

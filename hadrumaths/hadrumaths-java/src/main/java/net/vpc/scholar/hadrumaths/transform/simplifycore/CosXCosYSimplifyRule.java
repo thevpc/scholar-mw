@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -37,14 +37,14 @@ public class CosXCosYSimplifyRule implements ExpressionRewriterRule {
             return RewriteResult.bestEffort(DoubleValue.valueOf(0, e.getDomain()));
         }
         if (ee.getA() == 0 && ee.getC() == 0) {
-            return RewriteResult.bestEffort(DoubleValue.valueOf(Maths.cos2(ee.getB()) * Maths.cos2(ee.getD()), e.getDomain()));
+            return RewriteResult.bestEffort(DoubleValue.valueOf(MathsBase.cos2(ee.getB()) * MathsBase.cos2(ee.getD()), e.getDomain()));
         }
 
         if (ee.getA() == 0 && ee.getB() != 0) {
-            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * Maths.cos2(ee.getB()), 0, 0, ee.getC(), ee.getD(), ee.getDomain()));
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * MathsBase.cos2(ee.getB()), 0, 0, ee.getC(), ee.getD(), ee.getDomain()));
         }
         if (ee.getC() == 0 && ee.getD() != 0) {
-            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * Maths.cos2(ee.getD()), ee.getA(), ee.getB(), 0, 0, ee.getDomain()));
+            return RewriteResult.bestEffort(new CosXCosY(ee.getAmp() * MathsBase.cos2(ee.getD()), ee.getA(), ee.getB(), 0, 0, ee.getDomain()));
         }
         return RewriteResult.unmodified(e);
     }

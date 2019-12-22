@@ -6,19 +6,19 @@
 package net.vpc.scholar.hadrumaths.interop.matlab.impl;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 
 /**
  * @author vpc
  */
-public class MatrixToMatlabString implements ToMatlabString<Matrix> {
+public class MatrixToMatlabString implements ToMatlabString<ComplexMatrix> {
     public MatrixToMatlabString() {
     }
 
     @Override
-    public String toMatlabString(Matrix o, ToMatlabStringParam... format) {
+    public String toMatlabString(ComplexMatrix o, ToMatlabStringParam... format) {
         Complex[][] elements = o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {

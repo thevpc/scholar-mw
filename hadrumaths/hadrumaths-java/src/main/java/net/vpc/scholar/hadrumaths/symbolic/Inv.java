@@ -10,8 +10,6 @@ import net.vpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.vpc.scholar.hadrumaths.transform.ExpressionTransformer;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author vpc
@@ -121,7 +119,7 @@ public class Inv extends AbstractExprOperatorUnary implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return expression.toMatrix().inv();
     }
 
@@ -174,7 +172,7 @@ public class Inv extends AbstractExprOperatorUnary implements Cloneable {
     @Override
     public Expr mul(double other) {
         if (other == 0) {
-            return Maths.DDZERO;
+            return MathsBase.DDZERO;
         }
         return new Inv(expression.mul(1 / other));
     }
@@ -183,9 +181,9 @@ public class Inv extends AbstractExprOperatorUnary implements Cloneable {
     public Expr mul(Complex other) {
         if (other.isZero()) {
             if (expression.isZero()) {
-                return Maths.DDNAN;
+                return MathsBase.DDNAN;
             }
-            return Maths.DDZERO;
+            return MathsBase.DDZERO;
         }
         return new Inv(expression.mul(other.inv()));
     }
@@ -275,8 +273,8 @@ public class Inv extends AbstractExprOperatorUnary implements Cloneable {
 
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        Matrix matrix = expression.toDM().computeMatrix(x, y, z);
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
+        ComplexMatrix matrix = expression.toDM().computeMatrix(x, y, z);
         return matrix.inv();
     }
 
@@ -300,12 +298,12 @@ public class Inv extends AbstractExprOperatorUnary implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix x) {
+        public ComplexMatrix computeMatrix(ComplexMatrix x) {
             return x.inv();
         }
 
         @Override
-        public Vector computeVector(Vector x) {
+        public ComplexVector computeVector(ComplexVector x) {
             return x.inv();
         }
     }

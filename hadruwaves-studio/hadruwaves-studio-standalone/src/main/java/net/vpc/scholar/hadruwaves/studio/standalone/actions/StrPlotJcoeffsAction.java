@@ -4,7 +4,7 @@ import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.common.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadrumaths.Vector;
+import net.vpc.scholar.hadrumaths.ComplexVector;
 
 /**
  * User: taha
@@ -17,7 +17,7 @@ public class StrPlotJcoeffsAction extends StructureAction {
     }
 
     public void execute(RunningProjectThread thread) throws Exception {
-        Vector j = thread.getHelper(true).computeTestcoeff(ProgressMonitorFactory.none()).getColumn(0);
+        ComplexVector j = thread.getHelper(true).computeTestcoeff(ProgressMonitorFactory.none()).getColumn(0);
         Complex[] y = new Complex[j.size()];
         double[] x = Maths.dsteps(1, y.length, 1.0);
         for (int i = 0; i < y.length; i++) {

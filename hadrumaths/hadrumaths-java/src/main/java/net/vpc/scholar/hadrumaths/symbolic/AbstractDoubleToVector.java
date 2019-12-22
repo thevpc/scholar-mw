@@ -49,21 +49,21 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
 
 
     //@Override
-    public Vector computeVector(double x, double y, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, y, defined)
                 );
             }
             case 2: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, y, defined),
                         getComponent(Axis.Y).toDC().computeComplex(x, y, defined)
                 );
             }
             case 3: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, y, defined),
                         getComponent(Axis.Y).toDC().computeComplex(x, y, defined),
                         getComponent(Axis.Z).toDC().computeComplex(x, y, defined)
@@ -74,21 +74,21 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
     }
 
     //@Override
-    public Vector computeVector(double x, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
         switch (getComponentSize()) {
             case 1: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, defined)
                 );
             }
             case 2: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, defined),
                         getComponent(Axis.Y).toDC().computeComplex(x, defined)
                 );
             }
             case 3: {
-                return Maths.columnVector(
+                return MathsBase.columnVector(
                         getComponent(Axis.X).toDC().computeComplex(x, defined),
                         getComponent(Axis.Y).toDC().computeComplex(x, defined),
                         getComponent(Axis.Z).toDC().computeComplex(x, defined)
@@ -100,7 +100,7 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
 
 
     //@Override
-    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
 
         switch (getComponentSize()) {
             case 1: {
@@ -113,7 +113,7 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 DoubleToComplex fy = getComponent(Axis.Y).toDC();
                 Complex _x = fx.computeComplex(x, y, z);
                 Complex _y = fy.computeComplex(x, y, z);
-                return Maths.columnVector(_x, _y);
+                return MathsBase.columnVector(_x, _y);
             }
             case 3: {
                 DoubleToComplex fx = getComponent(Axis.X).toDC();
@@ -122,23 +122,23 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 Complex _x = fx.computeComplex(x, y, z);
                 Complex _y = fy.computeComplex(x, y, z);
                 Complex _z = fz.computeComplex(x, y, z);
-                return Maths.columnVector(_x, _y, _z);
+                return MathsBase.columnVector(_x, _y, _z);
             }
         }
         throw new UnsupportedComponentDimensionException(getComponentDimension());
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         switch (getComponentSize()) {
             case 1: {
                 Out<Range> _xr = new Out<Range>();
                 Complex[][][] _x = getComponent(Axis.X).toDC().computeComplex(x, y, z, d0, _xr);
-                Vector[][][] r = new Vector[z.length][y.length][x.length];
+                ComplexVector[][][] r = new ComplexVector[z.length][y.length][x.length];
                 for (int t = 0; t < z.length; t++) {
                     for (int i = 0; i < y.length; i++) {
                         for (int j = 0; j < x.length; j++) {
-                            r[t][i][j] = Maths.columnVector(
+                            r[t][i][j] = MathsBase.columnVector(
                                             _x[t][i][j]
                                     );
                         }
@@ -154,11 +154,11 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 Out<Range> _yr = new Out<Range>();
                 Complex[][][] _x = getComponent(Axis.X).toDC().computeComplex(x, y, z, d0, _xr);
                 Complex[][][] _y = getComponent(Axis.Y).toDC().computeComplex(x, y, z, d0, _yr);
-                Vector[][][] r = new Vector[z.length][y.length][x.length];
+                ComplexVector[][][] r = new ComplexVector[z.length][y.length][x.length];
                 for (int t = 0; t < z.length; t++) {
                     for (int i = 0; i < y.length; i++) {
                         for (int j = 0; j < x.length; j++) {
-                            r[t][i][j] = Maths.columnVector(
+                            r[t][i][j] = MathsBase.columnVector(
                                             _x[t][i][j],
                                             _y[t][i][j]
                                     );
@@ -180,11 +180,11 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 Complex[][][] _x = getComponent(Axis.X).toDC().computeComplex(x, y, z, d0, _xr);
                 Complex[][][] _y = getComponent(Axis.Y).toDC().computeComplex(x, y, z, d0, _yr);
                 Complex[][][] _z = getComponent(Axis.Z).toDC().computeComplex(x, y, z, d0, _zr);
-                Vector[][][] r = new Vector[z.length][y.length][x.length];
+                ComplexVector[][][] r = new ComplexVector[z.length][y.length][x.length];
                 for (int t = 0; t < z.length; t++) {
                     for (int i = 0; i < y.length; i++) {
                         for (int j = 0; j < x.length; j++) {
-                            r[t][i][j] = Maths.columnVector(
+                            r[t][i][j] = MathsBase.columnVector(
                                             _x[t][i][j],
                                             _y[t][i][j],
                                             _z[t][i][j]
@@ -207,14 +207,14 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         switch (getComponentSize()) {
             case 1: {
                 Out<Range> _xr = new Out<Range>();
                 Complex[] _x = getComponent(Axis.X).toDC().computeComplex(x, d0, _xr);
-                Vector[] r = new Vector[x.length];
+                ComplexVector[] r = new ComplexVector[x.length];
                 for (int j = 0; j < x.length; j++) {
-                    r[j] = Maths.columnVector(_x[j]);
+                    r[j] = MathsBase.columnVector(_x[j]);
                 }
                 if (ranges != null) {
                     ranges.set(_xr.get());
@@ -226,9 +226,9 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 Out<Range> _yr = new Out<Range>();
                 Complex[] _x = getComponent(Axis.X).toDC().computeComplex(x, d0, _xr);
                 Complex[] _y = getComponent(Axis.Y).toDC().computeComplex(x, d0, _yr);
-                Vector[] r = new Vector[x.length];
+                ComplexVector[] r = new ComplexVector[x.length];
                 for (int j = 0; j < x.length; j++) {
-                    r[j] = Maths.columnVector(_x[j], _y[j]);
+                    r[j] = MathsBase.columnVector(_x[j], _y[j]);
                 }
                 if (ranges != null) {
 
@@ -245,9 +245,9 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 Complex[] _x = getComponent(Axis.X).toDC().computeComplex(x, d0, _xr);
                 Complex[] _y = getComponent(Axis.Y).toDC().computeComplex(x, d0, _yr);
                 Complex[] _z = getComponent(Axis.Z).toDC().computeComplex(x, d0, _zr);
-                Vector[] r = new Vector[x.length];
+                ComplexVector[] r = new ComplexVector[x.length];
                 for (int j = 0; j < x.length; j++) {
-                    r[j] = Maths.columnVector(_x[j], _y[j], _z[j]);
+                    r[j] = MathsBase.columnVector(_x[j], _y[j], _z[j]);
                 }
                 if (ranges != null) {
                     Range rangex = _xr.get();
@@ -307,16 +307,16 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
         return true;
     }
 
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         switch (getComponentSize()) {
             case 1: {
                 Out<Range> _xr = new Out<Range>();
                 Complex[][] _x = getComponent(Axis.X).toDC().computeComplex(x, y, d0, _xr);
                 ExpressionsDebug.debug_check(_x,_xr);
-                Vector[][] r = new Vector[y.length][x.length];
+                ComplexVector[][] r = new ComplexVector[y.length][x.length];
                 for (int i = 0; i < y.length; i++) {
                     for (int j = 0; j < x.length; j++) {
-                        r[i][j] = Maths.columnVector(
+                        r[i][j] = MathsBase.columnVector(
                                         _x[i][j]
                                 );
                     }
@@ -333,10 +333,10 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
                 ExpressionsDebug.debug_check(_x,_xr);
                 Complex[][] _y = getComponent(Axis.Y).toDC().computeComplex(x, y, d0, _yr);
                 ExpressionsDebug.debug_check(_y,_yr);
-                Vector[][] r = new Vector[y.length][x.length];
+                ComplexVector[][] r = new ComplexVector[y.length][x.length];
                 for (int i = 0; i < y.length; i++) {
                     for (int j = 0; j < x.length; j++) {
-                        r[i][j] = Maths.columnVector(
+                        r[i][j] = MathsBase.columnVector(
                                         _x[i][j],
                                         _y[i][j]
                                 );
@@ -360,10 +360,10 @@ public abstract class AbstractDoubleToVector extends AbstractExprPropertyAware i
         ExpressionsDebug.debug_check(_y,_yr);
         Complex[][] _z = getComponent(Axis.Z).toDC().computeComplex(x, y, d0, _zr);
         ExpressionsDebug.debug_check(_z,_zr);
-        Vector[][] r = new Vector[y.length][x.length];
+        ComplexVector[][] r = new ComplexVector[y.length][x.length];
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x.length; j++) {
-                r[i][j] = Maths.columnVector(
+                r[i][j] = MathsBase.columnVector(
                         _x[i][j],
                         _y[i][j],
                         _z[i][j]);

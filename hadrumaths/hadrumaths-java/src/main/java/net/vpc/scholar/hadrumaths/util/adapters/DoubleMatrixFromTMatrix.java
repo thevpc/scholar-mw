@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.adapters;
 
 import net.vpc.scholar.hadrumaths.DoubleMatrix;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.TMatrix;
 
 /**
@@ -11,7 +11,7 @@ public class DoubleMatrixFromTMatrix<T> extends TMatrixAdapter<T, Double> implem
     private static final long serialVersionUID = 1L;
 
     public DoubleMatrixFromTMatrix(TMatrix<T> matrix) {
-        super(matrix, Maths.$DOUBLE);
+        super(matrix, MathsBase.$DOUBLE);
     }
 
     @Override

@@ -8,7 +8,8 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
@@ -166,7 +167,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         int appliedRulesCount = 0;
         List<ExpressionRewriterRule> rulesByClass = getRulesByClass(cls);
         int bestEfforts = 0;
-        boolean debugExpressionRewrite = Maths.Config.isDebugExpressionRewrite();
+        boolean debugExpressionRewrite = MathsBase.Config.isDebugExpressionRewrite();
         for (ExpressionRewriterRule rule : rulesByClass) {
 
             appliedRulesCount++;
@@ -177,7 +178,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             if (debugExpressionRewrite) {
 //                    if (ThreadStack.depth() > 200) {
                 _debug = true;
-                _debug_msg = DumpManager.getStackDepthWhites() + name + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + Maths.dump(curr);
+                _debug_msg = DumpManager.getStackDepthWhites() + name + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + MathsBase.dump(curr);
 //                    msg = DumpManager.getStackDepthWhites() + name + " :: " + rule.getClass().getSimpleName() + "  :  " + System.identityHashCode(curr) + "  :  " + curr.getClass().getSimpleName() + " :: " + curr;
                 System.out.println("_" + _debug_msg);
 //                    }

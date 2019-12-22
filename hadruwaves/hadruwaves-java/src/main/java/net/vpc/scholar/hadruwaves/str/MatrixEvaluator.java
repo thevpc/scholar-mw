@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.str;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -9,5 +9,5 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
  * @creationtime 24 mai 2007 21:47:59
  */
 public interface MatrixEvaluator extends MWStructureEvaluator {
-    Matrix evaluate(MomStructure str, ProgressMonitor monitor);
+    ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor);
 }

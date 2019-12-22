@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public final class MemTMatrix<T> extends AbstractTMatrix<T> implements Serializable {
+public class MemTMatrix<T> extends AbstractTMatrix<T> implements Serializable {
     private static final long serialVersionUID = 1;
 
     private VectorSpace<T> vs;
@@ -962,7 +962,7 @@ public final class MemTMatrix<T> extends AbstractTMatrix<T> implements Serializa
             for (T complex : element) {
                 alpha = alpha + vs.absdblsqr(complex);
             }
-            x *= Maths.sqrt(alpha);
+            x *= MathsBase.sqrt(alpha);
         }
         return vs.absdbl(det) / x;
     }
@@ -1158,34 +1158,4 @@ public final class MemTMatrix<T> extends AbstractTMatrix<T> implements Serializa
             }
         }
     }
-
-    //    private void writeObject(ObjectOutputStream oos)
-//            throws IOException {
-//        // default serialization
-//        oos.defaultWriteObject();
-//        int rowCount = getRowCount();
-//        oos.writeInt(rowCount);
-//        int columnCount = getColumnCount();
-//        oos.writeInt(columnCount);
-//        for (int i = 0; i < rowCount; i++) {
-//            for (int j = 0; j < columnCount; j++) {
-//                T.writeObjectHelper(get(i, j),oos);
-//            }
-//        }
-//    }
-//
-//    private void readObject(ObjectInputStream ois)
-//            throws ClassNotFoundException, IOException {
-//        // default deserialization
-//        ois.defaultReadObject();
-//        int rowCount = ois.readInt(); // Replace with real deserialization
-//        int columnCount = ois.readInt(); // Replace with real deserialization
-//        elements=new T[rowCount][columnCount];
-//        for (int i = 0; i < rowCount; i++) {
-//            for (int j = 0; j < columnCount; j++) {
-//                elements[i][j]=T.readObjectResolveHelper(ois);
-//            }
-//        }
-//    }
-
 }

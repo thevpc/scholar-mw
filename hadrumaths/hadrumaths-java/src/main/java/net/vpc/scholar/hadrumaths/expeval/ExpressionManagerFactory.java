@@ -9,6 +9,7 @@ import net.vpc.common.jeep.ExpressionManager;
 import net.vpc.common.jeep.PlatformHelper;
 import net.vpc.common.jeep.UtilClassExpressionEvaluatorResolver;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 /**
  * <i>Mathematic expression evaluator.</i> Supports the following functions:
@@ -26,13 +27,13 @@ import net.vpc.scholar.hadrumaths.Maths;
  */
 public final class ExpressionManagerFactory {
 
-    private static final UtilClassExpressionEvaluatorResolver EVAL_RESOLVER = new UtilClassExpressionEvaluatorResolver(false, Maths.class
+    private static final UtilClassExpressionEvaluatorResolver EVAL_RESOLVER = new UtilClassExpressionEvaluatorResolver(false, MathsBase.class
             , PlatformHelper.class
             , PlatformHelper2.class
     );
 
     private static final UtilClassExpressionEvaluatorResolver PARSER = new UtilClassExpressionEvaluatorResolver(true,
-            PlatformHelperAsExpr.class).addImportFields(Maths.class);
+            PlatformHelperAsExpr.class).addImportFields(MathsBase.class);
 
     public static ExpressionManager createEvaluator() {
         DefaultExpressionManager e = new DefaultExpressionManager();

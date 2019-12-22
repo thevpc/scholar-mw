@@ -29,7 +29,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                 final double k0 = Physics.K0(structure.getFrequency());
                 final Complex C1 = (î.mul(-k0).mul(Maths.exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
                 final TMatrix<Complex> SPM = structure.getTestModeScalarProducts();
-                final Matrix Xj = structure.matrixX().computeMatrix();
+                final ComplexMatrix Xj = structure.matrixX().computeMatrix();
                 Complex[][] EthetaMatrix = new Complex[thetaArr.length][phiArr.length];
                 Complex[][] EphiMatrix = new Complex[thetaArr.length][phiArr.length];
                 final String monText = getClass().getSimpleName();
@@ -99,13 +99,12 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                         EphiMatrix[i][j] = rr[1];
                     }
                 }
-                ArrayTVector<TMatrix<Complex>> tMatrices = new ArrayTVector<TMatrix<Complex>>(
-                        Maths.getVectorSpace($CMATRIX),
-                        new TMatrix[]{Maths.matrix(EthetaMatrix),
-                                Maths.matrix(EphiMatrix)},
-                        false
+                TVector<ComplexMatrix> tMatrices = Maths.columnTVector(
+                        Maths.$MATRIX,
+                        Maths.matrix(EthetaMatrix),
+                                Maths.matrix(EphiMatrix)
                 );
-                return tMatrices;
+                return (TVector) tMatrices;
             }
         });
     }

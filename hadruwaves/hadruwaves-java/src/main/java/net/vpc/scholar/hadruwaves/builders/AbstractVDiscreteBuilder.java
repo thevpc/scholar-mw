@@ -50,54 +50,54 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
     }
 
 
-    protected Vector computeVectorImpl(Axis axis, double[] x, double y, double z, ProgressMonitor monitor) {
+    protected ComplexVector computeVectorImpl(Axis axis, double[] x, double y, double z, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(x, new double[]{y}, new double[]{z}, monitor).getComponent(axis).getVector(Axis.X, Axis.Y, 0, Axis.Z, 0);
     }
 
-    protected Vector computeVectorImpl(Axis axis, double x, double[] y, double z, ProgressMonitor monitor) {
+    protected ComplexVector computeVectorImpl(Axis axis, double x, double[] y, double z, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(new double[]{x}, y, new double[]{z}, monitor).getComponent(axis).getVector(Axis.Y, Axis.X, 0, Axis.Z, 0);
     }
 
-    protected Vector computeVectorImpl(Axis axis, double x, double y, double[] z, ProgressMonitor monitor) {
+    protected ComplexVector computeVectorImpl(Axis axis, double x, double y, double[] z, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(new double[]{x}, new double[]{y}, z, monitor).getComponent(axis).getVector(Axis.Z, Axis.X, 0, Axis.Y, 0);
     }
 
-    public Vector computeVector(final Axis axis, final double[] x, final double y, final double z) {
+    public ComplexVector computeVector(final Axis axis, final double[] x, final double y, final double z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexVector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
                 }
             }, getMonitor()));
         }
     }
 
-    public Vector computeVector(final Axis axis, final double x, final double[] y, final double z) {
+    public ComplexVector computeVector(final Axis axis, final double x, final double[] y, final double z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexVector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
                 }
             }, getMonitor()));
         }
     }
 
-    public Vector computeVector(final Axis axis, final double x, final double y, final double[] z) {
+    public ComplexVector computeVector(final Axis axis, final double x, final double y, final double[] z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeVectorImpl(axis, x, y, z, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Vector evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexVector evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeVectorImpl(axis, x, y, z, monitor);
                 }
             }, getMonitor()));
@@ -105,7 +105,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
     }
 
 
-    public Matrix computeMatrix(final Axis axis, Samples samples) {
+    public ComplexMatrix computeMatrix(final Axis axis, Samples samples) {
         AbsoluteSamples a = ((MomStructure) getStructure()).getDomain().toAbsolute(samples);
         double[] x = a.getX();
         switch (a.getDimension()) {
@@ -134,7 +134,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
         throw new IllegalArgumentException("Not Supported dimension, not a Matrix");
     }
 
-    public Vector computeVector(final Axis axis, Samples samples) {
+    public ComplexVector computeVector(final Axis axis, Samples samples) {
         Domain d = ((MomStructure) getStructure()).getDomain();
         AbsoluteSamples a = d.toAbsolute(samples);
         double[] z = a.getZ();
@@ -162,28 +162,28 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
         throw new IllegalArgumentException("Not Supported count, not a Vector");
     }
 
-    public Matrix computeMatrix(final Axis axis, final double[] x, final double[] y, final double z) {
+    public ComplexMatrix computeMatrix(final Axis axis, final double[] x, final double[] y, final double z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
                 }
             }, getMonitor()));
         }
     }
 
-    public Matrix computeMatrix(final Axis axis, final double[] x, final double y, final double[] z) {
+    public ComplexMatrix computeMatrix(final Axis axis, final double[] x, final double y, final double[] z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
                 }
             }, getMonitor()));
@@ -191,14 +191,14 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
     }
 
 
-    public Matrix computeMatrix(final Axis axis, final double x, final double[] y, final double[] z) {
+    public ComplexMatrix computeMatrix(final Axis axis, final double x, final double[] y, final double[] z) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeXYMatrixImpl(x, y, z, axis, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeXYMatrixImpl(x, y, z, axis, monitor);
                 }
             }, getMonitor()));
@@ -237,15 +237,15 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
         }
     }
 
-    protected Matrix computeXYMatrixImpl(double[] x, double[] y, double z, Axis axis, ProgressMonitor monitor) {
+    protected ComplexMatrix computeXYMatrixImpl(double[] x, double[] y, double z, Axis axis, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(x, y, new double[]{z}, monitor).getComponent(axis).getMatrix(Axis.Z, 0);
     }
 
-    protected Matrix computeXYMatrixImpl(double[] x, double y, double[] z, Axis axis, ProgressMonitor monitor) {
+    protected ComplexMatrix computeXYMatrixImpl(double[] x, double y, double[] z, Axis axis, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(x, new double[]{y}, z, monitor).getComponent(axis).getMatrix(Axis.Y, 0);
     }
 
-    protected Matrix computeXYMatrixImpl(double x, double[] y, double[] z, Axis axis, ProgressMonitor monitor) {
+    protected ComplexMatrix computeXYMatrixImpl(double x, double[] y, double[] z, Axis axis, ProgressMonitor monitor) {
         return computeVDiscreteImplLog(new double[]{x}, y, z, monitor).getComponent(axis).getMatrix(Axis.X, 0);
     }
 

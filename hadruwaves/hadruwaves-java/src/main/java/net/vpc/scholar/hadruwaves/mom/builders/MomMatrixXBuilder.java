@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.builders;
 
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Vector;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.ComplexVector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
@@ -16,8 +16,8 @@ public interface MomMatrixXBuilder extends ValueBuilder {
 
     MomMatrixXBuilder converge(ConvergenceEvaluator convergenceEvaluator);
 
-    Matrix computeMatrix();
+    ComplexMatrix computeMatrix();
 
-    Vector computeVector();
+    ComplexVector computeVector();
 
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.mom.project.common.RunAction;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 
@@ -18,11 +18,11 @@ public class BuildZinAction extends RunAction {
     }
 
 
-    public Matrix go0() {
-        return (Matrix) go();
+    public ComplexMatrix go0() {
+        return (ComplexMatrix) go();
     }
 
-    public Matrix run() {
+    public ComplexMatrix run() {
         return jxy.computeZin(this);
     }
 

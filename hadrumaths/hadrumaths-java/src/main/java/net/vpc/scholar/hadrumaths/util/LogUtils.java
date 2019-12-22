@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class LogUtils {
         if (StringUtils.trimToNull(pattern) == null) {
             pattern = "net-vpc-scholar-math-%g.log";
         }
-        pattern = Maths.Config.expandPath(pattern);
+        pattern = MathsBase.Config.expandPath(pattern);
         if (maxSize <= 0) {
             maxSize = 5;
         }

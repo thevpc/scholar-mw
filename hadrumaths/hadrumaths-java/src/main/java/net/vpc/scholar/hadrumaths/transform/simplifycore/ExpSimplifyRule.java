@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
@@ -41,7 +41,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
         Expr simplifiedArg = rewriteResult.getValue();
         if (simplifiedArg.isDoubleExpr()) {
             return RewriteResult.newVal(
-                    new DoubleValue(Maths.exp(simplifiedArg.toDouble()), simplifiedArg.getDomain())
+                    new DoubleValue(MathsBase.exp(simplifiedArg.toDouble()), simplifiedArg.getDomain())
             );
         } else if (simplifiedArg.isComplex()) {
             Complex c = simplifiedArg.toComplex();
@@ -80,7 +80,7 @@ public class ExpSimplifyRule implements ExpressionRewriterRule {
             DoubleToComplex doubleToComplex = simplifiedArg.toDC();
             Expr a = ruleset.rewriteOrSame(doubleToComplex.getRealDD()).toDD();
             Expr b = ruleset.rewriteOrSame(doubleToComplex.getImagDD()).toDD();
-            return RewriteResult.newVal(Maths.mul(new Exp(a), Maths.sum(Maths.cos(b), Maths.mul(Maths.I, Maths.sin(b)))));
+            return RewriteResult.newVal(MathsBase.mul(new Exp(a), MathsBase.sum(MathsBase.cos(b), MathsBase.mul(MathsBase.I, MathsBase.sin(b)))));
         }
         if (rewriteResult.isUnmodified()) {
             return RewriteResult.unmodified(ee);

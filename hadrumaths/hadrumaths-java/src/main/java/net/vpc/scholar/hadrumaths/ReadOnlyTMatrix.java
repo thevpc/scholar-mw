@@ -5,17 +5,17 @@ import net.vpc.common.util.TypeName;
 public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T> {
     private static final long serialVersionUID = 1L;
     private TypeName<T> componentType;
-    private TMatrixModel<T> f;
+    private TMatrixModel<T> model;
 
-    public ReadOnlyTMatrix(TypeName<T> componentType, TMatrixModel<T> f) {
+    public ReadOnlyTMatrix(TypeName<T> componentType, TMatrixModel<T> model) {
         this.componentType = componentType;
-        this.f = f;
+        this.model = model;
     }
 
 
     @Override
     public T get(int row, int col) {
-        return f.get(row, col);
+        return model.get(row, col);
     }
 
     @Override
@@ -25,12 +25,12 @@ public class ReadOnlyTMatrix<T> extends AbstractTMatrix<T> {
 
     @Override
     public int getRowCount() {
-        return f.getRowCount();
+        return model.getRowCount();
     }
 
     @Override
     public int getColumnCount() {
-        return f.getColumnCount();
+        return model.getColumnCount();
     }
 
 

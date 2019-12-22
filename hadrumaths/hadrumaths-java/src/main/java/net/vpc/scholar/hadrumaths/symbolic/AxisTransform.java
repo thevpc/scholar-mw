@@ -120,12 +120,12 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         return ret;
     }
 
-    public Matrix[][][] convertBackXYZValues(Matrix[][][] xyz) {
+    public ComplexMatrix[][][] convertBackXYZValues(ComplexMatrix[][][] xyz) {
         int[] count = {xyz[0][0].length, xyz[0].length, xyz.length};
         int xindex = axis[0].equals(Axis.X) ? 0 : axis[1].equals(Axis.X) ? 1 : 2;
         int yindex = axis[0].equals(Axis.Y) ? 0 : axis[1].equals(Axis.Y) ? 1 : 2;
         int zindex = axis[0].equals(Axis.Z) ? 0 : axis[1].equals(Axis.Z) ? 1 : 2;
-        Matrix[][][] ret = new Matrix[count[zindex]][count[yindex]][count[xindex]];
+        ComplexMatrix[][][] ret = new ComplexMatrix[count[zindex]][count[yindex]][count[xindex]];
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
@@ -137,12 +137,12 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         return ret;
     }
 
-    public Vector[][][] convertBackXYZValues(Vector[][][] xyz) {
+    public ComplexVector[][][] convertBackXYZValues(ComplexVector[][][] xyz) {
         int[] count = {xyz[0][0].length, xyz[0].length, xyz.length};
         int xindex = axis[0].equals(Axis.X) ? 0 : axis[1].equals(Axis.X) ? 1 : 2;
         int yindex = axis[0].equals(Axis.Y) ? 0 : axis[1].equals(Axis.Y) ? 1 : 2;
         int zindex = axis[0].equals(Axis.Z) ? 0 : axis[1].equals(Axis.Z) ? 1 : 2;
-        Vector[][][] ret = new Vector[count[zindex]][count[yindex]][count[xindex]];
+        ComplexVector[][][] ret = new ComplexVector[count[zindex]][count[yindex]][count[xindex]];
         for (int z = 0; z < ret.length; z++) {
             for (int y = 0; y < ret[z].length; y++) {
                 for (int x = 0; x < ret[z][y].length; x++) {
@@ -420,7 +420,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x0, double[] y0, Domain d00, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x0, double[] y0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, y0, new double[0]);
         double[] x = xyz[0];
         double[] y = xyz[1];
@@ -429,15 +429,15 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x, y);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Matrix[][] ret = expression.toDM().computeMatrix(x, y, d0, r2);
-            ret = convertBackXYZValues(new Matrix[][][]{ret})[0];
+            ComplexMatrix[][] ret = expression.toDM().computeMatrix(x, y, d0, r2);
+            ret = convertBackXYZValues(new ComplexMatrix[][][]{ret})[0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Matrix[][] ret = ArrayUtils.fillArray2Matrix(x0.length, y0.length, Maths.zerosMatrix(d.rows, d.columns));
+            ComplexMatrix[][] ret = ArrayUtils.fillArray2Matrix(x0.length, y0.length, MathsBase.zerosMatrix(d.rows, d.columns));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -446,7 +446,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Vector[][] computeVector(double[] x0, double[] y0, Domain d00, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x0, double[] y0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, y0, new double[0]);
         double[] x = xyz[0];
         double[] y = xyz[1];
@@ -455,15 +455,15 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x, y);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Vector[][] ret = expression.toDV().computeVector(x, y, d0, r2);
-            ret = convertBackXYZValues(new Vector[][][]{ret})[0];
+            ComplexVector[][] ret = expression.toDV().computeVector(x, y, d0, r2);
+            ret = convertBackXYZValues(new ComplexVector[][][]{ret})[0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Vector[][] ret = ArrayUtils.fillArray2Vector(x0.length, y0.length, Maths.zerosVector(d.rows));
+            ComplexVector[][] ret = ArrayUtils.fillArray2Vector(x0.length, y0.length, MathsBase.zerosVector(d.rows));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -472,7 +472,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x0, Domain d00, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, new double[0], new double[0]);
         double[] x = xyz[0];
         Domain domainXY = getDomain();
@@ -480,15 +480,15 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Matrix[] ret = expression.toDM().computeMatrix(x, d0, r2);
-            ret = convertBackXYZValues(new Matrix[][][]{{ret}})[0][0];
+            ComplexMatrix[] ret = expression.toDM().computeMatrix(x, d0, r2);
+            ret = convertBackXYZValues(new ComplexMatrix[][][]{{ret}})[0][0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Matrix[] ret = ArrayUtils.fill(new Matrix[x0.length], Maths.zerosMatrix(d.rows, d.columns));
+            ComplexMatrix[] ret = ArrayUtils.fill(new ComplexMatrix[x0.length], MathsBase.zerosMatrix(d.rows, d.columns));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -497,7 +497,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Vector[] computeVector(double[] x0, Domain d00, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, new double[0], new double[0]);
         double[] x = xyz[0];
         Domain domainXY = getDomain();
@@ -505,15 +505,15 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Vector[] ret = expression.toDV().computeVector(x, d0, r2);
-            ret = convertBackXYZValues(new Vector[][][]{{ret}})[0][0];
+            ComplexVector[] ret = expression.toDV().computeVector(x, d0, r2);
+            ret = convertBackXYZValues(new ComplexVector[][][]{{ret}})[0][0];
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
             }
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Vector[] ret = ArrayUtils.fill(new Vector[x0.length], Maths.zerosVector(d.rows));
+            ComplexVector[] ret = ArrayUtils.fill(new ComplexVector[x0.length], MathsBase.zerosVector(d.rows));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -522,7 +522,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, y0, z0);
         double[] x = xyz[0];
         double[] y = xyz[1];
@@ -532,7 +532,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x, y, z);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Matrix[][][] ret = expression.toDM().computeMatrix(x, y, z, d0, r2);
+            ComplexMatrix[][][] ret = expression.toDM().computeMatrix(x, y, z, d0, r2);
             ret = convertBackXYZValues(ret);
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
@@ -540,7 +540,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x0.length, y0.length, z0.length, Maths.zerosMatrix(d.rows, d.columns));
+            ComplexMatrix[][][] ret = ArrayUtils.fillArray3Matrix(x0.length, y0.length, z0.length, MathsBase.zerosMatrix(d.rows, d.columns));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -549,7 +549,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Vector[][][] computeVector(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x0, double[] y0, double[] z0, Domain d00, Out<Range> ranges) {
         double[][] xyz = convertXYZAxis(x0, y0, z0);
         double[] x = xyz[0];
         double[] y = xyz[1];
@@ -559,7 +559,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
         Range r = Domain.range(domainXY, d0, x, y, z);
         if (r != null) {
             Out<Range> r2 = new Out<Range>();
-            Vector[][][] ret = expression.toDV().computeVector(x, y, z, d0, r2);
+            ComplexVector[][][] ret = expression.toDV().computeVector(x, y, z, d0, r2);
             ret = convertBackXYZValues(ret);
             if (ranges != null) {
                 ranges.set(convertBackRange(r));
@@ -567,7 +567,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
             return ret;
         } else {
             ComponentDimension d = getComponentDimension();
-            Vector[][][] ret = ArrayUtils.fillArray3Vector(x0.length, y0.length, z0.length, Maths.zerosVector(d.rows));
+            ComplexVector[][][] ret = ArrayUtils.fillArray3Vector(x0.length, y0.length, z0.length, MathsBase.zerosVector(d.rows));
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -656,7 +656,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return expression.toMatrix();
     }
 
@@ -672,19 +672,8 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        Expr updated = expression.composeX(xreplacement);
-        if (updated != expression) {
-            Expr e = new AxisTransform(updated, axis, dim);
-            e = Any.copyProperties(this, e);
-            return e;
-        }
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr updated = expression.composeY(yreplacement);
+    public Expr compose(Axis axis2,Expr xreplacement) {
+        Expr updated = expression.compose(axis2,xreplacement);
         if (updated != expression) {
             Expr e = new AxisTransform(updated, axis, dim);
             e = Any.copyProperties(this, e);
@@ -786,7 +775,7 @@ public class AxisTransform extends AbstractPolymorphExpr implements Cloneable
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         double[][] xyz = convertXYZAxis(new double[]{x}, new double[]{y}, new double[]{z});
         x = xyz[0][0];
         y = xyz[1][0];

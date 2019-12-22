@@ -144,8 +144,8 @@ public class Neg extends AbstractExprOperatorUnary implements Cloneable {
     }
 
     @Override
-    public Matrix computeMatrix(double x, double y, double z) {
-        Matrix matrix = expression.toDM().computeMatrix(x, y, z);
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
+        ComplexMatrix matrix = expression.toDM().computeMatrix(x, y, z);
         return matrix.neg();
     }
 
@@ -177,13 +177,13 @@ public class Neg extends AbstractExprOperatorUnary implements Cloneable {
         }
 
         @Override
-        public Matrix computeMatrix(Matrix x) {
+        public ComplexMatrix computeMatrix(ComplexMatrix x) {
             //defined.set();
             return x.neg();
         }
 
         @Override
-        public Vector computeVector(Vector x) {
+        public ComplexVector computeVector(ComplexVector x) {
             return x.neg();
         }
     }

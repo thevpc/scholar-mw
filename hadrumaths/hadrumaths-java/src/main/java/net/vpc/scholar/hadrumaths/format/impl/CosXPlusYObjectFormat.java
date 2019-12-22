@@ -6,7 +6,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
@@ -35,7 +35,7 @@ public class CosXPlusYObjectFormat implements ObjectFormat<CosXPlusY> {
 //            return "0";
 //        } else {
 //            StringBuilder sb = new StringBuilder();
-//            if (Maths.isInt(amp) && amp == 1 || amp == -1) {
+//            if (MathsBase.isInt(amp) && amp == 1 || amp == -1) {
 //                if (amp == -1) {
 //                    sb.append("-");
 //                }
@@ -69,7 +69,7 @@ public class CosXPlusYObjectFormat implements ObjectFormat<CosXPlusY> {
             sb.append("0");
             return;
         } else {
-            if (Maths.isInt(amp) && amp == 1 || amp == -1) {
+            if (MathsBase.isInt(amp) && amp == 1 || amp == -1) {
                 if (amp == -1) {
                     sb.append("-");
                 }

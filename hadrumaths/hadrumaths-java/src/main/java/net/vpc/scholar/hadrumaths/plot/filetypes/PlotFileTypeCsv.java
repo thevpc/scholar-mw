@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
 
@@ -134,7 +134,7 @@ public class PlotFileTypeCsv implements PlotFileType {
 
     @Override
     public PlotModel loadModel(File file) {
-        Matrix matrix = Maths.loadMatrix(file);
+        ComplexMatrix matrix = MathsBase.loadMatrix(file);
         return Plot.title(file.getName()).asMatrix().createModel(matrix);
     }
 }

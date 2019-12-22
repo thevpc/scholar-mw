@@ -5,7 +5,7 @@
 
 package net.vpc.scholar.hadruwaves.mom.util;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
@@ -42,7 +42,7 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public Matrix computeTestcoeff(ProgressMonitor monitor) {
+    public ComplexMatrix computeTestcoeff(ProgressMonitor monitor) {
         return momStructure.matrixX().monitor(monitor).computeMatrix();
     }
 
@@ -67,22 +67,22 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public Matrix computeZin(ProgressMonitor monitor) {
+    public ComplexMatrix computeZin(ProgressMonitor monitor) {
         return momStructure.inputImpedance().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeS(ProgressMonitor monitor) {
+    public ComplexMatrix computeS(ProgressMonitor monitor) {
         return momStructure.sparameters().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeAMatrix(ProgressMonitor monitor) {
+    public ComplexMatrix computeAMatrix(ProgressMonitor monitor) {
         return momStructure.matrixA().monitor(monitor).computeMatrix();
     }
 
 
-    public Matrix computeBMatrix(ProgressMonitor monitor) {
+    public ComplexMatrix computeBMatrix(ProgressMonitor monitor) {
         return momStructure.matrixB()
                 .monitor(monitor).computeMatrix();
     }
@@ -122,7 +122,7 @@ public class MomStrHelperImpl implements MomStrHelper {
         return momStructure.getAllCaches();
     }
 
-    public Matrix computeCapacity(ProgressMonitor monitor) {
+    public ComplexMatrix computeCapacity(ProgressMonitor monitor) {
         return momStructure
                 .capacity().monitor(monitor).computeMatrix();
     }

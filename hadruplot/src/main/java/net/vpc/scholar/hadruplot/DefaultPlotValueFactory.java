@@ -83,12 +83,14 @@ public class DefaultPlotValueFactory implements PlotValueFactory {
         }
         for (Object o : initial) {
             PlotValue ii = PlotConfigManager.createPlotValue(o, builder);
-            PlotValueType itm = ii.getType();
-            all.add(ii.getValue());
-            if (t == null) {
-                t = itm;
-            } else {
-                t = PlotConfigManager.getPlotValueTypeFactory().resolveUmbrellaType(t, itm);
+            if(ii!=null) {
+                PlotValueType itm = ii.getType();
+                all.add(ii.getValue());
+                if (t == null) {
+                    t = itm;
+                } else {
+                    t = PlotConfigManager.getPlotValueTypeFactory().resolveUmbrellaType(t, itm);
+                }
             }
         }
         t = PlotConfigManager.getPlotValueTypeFactory().getType(t.getName() + "[]");

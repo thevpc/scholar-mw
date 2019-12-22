@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class ZinMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
+class ZinMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     private MomStructure momStructure;
     private ProgressMonitor[] mon;
@@ -22,7 +22,7 @@ class ZinMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public Matrix compute(ObjectCache momCache) {
+    public ComplexMatrix compute(ObjectCache momCache) {
         return momStructure.createZinEvaluator().evaluate(momStructure, mon[1]);
     }
 }

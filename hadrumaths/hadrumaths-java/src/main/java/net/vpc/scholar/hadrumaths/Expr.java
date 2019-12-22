@@ -2,6 +2,10 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
+import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +16,7 @@ import java.util.Set;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2007 15:45:33
  */
-public interface Expr extends Serializable {
+public interface Expr extends Serializable, Dumpable {
 
     /**
      * @param axis
@@ -87,7 +91,7 @@ public interface Expr extends Serializable {
      */
     double toDouble();
 
-    default Matrix toMatrix() {
+    default ComplexMatrix toMatrix() {
         throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
     }
 
@@ -126,6 +130,15 @@ public interface Expr extends Serializable {
 
     default DoubleToMatrix toDM() {
         if (!isDM()) {
+            if (isDV()) {
+                return new DV2DM(toDV());
+            }
+            if (isDC()) {
+                return new DC2DM(toDC());
+            }
+            if (isDD()) {
+                return new DD2DC(toDD()).toDM();
+            }
             throw new ClassCastException("Unable to Cast to DM :: " + getClass().getName() + " = " + toString());
         }
         return (DoubleToMatrix) this;
@@ -163,7 +176,9 @@ public interface Expr extends Serializable {
 
     Double getDoubleProperty(String name);
 
-    Object prop(String name);
+    default Object prop(String name) {
+        return getProperty(name);
+    }
 
     Object getProperty(String name);
 
@@ -177,16 +192,18 @@ public interface Expr extends Serializable {
 
     Expr setProperty(String name, Object value);
 
-    Expr composeX(Expr xreplacement);
-
-    Expr composeY(Expr yreplacement);
+    Expr compose(Axis axis, Expr xreplacement);
 
     /**
      * simple call to Maths.simplify(this);
      *
      * @return
      */
-    Expr simplify();
+    default Expr simplify() {
+        return simplify(null);
+    }
+
+    Expr simplify(SimplifyOptions options);
 
     /**
      * simple call to Maths.normalizeString(this);
@@ -203,6 +220,13 @@ public interface Expr extends Serializable {
      * @param name
      */
     Expr setTitle(String name);
+
+    /**
+     * create a clone expression with changed name
+     *
+     * @param name
+     */
+    Expr title(String name);
 
     int getDomainDimension();
 
@@ -276,14 +300,35 @@ public interface Expr extends Serializable {
 
     Expr rsub(double other);
 
-    default TList<Expr> asSeq(DoubleParamFromTo d) {
-        return MathsBase.seq(this, d.getParam(), d.values());
+    /**
+     * create an inflated list of all values of the given param.
+     * This method is equivalent to {@link #allOf(DoubleParamValues)}
+     *
+     * @param paramValues params and values to inflate with
+     * @return new inflated list of all values of the given param
+     */
+    default ExprVector inflate(DoubleParamValues paramValues) {
+        return MathsBase.elist(this).inflate(paramValues, getTitle());
     }
 
-    default TList<Expr> asSeq(DoubleParamFromTo2 d) {
-        return MathsBase.seq(this,
-                new DoubleParam[]{d.getParam1(), d.getParam2()},
-                d.values()
-        );
+    /**
+     * create an inflated list of all values of the given param
+     * This method is equivalent to {@link #inflate(DoubleParamValues)}
+     *
+     * @param paramValues params and values to inflate with
+     * @return new inflated list of all values of the given param
+     */
+    default ExprVector allOf(DoubleParamValues paramValues) {
+        return inflate(paramValues);
     }
+
+    /**
+     * create a singleton list containing this expression.
+     *
+     * @return a singleton list containing this expression.
+     */
+    default ExprVector toList() {
+        return MathsBase.elist(this);
+    }
+
 }

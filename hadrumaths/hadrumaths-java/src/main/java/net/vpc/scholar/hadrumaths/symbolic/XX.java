@@ -223,7 +223,7 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, Maths.zerosMatrix(1));
+//            Matrix[][] cc = ArrayUtils.fillArray2Matrix(x.length, y.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -251,7 +251,7 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[][] cc = ArrayUtils.fillArray2Vector(x.length, y.length, Maths.zerosVector(1));
+//            Vector[][] cc = ArrayUtils.fillArray2Vector(x.length, y.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -281,7 +281,7 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, Maths.zerosMatrix(1));
+//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -311,7 +311,7 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, Maths.zerosVector(1));
+//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -337,7 +337,7 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[] cc = ArrayUtils.fillArray1Matrix(x.length, Maths.zerosMatrix(1));
+//            Matrix[] cc = ArrayUtils.fillArray1Matrix(x.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -363,23 +363,13 @@ public class XX extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[] cc = ArrayUtils.fillArray1Vector(x.length, Maths.zerosVector(1));
+//            Vector[] cc = ArrayUtils.fillArray1Vector(x.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
 //            return cc;
 //        }
 //    }
-
-    public Expr composeX(Expr xreplacement) {
-        return xreplacement;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        return this;
-    }
-
 
     @Override
     public Expr clone() {
@@ -458,7 +448,7 @@ public class XX extends AxisFunction implements Cloneable {
 //        if (contains(x, y, z)) {
 //            return Complex.valueOf(x).toMatrix();
 //        }
-//        return Maths.identityMatrix(1);
+//        return MathsBase.identityMatrix(1);
 //    }
 
 

@@ -4,7 +4,7 @@ import net.vpc.common.util.TypeName;
 
 import java.util.List;
 
-public class DoubleArray2 extends ArrayTList<DoubleArray> {
+public class DoubleArray2 extends ArrayTVector<DoubleArray> {
     private static final long serialVersionUID = 1L;
 
     public DoubleArray2() {
@@ -16,7 +16,7 @@ public class DoubleArray2 extends ArrayTList<DoubleArray> {
     }
 
     public DoubleArray2(boolean row, int initialSize) {
-        super((TypeName) Maths.$DLIST2, row, initialSize);
+        super((TypeName) MathsBase.$DLIST2, row, initialSize);
     }
 
     public DoubleArray2(boolean row, List<List<Double>> values) {
@@ -33,42 +33,50 @@ public class DoubleArray2 extends ArrayTList<DoubleArray> {
         }
     }
 
-    public void appendAll(DoubleArray2 a) {
+    public DoubleArray2 appendAll(DoubleArray2 a) {
         for (DoubleArray d : a) {
             append(d);
         }
+        return this;
     }
 
-    public void appendRow(double[] d) {
-        append(new DoubleArray(d));
+    public DoubleArray2 append(DoubleArray e) {
+        return (DoubleArray2) super.append(e);
+    }
+    public DoubleArray2 append(int index, DoubleArray e) {
+        return (DoubleArray2) super.append(index,e);
     }
 
-    public void appendRow(Double[] d) {
-        append(new DoubleArray(d));
+    public DoubleArray2 appendRow(double[] d) {
+        return append(new DoubleArray(d));
     }
 
-    public void appendRow(List<Double> d) {
-        append(new DoubleArray(d));
+    public DoubleArray2 appendRow(Double[] d) {
+        return append(new DoubleArray(d));
     }
 
-    public void appendRow(int pos, double[] d) {
-        append(pos, new DoubleArray(d));
+    public DoubleArray2 appendRow(List<Double> d) {
+        return append(new DoubleArray(d));
     }
 
-    public void appendRow(int pos, Double[] d) {
-        append(pos, new DoubleArray(d));
+    public DoubleArray2 appendRow(int pos, double[] d) {
+        return append(pos, new DoubleArray(d));
     }
 
-    public void appendRow(int pos, List<Double> d) {
-        append(pos, new DoubleArray(d));
+    public DoubleArray2 appendRow(int pos, Double[] d) {
+        return append(pos, new DoubleArray(d));
     }
 
-    public void appendRow(DoubleArray d) {
-        append(d);
+    public DoubleArray2 appendRow(int pos, List<Double> d) {
+        return append(pos, new DoubleArray(d));
     }
 
-    public void appendRow(int pos, DoubleArray row) {
-        append(pos, row);
+    public DoubleArray2 appendRow(DoubleArray d) {
+        return append(d);
+    }
+
+    public DoubleArray2 appendRow(int pos, DoubleArray row) {
+        return append(pos, row);
     }
 
     public DoubleArray getRow(int index) {

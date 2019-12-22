@@ -5,7 +5,6 @@ import net.vpc.common.mvn.PomIdResolver;
 import net.vpc.common.util.Converter;
 import net.vpc.scholar.hadrumaths.HadrumathsService;
 import net.vpc.scholar.hadrumaths.HadrumathsServiceDesc;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadruplot.Plot;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;

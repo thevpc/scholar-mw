@@ -17,7 +17,7 @@ import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 public class MatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
     public static final MatrixAWaveguideSerialEvaluator INSTANCE = new MatrixAWaveguideSerialEvaluator();
 
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.getTestFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
         Complex[][] b = new Complex[_g.length][_g.length];

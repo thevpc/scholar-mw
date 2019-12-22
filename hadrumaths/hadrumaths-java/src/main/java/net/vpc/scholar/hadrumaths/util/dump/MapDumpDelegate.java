@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util.dump;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class MapDumpDelegate implements DumpDelegate {
         Map m = (Map) object;
         for (Object o : m.entrySet()) {
             Map.Entry e = (Map.Entry) o;
-            h.add(Maths.dump(e.getKey()), e.getValue());
+            h.add(MathsBase.dump(e.getKey()), e.getValue());
         }
         return h.toString();
     }

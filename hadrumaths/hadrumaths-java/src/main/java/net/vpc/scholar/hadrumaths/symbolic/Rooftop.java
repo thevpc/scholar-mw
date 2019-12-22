@@ -3,11 +3,11 @@ package net.vpc.scholar.hadrumaths.symbolic;
 import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TList;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.TVector;
 import net.vpc.scholar.hadrumaths.util.test.TestInfo;
 
-import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.vpc.scholar.hadrumaths.MathsBase.*;
 
 /**
  * Created by vpc on 5/7/14.
@@ -93,7 +93,7 @@ public class Rooftop extends Ref implements Cloneable {
         this.nx = nx;
         this.ny = ny;
         this.d = d;
-        TList<Expr> list = Maths.elist();
+        TVector<Expr> list = MathsBase.elist();
         if (xside && yside) {
             throw new Error("Not yet supported");
         } else if (xside) {
@@ -180,7 +180,7 @@ public class Rooftop extends Ref implements Cloneable {
         } else {
             throw new RuntimeException("Rooftop Pattern should include either X or Y");
         }
-        init(Maths.esum(list));
+        init(MathsBase.esum(list));
     }
 
     private Expr rooftopPartX(boolean asc, Domain domain) {
@@ -206,10 +206,10 @@ public class Rooftop extends Ref implements Cloneable {
     }
 
     private Expr rooftop(boolean x, boolean y, Domain domain) {
-        Expr px = Maths.sum(rooftopPartX(true, domain), rooftopPartX(false, domain));
-        Expr py = Maths.sum(rooftopPartY(true, domain), rooftopPartY(false, domain));
+        Expr px = MathsBase.sum(rooftopPartX(true, domain), rooftopPartX(false, domain));
+        Expr py = MathsBase.sum(rooftopPartY(true, domain), rooftopPartY(false, domain));
         if (x && y) {
-            return Maths.mul(px, py);
+            return MathsBase.mul(px, py);
         } else if (x) {
             return px;
         } else if (y) {

@@ -29,7 +29,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                Matrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
 
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();

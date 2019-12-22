@@ -5,8 +5,8 @@ import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 
-import static net.vpc.scholar.hadrumaths.Maths.cos2;
-import static net.vpc.scholar.hadrumaths.Maths.sin2;
+import static net.vpc.scholar.hadrumaths.MathsBase.cos2;
+import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
 
 
 /**

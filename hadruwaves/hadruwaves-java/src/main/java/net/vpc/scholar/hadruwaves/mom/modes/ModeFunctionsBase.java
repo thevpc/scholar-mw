@@ -366,12 +366,12 @@ public abstract class ModeFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
-    public synchronized TList<Expr> list() {
+    public synchronized TVector<Expr> list() {
         return Maths.elist(arr());
     }
 
     @Override
-    public synchronized TList<Expr> toList() {
+    public synchronized TVector<Expr> toList() {
         return list();
     }
 

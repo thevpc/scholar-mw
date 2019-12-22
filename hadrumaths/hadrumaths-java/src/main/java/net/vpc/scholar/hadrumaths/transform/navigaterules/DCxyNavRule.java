@@ -6,9 +6,9 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.symbolic.DCxy;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -20,7 +20,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 public class DCxyNavRule implements ExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new DCxyNavRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{DCxy.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{DD2DC.class};
 
 
     @Override
@@ -29,7 +29,7 @@ public class DCxyNavRule implements ExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        DCxy ee = (DCxy) e;
+        DD2DC ee = (DD2DC) e;
         RewriteResult rr = ruleset.rewrite(ee.getRealDD());
         RewriteResult ii = ruleset.rewrite(ee.getImagDD());
         if (!rr.isRewritten() && !ii.isRewritten()) {
@@ -38,7 +38,7 @@ public class DCxyNavRule implements ExpressionRewriterRule {
         DoubleToDouble real = rr.getValue().toDD();
         DoubleToDouble imag = ii.getValue().toDD();
 //        if (!real.equals(ee.getReal()) || !(imag.equals(ee.getImag()))) {
-        Expr e2 = Maths.complex(real, imag);
+        Expr e2 = MathsBase.complex(real, imag);
         e2 = Any.copyProperties(e, e2);
         if (rr.isBestEffort() && ii.isBestEffort()) {
             return RewriteResult.bestEffort(e2);

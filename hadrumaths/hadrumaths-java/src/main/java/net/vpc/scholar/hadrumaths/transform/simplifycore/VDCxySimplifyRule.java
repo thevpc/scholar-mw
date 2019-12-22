@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -51,15 +51,15 @@ public class VDCxySimplifyRule implements ExpressionRewriterRule {
             Expr e2=null;
             switch (length){
                 case 1: {
-                    e2 = Maths.vector(updated[0].toDC().toDC());
+                    e2 = MathsBase.vector(updated[0].toDC().toDC());
                     break;
                 }
                 case 2: {
-                    e2 = Maths.vector(updated[0].toDC(), updated[1].toDC());
+                    e2 = MathsBase.vector(updated[0].toDC(), updated[1].toDC());
                     break;
                 }
                 case 3: {
-                    e2 = Maths.vector(updated[0].toDC(), updated[1].toDC(), updated[2].toDC());
+                    e2 = MathsBase.vector(updated[0].toDC(), updated[1].toDC(), updated[2].toDC());
                     break;
                 }
                 default:{

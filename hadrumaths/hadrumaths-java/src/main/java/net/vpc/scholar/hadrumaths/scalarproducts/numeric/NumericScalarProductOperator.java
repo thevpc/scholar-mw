@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.numeric;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
@@ -35,13 +35,13 @@ public class NumericScalarProductOperator extends AbstractScalarProductOperator 
         }
         switch (inter.getDimension()) {
             case 1: {
-                return integrator.integrateX(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax());
+                return integrator.integrateX(MathsBase.mul(f1, f2).toDD(), inter.xmin(), inter.xmax());
             }
             case 2: {
-                return integrator.integrateXY(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
+                return integrator.integrateXY(MathsBase.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
             }
             case 3: {
-                return integrator.integrateXYZ(Maths.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax(), inter.zmin(), inter.zmax());
+                return integrator.integrateXYZ(MathsBase.mul(f1, f2).toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax(), inter.zmin(), inter.zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported dimension");

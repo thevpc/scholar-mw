@@ -21,7 +21,7 @@
 //    val m = param("m")
 //    val n = param("n")
 //    val p = param("p")
-//    //    var f: DCxy = (X + sin(X) * sin(m * Y)) * II(0.0 -> 10, 0.0 -> 20.0) !!;
+//    //    var f: DD2DC = (X + sin(X) * sin(m * Y)) * II(0.0 -> 10, 0.0 -> 20.0) !!;
 //    //    val d: DomainXY = f.Domain.addMargin(2, 2, 2, 2); //.expand(new DomainXY(-10.0-> 12.0 , -10.0-> 30.0))
 //    //    plotSurface(d / 100, f(m -> 2)).exitOnClose.setTitle(f.toString)
 //    //    plotCurve(5, d.y / 100, f(m -> 2)).exitOnClose.setTitle(f.toString)

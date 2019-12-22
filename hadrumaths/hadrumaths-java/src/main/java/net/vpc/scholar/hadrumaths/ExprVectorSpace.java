@@ -19,7 +19,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) Maths.matrix(1, 1, new MatrixCell() {
+//            return (R) MathsBase.matrix(1, 1, new MatrixCell() {
 //                @Override
 //                public Complex get(int row, int column) {
 //                    return value.toComplex();
@@ -27,7 +27,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //            });
 //        }
 //        if(t.equals(TMatrix.class)){
-//            return (R) Maths.tmatrix(Expr.class, 1, 1, new TMatrixCell<Expr>() {
+//            return (R) MathsBase.tmatrix(Expr.class, 1, 1, new TMatrixCell<Expr>() {
 //                @Override
 //                public Expr get(int row, int column) {
 //                    return value;
@@ -35,10 +35,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //            });
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) Maths.columnVector(new Complex[]{value.toComplex()});
+//            return (R) MathsBase.columnVector(new Complex[]{value.toComplex()});
 //        }
 //        if(t.equals(TVector.class)){
-//            return (R) Maths.columnTVector(Expr.class, 1, new TVectorCell<Expr>() {
+//            return (R) MathsBase.columnTVector(Expr.class, 1, new TVectorCell<Expr>() {
 //                @Override
 //                public Expr get(int index) {
 //                    return value;
@@ -138,7 +138,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 
     @Override
     public Expr mul(Expr a, Expr b) {
-        TList<Expr> all = Maths.elist();
+        TVector<Expr> all = MathsBase.elist();
         //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
         for (Expr expr : new Expr[]{a, b}) {
             if (expr instanceof Mul) {
@@ -174,7 +174,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr imag(Expr a) {
         if (a.isDoubleExpr()) {
-            return Maths.DDZERO;
+            return MathsBase.DDZERO;
         }
         if (a.isComplex()) {
             return ((a.toComplex().imag()));
@@ -208,9 +208,9 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr abssqr(Expr a) {
         if (a.isDouble()) {
-            return Complex.valueOf(Maths.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()));
+            return Complex.valueOf(MathsBase.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()));
         } else if (a.isDoubleExpr()) {
-            return ComplexValue.valueOf(Maths.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()), a.getDomain());
+            return ComplexValue.valueOf(MathsBase.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()), a.getDomain());
         } else if (a.isComplex()) {
             return (a.toComplex().abssqr());
         } else if (a.isComplexExpr()) {
@@ -336,8 +336,8 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Expr If(Expr cond, Expr exp1, Expr exp2) {
-        return new IfThenElse(cond, exp1, exp2);
+    public IfExpr If(Expr cond, Expr exp1, Expr exp2) {
+        return new IfExpr(cond, exp1, exp2);
     }
 
     @Override
@@ -393,10 +393,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr conj(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.conj(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.conj(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.conj(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.conj(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().conj());
@@ -407,10 +407,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr inv(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.inv(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.inv(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.inv(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.inv(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().inv());
@@ -421,10 +421,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr sin(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.sin(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.sin(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.sin(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.sin(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().sin());
@@ -463,10 +463,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr cotan(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.cotan(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.cotan(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.cotan(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.cotan(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().cotan());
@@ -491,10 +491,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr sincard(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.sincard(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.sincard(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.sincard(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.sincard(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().sincard());
@@ -533,10 +533,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr cotanh(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.cotanh(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.cotanh(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.cotanh(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.cotanh(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().cotanh());
@@ -547,10 +547,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr asinh(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.asinh(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.asinh(e.toDouble()));
         }
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.asinh(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.asinh(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().asinh());
@@ -561,10 +561,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr acosh(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.acosh(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.acosh(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.acosh(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.acosh(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().acosh());
@@ -617,10 +617,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr arg(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.arg(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.arg(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.arg(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.arg(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().arg());
@@ -631,10 +631,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr acotan(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.acotan(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.acotan(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.acotan(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.acotan(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().acotan());
@@ -645,10 +645,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr exp(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.exp(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.exp(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.exp(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.exp(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().exp());
@@ -687,10 +687,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr db(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.db(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.db(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.db(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.db(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().db());
@@ -701,10 +701,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr db2(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.db2(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.db2(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.db2(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.db2(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().db2());
@@ -715,10 +715,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr sqr(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.sqr(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.sqr(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.sqr(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.sqr(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().sqr());
@@ -735,10 +735,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr sqrt(Expr e) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.sqrt(e.toDouble()));
+            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble()));
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.sqrt(e.toDouble()), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble()), e.getDomain());
         }
         if (e.isComplex()) {
             return (e.toComplex().sqrt());
@@ -755,10 +755,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr sqrt(Expr e, int n) {
         if (e.isDouble()) {
-            return DoubleValue.valueOf(Maths.sqrt(e.toDouble(), n), e.getDomain());
+            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble(), n), e.getDomain());
         }
         if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.sqrt(e.toDouble(), n));
+            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble(), n));
         }
         if (e.isComplex()) {
             return (e.toComplex().sqrt(n));
@@ -769,10 +769,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr pow(Expr a, Expr b) {
         if (a.isDouble()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b.toDouble()));
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b.toDouble()));
         }
         if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b.toDouble()), a.getDomain());
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b.toDouble()), a.getDomain());
         }
         if (a.isComplex()) {
             return (a.toComplex().pow(b.toComplex()));
@@ -783,29 +783,29 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     @Override
     public Expr pow(Expr a, double b) {
         if (a.isDouble()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b));
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b));
         }
         if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b), a.getDomain());
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b), a.getDomain());
         }
         if (a.isComplex()) {
             return (a.toComplex().pow(b));
         }
-        return new Pow(a, Maths.expr(b));
+        return new Pow(a, MathsBase.expr(b));
     }
 
     @Override
     public Expr npow(Expr a, int b) {
         if (a.isDouble()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b));
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b));
         }
         if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(Maths.pow(a.toDouble(), b), a.getDomain());
+            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b), a.getDomain());
         }
         if (a.isComplex()) {
             return (a.toComplex().pow(b));
         }
-        return new Pow(a, Maths.expr(b));
+        return new Pow(a, MathsBase.expr(b));
     }
 
     @Override
@@ -831,12 +831,12 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 
     @Override
     public TypeName<Expr> getItemType() {
-        return Maths.$EXPR;
+        return MathsBase.$EXPR;
     }
 
     @Override
     public Expr scalarProduct(Expr a, Expr b) {
-        return Maths.Config.getScalarProductOperator().eval(a, b);
+        return MathsBase.Config.getScalarProductOperator().eval(a, b);
     }
 
     @Override
@@ -892,7 +892,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (all.isEmpty()) {
                 return complex;
             }
-            if (!complex.equals(Maths.CONE)) {
+            if (!complex.equals(MathsBase.CONE)) {
                 all.add(0, complex);
             }
             return new Plus(all.toArray(new Expr[0]));
@@ -940,7 +940,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (all.isEmpty()) {
                 return complex;
             }
-            if (!complex.equals(Maths.CONE)) {
+            if (!complex.equals(MathsBase.CONE)) {
                 all.add(0, complex);
             }
             return new Mul(all.toArray(new Expr[0]));
@@ -949,19 +949,19 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 
     @Override
     public <R> boolean is(Expr value, TypeName<R> type) {
-        if (Maths.$EXPR.equals(type)) {
+        if (MathsBase.$EXPR.equals(type)) {
             return true;
         }
-        if (Maths.$COMPLEX.equals(type)) {
+        if (MathsBase.$COMPLEX.equals(type)) {
             return value.isComplex();
         }
-        if (Maths.$DOUBLE.equals(type)) {
+        if (MathsBase.$DOUBLE.equals(type)) {
             return value.isDouble();
         }
-        if (Maths.$INTEGER.equals(type)) {
+        if (MathsBase.$INTEGER.equals(type)) {
             return value.isDouble() && value.toDouble() == (int) value.toDouble();
         }
-        if (Maths.$LONG.equals(type)) {
+        if (MathsBase.$LONG.equals(type)) {
             return value.isDouble() && value.toDouble() == (long) value.toDouble();
         }
         return false;

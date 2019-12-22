@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.symbolic.conv;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Out;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.Range;
@@ -19,7 +19,7 @@ public class DC2DMHelper3 {
         this.zz = zz;
     }
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, z, d0, ranges),
                 yy.computeComplex(x, y, z, d0, ranges),
@@ -27,7 +27,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -35,7 +35,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, d0, ranges)
                 , yy.computeComplex(x, d0, ranges)
@@ -43,7 +43,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -51,7 +51,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, d0, ranges)
                 , yy.computeComplex(x, y, d0, ranges)
@@ -59,7 +59,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix computeMatrix(double x) {
+    public ComplexMatrix computeMatrix(double x) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x)
                 , yy.computeComplex(x)
@@ -67,7 +67,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix computeMatrix(double x, double y) {
+    public ComplexMatrix computeMatrix(double x, double y) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y)
                 , yy.computeComplex(x, y)
@@ -75,7 +75,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix computeMatrix(double x, double y, double z) {
+    public ComplexMatrix computeMatrix(double x, double y, double z) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, z)
                 , yy.computeComplex(x, y, z)
@@ -117,7 +117,7 @@ public class DC2DMHelper3 {
         throw new IllegalArgumentException("Invalid row,column " + row + "," + col);
     }
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y, z)
                 , yy.computeComplex(x, y, z)
@@ -125,7 +125,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[][] computeMatrix(double[] x, double[] y) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x, y)
                 , yy.computeComplex(x, y)
@@ -133,7 +133,7 @@ public class DC2DMHelper3 {
         );
     }
 
-    public Matrix[] computeMatrix(double[] x) {
+    public ComplexMatrix[] computeMatrix(double[] x) {
         return ArrayUtils.c2m(
                 xx.computeComplex(x)
                 , yy.computeComplex(x)

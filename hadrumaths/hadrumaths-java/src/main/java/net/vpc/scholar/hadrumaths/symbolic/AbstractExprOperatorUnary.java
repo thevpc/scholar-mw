@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
+public abstract class AbstractExprOperatorUnary extends AbstractExprOperator {
     protected Expr expression;
+
     public AbstractExprOperatorUnary(Expr expression) {
         this.expression = expression;
     }
@@ -24,6 +25,7 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
     public Domain getDomainImpl() {
         return expression.getDomain();
     }
+
     @Override
     public int getComponentSize() {
         return expression.toDV().getComponentSize();
@@ -33,6 +35,7 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
     public String getComponentTitle(int row, int col) {
         return Expressions.getMatrixExpressionTitleByChildren(this, row, col);
     }
+
     @Override
     public DoubleToVector toDV() {
         if (!isDV()) {
@@ -40,6 +43,7 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
         }
         return this;
     }
+
     @Override
     public int getDomainDimension() {
         return expression.getDomainDimension();
@@ -66,8 +70,8 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        Expr updated = expression.composeX(xreplacement);
+    public Expr compose(Axis axis, Expr xreplacement) {
+        Expr updated = expression.compose(axis, xreplacement);
         if (updated != expression) {
             Expr e = newInstance(updated);
             e = Any.copyProperties(this, e);
@@ -76,16 +80,7 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
         return this;
     }
 
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr updated = expression.composeY(yreplacement);
-        if (updated != expression) {
-            Expr e = newInstance(updated);
-            e = Any.copyProperties(this, e);
-            return e;
-        }
-        return this;
-    }
+
     @Override
     public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeComplex(this, getUnaryExprHelper(), x, d0, ranges);
@@ -117,48 +112,49 @@ public abstract class AbstractExprOperatorUnary extends AbstractExprOperator{
     }
 
     @Override
-    public Matrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getUnaryExprHelper(), x, d0, ranges);
     }
 
     @Override
-    public Vector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
+    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getUnaryExprHelper(), x, d0, ranges);
     }
 
     @Override
-    public Matrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getUnaryExprHelper(), x, y, d0, ranges);
     }
 
 
     @Override
-    public Vector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getUnaryExprHelper(), x, y, d0, ranges);
     }
 
 
     @Override
-    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
-        return Expressions.computeVector(this,x,y,z,defined);
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
+        return Expressions.computeVector(this, x, y, z, defined);
     }
 
     @Override
-    public Vector computeVector(double x, double y, BooleanMarker defined) {
-        return Expressions.computeVector(this,x,y,defined);
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
+        return Expressions.computeVector(this, x, y, defined);
     }
 
     @Override
-    public Vector computeVector(double x, BooleanMarker defined) {
-        return Expressions.computeVector(this,x,defined);
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
+        return Expressions.computeVector(this, x, defined);
     }
 
     @Override
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeMatrix(this, getUnaryExprHelper(), x, y, z, d0, ranges);
     }
+
     @Override
-    public Vector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return Expressions.computeVector(this, getUnaryExprHelper(), x, y, z, d0, ranges);
     }
 

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Matrix;
-import net.vpc.scholar.hadrumaths.Vector;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.ComplexVector;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
@@ -16,7 +16,7 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
         super(momStructure);
     }
 
-    private Matrix computeMatrixImpl() {
+    private ComplexMatrix computeMatrixImpl() {
         MomStructure momStructure = getStructure();
         momStructure.build();
         return new MatrixXMatrixStrCacheSupport(momStructure, getMonitor()).get();
@@ -24,14 +24,14 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
 
 
     @Override
-    public Matrix computeMatrix() {
+    public ComplexMatrix computeMatrix() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
             return computeMatrixImpl();
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public Matrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
                     return computeMatrixImpl();
                 }
             }, getMonitor()));
@@ -39,7 +39,7 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
     }
 
     @Override
-    public Vector computeVector() {
+    public ComplexVector computeVector() {
         return computeMatrix().toVector();
     }
 }

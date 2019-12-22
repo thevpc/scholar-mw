@@ -27,7 +27,7 @@ import java.awt.event.WindowListener;
 public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler {
 
     @Override
-    public void showError(String title, Throwable e, Matrix m, MWStructure structure) {
+    public void showError(String title, Throwable e, ComplexMatrix m, MWStructure structure) {
         if (PlotConsole.debugFramesCount > 3) {
             return;
         }

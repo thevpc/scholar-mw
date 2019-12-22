@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.common.util.Chronometer;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.interop.jblas.JBlasMatrixFactory;
+import net.vpc.scholar.hadrumaths.interop.jblas.JBlasComplexMatrixFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,13 +11,13 @@ public class TestMatrices {
     public static final double MAX_ERR = 1E-1;
     int SIZE = 600;
 
-    private MatrixFactory[] getFactories() {
-        return new MatrixFactory[]{
+    private ComplexMatrixFactory[] getFactories() {
+        return new ComplexMatrixFactory[]{
             //                MemMatrixFactory.INSTANCE,
             //                MemRawD1MatrixFactory.INSTANCE,
             //                SmartMatrixFactory.INSTANCE,
             //                OjalgoMatrixFactory.INSTANCE,
-            JBlasMatrixFactory.INSTANCE, //                Maths.Config.getLargeMatrixFactory()
+            JBlasComplexMatrixFactory.INSTANCE, //                Maths.Config.getLargeMatrixFactory()
         };
     }
 
@@ -38,15 +38,15 @@ public class TestMatrices {
     public void testMul() {
         String op = "multiplication";
         System.out.println("========= " + op);
-        MatrixFactory ref = MemMatrixFactory.INSTANCE;
-        MatrixFactory[] factories = getFactories();
+        ComplexMatrixFactory ref = MemComplexMatrixFactory.INSTANCE;
+        ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
-            MatrixFactory f = factories[i];
+            ComplexMatrixFactory f = factories[i];
             Chronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
-            Matrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m3=null;
+            ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m3=null;
             try {
                 m3 = m1.mul(m2);
             } catch (UnsatisfiedLinkError ex) {
@@ -56,8 +56,8 @@ public class TestMatrices {
             }
 //            Matrix m3 = m1.mul(m2);
             chrono.stop();
-            Matrix other = ref.newMatrix(m2);
-            Matrix m3Ref = ref.newMatrix(m1).mul(other);
+            ComplexMatrix other = ref.newMatrix(m2);
+            ComplexMatrix m3Ref = ref.newMatrix(m1).mul(other);
             boolean ok = checkMatrixEquality(m3, m3Ref);
             System.out.println("=== " + f + " : " + chrono + " : " + ok);
             if (!ok) {
@@ -72,7 +72,7 @@ public class TestMatrices {
         }
     }
 
-    private boolean checkMatrixEquality(Matrix m3, Matrix m3Ref) {
+    private boolean checkMatrixEquality(ComplexMatrix m3, ComplexMatrix m3Ref) {
         boolean a = m3.equals(m3Ref);
         if (!a) {
             double e = m3.getError(m3Ref);
@@ -90,18 +90,18 @@ public class TestMatrices {
     public void testAdd() {
         String op = "addition";
         System.out.println("========= " + op);
-        MatrixFactory ref = MemMatrixFactory.INSTANCE;
-        MatrixFactory[] factories = getFactories();
+        ComplexMatrixFactory ref = MemComplexMatrixFactory.INSTANCE;
+        ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
-            MatrixFactory f = factories[i];
+            ComplexMatrixFactory f = factories[i];
             Chronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
-            Matrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m3 = m1.add(m2);
+            ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m3 = m1.add(m2);
             chrono.stop();
-            Matrix other = ref.newMatrix(m2);
-            Matrix m3Ref = ref.newMatrix(m1).add(other);
+            ComplexMatrix other = ref.newMatrix(m2);
+            ComplexMatrix m3Ref = ref.newMatrix(m1).add(other);
             boolean ok = checkMatrixEquality(m3, m3Ref);
             System.out.println("=== " + f + " : " + chrono + " : " + ok);
             if (!ok) {
@@ -120,18 +120,18 @@ public class TestMatrices {
     public void testSub() {
         String op = "substruction";
         System.out.println("========= " + op);
-        MatrixFactory ref = MemMatrixFactory.INSTANCE;
-        MatrixFactory[] factories = getFactories();
+        ComplexMatrixFactory ref = MemComplexMatrixFactory.INSTANCE;
+        ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
-            MatrixFactory f = factories[i];
+            ComplexMatrixFactory f = factories[i];
             Chronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
-            Matrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m3 = m1.sub(m2);
+            ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m3 = m1.sub(m2);
             chrono.stop();
-            Matrix other = ref.newMatrix(m2);
-            Matrix m3Ref = ref.newMatrix(m1).sub(other);
+            ComplexMatrix other = ref.newMatrix(m2);
+            ComplexMatrix m3Ref = ref.newMatrix(m1).sub(other);
             boolean ok = checkMatrixEquality(m3, m3Ref);
             System.out.println("=== " + f + " : " + chrono + " : " + ok);
             if (!ok) {
@@ -150,15 +150,15 @@ public class TestMatrices {
     public void testDiv() {
         String op = "divide";
         System.out.println("========= " + op);
-        MatrixFactory ref = MemMatrixFactory.INSTANCE;
-        MatrixFactory[] factories = getFactories();
+        ComplexMatrixFactory ref = MemComplexMatrixFactory.INSTANCE;
+        ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
-            MatrixFactory f = factories[i];
+            ComplexMatrixFactory f = factories[i];
             Chronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
-            Matrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
-            Matrix m2 = generateInvertible(SIZE, f);
-            Matrix m3 = null;
+            ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
+            ComplexMatrix m2 = generateInvertible(SIZE, f);
+            ComplexMatrix m3 = null;
             try {
                 m3 = m1.div(m2);
             } catch (UnsatisfiedLinkError ex) {
@@ -167,8 +167,8 @@ public class TestMatrices {
                 continue;
             }
             chrono.stop();
-            Matrix other = ref.newMatrix(m2);
-            Matrix m3Ref = ref.newMatrix(m1).div(other);
+            ComplexMatrix other = ref.newMatrix(m2);
+            ComplexMatrix m3Ref = ref.newMatrix(m1).div(other);
             boolean ok = checkMatrixEquality(m3, m3Ref);
             System.out.println("=== " + f + " : " + chrono + " : " + ok);
             if (!ok) {
@@ -187,16 +187,16 @@ public class TestMatrices {
     public void testInv() {
         String op = "invert";
         System.out.println("========= " + op);
-        MatrixFactory ref = MemMatrixFactory.INSTANCE;
-        MatrixFactory[] factories = getFactories();
+        ComplexMatrixFactory ref = MemComplexMatrixFactory.INSTANCE;
+        ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
-            MatrixFactory f = factories[i];
+            ComplexMatrixFactory f = factories[i];
             Chronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
-            Matrix m1 = generateInvertible(SIZE, f);
-            Matrix m3 = m1.invSolve();
+            ComplexMatrix m1 = generateInvertible(SIZE, f);
+            ComplexMatrix m3 = m1.invSolve();
             chrono.stop();
-            Matrix m3Ref = ref.newMatrix(m1).inv();
+            ComplexMatrix m3Ref = ref.newMatrix(m1).inv();
             boolean ok = checkMatrixEquality(m3, m3Ref);
             System.out.println("=== " + f + " : " + chrono + " : " + ok);
             if (!ok) {
@@ -210,7 +210,7 @@ public class TestMatrices {
         }
     }
 
-    private static Matrix generateInvertible(int size, MatrixFactory f) {
+    private static ComplexMatrix generateInvertible(int size, ComplexMatrixFactory f) {
         Complex[][] a = new Complex[size][size];
         for (int i = 0; i < size; i++) {
             MutableComplex s = MutableComplex.Zero();

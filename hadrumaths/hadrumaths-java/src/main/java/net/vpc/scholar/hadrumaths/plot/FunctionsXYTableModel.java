@@ -10,11 +10,12 @@ import java.util.*;
  * @creationtime 18 oct. 2006 09:57:45
  */
 public class FunctionsXYTableModel extends AbstractTableModel {
+    public static int MAX_SELECTED_EXPRESSIONS=1000;
     private static final long serialVersionUID = 1L;
     private Expr[] base;
     private String[] titles;
 //    private boolean[] selected;
-    private int maxSelected = 0;
+    private int maxSelected = 200;
     private LinkedHashSet<Integer> selectionOrder=new LinkedHashSet<>();
 //    private PropertyChangeSupport support;
 
@@ -27,6 +28,7 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         TreeSet<String> seenTitles = new TreeSet<String>();
         ArrayList<String> orderedTitles = new ArrayList<String>();
         orderedTitles.add("Name");
+        orderedTitles.add("Expr");
         seenTitles.add("Name");
         for (Expr f : base) {
             if (f.hasProperties()) {
@@ -82,6 +84,8 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         if (value == null) {
             if ("Name".equals(title)) {
                 return expr.getTitle();
+            } else if ("Expr".equals(title)) {
+                return expr.toString();
             } else if ("Selected".equals(title)) {
                 return isSelected(rowIndex);
             }
@@ -106,6 +110,8 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         String title = titles[columnIndex];
         if ("Name".equals(title)) {
+            return String.class;
+        }else if ("Expr".equals(title)) {
             return String.class;
         } else if ("Selected".equals(title)) {
             return Boolean.class;
@@ -159,6 +165,8 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         if ("Name".equals(title)) {
             return;
         } else if ("Selected".equals(title)) {
+            return;
+        } else if ("Expr".equals(title)) {
             return;
         }
         Object v = base[r].getProperty(titles[c]);

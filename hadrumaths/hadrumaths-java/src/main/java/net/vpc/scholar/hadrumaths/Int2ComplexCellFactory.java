@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-class Int2ComplexCellFactory implements VectorCell {
+class Int2ComplexCellFactory implements TVectorCell<Complex> {
     private final Int2Complex cellFactory;
 
     public Int2ComplexCellFactory(Int2Complex cellFactory) {

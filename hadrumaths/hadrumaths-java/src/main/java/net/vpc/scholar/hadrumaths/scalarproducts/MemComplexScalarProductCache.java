@@ -24,21 +24,21 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
 
     private static Expr[] simplifyAll(Expr[] e, ProgressMonitor mon) {
         Expr[] all = new Expr[e.length];
-        Maths.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
+        MathsBase.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 int length = all.length;
                 for (int i = 0; i < length; i++) {
                     mon.setProgress(i, length, messagePrefix + " {0}/{1}", (i + 1), length);
-                    all[i] = Maths.simplify(e[i]);
+                    all[i] = e[i].simplify();
                 }
             }
         });
         return all;
     }
 
-    public Matrix toMatrix() {
-        return Maths.matrix(cache);
+    public ComplexMatrix toMatrix() {
+        return MathsBase.matrix(cache);
     }
 
     public TVector<Complex> getColumn(int column) {
@@ -46,14 +46,14 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         for (int i = 0; i < vmatrix.length; i++) {
             vmatrix[i] = cache[i][column];
         }
-        return Maths.columnVector(vmatrix);
+        return MathsBase.columnVector(vmatrix);
     }
 
     public TVector<Complex> getRow(int row) {
 //        Complex[] vmatrix = new Complex[cache[0].length];
 //        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
-//        return Maths.columnVector(vmatrix);
-        return Maths.columnVector(cache[row]);
+//        return MathsBase.columnVector(vmatrix);
+        return MathsBase.columnVector(cache[row]);
     }
 
     public Complex[][] toArray() {
@@ -77,13 +77,13 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
-            sp = Maths.Config.getScalarProductOperator();
+            sp = MathsBase.Config.getScalarProductOperator();
         }
 //        ProgressMonitor[] hmon = emonitor.split(new double[]{2, 1, 3});
 //        if (doSimplifyAll) {
 //            Expr[] finalFn = fn;
 //            Expr[] finalGp = gp;
-//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
+//            Expr[][] fg = MathsBase.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
 //                @Override
 //                public Expr[][] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
 //                    Expr[][] fg = new Expr[2][];
@@ -108,7 +108,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     Expr[] finalGp = gp;
                     ScalarProductOperator finalSp = sp;
                     Expr[] finalFn = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -137,7 +137,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                 case Y: {
                     ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
                     Expr[] finalGp1 = gp;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -160,7 +160,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     Expr[] finalGp2 = gp;
                     ScalarProductOperator finalSp1 = sp;
                     Expr[] finalFn1 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -198,7 +198,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue2) {
@@ -245,7 +245,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     Expr[] finalGp4 = gp;
                     ScalarProductOperator finalSp3 = sp;
                     Expr[] finalFn3 = fn;
-                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue3) {

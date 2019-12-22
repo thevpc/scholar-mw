@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.awt.geom.Path2D;
 import java.io.Serializable;
@@ -115,20 +115,20 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         }
         List<Point> all = new ArrayList<Point>();
         double arcRatio = getValidArcRatio();
-        int max = (int) Maths.ceil(arcRatio * sides);
+        int max = (int) MathsBase.ceil(arcRatio * sides);
         if (max < 3) {
             throw new IllegalArgumentException("ratio too low " + arcRatio);
         }
         if (max == sides) {
             max = sides - 1;
         }
-        double dblpi = 2 * Maths.PI;
+        double dblpi = 2 * MathsBase.PI;
         for (int i = 0; i <= max; i++) {
             if ((((double) i) / sides) > arcRatio) {
                 break;
             }
-            double x = center.x + xradius * Maths.cos2(i * dblpi / sides + phase);
-            double y = center.y + yradius * Maths.sin2(i * dblpi / sides + phase);
+            double x = center.x + xradius * MathsBase.cos2(i * dblpi / sides + phase);
+            double y = center.y + yradius * MathsBase.sin2(i * dblpi / sides + phase);
             all.add(Point.create(x, y));
         }
         return new Polygon(all.toArray(new Point[0]));

@@ -301,11 +301,11 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //        if (isEmpty()) {
 //            return null;
 //        }
-//        int[] lx = Maths.range(x, xmin, xmax);
+//        int[] lx = MathsBase.range(x, xmin, xmax);
 //        if (lx == null) {
 //            return null;
 //        }
-//        int[] ly = Maths.range(y, ymin, ymax);
+//        int[] ly = MathsBase.range(y, ymin, ymax);
 //        if (ly == null) {
 //            return null;
 //        }
@@ -315,15 +315,15 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //        if (isEmpty()) {
 //            return null;
 //        }
-//        int[] lx = Maths.range(x, xmin, xmax);
+//        int[] lx = MathsBase.range(x, xmin, xmax);
 //        if (lx == null) {
 //            return null;
 //        }
-//        int[] ly = Maths.range(y, ymin, ymax);
+//        int[] ly = MathsBase.range(y, ymin, ymax);
 //        if (ly == null) {
 //            return null;
 //        }
-//        int[] lz = Maths.range(z, zmin, zmax);
+//        int[] lz = MathsBase.range(z, zmin, zmax);
 //        if (lz == null) {
 //            return null;
 //        }
@@ -412,7 +412,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (isEmpty()) {
             return null;
         }
-        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
         if (lx == null) {
             return null;
         }
@@ -427,7 +427,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
         switch (dimension()) {
             case 1: {
-                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
                 if (lx == null) {
                     return null;
                 }
@@ -435,11 +435,11 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             }
         }
 
-        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
         if (lx == null) {
             return null;
         }
-        int[] ly = Maths.rangeCO(y, ymin(), ymax());
+        int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
         if (ly == null) {
             return null;
         }
@@ -452,33 +452,33 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
         switch (dimension()) {
             case 1: {
-                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
                 if (lx == null) {
                     return null;
                 }
                 return Range.forBounds(lx[0], lx[1], 0, y.length - 1, 0, z.length - 1);
             }
             case 2: {
-                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
                 if (lx == null) {
                     return null;
                 }
-                int[] ly = Maths.rangeCO(y, ymin(), ymax());
+                int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
                 if (ly == null) {
                     return null;
                 }
                 return Range.forBounds(lx[0], lx[1], ly[0], ly[1], 0, z.length - 1);
             }
         }
-        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
         if (lx == null) {
             return null;
         }
-        int[] ly = Maths.rangeCO(y, ymin(), ymax());
+        int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
         if (ly == null) {
             return null;
         }
-        int[] lz = Maths.rangeCO(z, zmin(), zmax());
+        int[] lz = MathsBase.rangeCO(z, zmin(), zmax());
         if (lz == null) {
             return null;
         }
@@ -566,10 +566,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (other == null) {
             return this;
         }
-//        double x1= Maths.max(xmin,other.xmin);
-//        double x2=Maths.min(xmax,other.xmax);
-//        double y1=Maths.max(ymin,other.ymin);
-//        double y2=Maths.min(ymax,other.ymax);
+//        double x1= MathsBase.max(xmin,other.xmin);
+//        double x2=MathsBase.min(xmax,other.xmax);
+//        double y1=MathsBase.max(ymin,other.ymin);
+//        double y2=MathsBase.min(ymax,other.ymax);
         int d_t = this.dimension();
         int d_o = other.dimension();
         int dim = Math.max(d_t, d_o);
@@ -1106,7 +1106,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 if (isInfiniteX()) {
                     throw new IllegalArgumentException("Infinite X Domain");
                 }
-                return Samples.absolute(Maths.dsteps(xmin(), xmax(), xstep));
+                return Samples.absolute(MathsBase.dsteps(xmin(), xmax(), xstep));
             }
             case 2: {
                 if (isInfiniteX()) {
@@ -1116,8 +1116,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                     throw new IllegalArgumentException("Infinite Y Domain");
                 }
                 return Samples.absolute(
-                        Maths.dsteps(xmin(), xmax(), xstep),
-                        Maths.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep));
+                        MathsBase.dsteps(xmin(), xmax(), xstep),
+                        MathsBase.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep));
             }
         }
         if (isInfiniteX()) {
@@ -1130,9 +1130,9 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             throw new IllegalArgumentException("Infinite Z Domain");
         }
         return Samples.absolute(
-                Maths.dsteps(xmin(), xmax(), xstep),
-                Maths.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep),
-                Maths.dsteps(zmin(), zmax(), (zstep <= 0) ? xstep : zstep)
+                MathsBase.dsteps(xmin(), xmax(), xstep),
+                MathsBase.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep),
+                MathsBase.dsteps(zmin(), zmax(), (zstep <= 0) ? xstep : zstep)
         );
     }
 
@@ -1173,15 +1173,15 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
         switch (dimension()) {
             case 1: {
-                return Samples.absolute(Maths.dtimes(xmin(), xmax(), xtimes));
+                return Samples.absolute(MathsBase.dtimes(xmin(), xmax(), xtimes));
             }
             case 2: {
                 if (isInfiniteY()) {
                     throw new IllegalArgumentException("Infinite Y Domain");
                 }
                 return Samples.absolute(
-                        Maths.dtimes(xmin(), xmax(), xtimes),
-                        Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
+                        MathsBase.dtimes(xmin(), xmax(), xtimes),
+                        MathsBase.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
                 );
             }
         }
@@ -1192,42 +1192,42 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             throw new IllegalArgumentException("Infinite Z Domain");
         }
         return Samples.absolute(
-                Maths.dtimes(xmin(), xmax(), xtimes),
-                Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes),
-                Maths.dtimes(zmin(), zmax(), (ztimes <= 0) ? xtimes : ztimes)
+                MathsBase.dtimes(xmin(), xmax(), xtimes),
+                MathsBase.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes),
+                MathsBase.dtimes(zmin(), zmax(), (ztimes <= 0) ? xtimes : ztimes)
         );
     }
 
     //
-//  def xtimes(times: Int) = Maths.dtimes(xmin, xmax, times);
+//  def xtimes(times: Int) = MathsBase.dtimes(xmin, xmax, times);
 //
-//  def ysteps(step: Double) = Maths.dsteps(ymin, ymax, step);
+//  def ysteps(step: Double) = MathsBase.dsteps(ymin, ymax, step);
 //
-//  def ytimes(times: Int) = Maths.dtimes(ymin, ymax, times);
+//  def ytimes(times: Int) = MathsBase.dtimes(ymin, ymax, times);
     //
 //
     public double[] xsteps(double step) {
-        return Maths.dsteps(xmin(), xmax(), step);
+        return MathsBase.dsteps(xmin(), xmax(), step);
     }
 
     public double[] ysteps(double step) {
-        return Maths.dsteps(ymin(), ymax(), step);
+        return MathsBase.dsteps(ymin(), ymax(), step);
     }
 
     public double[] zsteps(double step) {
-        return Maths.dsteps(xmin(), xmax(), step);
+        return MathsBase.dsteps(xmin(), xmax(), step);
     }
 
     public double[] xtimes(int count) {
-        return Maths.dtimes(xmin(), xmax(), count);
+        return MathsBase.dtimes(xmin(), xmax(), count);
     }
 
     public double[] ytimes(int count) {
-        return Maths.dtimes(ymin(), ymax(), count);
+        return MathsBase.dtimes(ymin(), ymax(), count);
     }
 
     public double[] ztimes(int count) {
-        return Maths.dtimes(zmin(), zmax(), count);
+        return MathsBase.dtimes(zmin(), zmax(), count);
     }
 
     @Override
@@ -1620,7 +1620,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     public Domain cross(RightArrowUplet2.Double other) {
-        return cross(Maths.domain(other));
+        return cross(MathsBase.domain(other));
     }
 
     public Domain cross(Domain other) {
@@ -1838,7 +1838,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr sub(Expr other) {
-        return Maths.sub(this, other);
+        return MathsBase.sub(this, other);
     }
 
     @Override
@@ -1852,7 +1852,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return toComplex().toMatrix();
     }
 
@@ -1887,11 +1887,11 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     public Expr neg() {
-        return Maths.neg(this);
+        return MathsBase.neg(this);
     }
 
     public Expr mul(Geometry domain) {
-        return mul(Maths.expr(domain));
+        return mul(MathsBase.expr(domain));
     }
 
     public Expr multiply(Geometry domain) {
@@ -1968,7 +1968,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr mul(Expr other) {
-        return Maths.mul(this, other);
+        return MathsBase.mul(this, other);
     }
 
     @Override
@@ -1983,7 +1983,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr add(Expr other) {
-        return Maths.add(this, other);
+        return MathsBase.add(this, other);
     }
 
     @Override
@@ -1998,7 +1998,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr div(Expr other) {
-        return Maths.div(this, other);
+        return MathsBase.div(this, other);
     }
 
     @Override
@@ -2027,13 +2027,23 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
+    public Expr simplify(SimplifyOptions options) {
+        return this;
+    }
+
+    @Override
     public Expr normalize() {
-        return Maths.normalize((Expr) this);
+        return MathsBase.normalize((Expr) this);
     }
 
     @Override
     public String getTitle() {
         return null;
+    }
+
+    @Override
+    public Expr title(String name) {
+        return setTitle(name);
     }
 
     @Override
@@ -2071,12 +2081,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return this;
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         return this;
     }
 
@@ -2213,22 +2218,22 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 
     @Override
     public Expr rdiv(double other) {
-        return Maths.expr(other).div(this);
+        return MathsBase.expr(other).div(this);
     }
 
     @Override
     public Expr rmul(double other) {
-        return Maths.expr(other).mul(this);
+        return MathsBase.expr(other).mul(this);
     }
 
     @Override
     public Expr radd(double other) {
-        return Maths.expr(other).add(this);
+        return MathsBase.expr(other).add(this);
     }
 
     @Override
     public Expr rsub(double other) {
-        return Maths.expr(other).sub(this);
+        return MathsBase.expr(other).sub(this);
     }
 
     @Override

@@ -15,7 +15,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static net.vpc.scholar.math.Maths.*;
+//import static net.vpc.scholar.math.MathsBase.*;
 //
 ///**
 // *

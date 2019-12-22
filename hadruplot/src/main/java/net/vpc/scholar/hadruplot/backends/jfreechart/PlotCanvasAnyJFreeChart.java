@@ -46,7 +46,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
     protected PlotModelProvider plotModelProvider;
     protected ChartPanel chartPanel;
     protected ColorPalette paintArray = PlotConfigManager.DEFAULT_PALETTE;
-    protected PlotConfig config;
+    protected PlotViewConfig config;
 
     public PlotCanvasAnyJFreeChart(PlotModelProvider plotModelProvider) {
         super(new BorderLayout());
@@ -68,8 +68,8 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
 
     protected void loadConfig() {
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
-        config = (PlotConfig) model.getProperty("config", null);
-        config = PlotConfig.copy(config).validate(model.getZ().length);
+        config = (PlotViewConfig) model.getProperty("config", null);
+        config = PlotViewConfig.copy(config).validate(model.getZ().length);
         config.defaultXMultiplier.set(getDefaultXMultiplier());
     }
 
@@ -324,7 +324,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
             int i = initialIndex(ii);
-            PlotConfig lineConfig = config.children.get(i);
+            PlotViewConfig lineConfig = config.children.get(i);
             Color color = null;
             if (config.alternateColor.get()) {
                 color = lineConfig.color;
@@ -528,10 +528,10 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         int jfreeChartIndex = 0;
         for (int ii = 0; ii < dataSize(); ii++) {
             int i = initialIndex(ii);
-            PlotConfig lineConfig = null;
+            PlotViewConfig lineConfig = null;
             if(i>=config.children.size()){
                 while(i>=config.children.size()) {
-                    lineConfig = new PlotConfig();
+                    lineConfig = new PlotViewConfig();
                     config.children.add(lineConfig);
                 }
             }else{

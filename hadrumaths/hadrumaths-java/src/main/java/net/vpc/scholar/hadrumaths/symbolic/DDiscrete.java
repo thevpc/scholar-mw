@@ -33,7 +33,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
             @Override
             public void format(StringBuilder sb, DDiscrete o, ObjectFormatParamSet format) {
                 sb.append("DDiscrete(");
-                sb.append(Maths.dump(o.values));
+                sb.append(MathsBase.dump(o.values));
                 sb.append(")");
             }
         });
@@ -64,9 +64,9 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
 //                }
 //            }
 //        }
-//        double[] xx = Maths.dtimes(0.0, x - 1, x);
-//        double[] yy = Maths.dtimes(0.0, y - 1, y);
-//        double[] zz = Maths.dtimes(0.0, z - 1, z);
+//        double[] xx = MathsBase.dtimes(0.0, x - 1, x);
+//        double[] yy = MathsBase.dtimes(0.0, y - 1, y);
+//        double[] zz = MathsBase.dtimes(0.0, z - 1, z);
 //        double dx = 1;
 //        double dy = 1;
 //        double dz = 1;
@@ -303,12 +303,12 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     }
 
     public String dump() {
-        return Maths.dump(values);
+        return MathsBase.dump(values);
     }
 
 //    @Override
 //    public String toString() {
-//        return Maths.dump(values);
+//        return MathsBase.dump(values);
 //    }
 
     private void init(Domain domain, double[][][] model, double[] xvalues, double[] yvalues, double[] zvalues, double dx, double dy, double dz, Axis axis1, Axis axis2, Axis axis3, int dim) {
@@ -1064,7 +1064,7 @@ public class DDiscrete extends AbstractDoubleToDouble implements Dumpable, Doubl
     public double norm() {
         double f = 0;
         for (int j = 0; j < values.length; j++) {
-            f = Math.max(f, Maths.matrix(values[j]).norm1());
+            f = Math.max(f, MathsBase.matrix(values[j]).norm1());
         }
         return f;
     }

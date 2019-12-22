@@ -15,7 +15,7 @@ public class ValuesPlotXDoubleModelFace {
     private int[] initialIndexes;
     private String[] ytitles;
 
-    public ValuesPlotXDoubleModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
+    public ValuesPlotXDoubleModelFace(ValuesPlotModel model, PlotViewConfig plotViewConfig) {
         this.title = model.getTitle();
 
         if (model.accept(PlotModelType.NUMBER_1)) {
@@ -26,18 +26,18 @@ public class ValuesPlotXDoubleModelFace {
             List<double[]> xAxisList = new ArrayList<>();
             List<double[]> yAxisList = new ArrayList<>();
             List<String> yTitleList = new ArrayList<>();
-            if (plotConfig == null) {
-                plotConfig = (PlotConfig) model.getProperty("config", null);
-                plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
+            if (plotViewConfig == null) {
+                plotViewConfig = (PlotViewConfig) model.getProperty("config", null);
+                plotViewConfig = PlotViewConfig.copy(plotViewConfig).validate(model.getZ().length);
             }
 
-            double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+            double defaultXMultiplier = plotViewConfig.getDefaultXMultiplier(1);
             if (xAxis == null) {
                 for (int i = 0; i < yAxis.length; i++) {
                     if (model.getYVisible(i)) {
                         initialIndexesList.add(i);
-                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
-                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                         xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length, 1), xmultiplier));
                         yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
@@ -50,8 +50,8 @@ public class ValuesPlotXDoubleModelFace {
                     double[] yAxi = dd[i];
                     if (model.getYVisible(i)) {
                         initialIndexesList.add(i);
-                        double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
-                        double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                        double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                        double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                         //jfreechart does not accept infinity
                         double[] mul = PlotModelUtils.replaceInfinityWithNaN(PlotModelUtils.mul(yAxi, ymultiplier));
                         yAxisList.add(mul);
@@ -128,20 +128,20 @@ public class ValuesPlotXDoubleModelFace {
             List<double[]> xAxisList = new ArrayList<>();
             List<double[]> yAxisList = new ArrayList<>();
             List<String> yTitleList = new ArrayList<>();
-            if (plotConfig == null) {
-                plotConfig = (PlotConfig) model.getProperty("config", null);
-                plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
+            if (plotViewConfig == null) {
+                plotViewConfig = (PlotViewConfig) model.getProperty("config", null);
+                plotViewConfig = PlotViewConfig.copy(plotViewConfig).validate(model.getZ().length);
             }
             if (yAxis == null) {
                 //do nothing
             } else {
-                double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+                double defaultXMultiplier = plotViewConfig.getDefaultXMultiplier(1);
                 if (xAxis == null) {
                     for (int i = 0; i < yAxis.length; i++) {
                         if (model.getYVisible(i)) {
                             initialIndexesList.add(i);
-                            double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
-                            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                            double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                            double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                             xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length, 1), xmultiplier));
                             yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                             yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
@@ -161,8 +161,8 @@ public class ValuesPlotXDoubleModelFace {
                         double[] yAxi = dd[i];
                         if (model.getYVisible(i)) {
                             initialIndexesList.add(i);
-                            double xmultiplier = plotConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
-                            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+                            double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
+                            double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                             yAxisList.add(PlotModelUtils.replaceInfinityWithNaN(PlotModelUtils.mul(yAxi, ymultiplier)));
                             yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                             if (i >= xAxis.length || xAxis[i] == null || xAxis[i].length == 0 || xAxis[i].length < yAxi.length) {

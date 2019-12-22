@@ -7,7 +7,7 @@ import net.vpc.common.util.IndexSelectionStrategy;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2005 10:23:32
  */
-public class IntArrayParamSet<T extends IntArrayParamSet> extends ParamSet implements Cloneable {
+public class IntArrayParamSet extends ParamSet<Integer> implements Cloneable {
     private int[] values;
     private int index = -1;
 
@@ -32,30 +32,30 @@ public class IntArrayParamSet<T extends IntArrayParamSet> extends ParamSet imple
         this.values = values;
     }
 
-    public T init(int[] values) {
+    public IntArrayParamSet init(int[] values) {
         this.values = values;
         index = -1;
-        return (T) this;
+        return this;
     }
 
-    public T init(int value) {
+    public IntArrayParamSet init(int value) {
         this.values = new int[]{value};
-        return (T) this;
+        return this;
     }
 
-    public T itimes(int min, int max, int times) {
+    public IntArrayParamSet itimes(int min, int max, int times) {
         values = net.vpc.common.util.ArrayUtils.itimes(min, max, times);
-        return (T) this;
+        return this;
     }
 
-    public T itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
+    public IntArrayParamSet itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
         values = net.vpc.common.util.ArrayUtils.itimes(min, max, times, maxTimes, strategy);
-        return (T) this;
+        return this;
     }
 
-    public T isteps(int min, int max, int step) {
+    public IntArrayParamSet isteps(int min, int max, int step) {
         values = net.vpc.common.util.ArrayUtils.isteps(min, max, step);
-        return (T) this;
+        return this;
     }
 
     protected Integer getValueImpl() {

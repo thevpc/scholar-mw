@@ -74,7 +74,7 @@ public class ExprGenerator {
     private Filter expressionInstanceFilter = null;
 
     public static void main(String[] args) {
-//        Maths.Config.setCacheExpressionPropertiesEnabled(false);
+//        MathsBase.Config.setCacheExpressionPropertiesEnabled(false);
 //        try {
 //            Expr ee = (Expr) IOUtils.loadObject("/home/vpc/a.ser");
 //            Expr expr = ee.getSubExpressions().get(0);

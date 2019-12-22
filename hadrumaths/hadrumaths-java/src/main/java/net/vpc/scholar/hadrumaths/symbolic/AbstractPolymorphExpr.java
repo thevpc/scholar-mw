@@ -12,17 +12,17 @@ public abstract class AbstractPolymorphExpr extends AbstractExprPropertyAware
 
 
     @Override
-    public Vector computeVector(double x, double y, double z, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
         return Expressions.computeVector(this,x,y,z,defined);
     }
 
     @Override
-    public Vector computeVector(double x, double y, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
         return Expressions.computeVector(this,x,y,defined);
     }
 
     @Override
-    public Vector computeVector(double x, BooleanMarker defined) {
+    public ComplexVector computeVector(double x, BooleanMarker defined) {
         return Expressions.computeVector(this,x,defined);
     }
 

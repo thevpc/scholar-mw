@@ -35,7 +35,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
 //    private ModeType[] allowedModes;
     private BoxModes modesDesc;
     protected TMatrix<Complex> lastScalarProductProductMatrix;
-    protected TList<Expr> lastScalarProductProductMatrixInput;
+    protected TVector<Expr> lastScalarProductProductMatrixInput;
 
     public DefaultBoxModeFunctions(String pattern) {
         this(WallBorders.valueOf(pattern));
@@ -340,7 +340,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
     }
 
     @Override
-    public TMatrix<Complex> scalarProduct(final TList<Expr> testFunctions, final ProgressMonitor monitor) {
+    public TMatrix<Complex> scalarProduct(final TVector<Expr> testFunctions, final ProgressMonitor monitor) {
         if(!Maths.Config.isCacheEnabled()){
             return scalarProductCache0(testFunctions,monitor);
         }
@@ -365,7 +365,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         return lastScalarProductProductMatrix= evaluated;
     }
 
-    public TMatrix<Complex> scalarProductCache0(TList<Expr> testFunctions, ProgressMonitor monitor) {
+    public TMatrix<Complex> scalarProductCache0(TVector<Expr> testFunctions, ProgressMonitor monitor) {
 
 
 
@@ -383,7 +383,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
             double[][] rows=new double[testFunctions.size()][];
             for (int i = 0; i < rows.length; i++) {
                 m.inc();
-                rows[i]=((DoubleList)scalarProduct(testFunctions.get(i)).to(Maths.$DOUBLE)).toDoubleArray();
+                rows[i]=((DoubleVector)scalarProduct(testFunctions.get(i)).to(Maths.$DOUBLE)).toDoubleArray();
             }
             return new DMatrix(rows).to(Maths.$COMPLEX);
         }else{
@@ -392,7 +392,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
                 m.inc();
                 rows[i]=scalarProduct(testFunctions.get(i)).toArray();
             }
-            return Maths.Config.getDefaultMatrixFactory().newMatrix(rows);
+            return Maths.Config.getComplexMatrixFactory().newMatrix(rows);
         }
     }
 
@@ -441,8 +441,8 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
                 if(o.size()>currentCount){
                     return Maths.list(o).sublist(0,currentCount).copy();
                 }else{
-                    TList<Complex> copy = Maths.list(o).copy();
-                    TList<Expr> list = list();
+                    TVector<Complex> copy = Maths.list(o).copy();
+                    TVector<Expr> list = list();
                     list=list.sublist(copy.size(),list.length());
 
                     TVector<Complex> extra = scalarProduct0(dd,testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[0]));
@@ -454,7 +454,7 @@ public class DefaultBoxModeFunctions extends ModeFunctionsBase {
         return null;
     }
 
-    private TVector<Complex> scalarProduct0(boolean dd,Expr testFunction, DoubleToVector[] arr) {
+    private TVector<Complex> scalarProduct0(boolean dd, Expr testFunction, DoubleToVector[] arr) {
         ScalarProductOperator sp = Maths.Config.getScalarProductOperator();
         if (dd) {
             return Maths.dlist(sp.evalVDD(null, testFunction.toDV(), arr)).to(Maths.$COMPLEX);

@@ -1,6 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.common.util.DoubleFilter;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
 
@@ -51,7 +50,7 @@ public class DoubleParam extends ParamExpr implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         throw new IllegalArgumentException("Cannot process param " + getParamName() + " as Matrix");
     }
 
@@ -134,7 +133,28 @@ public class DoubleParam extends ParamExpr implements Cloneable {
         return new DC2DV(this);
     }
 
-    public DoubleParamFromTo from(double from) {
-        return new DoubleParamFromTo(this, from,from,1,null);
+    public DoubleParamFromTo1 from(double from) {
+        return new DoubleParamFromTo1(this, from, from, 1, null);
+    }
+
+    public DoubleParamFromTo1 steps(double from, double to) {
+        return new DoubleParamFromTo1(this, from, to, 1, null);
+    }
+
+    public DoubleParamFromTo1 in(double from, double to) {
+        return new DoubleParamFromTo1(this, from, to, 1, null);
+    }
+
+    public DoubleParamFromTo1 steps(double from, double to, double by) {
+        return new DoubleParamFromTo1(this, from, to, by, null);
+    }
+
+    public DoubleParamFromTo1 times(double from, double to, int times) {
+        double step = (to - from) / (times - 1);
+        return new DoubleParamFromTo1(this, from, to, step, null);
+    }
+
+    public DoubleParamFromTo1 to(double to) {
+        return from(0).to(to);
     }
 }

@@ -22,14 +22,14 @@ public class DoubleFormatterFactory {
             case "freq":
             case "frequency": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return Maths.Config.getFrequencyFormatter();
+                    return MathsBase.Config.getFrequencyFormatter();
                 }
                 return new FrequencyFormat(subFormat);
             }
             case "m":
             case "metric": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return Maths.Config.getMetricFormatter();
+                    return MathsBase.Config.getMetricFormatter();
                 }
                 return new MetricFormat(subFormat);
             }
@@ -37,27 +37,27 @@ public class DoubleFormatterFactory {
             case "mem":
             case "memory": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return Maths.Config.getMemorySizeFormatter();
+                    return MathsBase.Config.getMemorySizeFormatter();
                 }
                 return new BytesSizeFormat(subFormat);
             }
             case "%":
             case "percent": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return Maths.percentFormat();
+                    return MathsBase.percentFormat();
                 }
                 return new DecimalDoubleFormat(subFormat);
             }
             case "d":
             case "double": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return Maths.Config.getDoubleFormat();
+                    return MathsBase.Config.getDoubleFormat();
                 }
                 return new DecimalDoubleFormat(subFormat);
             }
         }
         if (StringUtils.isBlank(subFormat)) {
-            return Maths.Config.getDoubleFormat();
+            return MathsBase.Config.getDoubleFormat();
         }
         return new DecimalDoubleFormat(subFormat);
     }

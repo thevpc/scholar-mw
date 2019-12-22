@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.scalarproducts.numeric;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
@@ -28,7 +28,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         Domain inter = f1.getDomain().intersect(f2.getDomain()).intersect(domain);
-        Expr f0 = Maths.mul(f1, f2);
+        Expr f0 = MathsBase.mul(f1, f2);
         DoubleToDouble sf = getExpressionRewriter().rewriteOrSame(f0).toDD();
 //        Plot.title(f0.toString()).plot(f0,sf);
         switch (inter.getDimension()) {
@@ -36,7 +36,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
                 return integrator.integrateX(sf, inter.xmin(), inter.xmax());
 //                double v1 = integrator.integrateX(sf, inter.xmin(), inter.xmax());
 //                double v2 = integrator.integrateX(f0.toDD(), inter.xmin(), inter.xmax());
-//                System.out.println(Maths.rerr(v1,v2)+" -- "+v1+" -- "+v2);
+//                System.out.println(MathsBase.rerr(v1,v2)+" -- "+v1+" -- "+v2);
 //                return v1;
             }
             case 2: {
@@ -44,7 +44,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 //                double v1 = integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
 //                double v2 = integrator.integrateXY(f0.toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
 //                if(v1!=v2) {
-//                    System.out.println(Maths.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
+//                    System.out.println(MathsBase.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
 //                }
 //                return v1;
             }

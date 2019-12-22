@@ -80,7 +80,7 @@ public abstract class AdaptedExpr extends AbstractExpBase {
     @Override
     public Expr setParam(String name, Expr value) {
         Expr r = this.base.setParam(name, value);
-        if(r!=base) {
+        if (r != base) {
             return newInstance(r);
         }
         return this;
@@ -97,27 +97,18 @@ public abstract class AdaptedExpr extends AbstractExpBase {
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        Expr r = this.base.composeX(xreplacement);
-        if(r!=base) {
+    public Expr compose(Axis axis, Expr xreplacement) {
+        Expr r = this.base.compose(axis, xreplacement);
+        if (r != base) {
             return newInstance(r);
         }
         return this;
     }
 
     @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr r = this.base.composeY(yreplacement);
-        if(r!=base) {
-            return newInstance(r);
-        }
-        return this;
-    }
-
-    @Override
-    public Expr simplify() {
-        Expr r = this.base.simplify();
-        if(r!=base) {
+    public Expr simplify(SimplifyOptions options) {
+        Expr r = this.base.simplify(options);
+        if (r != base) {
             return newInstance(r);
         }
         return this;
@@ -126,7 +117,7 @@ public abstract class AdaptedExpr extends AbstractExpBase {
     @Override
     public Expr normalize() {
         Expr r = this.base.normalize();
-        if(r!=base) {
+        if (r != base) {
             return newInstance(r);
         }
         return this;

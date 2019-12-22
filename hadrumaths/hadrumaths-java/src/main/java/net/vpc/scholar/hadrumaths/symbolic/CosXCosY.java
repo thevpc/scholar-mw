@@ -62,9 +62,9 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable 
     @Override
     public boolean isZeroImpl() {
         return amp == 0 ||
-                (a == 0 && (Maths.cos2(b) == 0 || ((Math.abs(b) * 2 / Maths.PI) % 2 == 1)))
+                (a == 0 && (MathsBase.cos2(b) == 0 || ((Math.abs(b) * 2 / MathsBase.PI) % 2 == 1)))
                 ||
-                (c == 0 && (Maths.cos2(d) == 0 || ((Math.abs(d) * 2 / Maths.PI) % 2 == 1)));
+                (c == 0 && (MathsBase.cos2(d) == 0 || ((Math.abs(d) * 2 / MathsBase.PI) % 2 == 1)));
     }
 
     @Override
@@ -296,12 +296,12 @@ public final class CosXCosY extends AbstractDoubleToDouble implements Cloneable 
 
     protected double computeDouble0(double x, double y, BooleanMarker defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
+        return amp * MathsBase.cos2(a * x + b) * MathsBase.cos2(c * y + d);
     }
 
     protected double computeDouble0(double x, double y, double z, BooleanMarker defined) {
         defined.set();
-        return amp * Maths.cos2(a * x + b) * Maths.cos2(c * y + d);
+        return amp * MathsBase.cos2(a * x + b) * MathsBase.cos2(c * y + d);
     }
 
     @Override

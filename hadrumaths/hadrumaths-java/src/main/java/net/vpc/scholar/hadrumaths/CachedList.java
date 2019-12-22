@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-public class CachedList<T> extends AbstractTList<T> {
+public class CachedList<T> extends AbstractTVector<T> {
 
     private static final long serialVersionUID = 1L;
     private int size;
@@ -63,28 +63,32 @@ public class CachedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public void set(int index, T e) {
+    public TVector<T> set(int index, T e) {
         cache.set(index, e);
+        return this;
     }
 
     @Override
-    public void appendAll(TVector<T> e) {
+    public TVector<T> appendAll(TVector<T> e) {
         setUpdated();
         for (T expr : e) {
             cache.add(expr);
         }
+        return this;
     }
 
     @Override
-    public void append(T e) {
+    public TVector<T> append(T e) {
         setUpdated();
         cache.add(e);
+        return this;
     }
 
     @Override
-    public void appendAll(Collection<? extends T> e) {
+    public TVector<T> appendAll(Collection<? extends T> e) {
         setUpdated();
         cache.addAll(e);
+        return this;
     }
 
     @Override
@@ -96,12 +100,12 @@ public class CachedList<T> extends AbstractTList<T> {
     }
 
     @Override
-    public TList<T> sort() {
+    public TVector<T> sort() {
         return copy().sort();
     }
 
     @Override
-    public TList<T> removeDuplicates() {
+    public TVector<T> removeDuplicates() {
         return copy().removeDuplicates();
     }
 }

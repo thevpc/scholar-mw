@@ -17,13 +17,13 @@ public class ValuesPlotXYComplexModelFace {
     private String[] ytitles;
     private Object[][] z;
 
-    public ValuesPlotXYComplexModelFace(ValuesPlotModel model, PlotConfig plotConfig) {
-        if (plotConfig == null) {
-            plotConfig = (PlotConfig) model.getProperty("config", null);
-            plotConfig = PlotConfig.copy(plotConfig).validate(model.getZ().length);
+    public ValuesPlotXYComplexModelFace(ValuesPlotModel model, PlotViewConfig plotViewConfig) {
+        if (plotViewConfig == null) {
+            plotViewConfig = (PlotViewConfig) model.getProperty("config", null);
+            plotViewConfig = PlotViewConfig.copy(plotViewConfig).validate(model.getZ().length);
         }
         List<Integer> initialIndexesList = new ArrayList<>();
-        double defaultXMultiplier = plotConfig.getDefaultXMultiplier(1);
+        double defaultXMultiplier = plotViewConfig.getDefaultXMultiplier(1);
 
         x = PlotModelUtils.mul(PlotUtils.toValidOneDimArray(model.getX(), (z == null || z.length == 0) ? -1 : z[0].length), defaultXMultiplier);
         z = PlotUtils.toValidTwoDimArray(model.getZ());
@@ -41,7 +41,7 @@ public class ValuesPlotXYComplexModelFace {
         List<String> ys = new ArrayList<>(y.length);
         List<Object[]> zl = new ArrayList<>(y.length);
         for (int i = 0; i < y.length; i++) {
-            double ymultiplier = plotConfig.getYMultiplierAt(i, 1);
+            double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
             double v = y[i] * ymultiplier;
             if (model.getYVisible(i)) {
                 initialIndexesList.add(i);

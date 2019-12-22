@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
@@ -12,14 +12,14 @@ import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
  */
 public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
 
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop strzop = (MomStructureFractalZop) str;
-        Matrix ZinCond;
+        ComplexMatrix ZinCond;
         try {
-            Matrix a11 = A11(strzop);
-            Matrix a = A(strzop);
-            Matrix b = B(strzop);
-            Matrix ZinPaire = a11.sub(a.mul(b.inv()).mul(a.transposeHermitian()));
+            ComplexMatrix a11 = A11(strzop);
+            ComplexMatrix a = A(strzop);
+            ComplexMatrix b = B(strzop);
+            ComplexMatrix ZinPaire = a11.sub(a.mul(b.inv()).mul(a.transposeHermitian()));
 //            CMatrix ZinPaire = a11.substract(a.multiply(b.inv()).multiply(a.transpose()));
             ZinCond = ZinPaire.div(2);
         } catch (Exception e) {
@@ -30,7 +30,7 @@ public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
         return ZinCond;
     }
 
-    public Matrix A11(MomStructureFractalZop str) {
+    public ComplexMatrix A11(MomStructureFractalZop str) {
 //        Zoperator[] zoperators = str.Zop();
 //        CMatrix a11 = CMatrix.zerosMatrix(zoperators[0].getMatrix());
 //        for (int i = 0; i < zoperators.length; i++) {
@@ -68,11 +68,11 @@ public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
         return null;
     }
 
-    public Matrix A(MomStructure str) {
+    public ComplexMatrix A(MomStructure str) {
         return null;
     }
 
-    public Matrix B(MomStructure str) {
+    public ComplexMatrix B(MomStructure str) {
         return null;
     }
 

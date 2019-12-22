@@ -19,7 +19,7 @@ public class AxisFunctionDifferentiator implements FunctionDifferentiator {
             if (c.getDomain().isFull()) {
                 return Complex.ONE;
             }
-            return c.getDomain();//Maths.expr(c.getDomain());
+            return c.getDomain();//MathsBase.expr(c.getDomain());
         }
         return Complex.ZERO;
     }

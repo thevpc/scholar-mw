@@ -81,7 +81,6 @@ public class PathItem {
     }
 
     public PathItem addPath(String name, boolean folder, boolean ignoreExisting, boolean mkdirs) {
-        StringTokenizer st = new StringTokenizer(name, "/\\");
         String[] all = splitPath(name);
         for (String n : all) {
             checkName(n);
@@ -95,7 +94,7 @@ public class PathItem {
             if (pi.equals(".")) {
                 //do nothing;
             } else if (pi.equals("..")) {
-                if (parent == null) {
+                if (cur == null) {
                     throw new IllegalArgumentException("Invalid path " + getPath() + "/" + name);
                 }
                 cur = cur.getParent();

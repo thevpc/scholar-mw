@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.util.ArrayList;
 
@@ -152,7 +152,7 @@ public class ThreadStack {
         }
 
         public String getDump(Object... params) {
-            return getIndent() + getClassName() + "." + getMethodName() + "(" + Maths.dump(params) + ")";
+            return getIndent() + getClassName() + "." + getMethodName() + "(" + MathsBase.dump(params) + ")";
         }
 
         public int depth() {

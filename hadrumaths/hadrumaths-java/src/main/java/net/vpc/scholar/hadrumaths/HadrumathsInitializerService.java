@@ -17,12 +17,12 @@ public class HadrumathsInitializerService implements HadrumathsService {
     @Override
     public void installService() {
         LogUtils.initialize();
-        log.log(Level.INFO, "Initializing Hadrumaths component...(hadrumaths version " + Maths.getHadrumathsVersion() + ")");
+        log.log(Level.INFO, "Initializing Hadrumaths component...(hadrumaths version " + MathsBase.getHadrumathsVersion() + ")");
         MathsBase.Config.setLogMonitorLevel(Level.ALL);
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                Maths.Config.close();
+                MathsBase.Config.close();
             }
         }));
     }

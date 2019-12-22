@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.interop.jblas;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.TMatrix;
 import org.jblas.ComplexDouble;
 import org.jblas.ComplexDoubleMatrix;
@@ -15,12 +15,12 @@ public class JBlasConverter {
         return new ComplexDouble(complex.getReal(), complex.getImag());
     }
 
-    public static Matrix toVpcCMatrix(ComplexDoubleMatrix complexDouble) {
-        return new JBlasMatrix(complexDouble);
+    public static ComplexMatrix toVpcCMatrix(ComplexDoubleMatrix complexDouble) {
+        return new JBlasComplexMatrix(complexDouble);
     }
 
     public static ComplexDoubleMatrix fromVpcCMatrix(TMatrix<Complex> matrix) {
-        JBlasMatrix m = (JBlasMatrix) JBlasMatrixFactory.INSTANCE.newMatrix(matrix);
+        JBlasComplexMatrix m = (JBlasComplexMatrix) JBlasComplexMatrixFactory.INSTANCE.newMatrix(matrix);
         return m.getBase();
     }
 }

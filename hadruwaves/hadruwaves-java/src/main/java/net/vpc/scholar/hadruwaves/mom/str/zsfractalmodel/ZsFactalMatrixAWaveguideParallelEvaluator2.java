@@ -41,13 +41,13 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
     }
 
     @Override
-    public Matrix evaluate(final MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(final MomStructure str, ProgressMonitor monitor) {
         final MomStructureFractalZop str2 = (MomStructureFractalZop) str;
         final TestFunctions gpTestFunctions = str.getTestFunctions();
         final String simpleName = getClass().getSimpleName();
-        return Maths.invokeMonitoredAction(monitor, simpleName, new MonitoredAction<Matrix>() {
+        return Maths.invokeMonitoredAction(monitor, simpleName, new MonitoredAction<ComplexMatrix>() {
             @Override
-            public Matrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 final DoubleToVector[] g = gpTestFunctions.arr();
                 final Complex[][] b = new Complex[g.length][g.length];
                 ModeFunctions fn = str.getModeFunctions();
@@ -232,7 +232,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
 //                System.out.println("op : " + DumpStringUtils.dump(str));
-                        Matrix cMatrix;
+                        ComplexMatrix cMatrix;
                         if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT)) {
                             cMatrix = ops[0].getMatrix();
                         } else {

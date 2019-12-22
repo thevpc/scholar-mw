@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 import java.io.UncheckedIOException;
 import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTMatrix;
+import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromTComplexMatrix;
 import net.vpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromTMatrix;
 import net.vpc.scholar.hadrumaths.util.adapters.ExprMatrixFromTMatrix;
 
@@ -86,10 +86,10 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         int rows = getRowCount();
         for (int c = 0; c < columnDimension; c++) {
             for (int r = 0; r < rows; r++) {
-                f += Maths.sqr(getComponentVectorSpace().absdbl(get(r, c)));
+                f += MathsBase.sqr(getComponentVectorSpace().absdbl(get(r, c)));
             }
         }
-        return Maths.sqrt(f);
+        return MathsBase.sqrt(f);
     }
 
     /**
@@ -291,7 +291,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     protected TMatrix<T> createMatrix(int rows, int cols) {
         TMatrixFactory<T> f = getFactory();
         if (f == null) {
-            f = MathsBase.Config.getDefaultMatrixFactory(getComponentType());
+            f = MathsBase.Config.getComplexMatrixFactory(getComponentType());
         }
         return f.newMatrix(rows, cols);
     }
@@ -852,7 +852,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 //        double[][] X = new double[rows][columns];
 //        for (int i = 0; i < rows; i++) {
 //            for (int j = 0; j < columns; j++) {
-//                X[i][j] = Maths.sqr(get(i, j).absdbl());
+//                X[i][j] = MathsBase.sqr(get(i, j).absdbl());
 //            }
 //        }
 //        return X;
@@ -1154,7 +1154,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getRows() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) MathsBase.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -1169,7 +1169,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public TVector<TVector<T>> getColumns() {
-        return (TVector<TVector<T>>) Maths.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
+        return (TVector<TVector<T>>) MathsBase.<TVector<T>>columnTVector(TypeName.of(TVector.class, getComponentType()), new TVectorModel<TVector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -2155,9 +2155,9 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         for (int r = 0; r < rows; r++) {
             alpha = 0;
             for (int c = 0; c < cols; c++) {
-                alpha = alpha + Maths.sqr(componentVectorSpace.absdbl(get(r, c)));
+                alpha = alpha + MathsBase.sqr(componentVectorSpace.absdbl(get(r, c)));
             }
-            x *= Maths.sqrt(alpha);
+            x *= MathsBase.sqrt(alpha);
         }
         return componentVectorSpace.absdbl(det) / x;
     }
@@ -2358,7 +2358,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     }
 
     protected TMatrixFactory<T> createDefaultFactory() {
-        return MathsBase.Config.getDefaultMatrixFactory(getComponentType());
+        return MathsBase.Config.getComplexMatrixFactory(getComponentType());
     }
 
     @Override
@@ -2367,14 +2367,17 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             return factory;
         }
         if (factoryId != null) {
-            return factory = MathsBase.Config.getTMatrixFactory(factoryId);
+            TMatrixFactory f = MathsBase.Config.getTMatrixFactory(factoryId);
+            if(f!=null){
+                return factory = f;
+            }
         }
 
         TMatrixFactory<T> t = createDefaultFactory();
         if (t == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }
-        return t;
+        return factory = t;
     }
 
     @Override
@@ -2415,7 +2418,7 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
 
     @Override
     public VectorSpace<T> getComponentVectorSpace() {
-        return Maths.getVectorSpace(getComponentType());
+        return MathsBase.getVectorSpace(getComponentType());
     }
 
     @Override
@@ -2474,15 +2477,15 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
     @Override
     public <R> boolean isConvertibleTo(TypeName<R> other) {
         if (
-                Maths.$COMPLEX.equals(other)
-                        || Maths.$EXPR.equals(other)
+                MathsBase.$COMPLEX.equals(other)
+                        || MathsBase.$EXPR.equals(other)
         ) {
             return true;
         }
         if (other.isAssignableFrom(getComponentType())) {
             return true;
         }
-        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
+        VectorSpace<T> vs = MathsBase.getVectorSpace(getComponentType());
         for (TVector<T> ts : getRows()) {
             if (!ts.isConvertibleTo(other)) {
                 return false;
@@ -2501,18 +2504,18 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
         if (other.equals(getComponentType())) {
             return (TMatrix<R>) this;
         }
-        if (other.equals(Maths.$EXPR)) {
+        if (other.equals(MathsBase.$EXPR)) {
             return (TMatrix<R>) new ExprMatrixFromTMatrix<T>(this);
         }
-        if (other.equals(Maths.$COMPLEX)) {
-            return (TMatrix<R>) new ComplexMatrixFromTMatrix<T>(this);
+        if (other.equals(MathsBase.$COMPLEX)) {
+            return (TMatrix<R>) new ComplexMatrixFromTComplexMatrix<T>(this);
         }
-        if (other.equals(Maths.$DOUBLE)) {
+        if (other.equals(MathsBase.$DOUBLE)) {
             return (TMatrix<R>) new DoubleMatrixFromTMatrix<T>(this);
         }
         throw new IllegalArgumentException("Unsupported");
 //        //should i check default types?
-//        if (Maths.$COMPLEX.isAssignableFrom(other)) {
+//        if (MathsBase.$COMPLEX.isAssignableFrom(other)) {
 //            return (TVector<R>) new ReadOnlyVector(
 //                    new TVectorModel() {
 //                        @Override
@@ -2580,5 +2583,6 @@ public abstract class AbstractTMatrix<T> implements TMatrix<T> {
             }
         }
     }
+
 
 }

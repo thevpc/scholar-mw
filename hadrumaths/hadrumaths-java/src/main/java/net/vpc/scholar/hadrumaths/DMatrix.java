@@ -185,7 +185,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
 
     @Override
     public TypeName<Double> getComponentType() {
-        return Maths.$DOUBLE;
+        return MathsBase.$DOUBLE;
     }
     /* ------------------------
    Public Methods
@@ -629,7 +629,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double f = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                f = Maths.hypot(f, A[i][j]);
+                f = MathsBase.hypot(f, A[i][j]);
             }
         }
         return f;
@@ -1046,7 +1046,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         double[][] X = A.getDoubleArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                X[i][j] = Maths.random();
+                X[i][j] = MathsBase.random();
             }
         }
         return A;

@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform.navigaterules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.Any;
 import net.vpc.scholar.hadrumaths.symbolic.Sub;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -33,7 +33,7 @@ public class SubNavRule implements ExpressionRewriterRule {
         if (a.isUnmodified() && b.isUnmodified()) {
             return RewriteResult.unmodified(e);
         }
-        Expr eee = Maths.sub(a.getValue(), b.getValue());
+        Expr eee = MathsBase.sub(a.getValue(), b.getValue());
         eee = Any.copyProperties(e, eee);
         if (a.isBestEffort() && b.isBestEffort()) {
             return RewriteResult.bestEffort(eee);

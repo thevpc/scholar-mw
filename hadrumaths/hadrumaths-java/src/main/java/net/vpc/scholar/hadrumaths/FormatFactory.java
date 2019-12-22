@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -55,12 +56,12 @@ public class FormatFactory extends AbstractFactory {
         dateFormats.put("date", DATE_FORMAT);
         dateFormats.put("datetime", DATE_TIME_FORMAT);
         dateFormats.put("timestamp", TIMESTAMP_FORMAT);
-        Maths.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
+        MathsBase.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
     }
 
     static {
-        register(Matrix.class, new MatrixObjectFormat());
-        register(DCxy.class, new CFunctionXYObjectFormat());
+        register(ComplexMatrix.class, new MatrixObjectFormat());
+        register(DD2DC.class, new CFunctionXYObjectFormat());
         register(CExp.class, new CExpObjectFormat());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYFormatter());
         register(Linear.class, new LinearObjectFormat());
@@ -143,7 +144,7 @@ public class FormatFactory extends AbstractFactory {
         return format(o, toStringFormat);
     }
 
-//    public static String dblquadString(DCxy f, boolean useGate) {
+//    public static String dblquadString(DD2DC f, boolean useGate) {
 //        if (useGate) {
 //            DomainXY d = f.getDomain();
 //            return ("dblquad('"
@@ -191,7 +192,7 @@ public class FormatFactory extends AbstractFactory {
 //        }
 //    }
 //
-//    public static String symdblquadString(DCxy f) {
+//    public static String symdblquadString(DD2DC f) {
 //        f = f.simplify();
 //        DDxy r = f.getReal();
 //        DDxy i = f.getImag();
@@ -269,14 +270,14 @@ public class FormatFactory extends AbstractFactory {
 //        return putInto;
 //    }
 //
-//    public static String formatScalarProduct(DomainXY domain0, DCxy f1, DCxy f2, ObjectFormatParam... format) {
+//    public static String formatScalarProduct(DomainXY domain0, DD2DC f1, DD2DC f2, ObjectFormatParam... format) {
 //        FormatParamArray formatArray = new FormatParamArray(format);
 //        DomainXY domain = domain0 == null ? f1.intersect(f2) : f1.intersect(f2, domain0);
 //        if (domain.isEmpty()) {
 //            return "0";
 //        }
-//        ArrayList<DCxy> a1 = linearize(new DCxy[]{f1}, null);
-//        ArrayList<DCxy> a2 = linearize(new DCxy[]{f2}, null);
+//        ArrayList<DD2DC> a1 = linearize(new DD2DC[]{f1}, null);
+//        ArrayList<DD2DC> a2 = linearize(new DD2DC[]{f2}, null);
 //
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < a1.size(); i++) {
@@ -301,20 +302,20 @@ public class FormatFactory extends AbstractFactory {
 //
 //    }
 //
-//    private static ArrayList<DCxy> linearize(DCxy[] sum, ArrayList<DCxy> putInto) {
+//    private static ArrayList<DD2DC> linearize(DD2DC[] sum, ArrayList<DD2DC> putInto) {
 //        if (putInto == null) {
-//            putInto = new ArrayList<DCxy>();
+//            putInto = new ArrayList<DD2DC>();
 //        }
 //        for (int i = 0; i < sum.length; i++) {
-//            DCxy cFunctionXY = sum[i];
+//            DD2DC cFunctionXY = sum[i];
 //            if (cFunctionXY instanceof DCxyAbstractSum) {
 //                linearize(((DCxyAbstractSum) cFunctionXY).getSegments(), putInto);
 //            } else {
 //                if (cFunctionXY.getReal() != FunctionFactory.DZEROXY) {
-//                    putInto.add(new DCxy(cFunctionXY.getReal(), FunctionFactory.DZEROXY));
+//                    putInto.add(new DD2DC(cFunctionXY.getReal(), FunctionFactory.DZEROXY));
 //                }
 //                if (cFunctionXY.getImag() != FunctionFactory.DZEROXY) {
-//                    putInto.add(new DCxy(FunctionFactory.DZEROXY, cFunctionXY.getImag()));
+//                    putInto.add(new DD2DC(FunctionFactory.DZEROXY, cFunctionXY.getImag()));
 //                }
 //            }
 //        }

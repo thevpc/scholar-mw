@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class MatrixXMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
+class MatrixXMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     private MomStructure momStructure;
 
@@ -17,7 +17,7 @@ class MatrixXMatrixStrCacheSupport extends StrCacheSupport<Matrix> {
     }
 
     @Override
-    public Matrix compute(ObjectCache momCache) {
+    public ComplexMatrix compute(ObjectCache momCache) {
         return momStructure.createMatrixUnknownEvaluator().evaluate(momStructure, getMonitor());
     }
 }

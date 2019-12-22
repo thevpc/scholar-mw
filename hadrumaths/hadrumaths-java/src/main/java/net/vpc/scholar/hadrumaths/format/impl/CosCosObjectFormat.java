@@ -6,7 +6,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.XObjectFormatParam;
@@ -34,7 +34,7 @@ public class CosCosObjectFormat extends AbstractObjectFormat<CosXCosY> {
             return;
         } else {
             String lastAction = "";
-            if (Maths.isInt(amp) && amp == 1 || amp == -1) {
+            if (MathsBase.isInt(amp) && amp == 1 || amp == -1) {
                 if (amp == -1) {
                     sb.append("-");
                     lastAction = "minus";

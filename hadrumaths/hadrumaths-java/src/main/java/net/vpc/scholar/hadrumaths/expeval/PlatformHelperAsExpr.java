@@ -10,30 +10,30 @@ public class PlatformHelperAsExpr {
     // neg
 
     public static Expr neg(byte a) {
-        return Maths.neg(Maths.expr(a));
+        return MathsBase.neg(MathsBase.expr(a));
     }
 
     public static Expr neg(short a) {
-        return Maths.neg(Maths.expr(a));
+        return MathsBase.neg(MathsBase.expr(a));
     }
 
     public static Expr neg(int a) {
-        return Maths.neg(Maths.expr(a));
+        return MathsBase.neg(MathsBase.expr(a));
     }
 
     public static Expr neg(long a) {
-        return Maths.neg(Maths.expr(a));
+        return MathsBase.neg(MathsBase.expr(a));
     }
 
     public static Expr neg(float a) {
-        return Maths.neg(Maths.expr(a));
+        return MathsBase.neg(MathsBase.expr(a));
     }
 
     public static double neg(double a) {
-        return -a;//Maths.neg(Maths.expr(a));
+        return -a;//MathsBase.neg(MathsBase.expr(a));
     }
     public static Complex neg(Complex a) {
-        return a.neg();//Maths.neg(Maths.expr(a));
+        return a.neg();//MathsBase.neg(MathsBase.expr(a));
     }
 
 //    public static Expr neg(BigInteger a) {
@@ -107,27 +107,27 @@ public class PlatformHelperAsExpr {
     // byte ADD
 
     public static Expr add(byte a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(byte a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(byte a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(byte a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(byte a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(byte a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(byte a, BigInteger b) {
@@ -139,37 +139,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(byte a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(byte a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // short ADD
 
     public static Expr add(short a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(short a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(short a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(short a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(short a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(short a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(short a, BigInteger b) {
@@ -181,37 +181,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(short a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(short a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // int ADD
 
     public static Expr add(int a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(int a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(int a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(int a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(int a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(int a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(int a, BigInteger b) {
@@ -223,37 +223,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(int a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(int a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // long ADD
 
     public static Expr add(long a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(long a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(long a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(long a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(long a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(long a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(long a, BigInteger b) {
@@ -265,37 +265,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(long a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(long a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // float ADD
 
     public static Expr add(float a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(float a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(float a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(float a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(float a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(float a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(float a, BigInteger b) {
@@ -307,37 +307,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(float a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(float a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // double ADD
 
     public static Expr add(double a, byte b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(double a, short b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(double a, int b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(double a, long b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(double a, float b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr add(double a, double b) {
-        return Maths.add(Maths.expr(a),Maths.expr(b));
+        return MathsBase.add(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr add(double a, BigInteger b) {
@@ -349,11 +349,11 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr add(double a, Complex b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     public static Expr add(double a, Expr b) {
-        return Maths.expr(a).add(b);
+        return MathsBase.expr(a).add(b);
     }
 
     // BigInteger ADD
@@ -445,27 +445,27 @@ public class PlatformHelperAsExpr {
     // byte SUB
 
     public static Expr sub(byte a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(byte a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(byte a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(byte a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(byte a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(byte a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(byte a, BigInteger b) {
@@ -477,37 +477,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(byte a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(byte a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // short sub
 
     public static Expr sub(short a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(short a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(short a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(short a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(short a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(short a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(short a, BigInteger b) {
@@ -519,37 +519,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(short a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(short a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // int sub
 
     public static Expr sub(int a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(int a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(int a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(int a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(int a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(int a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(int a, BigInteger b) {
@@ -561,37 +561,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(int a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(int a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // long sub
 
     public static Expr sub(long a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(long a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(long a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(long a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(long a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(long a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(long a, BigInteger b) {
@@ -603,37 +603,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(long a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(long a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // float sub
 
     public static Expr sub(float a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(float a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(float a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(float a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(float a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(float a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(float a, BigInteger b) {
@@ -645,37 +645,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(float a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(float a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // double sub
 
     public static Expr sub(double a, byte b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(double a, short b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(double a, int b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(double a, long b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(double a, float b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr sub(double a, double b) {
-        return Maths.sub(Maths.expr(a),Maths.expr(b));
+        return MathsBase.sub(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr sub(double a, BigInteger b) {
@@ -687,11 +687,11 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr sub(double a, Complex b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     public static Expr sub(double a, Expr b) {
-        return Maths.expr(a).sub(b);
+        return MathsBase.expr(a).sub(b);
     }
 
     // BigInteger sub
@@ -783,27 +783,27 @@ public class PlatformHelperAsExpr {
     // byte mul
 
     public static Expr mul(byte a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(byte a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(byte a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(byte a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(byte a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(byte a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(byte a, BigInteger b) {
@@ -815,37 +815,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(byte a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(byte a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // short mul
 
     public static Expr mul(short a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(short a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(short a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(short a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(short a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(short a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(short a, BigInteger b) {
@@ -857,37 +857,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(short a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(short a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // int mul
 
     public static Expr mul(int a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(int a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(int a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(int a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(int a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(int a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(int a, BigInteger b) {
@@ -899,37 +899,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(int a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(int a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // long mul
 
     public static Expr mul(long a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(long a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(long a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(long a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(long a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(long a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(long a, BigInteger b) {
@@ -941,37 +941,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(long a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(long a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // float mul
 
     public static Expr mul(float a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(float a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(float a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(float a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(float a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(float a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(float a, BigInteger b) {
@@ -983,37 +983,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(float a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(float a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // double mul
 
     public static Expr mul(double a, byte b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(double a, short b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(double a, int b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(double a, long b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(double a, float b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr mul(double a, double b) {
-        return mul(Maths.expr(a),Maths.expr(b));
+        return mul(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr mul(double a, BigInteger b) {
@@ -1025,11 +1025,11 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(double a, Complex b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     public static Expr mul(double a, Expr b) {
-        return Maths.expr(a).mul(b);
+        return MathsBase.expr(a).mul(b);
     }
 
     // BigInteger mul
@@ -1121,27 +1121,27 @@ public class PlatformHelperAsExpr {
     // byte div
 
     public static Expr div(byte a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(byte a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(byte a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(byte a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(byte a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(byte a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(byte a, BigInteger b) {
@@ -1153,37 +1153,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(byte a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(byte a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // short  div
 
     public static Expr div(short a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(short a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(short a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(short a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(short a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(short a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(short a, BigInteger b) {
@@ -1195,37 +1195,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(short a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(short a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // int  div
 
     public static Expr div(int a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(int a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(int a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(int a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(int a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(int a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(int a, BigInteger b) {
@@ -1237,37 +1237,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(int a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(int a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // long  div
 
     public static Expr div(long a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(long a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(long a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(long a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(long a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(long a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(long a, BigInteger b) {
@@ -1279,37 +1279,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(long a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(long a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // float  div
 
     public static Expr div(float a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(float a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(float a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(float a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(float a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(float a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(float a, BigInteger b) {
@@ -1321,37 +1321,37 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(float a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(float a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // double  div
 
     public static Expr div(double a, byte b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(double a, short b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(double a, int b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(double a, long b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(double a, float b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
     public static Expr div(double a, double b) {
-        return Maths.div(Maths.expr(a),Maths.expr(b));
+        return MathsBase.div(MathsBase.expr(a),MathsBase.expr(b));
     }
 
 //    public static Expr div(double a, BigInteger b) {
@@ -1363,11 +1363,11 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr div(double a, Complex b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     public static Expr div(double a, Expr b) {
-        return Maths.expr(a).div(b);
+        return MathsBase.expr(a).div(b);
     }
 
     // BigInteger  div
@@ -1456,61 +1456,61 @@ public class PlatformHelperAsExpr {
 //    }
 
     public static Expr mul(Expr a, double b) {
-        return mul(a,Maths.expr(b));
+        return mul(a,MathsBase.expr(b));
     }
     public static Expr mul(Expr a, Complex b) {
         return mul(a,(Expr) b);
     }
     public static Expr add(Expr a, Expr b) {
-        return Maths.add(a,b);
+        return MathsBase.add(a,b);
     }
     public static Expr sub(Expr a, Expr b) {
-        return Maths.sub(a,b);
+        return MathsBase.sub(a,b);
     }
     public static Expr mul(Expr a, Expr b) {
-        return Maths.mul(a,b);
+        return MathsBase.mul(a,b);
     }
     public static Expr div(Expr a, Expr b) {
-        return Maths.div(a,b);
+        return MathsBase.div(a,b);
     }
     public static Expr neg(Expr a) {
-        return Maths.neg(a);
+        return MathsBase.neg(a);
     }
     public static Expr cos(Expr a) {
-        return Maths.cos(a);
+        return MathsBase.cos(a);
     }
     public static Expr sin(Expr a) {
-        return Maths.sin(a);
+        return MathsBase.sin(a);
     }
     public static Expr tan(Expr a) {
-        return Maths.tan(a);
+        return MathsBase.tan(a);
     }
     public static Expr atan(Expr a) {
-        return Maths.atan(a);
+        return MathsBase.atan(a);
     }
     public static Expr cotan(Expr a) {
-        return Maths.cotan(a);
+        return MathsBase.cotan(a);
     }
     public static Expr acotan(Expr a) {
-        return Maths.acotan(a);
+        return MathsBase.acotan(a);
     }
     public static Expr acos(Expr a) {
-        return Maths.acos(a);
+        return MathsBase.acos(a);
     }
     public static Expr asin(Expr a) {
-        return Maths.asin(a);
+        return MathsBase.asin(a);
     }
     public static Expr cosh(Expr a) {
-        return Maths.cosh(a);
+        return MathsBase.cosh(a);
     }
     public static Expr sinh(Expr a) {
-        return Maths.sinh(a);
+        return MathsBase.sinh(a);
     }
     public static Expr tanh(Expr a) {
-        return Maths.tanh(a);
+        return MathsBase.tanh(a);
     }
     public static Expr cotanh(Expr a) {
-        return Maths.cotanh(a);
+        return MathsBase.cotanh(a);
     }
 
     public static Expr scalarProduct(Expr a,Expr b) {
@@ -1609,19 +1609,19 @@ public class PlatformHelperAsExpr {
     }
 
     public static Expr sqrt(Expr a) {
-        return Maths.sqrt(a);
+        return MathsBase.sqrt(a);
     }
 
     public static Complex sqrt(Complex a) {
-        return Maths.sqrt(a);
+        return MathsBase.sqrt(a);
     }
 
     public static Expr sqr(Expr a) {
-        return Maths.sqr(a);
+        return MathsBase.sqr(a);
     }
 
     public static Complex sqr(Complex a) {
-        return Maths.sqr(a);
+        return MathsBase.sqr(a);
     }
 
 }

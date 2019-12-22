@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
@@ -128,11 +128,11 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
     public double getSurface() {
         double dp1p2, dp1p3, dp2p3, s;
-        dp1p2 = Maths.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
-        dp1p3 = Maths.sqrt((p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y) * (p3.y - p1.y));
-        dp2p3 = Maths.sqrt((p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y) * (p3.y - p2.y));
+        dp1p2 = MathsBase.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+        dp1p3 = MathsBase.sqrt((p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y) * (p3.y - p1.y));
+        dp2p3 = MathsBase.sqrt((p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y) * (p3.y - p2.y));
         s = (1.0 / 2.0) * (dp1p2 + dp1p3 + dp2p3);
-        return (Maths.sqrt(s * (s - dp1p2) * (s - dp1p3) * (s - dp2p3)));
+        return (MathsBase.sqrt(s * (s - dp1p2) * (s - dp1p3) * (s - dp2p3)));
     }
 
     public Point getBarycenter() {

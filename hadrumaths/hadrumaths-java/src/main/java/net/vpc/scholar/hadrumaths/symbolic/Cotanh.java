@@ -25,7 +25,7 @@ public class Cotanh extends TrigoFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.cotanh(c);
+        return MathsBase.cotanh(c);
     }
 
     @Override

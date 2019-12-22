@@ -10,6 +10,7 @@ import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.Normalizable;
 import net.vpc.scholar.hadruplot.console.params.Param;
 import net.vpc.scholar.hadruplot.console.params.ParamSet;
@@ -45,23 +46,23 @@ public class ConvergenceEvaluator {
     }
 
     public static ConvergenceEvaluator create(Param param, Object[] var) {
-        return create(Maths.paramSet(param, var));
+        return create(MathsBase.paramSet(param, var));
     }
 
     public static ConvergenceEvaluator create(Param param, int[] var) {
-        return create(Maths.paramSet(param, var));
+        return create(MathsBase.paramSet(param, var));
     }
 
     public static ConvergenceEvaluator create(Param param, double[] var) {
-        return create(Maths.paramSet(param, var));
+        return create(MathsBase.paramSet(param, var));
     }
 
     public static ConvergenceEvaluator create(Param param, float[] var) {
-        return create(Maths.paramSet(param, var));
+        return create(MathsBase.paramSet(param, var));
     }
 
     public static ConvergenceEvaluator create(Param param, long[] var) {
-        return create(Maths.paramSet(param, var));
+        return create(MathsBase.paramSet(param, var));
     }
 
     public static ConvergenceEvaluator create(ParamSet paramSet) {
@@ -89,23 +90,23 @@ public class ConvergenceEvaluator {
     }
 
     public ConvergenceEvaluator combine(Param scf, Object[] var) {
-        return combine(Maths.paramSet(scf, var), config);
+        return combine(MathsBase.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, int[] var) {
-        return combine(Maths.paramSet(scf, var), config);
+        return combine(MathsBase.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, long[] var) {
-        return combine(Maths.paramSet(scf, var), config);
+        return combine(MathsBase.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, float[] var) {
-        return combine(Maths.paramSet(scf, var), config);
+        return combine(MathsBase.paramSet(scf, var), config);
     }
 
     public ConvergenceEvaluator combine(Param scf, double[] var) {
-        return combine(Maths.paramSet(scf, var), config);
+        return combine(MathsBase.paramSet(scf, var), config);
     }
 
 
@@ -144,7 +145,7 @@ public class ConvergenceEvaluator {
         convInfo.subResult = null;
 
         double epsilon = config.getThreshold();
-        Maths.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
+        MathsBase.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor monitor99 = monitor.translate(0.8, 0);

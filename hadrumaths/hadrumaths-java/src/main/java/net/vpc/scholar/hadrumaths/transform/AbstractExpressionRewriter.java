@@ -3,7 +3,8 @@ package net.vpc.scholar.hadrumaths.transform;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.LRUMap;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public abstract class AbstractExpressionRewriter implements ExpressionRewriter, CacheEnabled {
     public static int MAX_REWRITE_TIME_SECONDS = 1;
-    private LRUMap<Expr, RewriteResult> cache = new LRUMap<Expr, RewriteResult>(Maths.Config.getSimplifierCacheSize());
+    private LRUMap<Expr, RewriteResult> cache = new LRUMap<Expr, RewriteResult>(MathsBase.Config.getSimplifierCacheSize());
     private boolean cacheEnabled = true;
     protected List<ExprRewriteSuccessListener> rewriteSuccessListeners = new ArrayList<>();
     protected List<ExprRewriteFailListener> rewriteFailListeners = new ArrayList<>();
@@ -50,18 +51,18 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
     };
 
     public AbstractExpressionRewriter() {
-        Maths.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
+        MathsBase.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
     }
 
     @Override
     protected void finalize() throws Throwable {
-        Maths.Config.removeConfigChangeListener("cacheEnabled", cacheEnabledListener);
+        MathsBase.Config.removeConfigChangeListener("cacheEnabled", cacheEnabledListener);
         super.finalize();
     }
 
     @Override
     public boolean isCacheEnabled() {
-        return Maths.Config.isExpressionWriterCacheEnabled() && cacheEnabled;
+        return MathsBase.Config.isExpressionWriterCacheEnabled() && cacheEnabled;
     }
 
     @Override
@@ -95,7 +96,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
     @Override
     public RewriteResult rewrite(Expr e) {
         if (isCacheEnabled()) {
-            if (Maths.Config.isDevelopmentMode()) {
+            if (MathsBase.Config.isDevelopmentMode()) {
                 PlatformUtils.requireEqualsAndHashCode(e.getClass());
             }
             RewriteResult found = cache.get(e);
@@ -104,7 +105,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
             }
             RewriteResult r = null;
             if (MAX_REWRITE_TIME_SECONDS > 0) {
-                Chronometer c = Maths.chrono();
+                Chronometer c = MathsBase.chrono();
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
@@ -118,7 +119,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
         } else {
             RewriteResult r = null;
             if (MAX_REWRITE_TIME_SECONDS > 0) {
-                Chronometer c = Maths.chrono();
+                Chronometer c = MathsBase.chrono();
                 r = rewriteImpl(e);
                 c.stop();
                 if (c.getSeconds() > MAX_REWRITE_TIME_SECONDS) {

@@ -3,7 +3,7 @@ package net.vpc.scholar.hadruwaves.studio.standalone.buildactions;
 
 import java.util.ArrayList;
 import net.vpc.common.log.Log;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
 
@@ -15,7 +15,7 @@ import net.vpc.scholar.hadruwaves.mom.util.MomStrHelper;
  */
 public class BuildConvengenceJCoeffAction extends AbstractBuildJCoeffSerieAction {
     private double precision;
-    Matrix value;
+    ComplexMatrix value;
     ArrayList<Double> relativeError;
     public BuildConvengenceJCoeffAction(MomStrHelper jxy, String iterVarName, double iterVarNameMinValue, double iterVarNameMaxValue, int iterVarNameCountValue, double precision) {
         super(jxy, iterVarName, iterVarNameMinValue, iterVarNameMaxValue, iterVarNameCountValue);
@@ -29,7 +29,7 @@ public class BuildConvengenceJCoeffAction extends AbstractBuildJCoeffSerieAction
     }
 
     protected boolean iteration(double i) {
-        Matrix newVal=getJxy().computeTestcoeff(ProgressMonitorFactory.none());
+        ComplexMatrix newVal=getJxy().computeTestcoeff(ProgressMonitorFactory.none());
         if(value!=null){
             double diff=(value.sub(newVal)).normInf();
             double oldVal=newVal.normInf();

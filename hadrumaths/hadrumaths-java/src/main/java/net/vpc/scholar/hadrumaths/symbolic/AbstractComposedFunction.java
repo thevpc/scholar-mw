@@ -74,13 +74,13 @@ public abstract class AbstractComposedFunction extends AbstractPolymorphExpr {
 //        return this;
 //    }
 
-    @Override
-    public DoubleToMatrix toDM() {
-        if (!isDM()) {
-            throw new ClassCastException();
-        }
-        return this;
-    }
+//    @Override
+//    public DoubleToMatrix toDM() {
+//        if (!isDM()) {
+//            throw new ClassCastException();
+//        }
+//        return this;
+//    }
 
     @Override
     public DoubleToVector toDV() {
@@ -121,13 +121,13 @@ public abstract class AbstractComposedFunction extends AbstractPolymorphExpr {
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         Expr[] a = getArguments();
         Expr[] b = new Expr[a.length];
         boolean updated = false;
         for (int i = 0; i < a.length; i++) {
             Expr ai = a[i];
-            Expr bi = ai.composeX(xreplacement);
+            Expr bi = ai.compose(axis,xreplacement);
             if (bi != null && bi != ai) {
                 updated = true;
             }
@@ -140,28 +140,6 @@ public abstract class AbstractComposedFunction extends AbstractPolymorphExpr {
         }
         return null;
     }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        Expr[] a = getArguments();
-        Expr[] b = new Expr[a.length];
-        boolean updated = false;
-        for (int i = 0; i < a.length; i++) {
-            Expr ai = a[i];
-            Expr bi = ai.composeY(yreplacement);
-            if (bi != null && bi != ai) {
-                updated = true;
-            }
-            b[i] = bi;
-        }
-        if (updated) {
-            Expr e = newInstance(b);
-            e = Any.copyProperties(this, e);
-            return e;
-        }
-        return null;
-    }
-
 
     @Override
     public boolean equals(Object o) {

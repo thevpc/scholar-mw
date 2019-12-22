@@ -4,6 +4,7 @@ import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.DatePart;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.scholar.hadrumaths.io.HFileFilter;
@@ -128,7 +129,7 @@ public class PersistenceCache implements PersistentCacheConfig {
     public HFile getRootFolder() {
         if (rootFolderCached == null) {
             if (rootFolder == null) {
-                rootFolderCached = Maths.Config.getCacheFileSystem().get("/");
+                rootFolderCached = MathsBase.Config.getCacheFileSystem().get("/");
             } else {
                 rootFolderCached = rootFolder;
             }
@@ -308,12 +309,12 @@ public class PersistenceCache implements PersistentCacheConfig {
         if (m != CacheMode.INHERITED) {
             return m;
         }
-        CacheMode p = parent == null ? (Maths.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
+        CacheMode p = parent == null ? (MathsBase.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
         return p;
     }
 //public CacheMode getEffectiveMode() {
 //        CacheMode m = mode == null ? CacheMode.INHERITED : mode;
-//        CacheMode p = parent == null ? (Maths.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
+//        CacheMode p = parent == null ? (MathsBase.Config.getPersistenceCacheMode()) : parent.getEffectiveMode();
 //        if (m == CacheMode.DISABLED || p == CacheMode.DISABLED) {
 //            return CacheMode.DISABLED;
 //        }

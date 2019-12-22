@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.srv;
 
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.io.HFileSystem;
 
 public class FSServlet implements HadrumathsServlet {
@@ -15,7 +16,7 @@ public class FSServlet implements HadrumathsServlet {
     }
 
     public HFileSystem getFileSystem() {
-        return Maths.Config.getCacheFileSystem();
+        return MathsBase.Config.getCacheFileSystem();
     }
 
 }

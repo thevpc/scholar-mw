@@ -282,18 +282,18 @@ public final class ComplexR extends Complex implements DoubleToDouble {
     }
 
     public Complex acotan() {
-        return Complex.valueOf(Maths.acotan(real));
+        return Complex.valueOf(MathsBase.acotan(real));
     }
 
     public Complex sincard() {
         if (real == 0) {
             return ONE;
         }
-        return Complex.valueOf(Maths.sincard(real));
+        return Complex.valueOf(MathsBase.sincard(real));
     }
 
     public Complex cotan() {
-        return Complex.valueOf(Maths.cotan(real));
+        return Complex.valueOf(MathsBase.cotan(real));
     }
 
     public Complex sinh() {
@@ -309,7 +309,7 @@ public final class ComplexR extends Complex implements DoubleToDouble {
     }
 
     public Complex cotanh() {
-        return Complex.valueOf(Maths.cotanh(real));
+        return Complex.valueOf(MathsBase.cotanh(real));
     }
 
     public Complex log() {
@@ -379,15 +379,15 @@ public final class ComplexR extends Complex implements DoubleToDouble {
 //        } else {
         return Complex.valueOf(Math.pow(real, power));
 //        } else if (power >= 0) {
-//            double r = Maths.pow(absdbl(), power);
+//            double r = MathsBase.pow(absdbl(), power);
 //            double angle = arg().toDouble();
 //            double theta = angle * power;
-//            return Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+//            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
 //        } else { //n<0
 //            power = -power;
-//            double r = Maths.pow(absdbl(), power);
+//            double r = MathsBase.pow(absdbl(), power);
 //            double theta = arg().toDouble() * power;
-//            Complex c = Complex.valueOf(r * Maths.cos2(theta), r * Maths.sin2(theta));
+//            Complex c = Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
 //            return c.inv();
 //        }
     }
@@ -446,12 +446,12 @@ public final class ComplexR extends Complex implements DoubleToDouble {
     @Override
     public DoubleToDouble getRealDD() {
         double real = getReal();
-        return real == 0 ? Maths.DDZERO : new DoubleValue(real, Domain.FULLX);
+        return real == 0 ? MathsBase.DDZERO : new DoubleValue(real, Domain.FULLX);
     }
 
     @Override
     public DoubleToDouble getImagDD() {
-        return Maths.DDZERO;
+        return MathsBase.DDZERO;
     }
 
     @Override

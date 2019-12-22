@@ -11,7 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
-public abstract class Complex extends Number implements Expr, Cloneable, IConstantValue, Normalizable, VectorSpaceItem<Complex>, DoubleToComplex {
+public abstract class Complex extends Number implements Cloneable, IConstantValue, Normalizable, VectorSpaceItem<Complex>, DoubleToComplex {
 
     public static final Complex NaNRI = new ComplexRI(Double.NaN, Double.NaN);
     public static final Complex NaN = new ComplexR(Double.NaN);
@@ -615,9 +615,9 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     public Complex cos() {
         if (getImag() == 0) {
-            return Complex.valueOf(Maths.cos2(getReal()));
+            return Complex.valueOf(MathsBase.cos2(getReal()));
         }
-        return Complex.valueOf(Maths.cos2(getReal()) * Math.cosh(getImag()), -Maths.sin(getReal()) * Math.sinh(getImag()));
+        return Complex.valueOf(MathsBase.cos2(getReal()) * Math.cosh(getImag()), -MathsBase.sin(getReal()) * Math.sinh(getImag()));
     }
 
     public Complex tan() {
@@ -779,7 +779,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 //    public Complex angle() {
 //        //workaround
 ////        if(real==0){
-////            return imag>=0?Math.PI/2:-Maths.PI/2;
+////            return imag>=0?Math.PI/2:-MathsBase.PI/2;
 ////        }else if(imag==0){
 ////            return real>=0?0:Math.PI;
 ////        }
@@ -853,7 +853,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? Complex.valueOf(Maths.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
+//            return real >= 0 ? Complex.valueOf(MathsBase.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
             double angle = arg().toDouble();
@@ -863,7 +863,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
             power = -power;
             double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * Math.cos(theta), r * Maths.sin(theta));
+            Complex c = Complex.valueOf(r * Math.cos(theta), r * MathsBase.sin(theta));
             return c.inv();
         }
     }
@@ -1004,12 +1004,12 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public Matrix toMatrix() {
-        return Maths.Config.getMatrixFactory().newMatrix(new Complex[][]{{this}});
+    public ComplexMatrix toMatrix() {
+        return MathsBase.Config.getComplexMatrixFactory().newMatrix(new Complex[][]{{this}});
     }
 
-    public Vector toVector() {
-        return Maths.columnVector(this);
+    public ComplexVector toVector() {
+        return MathsBase.columnVector(this);
     }
 
     @Override
@@ -1043,13 +1043,13 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 //        return this;
 //    }
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         return this;
     }
 
     @Override
-    public Expr composeY(Expr yreplacement) {
-        return this;
+    public Expr title(String name) {
+        return setTitle(name);
     }
 
     @Override
@@ -1068,6 +1068,11 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public Expr simplify() {
+        return this;
+    }
+
+    @Override
+    public Expr simplify(SimplifyOptions options) {
         return this;
     }
 
@@ -1172,7 +1177,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 
     @Override
     public VectorSpace<Complex> getVectorSpace() {
-        return Maths.COMPLEX_VECTOR_SPACE;
+        return MathsBase.COMPLEX_VECTOR_SPACE;
     }
 
     public boolean isFinite() {
@@ -1346,13 +1351,13 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     @Override
     public DoubleToDouble getRealDD() {
         double real = getReal();
-        return real == 0 ? Maths.DDZERO : new DoubleValue(real, Domain.FULLX);
+        return real == 0 ? MathsBase.DDZERO : new DoubleValue(real, Domain.FULLX);
     }
 
     @Override
     public DoubleToDouble getImagDD() {
         double imag = getImag();
-        return imag == 0 ? Maths.DDZERO : new DoubleValue(imag, Domain.FULLX);
+        return imag == 0 ? MathsBase.DDZERO : new DoubleValue(imag, Domain.FULLX);
     }
 
     @Override
@@ -1443,7 +1448,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         if (other instanceof Complex) {
             return mul((Complex) other);
         }
-        return Maths.mul(this, other);
+        return MathsBase.mul(this, other);
     }
 
     @Override
@@ -1451,7 +1456,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         if (other instanceof Complex) {
             return add((Complex) other);
         }
-        return Maths.add(this, other);
+        return MathsBase.add(this, other);
     }
 
     @Override
@@ -1459,7 +1464,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
         if (other instanceof Complex) {
             return div((Complex) other);
         }
-        return Maths.div(this, other);
+        return MathsBase.div(this, other);
     }
 
 //    //@Override
@@ -1467,18 +1472,18 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
 //        if (other instanceof Complex) {
 //            return div((Complex) other);
 //        }
-//        return Maths.div(this, other);
+//        return MathsBase.div(this, other);
 //    }
     @Override
     public Expr sub(Expr other) {
         if (other instanceof Complex) {
             return sub((Complex) other);
         }
-        return Maths.sub(this, other);
+        return MathsBase.sub(this, other);
     }
 
     public Expr mul(Domain domain) {
-//        return mul(Maths.expr(domain));
+//        return mul(MathsBase.expr(domain));
         if (domain.isUnconstrained()) {
             return this;
         }
@@ -1486,7 +1491,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     public Expr mul(Geometry domain) {
-        return mul(Maths.expr(domain));
+        return mul(MathsBase.expr(domain));
     }
 
     public Expr multiply(Domain domain) {
@@ -1574,7 +1579,7 @@ public abstract class Complex extends Number implements Expr, Cloneable, IConsta
     }
 
     @Override
-    public Object prop(String name) {
-        return getProperty(name);
+    public String dump() {
+        return toString();
     }
 }

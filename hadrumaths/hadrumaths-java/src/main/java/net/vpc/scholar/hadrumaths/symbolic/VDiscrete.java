@@ -353,13 +353,13 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         int cc = getCountX() * getCountY() * getCountZ();
         switch (componentDimension.rows) {
             case 1: {
-                return Maths.vector(values[Axis.X.ordinal()].avg());
+                return MathsBase.vector(values[Axis.X.ordinal()].avg());
             }
             case 2: {
-                return Maths.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg());
+                return MathsBase.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg());
             }
             case 3: {
-                return Maths.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg(), values[Axis.Z.ordinal()].avg());
+                return MathsBase.vector(values[Axis.X.ordinal()].avg(), values[Axis.Y.ordinal()].avg(), values[Axis.Z.ordinal()].avg());
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
@@ -369,13 +369,13 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
         int cc = getCountX() * getCountY() * getCountZ();
         switch (componentDimension.rows) {
             case 1: {
-                Maths.vector(values[Axis.X.ordinal()].sum());
+                MathsBase.vector(values[Axis.X.ordinal()].sum());
             }
             case 2: {
-                Maths.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum());
+                MathsBase.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum());
             }
             case 3: {
-                Maths.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum(), values[Axis.Z.ordinal()].sum());
+                MathsBase.vector(values[Axis.X.ordinal()].sum(), values[Axis.Y.ordinal()].sum(), values[Axis.Z.ordinal()].sum());
             }
         }
         throw new UnsupportedComponentDimensionException(componentDimension.rows);
@@ -478,12 +478,12 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
     }
 
 
-    public Matrix getMatrix(Axis axis, PlaneAxis plane, int index) {
-        return Maths.matrix(getArray(axis, plane.getNormalAxis(), index));
+    public ComplexMatrix getMatrix(Axis axis, PlaneAxis plane, int index) {
+        return MathsBase.matrix(getArray(axis, plane.getNormalAxis(), index));
     }
 
-    public Matrix getMatrix(Axis axis, Axis fixedNormalAxis, int index) {
-        return Maths.matrix(getComponent(axis).getArray(fixedNormalAxis, index));
+    public ComplexMatrix getMatrix(Axis axis, Axis fixedNormalAxis, int index) {
+        return MathsBase.matrix(getComponent(axis).getArray(fixedNormalAxis, index));
     }
 
     public Complex[][] getArray(Axis axis, PlaneAxis plane, int index) {
@@ -511,11 +511,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Cloneable, Norm
      * @param index2
      * @return
      */
-    public Vector getVector(Axis cubeAxis, Axis fixedAxis1, int index1, Axis fixedAxis2, int index2) {
+    public ComplexVector getVector(Axis cubeAxis, Axis fixedAxis1, int index1, Axis fixedAxis2, int index2) {
         return getComponent(cubeAxis).getVector(cubeAxis, fixedAxis1, index1, fixedAxis2, index2);
     }
 
-    public Vector getVector(Axis cubeAxis) {
+    public ComplexVector getVector(Axis cubeAxis) {
         return getComponent(cubeAxis).getVector(cubeAxis);
     }
 

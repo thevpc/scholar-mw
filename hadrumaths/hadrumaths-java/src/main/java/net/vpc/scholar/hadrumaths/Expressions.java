@@ -229,8 +229,8 @@ public class Expressions {
         }
     }
 
-    public static Matrix computeMatrix(DoubleToMatrix f, double x) {
-        Matrix[] r = f.computeMatrix(new double[]{x});
+    public static ComplexMatrix computeMatrix(DoubleToMatrix f, double x) {
+        ComplexMatrix[] r = f.computeMatrix(new double[]{x});
         return r[0];
     }
 
@@ -253,89 +253,89 @@ public class Expressions {
 //        return r[0];
 //    }
 
-    public static Vector computeVector(DoubleToVector f, double x) {
-        Vector[] r = f.computeVector(new double[]{x},(Domain) null, null);
+    public static ComplexVector computeVector(DoubleToVector f, double x) {
+        ComplexVector[] r = f.computeVector(new double[]{x},(Domain) null, null);
         return r[0];
     }
 
-    public static Vector computeVector(DoubleToVector f, double x, double y) {
-        Vector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, null);
+    public static ComplexVector computeVector(DoubleToVector f, double x, double y) {
+        ComplexVector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, null);
         return r[0][0];
     }
 
-    public static Vector computeVector(DoubleToVector f, double x, double y, double z) {
-        Vector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, null);
+    public static ComplexVector computeVector(DoubleToVector f, double x, double y, double z) {
+        ComplexVector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, null);
         return r[0][0][0];
     }
 
-    public static Vector computeVector(DoubleToVector f, double x,BooleanMarker defined) {
+    public static ComplexVector computeVector(DoubleToVector f, double x, BooleanMarker defined) {
         Out<Range> o = new Out<>();
-        Vector[] r = f.computeVector(new double[]{x},(Domain) null, o);
+        ComplexVector[] r = f.computeVector(new double[]{x},(Domain) null, o);
         if(defined!=null && !o.get().isEmpty()){
             defined.set();
         }
         return r[0];
     }
 
-    public static Vector computeVector(DoubleToVector f, double x, double y,BooleanMarker defined) {
+    public static ComplexVector computeVector(DoubleToVector f, double x, double y, BooleanMarker defined) {
         Out<Range> o = new Out<>();
-        Vector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, o);
+        ComplexVector[][] r = f.computeVector(new double[]{x}, new double[]{y}, null, o);
         if(defined!=null && !o.get().isEmpty()){
             defined.set();
         }
         return r[0][0];
     }
 
-    public static Vector computeVector(DoubleToVector f, double x, double y, double z,BooleanMarker defined) {
+    public static ComplexVector computeVector(DoubleToVector f, double x, double y, double z, BooleanMarker defined) {
         Out<Range> o = new Out<>();
-        Vector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, o);
+        ComplexVector[][][] r = f.computeVector(new double[]{x}, new double[]{y},new double[]{z}, null, o);
         if(defined!=null && !o.get().isEmpty()){
             defined.set();
         }
         return r[0][0][0];
     }
 
-    public static Matrix computeMatrix(DoubleToMatrix f, double x, double y) {
-        Matrix[][] r = f.computeMatrix(new double[]{x}, new double[]{y}, null, null);
+    public static ComplexMatrix computeMatrix(DoubleToMatrix f, double x, double y) {
+        ComplexMatrix[][] r = f.computeMatrix(new double[]{x}, new double[]{y}, null, null);
         return r[0][0];
     }
 
-    public static Matrix[][] computeMatrixFromComplex(DoubleToComplex f, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][] computeMatrixFromComplex(DoubleToComplex f, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Complex[][] c = f.computeComplex(x, y, d0, ranges);
         ExpressionsDebug.debug_check(c,ranges);
-        Matrix[][] t = new Matrix[c.length][c.length == 0 ? 0 : c[0].length];
+        ComplexMatrix[][] t = new ComplexMatrix[c.length][c.length == 0 ? 0 : c[0].length];
         for (int i = 0; i < t.length; i++) {
             for (int j = 0; j < t[i].length; j++) {
-                t[i][j] = Maths.constantMatrix(1, c[i][j]);
+                t[i][j] = MathsBase.constantMatrix(1, c[i][j]);
             }
         }
         return t;
     }
 
-    public static Matrix[] computeMatrix(DoubleToMatrix f, double[] x, double y, Domain d0, Out<Range> ranges) {
-        Matrix[][] r = f.computeMatrix(x, new double[]{y}, d0, ranges);
+    public static ComplexMatrix[] computeMatrix(DoubleToMatrix f, double[] x, double y, Domain d0, Out<Range> ranges) {
+        ComplexMatrix[][] r = f.computeMatrix(x, new double[]{y}, d0, ranges);
         return r[0];
     }
 
-    public static Matrix[] computeMatrix(DoubleToMatrix f, double x, double[] y, Domain d0, Out<Range> ranges) {
-        Matrix[][] r = f.computeMatrix(new double[]{x}, y, d0, ranges);
-        Matrix[] v = new Matrix[y.length];
+    public static ComplexMatrix[] computeMatrix(DoubleToMatrix f, double x, double[] y, Domain d0, Out<Range> ranges) {
+        ComplexMatrix[][] r = f.computeMatrix(new double[]{x}, y, d0, ranges);
+        ComplexMatrix[] v = new ComplexMatrix[y.length];
         for (int i = 0; i < v.length; i++) {
             v[i] = r[i][0];
         }
         return v;
     }
 
-    //    public DCxy getSymmetricX() {
-    //        return new DCxy(real.getSymmetricX(), imag.getSymmetricX());
+    //    public DD2DC getSymmetricX() {
+    //        return new DD2DC(real.getSymmetricX(), imag.getSymmetricX());
     //    }
     //
-    //    public DCxy getSymmetricY() {
-    //        return new DCxy(real.getSymmetricY(), imag.getSymmetricY());
+    //    public DD2DC getSymmetricY() {
+    //        return new DD2DC(real.getSymmetricY(), imag.getSymmetricY());
     //    }
     //
-    //    public DCxy translate(double deltaX, double deltaY) {
-    //        return new DCxy(real.translate(deltaX, deltaY), imag.translate(deltaX, deltaY));
+    //    public DD2DC translate(double deltaX, double deltaY) {
+    //        return new DD2DC(real.translate(deltaX, deltaY), imag.translate(deltaX, deltaY));
     //    }
     public static DoubleToDouble[] getReal(DoubleToComplex[] fct) {
         DoubleToDouble[] f = new DoubleToDouble[fct.length];
@@ -347,8 +347,8 @@ public class Expressions {
         return f;
     }
 
-    //    public DCxy multiply(double factor, DomainXY newDomain) {
-    //        return new DCxy(real.multiply(factor, newDomain), imag.multiply(factor, newDomain));
+    //    public DD2DC multiply(double factor, DomainXY newDomain) {
+    //        return new DD2DC(real.multiply(factor, newDomain), imag.multiply(factor, newDomain));
     //    }
     public static DoubleToDouble[] getImag(DoubleToComplex[] fct) {
         DoubleToDouble[] f = new DoubleToDouble[fct.length];
@@ -364,16 +364,16 @@ public class Expressions {
         DoubleToComplex[] f = new DoubleToComplex[fct.length];
         int maxi = fct.length;
         for (int i = 0; i < maxi; i++) {
-            f[i] = Maths.complex(fct[i]);
+            f[i] = MathsBase.complex(fct[i]);
         }
         return f;
     }
 
 //    public static IDoubleToComplex[] toComplex(IDDx[] fct) {
-//        DCxy[] f = new DCxy[fct.length];
+//        DD2DC[] f = new DD2DC[fct.length];
 //        int maxi = fct.length;
 //        for (int i = 0; i < maxi; i++) {
-//            f[i] = new DCxy(fct[i]);
+//            f[i] = new DD2DC(fct[i]);
 //        }
 //        return f;
 //    }
@@ -461,9 +461,9 @@ public class Expressions {
 
         Complex computeComplex(Complex x, BooleanMarker defined);
 
-        Matrix computeMatrix(Matrix x);
+        ComplexMatrix computeMatrix(ComplexMatrix x);
 
-        Vector computeVector(Vector x);
+        ComplexVector computeVector(ComplexVector x);
     }
 
     public static double[] computeDouble(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> range) {
@@ -590,7 +590,7 @@ public class Expressions {
     }
 
 
-    public static Matrix[] computeMatrix(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[] computeMatrix(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x);
         if (r != null) {
@@ -598,12 +598,12 @@ public class Expressions {
             r.setDefined(def0);
 
             Out<Range> r2 = new Out<Range>();
-            Matrix[] ret = h.getBaseExpr(base).toDM().computeMatrix(x, d0, r2);
+            ComplexMatrix[] ret = h.getBaseExpr(base).toDM().computeMatrix(x, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 BooleanArray1 def2 = d2.getDefined1();
                 ComponentDimension d = base.getComponentDimension();
-                Matrix z = Maths.zerosMatrix(d.rows, d.columns);
+                ComplexMatrix z = MathsBase.zerosMatrix(d.rows, d.columns);
                 for (int k = d2.xmin; k <= d2.xmax; k++) {
                     if (def2 != null && def2.get(k)) {
                         ret[k] = h.computeMatrix(ret[k]);
@@ -622,8 +622,8 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Matrix z = Maths.zerosMatrix(d.rows, d.columns);
-            Matrix[] ret = ArrayUtils.fillArray1Matrix(x.length, z);
+            ComplexMatrix z = MathsBase.zerosMatrix(d.rows, d.columns);
+            ComplexMatrix[] ret = ArrayUtils.fillArray1Matrix(x.length, z);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -631,7 +631,7 @@ public class Expressions {
         }
     }
 
-    public static Vector[] computeVector(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[] computeVector(Expr base, UnaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x);
         if (r != null) {
@@ -639,12 +639,12 @@ public class Expressions {
             r.setDefined(def0);
 
             Out<Range> r2 = new Out<Range>();
-            Vector[] ret = h.getBaseExpr(base).toDV().computeVector(x, d0, r2);
+            ComplexVector[] ret = h.getBaseExpr(base).toDV().computeVector(x, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 BooleanArray1 def2 = d2.getDefined1();
                 ComponentDimension d = base.getComponentDimension();
-                Vector z = Maths.zerosColumnVector(d.rows);
+                ComplexVector z = MathsBase.zerosColumnVector(d.rows);
                 for (int k = d2.xmin; k <= d2.xmax; k++) {
                     if (def2 != null && def2.get(k)) {
                         ret[k] = h.computeVector(ret[k]);
@@ -663,8 +663,8 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Vector z = Maths.zerosColumnVector(d.rows);
-            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, z);
+            ComplexVector z = MathsBase.zerosColumnVector(d.rows);
+            ComplexVector[] ret = ArrayUtils.fillArray1Vector(x.length, z);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -672,18 +672,18 @@ public class Expressions {
         }
     }
 
-    public static Matrix[][] computeMatrix(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][] computeMatrix(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x, y);
         if (r != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r.setDefined(def0);
             Out<Range> r2 = new Out<Range>();
-            Matrix[][] ret = h.getBaseExpr(base).toDM().computeMatrix(x, y, d0, r2);
+            ComplexMatrix[][] ret = h.getBaseExpr(base).toDM().computeMatrix(x, y, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 ComponentDimension d = base.getComponentDimension();
-                Matrix z = Maths.zerosMatrix(d.rows, d.columns);
+                ComplexMatrix z = MathsBase.zerosMatrix(d.rows, d.columns);
                 BooleanArray2 def2 = d2.getDefined2();
                 for (int j = d2.ymin; j <= d2.ymax; j++) {
                     for (int k = d2.xmin; k <= d2.xmax; k++) {
@@ -706,26 +706,26 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Matrix z = Maths.zerosMatrix(d.rows, d.columns);
-            Matrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, z);
+            ComplexMatrix z = MathsBase.zerosMatrix(d.rows, d.columns);
+            ComplexMatrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, z);
             if (ranges != null) {
                 ranges.set(null);
             }
             return ret;
         }
     }
-    public static Vector[][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x, y);
         if (r != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r.setDefined(def0);
             Out<Range> r2 = new Out<Range>();
-            Vector[][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, d0, r2);
+            ComplexVector[][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 ComponentDimension d = base.getComponentDimension();
-                Vector z = Maths.zerosColumnVector(d.rows);
+                ComplexVector z = MathsBase.zerosColumnVector(d.rows);
                 BooleanArray2 def2 = d2.getDefined2();
                 for (int j = d2.ymin; j <= d2.ymax; j++) {
                     for (int k = d2.xmin; k <= d2.xmax; k++) {
@@ -748,8 +748,8 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Vector z = Maths.zerosColumnVector(d.rows);
-            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, z);
+            ComplexVector z = MathsBase.zerosColumnVector(d.rows);
+            ComplexVector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, z);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -757,7 +757,7 @@ public class Expressions {
         }
     }
 
-    public static Matrix[][][] computeMatrix(Expr base, UnaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][][] computeMatrix(Expr base, UnaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x, y, z);
         if (r != null) {
@@ -765,11 +765,11 @@ public class Expressions {
             r.setDefined(def0);
 
             Out<Range> r2 = new Out<Range>();
-            Matrix[][][] ret = h.getBaseExpr(base).toDM().computeMatrix(x, y, z, d0, r2);
+            ComplexMatrix[][][] ret = h.getBaseExpr(base).toDM().computeMatrix(x, y, z, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 ComponentDimension d = base.getComponentDimension();
-                Matrix zeros = Maths.zerosMatrix(d.rows, d.columns);
+                ComplexMatrix zeros = MathsBase.zerosMatrix(d.rows, d.columns);
                 BooleanArray3 def2 = d2.getDefined3();
                 for (int t = d2.zmin; t <= d2.zmax; t++) {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
@@ -794,8 +794,8 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Matrix zeros = Maths.zerosMatrix(d.rows, d.columns);
-            Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zeros);
+            ComplexMatrix zeros = MathsBase.zerosMatrix(d.rows, d.columns);
+            ComplexMatrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zeros);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -803,7 +803,7 @@ public class Expressions {
         }
     }
 
-    public static Vector[][][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][][] computeVector(Expr base, UnaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         Domain domainXY = base.getDomain();
         Range r = Domain.range(domainXY, d0, x, y, z);
         if (r != null) {
@@ -811,11 +811,11 @@ public class Expressions {
             r.setDefined(def0);
 
             Out<Range> r2 = new Out<Range>();
-            Vector[][][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, z, d0, r2);
+            ComplexVector[][][] ret = h.getBaseExpr(base).toDV().computeVector(x, y, z, d0, r2);
             Range d2 = r2.get();
             if (d2 != null) {
                 ComponentDimension d = base.getComponentDimension();
-                Vector zeros = Maths.zerosColumnVector(d.rows);
+                ComplexVector zeros = MathsBase.zerosColumnVector(d.rows);
                 BooleanArray3 def2 = d2.getDefined3();
                 for (int t = d2.zmin; t <= d2.zmax; t++) {
                     for (int j = d2.ymin; j <= d2.ymax; j++) {
@@ -840,8 +840,8 @@ public class Expressions {
             return ret;
         } else {
             ComponentDimension d = base.getComponentDimension();
-            Vector zeros = Maths.zerosColumnVector(d.rows);
-            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zeros);
+            ComplexVector zeros = MathsBase.zerosColumnVector(d.rows);
+            ComplexVector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zeros);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -990,9 +990,9 @@ public class Expressions {
 
         Complex computeComplex(Complex a, Complex b, BooleanMarker defined, ComputeDefOptions options);
 
-        Matrix computeMatrix(Matrix a, Matrix b, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
+        ComplexMatrix computeMatrix(ComplexMatrix a, ComplexMatrix b, ComplexMatrix zero, BooleanMarker defined, ComputeDefOptions options);
 
-        Vector computeVector(Vector a, Vector b, Vector zero, BooleanMarker defined, ComputeDefOptions options);
+        ComplexVector computeVector(ComplexVector a, ComplexVector b, ComplexVector zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public interface TernaryExprHelper<T extends Expr> {
@@ -1002,9 +1002,9 @@ public class Expressions {
 
         Complex computeComplex(Complex a, Complex b, Complex c, BooleanMarker defined, ComputeDefOptions options);
 
-        Matrix computeMatrix(Matrix a, Matrix b, Matrix c, Matrix zero, BooleanMarker defined, ComputeDefOptions options);
+        ComplexMatrix computeMatrix(ComplexMatrix a, ComplexMatrix b, ComplexMatrix c, ComplexMatrix zero, BooleanMarker defined, ComputeDefOptions options);
 
-        Vector computeVector(Vector a, Vector b, Vector c, Vector zero, BooleanMarker defined, ComputeDefOptions options);
+        ComplexVector computeVector(ComplexVector a, ComplexVector b, ComplexVector c, ComplexVector zero, BooleanMarker defined, ComputeDefOptions options);
     }
 
     public static final class ComputeDefOptions {
@@ -1711,19 +1711,19 @@ public class Expressions {
 
 //------------------------------------------------------------------------------------------------------------------
 
-    public static Matrix[] computeMatrix(Expr base, BinaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[] computeMatrix(Expr base, BinaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray1 def0 = BooleanArrays.newArray(x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Matrix[] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, d0, r1);
+            ComplexMatrix[] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray1 def1 = d1.getDefined1();
@@ -1731,7 +1731,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Matrix[] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, d0, r2);
+                ComplexMatrix[] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray1 def2 = d2.getDefined1();
@@ -1757,7 +1757,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[] ret = ArrayUtils.fillArray1Matrix(x.length, zero);
+            ComplexMatrix[] ret = ArrayUtils.fillArray1Matrix(x.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1765,19 +1765,19 @@ public class Expressions {
         }
     }
 
-    public static Vector[] computeVector(Expr base, BinaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[] computeVector(Expr base, BinaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosColumnVector(d.rows);
+        ComplexVector zero = MathsBase.zerosColumnVector(d.rows);
         if (r0 != null) {
             BooleanArray1 def0 = BooleanArrays.newArray(x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Vector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
+            ComplexVector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray1 def1 = d1.getDefined1();
@@ -1785,7 +1785,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Vector[] val = h.getBaseExpr(base, ii).toDV().computeVector(x, d0, r2);
+                ComplexVector[] val = h.getBaseExpr(base, ii).toDV().computeVector(x, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray1 def2 = d2.getDefined1();
@@ -1811,7 +1811,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
+            ComplexVector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1819,18 +1819,18 @@ public class Expressions {
         }
     }
 
-    public static Matrix[] computeMatrix(Expr base, TernaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[] computeMatrix(Expr base, TernaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray1 def0 = BooleanArrays.newArray(x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Matrix[] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, d0, r1);
+            ComplexMatrix[] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray1 def1 = d1.getDefined1();
@@ -1838,11 +1838,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Matrix[] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, d0, r2);
+            ComplexMatrix[] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Matrix[] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, d0, r3);
+            ComplexMatrix[] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, d0, r3);
             Range d3 = r3.get();
 
             BooleanArray1 def2 = d2 == null ? null : d2.getDefined1();
@@ -1860,7 +1860,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[] ret = ArrayUtils.fillArray1Matrix(x.length, zero);
+            ComplexMatrix[] ret = ArrayUtils.fillArray1Matrix(x.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1868,18 +1868,18 @@ public class Expressions {
         }
     }
 
-    public static Vector[] computeVector(Expr base, TernaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[] computeVector(Expr base, TernaryExprHelper h, double[] x, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosVector(d.rows);
+        ComplexVector zero = MathsBase.zerosVector(d.rows);
         if (r0 != null) {
             BooleanArray1 def0 = BooleanArrays.newArray(x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Vector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
+            ComplexVector[] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray1 def1 = d1.getDefined1();
@@ -1887,11 +1887,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Vector[] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, d0, r2);
+            ComplexVector[] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Vector[] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, d0, r3);
+            ComplexVector[] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, d0, r3);
             Range d3 = r3.get();
 
             BooleanArray1 def2 = d2 == null ? null : d2.getDefined1();
@@ -1909,7 +1909,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
+            ComplexVector[] ret = ArrayUtils.fillArray1Vector(x.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1917,19 +1917,19 @@ public class Expressions {
         }
     }
 
-    public static Matrix[][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Matrix[][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, d0, r1);
+            ComplexMatrix[][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -1942,7 +1942,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Matrix[][] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, y, d0, r2);
+                ComplexMatrix[][] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, y, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray2 def2 = d2.getDefined2();
@@ -1972,7 +1972,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, zero);
+            ComplexMatrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -1980,19 +1980,19 @@ public class Expressions {
         }
     }
 
-    public static Vector[][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosVector(d.rows);
+        ComplexVector zero = MathsBase.zerosVector(d.rows);
         if (r0 != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Vector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
+            ComplexVector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -2005,7 +2005,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Vector[][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, d0, r2);
+                ComplexVector[][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray2 def2 = d2.getDefined2();
@@ -2035,7 +2035,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
+            ComplexVector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2043,18 +2043,18 @@ public class Expressions {
         }
     }
 
-    public static Matrix[][] computeMatrix(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][] computeMatrix(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Matrix[][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, d0, r1);
+            ComplexMatrix[][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -2062,11 +2062,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Matrix[][] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, y, d0, r2);
+            ComplexMatrix[][] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, y, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Matrix[][] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, y, d0, r3);
+            ComplexMatrix[][] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, y, d0, r3);
             Range d3 = r2.get();
 
 
@@ -2087,7 +2087,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, zero);
+            ComplexMatrix[][] ret = ArrayUtils.fillArray2Matrix(x.length, y.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2096,18 +2096,18 @@ public class Expressions {
     }
 
 
-    public static Vector[][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosVector(d.rows);
+        ComplexVector zero = MathsBase.zerosVector(d.rows);
         if (r0 != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Vector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
+            ComplexVector[][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray2 def1 = d1.getDefined2();
@@ -2115,11 +2115,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Vector[][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, d0, r2);
+            ComplexVector[][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Vector[][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, d0, r3);
+            ComplexVector[][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, d0, r3);
             Range d3 = r2.get();
 
 
@@ -2140,7 +2140,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
+            ComplexVector[][] ret = ArrayUtils.fillArray2Vector(x.length, y.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2149,19 +2149,19 @@ public class Expressions {
     }
 
 
-    public static Matrix[][][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][][] computeMatrix(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y, z);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Matrix[][][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, z, d0, r1);
+            ComplexMatrix[][][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, z, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray3 def1 = d1.getDefined3();
@@ -2176,7 +2176,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Matrix[][][] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, y, z, d0, r2);
+                ComplexMatrix[][][] val = h.getBaseExpr(base, ii).toDM().computeMatrix(x, y, z, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray3 def2 = d2.getDefined3();
@@ -2210,7 +2210,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
+            ComplexMatrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2218,19 +2218,19 @@ public class Expressions {
         }
     }
 
-    public static Vector[][][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][][] computeVector(Expr base, BinaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y, z);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosVector(d.rows);
+        ComplexVector zero = MathsBase.zerosVector(d.rows);
         if (r0 != null) {
             BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
             int count = h.getBaseExprCount(base);
-            Vector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
+            ComplexVector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray3 def1 = d1.getDefined3();
@@ -2245,7 +2245,7 @@ public class Expressions {
             }
             for (int ii = 1; ii < count; ii++) {
                 Out<Range> r2 = new Out<Range>();
-                Vector[][][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, z, d0, r2);
+                ComplexVector[][][] val = h.getBaseExpr(base, ii).toDV().computeVector(x, y, z, d0, r2);
                 Range d2 = r2.get();
                 if (d2 != null) {
                     BooleanArray3 def2 = d2.getDefined3();
@@ -2279,7 +2279,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
+            ComplexVector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2288,18 +2288,18 @@ public class Expressions {
     }
 
 
-    public static Matrix[][][] computeMatrix(Expr base, TernaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexMatrix[][][] computeMatrix(Expr base, TernaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y, z);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Matrix zero = Maths.zerosMatrix(d.rows, d.columns);
+        ComplexMatrix zero = MathsBase.zerosMatrix(d.rows, d.columns);
         if (r0 != null) {
             BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Matrix[][][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, z, d0, r1);
+            ComplexMatrix[][][] ret1 = h.getBaseExpr(base, 0).toDM().computeMatrix(x, y, z, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray3 def1 = d1.getDefined3();
@@ -2307,11 +2307,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Matrix[][][] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, y, z, d0, r2);
+            ComplexMatrix[][][] ret2 = h.getBaseExpr(base, 1).toDM().computeMatrix(x, y, z, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Matrix[][][] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, y, z, d0, r3);
+            ComplexMatrix[][][] ret3 = h.getBaseExpr(base, 2).toDM().computeMatrix(x, y, z, d0, r3);
             Range d3 = r3.get();
 
             BooleanArray3 def2 = d2.getDefined3();
@@ -2335,7 +2335,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Matrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
+            ComplexMatrix[][][] ret = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }
@@ -2343,18 +2343,18 @@ public class Expressions {
         }
     }
 
-    public static Vector[][][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public static ComplexVector[][][] computeVector(Expr base, TernaryExprHelper h, double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         d0 = base.getDomain().intersect(d0);
         Range r0 = d0.range(x, y, z);
         ComputeDefOptions o = new ComputeDefOptions();
         ComponentDimension d = base.getComponentDimension();
-        Vector zero = Maths.zerosVector(d.rows);
+        ComplexVector zero = MathsBase.zerosVector(d.rows);
         if (r0 != null) {
             BooleanArray3 def0 = BooleanArrays.newArray(z.length, y.length, x.length);
             r0.setDefined(def0);
 
             Out<Range> r1 = new Out<Range>();
-            Vector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
+            ComplexVector[][][] ret1 = h.getBaseExpr(base, 0).toDV().computeVector(x, y, z, d0, r1);
             Range d1 = r1.get();
             if (d1 != null) {
                 BooleanArray3 def1 = d1.getDefined3();
@@ -2362,11 +2362,11 @@ public class Expressions {
             }
 
             Out<Range> r2 = new Out<Range>();
-            Vector[][][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, z, d0, r2);
+            ComplexVector[][][] ret2 = h.getBaseExpr(base, 1).toDV().computeVector(x, y, z, d0, r2);
             Range d2 = r2.get();
 
             Out<Range> r3 = new Out<Range>();
-            Vector[][][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, z, d0, r3);
+            ComplexVector[][][] ret3 = h.getBaseExpr(base, 2).toDV().computeVector(x, y, z, d0, r3);
             Range d3 = r3.get();
 
             BooleanArray3 def2 = d2.getDefined3();
@@ -2390,7 +2390,7 @@ public class Expressions {
             }
             return ret1;
         } else {
-            Vector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
+            ComplexVector[][][] ret = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, zero);
             if (ranges != null) {
                 ranges.set(null);
             }

@@ -9,7 +9,7 @@ import net.vpc.common.mon.ProgressMonitor;
 import java.util.Collection;
 import net.vpc.scholar.hadruwaves.mom.project.*;
 import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
-import net.vpc.scholar.hadrumaths.Matrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.mom.MomCache;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
@@ -28,17 +28,17 @@ public interface MomStrHelper {
 
     void checkBuildIsRequired() throws RequiredRebuildException;
 
-    public Matrix computeTestcoeff(ProgressMonitor monitor);
+    public ComplexMatrix computeTestcoeff(ProgressMonitor monitor);
 
-    public Matrix computeZin(final ProgressMonitor monitor);
+    public ComplexMatrix computeZin(final ProgressMonitor monitor);
 
-    public Matrix computeCapacity(final ProgressMonitor monitor);
+    public ComplexMatrix computeCapacity(final ProgressMonitor monitor);
 
-    public Matrix computeS(ProgressMonitor monitor);
+    public ComplexMatrix computeS(ProgressMonitor monitor);
 
-    public Matrix computeAMatrix(final ProgressMonitor monitor);
+    public ComplexMatrix computeAMatrix(final ProgressMonitor monitor);
 
-    public Matrix computeBMatrix(final ProgressMonitor monitor);
+    public ComplexMatrix computeBMatrix(final ProgressMonitor monitor);
 
     public VDiscrete computeTestField(double[] x, double[] y, final ProgressMonitor monitor);
 

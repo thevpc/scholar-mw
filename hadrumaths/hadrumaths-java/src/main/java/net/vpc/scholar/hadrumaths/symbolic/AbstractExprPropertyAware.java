@@ -77,7 +77,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     public Expr clone() {
         AbstractExprPropertyAware clone = (AbstractExprPropertyAware) super.clone();
 //        if (properties != null) {
-//            clone.properties = new HashMap<String, Object>(Maths.max(1,properties.size()));
+//            clone.properties = new HashMap<String, Object>(MathsBase.max(1,properties.size()));
 //            for (Map.Entry<String, Object> e : properties.entrySet()) {
 //                Object v = null;
 ////                    if(e.getValue()!=null && e.getValue() instanceof Cloneable){
@@ -92,20 +92,9 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
+    public Expr compose(Axis axis,Expr xreplacement) {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        throw new UnsupportedOperationException();
-    }
-
-//    @Override
-//    public Expr setTitle(String title) {
-//        getProperties().put("title", title);
-//        return this;
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -311,7 +300,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public final boolean isScalarExpr() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return isScalarExprImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_isScalarExpr)) {
@@ -323,7 +312,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     }
 
     public final boolean hasParams() {
-        if (!Maths.Config.isCacheExpressionPropertiesEnabled()) {
+        if (!MathsBase.Config.isCacheExpressionPropertiesEnabled()) {
             return hasParamsImpl();
         }
         if (!_cache_is_evaluated(CACHE_EVALUATED_hasPrams)) {
@@ -343,7 +332,7 @@ public abstract class AbstractExprPropertyAware extends AbstractExpBase {
     public Domain getDomain() {
         return getDomainImpl();
 //        protected Domain _cache_domain;
-//        if(!Maths.Config.isCacheEnabled()){
+//        if(!MathsBase.Config.isCacheEnabled()){
 //            return getDomainImpl();
 //        }
 //        if( _cache_domain==null){

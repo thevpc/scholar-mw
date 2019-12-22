@@ -1,165 +1,174 @@
 package net.vpc.scholar.hadruplot;
 
-import net.vpc.common.util.BooleanHolder;
-import net.vpc.common.util.DoubleHolder;
-import net.vpc.common.util.IntegerHolder;
+import net.vpc.common.util.ClassMap;
+import net.vpc.common.util.Converter;
+import net.vpc.scholar.hadruplot.console.PlotManager;
 
-import java.awt.*;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
+//    private static class DoubleABSAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleABSAction(PlotModelProvider modelProvider) {
+//            super("Abs", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.ABS);
+//        }
+//    }
+//
+//    private static class DoubleREALAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleREALAction(PlotModelProvider modelProvider) {
+//            super("Real", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.REAL);
+//        }
+//    }
+//
+//    private static class DoubleIMAGAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleIMAGAction(PlotModelProvider modelProvider) {
+//            super("Imag", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.IMG);
+//        }
+//    }
+//
+//    private static class DoubleDBAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleDBAction(PlotModelProvider modelProvider) {
+//            super("DB", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.DB);
+//        }
+//    }
+//
+//    private static class DoubleDB2Action extends ValuesModelAction implements Serializable {
+//
+//        public DoubleDB2Action(PlotModelProvider modelProvider) {
+//            super("DB2", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.DB2);
+//        }
+//    }
+//
+//    private static class DoubleArgAction extends ValuesModelAction implements Serializable {
+//
+//        public DoubleArgAction(PlotModelProvider modelProvider) {
+//            super("Arg", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.ARG);
+//        }
+//    }
+//
+//    private static class ComplexAction extends ValuesModelAction implements Serializable {
+//
+//        public ComplexAction(PlotModelProvider modelProvider) {
+//            super("Complex", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setConverter(PlotDoubleConverter.COMPLEX);
+//        }
+//    }
+//    private static class PlotCourbeAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotCourbeAction(PlotModelProvider modelProvider) {
+//            super("Curves", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.CURVE);
+//        }
+//    }
+//
+//    private static class PlotHeatMapAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotHeatMapAction(PlotModelProvider modelProvider) {
+//            super("Heat Map", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.HEATMAP);
+//        }
+//    }
+//
+//    private static class PlotTableAction extends ValuesModelAction implements Serializable {
+//
+//        public PlotTableAction(PlotModelProvider modelProvider) {
+//            super("Table", modelProvider);
+//        }
+//
+//
+//        public void actionPerformed(ActionEvent e) {
+//            getModel().setPlotType(PlotType.TABLE);
+//        }
+//    }
 public class PlotConfig {
-    public PlotConfigLineStepType lineStepType;
-    public BooleanHolder showLegend = new BooleanHolder();
-    public IntegerHolder maxLegendCount = new IntegerHolder();
-    public BooleanHolder showTooltips = new BooleanHolder();
-    public BooleanHolder nodeLabel = new BooleanHolder();
-    public BooleanHolder threeD = new BooleanHolder();
-    public BooleanHolder alternateColor = new BooleanHolder();
-    public BooleanHolder alternateNode = new BooleanHolder();
-    public BooleanHolder alternateLine = new BooleanHolder();
-    public BooleanHolder clockwise = new BooleanHolder();
-    public DoubleHolder polarAngleOffset = new DoubleHolder();
 
-    public Color color;
-    public IntegerHolder lineType = new IntegerHolder();
-    public IntegerHolder nodeType = new IntegerHolder();
-    public BooleanHolder shapesVisible = new BooleanHolder();
-    public BooleanHolder lineVisible = new BooleanHolder();
-    public BooleanHolder shapesFilled = new BooleanHolder();
-    public DoubleHolder xmultiplier = new DoubleHolder();
-    public DoubleHolder ymultiplier = new DoubleHolder();
-    public DoubleHolder defaultXMultiplier = new DoubleHolder();
+    private int maxLegendCount = 20;
+    private String defaultWindowTitle = "Hadrumaths Plot";
+    private ClassMap<Converter> objectConverters = new ClassMap<Converter>(Object.class, Converter.class);
+    private PlotManager manager = null;
 
-    public List<PlotConfig> children = new ArrayList<>();
-
-    public PlotConfig copy() {
-        PlotConfig other = new PlotConfig();
-        for (Field field : getClass().getDeclaredFields()) {
-            if (field.getType().equals(IntegerHolder.class)) {
-                IntegerHolder h = null;
-                IntegerHolder m = null;
-                try {
-                    h = (IntegerHolder) field.get(other);
-                    m = (IntegerHolder) field.get(this);
-                    h.set(m.get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else if (field.getType().equals(BooleanHolder.class)) {
-                BooleanHolder h = null;
-                BooleanHolder  m = null;
-                try {
-                    h = (BooleanHolder) field.get(other);
-                    m = (BooleanHolder) field.get(this);
-                    h.set(m.get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else if (field.getType().equals(DoubleHolder.class)) {
-                DoubleHolder h = null;
-                DoubleHolder  m = null;
-                try {
-                    h = (DoubleHolder) field.get(other);
-                    m = (DoubleHolder) field.get(this);
-                    h.set(m.get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else if (field.getName().equals("children")) {
-                //do nothing...
-            }else{
-                try {
-                    field.set(other,field.get(this));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        other.children = new ArrayList<>();
-        for (PlotConfig child : children) {
-            other.children.add(child.copy());
-        }
-        return other;
+    public PlotManager getManager() {
+        return manager;
     }
 
-    public double getDefaultXMultiplier(double val) {
-        return defaultXMultiplier.get(val);
+    public void setManager(PlotManager manager) {
+        this.manager = manager;
     }
 
-    public double getXMultiplier(double val) {
-        return xmultiplier.get(val);
+    public   int getMaxLegendCount() {
+        return maxLegendCount;
     }
 
-    public double getYMultiplier(double val) {
-        return ymultiplier.get(val);
+    public   void setMaxLegendCount(int maxLegendCount) {
+        this.maxLegendCount = maxLegendCount;
     }
 
-    public double getXMultiplierAt(int index, double val) {
-        if (index < children.size()) {
-            children.get(index).getXMultiplier(val);
-        }
-        return val;
+    public   String getDefaultWindowTitle() {
+        return defaultWindowTitle;
     }
 
-    public double getYMultiplierAt(int index, double val) {
-        if (index < children.size()) {
-            children.get(index).getYMultiplier(val);
-        }
-        return ymultiplier.get(val);
+    public   void setDefaultWindowTitle(String defaultWindowTitle) {
+        this.defaultWindowTitle = defaultWindowTitle;
     }
 
-    public PlotConfig getOrCreate(int index) {
-        ensureChildrenSize(index + 1);
-        return children.get(index);
+    public   Object convert(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Converter converter = objectConverters.get(object.getClass());
+        if (converter != null) {
+            return converter.convert(object);
+        }
+        return object;
     }
 
-    public void ensureChildrenSize(int length) {
-        while (children.size() < length) {
-            children.add(new PlotConfig());
-        }
-        while (children.size() > length) {
-            children.remove(children.size() - 1);
-        }
+    public   void registerConverter(Class cls, Converter converter) {
+        objectConverters.put(cls, converter);
     }
 
-    public static PlotConfig copy(PlotConfig config) {
-        if (config == null) {
-            config = new PlotConfig();
-        } else {
-            config = config.copy();
-        }
-        return config;
-    }
-
-    public PlotConfig validate(int size) {
-        PlotConfig config = this;
-
-        if (config.clockwise == null) {
-            //config.clockwise = true;
-        }
-        if (config.polarAngleOffset == null) {
-            //config.polarAngleOffset = 0;
-        }
-
-        config.ensureChildrenSize(size);
-        for (int i = 0; i < config.children.size(); i++) {
-            PlotConfig lineConfig = config.children.get(i);
-            lineConfig.xmultiplier.setIfNull(1.0);
-            lineConfig.ymultiplier.setIfNull(1.0);
-        }
-        config.showLegend.setIfNull(true);
-        config.maxLegendCount.setIfNull(Plot.Config.getMaxLegendCount());
-        config.showTooltips.setIfNull(true);
-        config.alternateColor.setIfNull(true);
-        config.alternateNode.setIfNull(false);
-        config.alternateLine.setIfNull(false);
-        if (config.lineStepType == null) {
-            config.lineStepType = PlotConfigLineStepType.DEFAULT;
-        }
-        config.threeD.setIfNull(false);
-        config.nodeLabel.setIfNull(false);
-        return config;
+    public   void unregisterConverter(Class cls) {
+        objectConverters.remove(cls);
     }
 }

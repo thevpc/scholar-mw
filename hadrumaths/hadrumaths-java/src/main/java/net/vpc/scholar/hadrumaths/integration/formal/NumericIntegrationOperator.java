@@ -40,14 +40,14 @@ public class NumericIntegrationOperator extends AbstractIntegrationOperator {
                 return 0;
             }
             if (subExpressions.size() == 1) {
-                return delegateNumericProductOperator.evalDD(domain, subExpressions.get(0).toDD(), Maths.expr(domain));
+                return delegateNumericProductOperator.evalDD(domain, subExpressions.get(0).toDD(), MathsBase.expr(domain));
             }
             if (subExpressions.size() == 2) {
                 return delegateNumericProductOperator.evalDD(domain,
                         subExpressions.get(0).toDD(),
                         subExpressions.get(1).toDD());
             }
-            TVector<Expr> others = new ExprArrayList(true, subExpressions.size());
+            TVector<Expr> others = new ArrayExprVector(true, subExpressions.size());
             for (int i = 1; i < subExpressions.size(); i++) {
                 others.add(subExpressions.get(i));
             }
@@ -61,10 +61,10 @@ public class NumericIntegrationOperator extends AbstractIntegrationOperator {
             return ret;
         } else {
             if (delegateScalarProductOperator.isSupported(f1opt.getClass(), DoubleValue.class, 1)) {
-                return delegateScalarProductOperator.evalDD(f1opt.toDD(), Maths.expr(domain));
+                return delegateScalarProductOperator.evalDD(f1opt.toDD(), MathsBase.expr(domain));
             }
         }
-        return delegateNumericProductOperator.evalDD(domain, f1opt, Maths.expr(domain));
+        return delegateNumericProductOperator.evalDD(domain, f1opt, MathsBase.expr(domain));
     }
 
     public String dump() {

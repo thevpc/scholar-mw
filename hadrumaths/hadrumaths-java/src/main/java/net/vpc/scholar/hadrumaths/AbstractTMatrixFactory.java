@@ -198,48 +198,18 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 
     @Override
     public TMatrix<T> newColumnMatrix(final T... values) {
-        return newColumnMatrix(values.length, new TVectorCell<T>() {
-            @Override
-            public T get(int index) {
-                return values[index];
-            }
-        });
+        return newColumnMatrix(values.length, TMatrixCells.vectorForArray(values));
     }
 
     @Override
     public TMatrix<T> newRowMatrix(final T... values) {
-        return newRowMatrix(values.length, new TVectorCell<T>() {
-            @Override
-            public T get(int index) {
-                return values[index];
-            }
-        });
+        return newRowMatrix(values.length, TMatrixCells.vectorForArray(values));
     }
 
 
-//    @Override
-//    public TMatrix<T> newSymmetric(int rows, int cols, TMatrixCell<T> cellFactory) {
-//        return newMatrix(rows, cols, CellIteratorType.SYMETRIC, cellFactory);
-//    }
-//
-//    @Override
-//    public TMatrix<T> newHermitian(int rows, int cols, TMatrixCell<T> cellFactory) {
-//        return newMatrix(rows, cols, CellIteratorType.HERMITIAN, cellFactory);
-//    }
-//
-//    @Override
-//    public TMatrix<T> newDiagonal(int rows, int cols, TMatrixCell<T> cellFactory) {
-//        return newMatrix(rows, cols, CellIteratorType.DIAGONAL, cellFactory);
-//    }
-
     @Override
     public TMatrix<T> newDiagonal(final T... c) {
-        return newMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return c[row];
-            }
-        });
+        return newDiagonal(c.length,TMatrixCells.vectorForArray(c));
     }
 
 //    @Override
@@ -267,7 +237,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, Maths.random(), 0.0);
+//                A.set(i, j, MathsBase.random(), 0.0);
 //            }
 //        }
 //        return A;
@@ -278,7 +248,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, (((int) (Maths.random() * (max - min))) + min), 0);
+//                A.set(i, j, (((int) (MathsBase.random() * (max - min))) + min), 0);
 //            }
 //        }
 //        return A;
@@ -289,7 +259,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, (Maths.random() * (max - min) + min), 0);
+//                A.set(i, j, (MathsBase.random() * (max - min) + min), 0);
 //            }
 //        }
 //        return A;
@@ -300,7 +270,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, 0, (Maths.random() * (max - min) + min));
+//                A.set(i, j, 0, (MathsBase.random() * (max - min) + min));
 //            }
 //        }
 //        return A;
@@ -311,7 +281,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, 0, (((int) (Maths.random() * (max - min))) + min));
+//                A.set(i, j, 0, (((int) (MathsBase.random() * (max - min))) + min));
 //            }
 //        }
 //        return A;
@@ -322,8 +292,8 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, ((int) (Maths.random() * (maxReal - minReal))) + minReal,
-//                        ((int) (Maths.random() * (maxImag - minImag))) + minImag);
+//                A.set(i, j, ((int) (MathsBase.random() * (maxReal - minReal))) + minReal,
+//                        ((int) (MathsBase.random() * (maxImag - minImag))) + minImag);
 //            }
 //        }
 //        return A;
@@ -334,7 +304,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, Maths.random() * (maxReal - minReal) + minReal, Maths.random() * (maxImag - minImag) + minImag);
+//                A.set(i, j, MathsBase.random() * (maxReal - minReal) + minReal, MathsBase.random() * (maxImag - minImag) + minImag);
 //            }
 //        }
 //        return A;
@@ -345,7 +315,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, Maths.random() * (max - min) + min, Maths.random() * (max - min) + min);
+//                A.set(i, j, MathsBase.random() * (max - min) + min, MathsBase.random() * (max - min) + min);
 //            }
 //        }
 //        return A;
@@ -356,8 +326,8 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, ((int) (Maths.random() * (max - min))) + min,
-//                        ((int) (Maths.random() * (max - min))) + min);
+//                A.set(i, j, ((int) (MathsBase.random() * (max - min))) + min,
+//                        ((int) (MathsBase.random() * (max - min))) + min);
 //            }
 //        }
 //        return A;
@@ -368,7 +338,7 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //        TMatrix<T> A = newMatrix(m, n);
 //        for (int i = 0; i < m; i++) {
 //            for (int j = 0; j < n; j++) {
-//                A.set(i, j, T.I(Maths.random()));
+//                A.set(i, j, T.I(MathsBase.random()));
 //            }
 //        }
 //        return A;
@@ -548,73 +518,48 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 
     @Override
     public TMatrix<T> newHermitian(int rows, int cols, TMatrixCell<T> cellFactory) {
-        return newMatrix(rows, cols, CellIteratorType.HERMITIAN, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newMatrix(rows, cols, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    @Override
-    public TMatrix<T> newDiagonal(int rows, int cols, TMatrixCell<T> cellFactory) {
-        return newMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
-    }
+//    @Override
+//    public TMatrix<T> newDiagonal(int rows, int cols, TMatrixCell<T> cellFactory) {
+//        return newMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
+//            @Override
+//            public T get(int row, int column) {
+//                return cellFactory.get(row, column);
+//            }
+//        });
+//    }
 
     @Override
     public TMatrix<T> newDiagonal(int rows, TVectorCell<T> cellFactory) {
-        return newMatrix(rows, rows, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row);
-            }
-        });
+        return newMatrix(rows, rows, CellIteratorType.DIAGONAL, TMatrixCells.columnForVector(cellFactory));
     }
 
     @Override
     public TMatrix<T> newMatrix(int dim, TMatrixCell<T> cellFactory) {
-        return newMatrix(dim, dim, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newMatrix(dim, dim, CellIteratorType.FULL, cellFactory);
     }
 
     @Override
     public TMatrix<T> newSymmetric(int dim, TMatrixCell<T> cellFactory) {
-        return newMatrix(dim, dim, CellIteratorType.SYMETRIC, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newMatrix(dim, dim, CellIteratorType.SYMETRIC, cellFactory);
     }
 
     @Override
     public TMatrix<T> newHermitian(int dim, TMatrixCell<T> cellFactory) {
-        return newMatrix(dim, dim, CellIteratorType.HERMITIAN, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newMatrix(dim, dim, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    @Override
-    public TMatrix<T> newDiagonal(int dim, TMatrixCell<T> cellFactory) {
-        return newMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
-    }
+//    @Override
+//    public TMatrix<T> newDiagonal(int dim, TMatrixCell<T> cellFactory) {
+//        return newMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
+//            @Override
+//            public T get(int row, int column) {
+//                return cellFactory.get(row, column);
+//            }
+//        });
+//    }
 
 
     @Override
@@ -665,94 +610,59 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 
     @Override
     public TMatrix<T> newImmutableColumnMatrix(int rows, TVectorCell<T> cellFactory) {
-        return newImmutableMatrix(rows, 1, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row);
-            }
-        });
+        return newImmutableMatrix(rows, 1, CellIteratorType.FULL, TMatrixCells.columnForVector(cellFactory));
     }
 
 
     @Override
     public TMatrix<T> newImmutableSymmetric(int rows, int cols, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(rows, cols, CellIteratorType.SYMETRIC, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newImmutableMatrix(rows, cols, CellIteratorType.SYMETRIC, cellFactory);
     }
 
     @Override
     public TMatrix<T> newImmutableHermitian(int rows, int cols, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(rows, cols, CellIteratorType.HERMITIAN, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newImmutableMatrix(rows, cols, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    @Override
-    public TMatrix<T> newImmutableDiagonal(int rows, int cols, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
-    }
+//    @Override
+//    public TMatrix<T> newImmutableDiagonal(int rows, int cols, TMatrixCell<T> cellFactory) {
+//        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
+//            @Override
+//            public T get(int row, int column) {
+//                return cellFactory.get(row, column);
+//            }
+//        });
+//    }
 
     @Override
     public TMatrix<T> newImmutableDiagonal(int rows, TVectorCell<T> cellFactory) {
-        return newImmutableMatrix(rows, rows, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row);
-            }
-        });
+        return newImmutableMatrix(rows, rows, CellIteratorType.DIAGONAL, TMatrixCells.columnForVector(cellFactory));
     }
 
     @Override
     public TMatrix<T> newImmutableMatrix(int dim, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(dim, dim, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newImmutableMatrix(dim, dim, CellIteratorType.FULL, cellFactory);
     }
 
     @Override
     public TMatrix<T> newImmutableSymmetric(int dim, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(dim, dim, CellIteratorType.SYMETRIC, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newImmutableMatrix(dim, dim, CellIteratorType.SYMETRIC, cellFactory);
     }
 
     @Override
     public TMatrix<T> newImmutableHermitian(int dim, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(dim, dim, CellIteratorType.HERMITIAN, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
+        return newImmutableMatrix(dim, dim, CellIteratorType.HERMITIAN, cellFactory);
     }
 
-    @Override
-    public TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory) {
-        return newImmutableMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row, column);
-            }
-        });
-    }
+//    @Override
+//    public TMatrix<T> newImmutableDiagonal(int dim, TMatrixCell<T> cellFactory) {
+//        return newImmutableMatrix(dim, dim, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
+//            @Override
+//            public T get(int row, int column) {
+//                return cellFactory.get(row, column);
+//            }
+//        });
+//    }
 
     @Override
     public TMatrix<T> newImmutableIdentity(int dim) {
@@ -761,32 +671,18 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 
     @Override
     public TMatrix<T> newImmutableColumnMatrix(final T... values) {
-        return newImmutableMatrix(values.length, 1, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return values[row];
-            }
-        });
+
+        return newImmutableMatrix(values.length, 1, CellIteratorType.FULL, TMatrixCells.columnForArray(values));
     }
 
     @Override
     public TMatrix<T> newImmutableRowMatrix(int columns, TVectorCell<T> cellFactory) {
-        return newImmutableMatrix(1, columns, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return cellFactory.get(row);
-            }
-        });
+        return newImmutableMatrix(1, columns, CellIteratorType.FULL, TMatrixCells.rowForVector(cellFactory));
     }
 
     @Override
     public TMatrix<T> newImmutableRowMatrix(final T... values) {
-        return newImmutableMatrix(1, values.length, CellIteratorType.FULL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return values[row];
-            }
-        });
+        return newImmutableMatrix(1, values.length, CellIteratorType.FULL,TMatrixCells.rowForArray(values));
     }
 
 
@@ -820,23 +716,14 @@ public abstract class AbstractTMatrixFactory<T> implements TMatrixFactory<T> {
 //    }
 
     @Override
-    public TMatrix<T> newImmutableDiagonal(T... c) {
-        return newImmutableMatrix(c.length, c.length, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return c[row];
-            }
-        });
+    public TMatrix<T> newImmutableDiagonal(T... values) {
+        return newImmutableMatrix(values.length, values.length, CellIteratorType.DIAGONAL, TMatrixCells.columnForArray(values));
     }
 
     @Override
     public TMatrix<T> newImmutableIdentity(int rows, int cols) {
-        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL, new TMatrixCell<T>() {
-            @Override
-            public T get(int row, int column) {
-                return vs.one();
-            }
-        });
+        return newImmutableMatrix(rows, cols, CellIteratorType.DIAGONAL,TMatrixCells.matrixForConstant(vs.one()));
     }
+
 
 }

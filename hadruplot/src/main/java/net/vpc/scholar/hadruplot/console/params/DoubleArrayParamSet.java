@@ -6,7 +6,7 @@ import net.vpc.common.util.ArrayUtils;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2005 10:23:32
  */
-public class DoubleArrayParamSet extends ParamSet implements Cloneable {
+public class DoubleArrayParamSet extends ParamSet<Double> implements Cloneable {
     private double[] values;
     private int index = -1;
 

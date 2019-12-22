@@ -21,7 +21,7 @@ import net.vpc.scholar.hadruwaves.util.Impedance;
 public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
     public static final MatrixAPlanarSerialEvaluator INSTANCE = new MatrixAPlanarSerialEvaluator();
 
-    public Matrix evaluate(MomStructure str, ProgressMonitor monitor) {
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.getTestFunctions();
         final DoubleToVector[] _g = gpTestFunctions.arr();
         final Complex[][] b = new Complex[_g.length][_g.length];

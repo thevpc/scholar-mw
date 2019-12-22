@@ -6,7 +6,7 @@
 //package net.vpc.scholar.math.eval.canonicalrules;
 //
 //import net.vpc.scholar.math.Expr;
-//import net.vpc.scholar.math.Maths;
+//import net.vpc.scholar.math.MathsBase;
 //import net.vpc.scholar.math.functions.Cos;
 //import net.vpc.scholar.math.functions.Domain;
 //import net.vpc.scholar.math.functions.FunctionFactory;
@@ -37,7 +37,7 @@
 //
 //        DDxCos ee = (DDxCos) e;
 //        Domain domainxy = Domain.toDomainXY(ee.getDomain());
-//        return Maths.mul(new Cos(new Linear(ee.getA(), 0, ee.getB(), domainxy)), FunctionFactory.cst(ee.getAmp(), domainxy));
+//        return MathsBase.mul(new Cos(new Linear(ee.getA(), 0, ee.getB(), domainxy)), FunctionFactory.cst(ee.getAmp(), domainxy));
 //    }
 //    @Override
 //    public int hashCode() {

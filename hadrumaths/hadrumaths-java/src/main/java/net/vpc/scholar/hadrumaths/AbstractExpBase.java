@@ -11,6 +11,11 @@ public abstract class AbstractExpBase implements Expr {
     private static final long serialVersionUID = 1L;
 
     @Override
+    public String dump() {
+        return toString();
+    }
+
+    @Override
     public Integer getIntProperty(String name) {
         Number property = (Number) getProperty(name);
         return property == null ? null : property.intValue();
@@ -111,6 +116,11 @@ public abstract class AbstractExpBase implements Expr {
     }
 
     @Override
+    public Expr title(String name) {
+        return setTitle(name);
+    }
+
+    @Override
     public Expr setParam(ParamExpr paramExpr, double value) {
         return setParam(paramExpr.getParamName(), value);
     }
@@ -171,7 +181,7 @@ public abstract class AbstractExpBase implements Expr {
     }
 
 //    public Expr mul(double other) {
-//        return Maths.mul(this, other);
+//        return MathsBase.mul(this, other);
 //    }
 
     public Expr mul(Expr other) {
@@ -230,7 +240,7 @@ public abstract class AbstractExpBase implements Expr {
     }
 
 //    public Expr mul(Domain domain) {
-////        return mul(Maths.expr(domain));
+////        return mul(MathsBase.expr(domain));
 //        return mul((Expr)domain);
 //    }
 
@@ -315,14 +325,18 @@ public abstract class AbstractExpBase implements Expr {
         return s == null ? Collections.EMPTY_SET : s;
     }
 
-    @Override
-    public Object prop(String name) {
-        return getProperty(name);
-    }
 
     @Override
-    public Expr simplify() {
-        return MathsBase.simplify(this);
+    public Expr simplify(SimplifyOptions options) {
+        if(options==null){
+            options=SimplifyOptions.DEFAULT;
+        }
+        String t = getTitle();
+        Expr o = ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(this);
+        if(options.isPreserveRootName() && t!=null){
+            return o.setTitle(t);
+        }
+        return o;
     }
 
     @Override

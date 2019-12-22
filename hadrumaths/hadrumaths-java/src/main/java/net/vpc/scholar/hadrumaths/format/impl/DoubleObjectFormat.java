@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
@@ -38,7 +38,7 @@ public class DoubleObjectFormat implements ObjectFormat<Double> {
         }
         if (df != null) {
             sb.append(df.getFormat().format(o));
-        } else if (!_float && Maths.isInt(o)) {
+        } else if (!_float && MathsBase.isInt(o)) {
             sb.append(o.intValue());
         } else {
             sb.append(o.doubleValue());

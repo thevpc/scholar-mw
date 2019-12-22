@@ -379,7 +379,7 @@ public class BooleanArrays {
 ////        b.index()
 //        for (int i = 0; i < a.length; i++) {
 //            for (int j = 0; j < a[i].length; j++) {
-//                    boolean v = Maths.randomBoolean();
+//                    boolean v = MathsBase.randomBoolean();
 //                    a[i][j] = v;
 //                    b.set(i,j,v);
 //            }

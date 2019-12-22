@@ -9,23 +9,23 @@ public class DefaultExprSequenceFactory<T extends Expr> extends AbstractExprSequ
     public static final ExprSequenceFactory INSTANCE = new DefaultExprSequenceFactory();
 
     @Override
-    public TList<T> newSequence(final int size, final TVectorCell<T> it) {
+    public TVector<T> newSequence(final int size, final TVectorCell<T> it) {
         return newPreloadedSequence(size, it);
     }
 
     @Override
-    public TList<T> newPreloadedSequence(final int size, final TVectorCell<T> it) {
+    public TVector<T> newPreloadedSequence(final int size, final TVectorCell<T> it) {
 
         return new PreloadedList(getComponentType(), false, size, it);
     }
 
     @Override
-    public TList<T> newUnmodifiableSequence(final int size, final TVectorCell<T> it) {
+    public TVector<T> newUnmodifiableSequence(final int size, final TVectorCell<T> it) {
         return new UnmodifiableList(getComponentType(), false, size, it);
     }
 
     @Override
-    public TList<T> newCachedSequence(final int size, final TVectorCell<T> it) {
+    public TVector<T> newCachedSequence(final int size, final TVectorCell<T> it) {
         final Expr[] cache = new Expr[size];
         return new CachedList(getComponentType(), false, size, cache, it);
     }

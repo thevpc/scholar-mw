@@ -151,7 +151,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, Maths.zerosMatrix(1));
+//            Matrix[][][] cc = ArrayUtils.fillArray3Matrix(x.length, y.length, z.length, MathsBase.zerosMatrix(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -180,7 +180,7 @@ public class ZZ extends AxisFunction implements Cloneable {
 //            }
 //            return cc;
 //        } else {
-//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, Maths.zerosVector(1));
+//            Vector[][][] cc = ArrayUtils.fillArray3Vector(x.length, y.length, z.length, MathsBase.zerosVector(1));
 //            if (ranges != null) {
 //                ranges.set(null);
 //            }
@@ -223,12 +223,12 @@ public class ZZ extends AxisFunction implements Cloneable {
     }
 
     //@Override
-    public Matrix computeMatrix(double x, double y, double z, BooleanMarker defined) {
+    public ComplexMatrix computeMatrix(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             defined.set();
             return Complex.valueOf(z).toMatrix();
         }
-        return Maths.identityMatrix(1);
+        return MathsBase.identityMatrix(1);
     }
 
 

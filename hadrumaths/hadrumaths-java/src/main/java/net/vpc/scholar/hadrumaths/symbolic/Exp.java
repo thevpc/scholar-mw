@@ -24,7 +24,7 @@ public class Exp extends GenericFunctionX implements Cloneable {
 
     public double computeDoubleArg(double c, BooleanMarker defined) {
         defined.set();
-        return Maths.exp(c);
+        return MathsBase.exp(c);
     }
 
     @Override

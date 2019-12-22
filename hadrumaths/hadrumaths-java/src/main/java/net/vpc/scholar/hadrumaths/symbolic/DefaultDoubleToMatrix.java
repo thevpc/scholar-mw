@@ -4,7 +4,7 @@
 //
 //import java.util.*;
 //
-//import static net.vpc.scholar.hadrumaths.Maths.CZERO;
+//import static net.vpc.scholar.hadrumaths.MathsBase.CZERO;
 //
 ///**
 // * User: taha Date: 2 juil. 2003 Time: 16:42:35
@@ -23,19 +23,19 @@
 ////    }
 ////
 ////    public VDCxy(String name, IDoubleToDouble fx, IDoubleToDouble fy) {
-////        this(name, new DCxy(fx), new DCxy(fy), null);
+////        this(name, new DD2DC(fx), new DD2DC(fy), null);
 ////    }
 ////
 ////    public VDCxy(String name, IDoubleToDouble fx, IDoubleToComplex fy) {
-////        this(name, new DCxy(fx), fy, null);
+////        this(name, new DD2DC(fx), fy, null);
 ////    }
 ////
 ////    public VDCxy(String name, IDoubleToComplex fx, IDoubleToDouble fy) {
-////        this(name, fx, new DCxy(fy), null);
+////        this(name, fx, new DD2DC(fy), null);
 ////    }
 ////
 ////    public VDCxy(IDoubleToDouble fx, IDoubleToDouble fy) {
-////        this(null, fx == null ? null : new DCxy(fx), fy == null ? null : new DCxy(fy), null);
+////        this(null, fx == null ? null : new DD2DC(fx), fy == null ? null : new DD2DC(fy), null);
 ////    }
 ////
 ////    public VDCxy(String name, IDoubleToComplex fx, IDoubleToComplex fy) {
@@ -75,7 +75,7 @@
 //
 //    @Deprecated
 //    public static DoubleToVector add(DoubleToVector one, DoubleToVector another) {
-//        DoubleToVector vector2D = Maths.vector(Maths.sum(one.getComponent(Axis.X), another.getComponent(Axis.X)), Maths.sum(one.getComponent(Axis.Y), another.getComponent(Axis.Y)));
+//        DoubleToVector vector2D = MathsBase.vector(MathsBase.sum(one.getComponent(Axis.X), another.getComponent(Axis.X)), MathsBase.sum(one.getComponent(Axis.Y), another.getComponent(Axis.Y)));
 //        HashMap<String, Object> map = new HashMap<String, Object>();
 //        TreeSet<String> k = new TreeSet<String>();
 //        if (one.hasProperties()) {
@@ -166,11 +166,11 @@
 ////    }
 //
 //    public Complex scalarProduct(boolean hemitian, DoubleToVector other) {
-//        return Maths.scalarProduct(this, other);
+//        return MathsBase.scalarProduct(this, other);
 //    }
 //
 //    public DoubleToVector add(DoubleToVector other) {
-//        DoubleToVector vector2D = Maths.vector(Maths.sum(getComponent(Axis.X), other.getComponent(Axis.X)), Maths.sum(getComponent(Axis.Y), other.getComponent(Axis.Y)));
+//        DoubleToVector vector2D = MathsBase.vector(MathsBase.sum(getComponent(Axis.X), other.getComponent(Axis.X)), MathsBase.sum(getComponent(Axis.Y), other.getComponent(Axis.Y)));
 //        HashMap<String, Object> map = new HashMap<String, Object>();
 //        TreeSet<String> k = new TreeSet<String>();
 //        if (this.hasProperties()) {
@@ -238,7 +238,7 @@
 //            updated[i] = s2;
 //        }
 //        if (changed) {
-//            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
+//            Expr e = MathsBase.vector(updated[0].toDC(), updated[0].toDC());
 //            e = Any.copyProperties(this, e);
 //            return Any.updateTitleVars(e, name, value);
 //        }
@@ -258,7 +258,7 @@
 //            updated[i] = s2;
 //        }
 //        if (changed) {
-//            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
+//            Expr e = MathsBase.vector(updated[0].toDC(), updated[0].toDC());
 //            e = Any.copyProperties(this, e);
 //            return e;
 //        }
@@ -278,7 +278,7 @@
 //            updated[i] = s2;
 //        }
 //        if (changed) {
-//            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
+//            Expr e = MathsBase.vector(updated[0].toDC(), updated[0].toDC());
 //            e = Any.copyProperties(this, e);
 //            return e;
 //        }

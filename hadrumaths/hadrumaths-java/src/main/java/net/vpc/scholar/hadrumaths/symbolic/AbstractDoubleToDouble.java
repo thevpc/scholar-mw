@@ -49,7 +49,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     }
 
     public DoubleToDouble add(DoubleToDouble... others) {
-        return Maths.sum(this, Maths.sum(others)).toDD();
+        return MathsBase.sum(this, MathsBase.sum(others)).toDD();
     }
 
     public DoubleToDouble getSymmetricX(Domain newDomain) {
@@ -82,7 +82,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 //            return new DDxyProduct(this, other);
 //        }
 //    }
-    public DoubleToDouble simplify() {
+    public DoubleToDouble simplify(SimplifyOptions options) {
         return this;
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
     }
 
     public DoubleToComplex toDC() {
-        return Maths.complex(this);
+        return MathsBase.complex(this);
     }
 
     public boolean isDDImpl() {
@@ -249,7 +249,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
 
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         return toComplex().toMatrix();
     }
 
@@ -293,7 +293,7 @@ public abstract class AbstractDoubleToDouble extends AbstractExprPropertyAware i
         return helper.computeComplex(x,y,z, d0, ranges);
     }
 
-    public Matrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+    public ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
         return helper.computeMatrix(x,y,z, d0, ranges);
     }
 

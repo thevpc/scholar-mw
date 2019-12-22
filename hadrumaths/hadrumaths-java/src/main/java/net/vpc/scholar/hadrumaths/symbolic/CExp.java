@@ -7,7 +7,7 @@ import java.lang.Double;
 import java.util.Collections;
 import java.util.List;
 
-import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.vpc.scholar.hadrumaths.MathsBase.*;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 11:51:13
@@ -244,17 +244,12 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
 
     private Expr toCanonical() {
         //amp*exp(iax)*exp(iby)
-        return Maths.mul(exp(Maths.mul(X, î, expr(a))), exp(Maths.mul(Y, î, expr(b))), amp);
+        return MathsBase.mul(exp(MathsBase.mul(X, î, expr(a))), exp(MathsBase.mul(Y, î, expr(b))), amp);
     }
 
     @Override
-    public Expr composeX(Expr xreplacement) {
-        return toCanonical().composeX(xreplacement);
-    }
-
-    @Override
-    public Expr composeY(Expr yreplacement) {
-        return toCanonical().composeY(yreplacement);
+    public Expr compose(Axis axis,Expr xreplacement) {
+        return toCanonical().compose(axis,xreplacement);
     }
 
     @Override
@@ -287,7 +282,7 @@ public class CExp extends AbstractDoubleToComplex implements Cloneable {
     }
 
     @Override
-    public Matrix toMatrix() {
+    public ComplexMatrix toMatrix() {
         throw new ClassCastException();
     }
 

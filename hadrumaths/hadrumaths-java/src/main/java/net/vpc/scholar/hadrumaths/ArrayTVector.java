@@ -1,48 +1,45 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.TypeName;
-import net.vpc.scholar.hadrumaths.util.ArrayUtils;
+import net.vpc.scholar.hadrumaths.symbolic.TParam;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
- * Created by vpc on 4/11/16.
+ * Created by vpc on 5/7/14.
  */
-public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable {
+public class ArrayTVector<T> extends AbstractTVector<T> {
+
     private static final long serialVersionUID = 1L;
-    private T[] elements;
-    private transient VectorSpace<T> componentVectorSpace;
+
+    private ArrayList<T> values;
     private TypeName<T> componentType;
 
-    public ArrayTVector(TVector<T> other) throws IOException {
-        super(other.isRow());
-        this.componentType = other.getComponentType();
-        this.componentVectorSpace = other.getComponentVectorSpace();
-        elements = ArrayUtils.newArray(this.componentType, other.size());
-        System.arraycopy(other.toArray(), 0, elements, 0, elements.length);
-    }
-
-    public ArrayTVector(VectorSpace<T> vectorSpace, T[] elements, boolean row) {
+    //    public ArrayTList(Class<T> componentType) {
+//
+//    }
+    public ArrayTVector(TypeName<T> componentType, boolean row, int initialSize) {
         super(row);
-        this.elements = elements;
-        this.componentVectorSpace = vectorSpace;
-        this.componentType = componentVectorSpace.getItemType();
+        this.componentType = componentType;
+        if(componentType==null){
+            throw new NullPointerException("Null Component type");
+        }
+        values = new ArrayList<T>(initialSize);
     }
 
-    public ArrayTVector(File file) throws IOException {
-        super(false);
-        read(file);
+    public ArrayTVector(TypeName<T> componentType, boolean row, T[] values) {
+        this(componentType, row, values.length);
+        appendAll(Arrays.asList(values));
     }
-
-    public static <T> TVector<T> Row(VectorSpace<T> vectorSpace, T[] elements) {
-        return new ArrayTVector<T>(vectorSpace, elements, true);
-    }
-
-    public static <T> TVector<T> Column(VectorSpace<T> vectorSpace, T[] elements) {
-        return new ArrayTVector<T>(vectorSpace, elements, false);
+    public ArrayTVector(TypeName<T> componentType, boolean row, TVectorModel<T> values) {
+        this(componentType, row, values.size());
+        int s=values.size();
+        for (int i = 0; i < s; i++) {
+            append(values.get(i));
+        }
     }
 
     @Override
@@ -51,90 +48,176 @@ public class ArrayTVector<T> extends AbstractTVector<T> implements Serializable 
     }
 
     @Override
-    public TVector<T> transpose() {
-        T[] elements0 = ArrayUtils.newArray(getComponentType(), size());
-        System.arraycopy(elements, 0, elements0, 0, elements0.length);
-        return new ArrayTVector<T>(getComponentVectorSpace(), elements0, !isRow());
+    public <P extends T> P[] toArray(P[] a) {
+        return values.toArray(a);
     }
 
+    public TVector<T> append(T e) {
+        values.add(e);
+        return this;
+    }
 
-    public TMatrix<T> toMatrix() {
-        if (rowType) {
-            T[] e2 = ArrayUtils.newArray(getComponentType(), elements.length);
-            System.arraycopy(elements, 0, e2, 0, e2.length);
-            return MathsBase.Config.getDefaultMatrixFactory(getComponentType()).newRowMatrix(e2);
-        } else {
-            return MathsBase.Config.getDefaultMatrixFactory(getComponentType()).newColumnMatrix(elements);
+    public TVector<T> appendAll(Collection<? extends T> e) {
+        values.addAll(e);
+        return this;
+    }
+
+    public TVector<T> appendAll(TVector<T> e) {
+        for (int i = 0; i < e.size(); i++) {
+            values.add(e.get(i));
         }
-    }
-
-    public T get(int i) {
-        return elements[i];
-    }
-
-    public void set(int i, T complex) {
-        elements[i] = complex;
-    }
-
-    public T[] toArray() {
-        return elements;
-    }
-
-    public int size() {
-        return elements.length;
-    }
-
-
-    public void read(File file) throws IOException {
-        TMatrix<T> m = MathsBase.loadTMatrix(getComponentType(), file);
-
-        elements = m.getColumnCount() == 0 ? m.getRow(0).toArray() : m.getColumn(0).toArray();
-        rowType = m.getColumnCount() == 0;
-    }
-
-    public void read(BufferedReader reader) throws IOException {
-        TMatrix<T> m = Maths.Config.getDefaultMatrixFactory(getComponentType()).newZeros(1, 1);
-        m.read(reader);
-        elements = m.getColumnCount() == 0 ? m.getRow(0).toArray() : m.getColumn(0).toArray();
-        rowType = m.getColumnCount() == 0;
-    }
-
-    public T scalarProduct(TVector<T> other) {
-        int max = Math.max(elements.length, other.size());
-        VectorSpace<T> space = getComponentVectorSpace();
-        T d = space.zero();
-        for (int i = 0; i < max; i++) {
-            d = space.add(d, space.mul(elements[i], other.get(i)));
-        }
-        return d;
-    }
-
-    public T scalarProductAll(TVector<T>... other) {
-        int max = elements.length;
-        for (TVector<T> v : other) {
-            int size = v.size();
-            if (size > max) {
-                max = size;
-            }
-        }
-        VectorSpace<T> space = getComponentVectorSpace();
-        T d = space.zero();
-        for (int i = 0; i < max; i++) {
-            T el = elements[i];
-            for (TVector<T> v : other) {
-                el = space.mul(el, v.get(i));
-            }
-            d = space.add(d, el);
-        }
-        return d;
+        return this;
     }
 
     @Override
-    public VectorSpace<T> getComponentVectorSpace() {
-        if (componentVectorSpace == null) {
-            componentVectorSpace = Maths.getVectorSpace(componentType);
+    public TVector<T> concat(TVector<T> e) {
+        ArrayTVector<T> v=new ArrayTVector<T>(componentType,
+                isRow(),
+                size()+(e==null?0:e.size())
+        );
+        v.appendAll(this);
+        if(e!=null) {
+            v.appendAll(e);
         }
-        return componentVectorSpace;
+        return v;
+    }
+
+    public TVector<T> append(int index, T e) {
+        values.add(index, e);
+        return this;
+    }
+
+    @Override
+    public TVector<T> set(int index, T e) {
+        values.set(index, e);
+        return this;
+    }
+
+    public TVector<T> removeLast() {
+        values.remove(values.size() - 1);
+        return this;
+    }
+
+    public TVector<T> removeFirst() {
+        values.remove(0);
+        return this;
+    }
+
+    public TVector<T> remove(T e) {
+        values.remove(e);
+        return this;
+    }
+
+    public void remove(int index) {
+        values.remove(index);
+    }
+
+    @Override
+    public T get(int index) {
+        return values.get(index);
+    }
+
+//    public Expr[] toExprArray() {
+//        return values.toArray(new Expr[values.size()]);
+//    }
+//
+//    public List<Complex> toComplexList() {
+//        if(!isComplex()){
+//            throw new ClassCastException();
+//        }
+//        return new ArrayList(values);
+//    }
+//
+//    public Complex[] toComplexArray() {
+//        Complex[] cc=new Complex[values.size()];
+//        for (int i = 0; i < cc.length; i++) {
+//            cc[i]=values.get(i).toComplex();
+//        }
+//        return cc;
+//    }
+//
+//    public List<Double> toDoubleList() {
+//        if(!isDouble()){
+//            throw new ClassCastException();
+//        }
+//        List<Double> dval=new ArrayList<>(values.size());
+//        for (Expr value : values) {
+//            dval.add(value.toDouble());
+//        }
+//        return dval;
+//    }
+//
+//    public double[] toDoubleArray() {
+//        if(!isDouble()){
+//            throw new ClassCastException();
+//        }
+//        return ArrayUtils.exprListToDoubleArray((List<Expr>) values);
+//    }
+//
+//    public TList<T> rewrite(ExpressionRewriter r) {
+//        TList<T> next = newInstance();
+//        for (Expr e : this) {
+//            next.append((T) r.rewriteOrSame(e));
+//        }
+//        return next;
+//    }
+    public int size() {
+        return values.size();
+    }
+
+    public TVector<T> map(ElementOp<T> op) {
+        return this.eval(op);
+    }
+
+    public TVector<T> setParam(String name, Object value) {
+        TVector<T> other = MathsBase.list(getComponentType());
+        VectorSpace<T> cs = getComponentVectorSpace();
+        for (T e : this) {
+            other.append((T) cs.setParam(e, name, value));
+        }
+        return other;
+    }
+
+    public TVector<T> setParam(TParam paramExpr, Object value) {
+        return setParam(paramExpr.getParamName(), value);
+    }
+
+    public TVector<T> copy() {
+        TVector<T> other = MathsBase.list(getComponentType());
+        other.appendAll(this);
+        return other;
+    }
+
+    @Override
+    public String toString() {
+        return values.toString();
+    }
+
+    public void trimToSize() {
+        values.trimToSize();
+    }
+
+    @Override
+    public TVector<T> sort() {
+        Object[] vals = values.toArray();
+        Arrays.sort(vals);
+        return new ArrayTVector(componentType, isRow(), vals);
+    }
+
+    @Override
+    public TVector<T> removeDuplicates() {
+        Object[] vals = values.toArray();
+        Object[] vals2 = sort().toArray();
+        Object[] vals3 = new Object[vals.length];
+        int x = 0;
+        for (int i = 0; i < vals2.length; i++) {
+            Object val = vals2[i];
+            if (x == 0 || !PlatformUtils.equals(vals3[x - 1], val)) {
+                vals3[x] = val;
+                x++;
+            }
+        }
+        return new ArrayTVector(componentType, isRow(), vals3);
     }
 
 }

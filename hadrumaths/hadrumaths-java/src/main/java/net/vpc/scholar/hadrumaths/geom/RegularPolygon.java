@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         if (radius < 0 || Double.isInfinite(radius) || Double.isNaN(radius)) {
             throw new IllegalArgumentException("invalid radius " + radius);
         }
-        int max = (int) Maths.ceil(getValidArcRatio() * sides);
+        int max = (int) MathsBase.ceil(getValidArcRatio() * sides);
         if (max < 3) {
             throw new IllegalArgumentException("ratio too low " + arcRatio);
         }
@@ -95,10 +95,10 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
             max = sides - 1;
         }
         List<Point> all = new ArrayList<Point>();
-        double dblpi = 2 * Maths.PI;
+        double dblpi = 2 * MathsBase.PI;
         for (int i = 0; i <= max; i++) {
-            double x = center.x + radius * Maths.cos2(i * dblpi / sides + phase);
-            double y = center.y + radius * Maths.sin2(i * dblpi / sides + phase);
+            double x = center.x + radius * MathsBase.cos2(i * dblpi / sides + phase);
+            double y = center.y + radius * MathsBase.sin2(i * dblpi / sides + phase);
             all.add(Point.create(x, y));
         }
         return new Polygon(all.toArray(new Point[0]));

@@ -6,7 +6,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
@@ -52,11 +52,11 @@ public class ToCosXCosYRule implements ExpressionRewriterRule {
             Linear r = Linear.castOrConvert(t);
             if (r != null) {
                 if (r.getA() == 0) {
-                    return RewriteResult.newVal(new CosXCosY(1, 0, 0, r.getB(), r.getC() - Maths.PI / 2, (e).getDomain().intersect((t).getDomain())));
+                    return RewriteResult.newVal(new CosXCosY(1, 0, 0, r.getB(), r.getC() - MathsBase.PI / 2, (e).getDomain().intersect((t).getDomain())));
                 } else if (r.getB() == 0) {
-                    return RewriteResult.newVal(new CosXCosY(1, r.getA(), r.getC() - Maths.PI / 2, 0, 0, (e).getDomain().intersect((t).getDomain())));
+                    return RewriteResult.newVal(new CosXCosY(1, r.getA(), r.getC() - MathsBase.PI / 2, 0, 0, (e).getDomain().intersect((t).getDomain())));
                 } else {
-                    return RewriteResult.newVal(new CosXPlusY(1, r.getA(), r.getA(), r.getC() - Maths.PI / 2, (e).getDomain().intersect((t).getDomain())));
+                    return RewriteResult.newVal(new CosXPlusY(1, r.getA(), r.getA(), r.getC() - MathsBase.PI / 2, (e).getDomain().intersect((t).getDomain())));
                 }
             }
             if (rw.isRewritten()) {

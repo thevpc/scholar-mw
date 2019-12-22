@@ -1,7 +1,6 @@
 package net.vpc.scholar.mentoring.ch02_hadrumaths
 
 //these are Main Mandatory Imports
-import net.vpc.scholar.hadrumaths.Maths._
 import net.vpc.scholar.hadrumaths.MathScala._
 
 object T02_Complex extends App {

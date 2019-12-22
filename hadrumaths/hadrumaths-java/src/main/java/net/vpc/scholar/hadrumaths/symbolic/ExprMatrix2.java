@@ -1,20 +1,22 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.TMatrixCell;
 
 /**
  * Created by vpc on 2/14/15.
  */
-public interface ExprMatrix2 extends ExprCellIterator {
-    public int getColumnsDimension();
+@Deprecated
+public interface ExprMatrix2 extends TMatrixCell<Expr> {
+    int getColumnsDimension();
 
-    public int getRowsDimension();
+    int getRowsDimension();
 
-    public Expr apply(int row, int column);
+    Expr apply(int row, int column);
 
-    public Expr get(int row, int column);
+    Expr get(int row, int column);
 
-    public void set(Expr exp, int row, int col);
+    void set(Expr exp, int row, int col);
 
 
     /**
@@ -22,7 +24,7 @@ public interface ExprMatrix2 extends ExprCellIterator {
      *
      * @return
      */
-    public ExprMatrix2 preload();
+    ExprMatrix2 preload();
 
     /**
      * same as index, provided for scala compatibility
@@ -35,12 +37,12 @@ public interface ExprMatrix2 extends ExprCellIterator {
      *
      * @return
      */
-    public ExprMatrix2 withCache();
+    ExprMatrix2 withCache();
 
     /**
      * create a sequence of simplified elements
      *
      * @return
      */
-    public ExprMatrix2 simplify();
+    ExprMatrix2 simplify();
 }

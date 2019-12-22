@@ -53,6 +53,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 //    private Map<String, Object> properties = new HashMap<String, Object>();
     private JCheckBox autoUpdate = prepareStatusCheck(true, "auto", "auto update");
     private JCheckBox exclusive = prepareStatusCheck(false, "exclusive", "exclusive selection");
+    private JSpinner maxSelectionSpinner;
     //    private JCheckBox[] functionCheckBoxes;
     private JTextField yValueSliderText = new JTextField(10);
     private JSlider yValueSlider;
@@ -353,7 +354,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private static DoubleToVector[] convert(DoubleToComplex[] f) {
         DoubleToVector[] g = new DoubleToVector[f.length];
         for (int i = 0; i < g.length; i++) {
-            g[i] = Maths.vector(f[i], FunctionFactory.CZEROXY);
+            g[i] = MathsBase.vector(f[i], FunctionFactory.CZEROXY);
 //            g[i].setTitle(f[i].getName());
         }
         return g;
@@ -362,7 +363,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     private static DoubleToVector[] convert(DoubleToDouble[] f) {
         DoubleToVector[] g = new DoubleToVector[f.length];
         for (int i = 0; i < g.length; i++) {
-            g[i] = Maths.vector(f[i], FunctionFactory.CZEROXY);
+            g[i] = MathsBase.vector(f[i], FunctionFactory.CZEROXY);
 //            g[i].setTitle(f[i].getName());
         }
         return g;
@@ -482,7 +483,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     //    private static IVDCxy[] convert(DFunctionVector2D[] f) {
 //        IVDCxy[] g = new IVDCxy[f.length];
 //        for (int i = 0; i < g.length; i++) {
-//            g[i] = Maths.vector(f[i].fx, f[i].fy);
+//            g[i] = MathsBase.vector(f[i].fx, f[i].fy);
 //            g[i].setTitle(f[i].fx.getName() + ";" + f[i].fy.getName());
 //        }
 //        return g;
@@ -626,16 +627,34 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             aa.addAll(Arrays.asList(stacksRadioButton));
             Box h = Box.createHorizontalBox();
             h.add(new JLabel("Max Elements : "));
-            JSpinner spinner = new JSpinner(new SpinnerNumberModel(functionsTableModel.getMaxSelected(), 0, 8, 1));
-            spinner.addChangeListener(new ChangeListener() {
+            maxSelectionSpinner = new JSpinner(new SpinnerNumberModel(functionsTableModel.getMaxSelected(), 1, FunctionsXYTableModel.MAX_SELECTED_EXPRESSIONS, 1));
+            maxSelectionSpinner.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    JSpinner spinner = (JSpinner) e.getSource();
-                    functionsTableModel.setMaxSelected(((Integer) spinner.getValue()));
-                    updatePlotAsynch(true);
+                    if(exclusive.isSelected()){
+                        functionsTableModel.setMaxSelected(1);
+                        updatePlotAsynch(true);
+                    }else {
+                        Integer maxSelected = (Integer) maxSelectionSpinner.getValue();
+                        functionsTableModel.setMaxSelected(maxSelected);
+                        updatePlotAsynch(true);
+                    }
                 }
             });
-            h.add(spinner);
+            exclusive.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent ee) {
+                    if(exclusive.isSelected()){
+                        functionsTableModel.setMaxSelected(1);
+                        updatePlotAsynch(true);
+                    }else {
+                        Integer maxSelected = (Integer) maxSelectionSpinner.getValue();
+                        functionsTableModel.setMaxSelected(maxSelected);
+                        updatePlotAsynch(true);
+                    }
+                }
+            });
+            h.add(maxSelectionSpinner);
             aa.add(h);
             explodeStackPanel = PlotSwingUtils.createVerticalComponents("Layout", aa.toArray(new Component[0]));
         }
@@ -1069,8 +1088,8 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     public double[] resolveX() {
         Domain d = getDomainOrNull();
         if (baseSamples == null) {
-            return d == null ? Maths.dtimes(0, 99,getXPrecisionValue())
-                    : Maths.dtimes(d.xmin(), d.xmax(), getXPrecisionValue());
+            return d == null ? MathsBase.dtimes(0, 99,getXPrecisionValue())
+                    : MathsBase.dtimes(d.xmin(), d.xmax(), getXPrecisionValue());
         } else {
             if (d == null) {
                 if (baseSamples instanceof AbsoluteSamples) {
@@ -1105,7 +1124,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     public double[] resolveY() {
         Domain d = getDomainOrNull();
         if (baseSamples == null) {
-            return d == null ? new double[0] : Maths.dtimes(d.ymin(), d.ymax(), getYPrecisionValue());
+            return d == null ? new double[0] : MathsBase.dtimes(d.ymin(), d.ymax(), getYPrecisionValue());
         } else {
             if (d == null) {
                 if (baseSamples instanceof AbsoluteSamples) {
@@ -1242,7 +1261,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         int c = isqrt(axis.length);
 
         Domain d = getDomainOrNull();
-        double[] y = d == null ? new double[0] : Maths.dtimes(d.ymin(), d.ymax(), yPrecisionSlider.getValue());
+        double[] y = d == null ? new double[0] : MathsBase.dtimes(d.ymin(), d.ymax(), yPrecisionSlider.getValue());
         HashSet<String> title = new HashSet<String>();
         for (Exploded exp : exploded) {
             JPanel pp = new JPanel(new GridLayout(c, c));

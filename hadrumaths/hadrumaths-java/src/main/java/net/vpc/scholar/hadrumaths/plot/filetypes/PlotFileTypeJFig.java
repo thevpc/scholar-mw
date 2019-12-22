@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.plot.filetypes;
 import java.io.UncheckedIOException;
 import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
@@ -54,7 +54,7 @@ public class PlotFileTypeJFig implements PlotFileType {
             printStream.println();
             printStream.println(((model.getY() == null || model.getY().length == 0 || model.getY()[0] == null) ? ("y =" + lineSep) : (new DMatrix(model.getY()).toString(commentChar, "y"))) + endLine);
             printStream.println();
-            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (Maths.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
+            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (MathsBase.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
             printStream.println("title =" + (model.getTitle() == null ? "" : model.getTitle()) + endLine);
             printStream.println("xlabel =" + (model.getXtitle() == null ? "" : model.getXtitle()) + endLine);
             printStream.println("ylabel =" + (model.getYtitle() == null ? "" : model.getYtitle()) + endLine);
@@ -147,7 +147,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                                 }
                             }
                         }
-                        m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(Maths.matrix(sb.toString()).getArray()));
+                        m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(MathsBase.matrix(sb.toString()).getArray()));
                     } else if (line.startsWith("y =")) {
                         StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
                         if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
@@ -158,7 +158,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                                 }
                             }
                         }
-                        m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(Maths.matrix(sb.toString()).getArray()));
+                        m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(MathsBase.matrix(sb.toString()).getArray()));
                     } else if (line.startsWith("z =")) {
                         StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
                         if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
@@ -170,7 +170,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                             }
                         }
 
-                        m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
+                        m.setZ(sb.toString().trim().length() == 0 ? null : MathsBase.matrix(sb.toString()).getArray());
                     } else if (line.startsWith("title =")) {
                         m.setTitle(line.substring("title".length() + 2));
                     } else if (line.startsWith("name =")) {
