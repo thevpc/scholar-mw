@@ -9,6 +9,22 @@ public class MutableComplex {
     private double real;
     private double imag;
 
+    public MutableComplex() {
+
+    }
+
+    public MutableComplex(Complex c) {
+        this.real = c.getReal();
+        this.imag = c.getImag();
+        //DevUtils.run(this::debug_check);
+    }
+
+    public MutableComplex(double real, double imag) {
+        this.real = real;
+        this.imag = imag;
+        //DevUtils.run(this::debug_check);
+    }
+
     public static MutableComplex[] createArray(Complex value, int size) {
         MutableComplex[] arr = new MutableComplex[size];
         for (int i = 0; i < size; i++) {
@@ -48,6 +64,10 @@ public class MutableComplex {
 
     public static Complex toComplex(MutableComplex t) {
         return t.toComplex();
+    }
+
+    public Complex toComplex() {
+        return Complex.of(real, imag);
     }
 
     public static Complex toImmutable(MutableComplex t) {
@@ -94,11 +114,29 @@ public class MutableComplex {
         return all;
     }
 
-    public static MutableComplex toMutableComplex(Complex t) {
+    public static MutableComplex toMutable(Complex t) {
         return new MutableComplex(t);
     }
 
-    public static MutableComplex[] toMutableComplex(Complex[] t) {
+    public static MutableComplex[][][] toMutable(Complex[][][] t) {
+        MutableComplex[][][] all = new MutableComplex[t.length][][];
+        int size1 = all.length;
+        for (int i = 0; i < size1; i++) {
+            all[i] = toMutable(t[i]);
+        }
+        return all;
+    }
+
+    public static MutableComplex[][] toMutable(Complex[][] t) {
+        MutableComplex[][] all = new MutableComplex[t.length][];
+        int size1 = all.length;
+        for (int i = 0; i < size1; i++) {
+            all[i] = toMutable(t[i]);
+        }
+        return all;
+    }
+
+    public static MutableComplex[] toMutable(Complex[] t) {
         MutableComplex[] all = new MutableComplex[t.length];
         int size1 = all.length;
         for (int i = 0; i < size1; i++) {
@@ -108,25 +146,7 @@ public class MutableComplex {
         return all;
     }
 
-    public static MutableComplex[][] toMutableComplex(Complex[][] t) {
-        MutableComplex[][] all = new MutableComplex[t.length][];
-        int size1 = all.length;
-        for (int i = 0; i < size1; i++) {
-            all[i] = toMutableComplex(t[i]);
-        }
-        return all;
-    }
-
-    public static MutableComplex[][][] toMutableComplex(Complex[][][] t) {
-        MutableComplex[][][] all = new MutableComplex[t.length][][];
-        int size1 = all.length;
-        for (int i = 0; i < size1; i++) {
-            all[i] = toMutableComplex(t[i]);
-        }
-        return all;
-    }
-
-    public static MutableComplex forComplex(Complex c) {
+    public static MutableComplex of(Complex c) {
         return new MutableComplex(c);
     }
 
@@ -140,22 +160,6 @@ public class MutableComplex {
 
     public static MutableComplex I() {
         return new MutableComplex(0, 1);
-    }
-
-    public MutableComplex() {
-
-    }
-
-    public MutableComplex(Complex c) {
-        this.real = c.getReal();
-        this.imag = c.getImag();
-        //DevUtils.run(this::debug_check);
-    }
-
-    public MutableComplex(double real, double imag) {
-        this.real = real;
-        this.imag = imag;
-        //DevUtils.run(this::debug_check);
     }
 
     public void addProduct(Complex complex1, MutableComplex complex2) {
@@ -238,13 +242,6 @@ public class MutableComplex {
         //DevUtils.run(this::debug_check);
     }
 
-    public void mul(double real) {
-        this.real = this.real * real;
-        this.imag = this.imag * real;
-//        return this;
-        //DevUtils.run(this::debug_check);
-    }
-
 //    public void mul(double real,double imag){
 //        double a = this.real;
 //        double b = this.imag;
@@ -258,10 +255,6 @@ public class MutableComplex {
         mul(complex.real, complex.imag);
 //        return this;
         //DevUtils.run(this::debug_check);
-    }
-
-    public void mul(Complex complex) {
-        mul(complex.getReal(), complex.getImag());
     }
 
     public void mul(double r, double i) {
@@ -303,14 +296,11 @@ public class MutableComplex {
         //DevUtils.run(this::debug_check);
     }
 
-    //////////////////////////////////////
-
-    public void div(double real) {
-        this.real = this.real / real;
-        this.imag = this.imag / real;
-//        return this;
-        //DevUtils.run(this::debug_check);
+    public void mul(Complex complex) {
+        mul(complex.getReal(), complex.getImag());
     }
+
+    //////////////////////////////////////
 
     public void div(double real, double imag) {
         double a = this.real;
@@ -346,14 +336,13 @@ public class MutableComplex {
         //DevUtils.run(this::debug_check);
     }
 
-    ////////////////////////////////////////////
-
-
     public void add(double real) {
         this.real += real;
 //        return this;
         //DevUtils.run(this::debug_check);
     }
+
+    ////////////////////////////////////////////
 
     public void sub(Complex complex) {
         this.real -= complex.getReal();
@@ -400,26 +389,20 @@ public class MutableComplex {
 //        return this;
     }
 
+    public boolean isReal() {
+        return imag == 0;
+    }
+
+    public boolean isImag() {
+        return real == 0;
+    }
+
     public boolean isZero() {
         return real == 0 && imag == 0;
     }
 
-    public Complex toComplex() {
-        return Complex.valueOf(real, imag);
-    }
-
     public Complex toImmutable() {
-        return Complex.valueOf(real, imag);
-    }
-
-    public void exp() {
-        double e = MathsBase.exp(real);
-        double r = e * MathsBase.cos2(imag);
-        double i = e * MathsBase.sin2(this.imag);
-        this.real = r;
-        this.imag = i;
-        debug_check();
-//        return this;
+        return Complex.of(real, imag);
     }
 
     public void neg() {
@@ -464,21 +447,40 @@ public class MutableComplex {
         this.imag = 0;
     }
 
+    public boolean isNaN() {
+        return Double.isNaN(getReal()) || Double.isNaN(getImag());
+    }
+
+    public double getReal() {
+        return real;
+    }
+
+    public void setReal(double real) {
+        this.real = real;
+    }
+
+    public double getImag() {
+        return imag;
+    }
+
+    public void setImag(double imag) {
+        this.imag = imag;
+    }
+
+    public void setNaN() {
+        this.real = Double.NaN;
+        this.imag = Double.NaN;
+    }
+
     public void setOne() {
         this.real = 1;
         this.imag = 0;
     }
 
-    public void set(double real, double imag) {
-        this.real = real;
-        this.imag = imag;
-//        return this;
-    }
-
     public double sqrtDouble() {
         if (imag == 0) {
             if (real >= 0) {
-                return MathsBase.sqrt(real);
+                return Maths.sqrt(real);
             } else {
                 return Double.NaN;
             }
@@ -490,16 +492,36 @@ public class MutableComplex {
     public void sqrt() {
         if (imag == 0) {
             if (real >= 0) {
-                this.real = MathsBase.sqrt(real);
+                this.real = Maths.sqrt(real);
             } else {
-                set(0, MathsBase.sqrt(-real));
+                set(0, Maths.sqrt(-real));
             }
         } else {
-            double r = MathsBase.sqrt(abs());
+            double r = Maths.sqrt(abs());
             double theta = angle() / 2;
-            set(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
+            set(r * Maths.cos2(theta), r * Maths.sin2(theta));
         }
 //        return this;
+    }
+
+    public void set(double real, double imag) {
+        this.real = real;
+        this.imag = imag;
+//        return this;
+    }
+
+    public double abs() {
+        return Maths.sqrt(real * real + imag * imag);
+    }
+
+    public double angle() {
+        //workaround
+//        if(real==0){
+//            return imag>=0?Maths.PI/2:-Maths.PI/2;
+//        }else if(imag==0){
+//            return real>=0?0:Maths.PI;
+//        }
+        return Maths.atan2(imag, real);
     }
 
     public void sqrt(int n) {
@@ -509,7 +531,6 @@ public class MutableComplex {
         pow(1.0 / n);
     }
 
-
     public void pow(double power) {
         if (power == 0) {
             set(1, 0);
@@ -518,56 +539,22 @@ public class MutableComplex {
         } else if (power == -1) {
             inv();
 //        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(MathsBase.pow(real, power), 0) : new Complex(0, MathsBase.pow(-real, power));
+//            return real >= 0 ? new Complex(Maths.pow(real, power), 0) : new Complex(0, Maths.pow(-real, power));
         } else if (power >= 0) {
-            double r = MathsBase.pow(abs(), power);
+            double r = Maths.pow(abs(), power);
             double angle = angle();
             double theta = angle * power;
-            this.real = r * MathsBase.cos2(theta);
-            this.imag = r * MathsBase.sin2(theta);
+            this.real = r * Maths.cos2(theta);
+            this.imag = r * Maths.sin2(theta);
         } else { //n<0
             power = -power;
-            double r = MathsBase.pow(abs(), power);
+            double r = Maths.pow(abs(), power);
             double theta = angle() * power;
-            this.real = r * MathsBase.cos2(theta);
-            this.imag = r * MathsBase.sin2(theta);
+            this.real = r * Maths.cos2(theta);
+            this.imag = r * Maths.sin2(theta);
             inv();
         }
 //        return this;
-    }
-
-    public void log() {
-        set(Math.log(abs()), Math.atan2(imag, real));
-//        return this;
-    }
-
-    public void log10() {
-        set(Math.log(abs()), Math.atan2(imag, real));
-        div(Math.log(10));
-    }
-
-    public void db() {
-        log10();
-        mul(10);
-    }
-
-
-    public void pow(Complex y) {
-        double imag = y.getImag();
-        if (imag == 0) {
-            pow(y.getReal());
-        } else {
-            double real = y.getReal();
-            //x^y=exp(y*ln(x))
-            log();
-            mul(real, imag);
-            exp();
-        }
-    }
-
-
-    public double abs() {
-        return MathsBase.sqrt(real * real + imag * imag);
     }
 
     public void inv() {
@@ -585,22 +572,56 @@ public class MutableComplex {
         //DevUtils.run(this::debug_check);
     }
 
-    public double angle() {
-        //workaround
-//        if(real==0){
-//            return imag>=0?MathsBase.PI/2:-MathsBase.PI/2;
-//        }else if(imag==0){
-//            return real>=0?0:MathsBase.PI;
-//        }
-        return MathsBase.atan2(imag, real);
+    public void db() {
+        log10();
+        mul(10);
     }
 
-    public double getReal() {
-        return real;
+    public void log10() {
+        set(Math.log(abs()), Math.atan2(imag, real));
+        div(Math.log(10));
     }
 
-    public double getImag() {
-        return imag;
+    public void mul(double real) {
+        this.real = this.real * real;
+        this.imag = this.imag * real;
+//        return this;
+        //DevUtils.run(this::debug_check);
+    }
+
+    public void div(double real) {
+        this.real = this.real / real;
+        this.imag = this.imag / real;
+//        return this;
+        //DevUtils.run(this::debug_check);
+    }
+
+    public void pow(Complex y) {
+        double imag = y.getImag();
+        if (imag == 0) {
+            pow(y.getReal());
+        } else {
+            double real = y.getReal();
+            //x^y=exp(y*ln(x))
+            log();
+            mul(real, imag);
+            exp();
+        }
+    }
+
+    public void log() {
+        set(Math.log(abs()), Math.atan2(imag, real));
+//        return this;
+    }
+
+    public void exp() {
+        double e = Maths.exp(real);
+        double r = e * Maths.cos2(imag);
+        double i = e * Maths.sin2(this.imag);
+        this.real = r;
+        this.imag = i;
+        debug_check();
+//        return this;
     }
 
     private void debug_check() {
@@ -609,5 +630,9 @@ public class MutableComplex {
         } else if (Double.isInfinite(imag) && Double.isNaN(real)) {
             System.err.println("infinite imag, NaN real");
         }
+    }
+
+    public boolean isOne() {
+        return real == 1 && imag == 0;
     }
 }

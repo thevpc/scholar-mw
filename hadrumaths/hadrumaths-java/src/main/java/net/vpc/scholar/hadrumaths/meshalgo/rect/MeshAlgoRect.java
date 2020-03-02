@@ -1,13 +1,15 @@
 package net.vpc.scholar.hadrumaths.meshalgo.rect;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -19,52 +21,22 @@ import java.util.List;
  * @creationtime 22 mai 2007 00:02:41
  */
 public class MeshAlgoRect implements MeshAlgo, Cloneable {
+    public static final MeshAlgoRect RECT_ALGO_LOW_RESOLUTION = new MeshAlgoRect(GridPrecision.LEAST_PRECISION);
     private static final long serialVersionUID = 1L;
-    private int dividerX = 2;
-    private int dividerY = 2;
+    private final int dividerX = 2;
+    private final int dividerY = 2;
     private double minRelativeSizeX = 0.01;
     private double minRelativeSizeY = 0.01;
     private double maxRelativeSizeX = 0.25;
     private double maxRelativeSizeY = 0.25;
     private GridPrecision gridPrecision;
-    public static final MeshAlgoRect RECT_ALGO_LOW_RESOLUTION = new MeshAlgoRect(GridPrecision.LEAST_PRECISION);
-
-    public MeshAlgoRect(GridPrecision gridPrecision) {
-        setGridPrecision(gridPrecision);
-    }
 
     public MeshAlgoRect() {
         this(new GridPrecision(0, 4));
     }
 
-    public double getMinRelativeSizeX() {
-        return minRelativeSizeX;
-    }
-
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("dividerX", dividerX);
-        h.add("dividerY", dividerY);
-        h.add("minRelativeSizeX", minRelativeSizeX);
-        h.add("minRelativeSizeY", minRelativeSizeY);
-        h.add("maxRelativeSizeX", maxRelativeSizeX);
-        h.add("maxRelativeSizeY", maxRelativeSizeY);
-        return h.toString();
-    }
-
-    @Override
-    public String toString() {
-        Dumper h = new Dumper(getClass().getSimpleName(), Dumper.Type.SIMPLE);
-        h.add("divider", dividerX + "," + dividerY);
-        h.add("relativeSize", minRelativeSizeX + "->" + maxRelativeSizeX + "," + minRelativeSizeY + "->" + maxRelativeSizeY);
-        return h.toString();
-    }
-
-    public void setMinRelativeSizeX(double minRelativeSizeX) {
-        if (minRelativeSizeX <= 0 || minRelativeSizeX <= 0) {
-            throw new IllegalArgumentException("minRelativeSizeX <=0");
-        }
-        this.minRelativeSizeX = minRelativeSizeX;
+    public MeshAlgoRect(GridPrecision gridPrecision) {
+        setGridPrecision(gridPrecision);
     }
 
     public void setGridPrecision(GridPrecision gridPrecision) {
@@ -84,10 +56,43 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
             throw new IllegalArgumentException("gpMaxGridPrecisionY<gpMinGridPrecisionY : (" + mingy + " > " + maxgy + ")");
         }
 
-        setMinRelativeSizeX(1.0 / MathsBase.pow(2, maxgx));
-        setMinRelativeSizeY(1.0 / MathsBase.pow(2, maxgy < 0 ? maxgx : maxgy));
-        setMaxRelativeSizeX(1.0 / MathsBase.pow(2, mingx));
-        setMaxRelativeSizeY(1.0 / MathsBase.pow(2, mingy < 0 ? mingx : mingy));
+        setMinRelativeSizeX(1.0 / Maths.pow(2, maxgx));
+        setMinRelativeSizeY(1.0 / Maths.pow(2, maxgy < 0 ? maxgx : maxgy));
+        setMaxRelativeSizeX(1.0 / Maths.pow(2, mingx));
+        setMaxRelativeSizeY(1.0 / Maths.pow(2, mingy < 0 ? mingx : mingy));
+    }
+
+    public double getMinRelativeSizeX() {
+        return minRelativeSizeX;
+    }
+//    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("dividerX", dividerX);
+//        h.add("dividerY", dividerY);
+//        h.add("minRelativeSizeX", minRelativeSizeX);
+//        h.add("minRelativeSizeY", minRelativeSizeY);
+//        h.add("maxRelativeSizeX", maxRelativeSizeX);
+//        h.add("maxRelativeSizeY", maxRelativeSizeY);
+//        return h.toString();
+//    }
+
+    public void setMinRelativeSizeX(double minRelativeSizeX) {
+        if (minRelativeSizeX <= 0 || minRelativeSizeX <= 0) {
+            throw new IllegalArgumentException("minRelativeSizeX <=0");
+        }
+        this.minRelativeSizeX = minRelativeSizeX;
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj(getClass().getSimpleName())
+                .add("dividerX", context.elem(dividerX))
+                .add("dividerY", context.elem(dividerY))
+                .add("minRelativeSizeX", context.elem(minRelativeSizeX))
+                .add("minRelativeSizeY", context.elem(minRelativeSizeY))
+                .add("maxRelativeSizeX", context.elem(maxRelativeSizeX))
+                .add("maxRelativeSizeY", context.elem(maxRelativeSizeY))
+                .build();
     }
 
     public double getMinRelativeSizeY() {
@@ -123,15 +128,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         this.maxRelativeSizeY = maxRelativeSizeY;
     }
 
-//    private Rectangle2D.Float doubleToFloat(Rectangle2D x) {
-//        return new Rectangle2D.Float(
-//                doubleToFloatX(x.getX()),
-//                doubleToFloatY(x.getY()),
-//                doubleToFloatW(x.getWidth()),
-//                doubleToFloatH(x.getHeight())
-//        );
-//    }
-
     private Rectangle2D.Double floatToDouble(Rectangle2D x) {
         return new Rectangle2D.Double(
                 (x.getX()),
@@ -141,6 +137,14 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         );
     }
 
+//    private Rectangle2D.Float doubleToFloat(Rectangle2D x) {
+//        return new Rectangle2D.Float(
+//                doubleToFloatX(x.getX()),
+//                doubleToFloatY(x.getY()),
+//                doubleToFloatW(x.getWidth()),
+//                doubleToFloatH(x.getHeight())
+//        );
+//    }
 
     private List<Geometry> autoFusion(Geometry polygon, List<Geometry> all) {
         Domain domain = polygon.getDomain();
@@ -186,7 +190,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         return all;
     }
 
-
     public Collection<MeshZone> meshPolygon(Geometry polygon) {
         Domain domain = polygon.getDomain();
         double maxAbsoluteSizeX = maxRelativeSizeX * domain.xwidth();
@@ -212,8 +215,8 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         double dmx = d.getXMin();
         double dmy = d.getYMin();
 
-        int maxx = ((int) MathsBase.round(dw / maxAbsoluteSizeX));
-        int maxy = ((int) MathsBase.round(dh / maxAbsoluteSizeY));
+        int maxx = ((int) Maths.round(dw / maxAbsoluteSizeX));
+        int maxy = ((int) Maths.round(dh / maxAbsoluteSizeY));
         List<Geometry> areas = new ArrayList<Geometry>();
 
         if (maxAbsoluteSizeX < minAbsoluteSizeX && maxAbsoluteSizeY < minAbsoluteSizeY) {
@@ -224,7 +227,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
 
         for (int i = 0; i < maxx; i++) {
             for (int j = 0; j < maxy; j++) {
-                Domain r = Domain.forWidth(
+                Domain r = Domain.ofWidth(
                         dmx + (i * maxAbsoluteSizeX),
                         maxAbsoluteSizeX,
                         dmy + (j * maxAbsoluteSizeY),
@@ -273,5 +276,14 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("Never");
         }
+    }
+
+    @Override
+    public String toString() {
+        return dump();
+//        Dumper h = new Dumper(getClass().getSimpleName(), Dumper.Type.SIMPLE);
+//        h.add("divider", dividerX + "," + dividerY);
+//        h.add("relativeSize", minRelativeSizeX + "->" + maxRelativeSizeX + "," + minRelativeSizeY + "->" + maxRelativeSizeY);
+//        return h.toString();
     }
 }

@@ -7,14 +7,13 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
 //import net.vpc.scholar.math.functions.dfxy.DFunctionVector2D;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 11:58:07
  */
-public interface IntegrationOperator extends Dumpable {
+public interface IntegrationOperator extends HSerializable {
 
     double evalDD(Domain domain, DoubleToDouble f1);
 
@@ -42,7 +41,7 @@ public interface IntegrationOperator extends Dumpable {
 
     Complex[] eval(Expr[] g, ProgressMonitor monitor);
 
-    Complex[] eval(TVector<Expr> g, ProgressMonitor monitor);
+    Complex[] eval(Vector<Expr> g, ProgressMonitor monitor);
 
     Complex evalDC(Domain domain, DoubleToComplex f1);
 
@@ -50,6 +49,6 @@ public interface IntegrationOperator extends Dumpable {
 
     Complex evalDC(DoubleToComplex f1);
 
-    ExpressionRewriter getExpressionRewriter();
+    ExpressionRewriter getSimplifier();
 
 }

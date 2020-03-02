@@ -1,8 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.ZinEvaluator;
 
@@ -78,12 +81,11 @@ public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
-
 }

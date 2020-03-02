@@ -12,73 +12,94 @@ import net.vpc.scholar.hadrumaths.*;
  */
 public interface DoubleToDouble extends DoubleDomainExpr {
 
-    double[][][] computeDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
+    double[] evalDouble(double[] x, double y, Domain d0, Out<Range> ranges);
 
-    double[][] computeDouble(double[] x, double[] y, Domain d0, Out<Range> ranges);
+    default double evalDouble(double x, double y, double z) {
+        return evalDouble(x, y, z, NoneOutBoolean.INSTANCE);
+    }
 
-    double[] computeDouble(double[] x, Domain d0, Out<Range> range);
+    double evalDouble(double x, double y, double z, BooleanMarker defined);
+
+    default double[] evalDouble(double[] x) {
+        return evalDouble(x, (Domain) null, null);
+    }
+
+    double[] evalDouble(double[] x, Domain d0, Out<Range> range);
+
+    default double[] evalDouble(double x, double[] y) {
+        return evalDouble(x, y, null, null);
+    }
+
+    double[] evalDouble(double x, double[] y, Domain d0, Out<Range> ranges);
+
+    default double[][][] evalDouble(double[] x, double[] y, double[] z) {
+        return evalDouble(x, y, z, null, null);
+    }
+
+    double[][][] evalDouble(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
+
+    default double[][] evalDouble(double[] x, double[] y) {
+        return evalDouble(x, y, null, null);
+    }
+
+    double[][] evalDouble(double[] x, double[] y, Domain d0, Out<Range> ranges);
+
+    default double apply(double x) {
+        return evalDouble(x);
+    }
+
+    default double evalDouble(double x) {
+        return evalDouble(x, NoneOutBoolean.INSTANCE);
+    }
 
     /**
      * @param x
      * @param defined by ref, will return false if the expression is not defined for this value
      * @return
      */
-    double computeDouble(double x, BooleanMarker defined);
+    double evalDouble(double x, BooleanMarker defined);
 
-    double computeDouble(double x, double y, BooleanMarker defined);
-
-    double computeDouble(double x, double y, double z, BooleanMarker defined);
-
-    default double[] computeDouble(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this,x,y,d0,ranges);
+    default double apply(double x, double y) {
+        return evalDouble(x, y);
     }
 
-    default double[] computeDouble(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeDouble(this,x,y,d0,ranges);
+    default double evalDouble(double x, double y) {
+        return evalDouble(x, y, NoneOutBoolean.INSTANCE);
     }
 
-    default double computeDouble(double x) {
-        return computeDouble(x, NoneOutBoolean.INSTANCE);
+    double evalDouble(double x, double y, BooleanMarker defined);
+
+    default double apply(double x, double y, double z) {
+        return evalDouble(x, y);
     }
 
-    default double computeDouble(double x, double y) {
-        return computeDouble(x, y, NoneOutBoolean.INSTANCE);
+    default ExprType getNarrowType() {
+        return getType();
     }
 
-    default double computeDouble(double x, double y, double z) {
-        return computeDouble(x, y, z, NoneOutBoolean.INSTANCE);
+    default DoubleToComplex toDC() {
+        return (DoubleToComplex) narrow(ExprType.DOUBLE_COMPLEX);
     }
 
-    default double[] computeDouble(double[] x) {
-        return computeDouble(x, (Domain) null, null);
+    default DoubleToDouble toDD() {
+        return this;
     }
 
-    default double[] computeDouble(double x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
+    default DoubleToVector toDV() {
+        return (DoubleToVector) narrow(ExprType.DOUBLE_CVECTOR);
     }
 
-    default double[][][] computeDouble(double[] x, double[] y, double[] z) {
-        return computeDouble(x, y, z, (Domain) null, null);
+    default DoubleToMatrix toDM() {
+        return (DoubleToMatrix) narrow(ExprType.DOUBLE_CMATRIX);
     }
 
-    default double[][] computeDouble(double[] x, double[] y) {
-        return computeDouble(x, y, (Domain) null, null);
+    default ExprType getType() {
+        return ExprType.DOUBLE_DOUBLE;
     }
 
+    @Override
+    default ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
+    }
 
-//    default double apply(double x) {
-//        return computeDouble(x);
-//    }
-//
-//    default double[] apply(double[] x) {
-//        return computeDouble(x);
-//    }
-//
-//    default double apply(double x, double y) {
-//        return computeDouble(x, y);
-//    }
-//
-//    default double[][] apply(double[] x, double[] y) {
-//        return computeDouble(x, y);
-//    }
 }

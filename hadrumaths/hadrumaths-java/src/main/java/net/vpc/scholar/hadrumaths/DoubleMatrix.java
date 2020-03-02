@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths;
 
-public interface DoubleMatrix extends TMatrix<Double> {
+public interface DoubleMatrix extends Matrix<Double> {
     double getDouble(int row, int col);
 
     void set(int row, int col, double val);

@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.MapBuilder;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 
 import java.util.Arrays;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SimpleSeq2 implements TVectorCell<Expr> {
+class SimpleSeq2 implements VectorModel<Expr> {
     private final Expr pattern;
     private final DoubleParam m;
     private final DoubleParam n;
@@ -22,10 +22,15 @@ class SimpleSeq2 implements TVectorCell<Expr> {
     }
 
     @Override
+    public int size() {
+        return values.length;
+    }
+
+    @Override
     public Expr get(int index) {
         double[] value = values[index];
-        String mname = m.getParamName();
-        String nname = n.getParamName();
+        String mname = m.getName();
+        String nname = n.getName();
         Expr e = pattern.setParam(mname, value[0]).setParam(nname, value[1]);
         e.setProperties(MapBuilder.<String, Object>of(mname, value[0], nname, value[1]).build());
 //                Map<String, Object> props = e.getProperties();

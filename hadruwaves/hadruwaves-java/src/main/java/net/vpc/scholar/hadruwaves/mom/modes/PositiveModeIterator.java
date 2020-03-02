@@ -2,14 +2,14 @@ package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadruwaves.ModeIndex;
-import net.vpc.scholar.hadruwaves.ModeIterator;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.WallBorders;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
-public class PositiveModeIterator implements ModeIterator {
+public class PositiveModeIterator implements Iterator<ModeIndex> {
     private ModeType[] zeroModes;
     private ModeType[] nonZeroModes;
     private LinkedList<ModeIndex> list = new LinkedList<ModeIndex>();
@@ -43,15 +43,20 @@ public class PositiveModeIterator implements ModeIterator {
                 }
             }
         }
-        this.zeroModes = zeroModesList.toArray(new ModeType[zeroModesList.size()]);
-        this.nonZeroModes = nonZeroModesList.toArray(new ModeType[nonZeroModesList.size()]);
+        this.zeroModes = zeroModesList.toArray(new ModeType[0]);
+        this.nonZeroModes = nonZeroModesList.toArray(new ModeType[0]);
     }
 
-    public ModeIndex next() {
+    @Override
+    public boolean hasNext() {
         while (list.size() == 0) {
             nextModeInfos();
             index++;
         }
+        return !list.isEmpty();
+    }
+
+    public ModeIndex next() {
         ModeIndex m = list.getFirst();
         list.removeFirst();
         return m;

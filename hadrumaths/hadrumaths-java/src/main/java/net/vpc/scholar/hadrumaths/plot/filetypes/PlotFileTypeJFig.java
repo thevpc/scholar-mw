@@ -1,9 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
-import java.io.UncheckedIOException;
 import net.vpc.common.util.DoubleFormat;
 import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
@@ -13,8 +12,28 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PlotFileTypeJFig implements PlotFileType {
-    public static final PlotFileType INSTANCE=new PlotFileTypeJFig();
+public final class PlotFileTypeJFig implements PlotFileType {
+    public static final PlotFileType INSTANCE = new PlotFileTypeJFig();
+
+    private PlotFileTypeJFig() {
+    }
+
+    public static ValuesPlotModel loadDataJfig(InputStream reader) throws UncheckedIOException {
+        InputStreamReader streamReader = null;
+        try {
+            try {
+                streamReader = new InputStreamReader(reader);
+                return loadDataJfig(streamReader);
+            } finally {
+                if (streamReader != null) {
+                    streamReader.close();
+                }
+            }
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
     @Override
     public String getTitle() {
         return "JFig";
@@ -23,12 +42,6 @@ public class PlotFileTypeJFig implements PlotFileType {
     @Override
     public String[] getExtensions() {
         return new String[]{"jfig"};
-    }
-
-
-    @Override
-    public PlotModel loadModel(File file) {
-        return loadDataJfig(file);
     }
 
     @Override
@@ -54,7 +67,7 @@ public class PlotFileTypeJFig implements PlotFileType {
             printStream.println();
             printStream.println(((model.getY() == null || model.getY().length == 0 || model.getY()[0] == null) ? ("y =" + lineSep) : (new DMatrix(model.getY()).toString(commentChar, "y"))) + endLine);
             printStream.println();
-            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (MathsBase.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
+            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (Maths.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
             printStream.println("title =" + (model.getTitle() == null ? "" : model.getTitle()) + endLine);
             printStream.println("xlabel =" + (model.getXtitle() == null ? "" : model.getXtitle()) + endLine);
             printStream.println("ylabel =" + (model.getYtitle() == null ? "" : model.getYtitle()) + endLine);
@@ -88,9 +101,13 @@ public class PlotFileTypeJFig implements PlotFileType {
 
     @Override
     public void save(File file, PlotComponent component) throws IOException {
-        save(file,new SimplePlotModelProvider(component.getModel(),component.toComponent()));
+        save(file, new SimplePlotModelProvider(component.getModel(), component.toComponent()));
     }
 
+    @Override
+    public PlotModel loadModel(File file) {
+        return loadDataJfig(file);
+    }
 
     public static ValuesPlotModel loadDataJfig(File file) throws UncheckedIOException {
         FileReader fileReader = null;
@@ -101,22 +118,6 @@ public class PlotFileTypeJFig implements PlotFileType {
             } finally {
                 if (fileReader != null) {
                     fileReader.close();
-                }
-            }
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
-    }
-
-    public static ValuesPlotModel loadDataJfig(InputStream reader) throws UncheckedIOException {
-        InputStreamReader streamReader = null;
-        try {
-            try {
-                streamReader = new InputStreamReader(reader);
-                return loadDataJfig(streamReader);
-            } finally {
-                if (streamReader != null) {
-                    streamReader.close();
                 }
             }
         } catch (IOException ex) {
@@ -147,7 +148,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                                 }
                             }
                         }
-                        m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(MathsBase.matrix(sb.toString()).getArray()));
+                        m.setX(sb.toString().trim().length() == 0 ? null : ArrayUtils.getReal(Maths.matrix(sb.toString()).getArray()));
                     } else if (line.startsWith("y =")) {
                         StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
                         if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
@@ -158,7 +159,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                                 }
                             }
                         }
-                        m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(MathsBase.matrix(sb.toString()).getArray()));
+                        m.setY(sb.toString().trim().length() == 0 ? null : ArrayUtils.absdbl(Maths.matrix(sb.toString()).getArray()));
                     } else if (line.startsWith("z =")) {
                         StringBuilder sb = new StringBuilder(line.substring(3).trim()).append("\n");
                         if (sb.toString().trim().length() > 0 && !line.endsWith("]")) {
@@ -170,7 +171,7 @@ public class PlotFileTypeJFig implements PlotFileType {
                             }
                         }
 
-                        m.setZ(sb.toString().trim().length() == 0 ? null : MathsBase.matrix(sb.toString()).getArray());
+                        m.setZ(sb.toString().trim().length() == 0 ? null : Maths.matrix(sb.toString()).getArray());
                     } else if (line.startsWith("title =")) {
                         m.setTitle(line.substring("title".length() + 2));
                     } else if (line.startsWith("name =")) {
@@ -180,9 +181,9 @@ public class PlotFileTypeJFig implements PlotFileType {
                     } else if (line.startsWith("ylabel =")) {
                         m.setyTitle(line.substring("ylabel".length() + 2));
                     } else if (line.startsWith("plotType =")) {
-                        m.setPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)));
+                        m.setPlotType(new LibraryPlotType(PlotType.valueOf(line.substring("plotType".length() + 2)),null));
                     } else if (line.startsWith("zDoubleFunction =")) {
-                        m.setConverter(PlotDoubleConverter.valueOf(line.substring("zDoubleFunction".length() + 2)));
+                        m.setConverter(PlotDoubleConverter.of(line.substring("zDoubleFunction".length() + 2)));
                     } else if (line.startsWith("ytitle =")) {
                         ytitlesList.add(line.substring("ytitle".length() + 2));
                     } else if (line.startsWith("xformat =")) {
@@ -204,5 +205,13 @@ public class PlotFileTypeJFig implements PlotFileType {
         }
         return m;
     }
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
+    }
 }

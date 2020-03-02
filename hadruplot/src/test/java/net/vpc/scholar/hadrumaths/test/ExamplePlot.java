@@ -6,6 +6,7 @@
 package net.vpc.scholar.hadrumaths.test;
 
 import net.vpc.scholar.hadruplot.Plot;
+import net.vpc.scholar.hadruplot.console.PlotConsole;
 
 /**
  *
@@ -13,7 +14,10 @@ import net.vpc.scholar.hadruplot.Plot;
  */
 public class ExamplePlot {
     public static void main(String[] args) {
-        Plot.asCurve().plot(new double[]{1,2,3});
-        Plot.asCurve().plot(new double[][]{{1},{2},{3}});
+        PlotConsole c=new PlotConsole();
+        c.setGlobal();
+        Plot.asCurve().plot(new double[]{0,0.5,1});
+        Plot.asCurve().plot(new double[]{0,0.5,1});
+//        Plot.asCurve().plot(new double[][]{{100},{200},{300}});
     }
 }

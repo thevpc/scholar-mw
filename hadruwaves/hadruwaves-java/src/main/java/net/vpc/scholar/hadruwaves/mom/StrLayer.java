@@ -7,9 +7,10 @@ package net.vpc.scholar.hadruwaves.mom;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.vpc.common.tson.*;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.HSerializable;
 import net.vpc.scholar.hadruwaves.Physics;
 import net.vpc.scholar.hadruwaves.util.Impedance;
 
@@ -17,7 +18,7 @@ import net.vpc.scholar.hadruwaves.util.Impedance;
  *
  * @author vpc
  */
-public class StrLayer implements Dumpable, Cloneable {
+public class StrLayer implements HSerializable, Cloneable {
 
     public static final StrLayer[] NO_LAYERS = new StrLayer[0];
     private final double width;
@@ -34,12 +35,19 @@ public class StrLayer implements Dumpable, Cloneable {
         this.name = name==null?"None":name;
     }
 
-    public String dump() {
-        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        h.add("width", width);
-        h.add("impedance", impedance);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonFunctionBuilder sb = Tson.function(getClass().getSimpleName());
+        sb.add(Tson.pair("width", context.elem(width)));
+        sb.add(Tson.pair("impedance", context.elem(impedance)));
+        return sb.build();
     }
+//    public String dump() {
+//        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
+//        h.add("width", width);
+//        h.add("impedance", impedance);
+//        return h.toString();
+//    }
 
     @Override
     public StrLayer clone() {

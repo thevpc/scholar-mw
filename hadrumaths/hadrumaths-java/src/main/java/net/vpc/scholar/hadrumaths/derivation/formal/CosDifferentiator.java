@@ -4,10 +4,9 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Neg;
-import net.vpc.scholar.hadrumaths.symbolic.Sin;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Cos;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -16,11 +15,11 @@ import net.vpc.scholar.hadrumaths.symbolic.Sin;
 public class CosDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Cos c = (Cos) f;
-        Expr a = c.getArgument();
+        Expr a = c.getChild(0);
         return
-                new Neg(new Mul(
+                neg(mul(
                         d.derive(a, varIndex),
-                        new Sin(a)
+                        sin(a)
                 ));
     }
 }

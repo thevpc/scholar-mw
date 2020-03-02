@@ -44,7 +44,7 @@ public class Wavelet {
 //        }
 //        Wavelet cdf = new Wavelet();
 //        cdf.transform(data);
-//// print out transformed data (one data element per row!)
+//// print out transformed data (one data primitiveElement3D per row!)
 //        System.out.println("--Transformed data--");
 //        for (int k = 0; k < data.length; ++k) {
 //            System.out.println(" data[ " + k + " ]= " + data[k]);
@@ -124,18 +124,6 @@ public class Wavelet {
         }
     }
 
-
-    public void invTransform(float[] v) {
-        int last;
-        for (last = v.length; last >= 15; last = last / 2 + FilterType) {
-            ;
-        }
-        for (; 2 * last - FilterType <= v.length; last = 2 * last - FilterType) {
-            invTransform(v, last);
-        }
-    }
-
-
     public static void transform(float[] v, int last) {
         float[] ans = new float[last];
         int half = (last + FilterType) / 2;
@@ -168,6 +156,14 @@ public class Wavelet {
         System.arraycopy(ans, 0, v, 0, last);
     }
 
+    public void invTransform(float[] v) {
+        int last;
+        for (last = v.length; last >= 15; last = last / 2 + FilterType) {
+        }
+        for (; 2 * last - FilterType <= v.length; last = 2 * last - FilterType) {
+            invTransform(v, last);
+        }
+    }
 
     public static void invTransform(float[] v, int last) {
         float[] ans = new float[2 * last - FilterType];

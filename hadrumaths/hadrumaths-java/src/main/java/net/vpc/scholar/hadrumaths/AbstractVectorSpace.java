@@ -1,51 +1,51 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.Converter;
 import net.vpc.common.util.TypeName;
 
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
-    private Ops<T> ops = new OpsImpl<>(this);
+    private final Ops<T> ops = new OpsImpl<>(this);
 
     @Override
-    public <R> Converter<R, T> getConverterFrom(Class<R> t) {
-        return MathsBase.Config.getConverter(t, getItemType().getTypeClass());
+    public <R> Function<R, T> getConverterFrom(TypeName<R> t) {
+        return Maths.Config.getConverter(t, getItemType());
     }
 
     @Override
-    public <R> Converter<T, R> getConverterTo(Class<R> t) {
-        return MathsBase.Config.getConverter(getItemType().getTypeClass(), t);
+    public <R> Function<T, R> getConverterTo(TypeName<R> t) {
+        return Maths.Config.getConverter(getItemType(), t);
     }
 
     @Override
-    public <R> Converter<R, T> getConverterFrom(TypeName<R> t) {
-        return MathsBase.Config.getConverter(t, getItemType());
+    public <R> Function<R, T> getConverterFrom(Class<R> t) {
+        return Maths.Config.getConverter(t, getItemType().getTypeClass());
     }
 
     @Override
-    public <R> Converter<T, R> getConverterTo(TypeName<R> t) {
-        return MathsBase.Config.getConverter(getItemType(), t);
+    public <R> Function<T, R> getConverterTo(Class<R> t) {
+        return Maths.Config.getConverter(getItemType().getTypeClass(), t);
     }
 
 //    @Override
 //    public <R> Converter<R, T> getConverterFrom(TypeReference<R> t) {
-//        return MathsBase.Config.getConverter(t,getItemType());
+//        return Maths.Config.getConverter(t,getItemType());
 //    }
 //
 //    @Override
 //    public <R> Converter<T, R> getConverterTo(TypeReference<R> t) {
-//        return MathsBase.Config.getConverter(getItemType(),t);
+//        return Maths.Config.getConverter(getItemType(),t);
 //    }
 
     @Override
     public <R> R convertTo(T value, Class<R> t) {
-        return getConverterTo(t).convert(value);
+        return getConverterTo(t).apply(value);
     }
 
     @Override
     public <R> T convertFrom(R value, Class<R> t) {
-        return getConverterFrom(t).convert(value);
+        return getConverterFrom(t).apply(value);
     }
 
     @Override
@@ -70,201 +70,201 @@ public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
         return ops;
     }
 
-    public ElementOp<T> tanhOp() {
-        return new ElementOp<T>() {
+    public VectorOp<T> tanhOp() {
+        return new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) tanh(e);
+                return tanh(e);
             }
         };
     }
 
     public static class OpsImpl<T> implements Ops<T> {
-        private VectorSpace<T> v;
-        private ElementOp<T> tanh = new ElementOp<T>() {
+        private final VectorSpace<T> v;
+        private final VectorOp<T> tanh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.tanh(e);
+                return v.tanh(e);
             }
         };
-        private ElementOp<T> tan = new ElementOp<T>() {
+        private final VectorOp<T> tan = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.tan(e);
+                return v.tan(e);
             }
         };
-        private ElementOp<T> sin = new ElementOp<T>() {
+        private final VectorOp<T> sin = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.sin(e);
+                return v.sin(e);
             }
         };
-        private ElementOp<T> cos = new ElementOp<T>() {
+        private final VectorOp<T> cos = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.cos(e);
+                return v.cos(e);
             }
         };
-        private ElementOp<T> real = new ElementOp<T>() {
+        private final VectorOp<T> real = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.real(e);
+                return v.real(e);
             }
         };
-        private ElementOp<T> imag = new ElementOp<T>() {
+        private final VectorOp<T> imag = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.imag(e);
+                return v.imag(e);
             }
         };
-        private ElementOp<T> abs = new ElementOp<T>() {
+        private final VectorOp<T> abs = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.abs(e);
+                return v.abs(e);
             }
         };
-        private ElementOp<T> abssqr = new ElementOp<T>() {
+        private final VectorOp<T> abssqr = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.abssqr(e);
+                return v.abssqr(e);
             }
         };
-        private ElementOp<T> neg = new ElementOp<T>() {
+        private final VectorOp<T> neg = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.neg(e);
+                return v.neg(e);
             }
         };
-        private ElementOp<T> conj = new ElementOp<T>() {
+        private final VectorOp<T> conj = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.conj(e);
+                return v.conj(e);
             }
         };
-        private ElementOp<T> inv = new ElementOp<T>() {
+        private final VectorOp<T> inv = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.inv(e);
+                return v.inv(e);
             }
         };
-        private ElementOp<T> cotan = new ElementOp<T>() {
+        private final VectorOp<T> cotan = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.cotan(e);
+                return v.cotan(e);
             }
         };
-        private ElementOp<T> sinh = new ElementOp<T>() {
+        private final VectorOp<T> sinh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.sinh(e);
+                return v.sinh(e);
             }
         };
-        private ElementOp<T> cosh = new ElementOp<T>() {
+        private final VectorOp<T> cosh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.cosh(e);
+                return v.cosh(e);
             }
         };
-        private ElementOp<T> sincard = new ElementOp<T>() {
+        private final VectorOp<T> sincard = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.sincard(e);
+                return v.sincard(e);
             }
         };
-        private ElementOp<T> cotanh = new ElementOp<T>() {
+        private final VectorOp<T> cotanh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.cotanh(e);
+                return v.cotanh(e);
             }
         };
-        private ElementOp<T> asinh = new ElementOp<T>() {
+        private final VectorOp<T> asinh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.asinh(e);
+                return v.asinh(e);
             }
         };
-        private ElementOp<T> acosh = new ElementOp<T>() {
+        private final VectorOp<T> acosh = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.acosh(e);
+                return v.acosh(e);
             }
         };
-        private ElementOp<T> asin = new ElementOp<T>() {
+        private final VectorOp<T> asin = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.asin(e);
+                return v.asin(e);
             }
         };
-        private ElementOp<T> acos = new ElementOp<T>() {
+        private final VectorOp<T> acos = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.acos(e);
+                return v.acos(e);
             }
         };
-        private ElementOp<T> atan = new ElementOp<T>() {
+        private final VectorOp<T> atan = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.atan(e);
+                return v.atan(e);
             }
         };
-        private ElementOp<T> arg = new ElementOp<T>() {
+        private final VectorOp<T> arg = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.arg(e);
+                return v.arg(e);
             }
         };
-        private ElementOp<T> acotan = new ElementOp<T>() {
+        private final VectorOp<T> acotan = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.acotan(e);
+                return v.acotan(e);
             }
         };
-        private ElementOp<T> exp = new ElementOp<T>() {
+        private final VectorOp<T> exp = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.exp(e);
+                return v.exp(e);
             }
         };
-        private ElementOp<T> log = new ElementOp<T>() {
+        private final VectorOp<T> log = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.log(e);
+                return v.log(e);
             }
         };
-        private ElementOp<T> log10 = new ElementOp<T>() {
+        private final VectorOp<T> log10 = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.log10(e);
+                return v.log10(e);
             }
         };
-        private ElementOp<T> db = new ElementOp<T>() {
+        private final VectorOp<T> db = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.db(e);
+                return v.db(e);
             }
         };
-        private ElementOp<T> db2 = new ElementOp<T>() {
+        private final VectorOp<T> db2 = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.db2(e);
+                return v.db2(e);
             }
         };
-        private ElementOp<T> sqr = new ElementOp<T>() {
+        private final VectorOp<T> sqr = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.sqr(e);
+                return v.sqr(e);
             }
         };
-        private ElementOp<T> sqrt = new ElementOp<T>() {
+        private final VectorOp<T> sqrt = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.sqrt(e);
+                return v.sqrt(e);
             }
         };
-        private ElementOp<T> not = new ElementOp<T>() {
+        private final VectorOp<T> not = new VectorOp<T>() {
             @Override
             public T eval(int index, T e) {
-                return (T) v.not(e);
+                return v.not(e);
             }
         };
 
@@ -272,127 +272,127 @@ public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
             this.v = v;
         }
 
-        public ElementOp<T> tanh() {
-            return tanh;
-        }
-
-        public ElementOp<T> tan() {
-            return tan;
-        }
-
-        public ElementOp<T> sin() {
-            return sin;
-        }
-
-        public ElementOp<T> cos() {
-            return cos;
-        }
-
-        public ElementOp<T> real() {
+        public VectorOp<T> real() {
             return real;
         }
 
-        public ElementOp<T> imag() {
+        public VectorOp<T> imag() {
             return imag;
         }
 
-        public ElementOp<T> abs() {
+        public VectorOp<T> abs() {
             return abs;
         }
 
-        public ElementOp<T> abssqr() {
+        public VectorOp<T> abssqr() {
             return abssqr;
         }
 
-        public ElementOp<T> neg() {
+        public VectorOp<T> neg() {
             return neg;
         }
 
-        public ElementOp<T> conj() {
+        public VectorOp<T> conj() {
             return conj;
         }
 
-        public ElementOp<T> inv() {
+        public VectorOp<T> inv() {
             return inv;
         }
 
-        public ElementOp<T> cotan() {
+        public VectorOp<T> sin() {
+            return sin;
+        }
+
+        public VectorOp<T> cos() {
+            return cos;
+        }
+
+        public VectorOp<T> tan() {
+            return tan;
+        }
+
+        public VectorOp<T> cotan() {
             return cotan;
         }
 
-        public ElementOp<T> sinh() {
+        public VectorOp<T> sinh() {
             return sinh;
         }
 
-        public ElementOp<T> cosh() {
-            return cosh;
-        }
-
-        public ElementOp<T> sincard() {
+        public VectorOp<T> sincard() {
             return sincard;
         }
 
-        public ElementOp<T> cotanh() {
+        public VectorOp<T> cosh() {
+            return cosh;
+        }
+
+        public VectorOp<T> tanh() {
+            return tanh;
+        }
+
+        public VectorOp<T> cotanh() {
             return cotanh;
         }
 
-        public ElementOp<T> asinh() {
+        public VectorOp<T> asinh() {
             return asinh;
         }
 
-        public ElementOp<T> acosh() {
+        public VectorOp<T> acosh() {
             return acosh;
         }
 
-        public ElementOp<T> asin() {
+        public VectorOp<T> asin() {
             return asin;
         }
 
-        public ElementOp<T> acos() {
+        public VectorOp<T> acos() {
             return acos;
         }
 
-        public ElementOp<T> atan() {
+        public VectorOp<T> atan() {
             return atan;
         }
 
-        public ElementOp<T> arg() {
+        public VectorOp<T> arg() {
             return arg;
         }
 
-        public ElementOp<T> acotan() {
+        public VectorOp<T> acotan() {
             return acotan;
         }
 
-        public ElementOp<T> exp() {
+        public VectorOp<T> exp() {
             return exp;
         }
 
-        public ElementOp<T> log() {
+        public VectorOp<T> log() {
             return log;
         }
 
-        public ElementOp<T> log10() {
+        public VectorOp<T> log10() {
             return log10;
         }
 
-        public ElementOp<T> db() {
+        public VectorOp<T> db() {
             return db;
         }
 
-        public ElementOp<T> db2() {
+        public VectorOp<T> db2() {
             return db2;
         }
 
-        public ElementOp<T> sqr() {
+        public VectorOp<T> sqr() {
             return sqr;
         }
 
-        public ElementOp<T> sqrt() {
+        public VectorOp<T> sqrt() {
             return sqrt;
         }
 
-        public ElementOp<T> not() {
+        public VectorOp<T> not() {
             return not;
         }
     }

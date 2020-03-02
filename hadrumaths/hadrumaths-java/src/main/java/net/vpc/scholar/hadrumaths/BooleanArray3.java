@@ -11,6 +11,12 @@ public interface BooleanArray3 {
 
     void set(int i, int j, int k);
 
+    default void setAll(int i, int j, int kFrom, int kTo, boolean value) {
+        for (int k = kFrom; k < kTo; k++) {
+            set(j, j, k, value);
+        }
+    }
+
     void set(int i, int j, int k, boolean value);
 
     boolean get(int i, int j, int k);

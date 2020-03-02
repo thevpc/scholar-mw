@@ -3,6 +3,9 @@ package net.vpc.scholar.hadruwaves.mom.sources.planar;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.sources.*;
 import java.util.Collection;
@@ -10,7 +13,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -22,7 +24,7 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
     private List<PlanarSource> all = new ArrayList<PlanarSource>();
 
     public DefaultPlanarSources(Collection<PlanarSource> sources) {
-        this(sources.toArray(new PlanarSource[sources.size()]));
+        this(sources.toArray(new PlanarSource[0]));
     }
 
     public DefaultPlanarSources(PlanarSource... sources) {
@@ -39,11 +41,12 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
     }
 
     public PlanarSource[] getPlanarSources() {
-        return all.toArray(new PlanarSource[all.size()]);
+        return all.toArray(new PlanarSource[0]);
     }
 
-    public String dump() {
-        return new Dumper(this).add("sources", all).toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function("PlanarSources",context.elem(all)).build();
     }
 
     @Override

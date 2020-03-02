@@ -7,9 +7,9 @@ import net.vpc.scholar.hadrumaths.symbolic.old.*;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymOpDiv extends SymOperator {
-    private SymExpression left;
-    private SymExpression right;
     public static final SymUtils.BoxFormat DIV_FORMAT = new SymUtils.BoxFormat().setRowSeparator("-");
+    private final SymExpression left;
+    private final SymExpression right;
 
     public SymOpDiv(SymExpression left, SymExpression right) {
         this.left = left;

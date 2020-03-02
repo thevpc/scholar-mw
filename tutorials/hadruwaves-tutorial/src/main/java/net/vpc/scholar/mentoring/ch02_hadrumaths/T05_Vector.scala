@@ -12,7 +12,7 @@ object T05_Vector extends App {
   var cv3 = cv + cv2
   //  var cv3=cv+cv2
   var s1 = csum(cv2);
-  var s1u = cv2.toList.reduce((x: Complex, y: Complex) => x + y);
+  var s1u = cv2.stream().reduce((x: Complex, y: Complex) => x + y);
   var s2 = cv2.sum;
   var s3 = cv2.prod();
   var s4 = csum(1, 2, 5, 4, 7)

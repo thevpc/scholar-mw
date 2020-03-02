@@ -30,14 +30,14 @@ public abstract class ParamSet<T> implements Serializable, Cloneable, Comparable
      * exemple : Fn=nbre a la convergence
      */
     private T defaultValue;
-    private Param param;
+    private CParam param;
 
-    protected ParamSet(Param param) {
+    protected ParamSet(CParam param) {
 
         this.param = param;
     }
 
-    public Param getParam() {
+    public CParam getParam() {
         return param;
     }
 

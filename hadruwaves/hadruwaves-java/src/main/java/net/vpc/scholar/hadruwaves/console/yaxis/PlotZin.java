@@ -19,12 +19,12 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
     }
 
     @Override
-    protected Object[][] computeMatrixItems(ConsoleAwareObject structure, ParamSet x) {
+    protected Object[][] evalMatrixItems(ConsoleAwareObject structure, ParamSet x) {
         MomStructure s=(MomStructure) structure;
-        return s.inputImpedance().monitor(this).computeMatrix().getArray();
+        return s.inputImpedance().monitor(this).evalMatrix().getArray();
     }
 
-    protected Complex computeComplexSingleGpSingleModeSerial(MomStructure structure, ParamSet x) {
+    protected Complex evalComplexSingleGpSingleModeSerial(MomStructure structure, ParamSet x) {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
         Complex z0 = Maths.CZERO;
@@ -36,9 +36,9 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
 //        System.out.println("freq="+structure.getF());
         for (ModeInfo fi : evan) {
 //            System.out.println(fi.mode+"[m"+fi.m+",n"+fi.n+"] ; "+ "GAMMAmn = " + fi.firstBoxSpaceGamma+"  : Zmn = " + fi.zn);
-            z0 = z0.add(Maths.scalarProduct(g, fi.fn).sqr().mul(fi.impedance.impedanceValue()));
+            z0 = z0.add(Maths.scalarProduct(g, fi.fn).toComplex().sqr().mul(fi.impedance.impedanceValue()));
         }
-        Complex gf02 = Maths.scalarProduct(g, f0.fn).sqr();
+        Complex gf02 = Maths.scalarProduct(g, f0.fn).toComplex().sqr();
         z0 = z0.div(gf02);
 //        System.out.println("z="+z0);
 //        System.out.println("------------------------------------------------------------------------");
@@ -48,7 +48,7 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
         //return z;
     }
 
-    protected Complex computeComplexSingleGpSingleModeParallel(MomStructure structure, ParamSet x) {
+    protected Complex evalComplexSingleGpSingleModeParallel(MomStructure structure, ParamSet x) {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
         MutableComplex z0 = new MutableComplex();
@@ -60,9 +60,9 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
         System.out.println("freq=" + structure.getFrequency());
         for (ModeInfo fi : evan) {
             System.out.println(fi.mode.mtype + "[m" + fi.mode.m + ",n" + fi.mode.n + "] ; " + "GAMMAmn = " + fi.firstBoxSpaceGamma + "/" + fi.secondBoxSpaceGamma + "  : Zmn = " + fi.impedance.impedance() + "  : Ymn = " + fi.impedance.admittance());
-            z0.add(Maths.scalarProduct(g, fi.fn).sqr().mul(fi.impedance.admittanceValue()));
+            z0.add(Maths.scalarProduct(g, fi.fn).toComplex().sqr().mul(fi.impedance.admittanceValue()));
         }
-        Complex gf02 = Maths.scalarProduct(g, f0.fn).sqr();
+        Complex gf02 = Maths.scalarProduct(g, f0.fn).toComplex().sqr();
         Complex z1 = gf02.div(z0.toComplex());
         System.out.println("z=" + z0);
         System.out.println("------------------------------------------------------------------------");

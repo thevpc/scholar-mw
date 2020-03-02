@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HRMIServer extends HadrumathsAbstractServer {
-    private Map<String, HRMIServlet> servlets = new HashMap<>();
+    private final Map<String, HRMIServlet> servlets = new HashMap<>();
     private int port = HadrumathsServices.DEFAULT_RMI_PORT;
     private boolean started;
 
@@ -37,11 +37,21 @@ public class HRMIServer extends HadrumathsAbstractServer {
         }
     }
 
-    public int getPort() {
+    protected void checkNotStarted() {
+        if (started) {
+            throw new IllegalArgumentException("Already started");
+        }
+    }    public int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    protected HRMIServlet getServlet(int id) {
+        HRMIServlet s = servlets.get(id);
+        if (s == null) {
+            throw new IllegalArgumentException("Not Found");
+        }
+        return s;
+    }    public void setPort(int port) {
         checkNotStarted();
         if (port < 0) {
             port = HadrumathsServices.DEFAULT_SOCKET_PORT;
@@ -53,11 +63,7 @@ public class HRMIServer extends HadrumathsAbstractServer {
         return started;
     }
 
-    protected void checkNotStarted() {
-        if (started) {
-            throw new IllegalArgumentException("Already started");
-        }
-    }
+
 
     public void start() {
         checkNotStarted();
@@ -94,13 +100,7 @@ public class HRMIServer extends HadrumathsAbstractServer {
         }
     }
 
-    protected HRMIServlet getServlet(int id) {
-        HRMIServlet s = servlets.get(id);
-        if (s == null) {
-            throw new IllegalArgumentException("Not Found");
-        }
-        return s;
-    }
+
 
     public void stop() {
     }

@@ -1,7 +1,7 @@
 package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom;
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.symbolic._
-import net.vpc.scholar.hadruwaves.ModeIndex
+import net.vpc.scholar.hadruwaves.{Material, ModeIndex}
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.WallBorders.EEEE
 import net.vpc.scholar.hadrumaths.MathScala._
@@ -34,8 +34,8 @@ object MomMicrostripAntennaMoMExample5 {
 
 
     var m: MomStructure = MomStructure.EEEE(d, f, nbBaseFunctions
-      , BoxSpaceFactory.shortCircuit(1*MM, 2.2)
-      , BoxSpaceFactory.shortCircuit(100*MM, 1)
+      , BoxSpaceFactory.shortCircuit(Material.substrate(2.2),1*MM)
+      , BoxSpaceFactory.shortCircuit(Material.VACUUM,100*MM)
     )
 
     m.setSources(sd*1, 50)
@@ -48,7 +48,7 @@ object MomMicrostripAntennaMoMExample5 {
     )
 //    m.setTestFunctionsCount(4);
     val arr: Array[DoubleToVector] = m.getTestFunctions.arr()
-    println(arr(0).computeMatrix(0.01,0.5))
+    println(arr(0).toDM()(0.01,0.5))
     var c = Plot.console()
     c.run(
       new PlotData()

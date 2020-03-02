@@ -14,10 +14,10 @@ import net.vpc.scholar.hadrumaths.scalarproducts.numeric.SimpleNumericScalarProd
 public class ScalarProductOperatorFactory extends AbstractFactory {
     public static final ScalarProductOperator NUMERIC_SCALAR_PRODUCT_OPERATOR = new NumericScalarProductOperator(true);
     public static final ScalarProductOperator SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalScalarProductOperator(true, new SimpleNumericScalarProductOperator(true));
-    public static final ScalarProductOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalScalarProductOperator(true,null);
+    public static final ScalarProductOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR = new FormalScalarProductOperator(true, null);
     public static final ScalarProductOperator NUMERIC_SCALAR_PRODUCT_OPERATOR_NON_HERM = new NumericScalarProductOperator(false);
     public static final ScalarProductOperator SOFT_FORMAL_SCALAR_PRODUCT_OPERATOR_NON_HERM = new FormalScalarProductOperator(false, new SimpleNumericScalarProductOperator(false));
-    public static final ScalarProductOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR_NON_HERM = new FormalScalarProductOperator(false,null);
+    public static final ScalarProductOperator HARD_FORMAL_SCALAR_PRODUCT_OPERATOR_NON_HERM = new FormalScalarProductOperator(false, null);
 
     public static ScalarProductOperator defaultValue() {
         return numeric();
@@ -44,6 +44,10 @@ public class ScalarProductOperatorFactory extends AbstractFactory {
         return new FormalScalarProductOperator(hermitian, fallack);
     }
 
+    public static ScalarProductOperator quad() {
+        return quad(true);
+    }
+
     /**
      * create new instance of NumericScalarProductOperator with quad integrator
      * tolerance = 1E-6;
@@ -57,10 +61,6 @@ public class ScalarProductOperatorFactory extends AbstractFactory {
         return new NumericScalarProductOperator(hermitian, new DQuadIntegralXY());
     }
 
-    public static ScalarProductOperator quad() {
-        return quad(true);
-    }
-
     public static ScalarProductOperator quad(double tolerance, double minWindow, double maxWindow, int maxfcnt, boolean hermitian) {
         return new NumericScalarProductOperator(hermitian, new DQuadIntegralXY(tolerance, minWindow, maxWindow, maxfcnt));
     }
@@ -69,23 +69,23 @@ public class ScalarProductOperatorFactory extends AbstractFactory {
         return rectmid(0, 0, 0, hermitian);
     }
 
-    public static ScalarProductOperator rectmid(int precision, boolean hermitian) {
-        return rectmid(precision, precision, precision, hermitian);
-    }
-
     public static ScalarProductOperator rectmid(int xprecision, int yprecision, int zprecision, boolean hermitian) {
         return new NumericScalarProductOperator(hermitian, new DRectMidIntegralXY(xprecision, yprecision, zprecision));
+    }
+
+    public static ScalarProductOperator rectmid(int precision, boolean hermitian) {
+        return rectmid(precision, precision, precision, hermitian);
     }
 
     public static ScalarProductOperator rectlow(boolean hermitian) {
         return rectlow(0, 0, 0, hermitian);
     }
 
-    public static ScalarProductOperator rectlow(int precision, boolean hermitian) {
-        return rectlow(precision, precision, precision, hermitian);
-    }
-
     public static ScalarProductOperator rectlow(int xprecision, int yprecision, int zprecision, boolean hermitian) {
         return new NumericScalarProductOperator(hermitian, new DRectLowIntegralXY(xprecision, yprecision, zprecision));
+    }
+
+    public static ScalarProductOperator rectlow(int precision, boolean hermitian) {
+        return rectlow(precision, precision, precision, hermitian);
     }
 }

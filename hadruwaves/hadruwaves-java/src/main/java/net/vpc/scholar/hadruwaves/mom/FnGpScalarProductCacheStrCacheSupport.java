@@ -1,14 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.TMatrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Complex>> {
+class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     private MomStructure momStructure;
 
@@ -18,7 +17,7 @@ class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Comp
     }
 
     @Override
-    public TMatrix<Complex> compute(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache) {
         ProgressMonitor monitor = getMonitor();
         ProgressMonitor[] mon = monitor.split(new double[]{.1, .9});
         momStructure.initComputation(mon[0]);

@@ -3,6 +3,7 @@ package net.vpc.scholar.hadruplot.console;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.*;
 import net.vpc.common.util.Chronometer;
+import net.vpc.common.util.TimeDuration;
 import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.actions.AbstractPlotAction;
 import net.vpc.scholar.hadruplot.containers.DefaultPlotWindowContainerFactory;
@@ -29,7 +30,6 @@ public class PlotConsoleFrame extends JFrame {
     JMenu toolsWindowsMenu;
     RecentFilesMenu recentFilesMenu;
     JLabel globalLabel;
-    JProgressBar globalProgress;
     long globalStartTime;
     private List<PlotConsoleListener> listeners = new ArrayList<>();
     Map<String, JInternalFrame> userWindows = new HashMap<String, JInternalFrame>();
@@ -270,15 +270,11 @@ public class PlotConsoleFrame extends JFrame {
         JToolBar b = new JToolBar(JToolBar.HORIZONTAL);
         b.setFloatable(false);
 
-        globalProgress = new JProgressBar(0, 100);
-        globalProgress.setStringPainted(true);
         globalLabel = new JLabel();
         b.add(globalLabel);
         b.addSeparator();
-        b.add(globalProgress);
-        b.addSeparator();
 
-        b.addSeparator();
+        b.add(Box.createHorizontalGlue());
 
         b.addSeparator();
         b.add(new MemoryUseIconTray(false));
@@ -423,17 +419,8 @@ public class PlotConsoleFrame extends JFrame {
         onPostAddJInternalFrame(new JInternalFrameHelper(inf),fino);
     }
 
-    public void setGlobalInfo(String title, int value) {
+    public void setGlobalInfo(String title) {
         globalLabel.setText(title);
-        globalProgress.setMaximum(value);
-    }
-
-    public void setGlobalProgress(int value, long spentTimeNano) {
-        globalProgress.setValue(value);
-        globalProgress.setString(
-                String.valueOf(value) + "/" + String.valueOf(globalProgress.getMaximum())
-                        + (spentTimeNano < 0 ? "" : (" | + " + Chronometer.formatPeriodNano(spentTimeNano)))
-        );
     }
 
     public synchronized ConsoleWindow getWindow(WindowPath path) {

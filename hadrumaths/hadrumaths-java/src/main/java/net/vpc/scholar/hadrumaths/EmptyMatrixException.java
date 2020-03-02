@@ -5,7 +5,6 @@ package net.vpc.scholar.hadrumaths;
  * User: taha
  * Date: 6 juil. 2003
  * Time: 10:47:54
- * 
  */
 public class EmptyMatrixException extends RuntimeException {
     public EmptyMatrixException() {

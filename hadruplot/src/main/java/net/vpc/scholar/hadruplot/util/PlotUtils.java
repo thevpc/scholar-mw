@@ -4,7 +4,11 @@ import net.vpc.common.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Array;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,36 +122,6 @@ public class PlotUtils {
         return newVals;
     }
 
-    public static Object[] mul(Object[] a, double b) {
-        int max = a.length;
-        Object[] ret = new Object[max];
-        PlotNumbers numbers = PlotConfigManager.Numbers;
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] == null ? null : numbers.mul(a[i], b);
-        }
-        return ret;
-    }
-
-    public static Object[] plus(Object[] a, Object[] b) {
-        int max = a.length;
-        Object[] ret = new Object[max];
-        PlotNumbers numbers = PlotConfigManager.Numbers;
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] == null ? null : numbers.plus(a[i], b[i]);
-        }
-        return ret;
-    }
-
-    public static Object[] relativeError(Object[] a, Object[] b) {
-        int max = a.length;
-        Object[] ret = new Object[max];
-        PlotNumbers numbers = PlotConfigManager.Numbers;
-        for (int i = 0; i < max; i++) {
-            ret[i] = a[i] == null ? null : numbers.relativeError(a[i], b[i]);
-        }
-        return ret;
-    }
-
     /**
      * This is a work around if jdk 8 is not available
      *
@@ -193,7 +167,6 @@ public class PlotUtils {
         }
     }
 
-
     public static PlotDoubleConverter resolveDoubleConverter(Object[][][] c) {
         PlotDoubleConverter real = PlotDoubleConverter.intern(PlotDoubleConverter.REAL);
         if (c == null) {
@@ -238,27 +211,27 @@ public class PlotUtils {
         return real;
     }
 
+    public static PlotHyperCube mul(PlotHyperCube c, double v) {
+        List<PlotCube> t = new ArrayList<>();
+        for (int i = 0; i < c.getCubesCount(); i++) {
+            t.add(mul(c.getCube(i), v));
+        }
+        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
+    }
+
+    public static PlotCube mul(PlotCube c, double v) {
+        Object[][][] values = c.getValues();
+        Object[][][] mul0 = mul(values, v);
+        return new PlotCube(
+                c.getX(), c.getY(), c.getZ(),
+                mul0
+        );
+    }
+
     public static Object[][][] mul(Object[][][] c, double v) {
         Object[][][] c2 = new Object[c.length][][];
         for (int i = 0; i < c.length; i++) {
             c2[i] = mul(c[i], v);
-        }
-        return c2;
-    }
-
-    public static Object[][][] plus(Object[][][] c, Object[][][] v) {
-        Object[][][] c2 = new Object[c.length][][];
-        for (int i = 0; i < c.length; i++) {
-            c2[i] = plus(c[i], v[i]);
-        }
-        return c2;
-    }
-
-
-    public static Object[][][] relativeError(Object[][][] c, Object[][][] v) {
-        Object[][][] c2 = new Object[c.length][][];
-        for (int i = 0; i < c.length; i++) {
-            c2[i] = relativeError(c[i], v[i]);
         }
         return c2;
     }
@@ -271,10 +244,80 @@ public class PlotUtils {
         return c2;
     }
 
+    public static Object[] mul(Object[] a, double b) {
+        int max = a.length;
+        Object[] ret = new Object[max];
+        PlotNumbers numbers = PlotConfigManager.Numbers;
+        for (int i = 0; i < max; i++) {
+            ret[i] = a[i] == null ? null : numbers.mul(a[i], b);
+        }
+        return ret;
+    }
+
+    public static PlotHyperCube plus(PlotHyperCube c, PlotHyperCube v) {
+        List<PlotCube> t = new ArrayList<>();
+        for (int i = 0; i < c.getCubesCount(); i++) {
+            t.add(plus(c.getCube(i), v.getCube(i)));
+        }
+        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
+    }
+
+    public static PlotCube plus(PlotCube c, PlotCube v) {
+        Object[][][] values1 = c.getValues();
+        Object[][][] values2 = v.getValues();
+        return new PlotCube(
+                c.getX(), c.getY(), c.getZ(),
+                plus(values1, values2)
+        );
+    }
+
+    public static Object[][][] plus(Object[][][] c, Object[][][] v) {
+        Object[][][] c2 = new Object[c.length][][];
+        for (int i = 0; i < c.length; i++) {
+            c2[i] = plus(c[i], v[i]);
+        }
+        return c2;
+    }
+
     public static Object[][] plus(Object[][] c, Object[][] v) {
         Object[][] c2 = new Object[c.length][];
         for (int i = 0; i < c.length; i++) {
             c2[i] = plus(c[i], v[i]);
+        }
+        return c2;
+    }
+
+    public static Object[] plus(Object[] a, Object[] b) {
+        int max = a.length;
+        Object[] ret = new Object[max];
+        PlotNumbers numbers = PlotConfigManager.Numbers;
+        for (int i = 0; i < max; i++) {
+            ret[i] = a[i] == null ? null : numbers.plus(a[i], b[i]);
+        }
+        return ret;
+    }
+
+    public static PlotHyperCube relativeError(PlotHyperCube c, PlotHyperCube v) {
+        List<PlotCube> t = new ArrayList<>();
+        for (int i = 0; i < c.getCubesCount(); i++) {
+            t.add(relativeError(c.getCube(i), v.getCube(i)));
+        }
+        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
+    }
+
+    public static PlotCube relativeError(PlotCube c, PlotCube v) {
+        Object[][][] values1 = c.getValues();
+        Object[][][] values2 = v.getValues();
+        return new PlotCube(
+                c.getX(), c.getY(), c.getZ(),
+                relativeError(values1, values2)
+        );
+    }
+
+    public static Object[][][] relativeError(Object[][][] c, Object[][][] v) {
+        Object[][][] c2 = new Object[c.length][][];
+        for (int i = 0; i < c.length; i++) {
+            c2[i] = relativeError(c[i], v[i]);
         }
         return c2;
     }
@@ -287,59 +330,15 @@ public class PlotUtils {
         return c2;
     }
 
-
-    public static PlotCube mul(PlotCube c, double v) {
-        Object[][][] values = c.getValues();
-        Object[][][] mul0 = mul(values, v);
-        return new PlotCube(
-                c.getX(), c.getY(), c.getZ(),
-                mul0
-        );
-    }
-
-    public static PlotCube plus(PlotCube c, PlotCube v) {
-        Object[][][] values1 = c.getValues();
-        Object[][][] values2 = v.getValues();
-        return new PlotCube(
-                c.getX(), c.getY(), c.getZ(),
-                plus(values1, values2)
-        );
-    }
-
-    public static PlotCube relativeError(PlotCube c, PlotCube v) {
-        Object[][][] values1 = c.getValues();
-        Object[][][] values2 = v.getValues();
-        return new PlotCube(
-                c.getX(), c.getY(), c.getZ(),
-                relativeError(values1, values2)
-        );
-    }
-
-    public static PlotHyperCube mul(PlotHyperCube c, double v) {
-        List<PlotCube> t = new ArrayList<>();
-        for (int i = 0; i < c.getCubesCount(); i++) {
-            t.add(mul(c.getCube(i), v));
+    public static Object[] relativeError(Object[] a, Object[] b) {
+        int max = a.length;
+        Object[] ret = new Object[max];
+        PlotNumbers numbers = PlotConfigManager.Numbers;
+        for (int i = 0; i < max; i++) {
+            ret[i] = a[i] == null ? null : numbers.relativeError(a[i], b[i]);
         }
-        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
+        return ret;
     }
-
-
-    public static PlotHyperCube plus(PlotHyperCube c, PlotHyperCube v) {
-        List<PlotCube> t = new ArrayList<>();
-        for (int i = 0; i < c.getCubesCount(); i++) {
-            t.add(plus(c.getCube(i), v.getCube(i)));
-        }
-        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
-    }
-
-    public static PlotHyperCube relativeError(PlotHyperCube c, PlotHyperCube v) {
-        List<PlotCube> t = new ArrayList<>();
-        for (int i = 0; i < c.getCubesCount(); i++) {
-            t.add(relativeError(c.getCube(i), v.getCube(i)));
-        }
-        return new DefaultPlotHyperCube(t.toArray(new PlotCube[0]));
-    }
-
 
     public static Object[][] toColumn(Object[] obj, Class cls) {
         Object[][] vals = (Object[][]) Array.newInstance(cls, obj.length, 1);
@@ -359,22 +358,22 @@ public class PlotUtils {
     }
 
     public static Object[][] sub(Object[][] d, Object[][] m) {
-        return plus(d,mul(m,-1));
+        return plus(d, mul(m, -1));
     }
 
-    public static Object[] toObjectArrayOrNull(Object obj){
-        if(obj==null){
+    public static Object[] toObjectArrayOrNull(Object obj) {
+        if (obj == null) {
             return null;
         }
         if (obj.getClass().isArray()) {
             int l = Array.getLength(obj);
-            List<Object> initial=new ArrayList<>(l);
+            List<Object> initial = new ArrayList<>(l);
             for (int i = 0; i < l; i++) {
                 initial.add(Array.get(obj, i));
             }
             return initial.toArray();
         } else if (obj instanceof Iterable) {
-            List<Object> initial=new ArrayList<>();
+            List<Object> initial = new ArrayList<>();
             for (Object o : (Iterable) obj) {
                 initial.add(o);
             }
@@ -382,5 +381,30 @@ public class PlotUtils {
         } else {
             return null;
         }
+    }
+
+    public static ImageIcon getScaledImageIcon(URL srcImg, int w, int h) {
+        Image image = new ImageIcon(srcImg).getImage();
+        return new ImageIcon(getScaledImage(image, w, h));
+    }
+
+    public static Image getScaledImage(Image srcImg, int w, int h) {
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
+    }
+
+    public static JPopupMenu getOrCreateComponentPopupMenu(JComponent c){
+        JPopupMenu p = c.getComponentPopupMenu();
+        if(p==null){
+            p=new JPopupMenu();
+            c.setComponentPopupMenu(p);
+        }
+        return p;
     }
 }

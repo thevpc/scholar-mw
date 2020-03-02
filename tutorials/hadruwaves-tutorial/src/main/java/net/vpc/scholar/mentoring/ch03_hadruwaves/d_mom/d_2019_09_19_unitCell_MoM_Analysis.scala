@@ -1,7 +1,8 @@
 package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom
 
-import net.vpc.scholar.hadrumaths.MathScala._;
-import net.vpc.scholar.hadrumaths.{InverseStrategy, Maths, ScalarProductOperatorFactory}
+import net.vpc.scholar.hadrumaths.MathScala._
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector
+import net.vpc.scholar.hadrumaths.{Expr, InverseStrategy, Maths, ScalarProductOperatorFactory}
 import net.vpc.scholar.hadruwaves.mom.{BoxSpaceFactory, MomStructure, ProjectType}
 
 object d_2019_09_19_unitCell_MoM_Analysis {
@@ -39,7 +40,7 @@ object d_2019_09_19_unitCell_MoM_Analysis {
     val NPatch=sqrt(2.0/(cx*cy));
     val gpqx = (NPatch * sin(p*PI*(X+cx/2)/cx) * cos(q*PI*(Y  + cy/2)/cy)) * dPatch
     val gpqy = (NPatch * cos(p*PI*(X+cx/2)/cx) * sin(q*PI*(Y  + cy/2)/cy)) * dPatch
-    val gpq = vector(gpqx, gpqy);
+    val gpq  = vector(gpqx, gpqy);
 
     // *************************  Essai vector ************************
     var pp = 0;
@@ -50,6 +51,7 @@ object d_2019_09_19_unitCell_MoM_Analysis {
       qq = 0;
       while (qq < Q) {
         if ((pp != 0) || (qq != 0)) {
+//          val value: Expr = gpq(p -> pp)(q -> qq)
           essai :+= gpq(p -> pp)(q -> qq);
         }
         //println(" Line: p= "+pp+"   q= "+qq);
@@ -69,7 +71,7 @@ object d_2019_09_19_unitCell_MoM_Analysis {
     str.setProjectType(ProjectType.WAVE_GUIDE)
     str.testFunctions(essai)
     var sparams=dtimes(4*GHZ,6*GHZ,20).map(
-      ff=>str.frequency(ff).sparameters().computeComplex()
+      ff=>str.frequency(ff).sparameters().evalComplex()
 
     )//.toArray[Complex]
     Plot.title("SParams").plot( sparams)

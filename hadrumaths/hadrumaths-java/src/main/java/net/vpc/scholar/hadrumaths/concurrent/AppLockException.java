@@ -4,7 +4,7 @@ package net.vpc.scholar.hadrumaths.concurrent;
  * Created by vpc on 11/13/16.
  */
 public class AppLockException extends RuntimeException {
-    private AppLock file;
+    private final AppLock file;
 
     public AppLockException(String message, AppLock file) {
         super(message);

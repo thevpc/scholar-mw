@@ -1,13 +1,15 @@
 package net.vpc.scholar.hadruwaves;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.common.util.LRUMap;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.io.ObjectStreamException;
-import java.io.Serializable;
 
-public final class ModeIndex implements Serializable, Dumpable {
+public final class ModeIndex implements HSerializable {
     public final ModeType mtype;
     public final int m;
     public final int n;
@@ -113,9 +115,9 @@ public final class ModeIndex implements Serializable, Dumpable {
         return mtype;
     }
 
-    public String dump() {
-        return toString();
-    }
+//    public String dump() {
+//        return toString();
+//    }
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -138,6 +140,10 @@ public final class ModeIndex implements Serializable, Dumpable {
         return result;
     }
 
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(mtype.name(),Tson.elem(m),Tson.elem(n)).build();
+    }
     public String toString() {
         return  mtype.toString()+m+"."+n;
     }

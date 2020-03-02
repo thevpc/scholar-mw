@@ -23,6 +23,10 @@ public class DoubleArray implements ToDoubleArrayAware {
         }
     }
 
+    public void add(double d) {
+        values.add(d);
+    }
+
     public DoubleArray(double[] values) {
         this.values = new ArrayList<>();
         for (double aDouble : values) {
@@ -42,10 +46,6 @@ public class DoubleArray implements ToDoubleArrayAware {
 
     public boolean contains(double d) {
         return values.contains(d);
-    }
-
-    public void add(double d) {
-        values.add(d);
     }
 
     public void add(int pos, double d) {

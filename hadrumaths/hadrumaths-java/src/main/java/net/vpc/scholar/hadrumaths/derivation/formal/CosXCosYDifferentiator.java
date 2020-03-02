@@ -1,9 +1,12 @@
 package net.vpc.scholar.hadrumaths.derivation.formal;
 
-import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -14,12 +17,12 @@ public class CosXCosYDifferentiator implements FunctionDifferentiator {
         CosXCosY c = (CosXCosY) f;
         switch (varIndex) {
             case X: {
-                return new CosXCosY(c.amp * c.a, c.a, c.b - MathsBase.PI / 2, c.c, c.d, c.getDomain());
+                return new CosXCosY(c.getAmp() * c.getA(), c.getA(), c.getB() - Maths.PI / 2, c.getC(), c.getD(), c.getDomain());
             }
             case Y: {
-                return new CosXCosY(c.amp * c.c, c.a, c.b, c.c, c.d - MathsBase.PI / 2, c.getDomain());
+                return new CosXCosY(c.getAmp() * c.getC(), c.getA(), c.getB(), c.getC(), c.getD() - Maths.PI / 2, c.getDomain());
             }
         }
-        return FunctionFactory.DZEROXY;
+        return Maths.DZEROXY;
     }
 }

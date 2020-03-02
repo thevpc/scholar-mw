@@ -21,7 +21,7 @@ public class PlotYmode extends PlotAxisSeriesSingleValue implements Cloneable {
         this.mode = mode;
     }
 
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
         return ((MomStructure)structure).getModeFunctions().getMode(mode, m, n).impedance.admittanceValue();
     }
 

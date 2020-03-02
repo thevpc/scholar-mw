@@ -4,7 +4,7 @@ import net.vpc.common.util.TypeName;
 
 import java.util.List;
 
-public class DoubleArray2 extends ArrayTVector<DoubleArray> {
+public class DoubleArray2 extends ArrayVector<DoubleArray> {
     private static final long serialVersionUID = 1L;
 
     public DoubleArray2() {
@@ -16,7 +16,7 @@ public class DoubleArray2 extends ArrayTVector<DoubleArray> {
     }
 
     public DoubleArray2(boolean row, int initialSize) {
-        super((TypeName) MathsBase.$DLIST2, row, initialSize);
+        super((TypeName) Maths.$DLIST2, row, initialSize);
     }
 
     public DoubleArray2(boolean row, List<List<Double>> values) {
@@ -26,11 +26,27 @@ public class DoubleArray2 extends ArrayTVector<DoubleArray> {
         }
     }
 
+    public DoubleArray2 appendRow(List<Double> d) {
+        return append(new DoubleArray(d));
+    }
+
+    public DoubleArray2 append(DoubleArray e) {
+        return (DoubleArray2) super.append(e);
+    }
+
+    public DoubleArray2 append(int index, DoubleArray e) {
+        return (DoubleArray2) super.append(index, e);
+    }
+
     public DoubleArray2(boolean row, Double[][] values) {
         this(row, values.length);
         for (Double[] aDouble : values) {
             appendRow(aDouble);
         }
+    }
+
+    public DoubleArray2 appendRow(Double[] d) {
+        return append(new DoubleArray(d));
     }
 
     public DoubleArray2 appendAll(DoubleArray2 a) {
@@ -40,22 +56,7 @@ public class DoubleArray2 extends ArrayTVector<DoubleArray> {
         return this;
     }
 
-    public DoubleArray2 append(DoubleArray e) {
-        return (DoubleArray2) super.append(e);
-    }
-    public DoubleArray2 append(int index, DoubleArray e) {
-        return (DoubleArray2) super.append(index,e);
-    }
-
     public DoubleArray2 appendRow(double[] d) {
-        return append(new DoubleArray(d));
-    }
-
-    public DoubleArray2 appendRow(Double[] d) {
-        return append(new DoubleArray(d));
-    }
-
-    public DoubleArray2 appendRow(List<Double> d) {
         return append(new DoubleArray(d));
     }
 

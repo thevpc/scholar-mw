@@ -4,10 +4,9 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Div;
-import net.vpc.scholar.hadrumaths.symbolic.Inv;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Neg;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Inv;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -16,7 +15,7 @@ import net.vpc.scholar.hadrumaths.symbolic.Neg;
 public class InvDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Inv c = (Inv) f;
-        Expr e = c.getExpression();
-        return new Div(new Neg(d.derive(e,Axis.X)), new Mul(e, e));
+        Expr e = c.getChild(0);
+        return div(neg(d.derive(e, Axis.X)), mul(e, e));
     }
 }

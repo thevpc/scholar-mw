@@ -2,13 +2,13 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.TypeName;
 
-public abstract class AbstractExprMatrix extends AbstractTMatrix<Expr> implements ExprMatrix{
+public abstract class AbstractExprMatrix extends AbstractMatrix<Expr> implements ExprMatrix {
     public AbstractExprMatrix() {
     }
 
     @Override
     public TypeName getComponentType() {
-        return MathsBase.$EXPR;
+        return Maths.$EXPR;
     }
 
     @Override
@@ -18,7 +18,7 @@ public abstract class AbstractExprMatrix extends AbstractTMatrix<Expr> implement
 
     @Override
     public ExprMatrix simplify(SimplifyOptions options) {
-        return (ExprMatrix) MathsBase.Config.getComplexMatrixFactory(MathsBase.$EXPR).newMatrix(getRowCount(), getColumnCount(), new TMatrixCell<Expr>() {
+        return (ExprMatrix) Maths.Config.getComplexMatrixFactory(Maths.$EXPR).newMatrix(getRowCount(), getColumnCount(), new MatrixCell<Expr>() {
             @Override
             public Expr get(int row, int column) {
                 return AbstractExprMatrix.this.get(row, column).simplify(options);

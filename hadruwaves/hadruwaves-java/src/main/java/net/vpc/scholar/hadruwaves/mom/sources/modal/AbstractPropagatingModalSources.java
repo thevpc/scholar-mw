@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import static net.vpc.scholar.hadruwaves.Physics.lambda;
@@ -31,7 +34,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     public int getSourceCountForDimensions(ModeFunctions fn) {
-        int x = ((int) (Math.max(fn.getDomain().xwidth(),fn.getDomain().ywidth()) / lambda(fn.getFrequency()))) + 1;
+        int x = ((int) (Math.max(fn.getEnv().getDomain().xwidth(),fn.getEnv().getDomain().ywidth()) / lambda(fn.getEnv().getFrequency()))) + 1;
         int val = (x < 0 || x >= this.sourceCountPerDimension.length) ? this.defaultSourceCount : this.sourceCountPerDimension[x - 1];
         if (val == 0) {
             return x;
@@ -47,28 +50,17 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
         return dump();
     }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h=new Dumper(this,Dumper.Type.SIMPLE);
-        h.add("default", defaultSourceCount == 0 ? "%scale" : defaultSourceCount);
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("default", context.elem(defaultSourceCount == 0 ? "%scale" : defaultSourceCount));
         if (sourceCountPerDimension.length > 0) {
-            StringBuilder sb=new StringBuilder("");
-            for (int i = 0; i < sourceCountPerDimension.length; i++) {
-                if (i > 0) {
-                    sb.append(",");
-                }
-                if(sourceCountPerDimension[i]>0){
-                    sb.append(sourceCountPerDimension[i]);
-                }else{
-                    sb.append("*");
-                }
-            }
-            //bydimSourceCount
-            h.add("bydim",sb.toString());
+            h.add("bydim", context.elem(
+                    Arrays.stream(sourceCountPerDimension).boxed().map(x->x>0?String.valueOf(x):"*")
+                    .toArray()
+            ));
         }
-        return h;
-    }
-    public final String dump() {
-        return getDumpStringHelper().toString();
+        return h.build();
     }
 
     @Override
@@ -112,7 +104,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
 
     @Override
     public int hashCode() {
-        int result = defaultSourceCount;
+        int result = getClass().getName().hashCode()*31+defaultSourceCount;
         result = 31 * result + Arrays.hashCode(sourceCountPerDimension);
         return result;
     }

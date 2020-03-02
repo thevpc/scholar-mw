@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.common.mon.ProgressMonitorCreator;
 import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceResult;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
+import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 
@@ -33,8 +33,8 @@ public abstract class AbstractValueBuilder implements ValueBuilder {
     }
 
     @Override
-    public ValueBuilder monitor(ProgressTaskMonitor monitor) {
-        this.monitor = monitor == null ? null : monitor.addTask(toString(), getClass().getSimpleName());
+    public ValueBuilder monitor(TaskMonitorManager monitor) {
+        this.monitor = monitor == null ? null : monitor.createMonitor(toString(), getClass().getSimpleName());
         return this;
     }
 
@@ -58,13 +58,13 @@ public abstract class AbstractValueBuilder implements ValueBuilder {
             return monitor;
         }
         if (structure != null) {
-            ProgressMonitorCreator m = structure.monitor();
+            ProgressMonitorFactory m = structure.monitorFactory();
             if (m != null) {
                 ProgressMonitor p = m.createMonitor(toString(), getClass().getSimpleName());
-                return ProgressMonitorFactory.nonnull(p);
+                return ProgressMonitors.nonnull(p);
             }
         }
-        return ProgressMonitorFactory.nonnull(null);
+        return ProgressMonitors.nonnull(null);
     }
 
     public ConvergenceEvaluator getConvergenceEvaluator() {

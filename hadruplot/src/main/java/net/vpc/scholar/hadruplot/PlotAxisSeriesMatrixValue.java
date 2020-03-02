@@ -21,10 +21,10 @@ public abstract class PlotAxisSeriesMatrixValue extends PlotAxisSeriesRow {
         super(name, type, graphix);
     }
 
-    protected abstract Object[][] computeMatrixItems(ConsoleAwareObject structure, ParamSet x);
+    protected abstract Object[][] evalMatrixItems(ConsoleAwareObject structure, ParamSet x);
 
-    protected final PlotNamedVector computeComplexes(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        return convertMatrixToNamedVector(true, computeMatrixItems(structure, x), getName(), getName(), p);
+    protected final PlotNamedVector evalComplexes(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        return convertMatrixToNamedVector(true, evalMatrixItems(structure, x), getName(), getName(), p);
     }
 
     protected PlotNamedVector convertMatrixToNamedVector(boolean all, Object[][] matrix, String name, String shortName, ConsoleActionParams p) {

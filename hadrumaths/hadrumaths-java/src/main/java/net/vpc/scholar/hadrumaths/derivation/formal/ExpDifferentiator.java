@@ -4,8 +4,9 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Exp;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Exp;
+
+import static net.vpc.scholar.hadrumaths.Maths.mul;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -14,8 +15,8 @@ import net.vpc.scholar.hadrumaths.symbolic.Mul;
 public class ExpDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Exp c = (Exp) f;
-        Expr a = c.getArgument();
-        return new Mul(
+        Expr a = c.getChild(0);
+        return mul(
                 d.derive(a, varIndex), c
         );
     }

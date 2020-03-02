@@ -7,11 +7,11 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Expressions;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.Any;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.Div;
-import net.vpc.scholar.hadrumaths.symbolic.IConstantValue;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Div;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -19,7 +19,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class DivSimplifyRule implements ExpressionRewriterRule {
+public class DivSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new DivSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Div.class};
@@ -29,45 +29,39 @@ public class DivSimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (!(e instanceof Div)) {
             return null;
         }
 
         Div ee = (Div) e;
-        Expr first = ee.getFirst();
-        Expr second = ee.getSecond();
-        RewriteResult ar = ruleset.rewrite(first);
-        RewriteResult br = ruleset.rewrite(second);
+        Expr first = ee.getChild(0);
+        Expr second = ee.getChild(1);
+        RewriteResult ar = ruleset.rewrite(first, targetExprType);
+        RewriteResult br = ruleset.rewrite(second, targetExprType);
 
-        IConstantValue ac0 = Expressions.toComplexValue(ar.getValue());
-        IConstantValue bc0 = Expressions.toComplexValue(br.getValue());
+        Expr arv = ar.isUnmodified() ? first : ar.getValue();
+        Expr brv = br.isUnmodified() ? second : br.getValue();
+
+        Expr ac0 = Expressions.toConstantExprOrNull(arv);
+
+        Expr bc0 = Expressions.toConstantExprOrNull(brv);
         if (ac0 != null && bc0 != null) {
-            return RewriteResult.newVal(new ComplexValue(ac0.getComplexConstant().div(bc0.getComplexConstant()), ac0.getDomain().intersect(bc0.getDomain())));
+            Expr o = ac0.toNumber().div(bc0.toNumber()).mul(ac0.getDomain().intersect(bc0.getDomain()));
+            return RewriteResult.bestEffort(ruleset.rewriteOrSame(o,null));
         }
         if (bc0 != null) {
-            return RewriteResult.newVal(MathsBase.mul(ar.getValue(), new ComplexValue(bc0.getComplexConstant().inv(), bc0.getDomain())));
+            Expr mul = arv.mul(bc0.toNumber().inv().mul(bc0.getDomain()));
+            RewriteResult mulRes = ruleset.rewrite(mul, targetExprType);
+            return mulRes.isUnmodified()? RewriteResult.bestEffort(mul):mulRes;
         }
-        if (!ar.isRewritten() && !br.isRewritten()) {
-            return RewriteResult.unmodified(e);
+        if (ar.isUnmodified() && br.isUnmodified()) {
+            return RewriteResult.unmodified();
         }
-
-        Expr eee = MathsBase.div(ar.getValue(), br.getValue());
-        eee = Any.copyProperties(e, eee);
+        Expr eee = arv.div(brv);
+        eee = ExprDefaults.copyProperties(e, eee);
         return (ar.isBestEffort() && br.isBestEffort()) ? RewriteResult.bestEffort(eee) : RewriteResult.newVal(eee);
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

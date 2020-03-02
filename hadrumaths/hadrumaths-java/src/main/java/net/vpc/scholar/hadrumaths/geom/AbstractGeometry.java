@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.geom;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Shape2D;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Shape2D;
 
 /**
  * Created by vpc on 3/1/17.
@@ -25,7 +25,7 @@ public abstract class AbstractGeometry implements Geometry {
     }
 
     public Geometry scale(int width, int height) {
-        return DomainScaleTool.create(getDomain(), Domain.forBounds(0, width, 0, height)).rescale(this);
+        return DomainScaleTool.create(getDomain(), Domain.ofBounds(0, width, 0, height)).rescale(this);
     }
 
     @Override
@@ -56,30 +56,30 @@ public abstract class AbstractGeometry implements Geometry {
     @Override
     public Expr toExpr() {
         if (isRectangular()) {
-            return DoubleValue.valueOf(1, getDomain());
+            return Maths.expr(1, getDomain());
         }
         return new Shape2D(1, this);
     }
 
     @Override
-    public Expr multiply(int value) {
+    public Expr mul(int value) {
         if (isRectangular()) {
-            return DoubleValue.valueOf(value, getDomain());
+            return Maths.expr(value, getDomain());
         }
         return new Shape2D(value, this);
     }
 
     @Override
-    public Expr multiply(double value) {
+    public Expr mul(double value) {
         if (isRectangular()) {
-            return DoubleValue.valueOf(value, getDomain());
+            return Maths.expr(value, getDomain());
         }
         return new Shape2D(value, this);
     }
 
     @Override
-    public Expr multiply(Expr value) {
-        return toExpr().multiply(value);
+    public Expr mul(Expr value) {
+        return toExpr().mul(value);
     }
 
     @Override

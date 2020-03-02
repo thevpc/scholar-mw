@@ -8,7 +8,7 @@ public class PlotValuePointType extends AbstractPlotValueType {
         super("point");
     }
 
-    public Point toPoint(Object o){
+    public Point toPoint(Object o) {
         return (Point) o;
     }
 

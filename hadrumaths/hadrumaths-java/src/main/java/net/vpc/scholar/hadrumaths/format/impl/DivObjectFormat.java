@@ -6,33 +6,29 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Div;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Div;
 
 /**
  * @author vpc
  */
 public class DivObjectFormat implements ObjectFormat<Div> {
 
-    @Override
-    public String format(Div o, ObjectFormatParamSet format) {
-        StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
-        return sb.toString();
-    }
 
     @Override
-    public void format(StringBuilder sb, Div o, ObjectFormatParamSet format) {
-        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
-        format = format.add(FormatFactory.REQUIRED_PARS);
+    public void format(Div o, ObjectFormatContext context) {
+        boolean par = context.containsParam(FormatFactory.REQUIRED_PARS);
+        ObjectFormatParamSet format2 = context.getParams().add(FormatFactory.REQUIRED_PARS);
         if (par) {
-            sb.append("(");
+            context.append("(");
         }
-        FormatFactory.format(sb, o.getFirst(), format);
-        sb.append(" / ");
-        FormatFactory.format(sb, o.getSecond(), format);
+        context.format(o.getFirst(), format2);
+//        context.append(" / ");
+        context.append("/");
+        context.format(o.getSecond(), format2);
         if (par) {
-            sb.append(")");
+            context.append(")");
         }
     }
 }

@@ -1,13 +1,15 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Surface;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruplot.AbsoluteSamples;
 import net.vpc.scholar.hadruplot.PlotDomain;
 import net.vpc.scholar.hadruplot.RelativeSamples;
@@ -15,17 +17,20 @@ import net.vpc.scholar.hadruplot.Samples;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
+ * NO_NARROW
  */
-public abstract class Domain /*extends AbstractGeometry*/ implements Serializable, Dumpable/*, PolygonBuilder*/, Cloneable, Expr, PlotDomain {
+public abstract class Domain implements PlotDomain, DoubleValue, DoubleToDouble, DoubleToDoubleDefaults.DoubleToDoubleSimple {
 
-    public static final Domain NaNX = new DomainX(Double.NaN, Double.NaN);
-    public static final Domain NaNXY = new DomainXY(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
-    public static final Domain NaNXYZ = new DomainXYZ(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+//    public static final Domain NaNX = new DomainX(Double.NaN, Double.NaN);
+//    public static final Domain NaNXY = new DomainXY(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+//    public static final Domain NaNXYZ = new DomainXYZ(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
 
     public static final Domain EMPTYX = new DomainX(0, 0);
     public static final Domain FULLX = new DomainX(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -38,10 +43,15 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public static final Domain ZEROXYZ = FULLXYZ;//forBounds(0, 0, 0, 0, 0, 0);
     protected final static double epsilon = 1E-12;
     private static final long serialVersionUID = 1L;
+    protected final int eagerHashCode;
 
+    protected Domain(int eagerHashCode) {
+        this.eagerHashCode = eagerHashCode;
+    }
 
     public static Domain ZERO(int dim) {
-        return FULL(dim);
+        return EMPTY(dim);
+//        return FULL(dim);
     }
 
     public static Domain EMPTY(int dim) {
@@ -74,70 +84,323 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         throw new IllegalArgumentException("Unsupported dimension " + dim);
     }
 
-    //    public Domain(Rectangle2D rectangle) {
-//        this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), Domain.Type.LENGTH);
-//    }
-//    public Domain(Rectangle rectangle) {
-//        this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), Domain.Type.LENGTH);
-//    }
-//    public Domain(DomainX d) {
-//        this(d.xmin(), Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, d.xmax, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, 2);
-//    }
-//    public Domain(double xmin, double xmax) {
-//        this(xmin, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, xmax, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, 1);
-//    }
-//    public Domain(double xmin, double ymin, double max_x_or_width, double max_y_or_height, Type type) {
-//        this(xmin, ymin,
-//                Double.NEGATIVE_INFINITY,
-//                type.equals(Type.LENGTH) ? (xmin + max_x_or_width) : max_x_or_width,
-//                type.equals(Type.LENGTH) ? (ymin + max_y_or_height) : max_y_or_height
-//                , Double.POSITIVE_INFINITY,
-//                2
-//        );
-//    }
-    //    public static DomainXY forItervallBounds(double xmin, double xmax, double ymin, double ymax) {
-//        return new DomainXY(xmin, ymin, xmax, ymax);
-//    }
-//
-//    public static DomainXY forItervallLengths(double xmin, double xlen, double ymin, double ylen) {
-//        return new DomainXY(xmin, ymin, xmin + xlen, ymin + ylen);
-//    }
-//
-//    public static DomainXY forCornerBounds(double xmin, double ymin, double xmax, double ymax) {
-//        return new DomainXY(xmin, ymin, xmax, ymax);
-//    }
-//
-//    public static DomainXY forCornerLengths(double xmin, double ymin, double xlen, double ylen) {
-//        return new DomainXY(xmin, ymin, xmin + xlen, ymin + ylen);
-//    }
-//    public Domain(double xmin, double xmax, double ymin, double ymax) {
-//        this(xmin, xmax, ymin, ymax, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 2);
-//    }
-    public static Domain NaN(int dim) {
-        switch (dim) {
-            case 1: {
-                return NaNX;
-            }
-            case 2: {
-                return NaNXY;
-            }
-            case 3: {
-                return NaNXYZ;
-            }
-        }
-        throw new IllegalArgumentException("Unsupported");
-    }
-
     public static Range range(Domain a, Domain b, double[] x) {
         return (b == null ? a : a.intersect(b)).range(x);
     }
+
+    public Range range(double[] x) {
+        if (isEmpty()) {
+            return null;
+        }
+        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        if (lx == null) {
+            return null;
+        }
+        return Range.ofBounds(lx[0], lx[1]);
+//        int[] ints = rangeArray(x);
+//        return ints == null ? null : Range.forBounds(ints[0], ints[1]);
+    }
+
+    public Domain intersect(Domain other) {
+        if (other == null || other == this) {
+            return this;
+        }
+        int d_t = this.dimension();
+        int d_o = other.dimension();
+        int dim = Math.max(d_t, d_o);
+        double x1_t = xmin();
+        double x2_t = xmax();
+        double x1_o = other.xmin();
+        double x2_o = other.xmax();
+
+        double x1 = max(x1_t, x1_o);
+        double x2 = min(x2_t, x2_o);
+        // some workaround
+        double delta = x1 - x2;
+        if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
+            x1 = x2 = 0.0D;
+        }
+
+        switch (dim) {
+            case 1: {
+                if (d_t == 1 && x1 == x1_t && x2 == x2_t) {
+                    return this;
+                }
+                if (d_o == 1 && x1 == x1_o && x2 == x2_o) {
+                    return other;
+                }
+                return ofBounds(x1, x2);
+            }
+            case 2: {
+                double y1_t = ymin();
+                double y1_o = other.ymin();
+                double y2_t = ymax();
+                double y2_o = other.ymax();
+                double y1 = max(y1_t, y1_o);
+                double y2 = min(y2_t, y2_o);
+                x2 = max(x2, x1);
+                y2 = max(y2, y1);
+                delta = y1 - y2;
+                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
+                    y1 = y2 = 0.0D;
+                }
+
+                if (d_t == 2 && x1 == x1_t && x2 == x2_t && y1 == y1_t && y2 == y2_t) {
+                    return this;
+                }
+                if (d_o == 2 && x1 == x1_o && x2 == x2_o && y1 == y1_o && y2 == y2_o) {
+                    return other;
+                }
+
+                return ofBounds(x1, x2, y1, y2);
+            }
+            case 3: {
+                double y1_t = ymin();
+                double y1_o = other.ymin();
+                double y2_t = ymax();
+                double y2_o = other.ymax();
+                double y1 = max(y1_t, y1_o);
+                double y2 = min(y2_t, y2_o);
+
+
+                x2 = max(x2, x1);
+                y2 = max(y2, y1);
+                delta = y1 - y2;
+                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
+                    y1 = y2 = 0.0D;
+                }
+
+                double z1_t = zmin();
+                double z1_o = other.zmin();
+                double z2_t = zmax();
+                double z2_o = other.zmax();
+                double z1 = max(z1_t, z1_o);
+                double z2 = min(z2_t, z2_o);
+
+                z2 = max(z2, z1);
+                delta = z1 - z2;
+                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
+                    z1 = z2 = 0.0D;
+                }
+
+                if (d_t == 3 && x1 == x1_t && x2 == x2_t && y1 == y1_t && y2 == y2_t && z1 == z1_t && z2 == z2_t) {
+                    return this;
+                }
+                if (d_o == 3 && x1 == x1_o && x2 == x2_o && y1 == y1_o && y2 == y2_o && z1 == z1_o && z2 == z2_o) {
+                    return other;
+                }
+
+                return ofBounds(x1, x2, y1, y2, z1, z2);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported domain " + dim);
+    }
+
+    public boolean isEmpty() {
+        switch (dimension()) {
+            case 1: {
+                return xmin() >= xmax();
+            }
+            case 2: {
+                return xmin() >= xmax() || ymin() >= ymax();
+            }
+        }
+        return xmin() >= xmax() || ymin() >= ymax() || zmin() >= zmax();
+
+    }
+
+    public abstract double xmin();
+
+    public abstract double xmax();
+
+    public abstract int dimension();
+
+    protected static double max(double d1, double d2) {
+//        if (Double.isNaN(d1)) {
+//            return d2;
+//        }
+//        if (Double.isNaN(d2)) {
+//            return d1;
+//        }
+//        return Math.max(d1, d2);
+        if (d1 != d1) {
+            return d2;
+        }
+        if (d2 != d2) {
+            return d1;
+        }
+        return d1 >= d2 ? d1 : d2;
+    }
+
+    protected static double min(double d1, double d2) {
+//        if (Double.isNaN(d1)) {
+//            return d2;
+//        }
+//        if (Double.isNaN(d2)) {
+//            return d1;
+//        }
+//        return Math.min(d1, d2);
+        if (d1 != d1) {
+            return d2;
+        }
+        if (d2 != d2) {
+            return d1;
+        }
+        return d1 <= d2 ? d1 : d2;
+    }
+
+    public static Domain ofBounds(double xmin, double xmax) {
+        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY) {
+            return FULLX;
+        } else if ((/*xmin == 0 && */xmax <= xmin)) {
+            return EMPTYX;
+        } else if (Double.isNaN(xmin) || Double.isNaN(xmax)) {
+            throw new IllegalArgumentException("Invalid Domain bounds : NaN");
+//            return NaNX;
+        }
+        return new DomainX(xmin, xmax);
+    }
+
+    public abstract double ymin();
+
+    public abstract double ymax();
+
+    public static Domain ofBounds(double xmin, double xmax, double ymin, double ymax) {
+        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY) {
+            return FULLXY;
+        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin)) {
+            return EMPTYXY;
+        } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax)) {
+            throw new IllegalArgumentException("Invalid Domain bounds : NaN");
+//            return NaNXY;
+        }
+        //domain(4.800000000000001->5, FULL)
+        return new DomainXY(xmin, xmax, ymin, ymax);
+    }
+
+    public abstract double zmin();
+
+    public abstract double zmax();
+
+    public static Domain ofBounds(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY && zmin == Double.NEGATIVE_INFINITY && zmax == Double.POSITIVE_INFINITY) {
+            return FULLXYZ;
+        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin) && (zmin == 0 && zmax <= ymin)) {
+            return EMPTYXYZ;
+        } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax) || Double.isNaN(zmin) || Double.isNaN(zmax)) {
+            throw new IllegalArgumentException("Invalid Domain bounds : NaN");
+//            return NaNXYZ;
+        }
+        return new DomainXYZ(xmin, xmax, ymin, ymax, zmin, zmax);
+    }
+
+//    public static Domain toDomainXY(Domain d) {
+//        return forBounds(d.xmin, d.xmax, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+//    }
 
     public static Range range(Domain a, Domain b, double[] x, double[] y) {
         return ((b == null) ? a : (a.intersect(b))).range(x, y);
     }
 
+    public Range range(double[] x, double[] y) {
+        if (isEmpty()) {
+            return null;
+        }
+        switch (dimension()) {
+            case 1: {
+                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                if (lx == null) {
+                    return null;
+                }
+                return Range.ofBounds(lx[0], lx[1], 0, y.length - 1);
+            }
+        }
+
+        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        if (lx == null) {
+            return null;
+        }
+        int[] ly = Maths.rangeCO(y, ymin(), ymax());
+        if (ly == null) {
+            return null;
+        }
+        return Range.ofBounds(lx[0], lx[1], ly[0], ly[1]);
+    }
+
     public static Range range(Domain a, Domain b, double[] x, double[] y, double[] z) {
         return ((b == null) ? a : (a.intersect(b))).range(x, y, z);
+    }
+
+    //    public int[] rangesArray(double[] x, double[] y) {
+//        if (isEmpty()) {
+//            return null;
+//        }
+//        int[] lx = Maths.range(x, xmin, xmax);
+//        if (lx == null) {
+//            return null;
+//        }
+//        int[] ly = Maths.range(y, ymin, ymax);
+//        if (ly == null) {
+//            return null;
+//        }
+//        return new int[]{lx[0], lx[1], ly[0], ly[1]};
+//    }
+//    public int[] rangesArray(double[] x, double[] y, double[] z) {
+//        if (isEmpty()) {
+//            return null;
+//        }
+//        int[] lx = Maths.range(x, xmin, xmax);
+//        if (lx == null) {
+//            return null;
+//        }
+//        int[] ly = Maths.range(y, ymin, ymax);
+//        if (ly == null) {
+//            return null;
+//        }
+//        int[] lz = Maths.range(z, zmin, zmax);
+//        if (lz == null) {
+//            return null;
+//        }
+//        return new int[]{lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]};
+//    }
+
+    public Range range(double[] x, double[] y, double[] z) {
+        if (isEmpty()) {
+            return null;
+        }
+        switch (dimension()) {
+            case 1: {
+                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                if (lx == null) {
+                    return null;
+                }
+                return Range.ofBounds(lx[0], lx[1], 0, y.length - 1, 0, z.length - 1);
+            }
+            case 2: {
+                int[] lx = Maths.rangeCO(x, xmin(), xmax());
+                if (lx == null) {
+                    return null;
+                }
+                int[] ly = Maths.rangeCO(y, ymin(), ymax());
+                if (ly == null) {
+                    return null;
+                }
+                return Range.ofBounds(lx[0], lx[1], ly[0], ly[1], 0, z.length - 1);
+            }
+        }
+        int[] lx = Maths.rangeCO(x, xmin(), xmax());
+        if (lx == null) {
+            return null;
+        }
+        int[] ly = Maths.rangeCO(y, ymin(), ymax());
+        if (ly == null) {
+            return null;
+        }
+        int[] lz = Maths.rangeCO(z, zmin(), zmax());
+        if (lz == null) {
+            return null;
+        }
+        return Range.ofBounds(lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]);
     }
 
     //    public int[][] coeff(double[] xVector, double[] yVector) {
@@ -188,95 +451,20 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return d1.intersect(d2).intersect(d3);
     }
 
-    public static Domain forBounds(double xmin, double xmax) {
-        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY) {
-            return FULLX;
-        } else if ((/*xmin == 0 && */xmax <= xmin)) {
-            return EMPTYX;
-        } else if (Double.isNaN(xmin) || Double.isNaN(xmax)) {
-            return NaNX;
-        }
-        return new DomainX(xmin, xmax);
+    public static Domain ofWidthXY(double xmin, double ymin, double xwidth, double ywidth) {
+        return ofBounds(xmin, xmin + xwidth, ymin, ymin + ywidth);
     }
 
-    public static Domain forBounds(double xmin, double xmax, double ymin, double ymax) {
-        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY) {
-            return FULLXY;
-        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin)) {
-            return EMPTYXY;
-        } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax)) {
-            return NaNXY;
-        }
-        //domain(4.800000000000001->5, FULL)
-        return new DomainXY(xmin, xmax, ymin, ymax);
+    public static Domain ofWidthXYZ(double xmin, double ymin, double zmin, double xwidth, double ywidth, double zwidth) {
+        return ofBounds(xmin, xmin + xwidth, ymin, ymin + ywidth, zmin, zmin + zwidth);
     }
-
-    public static Domain forBounds(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
-        if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY && zmin == Double.NEGATIVE_INFINITY && zmax == Double.POSITIVE_INFINITY) {
-            return FULLXYZ;
-        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin) && (zmin == 0 && zmax <= ymin)) {
-            return EMPTYXYZ;
-        } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax) || Double.isNaN(zmin) || Double.isNaN(zmax)) {
-            return NaNXYZ;
-        }
-        return new DomainXYZ(xmin, xmax, ymin, ymax, zmin, zmax);
-    }
-
-    public static Domain forWidth(double xmin, double width) {
-        return new DomainX(xmin, xmin + width);
-    }
-
-    public static Domain forWidth(double xmin, double xwidth, double ymin, double ywidth) {
-        return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth);
-    }
-
-    public static Domain forPoints(double xmin, double xmax) {
-        return forBounds(xmin, xmax);
-    }
-
-    public static Domain forPoints(double xmin, double ymin, double xmax, double ymax) {
-        return forBounds(xmin, xmax, ymin, ymax);
-    }
-
-    public static Domain forPoints(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) {
-        return forBounds(xmin, xmax, ymin, ymax, zmin, zmax);
-    }
-
-    public static Domain forWidthXY(double xmin, double ymin, double xwidth, double ywidth) {
-        return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth);
-    }
-
-    public static Domain forWidthXYZ(double xmin, double ymin, double zmin, double xwidth, double ywidth, double zwidth) {
-        return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth, zmin, zmin + zwidth);
-    }
-
-
-    public static Domain forWidth(double xmin, double xwidth, double ymin, double ywidth, double zmin, double zwidth) {
-        return forBounds(xmin, xmin + xwidth, ymin, ymin + ywidth, zmin, zmin + zwidth);
-    }
-
-//    public static Domain toDomainXY(Domain d) {
-//        return forBounds(d.xmin, d.xmax, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-//    }
 
     public static Domain toDomainXY(Rectangle2D rectangle) {
-        return forWidth(rectangle.getX(), rectangle.getWidth(), rectangle.getY(), rectangle.getHeight());
+        return ofWidth(rectangle.getX(), rectangle.getWidth(), rectangle.getY(), rectangle.getHeight());
     }
 
-    /**
-     * 3 dimensions domain if z is not null otherwise will call forArray(x, y)
-     *
-     * @param x x values in the domain, ordered asc
-     * @param y y values in the domain, ordered asc
-     * @return 2 dimensions domain if y is not null otherwise will call forArray(x)
-     */
-    public static Domain forArray(double[] x, double[] y) {
-        if (y == null) {
-            return forArray(x);
-        }
-        Domain xd = forArray(x);
-        Domain yd = forArray(y);
-        return forBounds(xd.xmin(), xd.xmax(), yd.xmin(), yd.xmax());
+    public static Domain ofWidth(double xmin, double xwidth, double ymin, double ywidth) {
+        return ofBounds(xmin, xmin + xwidth, ymin, ymin + ywidth);
     }
 
     /**
@@ -287,250 +475,90 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
      * @param z z values in the domain, ordered asc
      * @return 3 dimensions domain if z is not null otherwise will call forArray(x, y)
      */
-    public static Domain forArray(double[] x, double[] y, double[] z) {
+    public static Domain ofArray(double[] x, double[] y, double[] z) {
         if (z == null) {
-            return forArray(x, y);
+            if (y == null) {
+                return ofArray(x);
+            }
+            return ofArray(x, y);
         }
-        Domain xd = forArray(x);
-        Domain yd = forArray(y);
-        Domain zd = forArray(z);
-        return forBounds(xd.xmin(), xd.xmax(), yd.xmin(), yd.xmax(), zd.xmin(), zd.xmax());
+        Domain xd = ofArray(x);
+        Domain yd = ofArray(y);
+        Domain zd = ofArray(z);
+        return ofBounds(xd.xmin(), xd.xmax(), yd.xmin(), yd.xmax(), zd.xmin(), zd.xmax());
     }
-
-    //    public int[] rangesArray(double[] x, double[] y) {
-//        if (isEmpty()) {
-//            return null;
-//        }
-//        int[] lx = MathsBase.range(x, xmin, xmax);
-//        if (lx == null) {
-//            return null;
-//        }
-//        int[] ly = MathsBase.range(y, ymin, ymax);
-//        if (ly == null) {
-//            return null;
-//        }
-//        return new int[]{lx[0], lx[1], ly[0], ly[1]};
-//    }
-//    public int[] rangesArray(double[] x, double[] y, double[] z) {
-//        if (isEmpty()) {
-//            return null;
-//        }
-//        int[] lx = MathsBase.range(x, xmin, xmax);
-//        if (lx == null) {
-//            return null;
-//        }
-//        int[] ly = MathsBase.range(y, ymin, ymax);
-//        if (ly == null) {
-//            return null;
-//        }
-//        int[] lz = MathsBase.range(z, zmin, zmax);
-//        if (lz == null) {
-//            return null;
-//        }
-//        return new int[]{lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]};
-//    }
 
     /**
      * creates a one dimension domain bound by x[0] and x[x.length - 1]
      *
-     * @param x domain (asc) ordered values
+     * @param xyz domain (asc) ordered values
      * @return ine dimension dmain
      */
-    public static Domain forArray(double[] x) {
-        if (x == null || x.length == 0) {
+    public static Domain ofArray(double[] xyz) {
+        if (xyz == null || xyz.length == 0) {
             throw new IllegalArgumentException("Invalid Domain interval");
         }
-        return forBounds(x[0], x[x.length - 1]);
+        return ofBounds(xyz[0], xyz[xyz.length - 1]);
     }
 
-    protected static double min(double d1, double d2) {
-//        if (Double.isNaN(d1)) {
-//            return d2;
-//        }
-//        if (Double.isNaN(d2)) {
-//            return d1;
-//        }
-//        return Math.min(d1, d2);
-        if (d1 != d1) {
-            return d2;
+    /**
+     * 3 dimensions domain if z is not null otherwise will call forArray(x, y)
+     *
+     * @param x x values in the domain, ordered asc
+     * @param y y values in the domain, ordered asc
+     * @return 2 dimensions domain if y is not null otherwise will call forArray(x)
+     */
+    public static Domain ofArray(double[] x, double[] y) {
+        if (y == null) {
+            return ofArray(x);
         }
-        if (d2 != d2) {
-            return d1;
-        }
-        return d1 <= d2 ? d1 : d2;
+        Domain xd = ofArray(x);
+        Domain yd = ofArray(y);
+        return ofBounds(xd.xmin(), xd.xmax(), yd.xmin(), yd.xmax());
     }
 
-    protected static double max(double d1, double d2) {
-//        if (Double.isNaN(d1)) {
-//            return d2;
-//        }
-//        if (Double.isNaN(d2)) {
-//            return d1;
-//        }
-//        return Math.max(d1, d2);
-        if (d1 != d1) {
-            return d2;
-        }
-        if (d2 != d2) {
-            return d1;
-        }
-        return d1 >= d2 ? d1 : d2;
+    public double xvalue() {
+        return valueBetween(xmin(), xmax());
     }
 
-    private static double[] toAbsolute(double[] base, double min, double max) {
-        if (base == null) {
-            return null;
+    public static double valueBetween(double a, double b) {
+        if (a == b) {
+            return a;
         }
-        double[] r = new double[base.length];
-        if (Double.isInfinite(min) || Double.isInfinite(max)) {
-            if (Double.isInfinite(min) && Double.isInfinite(max)) {
-                //all zero
-//                for (int i = 0; i < r.length; i++) {
-//                    r[i] = 0;
-//                }
-            } else {
-                for (int i = 0; i < r.length; i++) {
-                    r[i] = min;
-                }
+        if (b < a) {
+            return b;
+        }
+        if (a == Double.NEGATIVE_INFINITY && b == Double.POSITIVE_INFINITY) {
+            return 0;
+        }
+
+        if (a == Double.NEGATIVE_INFINITY) {
+            if (b > 0) {
+                return 0;
             }
-            return r;
-        } else {
-            double w = max - min;
-            for (int i = 0; i < r.length; i++) {
-                r[i] = min + w * base[i];
-            }
-            return r;
+            return b - 1;
         }
+
+        if (b == Double.POSITIVE_INFINITY) {
+            if (a <= 0) {
+                return 0;
+            }
+            return a + 1;
+        }
+        return (a + b) / 2;
+    }
+
+    public double yvalue() {
+        return valueBetween(ymin(), ymax());
+    }
+
+    public double zvalue() {
+        return valueBetween(zmin(), zmax());
     }
 
     public double[] intersect(double[] x) {
         Range r = range(x);
         return ArrayUtils.subarray(x, r);
-    }
-
-    public Range range(double[] x) {
-        if (isEmpty()) {
-            return null;
-        }
-        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-        if (lx == null) {
-            return null;
-        }
-        return Range.forBounds(lx[0], lx[1]);
-//        int[] ints = rangeArray(x);
-//        return ints == null ? null : Range.forBounds(ints[0], ints[1]);
-    }
-
-    public Range range(double[] x, double[] y) {
-        if (isEmpty()) {
-            return null;
-        }
-        switch (dimension()) {
-            case 1: {
-                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-                if (lx == null) {
-                    return null;
-                }
-                return Range.forBounds(lx[0], lx[1], 0, y.length - 1);
-            }
-        }
-
-        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-        if (lx == null) {
-            return null;
-        }
-        int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
-        if (ly == null) {
-            return null;
-        }
-        return Range.forBounds(lx[0], lx[1], ly[0], ly[1]);
-    }
-
-    public Range range(double[] x, double[] y, double[] z) {
-        if (isEmpty()) {
-            return null;
-        }
-        switch (dimension()) {
-            case 1: {
-                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-                if (lx == null) {
-                    return null;
-                }
-                return Range.forBounds(lx[0], lx[1], 0, y.length - 1, 0, z.length - 1);
-            }
-            case 2: {
-                int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-                if (lx == null) {
-                    return null;
-                }
-                int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
-                if (ly == null) {
-                    return null;
-                }
-                return Range.forBounds(lx[0], lx[1], ly[0], ly[1], 0, z.length - 1);
-            }
-        }
-        int[] lx = MathsBase.rangeCO(x, xmin(), xmax());
-        if (lx == null) {
-            return null;
-        }
-        int[] ly = MathsBase.rangeCO(y, ymin(), ymax());
-        if (ly == null) {
-            return null;
-        }
-        int[] lz = MathsBase.rangeCO(z, zmin(), zmax());
-        if (lz == null) {
-            return null;
-        }
-        return Range.forBounds(lx[0], lx[1], ly[0], ly[1], lz[0], lz[1]);
-    }
-
-    public double computeDouble(double x, double y, double z) {
-        return contains(x, y, z) ? 1 : 0;
-    }
-
-    public boolean contains(double x) {
-        return x >= xmin() && x < xmax();
-    }
-
-    //    @Override
-    public boolean contains(double x, double y) {
-        return x >= xmin() && x < xmax() && y >= ymin() && y < ymax();
-    }
-
-    public boolean contains(double x, double y, double z) {
-        return x >= xmin()
-                && x < xmax()
-                && y >= ymin()
-                && y < ymax()
-                && z >= zmin()
-                && z < zmax();
-    }
-
-    public boolean includes(Domain other) {
-        if (other.isEmpty() || other.isNaN()) {
-            return true;
-        }
-        int d = Math.max(dimension(), other.dimension());
-        switch (d) {
-            case 1: {
-                return (other.xmin() >= xmin()
-                        && other.xmax() <= xmax()
-                        && other.ymin() >= ymin());
-            }
-            case 2: {
-                return (other.xmin() >= xmin()
-                        && other.xmax() <= xmax()
-                        && other.ymin() >= ymin()
-                        && other.ymax() <= ymax());
-            }
-        }
-        return (other.xmin() >= xmin()
-                && other.xmax() <= xmax()
-                && other.ymin() >= ymin()
-                && other.ymax() <= ymax()
-                && other.zmin() >= zmin()
-                && other.zmax() <= zmax());
     }
 
 //    private static class Domain2 {
@@ -562,103 +590,114 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //        }
 //    }
 
-    public Domain intersect(Domain other) {
-        if (other == null) {
-            return this;
+    public boolean contains(double x) {
+        switch (dimension()) {
+            case 1:
+                return x >= xmin() && x < xmax();
         }
-//        double x1= MathsBase.max(xmin,other.xmin);
-//        double x2=MathsBase.min(xmax,other.xmax);
-//        double y1=MathsBase.max(ymin,other.ymin);
-//        double y2=MathsBase.min(ymax,other.ymax);
-        int d_t = this.dimension();
-        int d_o = other.dimension();
-        int dim = Math.max(d_t, d_o);
-        double x1_t = xmin();
-        double x2_t = xmax();
-        double x1_o = other.xmin();
-        double x2_o = other.xmax();
+        throw new MissingAxisException(Axis.Y);
+    }
 
-        double x1 = max(x1_t, x1_o);
-        double x2 = min(x2_t, x2_o);
-        // some workaround
-        double delta = x1 - x2;
-        if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
-            x1 = x2 = 0.0D;
+    //    @Override
+    public boolean contains(double x, double y) {
+        switch (dimension()) {
+            case 1:
+                return x >= xmin() && x < xmax();
+            case 2:
+                return x >= xmin() && x < xmax() && y >= ymin() && y < ymax();
         }
+        throw new MissingAxisException(Axis.Z);
+    }
 
-        switch (dim) {
+    public boolean contains(double x, double y, double z) {
+        switch (dimension()) {
+            case 1:
+                return x >= xmin() && x < xmax();
+            case 2:
+                return x >= xmin() && x < xmax() && y >= ymin() && y < ymax();
+        }
+        return x >= xmin()
+                && x < xmax()
+                && y >= ymin()
+                && y < ymax()
+                && z >= zmin()
+                && z < zmax();
+    }
+
+    // a union of two domains is not necessarely a domain
+//    public Domain union(Domain other) {
+//        return expand(other);
+//    }
+
+    public boolean includes(Domain other) {
+        if (other.isEmpty() || other.isNaN()) {
+            return true;
+        }
+        int d = Math.max(dimension(), other.dimension());
+        switch (d) {
             case 1: {
-                if (d_t == 1 && x1 == x1_t && x2 == x2_t) {
-                    return this;
-                }
-                if (d_o == 1 && x1 == x1_o && x2 == x2_o) {
-                    return other;
-                }
-                return forBounds(x1, x2);
+                return (other.xmin() >= xmin()
+                        && other.xmax() <= xmax()
+                        && other.ymin() >= ymin());
             }
             case 2: {
-                double y1_t = ymin();
-                double y1_o = other.ymin();
-                double y2_t = ymax();
-                double y2_o = other.ymax();
-                double y1 = max(y1_t, y1_o);
-                double y2 = min(y2_t, y2_o);
-                x2 = max(x2, x1);
-                y2 = max(y2, y1);
-                delta = y1 - y2;
-                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
-                    y1 = y2 = 0.0D;
-                }
-
-                if (d_t == 2 && x1 == x1_t && x2 == x2_t && y1 == y1_t && y2 == y2_t) {
-                    return this;
-                }
-                if (d_o == 2 && x1 == x1_o && x2 == x2_o && y1 == y1_o && y2 == y2_o) {
-                    return other;
-                }
-
-                return forBounds(x1, x2, y1, y2);
-            }
-            case 3: {
-                double y1_t = ymin();
-                double y1_o = other.ymin();
-                double y2_t = ymax();
-                double y2_o = other.ymax();
-                double y1 = max(y1_t, y1_o);
-                double y2 = min(y2_t, y2_o);
-
-
-                x2 = max(x2, x1);
-                y2 = max(y2, y1);
-                delta = y1 - y2;
-                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
-                    y1 = y2 = 0.0D;
-                }
-
-                double z1_t = zmin();
-                double z1_o = other.zmin();
-                double z2_t = zmax();
-                double z2_o = other.zmax();
-                double z1 = max(z1_t, z1_o);
-                double z2 = min(z2_t, z2_o);
-
-                z2 = max(z2, z1);
-                delta = z1 - z2;
-                if ((delta < 0.0D && -delta < epsilon) || (delta > 0.0D && delta < epsilon)) {
-                    z1 = z2 = 0.0D;
-                }
-
-                if (d_t == 2 && x1 == x1_t && x2 == x2_t && y1 == y1_t && y2 == y2_t && z1 == z1_t && z2 == z2_t) {
-                    return this;
-                }
-                if (d_o == 2 && x1 == x1_o && x2 == x2_o && y1 == y1_o && y2 == y2_o && z1 == z1_o && z2 == z2_o) {
-                    return other;
-                }
-
-                return forBounds(x1, x2, y1, y2, z1, z2);
+                return (other.xmin() >= xmin()
+                        && other.xmax() <= xmax()
+                        && other.ymin() >= ymin()
+                        && other.ymax() <= ymax());
             }
         }
-        throw new IllegalArgumentException("Unsupported domain " + dim);
+        return (other.xmin() >= xmin()
+                && other.xmax() <= xmax()
+                && other.ymin() >= ymin()
+                && other.ymax() <= ymax()
+                && other.zmin() >= zmin()
+                && other.zmax() <= zmax());
+    }
+
+    /**
+     * expand the domain to help including the given domain
+     *
+     * @param other domain to be included in the formed doamin
+     * @return
+     */
+    public Domain expand(Domain other) {
+        if (other == null || other == this || other.equals(this)) {
+            return this;
+        }
+        int dim = Math.max(dimension(), other.dimension());
+        Domain d1 = this.expandDimension(dim);
+        Domain d2 = other.expandDimension(dim);
+        switch (dim) {
+            case 1: {
+                double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
+                return Domain.ofBounds(x[0], x[1]);
+            }
+            case 2: {
+                double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
+                double[] y = expand(new double[]{d1.ymin(), d1.ymax()}, new double[]{d2.ymin(), d2.ymax()});
+                return Domain.ofBounds(x[0], x[1], y[0], y[1]);
+            }
+            case 3: {
+                double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
+                double[] y = expand(new double[]{d1.ymin(), d1.ymax()}, new double[]{d2.ymin(), d2.ymax()});
+                double[] z = expand(new double[]{d1.zmin(), d1.zmax()}, new double[]{d2.zmin(), d2.zmax()});
+                return Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported");
+            }
+        }
+    }
+
+    public Domain expandDimension(int dimension) {
+        if (this.dimension() == dimension) {
+            return this;
+        } else if (this.dimension() < dimension) {
+            return toDomain(dimension);
+        } else {
+            throw new IllegalArgumentException("Unable to expand Domain " + this.dimension() + " to " + dimension);
+        }
     }
 
     /**
@@ -678,18 +717,39 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
     }
 
-    public Domain union(Domain other) {
-        return expand(other);
+    public Domain toDomain(int dimension) {
+        if (dimension == this.dimension()) {
+            return this;
+        }
+        switch (dimension) {
+            case 1:
+                return toDomainX();
+            case 2:
+                return toDomainXY();
+            case 3:
+                return toDomainXYZ();
+        }
+        throw new IllegalArgumentException("invalid dimension " + dimension);
     }
 
-    /**
-     * expand the domain to help including the given domain
-     *
-     * @param other domain to be included in the formed doamin
-     * @return
-     */
-    public Domain expand(Domain other) {
-        if (other.equals(this)) {
+    //    public enum Type {
+//
+//        LENGTH, MAX, OLD_STYLE
+//    }
+    public Domain toDomainX() {
+        return ofBounds(this.xmin(), this.xmax());
+    }
+
+    public Domain toDomainXY() {
+        return ofBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax());
+    }
+
+    public Domain toDomainXYZ() {
+        return ofBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax(), this.zmin(), this.zmax());
+    }
+
+    private Domain expand_old(Domain other) {
+        if (other == null || other == this || other.equals(this)) {
             return this;
         }
 //        if(isNaN() || other.isNaN()){
@@ -710,13 +770,13 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 switch (d2.dimension()) {
                     case 1: {
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
-                        return Domain.forBounds(x[0], x[1]);
+                        return Domain.ofBounds(x[0], x[1]);
                     }
                     case 2: {
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
                         double y1 = d2.ymin();
                         double y2 = d2.ymax();
-                        return Domain.forBounds(x[0], x[1], y1, y2);
+                        return Domain.ofBounds(x[0], x[1], y1, y2);
                     }
                     case 3: {
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
@@ -724,7 +784,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                         double y2 = d2.ymax();
                         double z1 = d2.zmin();
                         double z2 = d2.zmax();
-                        return Domain.forBounds(x[0], x[1], y1, y2, z1, z2);
+                        return Domain.ofBounds(x[0], x[1], y1, y2, z1, z2);
                     }
                     default: {
                         throw new IllegalArgumentException("Unsupported");
@@ -736,14 +796,14 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                     case 2: {
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
                         double[] y = expand(new double[]{d1.ymin(), d1.ymax()}, new double[]{d2.ymin(), d2.ymax()});
-                        return Domain.forBounds(x[0], x[1], y[0], y[1]);
+                        return Domain.ofBounds(x[0], x[1], y[0], y[1]);
                     }
                     case 3: {
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
                         double[] y = expand(new double[]{d1.ymin(), d1.ymax()}, new double[]{d2.ymin(), d2.ymax()});
                         double z1 = d2.zmin();
                         double z2 = d2.zmax();
-                        return Domain.forBounds(x[0], x[1], y[0], y[1], z1, z2);
+                        return Domain.ofBounds(x[0], x[1], y[0], y[1], z1, z2);
                     }
                     default: {
                         throw new IllegalArgumentException("Unsupported");
@@ -757,7 +817,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                         double[] x = expand(new double[]{d1.xmin(), d1.xmax()}, new double[]{d2.xmin(), d2.xmax()});
                         double[] y = expand(new double[]{d1.ymin(), d1.ymax()}, new double[]{d2.ymin(), d2.ymax()});
                         double[] z = expand(new double[]{d1.zmin(), d1.zmax()}, new double[]{d2.zmin(), d2.zmax()});
-                        return Domain.forBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                        return Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
                     }
                     default: {
                         throw new IllegalArgumentException("Unsupported");
@@ -775,20 +835,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return !isEmpty() && !isInfinite() && !isNaN();
     }
 
-    public boolean isEmpty() {
-        switch (dimension()) {
-            case 1: {
-                return xmin() >= xmax();
-            }
-            case 2: {
-                return xmin() >= xmax() || ymin() >= ymax();
-            }
-        }
-        return xmin() >= xmax() || ymin() >= ymax() || zmin() >= zmax();
-
-    }
-
-    public boolean isInfinite() {
+    public boolean isInfiniteInterval() {
         switch (dimension()) {
             case 1: {
                 return Double.isInfinite(xmin()) || Double.isInfinite(xmax());
@@ -800,32 +847,41 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return Double.isInfinite(xmin()) || Double.isInfinite(xmax()) || Double.isInfinite(ymin()) || Double.isInfinite(ymax()) || Double.isInfinite(zmin()) || Double.isInfinite(zmax());
     }
 
-    public boolean isInfiniteX() {
-        return Double.isInfinite(xmin()) || Double.isInfinite(xmax());
-    }
-
-    public boolean isInfiniteY() {
-        return Double.isInfinite(ymin()) || Double.isInfinite(ymax());
-    }
-
-    public boolean isInfiniteZ() {
-        return Double.isInfinite(zmin()) || Double.isInfinite(zmax());
-    }
-
-    public boolean isNaN() {
-        switch (dimension()) {
-            case 1: {
-                return Double.isNaN(xmin()) || Double.isNaN(xmax());
-            }
-            case 2: {
-                return Double.isNaN(xmin()) || Double.isNaN(xmax()) || Double.isNaN(ymin()) || Double.isNaN(ymax());
-            }
+    public void requireFull1() {
+        if (!isUnbounded1()) {
+            throw new IllegalArgumentException("Require One Dimension Unconstrainted but was " + this);
         }
-        return Double.isNaN(xmin()) || Double.isNaN(xmax()) || Double.isNaN(ymin()) || Double.isNaN(ymax()) || Double.isNaN(zmin()) || Double.isNaN(zmax());
+    }
+
+    public boolean isUnbounded1() {
+        return dimension() == 1 && isUnboundedX();
+    }
+
+    public boolean isUnboundedX() {
+        return (xmin() == Double.NEGATIVE_INFINITY && xmax() == Double.POSITIVE_INFINITY)
+                || (Double.isNaN(xmin()) && Double.isNaN(xmax()));
+    }
+
+    public boolean isUnbounded2() {
+        return dimension() == 2 && isUnboundedX() && isUnboundedY();
+    }
+
+    public boolean isUnboundedY() {
+        return (ymin() == Double.NEGATIVE_INFINITY && ymax() == Double.POSITIVE_INFINITY)
+                || (Double.isNaN(ymin()) && Double.isNaN(ymax()));
+    }
+
+    public boolean isUnbounded3() {
+        return dimension() == 3 && isUnboundedX() && isUnboundedY() && isUnboundedZ();
+    }
+
+    public boolean isUnboundedZ() {
+        return (zmin() == Double.NEGATIVE_INFINITY && zmax() == Double.POSITIVE_INFINITY)
+                || (Double.isNaN(zmin()) && Double.isNaN(zmax()));
     }
 
     public Domain expandAll(double xmin, double xmax) {
-        switch (getDomainDimension()) {
+        switch (getDomain().getDimension()) {
             case 1:
                 return expand(xmin, xmax);
             case 2:
@@ -863,18 +919,18 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (zmax < 0 || Double.isNaN(zmax)) {
             throw new IllegalArgumentException("Invalid ymax");
         }
-        switch (getDomainDimension()) {
+        switch (getDomain().getDimension()) {
             case 1: {
                 double xmin0 = getXMin() - xmin;
                 double xmax0 = getXMax() + xmax;
-                return forBounds(xmin0, xmax0);
+                return ofBounds(xmin0, xmax0);
             }
             case 2: {
                 double xmin0 = getXMin() - xmin;
                 double xmax0 = getXMax() + xmax;
                 double ymin0 = getYMin() - ymin;
                 double ymax0 = getYMax() + ymax;
-                return forBounds(xmin0, xmax0, ymin0, ymax0);
+                return ofBounds(xmin0, xmax0, ymin0, ymax0);
             }
             case 3: {
                 double xmin0 = getXMin() - xmin;
@@ -883,14 +939,14 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 double ymax0 = getYMax() + ymax;
                 double zmin0 = getZMin() - zmin;
                 double zmax0 = getZMax() + zmax;
-                return forBounds(xmin0, xmax0, ymin0, ymax0, zmin0, zmax0);
+                return ofBounds(xmin0, xmax0, ymin0, ymax0, zmin0, zmax0);
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
 
     public Domain translate(double x, double y) {
-        return Domain.forBounds(
+        return Domain.ofBounds(
                 xmin() + x, xmax() + x, ymin() + y,
                 ymax() + y
         );
@@ -899,7 +955,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public Domain getSymmetricX(double x0) {
         double x1 = xmin() + 2 * (x0 - xmin());
         double x2 = xmax() + 2 * (x0 - xmax());
-        return Domain.forBounds(
+        return Domain.ofBounds(
                 Math.min(x1, x2), Math.max(x1, x2), ymin(),
                 ymax()
         );
@@ -908,7 +964,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     public Domain getSymmetricY(double y0) {
         double y1 = ymin() + 2 * (y0 - ymin());
         double y2 = ymax() + 2 * (y0 - ymax());
-        return Domain.forBounds(
+        return Domain.ofBounds(
                 xmin(), xmax(), Math.min(y1, y2),
                 Math.max(y1, y2)
         );
@@ -938,36 +994,18 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
     }
 
-    public double getXMin() {
-        return xmin();
-    }
-
-    public double getXMax() {
-        return xmax();
-    }
-
-    public double getZMin() {
-        return zmin();
-    }
-
-    public double getZMax() {
-        return zmax();
-    }
-
-    public double getYMin() {
-        return ymin();
-    }
-
-    public double getYMax() {
-        return ymax();
-    }
-
     public double getXwidth() {
         return xwidth();
     }
 
+    public abstract double xwidth();
+
     public double getYwidth() {
         return ywidth();
+    }
+
+    public double ywidth() {
+        return ymax() - ymin();
     }
 
     //    public StructureContext getStructureContext() {
@@ -988,28 +1026,24 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return zwidth();
     }
 
+    public double zwidth() {
+        return zmax() - zmin();
+    }
+
     public Domain x() {
-        return forBounds(xmin(), xmax());
+        return ofBounds(xmin(), xmax());
     }
 
     public Domain y() {
-        return forBounds(ymin(), ymax());
+        return ofBounds(ymin(), ymax());
     }
 
     public Domain z() {
-        return forBounds(zmin(), zmax());
+        return ofBounds(zmin(), zmax());
     }
 
     public Domain getDomainX() {
-        return forBounds(xmin(), xmax());
-    }
-
-    public Domain getDomainY() {
-        return forBounds(ymin(), ymax());
-    }
-
-    public Domain getDomainZ() {
-        return Domain.forBounds(zmin(), zmax());
+        return ofBounds(xmin(), xmax());
     }
 
     //    public static class DomainXY extends Domain{
@@ -1019,30 +1053,51 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //    public static class DomainXYZ extends DomainXY{
 //
 //    }
-    public String dump() {
-        switch (getDimension()) {
-            case 1: {
-                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
-                h.add(xmin() + "->" + xmax());
-                return h.toString();
-            }
-            case 2: {
-                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
-                h.add(xmin() + "->" + xmax());
-                h.add(ymin() + "->" + ymax());
-                return h.toString();
-            }
-        }
-        Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
-        h.add(xmin() + "->" + xmax());
-        h.add(ymin() + "->" + ymax());
-        h.add(zmin() + "->" + zmax());
-        return h.toString();
+//    public String dump() {
+//        switch (getDimension()) {
+//            case 1: {
+//                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+//                h.add(xmin() + "->" + xmax());
+//                return h.toString();
+//            }
+//            case 2: {
+//                Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+//                h.add(xmin() + "->" + xmax());
+//                h.add(ymin() + "->" + ymax());
+//                return h.toString();
+//            }
+//        }
+//        Dumper h = new Dumper("domain", Dumper.Type.SIMPLE).setElementSeparator(",");
+//        h.add(xmin() + "->" + xmax());
+//        h.add(ymin() + "->" + ymax());
+//        h.add(zmin() + "->" + zmax());
+//        return h.toString();
+//    }
+
+    public Domain getDomainY() {
+        return ofBounds(ymin(), ymax());
     }
 
+    public Domain getDomainZ() {
+        return Domain.ofBounds(zmin(), zmax());
+    }
+
+//    private int hashCode0() {
+//        int hash = 7;
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmin()) ^ (Double.doubleToLongBits(this.xmin()) >>> 32));
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmax()) ^ (Double.doubleToLongBits(this.xmax()) >>> 32));
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymin()) ^ (Double.doubleToLongBits(this.ymin()) >>> 32));
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymax()) ^ (Double.doubleToLongBits(this.ymax()) >>> 32));
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmin()) ^ (Double.doubleToLongBits(this.zmin()) >>> 32));
+//        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmax()) ^ (Double.doubleToLongBits(this.zmax()) >>> 32));
+//        return hash;
+//    }
+
     @Override
-    public String toString() {
-        return FormatFactory.format(this);
+    public int hashCode() {
+        return eagerHashCode;
+//        return hashCode0();
+//        return hashCode;
     }
 
     @Override
@@ -1069,35 +1124,20 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         if (this.zmin() != other.zmin()) {
             return false;
         }
-        if (this.zmax() != other.zmax()) {
-            return false;
-        }
-        return true;
-    }
-
-    private int hashCode0() {
-        int hash = 7;
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmin()) ^ (Double.doubleToLongBits(this.xmin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.xmax()) ^ (Double.doubleToLongBits(this.xmax()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymin()) ^ (Double.doubleToLongBits(this.ymin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.ymax()) ^ (Double.doubleToLongBits(this.ymax()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmin()) ^ (Double.doubleToLongBits(this.zmin()) >>> 32));
-        hash = 43 * hash + (int) (Double.doubleToLongBits(this.zmax()) ^ (Double.doubleToLongBits(this.zmax()) >>> 32));
-        return hash;
+        return this.zmax() == other.zmax();
     }
 
     @Override
-    public int hashCode() {
-        return hashCode0();
-//        return hashCode;
+    public String toString() {
+        return FormatFactory.format(this);
     }
 
-    public AbsoluteSamples steps(double xstep) {
-        return steps(xstep, xstep, xstep);
+    public AbsoluteSamples dsteps(double xstep) {
+        return dsteps(xstep, xstep, xstep);
     }
 
-    public AbsoluteSamples steps(double xstep, double ystep) {
-        return steps(xstep, ystep, xstep);
+    public AbsoluteSamples dsteps(double xstep, double ystep, double zstep) {
+        return steps(xstep, ystep, zstep);
     }
 
     public AbsoluteSamples steps(double xstep, double ystep, double zstep) {
@@ -1106,7 +1146,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 if (isInfiniteX()) {
                     throw new IllegalArgumentException("Infinite X Domain");
                 }
-                return Samples.absolute(MathsBase.dsteps(xmin(), xmax(), xstep));
+                return Samples.absolute(Maths.dsteps(xmin(), xmax(), xstep));
             }
             case 2: {
                 if (isInfiniteX()) {
@@ -1116,8 +1156,8 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                     throw new IllegalArgumentException("Infinite Y Domain");
                 }
                 return Samples.absolute(
-                        MathsBase.dsteps(xmin(), xmax(), xstep),
-                        MathsBase.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep));
+                        Maths.dsteps(xmin(), xmax(), xstep),
+                        Maths.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep));
             }
         }
         if (isInfiniteX()) {
@@ -1130,10 +1170,38 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             throw new IllegalArgumentException("Infinite Z Domain");
         }
         return Samples.absolute(
-                MathsBase.dsteps(xmin(), xmax(), xstep),
-                MathsBase.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep),
-                MathsBase.dsteps(zmin(), zmax(), (zstep <= 0) ? xstep : zstep)
+                Maths.dsteps(xmin(), xmax(), xstep),
+                Maths.dsteps(ymin(), ymax(), (ystep <= 0) ? xstep : ystep),
+                Maths.dsteps(zmin(), zmax(), (zstep <= 0) ? xstep : zstep)
         );
+    }
+
+    public boolean isInfiniteX() {
+        return Double.isInfinite(xmin()) || Double.isInfinite(xmax());
+    }
+
+    public boolean isInfiniteY() {
+        return Double.isInfinite(ymin()) || Double.isInfinite(ymax());
+    }
+
+    public boolean isInfiniteZ() {
+        return Double.isInfinite(zmin()) || Double.isInfinite(zmax());
+    }
+
+    public AbsoluteSamples steps(double xstep) {
+        return steps(xstep, xstep, xstep);
+    }
+
+    public AbsoluteSamples dsteps(double xstep, double ystep) {
+        return steps(xstep, ystep);
+    }
+
+    public AbsoluteSamples steps(double xstep, double ystep) {
+        return steps(xstep, ystep, xstep);
+    }
+
+    public AbsoluteSamples dtimes(int xtimes) {
+        return times(xtimes);
     }
 
     public AbsoluteSamples times(int xtimes) {
@@ -1148,8 +1216,47 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return times(xtimes, xtimes, xtimes);
     }
 
+    public AbsoluteSamples times(int xtimes, int ytimes, int ztimes) {
+        if (isInfiniteX()) {
+            throw new IllegalArgumentException("Infinite X Domain");
+        }
+        switch (dimension()) {
+            case 1: {
+                return Samples.absolute(Maths.dtimes(xmin(), xmax(), xtimes));
+            }
+            case 2: {
+                if (isInfiniteY()) {
+                    throw new IllegalArgumentException("Infinite Y Domain");
+                }
+                return Samples.absolute(
+                        Maths.dtimes(xmin(), xmax(), xtimes),
+                        Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
+                );
+            }
+        }
+        if (isInfiniteY()) {
+            throw new IllegalArgumentException("Infinite Y Domain");
+        }
+        if (isInfiniteZ()) {
+            throw new IllegalArgumentException("Infinite Z Domain");
+        }
+        return Samples.absolute(
+                Maths.dtimes(xmin(), xmax(), xtimes),
+                Maths.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes),
+                Maths.dtimes(zmin(), zmax(), (ztimes <= 0) ? xtimes : ztimes)
+        );
+    }
+
+    public AbsoluteSamples dtimes(int xtimes, int ytimes) {
+        return times(xtimes, ytimes);
+    }
+
     public AbsoluteSamples times(int xtimes, int ytimes) {
         return times(xtimes, ytimes, xtimes);
+    }
+
+    public AbsoluteSamples dtimes(int xtimes, int ytimes, int ztimes) {
+        return times(xtimes, ytimes, ztimes);
     }
 
     public AbsoluteSamples toAbsolute(Samples s) {
@@ -1167,131 +1274,143 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         throw new IllegalArgumentException("Unsupported yet");
     }
 
-    public AbsoluteSamples times(int xtimes, int ytimes, int ztimes) {
-        if (isInfiniteX()) {
-            throw new IllegalArgumentException("Infinite X Domain");
+    private static double[] toAbsolute(double[] base, double min, double max) {
+        if (base == null) {
+            return null;
         }
-        switch (dimension()) {
-            case 1: {
-                return Samples.absolute(MathsBase.dtimes(xmin(), xmax(), xtimes));
-            }
-            case 2: {
-                if (isInfiniteY()) {
-                    throw new IllegalArgumentException("Infinite Y Domain");
+        double[] r = new double[base.length];
+        if (Double.isInfinite(min) || Double.isInfinite(max)) {
+            if (Double.isInfinite(min) && Double.isInfinite(max)) {
+                //all zero
+//                for (int i = 0; i < r.length; i++) {
+//                    r[i] = 0;
+//                }
+            } else {
+                for (int i = 0; i < r.length; i++) {
+                    r[i] = min;
                 }
-                return Samples.absolute(
-                        MathsBase.dtimes(xmin(), xmax(), xtimes),
-                        MathsBase.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes)
-                );
             }
+            return r;
+        } else {
+            double w = max - min;
+            for (int i = 0; i < r.length; i++) {
+                r[i] = min + w * base[i];
+            }
+            return r;
         }
-        if (isInfiniteY()) {
-            throw new IllegalArgumentException("Infinite Y Domain");
-        }
-        if (isInfiniteZ()) {
-            throw new IllegalArgumentException("Infinite Z Domain");
-        }
-        return Samples.absolute(
-                MathsBase.dtimes(xmin(), xmax(), xtimes),
-                MathsBase.dtimes(ymin(), ymax(), (ytimes <= 0) ? xtimes : ytimes),
-                MathsBase.dtimes(zmin(), zmax(), (ztimes <= 0) ? xtimes : ztimes)
-        );
+    }
+
+    public double getXMin() {
+        return xmin();
+    }
+
+    public double getXMax() {
+        return xmax();
+    }
+
+    public double getYMin() {
+        return ymin();
+    }
+
+    public double getYMax() {
+        return ymax();
+    }
+
+    public double getZMin() {
+        return zmin();
+    }
+
+    public double getZMax() {
+        return zmax();
     }
 
     //
-//  def xtimes(times: Int) = MathsBase.dtimes(xmin, xmax, times);
+//  def xtimes(times: Int) = Maths.dtimes(xmin, xmax, times);
 //
-//  def ysteps(step: Double) = MathsBase.dsteps(ymin, ymax, step);
+//  def ysteps(step: Double) = Maths.dsteps(ymin, ymax, step);
 //
-//  def ytimes(times: Int) = MathsBase.dtimes(ymin, ymax, times);
+//  def ytimes(times: Int) = Maths.dtimes(ymin, ymax, times);
     //
 //
     public double[] xsteps(double step) {
-        return MathsBase.dsteps(xmin(), xmax(), step);
+        return Maths.dsteps(xmin(), xmax(), step);
     }
 
     public double[] ysteps(double step) {
-        return MathsBase.dsteps(ymin(), ymax(), step);
+        return Maths.dsteps(ymin(), ymax(), step);
     }
 
     public double[] zsteps(double step) {
-        return MathsBase.dsteps(xmin(), xmax(), step);
+        return Maths.dsteps(xmin(), xmax(), step);
     }
 
     public double[] xtimes(int count) {
-        return MathsBase.dtimes(xmin(), xmax(), count);
+        return Maths.dtimes(xmin(), xmax(), count);
     }
 
     public double[] ytimes(int count) {
-        return MathsBase.dtimes(ymin(), ymax(), count);
+        return Maths.dtimes(ymin(), ymax(), count);
     }
 
     public double[] ztimes(int count) {
-        return MathsBase.dtimes(zmin(), zmax(), count);
-    }
-
-    @Override
-    public Domain clone() {
-        try {
-            return (Domain) super.clone();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+        return Maths.dtimes(zmin(), zmax(), count);
     }
 
     public Domain scale(double x) {
         return scale(x, x, x);
     }
 
+    public Domain scale(double x, double y, double z) {
+        switch (dimension()) {
+            case 1: {
+                return ofWidth(xmin(), xwidth() * x);
+            }
+            case 2: {
+                return ofWidth(xmin(), xwidth() * x, ymin(), ywidth() * y);
+            }
+        }
+        return ofWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
+    }
+
+    public static Domain ofWidth(double xmin, double width) {
+        return new DomainX(xmin, xmin + width);
+    }
+
+    public static Domain ofWidth(double xmin, double xwidth, double ymin, double ywidth, double zmin, double zwidth) {
+        return ofBounds(xmin, xmin + xwidth, ymin, ymin + ywidth, zmin, zmin + zwidth);
+    }
+
     public Domain scale(double x, double y) {
         return scale(x, y, x);
     }
 
-    public Domain scale(double x, double y, double z) {
+    public Domain scale(Align anchor, double x) {
+        return scale(anchor, x, x, x);
+    }
+
+    public Domain scale(Align anchor, double x, double y, double z) {
         switch (dimension()) {
             case 1: {
-                return forWidth(xmin(), xwidth() * x);
-            }
-            case 2: {
-                return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y);
-            }
-        }
-        return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
-    }
-
-    public Domain scale(Align anchor,double x) {
-        return scale(anchor,x, x, x);
-    }
-
-    public Domain scale(Align anchor,double x, double y) {
-        return scale(anchor,x, y, x);
-    }
-
-    public Domain scale(Align anchor,double x, double y, double z) {
-        switch (dimension()) {
-            case 1: {
-                switch (anchor){
+                switch (anchor) {
                     case WEST:
                     case SOUTH_WEST:
                     case NORTH_WEST: {
-                        return forWidth(xmin(), xwidth() * x);
+                        return ofWidth(xmin(), xwidth() * x);
                     }
                     case EAST:
                     case SOUTH_EAST:
                     case NORTH_EAST: {
                         double w = xwidth() * x;
-                        return forWidth(xmin() - (w - xwidth()), w);
+                        return ofWidth(xmin() - (w - xwidth()), w);
                     }
                     case CENTER:
                     case NORTH:
-                    case SOUTH:{
+                    case SOUTH: {
                         double w = xwidth() * x;
-                        return forWidth(xmin() - (w - xwidth())/2, w);
+                        return ofWidth(xmin() - (w - xwidth()) / 2, w);
                     }
-                    default:{
-                        throw new IllegalArgumentException("Unsupported "+anchor);
+                    default: {
+                        throw new IllegalArgumentException("Unsupported " + anchor);
                     }
                 }
                 //return forWidth(xmin(), xwidth() * x);
@@ -1299,15 +1418,15 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             case 2: {
                 double xwidth = xwidth() * x;
                 double ywidth = ywidth() * y;
-                switch (anchor){
+                switch (anchor) {
                     case NORTH_WEST: {
-                        return forWidth(xmin(), xwidth, ymin(), ywidth);
+                        return ofWidth(xmin(), xwidth, ymin(), ywidth);
                     }
                     case CENTER: {
-                        return forWidth(xmin()-(xwidth-xwidth())/2, xwidth, ymin()-(ywidth-ywidth())/2, ywidth);
+                        return ofWidth(xmin() - (xwidth - xwidth()) / 2, xwidth, ymin() - (ywidth - ywidth()) / 2, ywidth);
                     }
-                    default:{
-                        throw new IllegalArgumentException("Unsupported "+anchor);
+                    default: {
+                        throw new IllegalArgumentException("Unsupported " + anchor);
                     }
 //                    case WEST:{
 //                        throw new IllegalArgumentException("Unsupported yet");
@@ -1333,18 +1452,18 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         double xwidth = xwidth() * x;
         double ywidth = ywidth() * y;
         double zwidth = zwidth() * z;
-        switch (anchor){
+        switch (anchor) {
             case NORTH_WEST: {
-                return forWidth(xmin(), xwidth, ymin(), ywidth, zmin(), zwidth);
+                return ofWidth(xmin(), xwidth, ymin(), ywidth, zmin(), zwidth);
             }
             case CENTER: {
-                return forWidth(xmin()-(xwidth-xwidth())/2, xwidth
-                        , ymin()-(ywidth-ywidth())/2, ywidth
-                        , zmin()-(zwidth-zwidth())/2, zwidth
+                return ofWidth(xmin() - (xwidth - xwidth()) / 2, xwidth
+                        , ymin() - (ywidth - ywidth()) / 2, ywidth
+                        , zmin() - (zwidth - zwidth()) / 2, zwidth
                 );
             }
-            default:{
-                throw new IllegalArgumentException("Unsupported "+anchor);
+            default: {
+                throw new IllegalArgumentException("Unsupported " + anchor);
             }
 //                    case WEST:{
 //                        throw new IllegalArgumentException("Unsupported yet");
@@ -1367,14 +1486,13 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
 //        return forWidth(xmin(), xwidth() * x, ymin(), ywidth() * y, zmin(), zwidth() * z);
     }
 
+    public Domain scale(Align anchor, double x, double y) {
+        return scale(anchor, x, y, x);
+    }
+
     //    @Override
     public Polygon toPolygon() {
         return new Polygon(this);
-    }
-
-    @Override
-    public Domain getDomain() {
-        return this;
     }
 
     //    @Override
@@ -1388,16 +1506,6 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         }
     }
 
-    public Domain expandDimension(int dimension) {
-        if (this.dimension() == dimension) {
-            return this;
-        } else if (this.dimension() < dimension) {
-            return toDomain(dimension);
-        } else {
-            throw new IllegalArgumentException("Unable to expand Domain to " + dimension);
-        }
-    }
-
     public Domain narrowDimension(int dimension) {
         if (this.dimension() == dimension) {
             return this;
@@ -1406,41 +1514,6 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         } else {
             throw new IllegalArgumentException("Unable to narrow Domain to " + dimension);
         }
-    }
-
-    public Domain toDomain(int dimension) {
-        if (dimension == this.dimension()) {
-            return this;
-        }
-        switch (dimension) {
-            case 1:
-                return toDomainX();
-            case 2:
-                return toDomainXY();
-            case 3:
-                return toDomainXYZ();
-        }
-        throw new IllegalArgumentException("invalid dimension " + dimension);
-    }
-
-    //    public enum Type {
-//
-//        LENGTH, MAX, OLD_STYLE
-//    }
-    public Domain toDomainX() {
-        return forBounds(this.xmin(), this.xmax());
-    }
-
-    public Domain toDomainXY() {
-        return forBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax());
-    }
-
-    public Domain toDomainXYZ() {
-        return forBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax(), this.zmin(), this.zmax());
-    }
-
-    public int getDimension() {
-        return dimension();
     }
 
     public int[] rangeArray(double[] x) {
@@ -1521,38 +1594,19 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     public Domain transformLinear(double a0x, double b0) {
-        return forBounds(a0x * xmin() + b0, a0x * xmax() + b0);
+        return ofBounds(a0x * xmin() + b0, a0x * xmax() + b0);
     }
 
-    public boolean isFull() {
+    public boolean isUnbounded() {
         switch (dimension()) {
             case 1: {
-                return isUnconstrainedX();
+                return isUnboundedX();
             }
             case 2: {
-                return isUnconstrainedX() && isUnconstrainedY();
+                return isUnboundedX() && isUnboundedY();
             }
         }
-        return isUnconstrainedX() && isUnconstrainedY() && isUnconstrainedZ();
-    }
-
-    public boolean isUnconstrainedX() {
-        return (xmin() == Double.NEGATIVE_INFINITY && xmax() == Double.POSITIVE_INFINITY)
-                || (Double.isNaN(xmin()) && Double.isNaN(xmax()));
-    }
-
-    public boolean isUnconstrainedY() {
-        return (ymin() == Double.NEGATIVE_INFINITY && ymax() == Double.POSITIVE_INFINITY)
-                || (Double.isNaN(ymin()) && Double.isNaN(ymax()));
-    }
-
-    public boolean isUnconstrainedZ() {
-        return (zmin() == Double.NEGATIVE_INFINITY && zmax() == Double.POSITIVE_INFINITY)
-                || (Double.isNaN(zmin()) && Double.isNaN(zmax()));
-    }
-
-    public boolean isUnconstrained() {
-        return isUnconstrainedX() && isUnconstrainedY() && isUnconstrainedZ();
+        return isUnboundedX() && isUnboundedY() && isUnboundedZ();
     }
 
     public Domain transform(Axis a1, Axis a2, Axis a3, int dim) {
@@ -1616,11 +1670,11 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
                 break;
             }
         }
-        return Domain.forBounds(xmin, xmax, ymin, ymax, zmin, zmax).toDomain(dim);
+        return Domain.ofBounds(xmin, xmax, ymin, ymax, zmin, zmax).toDomain(dim);
     }
 
     public Domain cross(RightArrowUplet2.Double other) {
-        return cross(MathsBase.domain(other));
+        return cross(Maths.domain(other));
     }
 
     public Domain cross(Domain other) {
@@ -1633,10 +1687,10 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             case 1: {
                 switch (b) {
                     case 1: {
-                        return forBounds(this.xmin(), this.xmax(), other.xmin(), other.xmax());
+                        return ofBounds(this.xmin(), this.xmax(), other.xmin(), other.xmax());
                     }
                     case 2: {
-                        return forBounds(this.xmin(), this.xmax(), other.xmin(), other.xmax(), other.ymin(), other.ymax());
+                        return ofBounds(this.xmin(), this.xmax(), other.xmin(), other.xmax(), other.ymin(), other.ymax());
                     }
                 }
                 break;
@@ -1644,7 +1698,7 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
             case 2: {
                 switch (b) {
                     case 1: {
-                        return forBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax(), other.xmin(), other.xmax());
+                        return ofBounds(this.xmin(), this.xmax(), this.ymin(), this.ymax(), other.xmin(), other.xmax());
                     }
                 }
                 break;
@@ -1653,26 +1707,40 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         throw new IllegalArgumentException("Unsupported Domain crossing");
     }
 
+    public int getDimension() {
+        return dimension();
+    }
+
     //    @Override
     public Geometry translateGeometry(double x, double y) {
         switch (dimension()) {
             case 1: {
                 if (y == 0) {
-                    return Domain.forWidth(xmin() + x, ywidth()).toTriangle();
+                    return Domain.ofWidth(xmin() + x, ywidth()).toTriangle();
 
                 } else {
                     throw new IllegalArgumentException("Unsupported");
                 }
             }
             case 2: {
-                return Domain.forWidth(xmin() + x, xwidth(), ymax() + y, ywidth()).toTriangle();
+                return Domain.ofWidth(xmin() + x, xwidth(), ymax() + y, ywidth()).toTriangle();
             }
             case 3: {
-                return Domain.forWidth(xmin() + x, xwidth(), ymax() + y, ywidth(), zmin(), zwidth()).toTriangle();
+                return Domain.ofWidth(xmin() + x, xwidth(), ymax() + y, ywidth(), zmin(), zwidth()).toTriangle();
             }
         }
         throw new IllegalArgumentException("Unsupported Domain dimension");
     }
+
+    //    @Override
+    public Triangle toTriangle() {
+        throw new IllegalArgumentException("Not Triangular");
+    }
+
+//    @Override
+//    public boolean isDoubleTyped() {
+//        return true;
+//    }
 
     //    @Override
     public boolean isPolygonal() {
@@ -1689,156 +1757,138 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return isEmpty();
     }
 
-    //    @Override
-    public Triangle toTriangle() {
-        throw new IllegalArgumentException("Not Triangular");
+    public double xmiddle() {
+        return (xmin() + xmax()) / 2;
     }
 
-    //    @Override
-    public Path2D.Double getPath() {
-        Path2D.Double p = new Path2D.Double();
-        p.moveTo(xmin(), ymin());
-        p.lineTo(xmax(), ymin());
-        p.lineTo(xmax(), ymax());
-        p.lineTo(xmin(), ymax());
-        p.closePath();
-        return p;
+    public double ymiddle() {
+        return (ymin() + ymax()) / 2;
     }
 
-    @Override
-    public boolean isDoubleTyped() {
-        return true;
+    public double zmiddle() {
+        return (zmin() + zmax()) / 2;
     }
 
-    public double ywidth() {
-        return ymax() - ymin();
-    }
-
-    public double zwidth() {
-        return zmax() - zmin();
-    }
-
-
-    public abstract double xmin();
-
-    public abstract double xmax();
-
-    public abstract double ymin();
-
-    public abstract double ymax();
-
-    public abstract double zmin();
-
-    public abstract double zmax();
-
-    public abstract double xwidth();
-
-    public abstract int dimension();
-
-
-    public Domain ensureBounded(double x, double y, double z) {
+    public Domain ensureFiniteBounds(double x, double y, double z) {
         if (x <= 0 || y <= 0 || z <= 0) {
             throw new IllegalArgumentException("Unsupported bounds " + x + ", " + y + ", " + z);
         }
-        if (isInfinite()) {
-            return ensureBounded(Domain.forBounds(
-                    -x, x, -y, y, -z, z
-            ));
+        return ensureFiniteBounds(Domain.ofBounds(-x, x, -y, y, -z, z));
+    }
+
+    public Domain ensureFiniteBounds(Domain bounds) {
+        switch (dimension()) {
+            case 1: {
+                return Domain.ofBounds(
+                        xmin() == Double.NEGATIVE_INFINITY ? bounds.xmin() : xmin(),
+                        xmax() == Double.POSITIVE_INFINITY ? bounds.xmax() : xmax()
+                );
+            }
+            case 2: {
+                return Domain.ofBounds(
+                        xmin() == Double.NEGATIVE_INFINITY ? bounds.xmin() : xmin(),
+                        xmax() == Double.POSITIVE_INFINITY ? bounds.xmax() : xmax()
+                        ,
+                        ymin() == Double.NEGATIVE_INFINITY ? bounds.ymin() : ymin(),
+                        ymax() == Double.POSITIVE_INFINITY ? bounds.ymax() : ymax()
+                );
+            }
+            case 3: {
+                return Domain.ofBounds(
+                        xmin() == Double.NEGATIVE_INFINITY ? bounds.xmin() : xmin(),
+                        xmax() == Double.POSITIVE_INFINITY ? bounds.xmax() : xmax()
+                        ,
+                        ymin() == Double.NEGATIVE_INFINITY ? bounds.ymin() : ymin(),
+                        ymax() == Double.POSITIVE_INFINITY ? bounds.ymax() : ymax()
+                        ,
+                        zmin() == Double.NEGATIVE_INFINITY ? bounds.zmin() : zmin(),
+                        zmax() == Double.POSITIVE_INFINITY ? bounds.zmax() : zmax()
+                );
+            }
         }
-        return this;
+        throw new IllegalArgumentException("Unsupported dimension " + dimension());
     }
 
     public Domain ensureBounded(Domain bounds) {
-        if (isInfinite()) {
-            double xmin = getXMin();
-            double xmax = getXMax();
-            if (Double.isInfinite(xmin)) {
-                xmin = bounds.xmin();
-            }
-            if (Double.isInfinite(xmax)) {
-                xmax = bounds.xmax();
-            }
-            double ymin = getYMin();
-            double ymax = getYMax();
-            if (Double.isInfinite(ymin)) {
-                ymin = bounds.ymin();
-            }
-            if (Double.isInfinite(ymax)) {
-                ymax = bounds.ymax();
-            }
-            double zmin = getZMin();
-            double zmax = getZMax();
-            if (Double.isInfinite(zmin)) {
-                zmin = bounds.zmin();
-            }
-            if (Double.isInfinite(zmax)) {
-                zmax = bounds.zmax();
-            }
-            switch (dimension()) {
-                case 1: {
-                    return forPoints(xmin, xmax);
+        switch (dimension()) {
+            case 1: {
+                double xmin = getXMin();
+                double xmax = getXMax();
+                if (xmin == Double.NEGATIVE_INFINITY || xmin < bounds.xmin()) {
+                    xmin = bounds.xmin();
                 }
-                case 2: {
-                    return forPoints(xmin, ymin, xmax, ymax);
+                if (xmax == Double.POSITIVE_INFINITY || xmax > bounds.xmax()) {
+                    xmax = bounds.xmax();
                 }
-                case 3: {
-                    return Domain.forPoints(xmin, ymin, zmin, xmax, ymax, zmax);
+                return ofPoints(xmin, xmax);
+            }
+            case 2: {
+                double xmin = getXMin();
+                double xmax = getXMax();
+                if (xmin == Double.NEGATIVE_INFINITY || xmin < bounds.xmin()) {
+                    xmin = bounds.xmin();
                 }
-                default: {
-                    throw new IllegalArgumentException("Unsupported dimension " + dimension());
+                if (xmax == Double.POSITIVE_INFINITY || xmax > bounds.xmax()) {
+                    xmax = bounds.xmax();
                 }
+                double ymin = getYMin();
+                double ymax = getYMax();
+                if (ymin == Double.NEGATIVE_INFINITY || ymin < bounds.ymin()) {
+                    ymin = bounds.ymin();
+                }
+                if (ymax == Double.POSITIVE_INFINITY || ymax > bounds.ymax()) {
+                    ymax = bounds.ymax();
+                }
+                return ofPoints(xmin, ymin, xmax, ymax);
+            }
+            case 3: {
+                double xmin = getXMin();
+                double xmax = getXMax();
+                if (xmin == Double.NEGATIVE_INFINITY || xmin < bounds.xmin()) {
+                    xmin = bounds.xmin();
+                }
+                if (xmax == Double.POSITIVE_INFINITY || xmax > bounds.xmax()) {
+                    xmax = bounds.xmax();
+                }
+                double ymin = getYMin();
+                double ymax = getYMax();
+                if (ymin == Double.NEGATIVE_INFINITY || ymin < bounds.ymin()) {
+                    ymin = bounds.ymin();
+                }
+                if (ymax == Double.POSITIVE_INFINITY || ymax > bounds.ymax()) {
+                    ymax = bounds.ymax();
+                }
+                double zmin = getZMin();
+                double zmax = getZMax();
+                if (zmin == Double.NEGATIVE_INFINITY || zmin < bounds.zmin()) {
+                    zmin = bounds.zmin();
+                }
+                if (zmax == Double.POSITIVE_INFINITY || zmax > bounds.zmax()) {
+                    zmax = bounds.ymax();
+                }
+                return Domain.ofPoints(xmin, ymin, zmin, xmax, ymax, zmax);
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported dimension " + dimension());
             }
         }
-        return this;
     }
 
-    public Domain multiply(Domain other) {
-        return mul(other);
+    public static Domain ofPoints(double xmin, double xmax) {
+        return ofBounds(xmin, xmax);
     }
 
-    public Domain mul(Domain other) {
-        return this.intersect(other);
+    public static Domain ofPoints(double xmin, double ymin, double xmax, double ymax) {
+        return ofBounds(xmin, xmax, ymin, ymax);
     }
 
+    public static Domain ofPoints(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) {
+        return ofBounds(xmin, xmax, ymin, ymax, zmin, zmax);
+    }
 
     @Override
     public boolean isInvariant(Axis axis) {
         return true;
-    }
-
-    @Override
-    public boolean isDouble() {
-        return isUnconstrained();
-    }
-
-    @Override
-    public boolean isComplex() {
-        return isUnconstrained();
-    }
-
-    @Override
-    public boolean isComplexExpr() {
-        return true;
-    }
-
-    @Override
-    public boolean isDoubleExpr() {
-        return true;
-    }
-
-    @Override
-    public boolean isScalarExpr() {
-        return true;
-    }
-
-    @Override
-    public boolean isMatrix() {
-        return true;
-    }
-
-    @Override
-    public Expr sub(Expr other) {
-        return MathsBase.sub(this, other);
     }
 
     @Override
@@ -1847,33 +1897,43 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public double toDouble() {
-        return 1;
+    public NumberExpr toNumber() {
+        return this;
     }
 
     @Override
-    public ComplexMatrix toMatrix() {
-        return toComplex().toMatrix();
+    public ExprType getType() {
+        return isUnbounded1() ? ExprType.DOUBLE_NBR : ExprType.DOUBLE_EXPR;
     }
 
-    @Override
-    public boolean isDC() {
-        return true;
-    }
+//    @Override
+//    public boolean isDouble() {
+//        return isUnconstrained();
+//    }
+//
+//    @Override
+//    public boolean isComplex() {
+//        return isUnconstrained();
+//    }
+
+//    @Override
+//    public boolean isComplexExpr() {
+//        return true;
+//    }
+
+//    @Override
+//    public boolean isDoubleExpr() {
+//        return true;
+//    }
+
+//    @Override
+//    public boolean isMatrix() {
+//        return true;
+//    }
 
     @Override
-    public boolean isDD() {
-        return true;
-    }
-
-    @Override
-    public boolean isDV() {
-        return true;
-    }
-
-    @Override
-    public boolean isDM() {
-        return true;
+    public DoubleToComplex toDC() {
+        return new DefaultComplexValue(Complex.ONE, this);
     }
 
     @Override
@@ -1881,190 +1941,38 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return false;
     }
 
+    public boolean isNaN() {
+        return false;
+//        switch (dimension()) {
+//            case 1: {
+//                return Double.isNaN(xmin()) || Double.isNaN(xmax());
+//            }
+//            case 2: {
+//                return Double.isNaN(xmin()) || Double.isNaN(xmax()) || Double.isNaN(ymin()) || Double.isNaN(ymax());
+//            }
+//        }
+//        return Double.isNaN(xmin()) || Double.isNaN(xmax()) || Double.isNaN(ymin()) || Double.isNaN(ymax()) || Double.isNaN(zmin()) || Double.isNaN(zmax());
+    }
+
+//    @Override
+//    public ComplexMatrix toMatrix() {
+//        return toComplex().toMatrix();
+//    }
+
+    @Override
+    public List<Expr> getChildren() {
+        return Collections.EMPTY_LIST;
+    }
+
     @Override
     public boolean hasParams() {
         return false;
     }
 
-    public Expr neg() {
-        return MathsBase.neg(this);
-    }
-
-    public Expr mul(Geometry domain) {
-        return mul(MathsBase.expr(domain));
-    }
-
-    public Expr multiply(Geometry domain) {
-        return mul(domain);
-    }
-
-    public Expr divide(Expr other) {
-        return div(other);
-    }
-
-
-    public Expr divide(double other) {
-        return div(other);
-    }
-
-    public Expr multiply(int c) {
-        return mul(c);
-    }
-
-    public Expr multiply(double c) {
-        return mul(c);
-    }
-
-    public Expr multiply(Expr c) {
-        return mul(c);
-    }
-
-    public Expr subtract(int c) {
-        return sub(c);
-    }
-
-    public Expr subtract(double c) {
-        return sub(c);
-    }
-
-
-    public Expr negate() {
-        return neg();
-    }
-
     @Override
-    public Expr divide(int other) {
-        return div(other);
-    }
-
-    @Override
-    public Expr subtract(Expr other) {
-        return sub(other);
-    }
-
-    @Override
-    public int getDomainDimension() {
-        return getDimension();
-    }
-
-    @Override
-    public Expr mul(int other) {
-        return DoubleValue.valueOf(other, this);
-    }
-
-    @Override
-    public Expr mul(double other) {
-        return DoubleValue.valueOf(other, this);
-    }
-
-
-    @Override
-    public Expr mul(Complex other) {
-        if (other.isReal()) {
-            return mul(other.toDouble());
-        }
-        return ComplexValue.valueOf(other, this);
-    }
-
-    @Override
-    public Expr mul(Expr other) {
-        return MathsBase.mul(this, other);
-    }
-
-    @Override
-    public Expr add(int other) {
-        return DoubleValue.valueOf(other + 1, this);
-    }
-
-    @Override
-    public Expr add(double other) {
-        return DoubleValue.valueOf(other + 1, this);
-    }
-
-    @Override
-    public Expr add(Expr other) {
-        return MathsBase.add(this, other);
-    }
-
-    @Override
-    public Expr div(int other) {
-        return DoubleValue.valueOf(1.0 / other, this);
-    }
-
-    @Override
-    public Expr div(double other) {
-        return DoubleValue.valueOf(1.0 / other, this);
-    }
-
-    @Override
-    public Expr div(Expr other) {
-        return MathsBase.div(this, other);
-    }
-
-    @Override
-    public Expr sub(int other) {
-        return DoubleValue.valueOf(1.0 - other, this);
-    }
-
-    @Override
-    public Expr sub(double other) {
-        return DoubleValue.valueOf(1.0 - other, this);
-    }
-
-    @Override
-    public Domain domain() {
+    public Expr setParams(ParamValues params) {
         return this;
     }
-
-    @Override
-    public boolean hasProperties() {
-        return false;
-    }
-
-    @Override
-    public Expr simplify() {
-        return this;
-    }
-
-    @Override
-    public Expr simplify(SimplifyOptions options) {
-        return this;
-    }
-
-    @Override
-    public Expr normalize() {
-        return MathsBase.normalize((Expr) this);
-    }
-
-    @Override
-    public String getTitle() {
-        return null;
-    }
-
-    @Override
-    public Expr title(String name) {
-        return setTitle(name);
-    }
-
-    @Override
-    public Expr setTitle(String name) {
-        if (name != null) {
-            return new Any(this, name, null);
-        } else {
-            return this;
-        }
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, double value) {
-        return this;
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, Expr value) {
-        return this;
-    }
-
 
     public Expr setParam(String name, double value) {
         return this;
@@ -2076,53 +1984,41 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public List<Expr> getSubExpressions() {
-        return Collections.EMPTY_LIST;
+    public Set<Param> getParams() {
+        return Collections.EMPTY_SET;
     }
 
     @Override
-    public Expr compose(Axis axis,Expr xreplacement) {
+    public Expr setParam(Param paramExpr, double value) {
         return this;
     }
 
     @Override
-    public ComponentDimension getComponentDimension() {
-        return ComponentDimension.SCALAR;
+    public Expr setParam(Param paramExpr, Expr value) {
+        return this;
+    }
+
+    public boolean isInfinite() {
+        return false;
+//        switch (dimension()) {
+//            case 1: {
+//                return Double.isInfinite(xmin()) || Double.isInfinite(xmax());
+//            }
+//            case 2: {
+//                return Double.isInfinite(xmin()) || Double.isInfinite(xmax()) || Double.isInfinite(ymin()) || Double.isInfinite(ymax());
+//            }
+//        }
+//        return Double.isInfinite(xmin()) || Double.isInfinite(xmax()) || Double.isInfinite(ymin()) || Double.isInfinite(ymax()) || Double.isInfinite(zmin()) || Double.isInfinite(zmax());
     }
 
     @Override
-    public Expr setProperties(Map<String, Object> map) {
-        return setProperties(map, false);
+    public boolean isEvaluatable() {
+        return true;
     }
 
     @Override
-    public Expr setMergedProperties(Map<String, Object> map) {
-        return setProperties(map, true);
-    }
-
-    @Override
-    public Expr setProperties(Map<String, Object> map, boolean merge) {
-        if (map == null || map.isEmpty()) {
-            return this;
-        }
-        return new Any(this, null, map);
-    }
-
-    @Override
-    public Expr setProperty(String name, Object value) {
-        HashMap<String, Object> m = new HashMap<>(1);
-        m.put(name, value);
-        return setProperties(m, true);
-    }
-
-    @Override
-    public Object getProperty(String name) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> getProperties() {
-        return Collections.EMPTY_MAP;
+    public boolean hasProperties() {
+        return false;
     }
 
     @Override
@@ -2146,94 +2042,230 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
     }
 
     @Override
-    public DoubleToComplex toDC() {
-        return new ComplexValue(Complex.ONE, this);
+    public Map<String, Object> getProperties() {
+        return Collections.EMPTY_MAP;
     }
 
     @Override
-    public DoubleToDouble toDD() {
-        return new DoubleValue(1, this);
+    public Expr compose(Expr xreplacement, Expr yreplacement, Expr zreplacement) {
+        return this;
     }
 
     @Override
-    public DoubleToVector toDV() {
-        return toDC().toDV();
+    public Expr normalize() {
+        return ExprDefaults.normalize(this);
     }
 
     @Override
-    public DoubleToMatrix toDM() {
-        return toDC().toDM();
-    }
-
-
-    public Geometry scale(Domain newDomain) {
-        return DomainScaleTool.create(getDomain(), newDomain).rescale(toGeometry());
-    }
-
-    public Geometry scale(int width, int height) {
-        return DomainScaleTool.create(getDomain(), Domain.forBounds(0, width, 0, height)).rescale(toGeometry());
-    }
-
-    public Geometry intersectGeometry(Geometry geometry) {
-        return toSurface().intersectGeometry(geometry);
-    }
-
-    public Geometry subtractGeometry(Geometry geometry) {
-        return toSurface().subtractGeometry(geometry);
-    }
-
-    public Geometry addGeometry(Domain geometry) {
-        return addGeometry(geometry.toGeometry());
-    }
-
-    public Geometry subtractGeometry(Domain geometry) {
-        return subtractGeometry(geometry.toGeometry());
-    }
-
-    public Geometry intersectGeometry(Domain geometry) {
-        return intersectGeometry(geometry.toGeometry());
-    }
-
-    public Geometry addGeometry(Geometry geometry) {
-        return toSurface().addGeometry(geometry);
-    }
-
-    public Geometry exclusiveOrGeometry(Geometry geometry) {
-        return toSurface().exclusiveOrGeometry(geometry);
-    }
-
-    public Surface toSurface() {
-        return new Surface(getPath());
-    }
-
-
-    public Geometry toGeometry() {
-        return new DomainGeometry(this);
+    public ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
     }
 
     @Override
-    public Set<ParamExpr> getParams() {
-        return Collections.EMPTY_SET;
+    public Expr mul(Complex other) {
+        if (other.isReal()) {
+            return mul(other.toDouble());
+        }
+        if (isUnbounded1()) {
+            return other;
+        }
+        if (other.isOne()) {
+            return this;
+        }
+        return Maths.expr(other, this);
+    }
+
+    @Override
+    public Expr add(int other) {
+        return Maths.expr(other + 1, this);
+    }
+
+    @Override
+    public Expr add(double other) {
+        return Maths.expr(other + 1, this);
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        return ExprDefaults.add(this, other);
     }
 
     @Override
     public Expr rdiv(double other) {
-        return MathsBase.expr(other).div(this);
+        return Maths.expr(other).div(this);
     }
 
     @Override
     public Expr rmul(double other) {
-        return MathsBase.expr(other).mul(this);
+        return Maths.expr(other).mul(this);
     }
+
+//    @Override
+//    public Expr simplify() {
+//        return this;
+//    }
+
+//    @Override
+//    public Expr simplify(SimplifyOptions options) {
+//        return this;
+//    }
 
     @Override
     public Expr radd(double other) {
-        return MathsBase.expr(other).add(this);
+        return Maths.expr(other).add(this);
     }
 
     @Override
     public Expr rsub(double other) {
-        return MathsBase.expr(other).sub(this);
+        return Maths.expr(other).sub(this);
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
+    public boolean isSmartMulDouble() {
+        return true;
+    }
+
+    @Override
+    public boolean isSmartMulComplex() {
+        return true;
+    }
+
+    @Override
+    public boolean isSmartMulDomain() {
+        return true;
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        switch (getDimension()) {
+            case 1: {
+                return Tson.function("domain", Tson.elem(xmin()), Tson.elem(xmax())).build();
+            }
+            case 2: {
+                return Tson.function("domain",
+                        Tson.elem(xmin()), Tson.elem(xmax()),
+                        Tson.elem(ymin()), Tson.elem(ymax())
+                ).build();
+            }
+        }
+        return Tson.function("domain",
+                Tson.elem(xmin()), Tson.elem(xmax()),
+                Tson.elem(ymin()), Tson.elem(ymax()),
+                Tson.elem(zmin()), Tson.elem(zmax())
+        ).build();
+    }
+
+    public Domain multiply(Domain other) {
+        return mul(other);
+    }
+
+    public Domain mul(Domain other) {
+        return this.intersect(other);
+    }
+
+    public Expr multiply(Geometry geometry) {
+        return mul(geometry);
+    }
+
+    public Expr mul(Geometry domain) {
+        return mul(Maths.expr(domain));
+    }
+
+    public Expr multiply(int c) {
+        return mul(c);
+    }
+
+    @Override
+    public Expr mul(int other) {
+        return Maths.expr(other, this);
+    }
+
+    public Expr multiply(double c) {
+        return mul(c);
+    }
+
+    @Override
+    public Expr mul(double other) {
+        return other == 1 ? this : other == 0 ? Maths.DZERO(getDimension()) : Maths.expr(other, this);
+    }
+
+    public Expr multiply(Expr c) {
+        return mul(c);
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        return ExprDefaults.mul(this, other);
+    }
+
+    @Override
+    public Expr divide(int other) {
+        return div(other);
+    }
+
+    @Override
+    public Expr div(int other) {
+        return Maths.expr(1.0 / other, this);
+    }
+
+    public Expr divide(double other) {
+        return div(other);
+    }
+
+    @Override
+    public Expr div(double other) {
+        return Maths.expr(1.0 / other, this);
+    }
+
+    public Expr divide(Expr other) {
+        return div(other);
+    }
+
+    @Override
+    public Expr div(Expr other) {
+        return ExprDefaults.div(this, other);
+    }
+
+    public Expr subtract(int c) {
+        return sub(c);
+    }
+
+    @Override
+    public Expr sub(int other) {
+        return Maths.expr(1.0 - other, this);
+    }
+
+    public Expr subtract(double c) {
+        return sub(c);
+    }
+
+    @Override
+    public Expr sub(double other) {
+        return Maths.expr(1.0 - other, this);
+    }
+
+    @Override
+    public Expr subtract(Expr other) {
+        return sub(other);
+    }
+
+    @Override
+    public Expr sub(Expr other) {
+        return ExprDefaults.sub(this, other);
+    }
+
+    public Expr neg() {
+        return Maths.neg(this);
+    }
+
+    @Override
+    public Domain getDomain() {
+        return this;
     }
 
     @Override
@@ -2241,88 +2273,178 @@ public abstract class Domain /*extends AbstractGeometry*/ implements Serializabl
         return getProperty(name);
     }
 
-    public Domain replaceXmin(double newValue){
-        switch (dimension()){
-            case 1:{
-                return Domain.forBounds(newValue,xmax());
+    @Override
+    public Object getProperty(String name) {
+        return null;
+    }
+
+    @Override
+    public Expr newInstance(Expr... subExpressions) {
+        return this;
+    }
+
+    @Override
+    public double toDouble() {
+        return 1;
+    }
+
+    public Geometry scale(Domain newDomain) {
+        return DomainScaleTool.create(getDomain(), newDomain).rescale(toGeometry());
+    }
+
+    public Geometry toGeometry() {
+        return new DomainGeometry(this);
+    }
+
+    public Geometry scale(int width, int height) {
+        return DomainScaleTool.create(getDomain(), Domain.ofBounds(0, width, 0, height)).rescale(toGeometry());
+    }
+
+    public Geometry addGeometry(Domain geometry) {
+        return addGeometry(geometry.toGeometry());
+    }
+
+    public Geometry addGeometry(Geometry geometry) {
+        return toSurface().addGeometry(geometry);
+    }
+
+    public Surface toSurface() {
+        return new Surface(getPath());
+    }
+
+    //    @Override
+    public Path2D.Double getPath() {
+        Path2D.Double p = new Path2D.Double();
+        p.moveTo(xmin(), ymin());
+        p.lineTo(xmax(), ymin());
+        p.lineTo(xmax(), ymax());
+        p.lineTo(xmin(), ymax());
+        p.closePath();
+        return p;
+    }
+
+    public Geometry subtractGeometry(Domain geometry) {
+        return subtractGeometry(geometry.toGeometry());
+    }
+
+    public Geometry subtractGeometry(Geometry geometry) {
+        return toSurface().subtractGeometry(geometry);
+    }
+
+    public Geometry intersectGeometry(Domain geometry) {
+        return intersectGeometry(geometry.toGeometry());
+    }
+
+    public Geometry intersectGeometry(Geometry geometry) {
+        return toSurface().intersectGeometry(geometry);
+    }
+
+    public Geometry exclusiveOrGeometry(Geometry geometry) {
+        return toSurface().exclusiveOrGeometry(geometry);
+    }
+
+    public Domain replaceXmin(double newValue) {
+        switch (dimension()) {
+            case 1: {
+                return Domain.ofBounds(newValue, xmax());
             }
-            case 2:{
-                return Domain.forBounds(newValue,xmax(),ymin(),ymax());
+            case 2: {
+                return Domain.ofBounds(newValue, xmax(), ymin(), ymax());
             }
-            case 3:{
-                return Domain.forBounds(newValue,xmax(),ymin(),ymax(),zmin(),zmax());
+            case 3: {
+                return Domain.ofBounds(newValue, xmax(), ymin(), ymax(), zmin(), zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
-    public Domain replaceXwidth(double newValue){
-        switch (dimension()){
-            case 1:{
-                return Domain.forBounds(xmin(),xmin()+newValue);
+
+    public Domain replaceXwidth(double newValue) {
+        switch (dimension()) {
+            case 1: {
+                return Domain.ofBounds(xmin(), xmin() + newValue);
             }
-            case 2:{
-                return Domain.forBounds(xmin(),xmin()+newValue,ymin(),ymax());
+            case 2: {
+                return Domain.ofBounds(xmin(), xmin() + newValue, ymin(), ymax());
             }
-            case 3:{
-                return Domain.forBounds(xmin(),xmin()+newValue,ymin(),ymax(),zmin(),zmax());
-            }
-        }
-        throw new IllegalArgumentException("Unsupported");
-    }
-    public Domain replaceYmin(double newValue){
-        switch (dimension()){
-            case 1:{
-                throw new IllegalArgumentException("Invalid dimension");
-            }
-            case 2:{
-                return Domain.forBounds(xmin(),xwidth(),newValue,ymax());
-            }
-            case 3:{
-                return Domain.forBounds(xmin(),xmax(),newValue,ymax(),zmin(),zmax());
+            case 3: {
+                return Domain.ofBounds(xmin(), xmin() + newValue, ymin(), ymax(), zmin(), zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
-    public Domain replaceYwidth(double newValue){
-        switch (dimension()){
-            case 1:{
+
+    public Domain replaceYmin(double newValue) {
+        switch (dimension()) {
+            case 1: {
                 throw new IllegalArgumentException("Invalid dimension");
             }
-            case 2:{
-                return Domain.forBounds(xmin(),xmax(),ymin(),ymin()+newValue);
+            case 2: {
+                return Domain.ofBounds(xmin(), xwidth(), newValue, ymax());
             }
-            case 3:{
-                return Domain.forBounds(xmin(),xmax(),ymin(),ymin()+newValue,zmin(),zmax());
+            case 3: {
+                return Domain.ofBounds(xmin(), xmax(), newValue, ymax(), zmin(), zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
-    public Domain replaceZmin(double newValue){
-        switch (dimension()){
-            case 1:{
+
+    public Domain replaceYwidth(double newValue) {
+        switch (dimension()) {
+            case 1: {
                 throw new IllegalArgumentException("Invalid dimension");
             }
-            case 2:{
-                throw new IllegalArgumentException("Invalid dimension");
+            case 2: {
+                return Domain.ofBounds(xmin(), xmax(), ymin(), ymin() + newValue);
             }
-            case 3:{
-                return Domain.forBounds(xmin(),xmax(),ymin(),ymax(),newValue,zmax());
+            case 3: {
+                return Domain.ofBounds(xmin(), xmax(), ymin(), ymin() + newValue, zmin(), zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
-    public Domain replaceZwidth(double newValue){
-        switch (dimension()){
-            case 1:{
+
+    public Domain replaceZmin(double newValue) {
+        switch (dimension()) {
+            case 1: {
                 throw new IllegalArgumentException("Invalid dimension");
             }
-            case 2:{
+            case 2: {
                 throw new IllegalArgumentException("Invalid dimension");
             }
-            case 3:{
-                return Domain.forBounds(xmin(),xmax(),ymin(),ymax(),zmin(),zmin()+newValue);
+            case 3: {
+                return Domain.ofBounds(xmin(), xmax(), ymin(), ymax(), newValue, zmax());
             }
         }
         throw new IllegalArgumentException("Unsupported");
+    }
+
+    public Domain replaceZwidth(double newValue) {
+        switch (dimension()) {
+            case 1: {
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 2: {
+                throw new IllegalArgumentException("Invalid dimension");
+            }
+            case 3: {
+                return Domain.ofBounds(xmin(), xmax(), ymin(), ymax(), zmin(), zmin() + newValue);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    @Override
+    public double evalDoubleSimple(double x, double y, double z) {
+        return 1;
+    }
+
+    @Override
+    public double evalDoubleSimple(double x, double y) {
+        return 1;
+    }
+
+    @Override
+    public double evalDoubleSimple(double x) {
+        return 1;
     }
 }

@@ -5,9 +5,10 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
+import java.util.Iterator;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
-import static net.vpc.scholar.hadrumaths.FunctionFactory.DZEROXY;
 import static net.vpc.scholar.hadrumaths.Maths.sqr;
 
 /**
@@ -26,7 +27,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
         double a = domain.xwidth();
         double b = domain.ywidth();
 //        return Complex.valueOf(sqr(m * PI / a) + sqr(n * PI / b) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
-        Complex eps = space.getEps(freq);
+        Complex eps = space.getEpsrc(freq);
         double mu = Maths.U0;
         return eps.mul(mu *Maths.sqr(2*PI*freq)).neg().add(sqr(m * PI / a) + sqr(n * PI / b))
                .sqrt()
@@ -44,8 +45,8 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
         return Physics.freqByK0(k0Coupure);
     }
 
-    public ModeIterator iterator() {
-        return new PositiveModeIterator(allowedModes, axis, borders);
+    public Iterator<ModeIndex> iterator() {
+        return new PositiveModeIterator2(allowedModes, axis, borders);
     }
 
 
@@ -94,8 +95,8 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
 
                 nx = n_bAmp;
                 ny = -m_aAmp;
-                fx = nx == 0 ? FunctionFactory.DZEROXY : getFctX(domain, m, n, a, b, nx, ny);
-                fy = ny == 0 ? FunctionFactory.DZEROXY : getFctY(domain, m, n, a, b, nx, ny);
+                fx = nx == 0 ? Maths.DZEROXY : getFctX(domain, m, n, a, b, nx, ny);
+                fy = ny == 0 ? Maths.DZEROXY : getFctY(domain, m, n, a, b, nx, ny);
                 break;
             }
             case TM: {
@@ -118,8 +119,8 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
 
                 nx = -m_aAmp;
                 ny = -n_bAmp;
-                fx = nx == 0 ? FunctionFactory.DZEROXY : getFctX(domain, m, n, a, b, nx, ny);
-                fy = ny == 0 ? FunctionFactory.DZEROXY : getFctY(domain, m, n, a, b, nx, ny);
+                fx = nx == 0 ? Maths.DZEROXY : getFctX(domain, m, n, a, b, nx, ny);
+                fy = ny == 0 ? Maths.DZEROXY : getFctY(domain, m, n, a, b, nx, ny);
                 break;
             }
             default: {
@@ -137,8 +138,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
             System.err.println("How come " + borders + "(" + i.getModeType() + "," + i.getM() + "," + i.getN() + ") is Infinite");
         }
         DoubleToVector fn = null;
-        fn = Maths.vector((fx), (fy));
-        fn = fn.setTitle(borders.toString() + "/" + i).toDV();
+        fn = Maths.vector(fx, fy).setTitle(borders.toString() + "/" + i).toDV();
         return fn;
     }
 
@@ -153,7 +153,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
 //        }
 
     protected Expr getFctXTEM(Domain domain) {
-        return DZEROXY;
+        return Maths.DZEROXY;
     }
 //        {
 //            double a = domain.xwidth();
@@ -162,7 +162,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
 //        }
 
     protected Expr getFctYTEM(Domain domain) {
-        return DZEROXY;
+        return Maths.DZEROXY;
     }
 //        {
 //            double a = domain.xwidth();

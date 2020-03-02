@@ -10,13 +10,13 @@ import java.util.*;
  * @creationtime 18 oct. 2006 09:57:45
  */
 public class FunctionsXYTableModel extends AbstractTableModel {
-    public static int MAX_SELECTED_EXPRESSIONS=1000;
     private static final long serialVersionUID = 1L;
+    public static int MAX_SELECTED_EXPRESSIONS = 1000;
     private Expr[] base;
     private String[] titles;
-//    private boolean[] selected;
+    //    private boolean[] selected;
     private int maxSelected = 200;
-    private LinkedHashSet<Integer> selectionOrder=new LinkedHashSet<>();
+    private final LinkedHashSet<Integer> selectionOrder = new LinkedHashSet<>();
 //    private PropertyChangeSupport support;
 
     public FunctionsXYTableModel(Expr[] base) {
@@ -49,10 +49,45 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         int max = Math.min(50, base.length);
         selectionOrder.clear();
         for (int i = 0; i < max; i++) {
-            setSelected(i,true,false);
+            setSelected(i, true, false);
         }
         fireTableDataChanged();
 //        support=new PropertyChangeSupport(this);
+    }
+
+    private synchronized boolean setSelected(int index, boolean v, boolean fire) {
+        if (index >= 0 && index < base.length) {
+            boolean old = isSelected(index);
+            if (old != v) {
+                if (v) {
+                    selectionOrder.add(index);
+                } else {
+                    selectionOrder.remove(index);
+                }
+                rebuildSelectionOrder();
+                if (fire) {
+                    fireTableDataChanged();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private synchronized boolean isSelected(int index) {
+        return selectionOrder.contains(index);
+    }
+
+    private synchronized void rebuildSelectionOrder() {
+        if (maxSelected > 0 && selectionOrder.size() > maxSelected) {
+            for (Iterator<Integer> iterator = selectionOrder.iterator(); iterator.hasNext(); ) {
+                Integer p = iterator.next();
+                iterator.remove();
+                if (selectionOrder.size() <= maxSelected) {
+                    break;
+                }
+            }
+        }
     }
 
     public int getMaxSelected() {
@@ -66,13 +101,13 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     }
 
     @Override
-    public int getColumnCount() {
-        return titles == null ? 1 : titles.length;
+    public int getRowCount() {
+        return base == null ? 0 : base.length;
     }
 
     @Override
-    public int getRowCount() {
-        return base == null ? 0 : base.length;
+    public int getColumnCount() {
+        return titles == null ? 1 : titles.length;
     }
 
     @Override
@@ -98,20 +133,12 @@ public class FunctionsXYTableModel extends AbstractTableModel {
         return titles == null ? super.getColumnName(column) : titles[column];
     }
 
-
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        String title = titles[columnIndex];
-        return "Selected".equals(title);
-    }
-
-
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         String title = titles[columnIndex];
         if ("Name".equals(title)) {
             return String.class;
-        }else if ("Expr".equals(title)) {
+        } else if ("Expr".equals(title)) {
             return String.class;
         } else if ("Selected".equals(title)) {
             return Boolean.class;
@@ -120,46 +147,19 @@ public class FunctionsXYTableModel extends AbstractTableModel {
     }
 
     @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        String title = titles[columnIndex];
+        return "Selected".equals(title);
+    }
+
+    @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         String title = titles[columnIndex];
         if ("Selected".equals(title)) {
-            setSelected(rowIndex, (Boolean) aValue,true);
+            setSelected(rowIndex, (Boolean) aValue, true);
         }
-    }
-    private synchronized boolean isSelected(int index){
-        return selectionOrder.contains(index);
     }
 
-    private synchronized boolean setSelected(int index,boolean v,boolean fire){
-        if(index>=0 && index<base.length){
-            boolean old=isSelected(index);
-            if(old!=v) {
-                if(v){
-                    selectionOrder.add(index);
-                }else{
-                    selectionOrder.remove(index);
-                }
-                rebuildSelectionOrder();
-                if(fire){
-                    fireTableDataChanged();
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private synchronized void rebuildSelectionOrder(){
-        if(maxSelected>0 && selectionOrder.size()>maxSelected){
-            for (Iterator<Integer> iterator = selectionOrder.iterator(); iterator.hasNext(); ) {
-                Integer p = iterator.next();
-                iterator.remove();
-                if(selectionOrder.size()<=maxSelected){
-                    break;
-                }
-            }
-        }
-    }
     public void setAllSelectedByCell(int c, int r, boolean value) {
         String title = titles[c];
         if ("Name".equals(title)) {
@@ -170,20 +170,20 @@ public class FunctionsXYTableModel extends AbstractTableModel {
             return;
         }
         Object v = base[r].getProperty(titles[c]);
-        boolean change=false;
+        boolean change = false;
         for (int i = 0; i < base.length; i++) {
             Object v2 = base[i].getProperty(titles[c]);
             if (v == v2 || (v != null && v2 != null && v.equals(v2))) {
-                change|=setSelected(i,value,false);
+                change |= setSelected(i, value, false);
             }
         }
         fireTableDataChanged();
     }
 
     public void setAllSelected(boolean value) {
-        boolean change=false;
+        boolean change = false;
         for (int i = 0; i < base.length; i++) {
-            change|=setSelected(i,value,false);
+            change |= setSelected(i, value, false);
         }
         fireTableDataChanged();
     }

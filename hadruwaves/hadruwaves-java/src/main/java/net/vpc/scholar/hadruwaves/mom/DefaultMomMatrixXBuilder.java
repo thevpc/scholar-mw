@@ -16,7 +16,7 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
         super(momStructure);
     }
 
-    private ComplexMatrix computeMatrixImpl() {
+    private ComplexMatrix evalMatrixImpl() {
         MomStructure momStructure = getStructure();
         momStructure.build();
         return new MatrixXMatrixStrCacheSupport(momStructure, getMonitor()).get();
@@ -24,22 +24,22 @@ class DefaultMomMatrixXBuilder extends AbstractMomMatrixXBuilder {
 
 
     @Override
-    public ComplexMatrix computeMatrix() {
+    public ComplexMatrix evalMatrix() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return computeMatrixImpl();
+            return evalMatrixImpl();
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return computeMatrixImpl();
+                    return evalMatrixImpl();
                 }
             }, getMonitor()));
         }
     }
 
     @Override
-    public ComplexVector computeVector() {
-        return computeMatrix().toVector();
+    public ComplexVector evalVector() {
+        return evalMatrix().toVector();
     }
 }

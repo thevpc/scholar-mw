@@ -34,7 +34,7 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
                         "/" + plotTitle,
                         Plot.create(
                                 new PlotHyperCubePlotModel()
-                                        .setLibraries(libraries)
+                                       // .setLibraries(libraries)
                                         .setVdiscretes(yvalues)
                                         .setTitle(plotTitle)
                                 ,

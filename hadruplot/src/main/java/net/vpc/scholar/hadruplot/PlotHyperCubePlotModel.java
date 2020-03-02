@@ -20,11 +20,6 @@ public class PlotHyperCubePlotModel extends BasePlotModel {
         return this;
     }
 
-    @Override
-    public PlotHyperCubePlotModel setLibraries(String libraries) {
-        return (PlotHyperCubePlotModel)super.setLibraries(libraries);
-    }
-
     public PlotDoubleConverter getConverter() {
         return converter;
     }

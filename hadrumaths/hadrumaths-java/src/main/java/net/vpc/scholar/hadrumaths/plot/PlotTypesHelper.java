@@ -3,6 +3,7 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.common.util.CollectionUtils;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -31,13 +32,13 @@ public class PlotTypesHelper {
         }
         if (obj instanceof Expr) {
             Expr e = ((Expr) obj).simplify();
-            if (e.isDouble()) {
+            if (e.isNarrow(ExprType.DOUBLE_EXPR) && e.getDomain().isUnbounded()) {
                 return e.toDouble();
             }
         } else if (obj instanceof Number) {
             return ((Number) obj).doubleValue();
         }
-        throw new IllegalArgumentException("Not a Double");
+        throw new IllegalArgumentException("Not a Double : " + obj.getClass());
     }
 
     public static Complex toComplex(Object obj) {
@@ -48,7 +49,7 @@ public class PlotTypesHelper {
             return (Complex) obj;
         }
         if (obj instanceof Number) {
-            return Complex.valueOf(((Number) obj).doubleValue());
+            return Complex.of(((Number) obj).doubleValue());
         }
         throw new IllegalArgumentException("Not a Complex");
     }
@@ -139,8 +140,8 @@ public class PlotTypesHelper {
             throw new IllegalArgumentException("Not an Object Array");
         } else if (obj instanceof java.util.Vector) {
             return ((java.util.Vector) obj).toArray();
-        } else if (obj instanceof TVector) {
-            return toObjectArray(((TVector) obj).toArray());
+        } else if (obj instanceof Vector) {
+            return toObjectArray(((Vector) obj).toArray());
         } else if (obj instanceof Collection) {
             return (((Collection) obj).toArray());
         } else if (obj instanceof Iterable) {
@@ -163,8 +164,8 @@ public class PlotTypesHelper {
             return arr;
         } else if (obj instanceof Collection) {
             return toComplexArray2(((Collection) obj).toArray());
-        } else if (obj instanceof TMatrix) {
-            return toComplexArray2(((TMatrix) obj).getArray());
+        } else if (obj instanceof Matrix) {
+            return toComplexArray2(((Matrix) obj).getArray());
         } else if (obj instanceof java.util.Vector) {
             return ((ComplexVector) obj).toMatrix().getArray();
         }
@@ -183,8 +184,8 @@ public class PlotTypesHelper {
             return arr;
         } else if (obj instanceof Collection) {
             return toComplexArray3(((Collection) obj).toArray());
-        } else if (obj instanceof TMatrix) {
-            return toComplexArray3(((TMatrix) obj).getArray());
+        } else if (obj instanceof Matrix) {
+            return toComplexArray3(((Matrix) obj).getArray());
         }
         throw new IllegalArgumentException("Not an Complex[][][]");
     }
@@ -221,8 +222,8 @@ public class PlotTypesHelper {
                 arr[i] = toDouble(Array.get(obj, i));
             }
             return arr;
-        } else if (obj instanceof TVector) {
-            return toDoubleArray(((TVector) obj).toArray());
+        } else if (obj instanceof Vector) {
+            return toDoubleArray(((Vector) obj).toArray());
         } else if (obj instanceof Collection) {
             return toDoubleArray(((Collection) obj).toArray());
         }

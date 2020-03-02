@@ -5,11 +5,11 @@
 
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 /**
  * @author vpc
@@ -19,14 +19,7 @@ public class DCstFunctionXYObjectFormat implements ObjectFormat<DoubleValue> {
     }
 
     @Override
-    public String format(DoubleValue o, ObjectFormatParamSet format) {
-        StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
-        return sb.toString();
-    }
-
-    @Override
-    public void format(StringBuilder sb, DoubleValue o, ObjectFormatParamSet format) {
-        FormatFactory.format(sb, new Linear(0, 0, o.getValue(), o.getDomain()), format);
+    public void format(DoubleValue o, ObjectFormatContext context) {
+        context.format(new Linear(0, 0, o.toDouble(), o.getDomain()));
     }
 }

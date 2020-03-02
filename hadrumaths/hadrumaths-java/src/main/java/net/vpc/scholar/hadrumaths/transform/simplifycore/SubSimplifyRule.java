@@ -7,16 +7,15 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.Sub;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.transform.RewriteResult;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Sub;
+import net.vpc.scholar.hadrumaths.transform.*;
 
 /**
  * @author vpc
  */
-public class SubSimplifyRule implements ExpressionRewriterRule {
+public class SubSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new SubSimplifyRule();
     public static final Class<? extends Sub>[] TYPES = new Class[]{Sub.class};
@@ -26,28 +25,21 @@ public class SubSimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (!(e instanceof Sub)) {
             return null;
         }
         Sub ee = (Sub) e;
-        Expr a = ruleset.rewriteOrSame(ee.getFirst());
-        Expr b = ruleset.rewriteOrSame(ee.getSecond());
-        RewriteResult rewrite = ruleset.rewrite(MathsBase.sum(a, MathsBase.mul(b, Complex.MINUS_ONE)));
-        return RewriteResult.newVal(rewrite.getValue());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
+        ExprType nt = ee.getNarrowType();
+        Expr a = ruleset.rewriteOrSame(ee.getChild(0), nt);
+        Expr b = ruleset.rewriteOrSame(ee.getChild(1), nt);
+        Expr sum = Maths.sum(a, Maths.mul(b, Complex.MINUS_ONE));
+        RewriteResult rewrite = ruleset.rewrite(sum, targetExprType);
+        if (rewrite.getType() == RewriteResultType.UNMODIFIED) {
+            return RewriteResult.bestEffort(sum);
         }
-        return true;
+        return rewrite;
     }
+
 
 }

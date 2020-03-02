@@ -7,6 +7,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DefaultPlotValueFactory implements PlotValueFactory {
     public static final PlotValueFactory INSTANCE = new DefaultPlotValueFactory(0);
@@ -105,5 +106,16 @@ public class DefaultPlotValueFactory implements PlotValueFactory {
         return t;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultPlotValueFactory that = (DefaultPlotValueFactory) o;
+        return priority == that.priority;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(priority);
+    }
 }

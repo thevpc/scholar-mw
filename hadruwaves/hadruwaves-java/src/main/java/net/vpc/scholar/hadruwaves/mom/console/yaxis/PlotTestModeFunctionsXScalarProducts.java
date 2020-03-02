@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruplot.PlotType;
 import net.vpc.scholar.hadrumaths.Complex;
@@ -31,12 +31,12 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
     }
 
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         ModeFunctions fnModeFunctions = structure.getModeFunctions();
         TestFunctions gpTestFunctions = structure.getTestFunctions();
         DoubleToVector[] cache_essai = gpTestFunctions.arr();
@@ -50,10 +50,10 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
                 gfps[q][n] = Maths.scalarProduct(
                         indexes[n].fn.getComponent(Axis.X),
                         cache_essai[q].getComponent(Axis.X)
-                );
+                ).toComplex();
 //                progress++;
 //                monitor.setProgress(1.0*progress/(cache_essai.length*max));
-                ProgressMonitorFactory.setProgress(monitor,q,n,gfps.length,max, getClass().getSimpleName());
+                ProgressMonitors.setProgress(monitor,q,n,gfps.length,max, getClass().getSimpleName());
             }
         }
         PlotMatrix namedMatrix = new PlotMatrix(gfps);

@@ -16,7 +16,7 @@
 // *
 // * @author vpc
 // */
-//public class DoubleXSymbolRule implements ExpressionRewriterRule {
+//public class DoubleXSymbolRule extends AbstractExpressionRewriterRule {
 //
 //    public static final ExpressionRewriterRule INSTANCE = new DoubleXSymbolRule();
 //    public static final Class<? extends Expr>[] TYPES = new Class[]{DoubleX.class};

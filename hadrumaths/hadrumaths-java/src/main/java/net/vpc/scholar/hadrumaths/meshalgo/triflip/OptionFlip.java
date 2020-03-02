@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triflip;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.meshalgo.DefaultOption;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 
@@ -10,14 +11,17 @@ public class OptionFlip extends DefaultOption {
     private static final long serialVersionUID = 1L;
     FlipPrecision precision;
 
-    public boolean isMeshAllowed(List<Triangle> t, int iteration) {
+    public void setPrecision(FlipPrecision pr) {
+        precision = pr;
+    }    public boolean isMeshAllowed(List<Triangle> t, int iteration) {
         return precision.isPrecisionValide(t) || enhancedMeshZone.isZoneValide(t);
     }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h = super.getDumpStringHelper();
-        h.add("precision", precision);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return super.toTsonElement(context).toObject().builder()
+                .add("precision", context.elem(precision))
+                .build();
     }
 
     public Triangle selectMeshTriangle(List<Triangle> t, int iteration) {
@@ -32,7 +36,5 @@ public class OptionFlip extends DefaultOption {
         }
     }
 
-    public void setPrecision(FlipPrecision pr) {
-        precision = pr;
-    }
+
 }

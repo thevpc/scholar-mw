@@ -28,16 +28,16 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
         base.set(i, value);
         if (base instanceof MapSparseArray) {
             double d = base.getEffectiveSize();
-            d /= base.length();
+            d /= base.size();
             if (d > 0.75) {
-                base = new FixedSparseArray<T>(base, base.length());
+                base = new PreallocatedSparseArray<T>(base, base.size());
             }
         }
     }
 
     @Override
-    public int length() {
-        return base.length();
+    public int size() {
+        return base.size();
     }
 
     @Override
@@ -46,7 +46,12 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public int getCurrentLength() {
-        return base.getCurrentLength();
+    public int getCurrentSize() {
+        return base.getCurrentSize();
+    }
+
+    @Override
+    public void resize(int newSize) {
+        base.resize(newSize);
     }
 }

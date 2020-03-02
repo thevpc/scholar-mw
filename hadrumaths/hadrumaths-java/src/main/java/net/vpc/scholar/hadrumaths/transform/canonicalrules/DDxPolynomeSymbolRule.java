@@ -6,7 +6,7 @@
 //package net.vpc.scholar.math.eval.canonicalrules;
 //
 //import net.vpc.scholar.math.Expr;
-//import net.vpc.scholar.math.MathsBase;
+//import net.vpc.scholar.math.Maths;
 //import net.vpc.scholar.math.functions.Domain;
 //import net.vpc.scholar.math.functions.FunctionFactory;
 //import net.vpc.scholar.math.functions.dfx.DDxPolynome;
@@ -16,13 +16,13 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static net.vpc.scholar.math.MathsBase.*;
+//import static net.vpc.scholar.math.Maths.*;
 //
 ///**
 // *
 // * @author vpc
 // */
-//public class DDxPolynomeSymbolRule implements ExpressionRewriterRule {
+//public class DDxPolynomeSymbolRule extends AbstractExpressionRewriterRule {
 //
 //    public static final ExpressionRewriterRule INSTANCE = new DDxPolynomeSymbolRule();
 //    public static final Class<? extends Expr>[] TYPES = new Class[]{DDxPolynome.class};
@@ -47,9 +47,9 @@
 //            if(i==0){
 //                p.add(FunctionFactory.cst(v, domain));
 //            }else if(i==1){
-//                p.add(mul(FunctionFactory.cst(v, domain), MathsBase.X));
+//                p.add(mul(FunctionFactory.cst(v, domain), Maths.X));
 //            }else{
-//                p.add(mul(FunctionFactory.cst(v, domain), MathsBase.pow(MathsBase.X, FunctionFactory.cst(v, domain))));
+//                p.add(mul(FunctionFactory.cst(v, domain), Maths.pow(Maths.X, FunctionFactory.cst(v, domain))));
 //            }
 //        }
 //        if(p.isEmpty()){

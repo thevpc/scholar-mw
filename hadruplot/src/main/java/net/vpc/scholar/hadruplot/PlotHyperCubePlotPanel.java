@@ -207,24 +207,26 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
                         ValuesPlotModel pmodel = new ValuesPlotModel(
                                 "Axe " + axis + " ; Coupe " + surface.getSelectedItem(), null, null, null, axis1, axis2, renderedValues,
                                 convert,
-                                PlotType.HEATMAP,
+                                new LibraryPlotType(PlotType.HEATMAP,null),
                                 null
                         );
                         SimplePlotModelProvider modelProvider = new SimplePlotModelProvider(pmodel, this);
                         switch (typeSurface) {
                             case TYPE_2D: {
-                                pmodel.setPlotType(PlotType.HEATMAP);
+                                LibraryPlotType plotType = new LibraryPlotType(PlotType.HEATMAP, null);
+                                pmodel.setPlotType(plotType);
                                 pp.add(PlotBackendLibraries.createPlotComponentPanel(
-                                        new DefaultPlotComponentContext(PlotType.HEATMAP, modelProvider)
+                                        new DefaultPlotComponentContext(plotType, modelProvider)
                                                 .setNormalizer(new ExtendedNormalizer(axis))
                                                 .setPreferredWidth(200)
                                 ).toComponent());
                                 break;
                             }
                             case TYPE_MATRIX: {
-                                pmodel.setPlotType(PlotType.MATRIX);
+                                LibraryPlotType plotType = new LibraryPlotType(PlotType.MATRIX, null);
+                                pmodel.setPlotType(plotType);
                                 pp.add(PlotBackendLibraries.createPlotComponentPanel(
-                                        new DefaultPlotComponentContext(PlotType.MATRIX, modelProvider)
+                                        new DefaultPlotComponentContext(plotType, modelProvider)
                                         .setNormalizer(new ExtendedNormalizer(axis))
                                         .setPreferredWidth(200)
                                 ).toComponent());
@@ -232,13 +234,15 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
                                 break;
                             }
                             case TYPE_MESH: {
-                                pmodel.setPlotType(PlotType.MESH);
-                                pp.add(PlotBackendLibraries.createPlotComponentPanel(new DefaultPlotComponentContext(PlotType.MESH, modelProvider)).toComponent());
+                                LibraryPlotType plotType = new LibraryPlotType(PlotType.MESH, null);
+                                pmodel.setPlotType(plotType);
+                                pp.add(PlotBackendLibraries.createPlotComponentPanel(new DefaultPlotComponentContext(plotType, modelProvider)).toComponent());
                                 break;
                             }
                             case TYPE_1D: {
-                                pmodel.setPlotType(PlotType.CURVE);
-                                pp.add(PlotBackendLibraries.createPlotComponentPanel(new DefaultPlotComponentContext(PlotType.CURVE, modelProvider)).toComponent());
+                                LibraryPlotType plotType = new LibraryPlotType(PlotType.CURVE, null);
+                                pmodel.setPlotType(plotType);
+                                pp.add(PlotBackendLibraries.createPlotComponentPanel(new DefaultPlotComponentContext(plotType, modelProvider)).toComponent());
                                 break;
                             }
                             default:

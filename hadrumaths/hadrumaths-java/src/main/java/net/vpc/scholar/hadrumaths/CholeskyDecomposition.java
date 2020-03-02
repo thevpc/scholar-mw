@@ -23,14 +23,14 @@ public class CholeskyDecomposition implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private double[][] L;
+    private final double[][] L;
 
     /**
      * Row and column dimension (square matrix).
      *
      * @serial matrix dimension.
      */
-    private int n;
+    private final int n;
 
     /**
      * Symmetric and positive definite flag.
@@ -72,7 +72,7 @@ public class CholeskyDecomposition implements java.io.Serializable {
             }
             d = A[j][j] - d;
             isspd = isspd && (d > 0.0);
-            L[j][j] = MathsBase.sqrt(Math.max(d, 0.0));
+            L[j][j] = Maths.sqrt(Math.max(d, 0.0));
             for (int k = j + 1; k < n; k++) {
                 L[j][k] = 0.0;
             }
@@ -122,7 +122,7 @@ public class CholeskyDecomposition implements java.io.Serializable {
          }
          d = A[j][j] - d;
          isspd = isspd & (d > 0.0);
-         R[j][j] = Math.sqrt(MathsBase.max(d,0.0));
+         R[j][j] = Math.sqrt(Maths.max(d,0.0));
          for (int k = j+1; k < n; k++) {
             R[k][j] = 0.0;
          }

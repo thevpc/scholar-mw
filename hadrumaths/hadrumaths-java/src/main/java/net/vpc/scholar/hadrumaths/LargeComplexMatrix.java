@@ -9,7 +9,7 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
     private static final long serialVersionUID = 1L;
     private String largeFactoryId;
     private transient LargeComplexMatrixFactory largeFactory;
-    private long largeMatrixId;
+    private final long largeMatrixId;
     private int rows;
     private int columns;
 
@@ -17,8 +17,8 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
 //        try {
 //            File file = new File("/home/vpc/zzz/abc");
 //
-//            Matrix m = MathsBase.getLargeMatrixFactory().newMatrix("[1 2 3 ; 1 3 2]");
-//            Matrix m2 = MathsBase.getLargeMatrixFactory().newMatrix(m);
+//            Matrix m = Maths.getLargeMatrixFactory().newMatrix("[1 2 3 ; 1 3 2]");
+//            Matrix m2 = Maths.getLargeMatrixFactory().newMatrix(m);
 //            System.out.println(m.format(null,null));
 //            System.out.println(m2.format(null,null));
 ////            ObjectCache.storeObject(file, m);
@@ -37,13 +37,21 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
         this.columns = columns;
     }
 
+    public long getLargeMatrixId() {
+        return largeMatrixId;
+    }
+
+    @Override
+    public Complex get(int row, int col) {
+        return getLargeFactory().get(largeMatrixId, row, col);
+    }
+
     public LargeComplexMatrixFactory getLargeFactory() {
         if (largeFactory == null) {
-            return largeFactory = (LargeComplexMatrixFactory) MathsBase.Config.getTMatrixFactory(largeFactoryId);
+            return largeFactory = (LargeComplexMatrixFactory) Maths.Config.getTMatrixFactory(largeFactoryId);
         }
         return largeFactory;
     }
-
 
     public void setLargeFactory(LargeComplexMatrixFactory largeFactory) {
         this.largeFactory = largeFactory;
@@ -51,9 +59,9 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
         setFactory(largeFactory);
     }
 
-
-    public long getLargeMatrixId() {
-        return largeMatrixId;
+    @Override
+    public void set(int row, int col, Complex val) {
+        getLargeFactory().set(largeMatrixId, val, row, col);
     }
 
     @Override
@@ -66,31 +74,18 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
         return columns;
     }
 
-    @Override
-    public Complex get(int row, int col) {
-        return getLargeFactory().get(largeMatrixId, row, col);
-    }
-
-    @Override
-    public ComplexVector getColumn(int column) {
-        return new ArrayComplexVector(getLargeFactory().getColumn(largeMatrixId, column, 0, getRowCount()), false);
+    public String toString() {
+        return "LargeMatrix[#" + largeMatrixId + "]{" + getRowCount() + "x" + getColumnCount() + "}@" + getFactory();
     }
 
     @Override
     public ComplexVector getRow(int row) {
-        return new ArrayComplexVector(getLargeFactory().getRow(largeMatrixId, row, 0, getColumnCount()), true);
+        return new DefaultComplexVector(true, getLargeFactory().getRow(largeMatrixId, row, 0, getColumnCount()));
     }
 
     @Override
-    public void set(int row, int col, Complex val) {
-        getLargeFactory().set(largeMatrixId, val, row, col);
-    }
-
-    @Override
-    public void resize(int rows, int columns) {
-        getLargeFactory().resizeMatrix(largeMatrixId, rows, columns);
-        this.rows = rows;
-        this.columns = columns;
+    public ComplexVector getColumn(int column) {
+        return new DefaultComplexVector(false, getLargeFactory().getColumn(largeMatrixId, column, 0, getRowCount()));
     }
 
     @Override
@@ -98,8 +93,11 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
         getLargeFactory().disposeMatrix(largeMatrixId);
     }
 
-    public String toString() {
-        return "LargeMatrix[#" + largeMatrixId + "]{" + getRowCount() + "x" + getColumnCount() + "}@" + getFactory();
+    @Override
+    public void resize(int rows, int columns) {
+        getLargeFactory().resizeMatrix(largeMatrixId, rows, columns);
+        this.rows = rows;
+        this.columns = columns;
     }
 
 }

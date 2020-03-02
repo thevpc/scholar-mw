@@ -1,9 +1,10 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triconsdes;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.GeomUtils;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.meshalgo.DefaultOption;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.util.List;
@@ -18,20 +19,28 @@ public class MeshOptionsConsDes extends DefaultOption {
         precision = new ConsDesSurfacePrecision(400);
     }
 
-    @Override
-    public Dumper getDumpStringHelper() {
-        Dumper h = super.getDumpStringHelper();
-        h.add("precision", precision);
-        return h;
+    public MeshOptionsConsDes setMaxIterations(int max) {
+        return setPrecision(new ConsDesIterationPrecision(max));
+    }    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return super.toTsonElement(context).toObject().builder()
+                .add("precision", context.elem(precision))
+                .build();
     }
 
-
-    @Override
+    public int getMaxTriangles() {
+        if (precision instanceof ConsDesTriangleCountPrecision) {
+            return ((ConsDesTriangleCountPrecision) precision).nbre;
+        }
+        return 0;
+    }    @Override
     public boolean isMeshAllowed(List<Triangle> t, int iteration) {
         return precision.isMeshAllowed(t, iteration) && (enhancedMeshZone == null || enhancedMeshZone.isZoneValide(t));
     }
 
-    @Override
+    public MeshOptionsConsDes setMaxTriangles(int max) {
+        return setPrecision(new ConsDesTriangleCountPrecision(max));
+    }    @Override
     public Triangle selectMeshTriangle(List<Triangle> t, int iteration) {
         if (isMeshAllowed(t, iteration)) {
             if (precision.isMeshAllowed(t, iteration)) {
@@ -49,18 +58,9 @@ public class MeshOptionsConsDes extends DefaultOption {
         return this;
     }
 
-    public MeshOptionsConsDes setMaxTriangles(int max) {
-        return setPrecision(new ConsDesTriangleCountPrecision(max));
-    }
 
-    public MeshOptionsConsDes setMaxIterations(int max) {
-        return setPrecision(new ConsDesIterationPrecision(max));
-    }
 
-    public int getMaxTriangles() {
-        if (precision instanceof ConsDesTriangleCountPrecision) {
-            return ((ConsDesTriangleCountPrecision) precision).nbre;
-        }
-        return 0;
-    }
+
+
+
 }

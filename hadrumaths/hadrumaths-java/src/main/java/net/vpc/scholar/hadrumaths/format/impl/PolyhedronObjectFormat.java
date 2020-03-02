@@ -4,9 +4,9 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Polyhedron;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Polyhedron;
 
 /**
  * @author vpc
@@ -14,12 +14,13 @@ import net.vpc.scholar.hadrumaths.symbolic.Polyhedron;
 public class PolyhedronObjectFormat extends AbstractObjectFormat<Polyhedron> {
 
     @Override
-    public void format(StringBuilder sb, Polyhedron o, ObjectFormatParamSet format) {
-        sb.append("Polyhedron(");
-        FormatFactory.format(sb, o.getMax(), format);
-        sb.append(",");
-        FormatFactory.format(sb, o.getPolygon(), format);
-        sb.append(")");
+    public void format(Polyhedron o, ObjectFormatContext context) {
+        ObjectFormatParamSet format = context.getParams();
+        context.append("Polyhedron(");
+        context.format(o.getMax(), format);
+        context.append(",");
+        context.format(o.getPolygon(), format);
+        context.append(")");
     }
 
 }

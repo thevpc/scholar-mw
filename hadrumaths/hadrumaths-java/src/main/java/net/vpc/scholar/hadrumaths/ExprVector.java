@@ -1,17 +1,20 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.TypeName;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleParamValues;
+import net.vpc.scholar.hadrumaths.symbolic.Param;
 import net.vpc.scholar.hadrumaths.util.InflatedExprTitleResolver;
 
 import java.util.Collection;
 
-public interface ExprVector extends TVector<Expr> {
+public interface ExprVector extends Vector<Expr> {
     @Override
-    ExprVector eval(ElementOp<Expr> op);
+    ExprVector eval(VectorOp<Expr> op);
+
+    ExprVector copy();
 
     @Override
-    ExprVector setParam(TParam param, Object value);
+    ExprVector setParam(Param param, Object value);
 
     @Override
     ExprVector setParam(String name, Object value);
@@ -26,25 +29,25 @@ public interface ExprVector extends TVector<Expr> {
     ExprVector rscalarProduct(Expr other);
 
     @Override
-    <R> TVector<R> to(TypeName<R> other);
+    <R> Vector<R> to(TypeName<R> other);
 
     @Override
-    ExprVector vscalarProduct(TVector<Expr>... other);
+    ExprVector vscalarProduct(Vector<Expr>... other);
 
     @Override
-    ExprVector dotmul(TVector<Expr> other);
+    ExprVector dotmul(Vector<Expr> other);
 
     @Override
-    ExprVector dotdiv(TVector<Expr> other);
+    ExprVector dotdiv(Vector<Expr> other);
 
     @Override
-    ExprVector dotpow(TVector<Expr> other);
+    ExprVector dotpow(Vector<Expr> other);
 
     @Override
-    ExprVector add(TVector<Expr> other);
+    ExprVector add(Vector<Expr> other);
 
     @Override
-    ExprVector sub(TVector<Expr> other);
+    ExprVector sub(Vector<Expr> other);
 
     @Override
     ExprVector add(Expr other);
@@ -149,6 +152,18 @@ public interface ExprVector extends TVector<Expr> {
     ExprVector acotan();
 
     @Override
+    ExprVector filter(VectorFilter<Expr> filter);
+
+    @Override
+    ExprVector transform(VectorTransform<Expr, Expr> op);
+
+    ExprVector append(Expr e);
+
+    ExprVector appendAll(Collection<? extends Expr> e);
+
+    ExprVector appendAll(Vector<Expr> e);
+
+    @Override
     ExprVector sublist(int fromIndex, int toIndex);
 
     @Override
@@ -161,39 +176,7 @@ public interface ExprVector extends TVector<Expr> {
     ExprVector concat(Expr e);
 
     @Override
-    ExprVector concat(TVector<Expr> e);
-
-    @Override
-    ExprVector neg();
-
-    @Override
-    ExprVector sincard();
-
-    @Override
-    ExprVector sqrt(int n);
-
-    @Override
-    ExprVector pow(TVector<Expr> b);
-
-    @Override
-    ExprVector pow(double n);
-
-    @Override
-    ExprVector arg();
-
-    @Override
-    ExprVector transform(TTransform<Expr, Expr> op);
-
-    ExprVector append(Expr e);
-
-    ExprVector appendAll(Collection<? extends Expr> e);
-
-    ExprVector appendAll(TVector<Expr> e);
-
-    ExprVector copy();
-
-    @Override
-    ExprVector filter(TFilter<Expr> filter);
+    ExprVector concat(Vector<Expr> e);
 
     @Override
     ExprMatrix toMatrix();
@@ -211,10 +194,28 @@ public interface ExprVector extends TVector<Expr> {
     ExprVector update(Enum i, Expr value);
 
     @Override
-    ExprVector rem(TVector<Expr> other);
+    ExprVector rem(Vector<Expr> other);
 
     @Override
     ExprVector inv();
+
+    @Override
+    ExprVector neg();
+
+    @Override
+    ExprVector sincard();
+
+    @Override
+    ExprVector sqrt(int n);
+
+    @Override
+    ExprVector pow(Vector<Expr> b);
+
+    @Override
+    ExprVector pow(double n);
+
+    @Override
+    ExprVector arg();
 
     ExprVector setParams(DoubleParamValues p);
 
@@ -222,7 +223,7 @@ public interface ExprVector extends TVector<Expr> {
 
     ExprVector inflate(DoubleParamValues d, InflatedExprTitleResolver title);
 
-    ExprVector inflate(DoubleParamValues d,String title);
+    ExprVector inflate(DoubleParamValues d, String title);
 
     ExprVector normalize();
 
@@ -231,4 +232,33 @@ public interface ExprVector extends TVector<Expr> {
     ExprVector simplify(SimplifyOptions options);
 
 
+    @Override
+    ExprVector copy(CopyStrategy strategy);
+
+    @Override
+    ExprVector toReadOnly();
+
+    @Override
+    ExprVector toMutable();
+
+    @Override
+    ExprVector mul(Vector<Expr> other);
+
+    @Override
+    ExprVector removeAt(int index);
+
+    @Override
+    ExprVector appendAt(int index, Expr e);
+
+    @Override
+    ExprVector removeFirst();
+
+    @Override
+    ExprVector removeLast();
+
+    @Override
+    ExprVector appendAll(VectorModel<Expr> e) ;
+
+    @Override
+    ExprVector pow(Complex n);
 }

@@ -8,10 +8,10 @@ import java.io.Serializable;
  */
 final class ClassClassKey implements Serializable {
     private static final long serialVersionUID = 1L;
-    int domainDimension;
-    Class c1;
-    Class c2;
-    private int h;
+    private final int h;
+    private int domainDimension;
+    private Class c1;
+    private Class c2;
 
     public ClassClassKey(Class c1, Class c2, int domainDimension) {
         this.c1 = c1;
@@ -24,17 +24,24 @@ final class ClassClassKey implements Serializable {
         return new ClassClassKey(c2, c1, domainDimension);
     }
 
+    public int hashCode() {
+        return h;
+    }
+
     public boolean equals(Object obj) {
         ClassClassKey obj2 = (ClassClassKey) obj;
         return obj2.c1.equals(c1) && obj2.c2.equals(c2) && obj2.domainDimension == domainDimension;
     }
 
-
-    public int hashCode() {
-        return h;
+    public String toString() {
+        return "(" + c1.getSimpleName() + "," + c2.getSimpleName() + "," + domainDimension + ")";
     }
 
-    public String toString() {
-        return "(" + c1.getSimpleName() + "," + c2.getSimpleName() + ")";
+    public Class getC1() {
+        return c1;
+    }
+
+    public Class getC2() {
+        return c2;
     }
 }

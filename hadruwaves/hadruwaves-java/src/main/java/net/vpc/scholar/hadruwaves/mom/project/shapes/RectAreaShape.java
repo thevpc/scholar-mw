@@ -49,7 +49,7 @@ public class RectAreaShape extends AbstractMomProjectItem implements AreaShape{
         double _y = context.evaluateDimension(yExpression);
         double _width = context.evaluateDimension(widthExpression);
         double _height = context.evaluateDimension(heightExpression);
-        return (Domain.forBounds(_x, _x + _width, _y, _y + _height));
+        return (Domain.ofBounds(_x, _x + _width, _y, _y + _height));
 
     }
 

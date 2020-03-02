@@ -2,8 +2,11 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import java.util.Map;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
@@ -12,9 +15,9 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.Rooftop2DFunctionXY;
-import net.vpc.scholar.hadrumaths.symbolic.RooftopType;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Rooftop2DFunctionXY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.Wall;
 import net.vpc.scholar.hadruwaves.mom.util.MomUtils;
@@ -54,6 +57,15 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
     public Rooftop2DPattern(boolean attachX, boolean attachY, Axis invariance) {
         super(attachX, attachY);
         this.invariance = invariance;
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("invariance", context.elem(invariance));
+        h.add("alwaysAttachForX", context.elem(alwaysAttachForX));
+        h.add("alwaysAttachForY", context.elem(alwaysAttachForY));
+        return h.build();
     }
 
     public boolean isAlwaysAttachForX() {
@@ -126,14 +138,14 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
             case MeshZoneType.ID_BORDER_NORTH: {
                 Domain dd = zoneDomain;
                 Axis wallAxis = Axis.X;
-                wall = "Box".equals(edgeType) ? str.getModeFunctions().getBorders().north : "Nothing".equals(edgeType) ? defaultWall : null;
+                wall = "Box".equals(edgeType) ? str.getBorders().north : "Nothing".equals(edgeType) ? defaultWall : null;
                 neededAttachForX = alwaysAttachForX || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.X, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.X, wall, wallAxis)));
                 neededAttachForY = alwaysAttachForY || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.Y, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.Y, wall, wallAxis)));
                 DoubleToVector f = Maths.vector(
-                        !neededAttachForX ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.NORTH),
-                        !neededAttachForY ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.NORTH))
+                        !neededAttachForX ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.NORTH),
+                        !neededAttachForY ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.NORTH))
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
                         .setProperties(zoneProperties).toDV();
@@ -142,7 +154,7 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_BORDER_SOUTH: {
                 Domain dd = zoneDomain;
-                wall = "Box".equals(edgeType) ? str.getModeFunctions().getBorders().south : "Nothing".equals(edgeType) ? defaultWall : null;
+                wall = "Box".equals(edgeType) ? str.getBorders().south : "Nothing".equals(edgeType) ? defaultWall : null;
                 Axis wallAxis = Axis.X;
                 neededAttachForX = alwaysAttachForX || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.X, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.X, wall, wallAxis)));
@@ -151,8 +163,8 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
                 AbstractDoubleToDouble fct = new Rooftop2DFunctionXY(dd, invariance, RooftopType.SOUTH);
                 //DFunctionXY fct=new DCstFunctionXY(new DomainXY(dd.xmin, dd.ymin + dd.height / 2, dd.width, dd.height / 2, DomainXY.Type.LENGTH));
                 DoubleToVector f = Maths.vector(
-                        !neededAttachForX ? FunctionFactory.DZEROXY : fct,
-                        !neededAttachForY ? FunctionFactory.DZEROXY : fct)
+                        !neededAttachForX ? Maths.DZEROXY : fct,
+                        !neededAttachForY ? Maths.DZEROXY : fct)
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
                         .setProperties(zoneProperties).toDV();
@@ -161,15 +173,15 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_BORDER_EAST: {
                 Domain dd = zoneDomain;
-                wall = "Box".equals(edgeType) ? str.getModeFunctions().getBorders().east : "Nothing".equals(edgeType) ? defaultWall : null;
+                wall = "Box".equals(edgeType) ? str.getBorders().east : "Nothing".equals(edgeType) ? defaultWall : null;
                 Axis wallAxis = Axis.Y;
                 neededAttachForX = alwaysAttachForX || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.X, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.X, wall, wallAxis)));
                 neededAttachForY = alwaysAttachForY || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.Y, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.Y, wall, wallAxis)));
                 DoubleToVector f = Maths.vector(
-                        !neededAttachForX ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.EAST),
-                        !neededAttachForY ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.EAST))
+                        !neededAttachForX ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.EAST),
+                        !neededAttachForY ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.EAST))
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
                         .setProperties(zoneProperties).toDV();
@@ -178,15 +190,15 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_BORDER_WEST: {
                 Domain dd = zoneDomain;
-                wall = "Box".equals(edgeType) ? str.getModeFunctions().getBorders().west : "Nothing".equals(edgeType) ? defaultWall : null;
+                wall = "Box".equals(edgeType) ? str.getBorders().west : "Nothing".equals(edgeType) ? defaultWall : null;
                 Axis wallAxis = Axis.Y;
                 neededAttachForX = alwaysAttachForX || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.X, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.X, wall, wallAxis)));
                 neededAttachForY = alwaysAttachForY || (wall != null && (CircuitType.SERIAL.equals(circuitType) ? MomUtils.isCurrentMaximumForWall(Axis.Y, wall, wallAxis)
                         : MomUtils.isElectricFieldMaximumForWall(Axis.Y, wall, wallAxis)));
                 DoubleToVector f = Maths.vector(
-                        !neededAttachForX ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.WEST),
-                        !neededAttachForY ? FunctionFactory.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.WEST))
+                        !neededAttachForX ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.WEST),
+                        !neededAttachForY ? Maths.DZEROXY : new Rooftop2DFunctionXY(dd, invariance, RooftopType.WEST))
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
                         .setProperties(zoneProperties).toDV();

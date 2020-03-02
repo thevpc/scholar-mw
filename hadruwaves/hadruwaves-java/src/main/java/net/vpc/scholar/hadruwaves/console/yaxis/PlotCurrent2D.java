@@ -10,7 +10,7 @@ import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.console.params.XParamSet;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -38,28 +38,28 @@ public class PlotCurrent2D extends PlotAxisSeries implements Cloneable {
     }
 
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure, monitor, p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure, monitor, p);
     }
 
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
         VDiscrete j = null;
         if (convergenceFn) {
-            int fnMax_start = structure.getModeFunctionsCount();
+            int fnMax_start = structure.getModeFunctions().getSize();
             int[] fnMax_all = Maths.isteps(fnMax_start, fnMax_start + fnstep * 10000, fnstep);
             j = structure.current().monitor(monitor)
                     .converge(
-                            ConvergenceEvaluator.create(MomParamFactory.params.modesCount(), fnMax_all)
+                            ConvergenceEvaluator.of(MomParamFactory.params.modesCount(), fnMax_all)
                                     .setThreshold(epsilon).setStabilityIterations(threshold).setMaxIterations(1000)
-                    ).computeVDiscrete(x, y);
+                    ).evalVDiscrete(x, y);
         } else {
-            j = structure.current().monitor(monitor).computeVDiscrete(x, y);
+            j = structure.current().monitor(monitor).evalVDiscrete(x, y);
         }
-        Complex[][] c = j.getComponent(axis).getArray(Axis.Z, 0);
+        Complex[][] c = j.getComponentDiscrete(axis).getArray(Axis.Z, 0);
         if (x.length == 1 && y.length > 0) {
             //inverser les axes
             return new PlotMatrix(Maths.matrix(c).transpose().getArray(), y, x);

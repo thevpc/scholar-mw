@@ -1,16 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.ModeIndex;
-import net.vpc.scholar.hadruwaves.ModeIterator;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.WallBorders;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
-public class SimplePositiveModeIterator implements ModeIterator {
+public class SimplePositiveModeIterator implements Iterator<ModeIndex> {
     private ModeType[] zeroModes;
     private ModeType[] nonZeroModes;
     private LinkedList<ModeIndex> list = new LinkedList<ModeIndex>();
@@ -20,12 +19,12 @@ public class SimplePositiveModeIterator implements ModeIterator {
     private WallBorders borders;
     private int window;
 
-    public SimplePositiveModeIterator(ModeType[] modes, Axis invariance, WallBorders borders,int max) {
+    public SimplePositiveModeIterator(ModeType[] modes, Axis invariance, WallBorders borders, int max) {
         this.invariance = invariance;
         this.borders = borders;
-        this.maxIndex = max/2;
-        this.window = (int)Math.sqrt(this.maxIndex);
-        if(this.window<=0){
+        this.maxIndex = max / 2;
+        this.window = (int) Math.sqrt(this.maxIndex);
+        if (this.window <= 0) {
             throw new IllegalArgumentException("Unsupported");
         }
         ArrayList<ModeType> zeroModesList = new ArrayList<ModeType>(modes.length);
@@ -55,20 +54,21 @@ public class SimplePositiveModeIterator implements ModeIterator {
         this.nonZeroModes = nonZeroModesList.toArray(new ModeType[nonZeroModesList.size()]);
     }
 
-    public ModeIndex next() {
+    public boolean hasNext() {
         if (list.size() == 0) {
             nextModeInfos();
         }
-        if (list.size() == 0) {
-            return null;
-        }
+        return !list.isEmpty();
+    }
+
+    public ModeIndex next() {
         ModeIndex m = list.getFirst();
         list.removeFirst();
         return m;
     }
 
     protected void nextModeInfos() {
-        if(index<maxIndex) {
+        if (index < maxIndex) {
             int m = (int) (index / window);
             int n = (int) (index % window);
             if (borders == WallBorders.EMEM || borders == WallBorders.MEME) {

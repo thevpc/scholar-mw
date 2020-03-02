@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.interop.matlab.MatlabFactory;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class PlusExprToMatlabString implements ToMatlabString<Plus> {
 
     @Override
     public String toMatlabString(Plus o, ToMatlabStringParam... format) {
-        List<Expr> segments = o.getSubExpressions();
+        List<Expr> segments = o.getChildren();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < segments.size(); i++) {
             if (i > 0) {

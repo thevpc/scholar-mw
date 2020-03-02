@@ -6,16 +6,22 @@ package net.vpc.scholar.hadrumaths;
  * Time: 17:58:05
  */
 public class CArray {
-    private Complex[] array;
+    private final Complex[] array;
 
     public CArray(CArray other) {
         this.array = other.getArrayCopy();
     }
 
+    public Complex[] getArrayCopy() {
+        Complex[] n = new Complex[array.length];
+        System.arraycopy(array, 0, n, 0, n.length);
+        return n;
+    }
+
     public CArray(double[] c) {
         this.array = new Complex[c.length];
         for (int i = 0; i < this.array.length; i++) {
-            this.array[i] = Complex.valueOf(c[i]);
+            this.array[i] = Complex.of(c[i]);
         }
     }
 
@@ -28,7 +34,7 @@ public class CArray {
 
     public CArray(int dim, double value) {
         this.array = new Complex[dim];
-        Complex v = Complex.valueOf(value);
+        Complex v = Complex.of(value);
         for (int i = 0; i < dim; i++) {
             this.array[i] = v;
         }
@@ -40,12 +46,6 @@ public class CArray {
 
     public Complex[] getArray() {
         return array;
-    }
-
-    public Complex[] getArrayCopy() {
-        Complex[] n = new Complex[array.length];
-        System.arraycopy(array, 0, n, 0, n.length);
-        return n;
     }
 
     public CArray getCopy() {

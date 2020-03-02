@@ -9,6 +9,9 @@
 
 package net.vpc.scholar.hadruwaves.util;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeInfoFilter;
@@ -51,21 +54,26 @@ public final class ModeInfoUtils {
             return true;
         }
 
-        public String dump() {
-            if (all.length == 1) {
-                return all[0].dump();
-            }
-            StringBuilder s = new StringBuilder("(");
-            for (int i = 0; i < all.length; i++) {
-                ModeInfoFilter modeInfoFilter = all[i];
-                if (i > 0) {
-                    s.append("&&");
-                }
-                s.append(modeInfoFilter.dump());
-            }
-            s.append(")");
-            return s.toString();
+        @Override
+        public TsonElement toTsonElement(TsonObjectContext context) {
+            return Tson.function("AllOf",context.elem(all)).build();
         }
+
+//        public String dump() {
+//            if (all.length == 1) {
+//                return all[0].dump();
+//            }
+//            StringBuilder s = new StringBuilder("(");
+//            for (int i = 0; i < all.length; i++) {
+//                ModeInfoFilter modeInfoFilter = all[i];
+//                if (i > 0) {
+//                    s.append("&&");
+//                }
+//                s.append(modeInfoFilter.dump());
+//            }
+//            s.append(")");
+//            return s.toString();
+//        }
 
         @Override
         public boolean isFrequencyDependent() {
@@ -88,9 +96,14 @@ public final class ModeInfoUtils {
             return info.fn.getComponent(Axis.X).isInvariant(axis) && info.fn.getComponent(Axis.Y).isInvariant(axis);
         }
 
-        public String dump() {
-            return "Invariance("+axis+")";
+        @Override
+        public TsonElement toTsonElement(TsonObjectContext context) {
+            return Tson.function("invariance", context.elem(axis)).build();
         }
+
+//        public String dump() {
+//            return "Invariance("+axis+")";
+//        }
 
         @Override
         public boolean isFrequencyDependent() {
@@ -115,21 +128,26 @@ public final class ModeInfoUtils {
             return false;
         }
 
-        public String dump() {
-            if (all.length == 1) {
-                return all[0].dump();
-            }
-            StringBuilder s = new StringBuilder("(");
-            for (int i = 0; i < all.length; i++) {
-                ModeInfoFilter modeInfoFilter = all[i];
-                if (i > 0) {
-                    s.append("||");
-                }
-                s.append(modeInfoFilter.dump());
-            }
-            s.append(")");
-            return s.toString();
+        @Override
+        public TsonElement toTsonElement(TsonObjectContext context) {
+            return Tson.function("AnyOf",context.elem(all)).build();
         }
+
+//        public String dump() {
+//            if (all.length == 1) {
+//                return all[0].dump();
+//            }
+//            StringBuilder s = new StringBuilder("(");
+//            for (int i = 0; i < all.length; i++) {
+//                ModeInfoFilter modeInfoFilter = all[i];
+//                if (i > 0) {
+//                    s.append("||");
+//                }
+//                s.append(modeInfoFilter.dump());
+//            }
+//            s.append(")");
+//            return s.toString();
+//        }
 
         @Override
         public boolean isFrequencyDependent() {

@@ -7,7 +7,7 @@ import java.io.PrintStream;
  * @creationtime Oct 25, 2007 11:52:55 PM
  */
 public class ConvergenceLogListener implements ConvergenceListener {
-    private PrintStream out;
+    private final PrintStream out;
 
     public ConvergenceLogListener(PrintStream out) {
         this.out = out;

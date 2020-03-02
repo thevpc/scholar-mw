@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.Range;
-import net.vpc.scholar.hadrumaths.util.BitSet2;
+import net.vpc.common.util.BitSet2;
 
 /**
  * Created by vpc on 4/7/17.
@@ -25,6 +25,8 @@ public interface BooleanArray1 {
     void addFrom(BooleanArray1 other, Range r0);
 
     boolean[] toArray();
+
+    void setRange(int from, int toExcluded);
 
     void setAll();
 }

@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 

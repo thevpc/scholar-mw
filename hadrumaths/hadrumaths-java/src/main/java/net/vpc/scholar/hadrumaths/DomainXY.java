@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
  */
-public final class DomainXY extends Domain implements Cloneable {
+final class DomainXY extends Domain implements Cloneable {
     private static final long serialVersionUID = 1L;
 
 
@@ -13,6 +13,7 @@ public final class DomainXY extends Domain implements Cloneable {
     public final double ymax;
 
     DomainXY(double xmin, double xmax, double ymin, double ymax) {
+        super(hashCode(xmin, xmax, ymin, ymax));
         this.xmin = xmin;
         this.xmax = xmax;
         if (xwidth() < 0) {
@@ -25,6 +26,63 @@ public final class DomainXY extends Domain implements Cloneable {
         }
     }
 
+    private static int hashCode(double xmin, double xmax, double ymin, double ymax) {
+        int hash = 653712824;//DomainXY.class.getName().hashCode();
+        hash = 43 * hash + Double.hashCode(xmin);
+        hash = 43 * hash + Double.hashCode(xmax);
+        hash = 43 * hash + Double.hashCode(ymin);
+        hash = 43 * hash + Double.hashCode(ymax);
+        return hash;
+    }
+
+    public Expr simplify(SimplifyOptions options) {
+        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(this, options == null ? null : options.getTargetExprType());
+    }
+
+    public Domain intersect(Domain other) {
+        if (other == null || other == this) {
+            return this;
+        }
+        int d_t = this.dimension();
+        double[] minMax = new double[3];
+
+        switch (other.dimension()) {
+            case 1: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                switch ((int) minMax[2]) {
+                    case 1:
+                        return this;
+                    case 2:
+                        return Domain.ofBounds(minMax[0], minMax[1], ymin, ymax);
+                }
+                return Domain.ofBounds(minMax[0], minMax[1], ymin, ymax);
+            }
+            case 2: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                double xmin = minMax[0];
+                double xmax = minMax[1];
+                int xu = (int) minMax[2];
+                Expressions.domainIntersectHelper(ymin, ymax, other.ymin(), other.ymax(), minMax);
+                if (xu == minMax[2]) {
+                    switch (xu) {
+                        case 1:
+                            return this;
+                        case 2:
+                            return other;
+                    }
+                }
+                return Domain.ofBounds(xmin, xmax, minMax[0], minMax[1]);
+            }
+            case 3: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                double xmin = minMax[0];
+                double xmax = minMax[1];
+                Expressions.domainIntersectHelper(ymin, ymax, other.ymin(), other.ymax(), minMax);
+                return Domain.ofBounds(xmin, xmax, minMax[0], minMax[1], other.zmin(), other.zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported domain " + other.dimension());
+    }
 
     public double xmin() {
         return xmin;
@@ -32,6 +90,10 @@ public final class DomainXY extends Domain implements Cloneable {
 
     public double xmax() {
         return xmax;
+    }
+
+    public int dimension() {
+        return 2;
     }
 
     public double ymin() {
@@ -50,6 +112,32 @@ public final class DomainXY extends Domain implements Cloneable {
         return Double.POSITIVE_INFINITY;
     }
 
+    public boolean contains(double x) {
+        switch (dimension()) {
+            case 1:
+                return x >= xmin() && x < xmax();
+        }
+        throw new MissingAxisException(Axis.Y);
+    }
+
+    public boolean contains(double x, double y) {
+        return x >= xmin
+                && x < xmax
+                && y >= ymin
+                && y < ymax;
+    }
+
+    public boolean contains(double x, double y, double z) {
+        return x >= xmin
+                && x < xmax
+                && y >= ymin
+                && y < ymax;
+    }
+
+    public Domain toDomainXY() {
+        return this;
+    }
+
     public double xwidth() {
         return xmax - xmin;
     }
@@ -62,53 +150,34 @@ public final class DomainXY extends Domain implements Cloneable {
         return Double.POSITIVE_INFINITY;
     }
 
-    public int dimension() {
-        return 2;
-    }
-
     public int hashCode() {
-        int hash = 7;
-        long xminl = Double.doubleToLongBits(this.xmin);
-        long xmaxl = Double.doubleToLongBits(this.xmax);
-        long yminl = Double.doubleToLongBits(this.ymin);
-        long ymaxl = Double.doubleToLongBits(this.ymax);
-        hash = 43 * hash + (int) (xminl ^ (xminl >>> 32));
-        hash = 43 * hash + (int) (xmaxl ^ (xmaxl >>> 32));
-        hash = 43 * hash + (int) (yminl ^ (yminl >>> 32));
-        hash = 43 * hash + (int) (ymaxl ^ (ymaxl >>> 32));
-        return hash;
+        return eagerHashCode;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Domain other = (Domain) obj;
-        if (this.xmin() != other.xmin()) {
+        final DomainXY other = (DomainXY) obj;
+        if (this.eagerHashCode != other.eagerHashCode) {
             return false;
         }
-        if (this.xmax() != other.xmax()) {
+        if (this.xmin != other.xmin) {
             return false;
         }
-        if (this.ymin() != other.ymin()) {
+        if (this.xmax != other.xmax) {
             return false;
         }
-        if (this.ymax() != other.ymax()) {
+        if (this.ymin != other.ymin) {
             return false;
         }
-        return true;
+        return this.ymax == other.ymax;
     }
-
-    public boolean contains(double x, double y, double z) {
-        return x >= xmin()
-                && x < xmax()
-                && y >= ymin()
-                && y < ymax();
-    }
-
-
 }

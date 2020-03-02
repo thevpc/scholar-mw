@@ -15,10 +15,6 @@ public class DBLargeComplexMatrix extends LargeComplexMatrix {
         super(id, rows, columns, factory);
     }
 
-    protected static LargeComplexMatrixFactory createLargeMatrixFactory(boolean sparse, String file, Complex defaultValue) {
-        return (LargeComplexMatrixFactory) MathsBase.Config.getTMatrixFactory(DBLargeComplexMatrixFactory.createLocalId(file, sparse, defaultValue));
-    }
-
     @Override
     public CacheObjectSerializedForm createCacheObjectSerializedForm(HFile file) throws IOException {
         boolean sparse = getLargeFactory().isSparse();
@@ -30,6 +26,10 @@ public class DBLargeComplexMatrix extends LargeComplexMatrix {
         cacheFactory.close();
 
         return new MatrixSer(localId, sparse, defaultValue);
+    }
+
+    protected static LargeComplexMatrixFactory createLargeMatrixFactory(boolean sparse, String file, Complex defaultValue) {
+        return (LargeComplexMatrixFactory) Maths.Config.getTMatrixFactory(DBLargeComplexMatrixFactory.createLocalId(file, sparse, defaultValue));
     }
 
     private static class MatrixSer implements CacheObjectSerializedForm {

@@ -5,32 +5,203 @@
  */
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
+import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.transform.RewriteResult;
+import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.ExpressionsDebug;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXPlusY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Div;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Inv;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Cos;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Sin;
+import net.vpc.scholar.hadrumaths.transform.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author vpc
  */
-public class MulSimplifyRule implements ExpressionRewriterRule {
+public class MulSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new MulSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Mul.class};
+    private final ClassMap<MulAccumulator> accumulators = new ClassMap<>(Expr.class, MulAccumulator.class);
+
+    public MulSimplifyRule() {
+        regAccumulator(Complex.class, (MulAccumulator<Complex>) (a, context) -> context.mul(a));
+        regAccumulator(DefaultComplexValue.class, (MulAccumulator<DefaultComplexValue>) (a, context) -> context.mul(a.toComplex()));
+        regAccumulator(DoubleValue.class, (MulAccumulator<DoubleValue>) (a, context) -> context.mul(a.toComplex()));
+        regAccumulator(Inv.class, (MulAccumulator<Inv>) (a, context) -> {
+            Expr inved = a.getChild(0);
+            context.dec(inved);
+        });
+        regAccumulator(Div.class, (MulAccumulator<Div>) (a, context) -> {
+            Expr first = a.getFirst();
+            if (first.isNarrow(ExprType.COMPLEX_EXPR)) {
+                context.mul(first.toComplex());
+                context.dec(a.getSecond());
+            } else {
+                accumulateDefault(a, context);
+            }
+        });
+        regAccumulator(CosXCosY.class, (MulAccumulator<CosXCosY>) (a, context) -> {
+            accumulateCosXCosY(new Trigo(a), context);
+        });
+        regAccumulator(Domain.class, (MulAccumulator<Domain>) (a, context) -> {
+        });
+
+        regAccumulator(Cos.class, (MulAccumulator<Cos>) (a, context) -> {
+            Trigo t = new Trigo(a);
+            if (t.cosXCosY != null) {
+                accumulateCosXCosY(t, context);
+            } else {
+                accumulateDefault(a, context);
+            }
+        });
+
+        regAccumulator(Sin.class, (MulAccumulator<Sin>) (a, context) -> {
+            Trigo t = new Trigo(a);
+            if (t.cosXCosY != null) {
+                accumulateCosXCosY(t, context);
+            } else {
+                accumulateDefault(a, context);
+            }
+        });
+
+        regAccumulator(Expr.class, (MulAccumulator<Expr>) (a, context) -> accumulateDefault(a, context));
+    }
+
+    private void regAccumulator(Class cls, MulAccumulator acc) {
+        accumulators.put(cls, acc);
+    }
+
+    private void accumulateDefault(Expr a, DomainAccumulateContext context) {
+        context.inc(a);
+    }
+
+    private void accumulateCosXCosY(Trigo a, DomainAccumulateContext context) {
+        for (Iterator<Trigo> iterator = context.partialTrigos.iterator(); iterator.hasNext(); ) {
+            Trigo cosXcosY = iterator.next();
+            CosXCosY old = cosXcosY.cosXCosY;
+            if (old.getA() == 0 && a.cosXCosY.getC() == 0) {
+                context.mul(old.getAmp() * a.cosXCosY.getAmp() * cos2(old.getB()) * cos2(a.cosXCosY.getD()));
+                cosXcosY = new Trigo(new CosXCosY(
+                        1,
+                        a.cosXCosY.getA(),
+                        a.cosXCosY.getB(),
+                        old.getC(),
+                        old.getD(),
+                        context.domain
+                ));
+                context.fullTrigos.add(cosXcosY);
+                iterator.remove();
+                return;
+            } else if (old.getC() == 0 && a.cosXCosY.getA() == 0) {
+                context.mul(old.getAmp() * a.cosXCosY.getAmp() * cos2(old.getD()) * cos2(a.cosXCosY.getB()));
+                cosXcosY = new Trigo(new CosXCosY(1, old.getA(), old.getB(), a.cosXCosY.getC(), a.cosXCosY.getD(), context.domain));
+                context.fullTrigos.add(cosXcosY);
+                iterator.remove();
+                return;
+            }
+        }
+        if (a.cosXCosY.getAmp() == 1) {
+            context.partialTrigos.add(a);
+        } else {
+            context.mul(a.cosXCosY.getAmp());
+            context.partialTrigos.add(new Trigo(new CosXCosY(
+                    1,
+                    a.cosXCosY.getA(),
+                    a.cosXCosY.getB(),
+                    a.cosXCosY.getC(),
+                    a.cosXCosY.getD(),
+                    context.domain
+            )));
+        }
+    }
+
+    public static CosXCosY toCosXCosY(Sin c) {
+        Expr t = c.getChild(0);
+        Linear r = Linear.castOrConvert(t);
+        if (r != null) {
+            if (r.getA() == 0) {
+                return (new CosXCosY(1, 0, 0, r.getB(), r.getC() - PI / 2, c.getDomain().intersect((t).getDomain())));
+            } else if (r.getB() == 0) {
+                return (new CosXCosY(1, r.getA(), r.getC() - PI / 2, 0, 0, c.getDomain().intersect((t).getDomain())));
+            }
+        }
+        return null;
+    }
+
+    public static CosXPlusY toCosXPlusCosY(Sin c) {
+        Expr t = c.getChild(0);
+        Linear r = Linear.castOrConvert(t);
+        if (r != null) {
+            if (r.getA() != 0 && r.getB() != 0) {
+                return (new CosXPlusY(1, r.getA(), r.getA(), r.getC() - PI / 2, c.getDomain().intersect((t).getDomain())));
+            }
+        }
+        return null;
+    }
+
+    private static CosXCosY toCosXCosY(Cos c) {
+        Expr t = c.getChild(0);
+        Linear r = Linear.castOrConvert(t);
+        if (r != null) {
+            if (r.getA() == 0) {
+                return (new CosXCosY(1, 0, 0, r.getB(), r.getC(), t.getDomain().intersect((t).getDomain())));
+            } else if (r.getB() == 0) {
+                return (new CosXCosY(1, r.getA(), r.getC(), 0, 0, t.getDomain().intersect((t).getDomain())));
+            }
+        }
+        return null;
+    }
+
+    private static CosXPlusY toCosXPlusCosY(Cos c) {
+        Expr t = c.getChild(0);
+        Linear r = Linear.castOrConvert(t);
+        if (r != null) {
+            if (r.getA() != 0 && r.getB() != 0) {
+                return (new CosXPlusY(1, r.getA(), r.getB(), r.getC(), t.getDomain().intersect((t).getDomain())));
+            }
+        }
+        return null;
+    }
+
+    protected int exprMulOrder(Expr expr) {
+        switch (expr.getClass().getName()) {
+            case "net.vpc.scholar.hadrumaths.DoubleExpr":
+            case "net.vpc.scholar.hadrumaths.Domain":
+            case "net.vpc.scholar.hadrumaths.DomainX":
+            case "net.vpc.scholar.hadrumaths.DomainXY":
+            case "net.vpc.scholar.hadrumaths.DomainXYZ":
+            case "net.vpc.scholar.hadrumaths.Complex":
+            case "net.vpc.scholar.hadrumaths.DefaultComplexValue":
+            case "net.vpc.scholar.hadrumaths.DefaultDoubleValue":
+                return 1;
+
+            case "net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Cos":
+            case "net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Sin":
+            case "net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY":
+                return 2;
+        }
+        return 10;
+    }
 
     @Override
     public Class<? extends Expr>[] getTypes() {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
 //        if(e.getSubExpressions().get(0) instanceof DoubleValue && e.getSubExpressions().get(1) instanceof Complex){
 //            System.out.println("Why");
 //        }
@@ -45,272 +216,309 @@ public class MulSimplifyRule implements ExpressionRewriterRule {
 //    public RewriteResult rewrite00(Expr e, ExpressionRewriter ruleset) {
 
         Mul ee = (Mul) e;
-        Complex complexeVal = Complex.ONE;
-        List<Expr> all = new ArrayList<Expr>();
-        Domain fullDomain = Domain.FULL(ee.getDomainDimension());
-        boolean updated = false;
-        List<Expr> linearized = new ArrayList<Expr>();
-        for (Expr expression : ee.getSubExpressions()) {
-            RewriteResult rewrite = ruleset.rewrite(expression);
-            expression = rewrite.getValue();
+        ExprType nt = ee.getNarrowType();
+        DomainAccumulateContext context = new DomainAccumulateContext(ruleset);
+        context.domain = Domain.FULL(ee.getDomain().getDimension());
+        RewriteResultType someModification = RewriteResultType.UNMODIFIED;
+        List<Expr> eeChildren = ee.getChildren();
+        int lastOrder=0;
+        for (Expr expression : eeChildren) {
+            RewriteResult rewrite = ruleset.rewrite(expression, null/*nt*/);
+            expression = rewrite.isUnmodified() ? expression : rewrite.getValue();
             if (rewrite.isRewritten()) {
-                updated = true;
+                someModification = someModification.max(rewrite.getType());
             }
-            fullDomain = fullDomain.intersect(expression.getDomain());
+            context.domain = context.domain.intersect(expression.getDomain());
             if (expression instanceof Mul) {
-                updated = true;
-                linearized.addAll(expression.getSubExpressions());
+                someModification = someModification.max(RewriteResultType.NEW_VAL);
+                for (Expr subExpression : expression.getChildren()) {
+                    context.accumulate(subExpression);
+                }
             } else {
-                linearized.add(expression);
+                int o=exprMulOrder(expression);
+                if(o<lastOrder){
+                    context.modified=true;
+                }
+                lastOrder=o;
+                context.accumulate(expression);
             }
         }
-        for (Expr expression : linearized) {
-            if (expression.isZero()) {
+        if (context.specialEnd) {
+            if (context.complex.isZero()) {
                 return RewriteResult.bestEffort(Complex.ZERO);
-            }
-            if (expression instanceof Complex) {
-                complexeVal = complexeVal.mul((Complex) expression);
-//            } else if (expression.isDDx()) {
-//                IDDx v = expression.toDDx();
-//                all.add(v);
-//                DomainX d = v.getDomain();
-//                fullDomain = fullDomain.intersect(new DomainXY(d.xmin, d.xmax));
-            } else if (expression.isDD()) {
-                DoubleToDouble v = expression.toDD();
-                all.add(v);
-                fullDomain = fullDomain.intersect(v.getDomain());
-            } else if (expression.isDC()) {
-                DoubleToComplex v = expression.toDC();
-                all.add(v);
-                fullDomain = fullDomain.intersect(v.getDomain());
-            } else if (expression.isDM()) {
-                DoubleToMatrix v = expression.toDM();
-                all.add(v);
-                fullDomain = fullDomain.intersect(v.getDomain());
+            } else if (context.complex.isNaN()) {
+                return RewriteResult.bestEffort(context.complex.toComplex());
             } else {
-                throw new IllegalArgumentException("Unsupported Expression Type " + expression);
+                throw new IllegalArgumentException("Unexpected");
             }
-        }
-        if (fullDomain.isEmpty()) {
-            return RewriteResult.bestEffort(Complex.ZERO);
-        } else if (fullDomain.isNaN()) {
-            return RewriteResult.bestEffort(Complex.NaN);
-        }
-        if (!complexeVal.equals(Complex.ONE)) {
-            all.add(complexeVal);
-        }
-        all = simplify(all, fullDomain);
-        //no element in the multiplication, all are ones, so discarded!
-        //we return one in that case
-        if (all.size() == 0) {
-            return RewriteResult.bestEffort(Complex.ONE);
-        }
-        if (all.size() == 1) {
-            Expr value = all.get(0);
-            if (e.equals(value)) {
-                return RewriteResult.unmodified(e);
+        } else {
+            List<Expr> mlist = new ArrayList<>();
+            boolean ampProcessed = false;
+            boolean domainProcessed = false;
+            if (context.complex.isOne()) {
+                ampProcessed = true;
             }
-            return RewriteResult.newVal(value);
-        }
-        Expr m2 = MathsBase.mul(all.toArray(new Expr[0]));
-        if (!updated && m2.equals(e)) {
-            return RewriteResult.unmodified(e);
-        }
-        //TODO should we return bestEffort? test me please
-        return RewriteResult.newVal(m2);
-    }
+            if (context.domain.isUnbounded1()) {
+                domainProcessed = true;
+            }
 
-    protected List<Expr> simplify(List<Expr> all, Domain fullDomain) {
-        while (true) {
-            List<Expr> all2 = simplify0(all, fullDomain);
-            if (all2.size() == all.size()) {
-                break;
-            }
-            all = all2;
-        }
-        return all;
-    }
-
-    protected List<Expr> simplify0(List<Expr> all, Domain fullDomain) {
-        if (all.size() < 2) {
-            return new ArrayList<Expr>(all);
-        }
-        Expr[] arr = all.toArray(new Expr[0]);
-        boolean[] processed = new boolean[arr.length];
-        List<Expr> ok = new ArrayList<Expr>();
-        boolean optimized;
-        for (int i = 0; i < arr.length; i++) {
-            Expr a = arr[i];
-            if (!processed[i]) {
-                optimized = false;
-                for (int j = i + 1; j < arr.length; j++) {
-                    Expr b = arr[j];
-                    if (!processed[i] && !processed[j]) {
-                        Expr r = simplify(a, b, fullDomain);
-                        if (r != null) {
-                            processed[i] = true;
-                            processed[j] = true;
-                            ok.add(r);
-                            optimized = true;
-                            break;
-                        }
+            for (Iterator<Trigo> iterator = context.fullTrigos.iterator(); iterator.hasNext(); ) {
+                Trigo cosXcosY = iterator.next();
+                if (!ampProcessed) {
+                    if (context.complex.isReal()) {
+                        cosXcosY = new Trigo((CosXCosY) cosXcosY.cosXCosY.mul(context.complex.getReal()));
+                        context.complex.setOne();
+                        ampProcessed = true;
+                        context.modified = true;
                     }
                 }
-                if (!optimized) {
-                    ok.add(a);
+                if (!domainProcessed) {
+                    cosXcosY = new Trigo((CosXCosY) cosXcosY.cosXCosY.mul(context.domain));
+                    domainProcessed = true;
+                }
+                accumulateDefault(cosXcosY.base, context);
+                iterator.remove();
+            }
+            for (Iterator<Trigo> iterator = context.partialTrigos.iterator(); iterator.hasNext(); ) {
+                Trigo cosXcosY = iterator.next();
+                if (!ampProcessed) {
+                    if (context.complex.isReal()) {
+                        cosXcosY = new Trigo((CosXCosY) cosXcosY.cosXCosY.mul(context.complex.getReal()));
+                        context.complex.setOne();
+                        ampProcessed = true;
+                    }
+                }
+                if (!domainProcessed) {
+                    cosXcosY = new Trigo((CosXCosY) cosXcosY.cosXCosY.mul(context.domain));
+                    domainProcessed = true;
+                }
+                accumulateDefault(cosXcosY.base, context);
+                iterator.remove();
+            }
+
+            for (Map.Entry<Expr, Integer> eentry : context.exprCount.entrySet()) {
+                Expr mex = eentry.getKey();
+                int value = eentry.getValue();
+                switch (value) {
+                    case 0: {
+                        //ignore
+                        break;
+                    }
+                    case 1: {
+                        if (!ampProcessed) {
+                            if (context.complex.isReal()) {
+                                if (mex.isSmartMulDouble()) {
+                                    mex = mex.mul(context.complex.getReal());
+                                    context.complex.setOne();
+                                    ampProcessed = true;
+                                }
+                            } else if (mex.isSmartMulComplex()) {
+                                mex = mex.mul(context.complex.toComplex());
+                                context.complex.setOne();
+                                ampProcessed = true;
+                            }
+                        }
+                        if (!domainProcessed) {
+                            if (mex.isSmartMulDomain()) {
+                                mex = mex.mul(context.domain);
+                                domainProcessed = true;
+                            }
+                        }
+                        mlist.add(mex);
+                        break;
+                    }
+                    case -1: {
+                        if (!ampProcessed) {
+                            if (context.complex.isReal()) {
+                                if (mex.isSmartMulDouble()) {
+                                    mex = Inv.of(mex.mul(1.0 / context.complex.getReal()));
+                                    context.complex.setOne();
+                                    ampProcessed = true;
+                                }
+                            } else if (mex.isSmartMulComplex()) {
+                                context.complex.inv();
+                                mex = Inv.of(mex.mul(context.complex.toComplex()));
+                                context.complex.setOne();
+                                ampProcessed = true;
+                            }
+                        }
+                        if (!domainProcessed) {
+                            if (mex.isSmartMulDomain()) {
+                                mex = mex.mul(context.domain);
+                                domainProcessed = true;
+                            }
+                        }
+                        mlist.add(mex);
+                        break;
+                    }
+                    default: {
+                        mlist.add(pow(mex, expr((value))));
+                    }
                 }
             }
-        }
-        return ok;
-    }
-
-    protected Expr simplify(Expr a, Expr b, Domain fullDomain) {
-        if (a.isComplexExpr()) {
-            return b.mul(a.toComplex()).mul(a.getDomain());
-        }
-        if (b.isComplexExpr()) {
-            return a.mul(b.toComplex()).mul(b.getDomain());
-        }
-        //process cross
-//        if (a.isDouble()) {
-//            double cst = a.toDouble();
-//            //b.
-//        }
-
-        if (a.isDoubleExpr()) {
-            double cst = a.toDouble();
-            //UPDATED
-            Domain theDomain = fullDomain.intersect(b.getDomain());
-            boolean domainChanged = !theDomain.equals(b.getDomain());
-            if (!domainChanged) {
-                if (cst == 1) {
-                    return b;
-                }
-            }
-            boolean expSimplifiableIfMulDomain = isExpSimplifiableIfMulDomain(b);
-            boolean expSimplifiableIfMulDouble = isExpSimplifiableIfMulDouble(b);
-            if (domainChanged) {
-                if (expSimplifiableIfMulDomain && expSimplifiableIfMulDouble) {
-                    return b.mul(fullDomain).mul(cst);
+            if (!ampProcessed) {
+                //multiplier always first
+                if (!domainProcessed) {
+                    if (context.domain.isUnbounded1()) {
+                        mlist.add(0, context.complex.toComplex());
+                    } else if (context.complex.isReal()) {
+                        mlist.add(0, expr(context.complex.getReal(), context.domain));
+                    } else {
+                        mlist.add(0, expr(context.complex.toComplex(), context.domain));
+                    }
+                    domainProcessed = true;
+                } else {
+                    if (context.complex.isReal()) {
+                        mlist.add(0, expr(context.complex.getReal(), context.domain));
+                    } else {
+                        mlist.add(0, context.complex.toComplex());
+                    }
                 }
             } else {
-                if (expSimplifiableIfMulDouble) {
-                    return b.mul(cst);
+                if (!domainProcessed) {
+                    if (context.domain.isUnbounded1()) {
+                        mlist.add(0, Maths.ONE);
+                    } else {
+                        mlist.add(0, context.domain);
+                    }
+                    domainProcessed = true;
+                } else {
+                    if (mlist.isEmpty()) {
+                        mlist.add(Maths.ONE);
+                    }
                 }
             }
-            return null;
-        } else if (a.isComplexExpr()) {
-            Complex cst = a.toComplex();
-            //UPDATED
-            Domain theDomain = fullDomain.intersect(b.getDomain());
-            boolean domainChanged = !theDomain.equals(b.getDomain());
-            if (!domainChanged) {
-                if (cst.equals(MathsBase.CONE)) {
-                    return b;
-                }
+            if (mlist.isEmpty()) {
+                mlist.add(Maths.ONE);
             }
-            boolean expSimplifiableIfMulDomain = isExpSimplifiableIfMulDomain(b);
-            boolean expSimplifiableIfMulDouble = isExpSimplifiableIfMulComplex(b);
-            if (domainChanged) {
-                if (expSimplifiableIfMulDomain && expSimplifiableIfMulDouble) {
-                    return b.mul(fullDomain).mul(cst);
-                }
+            if (context.modified || mlist.size() != eeChildren.size()) {
+                someModification = RewriteResultType.BEST_EFFORT;
+            }
+            if (mlist.size() == 1) {
+                return RewriteResult.bestEffort(mlist.get(0));
             } else {
-                if (expSimplifiableIfMulDouble) {
-                    return b.mul(cst);
+                Mul newVal = Mul.of(mlist.toArray(new Expr[0]));
+                switch (someModification) {
+                    case UNMODIFIED: {
+                        if(ExpressionsDebug.DEBUG) {
+                            if (newVal.equals(e)) {
+                                return RewriteResult.unmodified();
+                            }
+                            return RewriteResult.bestEffort(newVal);
+                        }
+                        return RewriteResult.unmodified();
+                    }
+                    case BEST_EFFORT:
+                    case NEW_VAL: {
+                        return RewriteResult.bestEffort(newVal);
+                    }
+                    default: {
+                        throw new IllegalArgumentException("Unsupported");
+                    }
                 }
             }
-            return null;
-        } else if (a instanceof XX) {
-            XX ac = (XX) a;
-            if (b instanceof XX) {
-                XX f = (XX) b;
-                return MathsBase.pow(new XX(ac.getDomain().intersect(f.getDomain())), MathsBase.expr(2));
-            } else if (b instanceof Pow && ((Pow) b).getFirst() instanceof XX) {
-                XX f = (XX) ((Pow) b).getFirst();
-                return MathsBase.pow(new XX(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), MathsBase.sum(((Pow) b).getSecond(), MathsBase.expr(1)));
+        }
+    }
+
+    private MulAccumulator getAccumulator(Expr e) {
+        MulAccumulator t = accumulators.get(e.getClass());
+        if (t == null) {
+            throw new IllegalArgumentException("No Accumulator for " + e.getClass() + " :: " + e);
+        }
+        return t;
+    }
+
+    protected interface MulAccumulator<T extends Expr> {
+        void accumulate(T a, DomainAccumulateContext context);
+    }
+
+    private static class Trigo {
+        private final Expr base;
+        private final CosXCosY cosXCosY;
+        private Cos cos;
+        private Sin sin;
+
+        public Trigo(CosXCosY base) {
+            this.base = base;
+            this.cosXCosY = base;
+        }
+
+        public Trigo(Cos base) {
+            this.base = base;
+            this.cos = base;
+            this.cosXCosY = toCosXCosY(base);
+        }
+
+        public Trigo(Sin base) {
+            this.base = base;
+            this.sin = base;
+            this.cosXCosY = toCosXCosY(base);
+        }
+    }
+
+    private class DomainAccumulateContext {
+        ExpressionRewriter ruleset;
+        Domain domain = Domain.EMPTYX;
+        MutableComplex complex = MutableComplex.One();
+        boolean specialEnd;
+        List<Trigo> fullTrigos = new ArrayList<>();
+        List<Trigo> partialTrigos = new ArrayList<>();
+        Map<Expr, Integer> exprCount = new LinkedHashMap<>();
+        int complexMuls = 0;
+        boolean modified = false;
+
+        public DomainAccumulateContext(ExpressionRewriter ruleset) {
+            this.ruleset = ruleset;
+        }
+
+        private void mul(double c) {
+            mul(Complex.of(c));
+        }
+
+        private void mul(Complex c) {
+            complex.mul(c);
+            complexMuls++;
+            if (complexMuls > 1) {
+                modified = true;
+            }
+        }
+
+        private void inc(Expr a) {
+            Integer t = exprCount.get(a);
+            if (t == null) {
+                exprCount.put(a, 1);
             } else {
-                return null;
+                modified = true;
+                exprCount.put(a, t + 1);
             }
-        } else if (a instanceof YY) {
-            YY ac = (YY) a;
-            if (b instanceof YY) {
-                YY f = (YY) b;
-                return MathsBase.pow(new YY(ac.getDomain().intersect(f.getDomain())), MathsBase.expr(2));
-            } else if (b instanceof Pow && ((Pow) b).getFirst() instanceof YY) {
-                YY f = (YY) ((Pow) b).getFirst();
-                return MathsBase.pow(new YY(ac.getDomain().intersect(f.getDomain()).intersect(b.getDomain())), MathsBase.sum(((Pow) b).getSecond(), MathsBase.expr(1)));
+        }
+
+        private void dec(Expr a) {
+            modified = true;
+            Integer t = exprCount.get(a);
+            if (t == null) {
+                exprCount.put(a, -1);
             } else {
-                return null;
+                exprCount.put(a, t - 1);
             }
+        }
 
-        } else if (a instanceof CosXCosY && b instanceof CosXCosY) {
-            CosXCosY aa = (CosXCosY) a;
-            CosXCosY bb = (CosXCosY) b;
-            if (aa.getA() == 0 && bb.getC() == 0) {
-                return new CosXCosY(
-                        aa.getAmp() * bb.getAmp() * MathsBase.cos2(aa.getB()) * MathsBase.cos2(bb.getD()),
-                        bb.getA(),
-                        bb.getB(),
-                        aa.getC(),
-                        aa.getD(),
-                        fullDomain
-                );
-            } else if (aa.getC() == 0 && bb.getA() == 0) {
-                return new CosXCosY(
-                        aa.getAmp() * bb.getAmp() * MathsBase.cos2(aa.getD()) * MathsBase.cos2(bb.getB()),
-                        aa.getA(),
-                        aa.getB(),
-                        bb.getC(),
-                        bb.getD(),
-                        fullDomain
-                );
+        public void accumulate(Expr e) {
+            if (specialEnd) {
+                modified = true;
+                //ignore
+            } else {
+                domain = domain.intersect(e.getDomain());
+                if (e.isZero() || domain.isEmpty()) {
+                    specialEnd = true;
+                    complex.setZero();
+                } else if (e.isNaN() || domain.isNaN()) {
+                    specialEnd = true;
+                    complex.setNaN();
+                } else {
+                    getAccumulator(e).accumulate(e, this);
+                }
             }
-            return null;
         }
-        if (b.isDoubleExpr() || b.isComplexExpr() || b instanceof AxisFunction) {
-            return simplify(b, a, fullDomain);
-        }
-        return null;
     }
-
-    private boolean isExpSimplifiableIfMulDouble(Expr b) {
-        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
-                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
-                || b instanceof Plus || b instanceof Sub || b instanceof Neg
-                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
-    }
-
-    private boolean isExpSimplifiableIfMulComplex(Expr b) {
-        if (true) return true;
-        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
-                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
-                || b instanceof Plus || b instanceof Sub || b instanceof Neg
-                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
-    }
-
-    private boolean isExpSimplifiableIfMulDomain(Expr b) {
-        if (true) return true;
-        return b instanceof Domain || b instanceof Complex || b instanceof DoubleValue
-                || b instanceof ComplexValue || b instanceof Discrete || b instanceof VDiscrete
-                || b instanceof Linear || b instanceof Shape2D || b instanceof RWG
-                || b instanceof Plus || b instanceof Sub || b instanceof Neg
-                || b instanceof CosXCosY || b instanceof CosXPlusY || b instanceof UFunction;
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
-
 }

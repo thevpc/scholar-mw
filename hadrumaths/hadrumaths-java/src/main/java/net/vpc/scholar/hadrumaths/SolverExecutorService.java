@@ -11,9 +11,10 @@ import java.util.concurrent.*;
  * Created by vpc on 12/12/16.
  */
 public class SolverExecutorService implements Closeable {
+    List<Future> futures = new ArrayList<Future>();
     //    public static void main(String[] args) {
 //        try {
-//            MathsBase.solverExecutorService(1)
+//            Maths.solverExecutorService(1)
 //                    .submit(new Runnable() {
 //                        @Override
 //                        public void run() {
@@ -60,9 +61,8 @@ public class SolverExecutorService implements Closeable {
 //        }
 //        ;
 //    }
-    private CompletionService ecs;
-    private ExecutorService executor;
-    List<Future> futures = new ArrayList<Future>();
+    private final CompletionService ecs;
+    private final ExecutorService executor;
 
     public SolverExecutorService(int threadsCount) {
         this(Executors.newFixedThreadPool(threadsCount));

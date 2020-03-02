@@ -24,7 +24,7 @@ public class CLUDecomposition implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private Complex[][] LU;
+    private final Complex[][] LU;
     /**
      * Row and column dimensions, and pivot sign.
      *
@@ -32,13 +32,15 @@ public class CLUDecomposition implements java.io.Serializable {
      * @serial row dimension.
      * @serial pivot sign.
      */
-    private int m, n, pivsign;
+    private final int m;
+    private final int n;
+    private int pivsign;
     /**
      * Internal storage of pivot vector.
      *
      * @serial pivot vector.
      */
-    private int[] piv;
+    private final int[] piv;
 
     /*
      * ------------------------ Constructor ------------------------
@@ -156,26 +158,12 @@ public class CLUDecomposition implements java.io.Serializable {
      */
 
     /**
-     * Is the matrix nonsingular?
-     *
-     * @return true if U, and hence A, is nonsingular.
-     */
-    public boolean isNonsingular() {
-        for (int j = 0; j < n; j++) {
-            if (LU[j][j].equals(Complex.ZERO)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Return lower triangular factor
      *
      * @return L
      */
     public ComplexMatrix getL() {
-        ComplexMatrix X = MathsBase.matrix(m, n);
+        ComplexMatrix X = Maths.matrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (i > j) {
@@ -206,7 +194,7 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return MathsBase.matrix(U);
+        return Maths.matrix(U);
     }
 
     /**
@@ -230,7 +218,7 @@ public class CLUDecomposition implements java.io.Serializable {
     public double[] getDoublePivot() {
         double[] vals = new double[m];
         for (int i = 0; i < m; i++) {
-            vals[i] = (double) piv[i];
+            vals[i] = piv[i];
         }
         return vals;
     }
@@ -245,7 +233,7 @@ public class CLUDecomposition implements java.io.Serializable {
         if (m != n) {
             throw new IllegalArgumentException("Matrix must be square.");
         }
-        Complex d = Complex.valueOf(pivsign);
+        Complex d = Complex.of(pivsign);
         for (int j = 0; j < n; j++) {
             d = d.mul(LU[j][j]);
         }
@@ -298,6 +286,20 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-        return MathsBase.matrix(X);
+        return Maths.matrix(X);
+    }
+
+    /**
+     * Is the matrix nonsingular?
+     *
+     * @return true if U, and hence A, is nonsingular.
+     */
+    public boolean isNonsingular() {
+        for (int j = 0; j < n; j++) {
+            if (LU[j][j].equals(Complex.ZERO)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

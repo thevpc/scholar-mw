@@ -13,10 +13,6 @@ public interface PlotModel extends Serializable {
 
     PlotModel setColorPalette(String colorPalette);
 
-    String getLibraries();
-
-    PlotModel setLibraries(String libraries);
-
     boolean accept(PlotModelType t);
 
     Set<PlotModelType> getModelTypes();

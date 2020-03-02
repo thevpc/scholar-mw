@@ -4,9 +4,9 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Div;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Sub;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Div;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -23,9 +23,9 @@ public class DivDifferentiator implements FunctionDifferentiator {
         // a'/b - b'a / b²
 
 
-        return new Sub(
-                new Div(ad, b),
-                new Div(new Mul(a, bd), new Mul(b, b))
+        return sub(
+                div(ad, b),
+                div(mul(a, bd), mul(b, b))
         );
     }
 }

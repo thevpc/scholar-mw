@@ -1,11 +1,9 @@
 package net.vpc.scholar.hadruwaves.util;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.HSerializable;
 
-import java.io.Serializable;
-
-public interface Impedance extends Serializable, Dumpable {
+public interface Impedance extends HSerializable {
 
     Impedance parallel(Impedance b);
 

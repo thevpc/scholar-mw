@@ -6,23 +6,24 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.ParamExpr;
+import net.vpc.scholar.hadrumaths.symbolic.Param;
 
 /**
  * @author vpc
  */
-public class ParamObjectFormat implements ObjectFormat<ParamExpr> {
+public class ParamObjectFormat implements ObjectFormat<Param> {
     public ParamObjectFormat() {
     }
 
     @Override
-    public String format(ParamExpr o, ObjectFormatParamSet format) {
-        return o.getParamName();
+    public void format(Param o, ObjectFormatContext context) {
+        context.append(o.getName());
     }
 
     @Override
-    public void format(StringBuilder sb, ParamExpr o, ObjectFormatParamSet format) {
-        sb.append(o.getParamName());
+    public String format(Param o, ObjectFormatParamSet format, ObjectFormatContext context) {
+        return o.getName();
     }
 }

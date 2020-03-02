@@ -101,6 +101,12 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         });
         addMouseListener(this);
         setModel(model, reverseY, colorPalette, preferredDimension);
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        popupMenu.add(createColorPaletteMenu());
+        popupMenu.add(createColorContrastMenu());
+        popupMenu.add(createRotationMenu());
+        setComponentPopupMenu(popupMenu);
     }
 
     public void setModel(ValuesPlotXYDoubleModelFace model, boolean reverseY, ColorPalette colorPalette, Dimension preferredDimension) {
@@ -309,20 +315,6 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
             }
         });
         popupMenu.add(item);
-        return popupMenu;
-    }
-
-    public JPopupMenu getComponentPopupMenu() {
-        JPopupMenu popupMenu = super.getComponentPopupMenu();
-        if (popupMenu == null) {
-            popupMenu = new JPopupMenu();
-
-            popupMenu.add(createColorPaletteMenu());
-            popupMenu.add(createColorContrastMenu());
-            popupMenu.add(createRotationMenu());
-
-            setComponentPopupMenu(popupMenu);
-        }
         return popupMenu;
     }
 

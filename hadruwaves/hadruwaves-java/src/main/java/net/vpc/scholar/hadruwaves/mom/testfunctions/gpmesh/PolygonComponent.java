@@ -25,7 +25,7 @@ import java.awt.geom.Area;
 public class PolygonComponent extends JComponent {
     public static void main(String[] args) {
         GeometryList geometryList = new DefaultGeometryList();
-        Domain globalDomain = Domain.forBounds(0, 100, 0, 100);
+        Domain globalDomain = Domain.ofBounds(0, 100, 0, 100);
         geometryList.add(globalDomain.toPolygon());
         MeshConsDesAlgo meshalgo = new MeshConsDesAlgo(3);
         EchelonPattern pattern = new EchelonPattern();

@@ -11,15 +11,15 @@ public interface SymExpression {
      * @param varName var name
      * @return differentiated expression
      */
-    public SymExpression diff(String varName);
+    SymExpression diff(String varName);
 
-    public SymExpression eval(SymContext context);
+    SymExpression eval(SymContext context);
 
-    public SymExpression simplify();
+    SymExpression simplify();
 
-    public String toString(SymStringContext context);
+    String toString(SymStringContext context);
 
-    public SymExpression diff(String varName, int depth);
+    SymExpression diff(String varName, int depth);
 
     SymExpression diff(String... varNames);
 }

@@ -3,8 +3,12 @@ package net.vpc.scholar.hadruplot;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 import net.vpc.scholar.hadruplot.util.PlotModelUtils;
 
-public class DefaultPlotModelFactory implements PlotModelFactory{
+public final class DefaultPlotModelFactory implements PlotModelFactory{
     public static final PlotModelFactory INSTANCE=new DefaultPlotModelFactory();
+
+    private DefaultPlotModelFactory() {
+    }
+
     @Override
     public PlotModel createModel(PlotValue data, PlotBuilder builder) {
         PlotValueType type = data.getType();
@@ -90,5 +94,15 @@ public class DefaultPlotModelFactory implements PlotModelFactory{
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
     }
 }

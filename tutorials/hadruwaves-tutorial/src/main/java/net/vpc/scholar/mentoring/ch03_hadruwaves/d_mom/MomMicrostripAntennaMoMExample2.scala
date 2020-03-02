@@ -2,6 +2,7 @@ package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom;
 
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruwaves.Material
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.mom._
 /**
@@ -47,8 +48,8 @@ object MomMicrostripAntennaMoMExample2 {
     r=normalize(r)
     r=r/sqrt(norm(r))
     var src = 1 * srcDomain
-    val substrateSpace = shortCircuitBoxSpace(espr, h)
-    val superstrateSpace = matchedLoadBoxSpace(1)
+    val substrateSpace = shortCircuitBoxSpace(Material.substrate(espr), h)
+    val superstrateSpace = matchedLoadBoxSpace(Material.VACUUM)
 
     //use optimized (fast) Mom implementation
     var mm = MomStructure.EEEE(boxDomain, fr, N, substrateSpace, superstrateSpace)
@@ -61,12 +62,12 @@ object MomMicrostripAntennaMoMExample2 {
     PlotConfig.setDefaultWindowTitle("v57")
     Plot.title("fn").domain(boxDomain).plot(fn)
     Plot.title("g").domain(boxDomain).plot(g)
-    Plot.title("A ref").plot(mm.inputImpedance().computeComplex())
-    Plot.title("A ref").plot(mm.matrixA().computeMatrix())
-    Plot.title("B ref").plot(mm.matrixB().computeMatrix())
-    Plot.title("X ref").plot(mm.matrixX().computeMatrix())
-    Plot.title("J test").domain(boxDomain).plot(mm.testField().computeMatrix(Axis.X, relativeSamples(100, 100)))
-    Plot.title("J modes").domain(boxDomain).plot(mm.current().computeMatrix(Axis.X, relativeSamples(100, 100)))
-    Plot.title("E").domain(boxDomain).plot(mm.electricField().computeMatrix(Axis.X, relativeSamples(100, 100)))
+    Plot.title("A ref").plot(mm.inputImpedance().evalComplex())
+    Plot.title("A ref").plot(mm.matrixA().evalMatrix())
+    Plot.title("B ref").plot(mm.matrixB().evalMatrix())
+    Plot.title("X ref").plot(mm.matrixX().evalMatrix())
+    Plot.title("J test").domain(boxDomain).plot(mm.testField().evalMatrix(Axis.X, relativeSamples(100, 100)))
+    Plot.title("J modes").domain(boxDomain).plot(mm.current().evalMatrix(Axis.X, relativeSamples(100, 100)))
+    Plot.title("E").domain(boxDomain).plot(mm.electricField().cartesian().evalMatrix(Axis.X, relativeSamples(100, 100)))
   }
 }

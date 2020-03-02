@@ -13,5 +13,4 @@ public class FSConstants {
         PING,
     }
 
-    ;
 }

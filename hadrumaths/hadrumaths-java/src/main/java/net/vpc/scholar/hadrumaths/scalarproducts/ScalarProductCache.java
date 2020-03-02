@@ -7,13 +7,13 @@ public interface ScalarProductCache {
 
     ComplexMatrix toMatrix();
 
-    TVector<Complex> column(int column);
+    ComplexVector column(int column);
 
-    TVector<Complex> getColumn(int column);
+    ComplexVector getColumn(int column);
 
-    TVector<Complex> getRow(int row);
+    ComplexVector getRow(int row);
 
-    TVector<Complex> row(int row);
+    ComplexVector row(int row);
 
     Complex apply(int p, int n);
 

@@ -1,13 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 
-import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,64 +14,15 @@ import java.util.Set;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 17 juil. 2007 15:45:33
  */
-public interface Expr extends Serializable, Dumpable {
+public interface Expr extends HSerializable {
 
     /**
      * @param axis
      * @return true if expression does not depend on Axis
      */
-    boolean isInvariant(Axis axis);
-
-    /**
-     * @return true if this expression is defined as a valid non param, non constrained double value (full domain)
-     */
-    boolean isDouble();
-
-    /**
-     * <table>
-     * <tr><th>Expr</th><th>Type</th><th>isDoubleExpr</th><th>isDoubleTyped</th><th>isDouble</th></tr>
-     * <tr><td>2.0</td><td>DoubleValue</td><td>true</td><td>true</td><td>true</td></tr>
-     * <tr><td>2.0*II(0,10)</td><td>DoubleValue</td><td>true</td><td>true</td><td>false</td></tr>
-     * <tr><td>2.0*II(0,10)</td><td>ComplexValue</td><td>true</td><td>true</td><td>false</td></tr>
-     * <tr><td>(2.0+2.0î)*II(0,10)</td><td>ComplexValue</td><td>false</td><td>false</td><td>false</td></tr>
-     * <tr><td>(2.0)*II(0,10)</td><td>Mul</td><td>true</td><td>true</td><td>true</td></tr>
-     * <tr><td>(2.0+2.0î)*II(0,10)</td><td>Mul</td><td>false</td><td>false</td><td>false</td></tr>
-     * <tr><td>X</td><td>XX</td><td>false</td><td>true</td><td>false</td></tr>
-     * <tr><td>X+î</td><td>Plus</td><td>false</td><td>false</td><td>false</td></tr>
-     * <tr><td>param("m")</td><td>Param</td><td>false</td><td>true</td><td>false</td></tr>
-     * </table>
-     *
-     * @return true if this expression is defined as a valid,non function, non param, (may be) constrained double value
-     */
-    boolean isDoubleExpr();
-
-    /**
-     * true if this expression is defined only for double values and is not handling complex values
-     *
-     * @return
-     */
-    boolean isDoubleTyped();
-
-    /**
-     * @return true if this expression is defined as a valid non param, non constrained complex value (full domain)
-     */
-    boolean isComplex();
-
-    boolean isComplexExpr();
-
-
-    /**
-     * defines a scalar expression aka defines only for X axis
-     * (non vector nor matrix or a vector and matrix with the very first element only defined)
-     *
-     * @return
-     */
-    boolean isScalarExpr();
-
-    /**
-     * @return true if this expression is defined as a valid non param, non constrained matrix (full domain)
-     */
-    boolean isMatrix();
+    default boolean isInvariant(Axis axis) {
+        return false;
+    }
 
     /**
      * return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
@@ -81,7 +30,19 @@ public interface Expr extends Serializable, Dumpable {
      * @return complex value if this expression is defined as a valid non param complex value. It may have domain. Otherwise throws ClassCastException
      */
     default Complex toComplex() {
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+        throw new ExprNarrowException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
+    }
+
+    default NumberExpr toNumber() {
+        return ExprDefaults.toNumber(this);
+    }
+
+    default Expr inv() {
+        return ExprDefaults.inv(this);
+    }
+
+    default Expr not() {
+        return ExprDefaults.not(this);
     }
 
     /**
@@ -89,110 +50,198 @@ public interface Expr extends Serializable, Dumpable {
      *
      * @return double value if this expression is defined as a valid non param double value. It may have domain. Otherwise throws ClassCastException
      */
-    double toDouble();
-
-    default ComplexMatrix toMatrix() {
-        throw new ClassCastException(toString() + " of type " + getClass().getName() + " cannot be casted to Matrix");
+    default double toDouble() {
+        throw new ExprNarrowException(toString() + " of type " + getClass().getName() + " cannot be casted to double");
     }
 
-    boolean isDC();
-
-    default DoubleToComplex toDC() {
-        if (!isDC()) {
-            throw new ClassCastException("Unable to Cast to DC :: " + getClass().getName() + " = " + toString());
+    default Expr cast(ExprType other) {
+        if (!isNarrow(other)) {
+            throw new ExprNarrowException("Unable to Cast " + getType() + " to " + other +
+                    "" +
+                    " :: " + getClass().getName() + " = " + toString());
         }
-        return (DoubleToComplex) this;
+        return this;
     }
 
-    boolean isDD();
+    /**
+     * tries to if cast down is possible
+     *
+     * @param other
+     * @return
+     */
+    default boolean isNarrow(ExprType other) {
+        return ExprDefaults.isNarrow(this, other);
+    }
 
-    default DoubleToDouble toDD() {
-        if (!isDD()) {
-            throw new ClassCastException("Unable to Cast to DD :: " + getClass().getName() + " = " + toString());
-        }
-        return (DoubleToDouble) this;
+    ExprType getType(); //ExprDefaults.widest(getChildren());
+
+    /**
+     * tries to if cast down is possible
+     *
+     * @param other
+     * @return
+     */
+    default boolean isNarrow(ExprNumberType other) {
+        return ExprDefaults.isNarrow(this, other);
+    }
+
+    default boolean is(ExprNumberType other) {
+        return ExprDefaults.is(this, other);
+    }
+
+    default boolean is(ExprDim other) {
+        return ExprDefaults.is(this, other);
+    }
+
+    default boolean isNarrow(ExprDim other) {
+        return ExprDefaults.isNarrow(this, other);
+    }
+
+    default Expr narrow(ExprNumberType other) {
+        return ExprDefaults.narrow(this, other);
+    }
+
+    default Expr narrow(ExprDim other) {
+        return ExprDefaults.narrow(this, other);
+    }
+
+    default Expr narrow() {
+        return narrow(getNarrowType());
+    }
+
+    default Expr narrow(ExprType other) {
+        return ExprDefaults.narrow(this, other);
+    }
+
+    /**
+     * return the narrowest (most specific) def type.
+     * For instance a complex real value is narrowed to CONSTANT_DOUBLE
+     *
+     * @return
+     */
+    ExprType getNarrowType();
+
+    default boolean is(ExprType other) {
+        return ExprDefaults.is(this, other);
     }
 
 //    boolean isDDx();
 
 //    IDDx toDDx();
 
-    boolean isDV();
+//    boolean isDV();
 
-    default DoubleToVector toDV() {
-        if (!isDV()) {
-            throw new ClassCastException("Unable to Cast to DV :: " + getClass().getName() + " = " + toString());
-        }
-        return (DoubleToVector) this;
+    DoubleToComplex toDC();
+
+    DoubleToDouble toDD();
+
+    DoubleToVector toDV();
+
+    DoubleToMatrix toDM();
+
+    default boolean isZero() {
+        return false;
     }
 
-    boolean isDM();
-
-    default DoubleToMatrix toDM() {
-        if (!isDM()) {
-            if (isDV()) {
-                return new DV2DM(toDV());
-            }
-            if (isDC()) {
-                return new DC2DM(toDC());
-            }
-            if (isDD()) {
-                return new DD2DC(toDD()).toDM();
-            }
-            throw new ClassCastException("Unable to Cast to DM :: " + getClass().getName() + " = " + toString());
-        }
-        return (DoubleToMatrix) this;
+    default boolean isNaN() {
+        return ExprDefaults.isNaNAny(getChildren());
     }
 
-    boolean isZero();
-
-    boolean isNaN();
-
-    boolean hasParams();
-
-    Expr setParam(String name, double value);
-
-    Expr setParam(String name, Expr value);
-
-    Set<ParamExpr> getParams();
-
-    Expr setParam(ParamExpr paramExpr, double value);
-
-    Expr setParam(ParamExpr paramExpr, Expr value);
-
-    boolean isInfinite();
-
-    Expr clone();
-
-    List<Expr> getSubExpressions();
-
-    boolean hasProperties();
-
-    Integer getIntProperty(String name);
-
-    Long getLongProperty(String name);
-
-    String getStringProperty(String name);
-
-    Double getDoubleProperty(String name);
-
-    default Object prop(String name) {
-        return getProperty(name);
+    default List<Expr> getChildren() {
+        return Collections.emptyList();
     }
 
-    Object getProperty(String name);
+    default boolean hasParams() {
+        return ExprDefaults.hasParamsAny(getChildren());
+    }
 
-    Map<String, Object> getProperties();
+    default Expr setParams(ParamValues params) {
+        return ExprDefaults.setParams(this, params);
+    }
 
-    Expr setProperties(Map<String, Object> map);
+    default Expr setParam(String name, double value) {
+        return ExprDefaults.setParam(this, name, value);
+    }
 
-    Expr setMergedProperties(Map<String, Object> map);
+    default Expr setParam(String name, Expr value) {
+        return ExprDefaults.setParam(this, name, value);
+    }
 
-    Expr setProperties(Map<String, Object> map, boolean merge);
+    default Set<Param> getParams() {
+        return ExprDefaults.getParams(this);
+    }
 
-    Expr setProperty(String name, Object value);
+    default Expr setParam(Param paramExpr, double value) {
+        return ExprDefaults.setParam(this, paramExpr, value);
+    }
 
-    Expr compose(Axis axis, Expr xreplacement);
+    default Expr setParam(Param paramExpr, Expr value) {
+        return ExprDefaults.setParam(this, paramExpr, value);
+    }
+
+    default boolean isInfinite() {
+        return false;
+    }
+
+    default boolean isEvaluatable() {
+        return ExprDefaults.isEvaluatableAll(getChildren());
+    }
+
+    default Expr getChild(int index) {
+        return getChildren().get(index);
+    }
+
+    default boolean hasProperties() {
+        return ExprDefaults.hasProperties(this);
+    }
+
+    default Integer getIntProperty(String name) {
+        return ExprDefaults.getIntProperty(this, name);
+    }
+
+    default Long getLongProperty(String name) {
+        return ExprDefaults.getLongProperty(this, name);
+    }
+
+    default String getStringProperty(String name) {
+        return ExprDefaults.getStringProperty(this, name);
+    }
+
+    default Double getDoubleProperty(String name) {
+        return ExprDefaults.getDoubleProperty(this, name);
+    }
+
+    default Map<String, Object> getProperties() {
+        return ExprDefaults.getProperties(this);
+    }
+
+    default Expr setProperties(Map<String, Object> map) {
+        return ExprDefaults.setProperties(this, map);
+    }
+
+    default Expr setMergedProperties(Map<String, Object> map) {
+        return ExprDefaults.setMergedProperties(this, map);
+    }
+
+    default Expr setProperties(Map<String, Object> map, boolean merge) {
+        return ExprDefaults.setProperties(this, map, merge);
+    }
+
+    default Expr setProperty(String name, Object value) {
+        return ExprDefaults.setProperty(this, name, value);
+    }
+
+    default Expr compose(Expr xreplacement) {
+        return ExprDefaults.compose(this, xreplacement);
+    }
+
+    default Expr compose(Expr xreplacement, Expr yreplacement) {
+        return ExprDefaults.compose(this, xreplacement, yreplacement);
+    }
+
+    default Expr compose(Expr xreplacement, Expr yreplacement, Expr zreplacement) {
+        return ExprDefaults.compose(this, xreplacement, yreplacement, zreplacement);
+    }
 
     /**
      * simple call to Maths.simplify(this);
@@ -203,112 +252,51 @@ public interface Expr extends Serializable, Dumpable {
         return simplify(null);
     }
 
-    Expr simplify(SimplifyOptions options);
+    default Expr simplify(SimplifyOptions options) {
+        return ExprDefaults.simplify(this, options);
+    }
 
     /**
      * simple call to Maths.normalizeString(this);
      *
      * @return
      */
-    Expr normalize();
-
-    String getTitle();
-
-    /**
-     * create a clone expression with changed name
-     *
-     * @param name
-     */
-    Expr setTitle(String name);
-
-    /**
-     * create a clone expression with changed name
-     *
-     * @param name
-     */
-    Expr title(String name);
-
-    int getDomainDimension();
-
-    Domain getDomain();
-
-    Domain domain();
+    default Expr normalize() {
+        return ExprDefaults.normalize(this);
+    }
 
     ComponentDimension getComponentDimension();
 
-    Expr mul(Domain domain);
+    default Expr mul(Complex other) {
+        return ExprDefaults.mul(this, other);
+    }
 
-    Expr multiply(Domain domain);
+    default Expr add(int other) {
+        return ExprDefaults.add(this, other);
+    }
 
-    Expr mul(Geometry domain);
+    default Expr add(double other) {
+        return ExprDefaults.add(this, other);
+    }
 
-    Expr multiply(Geometry domain);
+    default Expr add(Expr other) {
+        return ExprDefaults.add(this, other);
+    }
 
-    Expr mul(int other);
+    default Expr rdiv(double other) {
+        return ExprDefaults.rdiv(this, other);
+    }
 
-    Expr mul(double other);
+    default Expr rmul(double other) {
+        return ExprDefaults.rmul(this, other);
+    }
 
-    Expr mul(Complex other);
+    default Expr radd(double other) {
+        return ExprDefaults.radd(this, other);
+    }
 
-    Expr mul(Expr other);
-
-    Expr multiply(int other);
-
-    Expr multiply(double other);
-
-    Expr multiply(Expr other);
-
-    Expr add(int other);
-
-    Expr add(double other);
-
-    Expr add(Expr other);
-
-    Expr divide(int other);
-
-    Expr divide(double other);
-
-    Expr divide(Expr other);
-
-    Expr div(int other);
-
-    Expr div(double other);
-
-    Expr div(Expr other);
-
-    Expr subtract(int other);
-
-    Expr subtract(double other);
-
-    Expr subtract(Expr other);
-
-    Expr sub(int other);
-
-    Expr sub(double other);
-
-    Expr sub(Expr other);
-
-    Expr negate();
-
-    Expr neg();
-
-    Expr rdiv(double other);
-
-    Expr rmul(double other);
-
-    Expr radd(double other);
-
-    Expr rsub(double other);
-
-    /**
-     * create an inflated list of all values of the given param.
-     * This method is equivalent to {@link #allOf(DoubleParamValues)}
-     *
-     * @param paramValues params and values to inflate with
-     * @return new inflated list of all values of the given param
-     */
-    default ExprVector inflate(DoubleParamValues paramValues) {
-        return MathsBase.elist(this).inflate(paramValues, getTitle());
+    default Expr rsub(double other) {
+        return ExprDefaults.rsub(this, other);
     }
 
     /**
@@ -323,12 +311,361 @@ public interface Expr extends Serializable, Dumpable {
     }
 
     /**
+     * create an inflated list of all values of the given param.
+     * This method is equivalent to {@link #allOf(DoubleParamValues)}
+     *
+     * @param paramValues params and values to inflate with
+     * @return new inflated list of all values of the given param
+     */
+    default ExprVector inflate(DoubleParamValues paramValues) {
+        return Maths.evector(this).inflate(paramValues, getTitle());
+    }
+
+    default String getTitle() {
+        return ExprDefaults.getTitle(this);
+    }
+
+    /**
+     * create a clone expression with changed name
+     *
+     * @param name
+     */
+    default Expr setTitle(String name) {
+        return ExprDefaults.setTitle(this, name);
+    }
+
+    /**
      * create a singleton list containing this expression.
      *
      * @return a singleton list containing this expression.
      */
     default ExprVector toList() {
-        return MathsBase.elist(this);
+        return Maths.evector(this);
     }
 
+    default boolean isSmartMulDouble() {
+        return false;
+    }
+
+    default boolean isSmartMulComplex() {
+        return false;
+    }
+
+    default boolean isSmartMulDomain() {
+        return false;
+    }
+
+    default TsonElement toTsonElement(TsonObjectContext context) {
+        return ExprDefaults.toTsonElement(this, context);
+    }
+
+    default Expr mul(Domain domain) {
+        return ExprDefaults.mul(this, domain);
+    }
+
+    default Expr mul(Geometry domain) {
+        return ExprDefaults.mul(this, domain);
+    }
+
+    default Expr mul(int other) {
+        return ExprDefaults.mul(this, other);
+    }
+
+    default Expr mul(double other) {
+        return ExprDefaults.mul(this, other);
+    }
+
+    default Expr mul(Expr other) {
+        return ExprDefaults.mul(this, other);
+    }
+    default Expr div(int other) {
+        return ExprDefaults.div(this, other);
+    }
+
+    /// USER-CENTRIC
+
+    default Expr div(double other) {
+        return ExprDefaults.div(this, other);
+    }
+
+    default Expr div(Expr other) {
+        return ExprDefaults.div(this, other);
+    }
+
+    default Expr rem(Expr other) {
+        return ExprDefaults.rem(this, other);
+    }
+
+    default Expr pow(Expr other) {
+        return ExprDefaults.pow(this, other);
+    }
+
+    default Expr sub(int other) {
+        return ExprDefaults.sub(this, other);
+    }
+
+    default Expr sub(double other) {
+        return ExprDefaults.sub(this, other);
+    }
+
+    default Expr sub(Expr other) {
+        return ExprDefaults.sub(this, other);
+    }
+
+    default Expr or(Expr other) {
+        return ExprDefaults.or(this, other);
+    }
+
+    default Expr and(Expr other) {
+        return ExprDefaults.and(this, other);
+    }
+
+    default Expr ne(double other) {
+        return ExprDefaults.ne(this, other);
+    }
+    default Expr eq(double other) {
+        return ExprDefaults.eq(this, other);
+    }
+    default Expr lt(double other) {
+        return ExprDefaults.lt(this, other);
+    }
+    default Expr lte(double other) {
+        return ExprDefaults.lte(this, other);
+    }
+    default Expr gt(double other) {
+        return ExprDefaults.gt(this, other);
+    }
+    default Expr gte(double other) {
+        return ExprDefaults.gte(this, other);
+    }
+    default Expr or(double other) {
+        return ExprDefaults.or(this, other);
+    }
+    default Expr and(double other) {
+        return ExprDefaults.and(this, other);
+    }
+
+    default Expr eq(Expr other) {
+        return ExprDefaults.eq(this, other);
+    }
+
+    default Expr ne(Expr other) {
+        return ExprDefaults.ne(this, other);
+    }
+
+    default Expr lt(Expr other) {
+        return ExprDefaults.lt(this, other);
+    }
+
+    default Expr lte(Expr other) {
+        return ExprDefaults.lte(this, other);
+    }
+
+    default Expr gt(Expr other) {
+        return ExprDefaults.gt(this, other);
+    }
+
+    default Expr gte(Expr other) {
+        return ExprDefaults.gte(this, other);
+    }
+
+    default Expr negate() {
+        return neg();
+    }
+
+    default Expr neg() {
+        return ExprDefaults.neg(this);
+    }
+
+    default Expr conj() {
+        return ExprDefaults.conj(this);
+    }
+
+    default Expr cos() {
+        return ExprDefaults.cos(this);
+    }
+
+    default Expr cosh() {
+        return ExprDefaults.cosh(this);
+    }
+
+    default Expr sin() {
+        return ExprDefaults.sin(this);
+    }
+
+    default Expr sinh() {
+        return ExprDefaults.sinh(this);
+    }
+
+    default Expr sincard() {
+        return ExprDefaults.sincard(this);
+    }
+
+    default Expr tan() {
+        return ExprDefaults.tan(this);
+    }
+
+    default Expr cotan() {
+        return ExprDefaults.cotan(this);
+    }
+
+    default Expr tanh() {
+        return ExprDefaults.tanh(this);
+    }
+
+    default Expr cotanh() {
+        return ExprDefaults.cotanh(this);
+    }
+
+    default Expr atan() {
+        return ExprDefaults.atan(this);
+    }
+
+    default Expr acotan() {
+        return ExprDefaults.acotan(this);
+    }
+
+    default Expr atanh() {
+        return ExprDefaults.atanh(this);
+    }
+
+    default Expr acos() {
+        return ExprDefaults.acos(this);
+    }
+
+    default Expr asin() {
+        return ExprDefaults.asin(this);
+    }
+
+    default Expr asinh() {
+        return ExprDefaults.asinh(this);
+    }
+
+    default Expr acosh() {
+        return ExprDefaults.acosh(this);
+    }
+
+    default double norm() {
+        return ExprDefaults.norm(this);
+    }
+
+    default Domain domain() {
+        return getDomain();
+    }
+
+    Domain getDomain();
+
+    /**
+     * create a clone expression with changed name
+     *
+     * @param name
+     */
+    default Expr title(String name) {
+        return setTitle(name);
+    }
+
+
+    /// SPECIFIC METHODS
+
+    default Object prop(String name) {
+        return getProperty(name);
+    }
+
+    default Object getProperty(String name) {
+        return ExprDefaults.getProperty(this, name);
+    }
+
+    Expr newInstance(Expr... subExpressions);
+
+    default Expr sqrt() {
+        return ExprDefaults.sqrt(this);
+    }
+
+    default Expr sqrt(int n) {
+        return ExprDefaults.sqrt(this, n);
+    }
+
+    default Expr sqr() {
+        return ExprDefaults.sqr(this);
+    }
+
+    default Expr log() {
+        return ExprDefaults.log(this);
+    }
+
+    default Expr log10() {
+        return ExprDefaults.log(this);
+    }
+
+    default Expr abs() {
+        return ExprDefaults.abs(this);
+    }
+
+    default Expr db() {
+        return ExprDefaults.db(this);
+    }
+
+    default Expr db2() {
+        return ExprDefaults.db2(this);
+    }
+
+    default Expr imag() {
+        return ExprDefaults.imag(this);
+    }
+
+    default Expr real() {
+        return ExprDefaults.real(this);
+    }
+
+    default Expr exp() {
+        return ExprDefaults.exp(this);
+    }
+
+
+    //long op names
+    default Expr subtract(int other) {
+        return sub(other);
+    }
+
+    default Expr subtract(double other) {
+        return sub(other);
+    }
+
+    default Expr subtract(Expr other) {
+        return sub(other);
+    }
+
+    default Expr multiply(Domain domain) {
+        return mul(domain);
+    }
+
+    default Expr multiply(Geometry geometry) {
+        return mul(geometry);
+    }
+
+    default Expr multiply(int other) {
+        return mul(other);
+    }
+
+    default Expr multiply(double other) {
+        return mul(other);
+    }
+
+    default Expr multiply(Expr other) {
+        return mul(other);
+    }
+
+    default Expr divide(int other) {
+        return div(other);
+    }
+
+    default Expr divide(double other) {
+        return div(other);
+    }
+
+    default Expr divide(Expr other) {
+        return div(other);
+    }
+
+    default String toLatex(){return null;}
 }

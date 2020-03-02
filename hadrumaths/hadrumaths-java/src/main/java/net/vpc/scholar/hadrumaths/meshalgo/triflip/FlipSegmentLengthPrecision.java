@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triflip;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 
@@ -23,11 +26,17 @@ public class FlipSegmentLengthPrecision implements FlipPrecision {
 
     }
 
-    public String dump() {
-        Dumper h = new Dumper(this);
-        h.add("segmentLength", longueur);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("segmentLength", context.elem(longueur));
+        return sb.build();
     }
+//    public String dump() {
+//        Dumper h = new Dumper(this);
+//        h.add("segmentLength", longueur);
+//        return h.toString();
+//    }
 
 
 }

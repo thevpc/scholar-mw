@@ -1,9 +1,22 @@
 package net.vpc.scholar.hadrumaths.concurrent;
 
 public interface AppLockListener {
-    void onLockAcquired(AppLockEvent event);
+    default void onLockAcquired(AppLockEvent event){
 
-    void onLockDetected(AppLockEvent event);
+    }
 
-    void onLockReleased(AppLockEvent event);
+    default void onLockAcquireFailed(AppLockEvent event){
+
+    }
+
+    default void onLockDetected(AppLockEvent event){
+
+    }
+
+    default void onLockReleased(AppLockEvent event){
+
+    }
+    default void onLockReleaseFailed(AppLockEvent event){
+
+    }
 }

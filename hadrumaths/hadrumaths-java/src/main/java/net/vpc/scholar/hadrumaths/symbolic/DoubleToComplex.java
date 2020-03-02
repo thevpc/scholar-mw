@@ -6,105 +6,151 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadruplot.Samples;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Imag;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Real;
 
 /**
  * @author vpc
  */
 public interface DoubleToComplex extends DoubleDomainExpr {
 
-
-    Complex computeComplex(double x, BooleanMarker defined);
-
-    Complex computeComplex(double x, double y, BooleanMarker defined);
-
-    Complex computeComplex(double x, double y, double z, BooleanMarker defined);
-
-    Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges);
-
-    Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges);
-
-    Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
-
-    DoubleToDouble getRealDD();
-
-    DoubleToDouble getImagDD();
-
-    default Complex[] computeComplex(double[] x, Domain d0) {
-        return computeComplex(x, d0, null);
+    //DEFAULTS
+    default DoubleToDouble getRealDD() {
+        return new Real(this);
     }
 
-    default Complex[] computeComplex(double[] x, double y, Domain d0) {
-        return computeComplex(x, y, d0, null);
+    default DoubleToDouble getImagDD() {
+        return new Imag(this);
     }
 
-    default Complex[] computeComplex(double x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
+    //USER-CENTRIC
+    default Complex[] evalComplex(double[] x, Domain d0) {
+        return evalComplex(x, d0, null);
     }
 
-    default Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        return computeComplex(x, y, z, d0, null);
+    default Complex[] evalComplex(double[] x, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, d0, ranges);
     }
 
-    default Complex[] computeComplex(double x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
+    default Complex[] evalComplex(double[] x, double y, Domain d0) {
+        return evalComplex(x, y, d0, null);
     }
 
-    default Complex[] computeComplex(double[] x, double y) {
-        return computeComplex(x, y, (Domain) null, null);
+    default Complex[] evalComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, y, d0, ranges);
     }
 
-    default Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        return computeComplex(x, y, d0, null);
+    default Complex[] evalComplex(double x, double[] y, Domain d0) {
+        return evalComplex(x, y, d0, null);
     }
 
-    default Complex computeComplex(double x) {
-        return computeComplex(x, NoneOutBoolean.INSTANCE);
+    default Complex[] evalComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, y, d0, ranges);
     }
 
-    default Complex computeComplex(double x, double y) {
-        return computeComplex(x, y, NoneOutBoolean.INSTANCE);
+    default Complex[][][] evalComplex(double[] x, double[] y, double[] z, Domain d0) {
+        return evalComplex(x, y, z, d0, null);
     }
 
-    default Complex computeComplex(double x, double y, double z) {
-        return computeComplex(x, y, z, NoneOutBoolean.INSTANCE);
+    default Complex[][][] evalComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, y, z, d0, ranges);
     }
 
-    default Complex[] computeComplex(double[] x) {
-        return computeComplex(x, (Domain) null, null);
+    default Complex[] evalComplex(double x, double[] y) {
+        return evalComplex(x, y, null, null);
     }
 
-    default Complex[][] computeComplex(double[] x, double[] y) {
-        return computeComplex(x, y, (Domain) null, null);
+    default Complex[] evalComplex(double[] x, double y) {
+        return evalComplex(x, y, null, null);
     }
 
-    default Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        return computeComplex(x, y, z, (Domain) null, null);
+    default Complex[][] evalComplex(double[] x, double[] y, Domain d0) {
+        return evalComplex(x, y, d0, null);
     }
 
-    default Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
+    default Complex[][] evalComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, y, d0, ranges);
     }
 
-    default Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
+    default Complex[][][] evalComplex(double[] x, double[] y, double[] z) {
+        return evalComplex(x, y, z, null, null);
     }
 
+    default Complex[] apply(double[] x) {
+        return evalComplex(x);
+    }
 
-//    default Complex apply(double x) {
-//        return computeComplex(x);
-//    }
-//
-//    default Complex[] apply(double[] x) {
-//        return computeComplex(x);
-//    }
-//
-//    default Complex apply(double x, double y) {
-//        return computeComplex(x, y);
-//    }
-//
-//    default Complex[][] apply(double[] x, double[] y) {
-//        return computeComplex(x, y);
-//    }
+    default Complex[] evalComplex(double[] x) {
+        return evalComplex(x, (Domain) null, null);
+    }
 
+    default Complex[][] apply(double[] x, double[] y) {
+        return evalComplex(x, y);
+    }
+
+    default Complex[][] evalComplex(double[] x, double[] y) {
+        return evalComplex(x, y, (Domain) null, null);
+    }
+
+    default Complex apply(double x) {
+        return evalComplex(x);
+
+    }
+
+    default Complex evalComplex(double x) {
+        return evalComplex(x, NoneOutBoolean.INSTANCE);
+    }
+
+    //TODO
+    Complex evalComplex(double x, BooleanMarker defined);
+
+    default Complex apply(double x, double y) {
+        return evalComplex(x, y);
+    }
+
+    default Complex evalComplex(double x, double y) {
+        return evalComplex(x, y, NoneOutBoolean.INSTANCE);
+    }
+
+    Complex evalComplex(double x, double y, BooleanMarker defined);
+
+    default Complex apply(double x, double y, double z) {
+        return evalComplex(x, y, z);
+    }
+
+    default Complex evalComplex(double x, double y, double z) {
+        return evalComplex(x, y, z, NoneOutBoolean.INSTANCE);
+    }
+
+    Complex evalComplex(double x, double y, double z, BooleanMarker defined);
+
+    default ExprType getNarrowType() {
+        return getType();
+    }
+
+    default DoubleToComplex toDC() {
+        return this;
+    }
+
+    default DoubleToDouble toDD() {
+        return (DoubleToDouble) narrow(ExprType.DOUBLE_DOUBLE);
+    }
+
+    default DoubleToVector toDV() {
+        return (DoubleToVector) narrow(ExprType.DOUBLE_CVECTOR);
+    }
+
+    default DoubleToMatrix toDM() {
+        return (DoubleToMatrix) narrow(ExprType.DOUBLE_CMATRIX);
+    }
+
+    @Override
+    default ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
+    }
+
+    @Override
+    default ExprType getType(){
+        return ExprType.DOUBLE_COMPLEX;
+    }
 }

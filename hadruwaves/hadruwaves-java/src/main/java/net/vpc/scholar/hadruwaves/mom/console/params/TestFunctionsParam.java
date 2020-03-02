@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadruplot.console.params.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractCParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 
 
-public class TestFunctionsParam extends AbstractParam implements Cloneable {
+public class TestFunctionsParam extends AbstractCParam implements Cloneable {
 
     public TestFunctionsParam() {
         super("gpType");

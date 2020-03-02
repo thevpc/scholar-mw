@@ -33,7 +33,6 @@ public final class ModeInfo implements Serializable,Cloneable {
     public ModeInfo copy(){
         try {
             ModeInfo mi=(ModeInfo) this.clone();
-            mi.fn=(DoubleToVector) mi.fn.clone();
             return mi;
         } catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("Never");

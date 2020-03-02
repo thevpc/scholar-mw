@@ -1,9 +1,8 @@
 package net.vpc.scholar.hadruwaves.str;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.TVector;
-import net.vpc.scholar.hadrumaths.TMatrix;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Vector;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -18,5 +17,5 @@ public interface FarFieldEvaluator extends MWStructureEvaluator {
      * @param monitor monitor
      * @return FarField_theta(theta as row,phi as column) = Matrix[0] FarField_phi = Matrix[1]
      */
-    TVector<TMatrix<Complex>> evaluate(MWStructure str, double[] theta, double[] phi, double r, ProgressMonitor monitor) ;
+    Vector<ComplexMatrix> evaluate(MWStructure str, double[] theta, double[] phi, double r, ProgressMonitor monitor) ;
 }

@@ -20,13 +20,13 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
     private double[][] y = new double[0][0];
     private Object[][] z = new Object[0][0];
     private PlotDoubleConverter converter;
-    private PlotType plotType = PlotType.CURVE;
+    private LibraryPlotType plotType = new LibraryPlotType(PlotType.CURVE,"default");
     private Map<String, Object> properties = new HashMap<String, Object>();
     private DoubleFormat xformat = null;
     private DoubleFormat yformat = null;
     private DoubleFormat zformat = null;
 
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String[] ytitles, double[] x, Object[] y, boolean column,PlotDoubleConverter converter, PlotType plotType, Map<String, Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String[] ytitles, double[] x, Object[] y, boolean column,PlotDoubleConverter converter, LibraryPlotType plotType, Map<String, Object> properties) {
         this.d1=true;
         this.d1column=column;
         init(title, xtitle, ytitle, ztitle, ytitles, new double[][]{x}, new double[0][], new Object[][]{y}, converter, plotType, properties);
@@ -45,7 +45,7 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
      * @param converter
      * @param plotType
      */
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, double[] x, double[] y, Object[][] z, PlotDoubleConverter converter, PlotType plotType, Map<String, Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, double[] x, double[] y, Object[][] z, PlotDoubleConverter converter, LibraryPlotType plotType, Map<String, Object> properties) {
         init(title, xtitle, ytitle, ztitle, null, new double[][]{x}, new double[][]{y}, z, converter, plotType, properties);
     }
 
@@ -60,16 +60,16 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
      * @param z
      * @param converter
      */
-    public ValuesPlotModel(String title, String xtitle, String ztitle, String[] yTitles, double[][] x, Object[][] z, PlotDoubleConverter converter, PlotType plotType, Map<String, Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ztitle, String[] yTitles, double[][] x, Object[][] z, PlotDoubleConverter converter, LibraryPlotType plotType, Map<String, Object> properties) {
         init(title, xtitle, null, ztitle, yTitles, x, null, z, converter, plotType, properties);
     }
 
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, double[][] z, PlotType plotType, Map<String, Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, double[][] z, LibraryPlotType plotType, Map<String, Object> properties) {
         init(title, xtitle, ytitle, ztitle, ytitles, x, y,
                 PlotDoubleConverter.intern(PlotDoubleConverter.REAL).toComplex(z), PlotDoubleConverter.REAL, plotType, properties);
     }
 
-    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Object[][] z, PlotDoubleConverter converter, PlotType plotType, Map<String, Object> properties) {
+    public ValuesPlotModel(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Object[][] z, PlotDoubleConverter converter, LibraryPlotType plotType, Map<String, Object> properties) {
         init(title, xtitle, ytitle, ztitle, ytitles, x, y,z, converter, plotType, properties);
     }
     
@@ -82,7 +82,7 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
         return z[0];
     }
     
-    private void init(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Object[][] z, PlotDoubleConverter converter, PlotType plotType, Map<String, Object> properties) {
+    private void init(String title, String xtitle, String ytitle, String ztitle, String[] ytitles, double[][] x, double[][] y, Object[][] z, PlotDoubleConverter converter, LibraryPlotType plotType, Map<String, Object> properties) {
         setTitle(title);
         setName(title);
         this.xtitle = xtitle;
@@ -140,10 +140,6 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
         return this;
     }
 
-    @Override
-    public ValuesPlotModel setLibraries(String libraries) {
-        return (ValuesPlotModel)super.setLibraries(libraries);
-    }
 
     public DoubleFormat getYformat() {
         return yformat;
@@ -382,14 +378,15 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D,PlotMo
         return this;
     }
 
-    public PlotType getPlotType() {
+    public LibraryPlotType getPlotType() {
         return plotType;
     }
 
-    public void setPlotType(PlotType plotType) {
+    public ValuesPlotModel setPlotType(LibraryPlotType plotType) {
         Object old = this.plotType;
         this.plotType = plotType;
         firePropertyChange("plotType", old, this.plotType);
+        return this;
     }
 
     public Map<String, Object> getProperties() {

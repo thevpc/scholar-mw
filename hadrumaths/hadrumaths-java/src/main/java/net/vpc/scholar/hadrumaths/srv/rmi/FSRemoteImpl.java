@@ -11,15 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FSRemoteImpl extends UnicastRemoteObject implements FSRemote {
-    private FSServlet fsServlet;
+    private final FSServlet fsServlet;
 
     public FSRemoteImpl(FSServlet fsServlet) throws RemoteException {
         this.fsServlet = fsServlet;
-    }
-
-    @Override
-    public void ping() {
-        //do nothing
     }
 
     @Override
@@ -77,5 +72,10 @@ public class FSRemoteImpl extends UnicastRemoteObject implements FSRemote {
             throw new IllegalArgumentException("Not a file : " + path);
         }
         return new FSInputStreamImpl(file.getInputStream());
+    }
+
+    @Override
+    public void ping() {
+        //do nothing
     }
 }

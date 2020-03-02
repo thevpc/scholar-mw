@@ -6,9 +6,10 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.XObjectFormatParam;
-import net.vpc.scholar.hadrumaths.symbolic.XX;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.XX;
 
 /**
  * @author vpc
@@ -16,16 +17,17 @@ import net.vpc.scholar.hadrumaths.symbolic.XX;
 public class XXObjectFormat implements ObjectFormat<XX> {
 
     @Override
-    public String format(XX o, ObjectFormatParamSet format) {
+    public String format(XX o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, XX o, ObjectFormatParamSet format) {
+    public void format(XX o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         XObjectFormatParam x = format.getParam(FormatFactory.X);
-        sb.append(x.getName());
-        FormatFactory.appendStarredDomain(sb, o, format);
+        context.append(x.getName());
+        FormatFactory.appendStarredDomain(context, o, format);
     }
 }

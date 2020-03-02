@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves;
 
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -9,13 +9,14 @@ import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * Created by vpc on 5/20/17.
  */
-public abstract class BoxModes {
+public abstract class BoxModes implements Iterable<ModeIndex>{
 
     protected Axis axis;
     protected double ma;
@@ -53,21 +54,21 @@ public abstract class BoxModes {
             case TM: {
                 switch (space.getLimit()) {
                     case OPEN: {
-                        y = I(cachedOmega).mul(space.getEps(freq)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                        y = I(cachedOmega).mul(space.getEpsrc(freq)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                         break;
                     }
                     case MATCHED_LOAD: {
                         // i omega
                         //------------ * cotanh( gamma thikness)
                         // eps gamma
-                        y = I(cachedOmega).mul(space.getEps(freq)).div(gamma);
+                        y = I(cachedOmega).mul(space.getEpsrc(freq)).div(gamma);
                         break;
                     }
                     case SHORT: {
                         // i omega   cotanh( gamma thikness)
                         //-------- * -------------------------
                         // eps            gamma
-                        y = I.mul(cachedOmega).mul(space.getEps(freq)).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                        y = I.mul(cachedOmega).mul(space.getEpsrc(freq)).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                         break;
                     }
                     case NOTHING: {
@@ -121,11 +122,10 @@ public abstract class BoxModes {
     }
 
     public ModeFct[] getModeFcts(final int max, ProgressMonitor monitor) {
-        Chronometer chrono = new Chronometer();
-        chrono.start();
+        Chronometer chrono = Chronometer.start();
         final ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
-        final ModeIterator iterator = iterator();
-        final ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        final Iterator<ModeIndex> iterator = iterator();
+        final ProgressMonitor mon = ProgressMonitors.incremental(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         final String message = tostr + " {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
@@ -137,14 +137,18 @@ public abstract class BoxModes {
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;
                         while (index < max && bruteIndex < bruteMax) {
-                            ModeIndex modeIndex = iterator.next();
-                            if (accept(modeIndex)) {
-                                ModeFct modeInfo = new ModeFct(modeIndex, getFunction(modeIndex));
-                                next.add(modeInfo);
-                                index++;
+                            if(iterator.hasNext()) {
+                                ModeIndex modeIndex = iterator.next();
+                                if (accept(modeIndex)) {
+                                    ModeFct modeInfo = new ModeFct(modeIndex, getFunction(modeIndex));
+                                    next.add(modeInfo);
+                                    index++;
+                                }
+                                bruteIndex++;
+                                mon.inc(message, index, max);
+                            }else{
+                                break;
                             }
-                            bruteIndex++;
-                            mon.inc(message, index, max);
                         }
                     }
                 }
@@ -198,11 +202,10 @@ public abstract class BoxModes {
     }
 
     public ModeIndex[] getIndexes(final int max, ProgressMonitor monitor) {
-        Chronometer chrono = new Chronometer();
-        chrono.start();
+        Chronometer chrono = Chronometer.start();
         final ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
-        final ModeIterator iterator = iterator();
-        final ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, max);
+        final Iterator<ModeIndex> iterator = iterator();
+        final ProgressMonitor mon = ProgressMonitors.incremental(monitor, max);
         String tostr = borders + " modes, enumerate modes";
         final String message = tostr + ", {0,number,#}/{1,number,#}";
         Maths.invokeMonitoredAction(
@@ -214,13 +217,17 @@ public abstract class BoxModes {
                         int bruteMax = max * 100 + 1;
                         int bruteIndex = 0;
                         while (index < max && bruteIndex < bruteMax) {
-                            ModeIndex modeIndex = iterator.next();
-                            if (accept(modeIndex)) {
-                                next.add(modeIndex);
-                                index++;
+                            if(iterator.hasNext()) {
+                                ModeIndex modeIndex = iterator.next();
+                                if (accept(modeIndex)) {
+                                    next.add(modeIndex);
+                                    index++;
+                                }
+                                bruteIndex++;
+                                mon.inc(message, index, max);
+                            }else{
+                                break;
                             }
-                            bruteIndex++;
-                            mon.inc(message, index, max);
                         }
                     }
                 });
@@ -262,5 +269,5 @@ public abstract class BoxModes {
 
     public abstract boolean accept(ModeIndex i);
 
-    public abstract ModeIterator iterator();
+    public abstract Iterator<ModeIndex> iterator();
 }

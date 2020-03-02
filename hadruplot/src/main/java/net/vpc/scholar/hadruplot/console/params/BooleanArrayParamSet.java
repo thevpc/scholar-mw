@@ -14,7 +14,7 @@ public class BooleanArrayParamSet extends ParamSet<Boolean> implements Cloneable
         return this;
     }
 
-    public BooleanArrayParamSet(Param configurator, boolean... values) {
+    public BooleanArrayParamSet(CParam configurator, boolean... values) {
         super(configurator);
         this.values = values;
     }

@@ -9,6 +9,7 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DomainObjectFormatParam;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
@@ -18,48 +19,49 @@ import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
  * @author vpc
  */
 public class DomainObjectFormat implements ObjectFormat<Domain> {
+
     public DomainObjectFormat() {
     }
 
     @Override
-    public String format(Domain o, ObjectFormatParamSet format) {
+    public String format(Domain o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
 
     }
 
-    private static void format(StringBuilder sb, Domain o, Axis axis, DoubleObjectFormatParam df, String x, String y, String z, ObjectFormatParamSet format, String emptyValue) {
+    private static void format(ObjectFormatContext context, Domain o, Axis axis, DoubleObjectFormatParam df, String x, String y, String z, ObjectFormatParamSet format, String emptyValue) {
         ObjectFormatParamSet format2 = format.add(FormatFactory.REQUIRED_FLOAT);
         switch (axis) {
             case X: {
-                if (!Double.isNaN(o.xmin()) && !Double.isNaN(o.xmax()) && o.isUnconstrainedX()) {
-                    sb.append(emptyValue);
+                if (!Double.isNaN(o.xmin()) && !Double.isNaN(o.xmax()) && o.isUnboundedX() && emptyValue!=null) {
+                    context.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.xmin(), format2);
-                sb.append("->");
-                FormatFactory.format(sb, o.xmax(), format2);
+                context.format(o.xmin(), format2);
+                context.append("->");
+                context.format(o.xmax(), format2);
                 return;
             }
             case Y: {
-                if (!Double.isNaN(o.ymin()) && !Double.isNaN(o.ymax()) && o.isUnconstrainedY()) {
-                    sb.append(emptyValue);
+                if (!Double.isNaN(o.ymin()) && !Double.isNaN(o.ymax()) && o.isUnboundedY() && emptyValue!=null) {
+                    context.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.ymin(), format2);
-                sb.append("->");
-                FormatFactory.format(sb, o.ymax(), format2);
+                context.format( o.ymin(), format2);
+                context.append("->");
+                context.format( o.ymax(), format2);
                 return;
             }
             case Z: {
-                if (!Double.isNaN(o.zmin()) && !Double.isNaN(o.zmax()) && o.isUnconstrainedZ()) {
-                    sb.append(emptyValue);
+                if (!Double.isNaN(o.zmin()) && !Double.isNaN(o.zmax()) && o.isUnboundedZ() && emptyValue!=null) {
+                    context.append(emptyValue);
                     return;
                 }
-                FormatFactory.format(sb, o.zmin(), format2);
-                sb.append("->");
-                FormatFactory.format(sb, o.zmax(), format2);
+                context.format( o.zmin(), format2);
+                context.append("->");
+                context.format( o.zmax(), format2);
                 return;
             }
         }
@@ -67,42 +69,46 @@ public class DomainObjectFormat implements ObjectFormat<Domain> {
     }
 
     @Override
-    public void format(StringBuilder sb, Domain o, ObjectFormatParamSet format) {
+    public void format(Domain o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         String xf = format.getParam(FormatFactory.X).getName();
         String yf = format.getParam(FormatFactory.Y).getName();
         String zf = format.getParam(FormatFactory.Z).getName();
-        DomainObjectFormatParam d = format.getParam(FormatFactory.NON_FULL_GATE_DOMAIN);
+        DomainObjectFormatParam d = format.getParam(FormatFactory.GATE_DOMAIN);
         DoubleObjectFormatParam df = format.getParam(DoubleObjectFormatParam.class, false);
         ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
-        String mul = pp.getOp() == null ? " " : (" " + pp.getOp() + " ");
         switch (d.getType()) {
             case GATE: {
-                if (!o.isNaN() && o.isFull() && d.isIgnoreFull()) {
+                if (!o.isNaN() && o.isUnbounded() && d.isIgnoreFull()) {
                     return;
                 } else {
+                    String emptyValue = null;//"FULL";
                     switch (o.getDimension()) {
                         case 1: {
-                            sb.append("domain(");
-                            format(sb, o, Axis.X, df, xf, yf, zf, format, "FULL");
-                            sb.append(")");
+                            context.append("domain(");
+                            format(context, o, Axis.X, df, xf, yf, zf, format, emptyValue);
+                            context.append(")");
                             return;
                         }
                         case 2: {
-                            sb.append("domain(");
-                            format(sb, o, Axis.X, df, xf, yf, zf, format, "FULL");
-                            sb.append(", ");
-                            format(sb, o, Axis.Y, df, xf, yf, zf, format, "FULL");
-                            sb.append(")");
+                            context.append("domain(");
+                            format(context, o, Axis.X, df, xf, yf, zf, format, emptyValue);
+//                            sb.append(", ");
+                            context.append(",");
+                            format(context, o, Axis.Y, df, xf, yf, zf, format, emptyValue);
+                            context.append(")");
                             return;
                         }
                         case 3: {
-                            sb.append("domain(");
-                            format(sb, o, Axis.X, df, xf, yf, zf, format, "FULL");
-                            sb.append(", ");
-                            format(sb, o, Axis.Y, df, xf, yf, zf, format, "FULL");
-                            sb.append(", ");
-                            format(sb, o, Axis.Z, df, xf, yf, zf, format, "FULL");
-                            sb.append(")");
+                            context.append("domain(");
+                            format(context, o, Axis.X, df, xf, yf, zf, format, emptyValue);
+//                            sb.append(", ");
+                            context.append(",");
+                            format(context, o, Axis.Y, df, xf, yf, zf, format, emptyValue);
+//                            sb.append(", ");
+                            context.append(",");
+                            format(context, o, Axis.Z, df, xf, yf, zf, format, emptyValue);
+                            context.append(")");
                             return;
                         }
                         default: {

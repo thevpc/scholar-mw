@@ -7,14 +7,14 @@ package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.HSerializable;
 
 import java.awt.geom.Path2D;
-import java.io.Serializable;
 
 /**
  * @author vpc
  */
-public interface Geometry extends Serializable {
+public interface Geometry extends HSerializable {
 
     Path2D.Double getPath();
 
@@ -38,6 +38,8 @@ public interface Geometry extends Serializable {
 
     Surface toSurface();
 
+    Polygon[] toPolygons();
+
     Polygon toPolygon();
 
     Triangle toTriangle();
@@ -60,10 +62,10 @@ public interface Geometry extends Serializable {
 
     Expr toExpr();
 
-    Expr multiply(int value);
+    Expr mul(int value);
 
-    Expr multiply(double value);
+    Expr mul(double value);
 
-    Expr multiply(Expr value);
+    Expr mul(Expr value);
 
 }

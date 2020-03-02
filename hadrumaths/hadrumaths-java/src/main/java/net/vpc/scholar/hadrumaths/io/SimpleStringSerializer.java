@@ -90,9 +90,7 @@ public class SimpleStringSerializer implements StringSerializer {
             if (k.equals("null")) {
                 return true;
             }
-            if (baseStr.containsKey(k)) {
-                return true;
-            }
+            return baseStr.containsKey(k);
         }
         return false;
     }

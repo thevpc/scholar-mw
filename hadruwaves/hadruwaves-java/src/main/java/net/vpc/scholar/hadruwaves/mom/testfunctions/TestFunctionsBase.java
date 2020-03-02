@@ -1,12 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import net.vpc.scholar.hadruwaves.mom.HintAxisType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -15,7 +18,6 @@ import net.vpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import java.util.Map;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 14 juil. 2005 10:11:39
  */
-public abstract class TestFunctionsBase implements Serializable, Dumpable, net.vpc.scholar.hadruwaves.mom.TestFunctions {
+public abstract class TestFunctionsBase implements net.vpc.scholar.hadruwaves.mom.TestFunctions {
     /**
      * les fonctions d'cache_essai
      */
@@ -78,8 +80,8 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
     }
 
     @Override
-    public TVector<Expr> list() {
-        return Maths.elist(arr());
+    public Vector<Expr> list() {
+        return Maths.evector(arr());
     }
 
     @Override
@@ -129,11 +131,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
     @Override
     public Domain getDomain() {
         if (cachedDomain == null) {
-            Domain d = Domain.NaNX;
-            for (DoubleToVector t : arr()) {
-                d = d.expand(t.getDomain());
-            }
-            cachedDomain = d.toDomain(getDomain().getDimension());
+            cachedDomain= ExprDefaults.expandDomainForExpressions(arr());
         }
         return cachedDomain;
     }
@@ -144,7 +142,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 //        if(structure==null){
 //            throw new IllegalArgumentException("Unable to evaluate Test Functions since 'structure' is null");
 //        }
-        ProgressMonitor emon = ProgressMonitorFactory.nonnull(monitor);
+        ProgressMonitor emon = ProgressMonitors.nonnull(monitor);
         DoubleToVector[] gpImpl = gpImpl(emon);
         DoubleToVector[] validGpImpl = null;
         HintAxisType fnAxis = getAxisType();
@@ -167,10 +165,10 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("Axis", "X");
                         properties.put("AxisIndex", xi);
                         xi++;
-                        DoubleToVector d = Maths.vector(cFunctionXY2D.getComponent(Axis.X), FunctionFactory.CZEROXY);
+                        Expr d = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.CZEROXY);
                         d = d.setTitle("[X] " + cFunctionXY2D.getTitle()).toDV();
                         d = d.setProperties(properties).toDV();
-                        goodX.add(d);
+                        goodX.add(d.toDV());
                     }
                     if (!cFunctionXY2D.getComponent(Axis.Y).isZero()) {
                         Map<String, Object> properties = PlatformUtils.merge(new HashMap(), cFunctionXY2D.getProperties());
@@ -180,17 +178,17 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("Axis", "Y");
                         properties.put("AxisIndex", yi);
                         yi++;
-                        DoubleToVector o = Maths.vector(FunctionFactory.CZEROXY, cFunctionXY2D.getComponent(Axis.Y));
-                        o =  o.setTitle("[Y] " + cFunctionXY2D.getTitle()).toDV();
-                        o =  o.setProperties(properties).toDV();
-                        goodY.add(o);
+                        Expr o = Maths.vector(Maths.CZEROXY, cFunctionXY2D.getComponent(Axis.Y));
+                        o = o.setTitle("[Y] " + cFunctionXY2D.getTitle()).toDV();
+                        o = o.setProperties(properties).toDV();
+                        goodY.add(o.toDV());
                     }
                 }
                 goodX.addAll(goodY);
                 int index = 1;
                 for (int i = 0; i < goodX.size(); i++) {
                     DoubleToVector cFunctionXY2D = goodX.get(i);
-                    goodX.set(i,  cFunctionXY2D.setProperty("Index", index++).toDV());
+                    goodX.set(i, cFunctionXY2D.setProperty("Index", index++).toDV());
                 }
                 validGpImpl = goodX.toArray(new DoubleToVector[goodX.size()]);
                 break;
@@ -241,11 +239,11 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 validGpImpl = gpImpl;
                 for (int i = 0; i < validGpImpl.length; i++) {
                     DoubleToVector cFunctionXY2D = validGpImpl[i];
-                    Map<String, Object> properties = PlatformUtils.merge(new HashMap(), cFunctionXY2D.getProperties());
+                    Map<String, Object> properties = PlatformUtils.<String, Object>merge(new HashMap<String, Object>(), cFunctionXY2D.getProperties());
                     properties.put("Axis", "XY");
                     properties.put("Index", i);
                     properties.put("AxisIndex", i + 1);
-                    validGpImpl[i] =  cFunctionXY2D.setProperties(properties).toDV();
+                    validGpImpl[i] = cFunctionXY2D.setProperties(properties).toDV();
                 }
                 break;
             }
@@ -254,13 +252,12 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 int index = 1;
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.X).isZero()) {
-                        cFunctionXY2D = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.DCZERO);
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap(), cFunctionXY2D.getProperties());
+                        Expr cFunctionXY2D2 = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.DCZERO);
+                        Map<String, Object> properties = PlatformUtils.<String,Object>merge(new HashMap<String, Object>(), cFunctionXY2D2.getProperties());
                         properties.put("Axis", "X");
                         properties.put("Index", index);
                         properties.put("AxisIndex", index);
-                        cFunctionXY2D =  cFunctionXY2D.setProperties(properties).toDV();
-                        newFcts.add(cFunctionXY2D);
+                        newFcts.add(cFunctionXY2D2.setProperties(properties).toDV());
                         index++;
                     }
                 }
@@ -272,8 +269,8 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                 int index = 1;
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.Y).isZero()) {
-                        cFunctionXY2D = Maths.vector(Maths.DDZERO, cFunctionXY2D.getComponent(Axis.Y));
-                        Map<String, Object> properties = PlatformUtils.merge(new HashMap(), cFunctionXY2D.getProperties());
+                        Expr cFunctionXY2D2 = Maths.vector(Maths.ZERO, cFunctionXY2D.getComponent(Axis.Y));
+                        Map<String, Object> properties = PlatformUtils.<String,Object>merge(new HashMap<>(), cFunctionXY2D2.getProperties());
 
 //                        if (properties == null) {
 //                            properties = new LinkedHashMap<String, Object>();
@@ -281,12 +278,12 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
                         properties.put("Axis", "Y");
                         properties.put("Index", newFcts.size() + 1);
                         properties.put("AxisIndex", index);
-                        cFunctionXY2D = cFunctionXY2D.setProperties(properties).toDV();
-                        newFcts.add(cFunctionXY2D);
+                        cFunctionXY2D2 = cFunctionXY2D2.setProperties(properties).toDV();
+                        newFcts.add(cFunctionXY2D2.toDV());
                         index++;
                     }
                 }
-                validGpImpl = newFcts.toArray(new DoubleToVector[newFcts.size()]);
+                validGpImpl = newFcts.toArray(new DoubleToVector[0]);
                 break;
             }
         }
@@ -300,7 +297,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
             properties.put("Domain", cFunctionVector2D.getComponent(Axis.X).getDomain().expand(cFunctionVector2D.getComponent(Axis.Y).getDomain()));
             properties.put("DomainX", cFunctionVector2D.getComponent(Axis.X).getDomain());
             properties.put("DomainY", cFunctionVector2D.getComponent(Axis.Y).getDomain());
-            cFunctionVector2D =  cFunctionVector2D.setMergedProperties(properties).toDV();
+            cFunctionVector2D = cFunctionVector2D.setMergedProperties(properties).toDV();
             validGpImpl[i] = cFunctionVector2D;
         }
         return validGpImpl;
@@ -373,18 +370,14 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
         firePropertyChange("axisType", old, axisType);
     }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("axisType", axisType);
-        if (functionsComparator != null) {
-            h.add("functionsComparator", functionsComparator);
-        }
-        return h;
-    }
-
     @Override
-    public final String dump() {
-        return getDumpStringHelper().toString();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("axisType", context.elem(axisType));
+        if (functionsComparator != null) {
+            h.add("functionsComparator", context.elem(functionsComparator));
+        }
+        return h.build();
     }
 
     @Override
@@ -426,7 +419,7 @@ public abstract class TestFunctionsBase implements Serializable, Dumpable, net.v
 
 
     @Override
-    public synchronized TVector<Expr> toList() {
+    public synchronized Vector<Expr> toList() {
         return list();
     }
 

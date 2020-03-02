@@ -1,8 +1,11 @@
 package net.vpc.scholar.hadrumaths.convergence;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.HSerializable;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,21 +13,20 @@ import java.util.Map;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 16 oct. 2007 23:45:02
  */
-public class ConvergenceResult {
-    private static final DecimalFormat d = new DecimalFormat("0.00%");
-    private boolean finalValue;
-    private String label;
-    private Object source;
-    private double epsilon;
-    private double relativeError;
-    private Object oldValue;
-    private Object value;
-    private int varIndex;
-    private Object varValue;
-    private int stabilityThreshold;
-    private ConvergenceResult subResult;
+public class ConvergenceResult implements HSerializable {
+    private final boolean finalValue;
+    private final String label;
+    private final Object source;
+    private final double epsilon;
+    private final double relativeError;
+    private final Object oldValue;
+    private final Object value;
+    private final int varIndex;
+    private final Object varValue;
+    private final int stabilityThreshold;
+    private final ConvergenceResult subResult;
     private ConvergenceConfig config;
-    private Map<String, Object> parameters;
+    private final Map<String, Object> parameters;
 
     public ConvergenceResult(
             String label, Object source, Object value, int varIndex, Object varValue, Object oldValue, double relativeError, Map<String, Object> parameters, double epsilon, int stabilityThreshold, boolean finalValue, ConvergenceResult subResult) {
@@ -110,24 +112,30 @@ public class ConvergenceResult {
         return isFinalValue() && (relativeError <= epsilon);
     }
 
+    public boolean isFinalValue() {
+        return finalValue;
+    }
+
     public String toString() {
-        Dumper h = new Dumper(label, Dumper.Type.SIMPLE);
-        h.add("threshold", Double.isNaN(epsilon) ? String.valueOf(epsilon) : d.format(epsilon));
-        h.add("err", Double.isNaN(relativeError) ? String.valueOf(relativeError) : d.format(relativeError));
-        h.add("ndex", varIndex);
-        h.add("value", varValue);
+        return dump();
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder obj = Tson.obj(getClass().getSimpleName());
+        obj.add("name", Tson.elem(label));
+        obj.add("threshold", Tson.elem(epsilon));
+        obj.add("err", Tson.elem(relativeError));
+        obj.add("ndex", Tson.elem(varIndex));
+        obj.add("value", context.elem(varValue));
         if (parameters != null && !parameters.isEmpty()) {
-            h.add("config", String.valueOf(parameters));
+            obj.add("config", context.elem(parameters));
         }
 //        h.add("value", String.valueOf(value));
         if (subResult != null) {
-            h.add("subResult", String.valueOf(subResult));
+            obj.add("subResult", context.elem(subResult));
         }
-        return h.toString();
-    }
-
-    public boolean isFinalValue() {
-        return finalValue;
+        return null;
     }
 
     public ConvergenceResult getSubResult() {

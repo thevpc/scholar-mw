@@ -7,15 +7,13 @@ public class PlotModelPopupFactoryContext {
     private PlotModelProvider modelProvider;
     private JMenu functionsMenu = new JMenu("Function");
     private JMenu viewMenu = null;
-    private JMenu libraries = null;
     private JMenuItem extProperties;
 
-    public PlotModelPopupFactoryContext(PlotModel model, PlotModelProvider modelProvider, JMenu functionsMenu, JMenu viewMenu, JMenu libraries,JMenuItem extProperties) {
+    public PlotModelPopupFactoryContext(PlotModel model, PlotModelProvider modelProvider, JMenu functionsMenu, JMenu viewMenu, JMenuItem extProperties) {
         this.model = model;
         this.modelProvider = modelProvider;
         this.functionsMenu = functionsMenu;
         this.viewMenu = viewMenu;
-        this.libraries = libraries;
         this.extProperties = extProperties;
     }
 
@@ -33,10 +31,6 @@ public class PlotModelPopupFactoryContext {
 
     public JMenu getViewMenu() {
         return viewMenu;
-    }
-
-    public JMenu getLibrariesMenu() {
-        return libraries;
     }
 
     public JMenuItem getExtProperties() {

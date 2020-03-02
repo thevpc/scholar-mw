@@ -15,9 +15,9 @@ public class SwingComponentPlotModel extends BasePlotModel implements PlotPanelF
     }
 
     @Override
-    public PlotPanel create(PlotModel model) {
+    public PlotPanel create() {
         BasePlotPanel p = new SwingComponentPlotPanel();
-        p.setModel(model);
+        p.setModel(this);
         return p;
     }
 

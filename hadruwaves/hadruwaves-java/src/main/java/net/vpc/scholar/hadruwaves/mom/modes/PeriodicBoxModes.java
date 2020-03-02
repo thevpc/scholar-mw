@@ -1,14 +1,16 @@
 package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.CExp;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CExp;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.vpc.scholar.hadruwaves.*;
 import net.vpc.scholar.hadruwaves.mom.BoxSpace;
 
+import java.util.Iterator;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
+import static net.vpc.scholar.hadrumaths.Maths.*;
 import static net.vpc.scholar.hadrumaths.Maths.sqr;
 
 /**
@@ -36,9 +38,9 @@ public class PeriodicBoxModes extends BoxModes {
         double a = domain.xwidth();
         double b = domain.ywidth();
 
-        Complex eps = space.getEps(freq);
-        double mu = Maths.U0;
-        return eps.mul(mu * Maths.sqr(2 * PI * freq)).neg().add(sqr(2 * m * PI / a) + sqr(2 * n * PI / b))
+        Complex eps = space.getEpsrc(freq);
+        double mu = U0;
+        return eps.mul(mu * sqr(2 * PI * freq)).neg().add(sqr(2 * m * PI / a) + sqr(2 * n * PI / b))
                 .sqrt()
                 ;
 //        return Complex.valueOf(Maths.sqr(2 * i.getM() * Math.PI / domain.xwidth()) + Maths.sqr(2 * i.getN() * Math.PI / domain.ywidth()) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
@@ -73,18 +75,16 @@ public class PeriodicBoxModes extends BoxModes {
         String name = "Period" + i;
         if (mode == ModeType.TE) {
             if (m == n && n == 0) {
-                DoubleToVector ff = Maths.vector(
-                        FunctionFactory.CZEROXY,
-                        (new DoubleValue(-1 / sqrt_ab, domain)));
-                ff = ff.setTitle(name).toDV();
-                return ff;
+                Expr ff = vector(
+                        Maths.CZEROXY,
+                        (expr(-1 / sqrt_ab, domain)));
+                return ff.setTitle(name).toDV();
             } else {
                 //TODO verifier ca stp
-                DoubleToVector ff = Maths.vector(
+                Expr ff = vector(
                         new CExp(By / sqrt_ab, -bx, -by, domain),
                         new CExp(-Bx / sqrt_ab, -bx, -by, domain));
-                ff =  ff.setTitle(name).toDV();
-                return ff;
+                return ff.setTitle(name).toDV();
 //                return new CFunctionXY2D(name,
 //                        new CFunctionXY(new DCstFunctionXY(1 / sqrt_ab, domain)),
 //                        CFunctionXY.ZERO
@@ -92,17 +92,15 @@ public class PeriodicBoxModes extends BoxModes {
             }
         } else {
             if (m == n && n == 0) {
-                DoubleToVector ff = Maths.vector(
-                        (new DoubleValue(1 / sqrt_ab, domain)),
-                        FunctionFactory.CZEROXY);
-                ff = ff.setTitle(name).toDV();
-                return ff;
+                Expr ff = vector(
+                        (expr(1 / sqrt_ab, domain)),
+                        Maths.CZEROXY);
+                return ff.setTitle(name).toDV();
             } else {
-                DoubleToVector ff = Maths.vector(
+                Expr ff = vector(
                         new CExp(-Bx / sqrt_ab + alphax, -bx, -by, domain),
                         new CExp(-By / sqrt_ab + betay, -bx, -by, domain));
-                ff = ff.setTitle(name).toDV();
-                return ff;
+                return ff.setTitle(name).toDV();
             }
         }
     }
@@ -111,7 +109,7 @@ public class PeriodicBoxModes extends BoxModes {
         return true;
     }
 
-    public ModeIterator iterator() {
+    public Iterator<ModeIndex> iterator() {
         return new PeriodicModeIterator(allowedModes, axis);
     }
 }

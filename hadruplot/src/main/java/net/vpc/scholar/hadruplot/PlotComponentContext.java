@@ -9,7 +9,7 @@ public interface PlotComponentContext {
 
     Integer getPreferredHeight();
 
-    PlotType getPlotType();
+    LibraryPlotType getPlotType();
 
     PlotModelProvider getModelProvider();
 }

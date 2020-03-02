@@ -1,9 +1,8 @@
 package net.vpc.scholar.mentoring.ch0x.s4
 
 import net.vpc.scholar.hadrumaths.MathScala._
-
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadruwaves.ModeIndex
+import net.vpc.scholar.hadruwaves.{Material, ModeIndex}
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.WallBorders.EEEE
 
@@ -48,8 +47,8 @@ object MomMicrostripAntennaMoMExample1 {
     val P = g.size() // number of test functions
 
     var src = 1 * srcDomain
-    val substrateSpace = shortCircuitBoxSpace(espr, h)
-    val superstrateSpace = matchedLoadBoxSpace(1)
+    val substrateSpace = shortCircuitBoxSpace(Material.substrate(espr), h)
+    val superstrateSpace = matchedLoadBoxSpace(Material.VACUUM)
 
     val mbox=boxModes(EEEE,boxDomain)
     val modes = mbox.indexes(N)

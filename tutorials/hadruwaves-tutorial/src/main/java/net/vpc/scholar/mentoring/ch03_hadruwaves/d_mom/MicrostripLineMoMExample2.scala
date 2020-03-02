@@ -2,6 +2,7 @@ package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom
 
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruwaves.Material
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.mom._
 
@@ -17,8 +18,8 @@ object MicrostripLineMoMExample2 extends App {
   var l = 5 * MM   // length of the strip line
   var w = 1 * MM   // width (along y) of the strip line
   var f = 3 * GHZ     // frequency
-  val space = matchedLoadBoxSpace(1) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
-  val mass = shortCircuitBoxSpace(2.2, 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
+  val space = matchedLoadBoxSpace(Material.VACUUM) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
+  val mass = shortCircuitBoxSpace(Material.substrate(2.2), 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
 
   var lineDomain = domain(0.0 -> l * 1.5, -w -> w) // line domain
   var box = domain(0.0 -> a, -b / 2 -> b / 2) // box domain
@@ -49,9 +50,9 @@ object MicrostripLineMoMExample2 extends App {
   var str=MomStructure.PPPP(box,f,N,mass,space).sources(e0)
 //    .setProjectType(ProjectType.WAVE_GUIDE)
 //    .setSources(new CutOffModalSourcesSingleMode(1))
-    .testFunctions(g).monitor(console)
+    .testFunctions(g).monitorFactory(console)
   str.setSerialZs(impedance(î*1E-3)) //serial
-  str.setLayers(Array(new StrLayer(1*MM,1*î))) //parallel
+  str.setLayers(new StrLayer(1*MM,1*î)) //parallel
   console.Plot.title("fn").plot(str.getModeFunctions.fn())
   var xprec=100
   var yprec=50
@@ -67,9 +68,9 @@ object MicrostripLineMoMExample2 extends App {
 //  Plot.title("Current 3").asHeatMap().domain(plotDomain).plot(J3)
 //  Plot.title("Current 4").asHeatMap().domain(plotDomain).plot(J4)
   private val JJ: Expr = str.current().expr()
-  private val EE: Expr = str.electricField().expr()
+//  private val EE: Expr = str.electricField().expr()
   console.Plot.title("str.current().expr()*plotDomain").asHeatMap().domain(plotDomain).plot(JJ*plotDomain)
-  console.Plot.title("str.current().expr()*plotDomain+1E-4*lineDomain").asHeatMap().domain(plotDomain).plot(JJ*plotDomain+1E-4*lineDomain)
-  console.Plot.title("str.current().expr()1E-4*lineDomain").asHeatMap().domain(plotDomain).plot(JJ+1E-4*lineDomain)
-  console.Plot.title("str.current().expr()").asHeatMap().domain(plotDomain).plot(JJ)
+//  console.Plot.title("str.current().expr()*plotDomain+1E-4*lineDomain").asHeatMap().domain(plotDomain).plot(JJ*plotDomain+1E-4*lineDomain)
+//  console.Plot.title("str.current().expr()1E-4*lineDomain").asHeatMap().domain(plotDomain).plot(JJ+1E-4*lineDomain)
+//  console.Plot.title("str.current().expr()").asHeatMap().domain(plotDomain).plot(JJ)
 }

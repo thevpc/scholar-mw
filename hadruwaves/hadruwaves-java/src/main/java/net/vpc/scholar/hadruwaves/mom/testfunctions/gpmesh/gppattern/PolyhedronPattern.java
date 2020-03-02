@@ -1,13 +1,15 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
-import net.vpc.scholar.hadrumaths.symbolic.Polyhedron;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Polyhedron;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -35,14 +37,16 @@ public final class PolyhedronPattern extends AbstractGpPattern {
         this(x,y,grid,grid);
     }
 
-    public Dumper getDumper() {
-        Dumper h = super.getDumper();
-        h.add("x",x);
-        h.add("y",y);
-        h.add("gridx",gridx);
-        h.add("gridy",gridy);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("x", context.elem(x));
+        h.add("y", context.elem(y));
+        h.add("gridx", context.elem(gridx));
+        h.add("gridy", context.elem(gridy));
+        return h.build();
     }
+
     public int getCount() {
         return 1;
     }
@@ -52,10 +56,10 @@ public final class PolyhedronPattern extends AbstractGpPattern {
             default: {
                 DoubleToVector f = Maths.vector(
                         (
-                                x ? DDiscrete.discretize(new Polyhedron(1, zone.getPolygon()), gridx, gridy) : FunctionFactory.DZEROXY
+                                x ? DDiscrete.of(new Polyhedron(1, zone.getPolygon()), gridx, gridy) : Maths.DZEROXY
                         ),
                         (
-                                y ? DDiscrete.discretize(new Polyhedron(1, zone.getPolygon()), gridx, gridy) : FunctionFactory.DZEROXY
+                                y ? DDiscrete.of(new Polyhedron(1, zone.getPolygon()), gridx, gridy) : Maths.DZEROXY
                         )
                 )
                         .setProperty("Type", (x & y) ? "Polyedre" : x ? "PolyedreX" : y ? "PolyedreY" : "0")

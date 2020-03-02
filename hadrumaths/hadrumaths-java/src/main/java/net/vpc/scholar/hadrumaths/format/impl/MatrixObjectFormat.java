@@ -6,9 +6,10 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 
 /**
@@ -19,15 +20,16 @@ public class MatrixObjectFormat implements ObjectFormat<ComplexMatrix> {
     }
 
     @Override
-    public String format(ComplexMatrix o, ObjectFormatParamSet format) {
+    public String format(ComplexMatrix o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
 
     }
 
     @Override
-    public void format(StringBuilder sb, ComplexMatrix o, ObjectFormatParamSet format) {
+    public void format(ComplexMatrix o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         Complex[][] elements = o.getArray();
         int[] colsWidth = new int[o.getColumnCount()];
         for (Complex[] element : elements) {
@@ -40,32 +42,31 @@ public class MatrixObjectFormat implements ObjectFormat<ComplexMatrix> {
         }
 
         String lineSep = System.getProperty("line.separator");
-        sb.append("[");
+        context.append("[");
         for (int i = 0; i < elements.length; i++) {
             if (i > 0 || elements.length > 1) {
-                sb.append(lineSep);
+                context.append(lineSep);
             }
             for (int j = 0; j < elements[i].length; j++) {
-                StringBuilder sbl = new StringBuilder(colsWidth[j]);
+//                StringBuilder sbl = new StringBuilder(colsWidth[j]);
                 //sbl.clear();
                 if (j > 0) {
-                    sbl.append(' ');
+                    context.append(" ");
                 }
-                int oldLen = sbl.length();
-                FormatFactory.format(sbl, elements[i][j], format);
-                int newLen = sbl.length();
-                int x = colsWidth[j] - (newLen - oldLen);
+                long oldLen = context.length();
+                context.format( elements[i][j], format);
+                long newLen = context.length();
+                int x = (int)(colsWidth[j] - (newLen - oldLen));
                 while (x > 0) {
-                    sbl.append(' ');
+                    context.append(' ');
                     x--;
                 }
                 //sbl.append(' ');
-                sb.append(sbl.toString());
             }
         }
         if (elements.length > 1) {
-            sb.append(lineSep);
+            context.append(lineSep);
         }
-        sb.append("]");
+        context.append("]");
     }
 }

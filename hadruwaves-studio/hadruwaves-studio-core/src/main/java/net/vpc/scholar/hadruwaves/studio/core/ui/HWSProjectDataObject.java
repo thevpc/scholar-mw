@@ -22,7 +22,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 @Messages({
-    "LBL_HWSProject_LOADER=Files of HWSProject"
+    "LBL_HWSProject_LOADER=Files of HWProject"
 })
 @MIMEResolver.ExtensionRegistration(
         displayName = "#LBL_HWSProject_LOADER",
@@ -113,7 +113,7 @@ public class HWSProjectDataObject extends MultiDataObject {
             iconBase = "net/vpc/scholar/hadruwaves/studio/core/icon-16.png",
             mimeType = "application/hadruwaves-studio-project",
             persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED,
-            preferredID = "HWSProject",
+            preferredID = "HWProject",
             position = 1000
     )
     @Messages("LBL_HWSProject_EDITOR=Source")

@@ -5,20 +5,14 @@
  */
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
-import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
+import net.vpc.scholar.hadrumaths.transform.*;
 import net.vpc.scholar.hadrumaths.transform.canonicalrules.CosXCosYSymbolRule;
 import net.vpc.scholar.hadrumaths.transform.canonicalrules.CosXPlusYSymbolRule;
 import net.vpc.scholar.hadrumaths.transform.canonicalrules.DDxyLinearSymbolRule;
-import net.vpc.scholar.hadrumaths.transform.canonicalrules.ReplaceDeprecatedRule;
-import net.vpc.scholar.hadrumaths.transform.navigaterules.*;
+import net.vpc.scholar.hadrumaths.transform.navigaterules.ExprNavRule;
 import net.vpc.scholar.hadrumaths.transform.simplifycore.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -27,54 +21,15 @@ import java.util.List;
 public class ExpressionRewriterFactory extends AbstractFactory {
 
 
-    public static final List<ExpressionRewriterRule> NAVIGATION_RULES = new ArrayList<ExpressionRewriterRule>(
+    public static final ExpressionRuleSource NAVIGATION_RULES = new DefaultExpressionRuleSource().addAllRules(
             Arrays.asList(
-                    AnyNavRule.INSTANCE
-                    , ComplexNavRule.INSTANCE
-                    , ComplexXYNavRule.INSTANCE
-                    , DDxNavRule.INSTANCE
-                    , DDyNavRule.INSTANCE
-                    , DDzNavRule.INSTANCE
-                    , DDzIntegralXYNavRule.INSTANCE
-                    , DCxyExpNavRule.INSTANCE
-                    , DCxyNavRule.INSTANCE
-//                    ,DDxCosNavRule.INSTANCE
-//                    ,DDxIntegralXNavRule.INSTANCE
-//                    ,DDxLinearNavRule.INSTANCE
-//                    ,DDxPolynomeNavRule.INSTANCE
-//                    ,DDxUxNavRule.INSTANCE
-//                    ,DDxyToDDxNavRule.INSTANCE
-                    , DivNavRule.INSTANCE
-                    , ReminderNavRule.INSTANCE
-                    , ParamExprNavRule.INSTANCE
-//                    ,DoubleXNavRule.INSTANCE
-                    , DoubleXYNavRule.INSTANCE
-                    , DomainNavRule.INSTANCE
-                    , GenericFunctionNavRule.INSTANCE
-                    , ImagNavRule.INSTANCE
-                    , InvNavRule.INSTANCE
-                    , MulNavRule.INSTANCE
-                    , NegNavRule.INSTANCE
-                    , PlusNavRule.INSTANCE
-                    , PowNavRule.INSTANCE
-                    , RealNavRule.INSTANCE
-                    , SubNavRule.INSTANCE
-                    , VDCxyNavRule.INSTANCE
-                    , ShapeSimplifyRule.INSTANCE
-                    , DiscreteNavRule.INSTANCE
-                    , DDiscreteNavRule.INSTANCE
-                    , VDiscreteNavRule.INSTANCE
-                    , AxisTransformNavRule.INSTANCE
-                    , RooftopXFunctionXYNavRule.INSTANCE
-                    , SinSeqYZNavRule.INSTANCE
-                    , DC2DVNavRule.INSTANCE
-                    , DC2DMNavRule.INSTANCE
-                    , DefaultDoubleToVectorNavRule.INSTANCE
+                    ExprNavRule.INSTANCE
             )
     );
-    public static final List<ExpressionRewriterRule> SIMPLIFY_RULES = new ArrayList<ExpressionRewriterRule>(
+    public static final ExpressionRuleSource SIMPLIFY_RULES = new DefaultExpressionRuleSource().addAllRules(
             Arrays.asList(
                     AnySimplifyRule.INSTANCE
+                    , ComplexSimplifyRule.INSTANCE
                     , ComplexXYSimplifyRule.INSTANCE
                     , DomainExprSimplifyRule.INSTANCE
                     , CosXCosYSimplifyRule.INSTANCE
@@ -86,8 +41,7 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , DivSimplifyRule.INSTANCE
                     , ReminderSimplifyRule.INSTANCE
                     , DoubleXYSimplifyRule.INSTANCE
-                    , GenericFunctionSimplifyRule.INSTANCE
-                    , GenericFunctionXSimplifyRule.INSTANCE
+                    , FunctionExprSimplifyRule.INSTANCE
                     , ImagSimplifyRule.INSTANCE
                     , InvSimplifyRule.INSTANCE
                     , MulSimplifyRule.INSTANCE
@@ -97,29 +51,16 @@ public class ExpressionRewriterFactory extends AbstractFactory {
                     , RealSimplifyRule.INSTANCE
                     , SubSimplifyRule.INSTANCE
                     , VDCxySimplifyRule.INSTANCE
-                    , ShapeSimplifyRule.INSTANCE
                     , ConditionSimplifyRule.INSTANCE
                     , ParametrizedScalarProductSimplifyRule.INSTANCE
                     , ExpSimplifyRule.INSTANCE
-                    , ComplexNavRule.INSTANCE
-                    , ParamExprNavRule.INSTANCE
-                    , DiscreteNavRule.INSTANCE
-                    , DDiscreteNavRule.INSTANCE
-                    , VDiscreteNavRule.INSTANCE
-                    , AxisTransformNavRule.INSTANCE
-                    , DDxNavRule.INSTANCE
-                    , DDzNavRule.INSTANCE
-                    , DDzIntegralXYNavRule.INSTANCE
-                    , DDyNavRule.INSTANCE
             )
     );
-    public final static List<ExpressionRewriterRule> CANONICAL_RULES = new ArrayList<ExpressionRewriterRule>(
+    public static final ExpressionRuleSource CANONICAL_RULES = new DefaultExpressionRuleSource().addAllRules(
             Arrays.asList(
                     CosXCosYSymbolRule.INSTANCE,
                     CosXPlusYSymbolRule.INSTANCE
                     , DDxyLinearSymbolRule.INSTANCE
-                    , ReplaceDeprecatedRule.INSTANCE
-
 
                     , AnySimplifyRule.INSTANCE
                     , DomainExprSimplifyRule.INSTANCE
@@ -130,6 +71,9 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 
     static {
         rebuild();
+    }
+
+    private ExpressionRewriterFactory() {
     }
 
     public static void rebuild() {
@@ -148,9 +92,6 @@ public class ExpressionRewriterFactory extends AbstractFactory {
 
     public static ExpressionRewriter getComputationSimplifier() {
         return COMPUTATION_SIMPLIFIER;
-    }
-
-    private ExpressionRewriterFactory() {
     }
 
 }

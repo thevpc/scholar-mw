@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadruplot.console.params.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractCParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 14 juil. 2005 11:43:56
  */
-public class FractalScaleParam extends AbstractParam implements Cloneable{
+public class FractalScaleParam extends AbstractCParam implements Cloneable{
 
     public FractalScaleParam() {
         super("k");

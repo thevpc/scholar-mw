@@ -6,7 +6,7 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -40,11 +40,7 @@ public final class SicoCocoPattern extends AbstractGpPatternPQ {
         double ay = Maths.scalarProduct(fy, fy);
         fx = (CosXCosY) fx.mul(1 / sqrt(ax), null);
         fy = (CosXCosY) fy.mul(1 / sqrt(ay), null);
-        DoubleToVector f = Maths.vector(
-                fx,
-                fy
-        );
-        return f.setTitle("sico(" + (p+1) + "x," + q + "y),coco(" + p + "x," + q + "y)")
+        return Maths.vector(fx,fy).setTitle("sico(" + (p+1) + "x," + q + "y),coco(" + p + "x," + q + "y)")
         .setProperty("Type", "SicoCoco")
         .setProperty("p", p)
         .setProperty("q", q).toDV();

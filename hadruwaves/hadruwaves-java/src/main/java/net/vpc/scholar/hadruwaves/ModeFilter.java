@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadruwaves;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 
 import java.util.EnumSet;
 import java.util.Arrays;
@@ -19,11 +22,17 @@ public final class ModeFilter implements ModeIndexFilter {
         return cachedHintFnModeTypes.contains(mode.getModeType());
     }
 
-    public String dump() {
-        Dumper h=new Dumper(this);
-        h.add(cachedHintFnModeTypes);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("cachedHintFnModeTypes", context.elem(cachedHintFnModeTypes));
+        return sb.build();
     }
+//    public String dump() {
+//        Dumper h=new Dumper(this);
+//        h.add(cachedHintFnModeTypes);
+//        return h.toString();
+//    }
 
     public ModeType[] getAcceptedModes(){
         return cachedHintFnModeTypes.toArray(new ModeType[0]);

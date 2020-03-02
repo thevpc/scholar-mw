@@ -24,7 +24,7 @@ public class ColorPalette2 extends ColorPalette implements Cloneable{
     private int colorType;
     private boolean mirrorOutOfRangeComponents;
 
-    private ArrayList<Double> divisionPoints;  // First element is always 0; last value is always 1
+    private ArrayList<Double> divisionPoints;  // First primitiveElement3D is always 0; last value is always 1
     private ArrayList<float[]> divisionPointColors; // Size is divisionPoints.size() + 1
 
     private final ChangeEvent changeEvent = new ChangeEvent(this);

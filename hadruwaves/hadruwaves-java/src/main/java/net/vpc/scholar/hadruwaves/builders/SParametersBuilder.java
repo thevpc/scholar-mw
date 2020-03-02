@@ -4,18 +4,18 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
+import net.vpc.common.mon.TaskMonitorManager;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface SParametersBuilder extends ValueBuilder{
-    SParametersBuilder monitor(ProgressTaskMonitor monitor);
+    SParametersBuilder monitor(TaskMonitorManager monitor);
     SParametersBuilder monitor(ProgressMonitor monitor);
     SParametersBuilder converge(ConvergenceEvaluator convergenceEvaluator) ;
 
-    ComplexMatrix computeMatrix();
+    ComplexMatrix evalMatrix();
 
-    Complex computeComplex();
+    Complex evalComplex();
 
 }

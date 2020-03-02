@@ -1,7 +1,5 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.Expr;
-
-public interface CustomCCFunctionXExpr extends Expr {
+public interface CustomCCFunctionXExpr extends FunctionExpr,DoubleToComplex {
     CustomCCFunctionXDefinition getDefinition();
 }

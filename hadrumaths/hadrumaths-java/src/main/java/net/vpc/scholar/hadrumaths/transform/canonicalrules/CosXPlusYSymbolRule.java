@@ -6,7 +6,9 @@
 package net.vpc.scholar.hadrumaths.transform.canonicalrules;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.CosXPlusY;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXPlusY;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -14,7 +16,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class CosXPlusYSymbolRule implements ExpressionRewriterRule {
+public class CosXPlusYSymbolRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new CosXPlusYSymbolRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{CosXPlusY.class};
@@ -25,26 +27,14 @@ public class CosXPlusYSymbolRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (!(e instanceof CosXPlusY)) {
             return null;
         }
 
         CosXPlusY ee = (CosXPlusY) e;
-        return RewriteResult.unmodified(ee);
+        return RewriteResult.unmodified();
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

@@ -35,12 +35,12 @@ public abstract class PlotElectricFieldAbstract extends PlotAxisSeries implement
         this.threshold = threshold;
     }
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         if (p.getAxis().getX() instanceof XParamSet) {
             XParamSet xAxis = (XParamSet) p.getAxis().getX();
             double[] xval = structure.toXForDomainCoeff(xAxis.getValues());
@@ -58,7 +58,7 @@ public abstract class PlotElectricFieldAbstract extends PlotAxisSeries implement
             }
         } else {
             throw new IllegalArgumentException();
-//            return super.computeMatrix(structure, x);
+//            return super.evalMatrix(structure, x);
         }
     }
 

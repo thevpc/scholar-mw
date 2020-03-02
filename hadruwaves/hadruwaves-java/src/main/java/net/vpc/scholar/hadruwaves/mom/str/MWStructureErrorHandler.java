@@ -13,5 +13,5 @@ import net.vpc.scholar.hadruwaves.str.MWStructure;
  * @author vpc
  */
 public interface MWStructureErrorHandler {
-    public void showError(String title, Throwable e, ComplexMatrix m, MWStructure str);
+    void showError(String title, Throwable e, ComplexMatrix m, MWStructure str);
 }

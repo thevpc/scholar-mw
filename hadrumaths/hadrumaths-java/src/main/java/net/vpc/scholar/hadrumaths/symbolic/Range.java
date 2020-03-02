@@ -26,14 +26,9 @@ public class Range implements Serializable {
     private Object defined;
 
     public Range(int xmin, int xmax) {
-        this(xmin,xmax,-1,-1,-1,-1,1);
+        this(xmin, xmax, -1, -1, -1, -1, 1);
     }
-    public Range(int xmin, int xmax, int ymin, int ymax) {
-        this(xmin,xmax,ymin,ymax,-1,-1,2);
-    }
-    public Range(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        this(xmin,xmax,ymin,ymax, zmin,  zmax,3);
-    }
+
     public Range(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax, int dim) {
         this.dimension = dim;
         this.xmin = xmin;
@@ -88,27 +83,59 @@ public class Range implements Serializable {
         }
     }
 
-    public Range toDimension(int dim){
-        if(dim==this.dimension){
+    public Range(int xmin, int xmax, int ymin, int ymax) {
+        this(xmin, xmax, ymin, ymax, -1, -1, 2);
+    }
+
+    public Range(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+        this(xmin, xmax, ymin, ymax, zmin, zmax, 3);
+    }
+
+    public static Range empty1() {
+        return ofBounds(0, 0);
+    }
+
+    public static Range ofBounds(int xmin, int xmax) {
+        return new Range(xmin, xmax, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+    }
+
+    public static Range empty2() {
+        return ofBounds(0, 0, 0, 0);
+    }
+
+    public static Range ofBounds(int xmin, int xmax, int ymin, int ymax) {
+        return new Range(xmin, xmax, ymin, ymax, Integer.MIN_VALUE, Integer.MAX_VALUE, 2);
+    }
+
+    public static Range empty3() {
+        return ofBounds(0, 0, 0, 0);
+    }
+
+    public static Range ofBounds(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+        return new Range(xmin, xmax, ymin, ymax, zmin, zmax, 3);
+    }
+
+    public Range toDimension(int dim) {
+        if (dim == this.dimension) {
             return this;
         }
         Range range = new Range(xmin, xmax, ymin, ymax, zmin, zmax, dim);
-        switch (this.dimension){
-            case 2:{
-                switch (dim){
-                    case 1:{
+        switch (this.dimension) {
+            case 2: {
+                switch (dim) {
+                    case 1: {
                         range.setDefined(getDefined2().get(0));
                         return range;
                     }
                 }
             }
-            case 3:{
-                switch (dim){
-                    case 1:{
+            case 3: {
+                switch (dim) {
+                    case 1: {
                         range.setDefined(getDefined3().get(0).get(0));
                         return range;
                     }
-                    case 2:{
+                    case 2: {
                         range.setDefined(getDefined3().get(0));
                         return range;
                     }
@@ -118,28 +145,12 @@ public class Range implements Serializable {
         throw new IllegalArgumentException("Unsupported");
     }
 
-    public static Range empty1() {
-        return forBounds(0, 0);
+    public BooleanArray2 getDefined2() {
+        return (BooleanArray2) defined;
     }
 
-    public static Range empty2() {
-        return forBounds(0, 0, 0, 0);
-    }
-
-    public static Range empty3() {
-        return forBounds(0, 0, 0, 0);
-    }
-
-    public static Range forBounds(int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        return new Range(xmin, xmax, ymin, ymax, zmin, zmax, 3);
-    }
-
-    public static Range forBounds(int xmin, int xmax, int ymin, int ymax) {
-        return new Range(xmin, xmax, ymin, ymax, Integer.MIN_VALUE, Integer.MAX_VALUE, 2);
-    }
-
-    public static Range forBounds(int xmin, int xmax) {
-        return new Range(xmin, xmax, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+    public BooleanArray3 getDefined3() {
+        return (BooleanArray3) defined;
     }
 
     public Range union(Range other) {
@@ -155,107 +166,6 @@ public class Range implements Serializable {
         int y2 = Math.max(ymax, other.ymax);
         int z1 = Math.min(zmin, other.zmin);
         int z2 = Math.max(zmax, other.zmax);
-        int dim = Math.max(dimension, other.dimension);
-        return new Range(x1, x2, y1, y2, z1, z2, dim);
-    }
-
-    public BooleanArray3 getDefined3() {
-        return (BooleanArray3) defined;
-    }
-
-    public BooleanArray2 getDefined2() {
-        return (BooleanArray2) defined;
-    }
-
-    public BooleanArray1 getDefined1() {
-        return (BooleanArray1) defined;
-    }
-
-    public Object getDefined() {
-        switch (dimension) {
-            case 1: {
-                return (BooleanArray1) defined;
-            }
-            case 2: {
-                return (BooleanArray2) defined;
-            }
-            case 3: {
-                return (BooleanArray3) defined;
-            }
-        }
-        throw new IllegalArgumentException("Invalid Dimension");
-    }
-
-    public void setDefined(BooleanArray3 defined) {
-        switch (dimension) {
-            case 3: {
-                this.defined = defined;
-                return;
-            }
-        }
-        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 3);
-    }
-
-    public void setDefined(BooleanArray2 defined) {
-        switch (dimension) {
-            case 2: {
-                this.defined = defined;
-                return;
-            }
-        }
-        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 2);
-    }
-
-    public BooleanArray1 setDefined1(int size) {
-        BooleanArray1 defined = BooleanArrays.newArray(size);
-        setDefined(defined);
-        return defined;
-    }
-
-    public BooleanArray2 setDefined2(int xsize, int ysize) {
-        BooleanArray2 defined = BooleanArrays.newArray(ysize, xsize);
-        setDefined(defined);
-        return defined;
-    }
-
-    public BooleanArray3 setDefined3(int xsize, int ysize, int zsize) {
-        BooleanArray3 defined = BooleanArrays.newArray(zsize, ysize, xsize);
-        setDefined(defined);
-        return defined;
-    }
-
-    public void setDefined(BooleanArray1 defined) {
-        switch (dimension) {
-            case 1: {
-                this.defined = defined;
-                return;
-            }
-        }
-        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 1);
-    }
-
-    public Range intersect(Range other) {
-        if (other.includes(this)) {
-            return other;
-        }
-        if (this.includes(other)) {
-            return this;
-        }
-        int x1 = Math.max(xmin, other.xmin);
-        int x2 = Math.min(xmax, other.xmax);
-        if (x2 < x1) {
-            return null;
-        }
-        int y1 = Math.max(ymin, other.ymin);
-        int y2 = Math.min(ymax, other.ymax);
-        if (y2 < y1) {
-            return null;
-        }
-        int z1 = Math.max(zmin, other.zmin);
-        int z2 = Math.min(zmax, other.zmax);
-        if (z2 < z1) {
-            return null;
-        }
         int dim = Math.max(dimension, other.dimension);
         return new Range(x1, x2, y1, y2, z1, z2, dim);
     }
@@ -287,10 +197,6 @@ public class Range implements Serializable {
         );
     }
 
-    public boolean isValid() {
-        return !isEmpty();
-    }
-
     public boolean isEmpty() {
         switch (dimension) {
             case 1: {
@@ -302,6 +208,118 @@ public class Range implements Serializable {
         }
 
         return xmin > xmax || ymin > ymax || zmin > zmax;
+    }
+
+    public BooleanArray1 getDefined1() {
+        return (BooleanArray1) defined;
+    }
+
+    public Object getDefined() {
+        switch (dimension) {
+            case 1: {
+                return defined;
+            }
+            case 2: {
+                return defined;
+            }
+            case 3: {
+                return defined;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Dimension : "+dimension);
+    }
+
+    public void setDefined(BooleanArray3 defined) {
+        switch (dimension) {
+            case 3: {
+                this.defined = defined;
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 3);
+    }
+
+    public void setDefined(BooleanArray2 defined) {
+        switch (dimension) {
+            case 2: {
+                this.defined = defined;
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 2);
+    }
+
+    public void setDefined(BooleanArray1 defined) {
+        switch (dimension) {
+            case 1: {
+                this.defined = defined;
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Dimension. Expected " + dimension + " but got " + 1);
+    }
+
+    public BooleanArray1 setDefined1(int size) {
+        BooleanArray1 defined = BooleanArrays.newArray(size);
+        setDefined(defined);
+        return defined;
+    }
+
+    public BooleanArray2 setDefined2(int xsize, int ysize) {
+        BooleanArray2 defined = BooleanArrays.newArray(ysize, xsize);
+        setDefined(defined);
+        return defined;
+    }
+
+    public BooleanArray3 setDefined3(int xsize, int ysize, int zsize) {
+        BooleanArray3 defined = BooleanArrays.newArray(zsize, ysize, xsize);
+        setDefined(defined);
+        return defined;
+    }
+
+    public Range intersect(Range other) {
+        if (other.includes(this)) {
+            return other;
+        }
+        if (this.includes(other)) {
+            return this;
+        }
+        int x1 = Math.max(xmin, other.xmin);
+        int x2 = Math.min(xmax, other.xmax);
+        if (x2 < x1) {
+            return null;
+        }
+        int y1 = Math.max(ymin, other.ymin);
+        int y2 = Math.min(ymax, other.ymax);
+        if (y2 < y1) {
+            return null;
+        }
+        int z1 = Math.max(zmin, other.zmin);
+        int z2 = Math.min(zmax, other.zmax);
+        if (z2 < z1) {
+            return null;
+        }
+        int dim = Math.max(dimension, other.dimension);
+        return new Range(x1, x2, y1, y2, z1, z2, dim);
+    }
+
+    public boolean isValid() {
+        return !isEmpty();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = xmin;
+        result = 31 * result + xmax;
+        result = 31 * result + ymin;
+        result = 31 * result + ymax;
+        result = 31 * result + zmin;
+        result = 31 * result + zmax;
+        result = 31 * result + xwidth;
+        result = 31 * result + ywidth;
+        result = 31 * result + zwidth;
+        result = 31 * result + dimension;
+        return result;
     }
 
     @Override
@@ -320,23 +338,6 @@ public class Range implements Serializable {
         if (ywidth != domainXYi.ywidth) return false;
         if (zmax != domainXYi.zmax) return false;
         if (zmin != domainXYi.zmin) return false;
-        if (zwidth != domainXYi.zwidth) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = xmin;
-        result = 31 * result + xmax;
-        result = 31 * result + ymin;
-        result = 31 * result + ymax;
-        result = 31 * result + zmin;
-        result = 31 * result + zmax;
-        result = 31 * result + xwidth;
-        result = 31 * result + ywidth;
-        result = 31 * result + zwidth;
-        result = 31 * result + dimension;
-        return result;
+        return zwidth == domainXYi.zwidth;
     }
 }

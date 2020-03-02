@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.AbstractComplexMatrixFactory;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.ComplexMatrixFactory;
 import net.vpc.scholar.hadrumaths.MemComplexMatrixFactory;
 
 import java.io.File;
+import java.io.UncheckedIOException;
 
 public class OjalgoComplexMatrixFactory extends AbstractComplexMatrixFactory {
     public static final ComplexMatrixFactory INSTANCE = new OjalgoComplexMatrixFactory();

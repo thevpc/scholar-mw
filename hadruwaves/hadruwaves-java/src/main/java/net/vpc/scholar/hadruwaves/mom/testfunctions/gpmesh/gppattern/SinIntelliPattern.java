@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.Axis;
@@ -8,15 +11,14 @@ import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  *
  */
 public final class SinIntelliPattern extends AbstractGpPatternPQ {
-    public static enum Walls {
-        EMEM
-    }
+//    public static enum Walls {
+//        EMEM
+//    }
 
     private int[] selectedFunctions;
     private boolean xinvariance;
@@ -37,11 +39,12 @@ public final class SinIntelliPattern extends AbstractGpPatternPQ {
     }
 
     @Override
-    public Dumper getDumper() {
-        return super.getDumper()
-                .add("xinvariance", xinvariance)
-                .add("yinvariance", yinvariance)
-                ;
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("xinvariance", context.elem(xinvariance));
+        h.add("yinvariance", context.elem(yinvariance));
+        h.add("selectedFunctions", context.elem(selectedFunctions));
+        return h.build();
     }
 
     @Override
@@ -78,7 +81,7 @@ public final class SinIntelliPattern extends AbstractGpPatternPQ {
         boolean southReached = Math.abs(d.ymax ()- globalDomain.ymax()) < EPS;
         CircuitType circuit = str.getCircuitType();
         ModeFunctions fn = str.getModeFunctions();
-        WallBorders b=fn.getBorders();
+        WallBorders b=str.getBorders();
         Wall eastWall= eastReached ?b.getEast():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
         Wall westWall= westReached ?b.getWest():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
         Wall northWall= northReached ?b.getNorth():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;

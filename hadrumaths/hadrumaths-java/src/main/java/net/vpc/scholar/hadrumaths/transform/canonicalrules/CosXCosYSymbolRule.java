@@ -7,18 +7,20 @@ package net.vpc.scholar.hadrumaths.transform.canonicalrules;
 
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.Cos;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 
+import static net.vpc.scholar.hadrumaths.Maths.*;
+
 /**
  * @author vpc
  */
-public class CosXCosYSymbolRule implements ExpressionRewriterRule {
+public class CosXCosYSymbolRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new CosXCosYSymbolRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{CosXCosY.class};
@@ -29,31 +31,21 @@ public class CosXCosYSymbolRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (!(e instanceof CosXCosY)) {
             return null;
         }
 
         CosXCosY ee = (CosXCosY) e;
         Domain domainxy = ee.getDomain();
-        return RewriteResult.newVal(MathsBase.mul(
-                new Cos(new Linear(ee.getA(), 0, ee.getB(), domainxy)),
-                new Cos(new Linear(0, ee.getC(), ee.getD(), domainxy)),
-                MathsBase.expr(ee.getAmp(), domainxy)
-        ));
+        return RewriteResult.bestEffort(
+                ruleset.rewriteOrSame(
+                        mul(
+                                cos(new Linear(ee.getA(), 0, ee.getB(), domainxy)),
+                                cos(new Linear(0, ee.getC(), ee.getD(), domainxy)),
+                                expr(ee.getAmp(), domainxy)
+                        ), targetExprType));
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

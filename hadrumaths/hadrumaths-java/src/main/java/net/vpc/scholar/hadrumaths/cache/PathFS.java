@@ -6,7 +6,7 @@ import java.io.PrintStream;
  * Created by vpc on 5/30/14.
  */
 public class PathFS {
-    private PathItem root = new PathItem();
+    private final PathItem root = new PathItem();
 
     public PathItem getRoot() {
         return root;

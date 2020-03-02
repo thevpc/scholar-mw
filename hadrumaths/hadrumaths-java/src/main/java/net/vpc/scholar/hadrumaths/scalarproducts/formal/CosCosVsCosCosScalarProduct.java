@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 
-import static net.vpc.scholar.hadrumaths.MathsBase.cos2;
-import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha
@@ -21,16 +21,13 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         CosXCosY f1ok = (CosXCosY) f1;
         CosXCosY f2ok = (CosXCosY) f2;
-        double d = computeTolerant(domain, f1ok, f2ok, 1E-15);
+        double d = evalTolerant(domain, f1ok, f2ok, 1E-15);
 //        double d = compute(domain, f1ok, f2ok);
 //        if (Double.isNaN(d)) {
 ////            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -39,7 +36,7 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 //        }
         if (Double.isNaN(d)) {
             System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            double d0 = compute(domain, f1ok, f2ok);
+            double d0 = eval(domain, f1ok, f2ok);
             d = d0;
         }
         return d;
@@ -48,29 +45,64 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 //        return new CosCosVsCosCosScalarProductOld2().compute(domain, f1, f2);
 //    }
 
+    private static double evalTolerant(Domain domain, CosXCosY f, CosXCosY g, double tolerance) {
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
 
-    static double compute(Domain domain, CosXCosY f, CosXCosY g) {
-        if (f.a == g.a && f.c == g.c) {
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+        if (tolerantEqual(fa, ga, tolerance) && tolerantEqual(fc, gc, tolerance)) {
             return primi_cos4_fa_fc(domain, f, g);
-        } else if (f.a == g.a && f.c == -g.c) {
+        } else if (tolerantEqual(fa, ga, tolerance) && tolerantEqual(fc, -gc, tolerance)) {
             return primi_cos4_fa_cf(domain, f, g);
-        } else if (f.a == -g.a && f.c == g.c) {
+        } else if (tolerantEqual(fa, -ga, tolerance) && tolerantEqual(fc, gc, tolerance)) {
             return primi_cos4_af_fc(domain, f, g);
-        } else if (f.a == -g.a && f.c == -g.c) {
+        } else if (tolerantEqual(fa, -ga, tolerance) && tolerantEqual(fc, -gc, tolerance)) {
             return primi_cos4_af_cf(domain, f, g);
-        } else if (f.a == g.a) {
+        } else if (tolerantEqual(fa, ga, tolerance)) {
             return primi_cos4_fa_fgc(domain, f, g);
-        } else if (f.a == -g.a) {
+        } else if (tolerantEqual(fa, -ga, tolerance)) {
             return primi_cos4_af_fgc(domain, f, g);
-        } else if (f.c == g.c) {
+        } else if (tolerantEqual(fc, gc, tolerance)) {
             return primi_cos4_fga_fc(domain, f, g);
-        } else if (f.c == -g.c) {
+        } else if (tolerantEqual(fc, -gc, tolerance)) {
             return primi_cos4_fga_cf(domain, f, g);
         } else {
             return primi_cos4_fga_fgc(domain, f, g);
         }
     }
 
+    static double eval(Domain domain, CosXCosY f, CosXCosY g) {
+        double fa = f.getA();
+        double ga = g.getA();
+        double fc = f.getC();
+        double gc = g.getC();
+        if (fa == ga && fc == gc) {
+            return primi_cos4_fa_fc(domain, f, g);
+        } else if (fa == ga && fc == -gc) {
+            return primi_cos4_fa_cf(domain, f, g);
+        } else if (fa == -ga && fc == gc) {
+            return primi_cos4_af_fc(domain, f, g);
+        } else if (fa == -ga && fc == -gc) {
+            return primi_cos4_af_cf(domain, f, g);
+        } else if (fa == ga) {
+            return primi_cos4_fa_fgc(domain, f, g);
+        } else if (fa == -ga) {
+            return primi_cos4_af_fgc(domain, f, g);
+        } else if (fc == gc) {
+            return primi_cos4_fga_fc(domain, f, g);
+        } else if (fc == -gc) {
+            return primi_cos4_fga_cf(domain, f, g);
+        } else {
+            return primi_cos4_fga_fgc(domain, f, g);
+        }
+    }
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);
@@ -97,723 +129,6 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
 //                ;
     }
 
-    private static double computeTolerant(Domain domain, CosXCosY f, CosXCosY g, double tolerance) {
-        if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
-            return primi_cos4_fa_fc(domain, f, g);
-        } else if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
-            return primi_cos4_fa_cf(domain, f, g);
-        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
-            return primi_cos4_af_fc(domain, f, g);
-        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
-            return primi_cos4_af_cf(domain, f, g);
-        } else if (tolerantEqual(f.a, g.a, tolerance)) {
-            return primi_cos4_fa_fgc(domain, f, g);
-        } else if (tolerantEqual(f.a, -g.a, tolerance)) {
-            return primi_cos4_af_fgc(domain, f, g);
-        } else if (tolerantEqual(f.c, g.c, tolerance)) {
-            return primi_cos4_fga_fc(domain, f, g);
-        } else if (tolerantEqual(f.c, -g.c, tolerance)) {
-            return primi_cos4_fga_cf(domain, f, g);
-        } else {
-            return primi_cos4_fga_fgc(domain, f, g);
-        }
-    }
-
-    //STARTING---------------------------------------
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(g_c*y+g_d)
-    public static double primi_cos4_fga_fgc(Domain domain, CosXCosY f, CosXCosY g) {
-        double value;
-        double b1 = domain.xmin();
-        double b2 = domain.xmax();
-        double b3 = domain.ymin();
-        double b4 = domain.ymax();
-
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       s1 = g.amp/4.0;      s3 = f.amp;      s6 = sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c;      s5 = s6+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c+sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c;      s6 = 1/(f.a*f.a*f.c*f.c-f.a*f.a*g.c*g.c-g.a*g.a*f.c*f.c+g.a*g.a*g.c*g.c);      s4 = s5*s6;      s2 = s3*s4;      t0 = s1*s2;
-            double t0;
-            double s6;
-            double s5;
-            double s4;
-            double s3;
-            double s2;
-            double s1;
-            s1 = g.amp / 4.0;
-            s3 = f.amp;
-            s6 = sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c;
-            s5 = s6 + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c;
-            s6 = 1 / (f.a * f.a * f.c * f.c - f.a * f.a * g.c * g.c - g.a * g.a * f.c * f.c + g.a * g.a * g.c * g.c);
-            s4 = s5 * s6;
-            s2 = s3 * s4;
-            t0 = s1 * s2;
-            value = t0;
-            s1 = g.amp / 4.0;
-            s3 = f.amp;
-            s6 = sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c;
-            s5 = s6 + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c;
-            s6 = 1 / (f.a * f.a * f.c * f.c - f.a * f.a * g.c * g.c - g.a * g.a * f.c * f.c + g.a * g.a * g.c * g.c);
-            s4 = s5 * s6;
-            s2 = s3 * s4;
-            t0 = s1 * s2;
-            value += t0;
-            s1 = g.amp / 4.0;
-            s3 = f.amp;
-            s6 = sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c;
-            s5 = s6 + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c;
-            s6 = 1 / (f.a * f.a * f.c * f.c - f.a * f.a * g.c * g.c - g.a * g.a * f.c * f.c + g.a * g.a * g.c * g.c);
-            s4 = s5 * s6;
-            s2 = s3 * s4;
-            t0 = s1 * s2;
-            value -= t0;
-            s1 = g.amp / 4.0;
-            s3 = f.amp;
-            s6 = sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c;
-            s5 = s6 + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c;
-            s6 = 1 / (f.a * f.a * f.c * f.c - f.a * f.a * g.c * g.c - g.a * g.a * f.c * f.c + g.a * g.a * g.c * g.c);
-            s4 = s5 * s6;
-            s2 = s3 * s4;
-            t0 = s1 * s2;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*sin2(g.a*x+g.b)*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/g.a/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / g.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / g.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / g.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / g.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*sin2(g.c*y+g.d)/g.c/(f.a*f.a-g.a*g.a)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * sin2(g.c * b3 + g.d) / g.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * sin2(g.c * b4 + g.d) / g.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * sin2(g.c * b4 + g.d) / g.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * sin2(g.c * b3 + g.d) / g.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp/g.a*sin2(g.a*x+g.b)/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp / g.a * sin2(g.a * b1 + g.b) / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp / g.a * sin2(g.a * b2 + g.b) / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp / g.a * sin2(g.a * b1 + g.b) / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp / g.a * sin2(g.a * b2 + g.b) / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*cos2(g.b)*sin2(f.a*x+f.b)*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/f.a/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.b)/f.a*sin2(f.a*x+f.b)/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) / f.a * sin2(f.a * b1 + f.b) / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) / f.a * sin2(f.a * b2 + f.b) / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) / f.a * sin2(f.a * b1 + f.b) / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) / f.a * sin2(f.a * b2 + f.b) / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*x/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.d)*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*sin2(f.c*y+f.d)/f.c/(f.a*f.a-g.a*g.a)/2.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * sin2(f.c * b3 + f.d) / f.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * sin2(f.c * b4 + f.d) / f.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * sin2(f.c * b4 + f.d) / f.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * sin2(f.c * b3 + f.d) / f.c / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*y/(f.a*f.a-g.a*g.a)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*cos2(g.d)*x/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b3;
-            value -= t0;
-            return value;
-
-        } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-        }
-    }
-
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(f_a*x+g_b)*cos2(g_c*y+g_d)
-    public static double primi_cos4_fa_fgc(Domain domain, CosXCosY f, CosXCosY g) {
-        double value;
-        double b1 = domain.xmin();
-        double b2 = domain.xmax();
-        double b3 = domain.ymin();
-        double b4 = domain.ymax();
-
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = g.amp*f.amp*(2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/f.a/(f.c*f.c-g.c*g.c)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*sin2(g.c*y+g.d)/f.a/g.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*x/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = g.amp*f.amp*(2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-2.0*cos2(f.b-g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(2.0*f.a*x+f.b+g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/f.a/(f.c*f.c-g.c*g.c)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*sin2(g.c*y+g.d)/f.a/g.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*x/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*sin2(f.c*y+f.d)/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*cos2(g.d)*x/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*sin2(f.c*y+f.d)/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*cos2(g.d)*x/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
-            value -= t0;
-            return value;
-
-        } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-        }
-    }
-
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(f_c*y+g_d)
-    public static double primi_cos4_fga_fc(Domain domain, CosXCosY f, CosXCosY g) {
-        double value;
-        double b1 = domain.xmin();
-        double b2 = domain.xmax();
-        double b3 = domain.ymin();
-        double b4 = domain.ymax();
-
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = g.amp*f.amp*(2.0*sin2(f.a*x-g.a*x+f.b-g.b)*f.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(f.a*x-g.a*x+f.b-g.b)*g.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(f.a*x+g.a*x+f.b+g.b)*f.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(2.0*f.c*y+f.d+g.d)-2.0*sin2(f.a*x+g.a*x+f.b+g.b)*g.a*cos2(f.d-g.d)*y*f.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(2.0*f.c*y+f.d+g.d))/f.c/(f.a*f.a-g.a*g.a)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d - g.d) * b3 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d - g.d) * b4 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d - g.d) * b4 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d - g.d) * b3 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*sin2(g.a*x+g.b)*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/g.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / g.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / g.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / g.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / g.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*y/(f.a*f.a-g.a*g.a)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*cos2(g.b)*sin2(f.a*x+f.b)*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = g.amp*f.amp*(2.0*sin2(f.a*x-g.a*x+f.b-g.b)*f.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(f.a*x-g.a*x+f.b-g.b)*g.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(f.a*x+g.a*x+f.b+g.b)*f.a*cos2(f.d-g.d)*y*f.c+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(2.0*f.c*y+f.d+g.d)-2.0*sin2(f.a*x+g.a*x+f.b+g.b)*g.a*cos2(f.d-g.d)*y*f.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(2.0*f.c*y+f.d+g.d))/f.c/(f.a*f.a-g.a*g.a)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d - g.d) * b3 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d - g.d) * b4 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d - g.d) * b4 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d - g.d) * b4 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d - g.d) * b3 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d - g.d) * b3 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*sin2(g.a*x+g.b)*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/g.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / g.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / g.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / g.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / g.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*y/(f.a*f.a-g.a*g.a)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.b)*sin2(f.a*x+f.b)*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b3;
-            value -= t0;
-            return value;
-
-        } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-        }
-    }
-
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.
     // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(f_a*x+g_b)*cos2(f_c*y+g_d)
@@ -824,211 +139,223 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         double b3 = domain.ymin();
         double b4 = domain.ymax();
 
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
         } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
         }
@@ -1045,431 +372,223 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         double b3 = domain.ymin();
         double b4 = domain.ymax();
 
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b-g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b-g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b+g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b+g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb-gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb-gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb+gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb+gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b - g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b + g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b + g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb + gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b - g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b - g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b + g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b + g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb - gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb + gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b-g.b)*x*f.a+sin2(2.0*f.a*x+f.b+g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b + g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b - g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b + g.b)) * b3 / f.a / 4.0;
-            value -= t0;
-            return value;
-
-        } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-        }
-    }
-
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(f_a*x-g_b)*cos2(g_c*y+g_d)
-    public static double primi_cos4_af_fgc(Domain domain, CosXCosY f, CosXCosY g) {
-        double value;
-        double b1 = domain.xmin();
-        double b2 = domain.xmax();
-        double b3 = domain.ymin();
-        double b4 = domain.ymax();
-
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = g.amp*f.amp*(2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/f.a/(f.c*f.c-g.c*g.c)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*sin2(g.c*y+g.d)/f.a/g.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*x/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = g.amp*f.amp*(2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-2.0*cos2(f.b+g.b)*x*f.a*sin2(f.c*y+g.c*y+f.d+g.d)*g.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(2.0*f.a*x+f.b-g.b)*sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/f.a/(f.c*f.c-g.c*g.c)/8.0;
-            double t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value = t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value += t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            t0 = g.amp * f.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / f.a / (f.c * f.c - g.c * g.c) / 8.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(sin2(f.c*y-g.c*y+f.d-g.d)*f.c+sin2(f.c*y-g.c*y+f.d-g.d)*g.c+sin2(f.c*y+g.c*y+f.d+g.d)*f.c-sin2(f.c*y+g.c*y+f.d+g.d)*g.c)/(f.c*f.c-g.c*g.c)/2.0;
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (sin2(f.c * b4 - g.c * b4 + f.d - g.d) * f.c + sin2(f.c * b4 - g.c * b4 + f.d - g.d) * g.c + sin2(f.c * b4 + g.c * b4 + f.d + g.d) * f.c - sin2(f.c * b4 + g.c * b4 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (sin2(f.c * b3 - g.c * b3 + f.d - g.d) * f.c + sin2(f.c * b3 - g.c * b3 + f.d - g.d) * g.c + sin2(f.c * b3 + g.c * b3 + f.d + g.d) * f.c - sin2(f.c * b3 + g.c * b3 + f.d + g.d) * g.c) / (f.c * f.c - g.c * g.c) / 2.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*sin2(g.c*y+g.d)/f.a/g.c/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(g.c * b4 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(g.c * b3 + g.d) / f.a / g.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*x/g.c*sin2(g.c*y+g.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b3 + g.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b4 + g.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b1 / g.c * sin2(g.c * b4 + g.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * b2 / g.c * sin2(g.c * b3 + g.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*sin2(f.c*y+f.d)/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*cos2(g.d)*x/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
-            double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
-            value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
-            value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*sin2(f.c*y+f.d)/f.a/f.c/4.0;
-            double t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value = t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value += t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * sin2(f.c * b4 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            t0 = f.amp * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * sin2(f.c * b3 + f.d) / f.a / f.c / 4.0;
-            value -= t0;
-            return value;
-
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*cos2(g.d)*x/f.c*sin2(f.c*y+f.d);
-            double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b3 + f.d);
-            value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b4 + f.d);
-            value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b1 / f.c * sin2(f.c * b4 + f.d);
-            value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * cos2(g.d) * b2 / f.c * sin2(f.c * b3 + f.d);
-            value -= t0;
-            return value;
-
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
-            double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
-            value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
-            value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
-            value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
         } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
         }
@@ -1485,211 +604,223 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         double b3 = domain.ymin();
         double b4 = domain.ymax();
 
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d-g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d+g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d+g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd-gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd-gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd+gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d - g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd - gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd - gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d - g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d + g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d + g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd - gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd - gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d-g.d)*y*f.c+sin2(2.0*f.c*y+f.d+g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d - g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d - g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d + g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
         } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
         }
@@ -1705,211 +836,919 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         double b3 = domain.ymin();
         double b4 = domain.ymax();
 
-        if (f.a != 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a == 0 && g.c != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*g.amp*(4.0*cos2(f.b+g.b)*x*f.a*cos2(f.d+g.d)*y*f.c+2.0*cos2(f.b+g.b)*x*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(2.0*f.a*x+f.b-g.b)*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.a*x+f.b-g.b)*sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/16.0;
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*(4.0*cos2(fb+gb)*x*fa*cos2(fd+gd)*y*fc+2.0*cos2(fb+gb)*x*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(2.0*fa*x+fb-gb)*cos2(fd+gd)*y*fc+sin2(2.0*fa*x+fb-gb)*sin2(2.0*fc*y+fd-gd))/fa/fc/16.0;
             double t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value = t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value += t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b1 * f.a * cos2(f.d + g.d) * b4 * f.c + 2.0 * cos2(f.b + g.b) * b1 * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b1 + f.b - g.b) * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.a * b1 + f.b - g.b) * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b1 * fa * cos2(fd + gd) * b4 * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(2.0 * fa * b1 + fb - gb) * cos2(fd + gd) * b4 * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
-            t0 = f.amp * g.amp * (4.0 * cos2(f.b + g.b) * b2 * f.a * cos2(f.d + g.d) * b3 * f.c + 2.0 * cos2(f.b + g.b) * b2 * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(2.0 * f.a * b2 + f.b - g.b) * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.a * b2 + f.b - g.b) * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 16.0;
+            t0 = famp * gamp * (4.0 * cos2(fb + gb) * b2 * fa * cos2(fd + gd) * b3 * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(2.0 * fa * b2 + fb - gb) * cos2(fd + gd) * b3 * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 16.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0 && g.c == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(2.0*cos2(f.b+g.b)*x*f.a+sin2(2.0*f.a*x+f.b-g.b))*y/f.a/4.0;
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b1 * f.a + sin2(2.0 * f.a * b1 + f.b - g.b)) * b4 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (2.0 * cos2(f.b + g.b) * b2 * f.a + sin2(2.0 * f.a * b2 + f.b - g.b)) * b3 / f.a / 4.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
             value -= t0;
             return value;
 
         } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+        }
+    }
+
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(f_a*x+g_b)*cos2(g_c*y+g_d)
+    public static double primi_cos4_fa_fgc(Domain domain, CosXCosY f, CosXCosY g) {
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
+
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = gamp*famp*(2.0*cos2(fb-gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*fc+2.0*cos2(fb-gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*gc+2.0*cos2(fb-gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*fc-2.0*cos2(fb-gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*gc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y-gc*y+fd-gd)*fc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y-gc*y+fd-gd)*gc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y+gc*y+fd+gd)*fc-sin2(2.0*fa*x+fb+gb)*sin2(fc*y+gc*y+fd+gd)*gc)/fa/(fc*fc-gc*gc)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*sin2(gc*y+gd)/fa/gc/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*x/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = gamp*famp*(2.0*cos2(fb-gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*fc+2.0*cos2(fb-gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*gc+2.0*cos2(fb-gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*fc-2.0*cos2(fb-gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*gc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y-gc*y+fd-gd)*fc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y-gc*y+fd-gd)*gc+sin2(2.0*fa*x+fb+gb)*sin2(fc*y+gc*y+fd+gd)*fc-sin2(2.0*fa*x+fb+gb)*sin2(fc*y+gc*y+fd+gd)*gc)/fa/(fc*fc-gc*gc)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb + gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb - gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb + gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*sin2(gc*y+gd)/fa/gc/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*x/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*sin2(fc*y+fd)/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*cos2(gd)*x/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*sin2(fc*y+fd)/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*cos2(gd)*x/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb-gb)*x*fa+sin2(2.0*fa*x+fb+gb))*y/fa/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b3 / fa / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b4 / fa / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b1 * fa + sin2(2.0 * fa * b1 + fb + gb)) * b4 / fa / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb - gb) * b2 * fa + sin2(2.0 * fa * b2 + fb + gb)) * b3 / fa / 4.0;
+            value -= t0;
+            return value;
+
+        } else { //all are nulls
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+        }
+    }
+
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(f_a*x-g_b)*cos2(g_c*y+g_d)
+    public static double primi_cos4_af_fgc(Domain domain, CosXCosY f, CosXCosY g) {
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
+
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = gamp*famp*(2.0*cos2(fb+gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*fc+2.0*cos2(fb+gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*gc+2.0*cos2(fb+gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*fc-2.0*cos2(fb+gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*gc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y-gc*y+fd-gd)*fc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y-gc*y+fd-gd)*gc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y+gc*y+fd+gd)*fc-sin2(2.0*fa*x+fb-gb)*sin2(fc*y+gc*y+fd+gd)*gc)/fa/(fc*fc-gc*gc)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*sin2(gc*y+gd)/fa/gc/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*x/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = gamp*famp*(2.0*cos2(fb+gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*fc+2.0*cos2(fb+gb)*x*fa*sin2(fc*y-gc*y+fd-gd)*gc+2.0*cos2(fb+gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*fc-2.0*cos2(fb+gb)*x*fa*sin2(fc*y+gc*y+fd+gd)*gc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y-gc*y+fd-gd)*fc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y-gc*y+fd-gd)*gc+sin2(2.0*fa*x+fb-gb)*sin2(fc*y+gc*y+fd+gd)*fc-sin2(2.0*fa*x+fb-gb)*sin2(fc*y+gc*y+fd+gd)*gc)/fa/(fc*fc-gc*gc)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b1 * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(2.0 * fa * b1 + fb - gb) * sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - 2.0 * cos2(fb + gb) * b2 * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(2.0 * fa * b2 + fb - gb) * sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*sin2(gc*y+gd)/fa/gc/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(gc * b4 + gd) / fa / gc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(gc * b3 + gd) / fa / gc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*x/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*sin2(fc*y+fd)/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*cos2(gd)*x/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*sin2(fc*y+fd)/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * sin2(fc * b4 + fd) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * sin2(fc * b3 + fd) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*cos2(gd)*x/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(2.0*cos2(fb+gb)*x*fa+sin2(2.0*fa*x+fb-gb))*y/fa/4.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b3 / fa / 4.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b4 / fa / 4.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b1 * fa + sin2(2.0 * fa * b1 + fb - gb)) * b4 / fa / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (2.0 * cos2(fb + gb) * b2 * fa + sin2(2.0 * fa * b2 + fb - gb)) * b3 / fa / 4.0;
+            value -= t0;
+            return value;
+
+        } else { //all are nulls
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+        }
+    }
+
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(f_c*y+g_d)
+    public static double primi_cos4_fga_fc(Domain domain, CosXCosY f, CosXCosY g) {
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
+
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = gamp*famp*(2.0*sin2(fa*x-ga*x+fb-gb)*fa*cos2(fd-gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(fa*x-ga*x+fb-gb)*ga*cos2(fd-gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(2.0*fc*y+fd+gd)+2.0*sin2(fa*x+ga*x+fb+gb)*fa*cos2(fd-gd)*y*fc+sin2(fa*x+ga*x+fb+gb)*fa*sin2(2.0*fc*y+fd+gd)-2.0*sin2(fa*x+ga*x+fb+gb)*ga*cos2(fd-gd)*y*fc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(2.0*fc*y+fd+gd))/fc/(fa*fa-ga*ga)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd - gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd + gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd - gd) * b3 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd - gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd + gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd - gd) * b4 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd - gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd + gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd - gd) * b4 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd - gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd + gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd - gd) * b3 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*sin2(ga*x+gb)*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/ga/fc/4.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / ga / fc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / ga / fc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / ga / fc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / ga / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*y/(fa*fa-ga*ga)/2.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gd)/ga*sin2(ga*x+gb)*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*cos2(gb)*sin2(fa*x+fb)*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gb)*cos2(gd)/fa*sin2(fa*x+fb)*y;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b3;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b4;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = gamp*famp*(2.0*sin2(fa*x-ga*x+fb-gb)*fa*cos2(fd-gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*fa*sin2(2.0*fc*y+fd+gd)+2.0*sin2(fa*x-ga*x+fb-gb)*ga*cos2(fd-gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(2.0*fc*y+fd+gd)+2.0*sin2(fa*x+ga*x+fb+gb)*fa*cos2(fd-gd)*y*fc+sin2(fa*x+ga*x+fb+gb)*fa*sin2(2.0*fc*y+fd+gd)-2.0*sin2(fa*x+ga*x+fb+gb)*ga*cos2(fd-gd)*y*fc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(2.0*fc*y+fd+gd))/fc/(fa*fa-ga*ga)/8.0;
+            double t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd - gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd + gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd - gd) * b3 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value = t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd - gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd + gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd - gd) * b4 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value += t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd - gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd + gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd - gd) * b4 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd + gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd - gd) * b4 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value -= t0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd - gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd + gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd - gd) * b3 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd + gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd - gd) * b3 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd + gd)) / fc / (fa * fa - ga * ga) / 8.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*sin2(ga*x+gb)*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/ga/fc/4.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / ga / fc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / ga / fc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / ga / fc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / ga / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*y/(fa*fa-ga*ga)/2.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gd)/ga*sin2(ga*x+gb)*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gb)*sin2(fa*x+fb)*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fa/fc/4.0;
+            double t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 4.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 4.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fa / fc / 4.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fa / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd-gd)*y*fc+sin2(2.0*fc*y+fd+gd))/fc/4.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd - gd) * b4 * fc + sin2(2.0 * fc * b4 + fd + gd)) / fc / 4.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd - gd) * b3 * fc + sin2(2.0 * fc * b3 + fd + gd)) / fc / 4.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gb)*cos2(gd)/fa*sin2(fa*x+fb)*y;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b3;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b4;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b3;
+            value -= t0;
+            return value;
+
+        } else { //all are nulls
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
         }
@@ -1925,107 +1764,386 @@ final class CosCosVsCosCosScalarProduct implements FormalScalarProductHelper {
         double b3 = domain.ymin();
         double b4 = domain.ymax();
 
-        if (f.a != 0 && f.c != 0 && g.a != 0) {
-            //       t0 = g.amp*f.amp*(2.0*sin2(f.a*x-g.a*x+f.b-g.b)*f.a*cos2(f.d+g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*f.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(f.a*x-g.a*x+f.b-g.b)*g.a*cos2(f.d+g.d)*y*f.c+sin2(f.a*x-g.a*x+f.b-g.b)*g.a*sin2(2.0*f.c*y+f.d-g.d)+2.0*sin2(f.a*x+g.a*x+f.b+g.b)*f.a*cos2(f.d+g.d)*y*f.c+sin2(f.a*x+g.a*x+f.b+g.b)*f.a*sin2(2.0*f.c*y+f.d-g.d)-2.0*sin2(f.a*x+g.a*x+f.b+g.b)*g.a*cos2(f.d+g.d)*y*f.c-sin2(f.a*x+g.a*x+f.b+g.b)*g.a*sin2(2.0*f.c*y+f.d-g.d))/f.c/(f.a*f.a-g.a*g.a)/8.0;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0) {
+            //       t0 = gamp*famp*(2.0*sin2(fa*x-ga*x+fb-gb)*fa*cos2(fd+gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*fa*sin2(2.0*fc*y+fd-gd)+2.0*sin2(fa*x-ga*x+fb-gb)*ga*cos2(fd+gd)*y*fc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(2.0*fc*y+fd-gd)+2.0*sin2(fa*x+ga*x+fb+gb)*fa*cos2(fd+gd)*y*fc+sin2(fa*x+ga*x+fb+gb)*fa*sin2(2.0*fc*y+fd-gd)-2.0*sin2(fa*x+ga*x+fb+gb)*ga*cos2(fd+gd)*y*fc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(2.0*fc*y+fd-gd))/fc/(fa*fa-ga*ga)/8.0;
             double t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d + g.d) * b3 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd + gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd + gd) * b3 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd + gd) * b3 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd - gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd + gd) * b3 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd - gd)) / fc / (fa * fa - ga * ga) / 8.0;
             value = t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d + g.d) * b4 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd + gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd + gd) * b4 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd + gd) * b4 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd - gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd + gd) * b4 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd - gd)) / fc / (fa * fa - ga * ga) / 8.0;
             value += t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a * sin2(2.0 * f.c * b4 + f.d - g.d) + 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * cos2(f.d + g.d) * b4 * f.c + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a * sin2(2.0 * f.c * b4 + f.d - g.d) - 2.0 * sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * cos2(f.d + g.d) * b4 * f.c - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a * sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * fa * cos2(fd + gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(fa * b1 - ga * b1 + fb - gb) * ga * cos2(fd + gd) * b4 * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(2.0 * fc * b4 + fd - gd) + 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * fa * cos2(fd + gd) * b4 * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(2.0 * fc * b4 + fd - gd) - 2.0 * sin2(fa * b1 + ga * b1 + fb + gb) * ga * cos2(fd + gd) * b4 * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(2.0 * fc * b4 + fd - gd)) / fc / (fa * fa - ga * ga) / 8.0;
             value -= t0;
-            t0 = g.amp * f.amp * (2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a * sin2(2.0 * f.c * b3 + f.d - g.d) + 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * cos2(f.d + g.d) * b3 * f.c + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a * sin2(2.0 * f.c * b3 + f.d - g.d) - 2.0 * sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * cos2(f.d + g.d) * b3 * f.c - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a * sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / (f.a * f.a - g.a * g.a) / 8.0;
+            t0 = gamp * famp * (2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * fa * cos2(fd + gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(fa * b2 - ga * b2 + fb - gb) * ga * cos2(fd + gd) * b3 * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(2.0 * fc * b3 + fd - gd) + 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * fa * cos2(fd + gd) * b3 * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(2.0 * fc * b3 + fd - gd) - 2.0 * sin2(fa * b2 + ga * b2 + fb + gb) * ga * cos2(fd + gd) * b3 * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(2.0 * fc * b3 + fd - gd)) / fc / (fa * fa - ga * ga) / 8.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a != 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*sin2(g.a*x+g.b)*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/g.a/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga != 0) {
+            //       t0 = famp*cos2(fb)*gamp*sin2(ga*x+gb)*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/ga/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / g.a / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / ga / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / g.a / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / ga / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b1 + g.b) * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / g.a / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / ga / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * sin2(g.a * b2 + g.b) * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / g.a / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / ga / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a != 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.d)*(sin2(f.a*x-g.a*x+f.b-g.b)*f.a+sin2(f.a*x-g.a*x+f.b-g.b)*g.a+sin2(f.a*x+g.a*x+f.b+g.b)*f.a-sin2(f.a*x+g.a*x+f.b+g.b)*g.a)*y/(f.a*f.a-g.a*g.a)/2.0;
+        } else if (fa != 0 && fc == 0 && ga != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*y/(fa*fa-ga*ga)/2.0;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b1 - g.a * b1 + f.b - g.b) * f.a + sin2(f.a * b1 - g.a * b1 + f.b - g.b) * g.a + sin2(f.a * b1 + g.a * b1 + f.b + g.b) * f.a - sin2(f.a * b1 + g.a * b1 + f.b + g.b) * g.a) * b4 / (f.a * f.a - g.a * g.a) / 2.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.d) * (sin2(f.a * b2 - g.a * b2 + f.b - g.b) * f.a + sin2(f.a * b2 - g.a * b2 + f.b - g.b) * g.a + sin2(f.a * b2 + g.a * b2 + f.b + g.b) * f.a - sin2(f.a * b2 + g.a * b2 + f.b + g.b) * g.a) * b3 / (f.a * f.a - g.a * g.a) / 2.0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c == 0 && g.a != 0) {
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.d)/g.a*sin2(g.a*x+g.b)*y;
+        } else if (fa == 0 && fc == 0 && ga != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gd)/ga*sin2(ga*x+gb)*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b1 + g.b) * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.d) / g.a * sin2(g.a * b2 + g.b) * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b3;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c != 0 && g.a == 0) {
-            //       t0 = f.amp*g.amp*cos2(g.b)*sin2(f.a*x+f.b)*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.a/f.c/4.0;
+        } else if (fa != 0 && fc != 0 && ga == 0) {
+            //       t0 = famp*gamp*cos2(gb)*sin2(fa*x+fb)*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fa/fc/4.0;
             double t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 4.0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 4.0;
             value = t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 4.0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 4.0;
             value += t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b1 + f.b) * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.a / f.c / 4.0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fa / fc / 4.0;
             value -= t0;
-            t0 = f.amp * g.amp * cos2(g.b) * sin2(f.a * b2 + f.b) * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.a / f.c / 4.0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fa / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a == 0 && f.c != 0 && g.a == 0) {
-            //       t0 = f.amp*cos2(f.b)*g.amp*cos2(g.b)*x*(2.0*cos2(f.d+g.d)*y*f.c+sin2(2.0*f.c*y+f.d-g.d))/f.c/4.0;
+        } else if (fa == 0 && fc != 0 && ga == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(2.0*cos2(fd+gd)*y*fc+sin2(2.0*fc*y+fd-gd))/fc/4.0;
             double t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value = t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value += t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b1 * (2.0 * cos2(f.d + g.d) * b4 * f.c + sin2(2.0 * f.c * b4 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (2.0 * cos2(fd + gd) * b4 * fc + sin2(2.0 * fc * b4 + fd - gd)) / fc / 4.0;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * g.amp * cos2(g.b) * b2 * (2.0 * cos2(f.d + g.d) * b3 * f.c + sin2(2.0 * f.c * b3 + f.d - g.d)) / f.c / 4.0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (2.0 * cos2(fd + gd) * b3 * fc + sin2(2.0 * fc * b3 + fd - gd)) / fc / 4.0;
             value -= t0;
             return value;
 
-        } else if (f.a != 0 && f.c == 0 && g.a == 0) {
-            //       t0 = f.amp*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)/f.a*sin2(f.a*x+f.b)*y;
+        } else if (fa != 0 && fc == 0 && ga == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gb)*cos2(gd)/fa*sin2(fa*x+fb)*y;
             double t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b3;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b3;
             value = t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b4;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b4;
             value += t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b1 + f.b) * b4;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) / f.a * sin2(f.a * b2 + f.b) * b3;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b3;
             value -= t0;
             return value;
 
         } else { //all are nulls
-            //       t0 = f.amp*cos2(f.b)*cos2(f.d)*g.amp*cos2(g.b)*cos2(g.d)*x*y;
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
             double t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
             value = t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
             value += t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b1 * b4;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
             value -= t0;
-            t0 = f.amp * cos2(f.b) * cos2(f.d) * g.amp * cos2(g.b) * cos2(g.d) * b2 * b3;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
+            value -= t0;
+            return value;
+        }
+    }
+
+    //STARTING---------------------------------------
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*g_amp*cos2(g_a*x+g_b)*cos2(g_c*y+g_d)
+    public static double primi_cos4_fga_fgc(Domain domain, CosXCosY f, CosXCosY g) {
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
+
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double fd = f.getD();
+        double famp = f.getAmp();
+
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
+        double gd = g.getD();
+        double gamp = g.getAmp();
+
+        if (fa != 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       s1 = gamp/4.0;      s3 = famp;      s6 = sin2(fa*x-ga*x+fb-gb)*fa*sin2(fc*y-gc*y+fd-gd)*fc+sin2(fa*x-ga*x+fb-gb)*fa*sin2(fc*y-gc*y+fd-gd)*gc+sin2(fa*x-ga*x+fb-gb)*fa*sin2(fc*y+gc*y+fd+gd)*fc-sin2(fa*x-ga*x+fb-gb)*fa*sin2(fc*y+gc*y+fd+gd)*gc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(fc*y-gc*y+fd-gd)*fc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(fc*y-gc*y+fd-gd)*gc+sin2(fa*x-ga*x+fb-gb)*ga*sin2(fc*y+gc*y+fd+gd)*fc-sin2(fa*x-ga*x+fb-gb)*ga*sin2(fc*y+gc*y+fd+gd)*gc;      s5 = s6+sin2(fa*x+ga*x+fb+gb)*fa*sin2(fc*y-gc*y+fd-gd)*fc+sin2(fa*x+ga*x+fb+gb)*fa*sin2(fc*y-gc*y+fd-gd)*gc+sin2(fa*x+ga*x+fb+gb)*fa*sin2(fc*y+gc*y+fd+gd)*fc-sin2(fa*x+ga*x+fb+gb)*fa*sin2(fc*y+gc*y+fd+gd)*gc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(fc*y-gc*y+fd-gd)*fc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(fc*y-gc*y+fd-gd)*gc-sin2(fa*x+ga*x+fb+gb)*ga*sin2(fc*y+gc*y+fd+gd)*fc+sin2(fa*x+ga*x+fb+gb)*ga*sin2(fc*y+gc*y+fd+gd)*gc;      s6 = 1/(fa*fa*fc*fc-fa*fa*gc*gc-ga*ga*fc*fc+ga*ga*gc*gc);      s4 = s5*s6;      s2 = s3*s4;      t0 = s1*s2;
+            double t0;
+            double s6;
+            double s5;
+            double s4;
+            double s3;
+            double s2;
+            double s1;
+            s1 = gamp / 4.0;
+            s3 = famp;
+            s6 = sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * gc;
+            s5 = s6 + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * gc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * fc + sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * gc;
+            s6 = 1 / (fa * fa * fc * fc - fa * fa * gc * gc - ga * ga * fc * fc + ga * ga * gc * gc);
+            s4 = s5 * s6;
+            s2 = s3 * s4;
+            t0 = s1 * s2;
+            value = t0;
+            s1 = gamp / 4.0;
+            s3 = famp;
+            s6 = sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * gc;
+            s5 = s6 + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * gc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * fc + sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * gc;
+            s6 = 1 / (fa * fa * fc * fc - fa * fa * gc * gc - ga * ga * fc * fc + ga * ga * gc * gc);
+            s4 = s5 * s6;
+            s2 = s3 * s4;
+            t0 = s1 * s2;
+            value += t0;
+            s1 = gamp / 4.0;
+            s3 = famp;
+            s6 = sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b1 - ga * b1 + fb - gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b1 - ga * b1 + fb - gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * gc;
+            s5 = s6 + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fa * b1 + ga * b1 + fb + gb) * fa * sin2(fc * b4 + gc * b4 + fd + gd) * gc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * fc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b4 - gc * b4 + fd - gd) * gc - sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * fc + sin2(fa * b1 + ga * b1 + fb + gb) * ga * sin2(fc * b4 + gc * b4 + fd + gd) * gc;
+            s6 = 1 / (fa * fa * fc * fc - fa * fa * gc * gc - ga * ga * fc * fc + ga * ga * gc * gc);
+            s4 = s5 * s6;
+            s2 = s3 * s4;
+            t0 = s1 * s2;
+            value -= t0;
+            s1 = gamp / 4.0;
+            s3 = famp;
+            s6 = sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b2 - ga * b2 + fb - gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b2 - ga * b2 + fb - gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * gc;
+            s5 = s6 + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fa * b2 + ga * b2 + fb + gb) * fa * sin2(fc * b3 + gc * b3 + fd + gd) * gc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * fc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b3 - gc * b3 + fd - gd) * gc - sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * fc + sin2(fa * b2 + ga * b2 + fb + gb) * ga * sin2(fc * b3 + gc * b3 + fd + gd) * gc;
+            s6 = 1 / (fa * fa * fc * fc - fa * fa * gc * gc - ga * ga * fc * fc + ga * ga * gc * gc);
+            s4 = s5 * s6;
+            s2 = s3 * s4;
+            t0 = s1 * s2;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*sin2(ga*x+gb)*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/ga/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / ga / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / ga / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b1 + gb) * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / ga / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * sin2(ga * b2 + gb) * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / ga / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*sin2(gc*y+gd)/gc/(fa*fa-ga*ga)/2.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * sin2(gc * b3 + gd) / gc / (fa * fa - ga * ga) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * sin2(gc * b4 + gd) / gc / (fa * fa - ga * ga) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * sin2(gc * b4 + gd) / gc / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * sin2(gc * b3 + gd) / gc / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp/ga*sin2(ga*x+gb)/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp / ga * sin2(ga * b1 + gb) / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp / ga * sin2(ga * b2 + gb) / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp / ga * sin2(ga * b1 + gb) / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp / ga * sin2(ga * b2 + gb) / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*gamp*cos2(gb)*sin2(fa*x+fb)*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/fa/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b1 + fb) * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gb) * sin2(fa * b2 + fb) * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / fa / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*x*(sin2(fc*y-gc*y+fd-gd)*fc+sin2(fc*y-gc*y+fd-gd)*gc+sin2(fc*y+gc*y+fd+gd)*fc-sin2(fc*y+gc*y+fd+gd)*gc)/(fc*fc-gc*gc)/2.0;
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b1 * (sin2(fc * b4 - gc * b4 + fd - gd) * fc + sin2(fc * b4 - gc * b4 + fd - gd) * gc + sin2(fc * b4 + gc * b4 + fd + gd) * fc - sin2(fc * b4 + gc * b4 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * b2 * (sin2(fc * b3 - gc * b3 + fd - gd) * fc + sin2(fc * b3 - gc * b3 + fd - gd) * gc + sin2(fc * b3 + gc * b3 + fd + gd) * fc - sin2(fc * b3 + gc * b3 + fd + gd) * gc) / (fc * fc - gc * gc) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gb)/fa*sin2(fa*x+fb)/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) / fa * sin2(fa * b1 + fb) / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) / fa * sin2(fa * b2 + fb) / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) / fa * sin2(fa * b1 + fb) / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) / fa * sin2(fa * b2 + fb) / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga == 0 && gc != 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*x/gc*sin2(gc*y+gd);
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b3 + gd);
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b4 + gd);
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b1 / gc * sin2(gc * b4 + gd);
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * b2 / gc * sin2(gc * b3 + gd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gd)*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*sin2(fc*y+fd)/fc/(fa*fa-ga*ga)/2.0;
+            double t0;
+            t0 = famp * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * sin2(fc * b3 + fd) / fc / (fa * fa - ga * ga) / 2.0;
+            value = t0;
+            t0 = famp * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * sin2(fc * b4 + fd) / fc / (fa * fa - ga * ga) / 2.0;
+            value += t0;
+            t0 = famp * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * sin2(fc * b4 + fd) / fc / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            t0 = famp * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * sin2(fc * b3 + fd) / fc / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gd)/ga*sin2(ga*x+gb)/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gd)*(sin2(fa*x-ga*x+fb-gb)*fa+sin2(fa*x-ga*x+fb-gb)*ga+sin2(fa*x+ga*x+fb+gb)*fa-sin2(fa*x+ga*x+fb+gb)*ga)*y/(fa*fa-ga*ga)/2.0;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b1 - ga * b1 + fb - gb) * fa + sin2(fa * b1 - ga * b1 + fb - gb) * ga + sin2(fa * b1 + ga * b1 + fb + gb) * fa - sin2(fa * b1 + ga * b1 + fb + gb) * ga) * b4 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gd) * (sin2(fa * b2 - ga * b2 + fb - gb) * fa + sin2(fa * b2 - ga * b2 + fb - gb) * ga + sin2(fa * b2 + ga * b2 + fb + gb) * fa - sin2(fa * b2 + ga * b2 + fb + gb) * ga) * b3 / (fa * fa - ga * ga) / 2.0;
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gd)/ga*sin2(ga*x+gb)*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b1 + gb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gd) / ga * sin2(ga * b2 + gb) * b3;
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*gamp*cos2(gb)*cos2(gd)/fa*sin2(fa*x+fb)/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fb)*gamp*cos2(gb)*cos2(gd)*x/fc*sin2(fc*y+fd);
+            double t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b3 + fd);
+            value = t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b4 + fd);
+            value += t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b1 / fc * sin2(fc * b4 + fd);
+            value -= t0;
+            t0 = famp * cos2(fb) * gamp * cos2(gb) * cos2(gd) * b2 / fc * sin2(fc * b3 + fd);
+            value -= t0;
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0 && gc == 0) {
+            //       t0 = famp*cos2(fd)*gamp*cos2(gb)*cos2(gd)/fa*sin2(fa*x+fb)*y;
+            double t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b3;
+            value = t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b4;
+            value += t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b1 + fb) * b4;
+            value -= t0;
+            t0 = famp * cos2(fd) * gamp * cos2(gb) * cos2(gd) / fa * sin2(fa * b2 + fb) * b3;
+            value -= t0;
+            return value;
+
+        } else { //all are nulls
+            //       t0 = famp*cos2(fb)*cos2(fd)*gamp*cos2(gb)*cos2(gd)*x*y;
+            double t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b3;
+            value = t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b4;
+            value += t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b1 * b4;
+            value -= t0;
+            t0 = famp * cos2(fb) * cos2(fd) * gamp * cos2(gb) * cos2(gd) * b2 * b3;
             value -= t0;
             return value;
         }

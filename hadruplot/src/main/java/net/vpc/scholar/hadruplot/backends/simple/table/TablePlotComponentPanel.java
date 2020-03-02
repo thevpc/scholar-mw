@@ -5,6 +5,7 @@ import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadruplot.ValuesPlotTableModel;
 import net.vpc.scholar.hadruplot.PlotComponentPanel;
 import net.vpc.scholar.hadruplot.PlotModelProvider;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,11 +42,6 @@ public class TablePlotComponentPanel extends JPanel implements PlotComponentPane
 
     @Override
     public JPopupMenu getPopupMenu() {
-        JPopupMenu componentPopupMenu = jTableHelper.getTable().getComponentPopupMenu();
-        if (componentPopupMenu == null) {
-            componentPopupMenu = new JPopupMenu();
-            jTableHelper.getTable().setComponentPopupMenu(componentPopupMenu);
-        }
-        return componentPopupMenu;
+        return PlotUtils.getOrCreateComponentPopupMenu(jTableHelper.getTable());
     }
 }

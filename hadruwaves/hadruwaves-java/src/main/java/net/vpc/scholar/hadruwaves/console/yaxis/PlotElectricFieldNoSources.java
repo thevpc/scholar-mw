@@ -2,11 +2,11 @@ package net.vpc.scholar.hadruwaves.console.yaxis;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadruplot.PlotType;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
@@ -31,20 +31,20 @@ public class PlotElectricFieldNoSources extends PlotAxisSeries implements Clonea
         setPlotType(PlotType.HEATMAP);
     }
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
         double[] z = structure.toZForDomainCoeff(xAxis.getZ());
-        Complex[][] s = structure.source().monitor(this).computeMatrix(axis, x, y, 0).getArray();
-        VDiscrete E = structure.electricField().monitor(this).computeVDiscrete(x, y, z);
-        Complex[][] e = E.getComponent(axis).getValues()[0];
+        Complex[][] s = structure.source().monitor(this).evalMatrix(axis, x, y, 0).getArray();
+        VDiscrete E = structure.electricField().monitor(this).cartesian().evalVDiscrete(x, y, z);
+        Complex[][] e = E.getComponentDiscrete(axis).getValues()[0];
         Complex[][] r= ArrayUtils.add(e, s);
 //        emonitor.terminatem(getClass().getSimpleName());
         return new PlotMatrix(r, x, y);

@@ -15,10 +15,60 @@ import java.util.Map;
  */
 public class MeshZone {
 
-    private MeshZoneShape shape;
+    private static final Comparator<Domain> domainsComparator = new Comparator<Domain>() {
+
+        public int compare(Domain o1, Domain o2) {
+            //d'abord les structures les plus grandes ensuite selon position (y puis x)
+            double a1 = o1.xwidth() * o1.ywidth();
+            double a2 = o2.xwidth() * o2.ywidth();
+            if (a1 < a2) {
+                return 1;
+            } else if (a1 > a2) {
+                return -1;
+            }
+            a1 = o1.ymin();
+            a2 = o2.ymin();
+            if (a1 < a2) {
+                return -1;
+            } else if (a1 > a2) {
+                return 1;
+            }
+            a1 = o1.xmin();
+            a2 = o2.xmin();
+            if (a1 < a2) {
+                return -1;
+            } else if (a1 > a2) {
+                return 1;
+            }
+            return 0;
+        }
+    };
+    public static final Comparator<MeshZone> ZONES_COMPARATOR = new Comparator<MeshZone>() {
+
+        public int compare(MeshZone o1, MeshZone o2) {
+            Integer type1 = o1.getType().getValue();
+            Integer type2 = o1.getType().getValue();
+            int c = type1.compareTo(type2);
+            if (c != 0) {
+                return c;
+            }
+//            if(o1==null || o2==null){
+//                return o1.equals(o2)?0:o1.hashCode()-o2.hashCode();
+//            }
+            int i = o1.type.compareTo(o2.type);
+            if (i != 0) {
+                return i;
+            }
+            if (o1.domain == null || o2.domain == null) {
+                return o1.equals(o2) ? 0 : o1.hashCode() - o2.hashCode();
+            }
+            return domainsComparator.compare(o1.domain, o2.domain);
+        }
+    };
+    private final MeshZoneShape shape;
     private boolean enabled = true;
     private Geometry geometry;
-    private MeshZoneType type;
+    private final MeshZoneType type;
     private Domain domain;
     private Polygon polygon;
     private Domain globalDomain;
@@ -28,11 +78,6 @@ public class MeshZone {
 
     public MeshZone(Domain domain) {
         this(domain.toGeometry(), MeshZoneShape.RECTANGLE, MeshZoneType.MAIN);
-        setDomain(domain);
-    }
-
-    public MeshZone(Domain domain, MeshZoneType type) {
-        this(domain.toGeometry(), MeshZoneShape.RECTANGLE, type);
         setDomain(domain);
     }
 
@@ -46,6 +91,24 @@ public class MeshZone {
         setProperty("Bounds", "[x=" + r.xmin() + ",y=" + r.ymin() + ",w=" + r.xwidth() + ",h=" + r.ywidth() + "]");
     }
 
+    public void setProperty(String name, Object value) {
+        if (value != null) {
+            if (userProperties == null) {
+                userProperties = new HashMap<String, Object>();
+            }
+            userProperties.put(name, value);
+        } else {
+            if (userProperties != null) {
+                userProperties.remove(name);
+            }
+        }
+    }
+
+    public MeshZone(Domain domain, MeshZoneType type) {
+        this(domain.toGeometry(), MeshZoneShape.RECTANGLE, type);
+        setDomain(domain);
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -56,10 +119,6 @@ public class MeshZone {
 
     public MeshZoneShape getShape() {
         return shape;
-    }
-
-    public Geometry getGeometry() {
-        return geometry;
     }
 
     public MeshZoneType getType() {
@@ -76,8 +135,42 @@ public class MeshZone {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("MeshZone{" + "shape=" + shape);
+        if (geometry != null) {
+            if (type != null) {
+                sb.append(",type=").append(type);
+            }
+            if (domain != null) {
+                sb.append(",domain=").append(domain);
+            }
+            if (geometry != null) {
+                sb.append(",geometry=").append(geometry);
+            }
+            if (polygon != null) {
+                sb.append(",polygon=").append(polygon);
+            }
+            if (globalDomain != null) {
+                sb.append(",globalDomain=").append(globalDomain);
+            }
+            if (domain0 != null) {
+                sb.append(",domain0=").append(domain0);
+            }
+            sb.append(",userProperties=").append(userProperties);
+        }
+        return sb.toString();
+    }
+
     public Domain getDomain() {
         return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+        if (domain.isEmpty()) {
+            throw new IllegalArgumentException("Zone Domain could not be null");
+        }
     }
 
     public Polygon getPolygon() {
@@ -121,7 +214,7 @@ public class MeshZone {
                 y[i] = (y[i] - domain0.ymin()) / domain0.ywidth() * globalDomain.ywidth() + globalDomain.ymin();
             }
             polygon = new Polygon(x, y);
-            Domain domainXY = Domain.forBounds(dxmin, dxmax, dymin, dymax);
+            Domain domainXY = Domain.ofBounds(dxmin, dxmax, dymin, dymax);
             Domain intersect = domainXY.intersect(polygon.getDomain());
             if (intersect.isEmpty()) {
                 intersect = domainXY.intersect(polygon.getDomain());
@@ -129,6 +222,17 @@ public class MeshZone {
             setDomain(intersect);
         }
         scale = !this.globalDomain.equals(domain0);
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public Point toEffectivePoint(Point p) {
+        if (!scale) {
+            return p;
+        }
+        return Point.create(toEffectiveX(p.x), toEffectiveY(p.y));
     }
 
     public double toEffectiveX(double x) {
@@ -145,20 +249,6 @@ public class MeshZone {
         return (y - domain0.getYMin()) / domain0.getYwidth() * globalDomain.ywidth() + globalDomain.ymin();
     }
 
-    public Point toEffectivePoint(Point p) {
-        if (!scale) {
-            return p;
-        }
-        return Point.create(toEffectiveX(p.x), toEffectiveY(p.y));
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-        if (domain.isEmpty()) {
-            throw new IllegalArgumentException("Zone Domain could not be null");
-        }
-    }
-
     public MeshZone getSymmetricY(double y0) {
         MeshZone zone = new MeshZone(geometry, shape, type);
         zone.setDomain(domain.getSymmetricY(y0));
@@ -171,19 +261,6 @@ public class MeshZone {
         return zone;
     }
 
-    public void setProperty(String name, Object value) {
-        if (value != null) {
-            if (userProperties == null) {
-                userProperties = new HashMap<String, Object>();
-            }
-            userProperties.put(name, value);
-        } else {
-            if (userProperties != null) {
-                userProperties.remove(name);
-            }
-        }
-    }
-
     public Map getProperties() {
         if (userProperties == null) {
             userProperties = new HashMap<String, Object>();
@@ -193,83 +270,5 @@ public class MeshZone {
 
     public Object getProperty(String name) {
         return userProperties == null ? null : userProperties.get(name);
-    }
-
-    public static final Comparator<MeshZone> ZONES_COMPARATOR = new Comparator<MeshZone>() {
-
-        public int compare(MeshZone o1, MeshZone o2) {
-            Integer type1 = o1.getType().getValue();
-            Integer type2 = o1.getType().getValue();
-            int c = type1.compareTo(type2);
-            if (c != 0) {
-                return c;
-            }
-//            if(o1==null || o2==null){
-//                return o1.equals(o2)?0:o1.hashCode()-o2.hashCode();
-//            }
-            int i = o1.type.compareTo(o2.type);
-            if (i != 0) {
-                return i;
-            }
-            if (o1.domain == null || o2.domain == null) {
-                return o1.equals(o2) ? 0 : o1.hashCode() - o2.hashCode();
-            }
-            return domainsComparator.compare(o1.domain, o2.domain);
-        }
-    };
-    private static Comparator<Domain> domainsComparator = new Comparator<Domain>() {
-
-        public int compare(Domain o1, Domain o2) {
-            //d'abord les structures les plus grandes ensuite selon position (y puis x)
-            double a1 = o1.xwidth() * o1.ywidth();
-            double a2 = o2.xwidth() * o2.ywidth();
-            if (a1 < a2) {
-                return 1;
-            } else if (a1 > a2) {
-                return -1;
-            }
-            a1 = o1.ymin();
-            a2 = o2.ymin();
-            if (a1 < a2) {
-                return -1;
-            } else if (a1 > a2) {
-                return 1;
-            }
-            a1 = o1.xmin();
-            a2 = o2.xmin();
-            if (a1 < a2) {
-                return -1;
-            } else if (a1 > a2) {
-                return 1;
-            }
-            return 0;
-        }
-    };
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("MeshZone{" + "shape=" + shape);
-        if (geometry != null) {
-            if (type != null) {
-                sb.append(",type=").append(type);
-            }
-            if (domain != null) {
-                sb.append(",domain=").append(domain);
-            }
-            if (geometry != null) {
-                sb.append(",geometry=").append(geometry);
-            }
-            if (polygon != null) {
-                sb.append(",polygon=").append(polygon);
-            }
-            if (globalDomain != null) {
-                sb.append(",globalDomain=").append(globalDomain);
-            }
-            if (domain0 != null) {
-                sb.append(",domain0=").append(domain0);
-            }
-            sb.append(",userProperties=").append(userProperties);
-        }
-        return sb.toString();
     }
 }

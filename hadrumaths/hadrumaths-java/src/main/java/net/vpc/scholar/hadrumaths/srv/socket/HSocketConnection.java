@@ -1,19 +1,15 @@
 package net.vpc.scholar.hadrumaths.srv.socket;
 
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.srv.HadrumathsServices;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
 public class HSocketConnection {
     private Socket socket;
-    private InetAddress address;
-    private int port;
+    private final InetAddress address;
+    private final int port;
     private DataInputStream in;
     private DataOutputStream out;
 
@@ -25,6 +21,12 @@ public class HSocketConnection {
         this.port = port;
     }
 
+    public void reconnectIfNecessary() throws UncheckedIOException {
+        if (!isConnected()) {
+            reconnect();
+        }
+    }
+
     public boolean isConnected() {
         if (socket == null) {
             return false;
@@ -32,33 +34,9 @@ public class HSocketConnection {
         return socket.isConnected();
     }
 
-    public void reconnectIfNecessary() throws UncheckedIOException {
-        if (!isConnected()) {
-            reconnect();
-        }
-    }
-
     public void reconnect() throws UncheckedIOException {
         close();
         connect();
-    }
-
-    public void connect() throws UncheckedIOException {
-        try {
-            socket = new Socket(address, port);
-            in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-            out = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public void invalidate() {
-        try {
-            close();
-        } catch (Exception e) {
-            //
-        }
     }
 
     public void close() throws UncheckedIOException {
@@ -90,11 +68,22 @@ public class HSocketConnection {
         }
     }
 
-    public DataInputStream in() throws UncheckedIOException {
-        if (in == null) {
-            throw new UncheckedIOException(new IOException("Not Connected"));
+    public void connect() throws UncheckedIOException {
+        try {
+            socket = new Socket(address, port);
+            in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            out = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
-        return in;
+    }
+
+    public void invalidate() {
+        try {
+            close();
+        } catch (Exception e) {
+            //
+        }
     }
 
     public DataOutputStream out() throws UncheckedIOException {
@@ -116,6 +105,13 @@ public class HSocketConnection {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public DataInputStream in() throws UncheckedIOException {
+        if (in == null) {
+            throw new UncheckedIOException(new IOException("Not Connected"));
+        }
+        return in;
     }
 
 

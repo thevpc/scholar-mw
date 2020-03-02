@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class ComplexArray implements Iterable<Complex>{
+public class ComplexArray implements Iterable<Complex> {
     private List<Complex> values = new ArrayList<>();
 
     public ComplexArray() {

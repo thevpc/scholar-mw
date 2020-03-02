@@ -26,7 +26,7 @@ public class QRDecomposition implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private double[][] QR;
+    private final double[][] QR;
 
     /**
      * Row and column dimensions.
@@ -34,14 +34,15 @@ public class QRDecomposition implements java.io.Serializable {
      * @serial column dimension.
      * @serial row dimension.
      */
-    private int m, n;
+    private final int m;
+    private final int n;
 
     /**
      * Array for internal storage of diagonal of R.
      *
      * @serial diagonal of R.
      */
-    private double[] Rdiag;
+    private final double[] Rdiag;
 
 /* ------------------------
    Constructor
@@ -66,7 +67,7 @@ public class QRDecomposition implements java.io.Serializable {
             // Compute 2-norm of k-th column without under/overflow.
             double nrm = 0;
             for (int i = k; i < m; i++) {
-                nrm = MathsBase.hypot(nrm, QR[i][k]);
+                nrm = Maths.hypot(nrm, QR[i][k]);
             }
 
             if (nrm != 0.0) {
@@ -98,20 +99,6 @@ public class QRDecomposition implements java.io.Serializable {
 /* ------------------------
    Public Methods
  * ------------------------ */
-
-    /**
-     * Is the matrix full rank?
-     *
-     * @return true if R, and hence A, has full rank.
-     */
-
-    public boolean isFullRank() {
-        for (int j = 0; j < n; j++) {
-            if (Rdiag[j] == 0)
-                return false;
-        }
-        return true;
-    }
 
     /**
      * Return the Householder vectors
@@ -233,5 +220,19 @@ public class QRDecomposition implements java.io.Serializable {
             }
         }
         return (new DMatrix(X, n, nx).getMatrix(0, n - 1, 0, nx - 1));
+    }
+
+    /**
+     * Is the matrix full rank?
+     *
+     * @return true if R, and hence A, has full rank.
+     */
+
+    public boolean isFullRank() {
+        for (int j = 0; j < n; j++) {
+            if (Rdiag[j] == 0)
+                return false;
+        }
+        return true;
     }
 }

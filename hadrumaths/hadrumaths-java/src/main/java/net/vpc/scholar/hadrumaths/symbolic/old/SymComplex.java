@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.Complex;
 public class SymComplex extends SymAbstractExpression {
     public static final SymComplex XZERO = new SymComplex(Complex.ZERO);
     public static final SymComplex XONE = new SymComplex(Complex.ONE);
-    private Complex value;
+    private final Complex value;
 
     public SymComplex(Complex value) {
         this.value = value;

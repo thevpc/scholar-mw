@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.sources.modal;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -52,17 +54,10 @@ public class UserModalSources extends AbstractPropagatingModalSources {
     }
 
     @Override
-    public Dumper getDumpStringHelper() {
-        Dumper h = super.getDumpStringHelper();
-        StringBuilder sb = new StringBuilder();
-        for (ModeIndex modeIndex : userDefined) {
-            if (sb.length() > 0) {
-                sb.append(",");
-            }
-            sb.append(modeIndex.dump());
-        }
-        h.add("modes", sb);
-        return h;
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("modes",context.elem(userDefined));
+        return h.build();
     }
 
     @Override

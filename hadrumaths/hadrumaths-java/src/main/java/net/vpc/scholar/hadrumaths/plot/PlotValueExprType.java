@@ -8,12 +8,12 @@ public class PlotValueExprType extends AbstractPlotValueType {
         super("expr");
     }
 
-    public Expr toExpr(Object o){
+    public Expr toExpr(Object o) {
         return (Expr) o;
     }
 
     @Override
     public Object getValue(Object o) {
-        return (Expr) o;
+        return o;
     }
 }

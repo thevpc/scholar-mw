@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -47,9 +47,9 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
         if (m == 0 && n == 0) {//mode TEM
             fn = Maths.vector(
 
-                    (FunctionFactory.DZEROXY),
+                    (Maths.DZEROXY),
                     (expr(1.0 / Math.sqrt(a * b), domain))
-            );
+            ).toDV();
             fn= fn.setTitle("EMEM" + mode + m + "" + n).toDV();
         } else {
             double u = 1;
@@ -98,8 +98,7 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
             //if(fx.isNull() && fy.isNull()){
             //    System.out.println("null for "+i);
             //}
-            fn = Maths.vector(fx, fy);
-            fn= fn.setTitle("EMEM" + m + "" + n).toDV();
+            fn= Maths.vector(fx, fy).setTitle("EMEM" + m + "" + n).toDV();
         }
         return fn;
     }

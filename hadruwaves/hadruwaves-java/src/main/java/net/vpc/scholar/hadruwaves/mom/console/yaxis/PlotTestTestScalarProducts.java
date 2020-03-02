@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadruplot.PlotType;
@@ -28,11 +28,11 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
     }
 
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure, monitor, p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure, monitor, p);
     }
 
-    protected PlotMatrix computeMatrix(final MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
+    protected PlotMatrix evalMatrix(final MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
         return Maths.invokeMonitoredAction(cmonitor, getClass().getSimpleName(), new MonitoredAction<PlotMatrix>() {
             @Override
             public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -52,8 +52,8 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
 //                }
                         gfps[q][n] = Maths.scalarProduct(
                                 _testFunctions.gp(n),
-                                _testFunctions.gp(q));
-                        ProgressMonitorFactory.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
+                                _testFunctions.gp(q)).toComplex();
+                        ProgressMonitors.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
 //                monitor.setProgress(1.0*progress/(gfps.length*max));
                     }
                 }

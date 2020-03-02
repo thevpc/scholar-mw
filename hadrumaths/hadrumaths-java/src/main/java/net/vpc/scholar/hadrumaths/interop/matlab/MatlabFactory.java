@@ -4,7 +4,13 @@ import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.interop.matlab.impl.*;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -26,6 +32,12 @@ import java.util.logging.Logger;
 public class MatlabFactory extends AbstractFactory {
 
     private static final ClassMap<ToMatlabString> map = new ClassMap<ToMatlabString>(Object.class, ToMatlabString.class, 12);
+    public static MatlabXFormat X = new MatlabXFormat("x");
+    public static MatlabYFormat Y = new MatlabYFormat("y");
+    public static MatlabZFormat Z = new MatlabZFormat("z");
+    public static MatlabDomainFormat NO_DOMAIN = new MatlabDomainFormat(MatlabDomainFormat.Type.NONE);
+    public static MatlabDomainFormat GATE_DOMAIN = new MatlabDomainFormat(MatlabDomainFormat.Type.GATE);
+    public static MatlabVectorizeFormat VECTORIZE = new MatlabVectorizeFormat();
 
     static {
         register(ComplexMatrix.class, new MatrixToMatlabString());
@@ -36,22 +48,13 @@ public class MatlabFactory extends AbstractFactory {
 //        register(DDxSymmetric.class, new DFunctionSymmetricXToMatlabString());
 //        register(DDxToDDxy.class, new DFunctionXYFromXToMatlabString());
         register(Linear.class, new DLinearFunctionXYToMatlabString());
-        register(DDy.class, new DFunctionYFromXYToMatlabString());
 //        register(DDxyToDDx.class, new DFunctionXFromXYToMatlabString());
         register(Mul.class, new DFunctionProductXYToMatlabString());
         register(DoubleValue.class, new DCstFunctionXYToMatlabString());
         register(CosXCosY.class, new DCosCosFunctionXYToMatlabString());
-        register(DDxyAbstractSum.class, new DAbstractSumFunctionXYToMatlabString());
 //        register(DomainX.class, new DomainXToMatlabString());
         register(Domain.class, new DomainXYToMatlabString());
     }
-
-    public static MatlabXFormat X = new MatlabXFormat("x");
-    public static MatlabYFormat Y = new MatlabYFormat("y");
-    public static MatlabZFormat Z = new MatlabZFormat("z");
-    public static MatlabDomainFormat NO_DOMAIN = new MatlabDomainFormat(MatlabDomainFormat.Type.NONE);
-    public static MatlabDomainFormat GATE_DOMAIN = new MatlabDomainFormat(MatlabDomainFormat.Type.GATE);
-    public static MatlabVectorizeFormat VECTORIZE = new MatlabVectorizeFormat();
 
     private MatlabFactory() {
     }
@@ -63,12 +66,6 @@ public class MatlabFactory extends AbstractFactory {
 //    }
     public static void register(Class clz, ToMatlabString t) {
         map.put(clz, t);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static String toMatlabString(Object o, ToMatlabStringParam... format) {
-        ToMatlabString best = map.getRequired(o.getClass());
-        return best.toMatlabString(o, format);
     }
 
     public static String dblquadString(DoubleToComplex f, boolean useGate) {
@@ -89,9 +86,6 @@ public class MatlabFactory extends AbstractFactory {
             DoubleToDouble[] s = null;
 
             s = new DoubleToDouble[]{r};
-            if (r instanceof DDxyAbstractSum) {
-                s = ((DDxyAbstractSum) r).getSegments();
-            }
             for (int j = 0; j < s.length; j++) {
                 Domain d = s[j].getDomain();
                 if (sb.length() > 0) {
@@ -103,9 +97,6 @@ public class MatlabFactory extends AbstractFactory {
             }
 
             s = new DoubleToDouble[]{i};
-            if (i instanceof DDxyAbstractSum) {
-                s = ((DDxyAbstractSum) i).getSegments();
-            }
             for (int j = 0; j < s.length; j++) {
                 Domain d = s[j].getDomain();
                 if (sb.length() > 0) {
@@ -119,6 +110,12 @@ public class MatlabFactory extends AbstractFactory {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static String toMatlabString(Object o, ToMatlabStringParam... format) {
+        ToMatlabString best = map.getRequired(o.getClass());
+        return best.toMatlabString(o, format);
+    }
+
     public static String symdblquadString(DoubleToComplex f) {
 //        f = f.simplify();
         DoubleToDouble r = f.getRealDD();
@@ -127,9 +124,6 @@ public class MatlabFactory extends AbstractFactory {
         DoubleToDouble[] s = null;
 
         s = new DoubleToDouble[]{r};
-        if (r instanceof DDxyAbstractSum) {
-            s = ((DDxyAbstractSum) r).getSegments();
-        }
         for (int j = 0; j < s.length; j++) {
             Domain d = s[j].getDomain();
             if (sb.length() > 0) {
@@ -139,9 +133,6 @@ public class MatlabFactory extends AbstractFactory {
         }
 
         s = new DoubleToDouble[]{i};
-        if (i instanceof DDxyAbstractSum) {
-            s = ((DDxyAbstractSum) i).getSegments();
-        }
         for (int j = 0; j < s.length; j++) {
             Domain d = s[j].getDomain();
             if (sb.length() > 0) {
@@ -188,11 +179,7 @@ public class MatlabFactory extends AbstractFactory {
         }
         for (int i = 0; i < sum.length; i++) {
             DoubleToDouble dFunction = sum[i];
-            if (dFunction instanceof DDxyAbstractSum) {
-                linearize(((DDxyAbstractSum) dFunction).getSegments(), putInto);
-            } else {
-                putInto.add(dFunction);
-            }
+            putInto.add(dFunction);
         }
         return putInto;
     }
@@ -235,11 +222,11 @@ public class MatlabFactory extends AbstractFactory {
         }
         for (int i = 0; i < sum.length; i++) {
             DoubleToComplex cFunctionXY = sum[i];
-            if (cFunctionXY.getRealDD() != FunctionFactory.DZEROXY) {
-                putInto.add(MathsBase.complex(cFunctionXY.getRealDD(), FunctionFactory.DZEROXY));
+            if (cFunctionXY.getRealDD() != Maths.DZEROXY) {
+                putInto.add(Maths.complex(cFunctionXY.getRealDD(), Maths.DZEROXY));
             }
-            if (cFunctionXY.getImagDD() != FunctionFactory.DZEROXY) {
-                putInto.add(MathsBase.complex(FunctionFactory.DZEROXY, cFunctionXY.getImagDD()));
+            if (cFunctionXY.getImagDD() != Maths.DZEROXY) {
+                putInto.add(Maths.complex(Maths.DZEROXY, cFunctionXY.getImagDD()));
             }
         }
         return putInto;

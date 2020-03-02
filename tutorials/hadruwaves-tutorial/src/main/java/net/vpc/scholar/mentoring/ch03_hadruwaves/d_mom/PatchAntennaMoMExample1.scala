@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
 
 object PatchAntennaMoMExample1 extends App {
-  val π = PI
+//  val π = PI
   var f = 5.7 * GHZ
   var λ = C / f
   val a = λ * 10

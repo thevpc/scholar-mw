@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruplot;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
@@ -17,8 +17,8 @@ public class PlotConstantMatrix extends PlotAxisSeries implements Cloneable {
 
 
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor m= ProgressMonitorFactory.nonnull(monitor);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        ProgressMonitor m= ProgressMonitors.nonnull(monitor);
         String name = getName();
         m.start(name+", starting...");
         m.terminate(name+", terminated...");

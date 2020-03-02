@@ -8,12 +8,12 @@ public class PlotValueComplexType extends AbstractPlotValueType {
         super("complex");
     }
 
-    public Complex toComplex(Object o) {
-        return PlotTypesHelper.toComplex(o);
-    }
-
     @Override
     public Object getValue(Object o) {
         return toComplex(o);
+    }
+
+    public Complex toComplex(Object o) {
+        return PlotTypesHelper.toComplex(o);
     }
 }

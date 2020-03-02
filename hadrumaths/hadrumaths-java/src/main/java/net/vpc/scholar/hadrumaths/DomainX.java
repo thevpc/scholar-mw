@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
  */
-public final class DomainX extends Domain implements Cloneable {
+final class DomainX extends Domain implements Cloneable {
     private static final long serialVersionUID = 1L;
 
 
@@ -11,6 +11,7 @@ public final class DomainX extends Domain implements Cloneable {
     public final double xmax;
 
     DomainX(double xmin, double xmax) {
+        super(hashCode0(xmin, xmax));
         this.xmin = xmin;
         this.xmax = xmax;
         if (xwidth() < 0) {
@@ -18,6 +19,47 @@ public final class DomainX extends Domain implements Cloneable {
         }
     }
 
+    private static int hashCode0(double xmin, double xmax) {
+        int hash = 1545108161;//DomainX.class.getName().hashCode();
+        hash = 43 * hash + Double.hashCode(xmin);
+        hash = 43 * hash + Double.hashCode(xmax);
+        return hash;
+    }
+
+    public Expr simplify(SimplifyOptions options) {
+        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(this, options == null ? null : options.getTargetExprType());
+    }
+
+
+    public Domain intersect(Domain other) {
+        if (other == null || other == this) {
+            return this;
+        }
+        int d_t = this.dimension();
+        double[] minMax = new double[3];
+
+        switch (other.dimension()) {
+            case 1: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                switch ((int) minMax[2]) {
+                    case 0:
+                        return this;
+                    case 1:
+                        return other;
+                }
+                return Domain.ofBounds(minMax[0], minMax[1]);
+            }
+            case 2: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                return Domain.ofBounds(minMax[0], minMax[1], other.ymin(), other.ymax());
+            }
+            case 3: {
+                Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
+                return Domain.ofBounds(minMax[0], minMax[1], other.ymin(), other.ymax(), other.zmin(), other.zmax());
+            }
+        }
+        throw new IllegalArgumentException("Unsupported domain " + other.dimension());
+    }
 
     public double xmin() {
         return xmin;
@@ -25,6 +67,10 @@ public final class DomainX extends Domain implements Cloneable {
 
     public double xmax() {
         return xmax;
+    }
+
+    public int dimension() {
+        return 1;
     }
 
     public double ymin() {
@@ -43,6 +89,33 @@ public final class DomainX extends Domain implements Cloneable {
         return Double.POSITIVE_INFINITY;
     }
 
+    public boolean contains(double x) {
+        return x >= xmin && x < xmax;
+    }
+
+    public boolean contains(double x, double y) {
+        return x >= xmin && x < xmax;
+    }
+
+    public boolean contains(double x, double y, double z) {
+        return x >= xmin
+                && x < xmax
+                ;
+    }
+
+//    public int hashCode() {
+//        int hash = 7;
+//        long xminl = Double.doubleToLongBits(this.xmin);
+//        long xmaxl = Double.doubleToLongBits(this.xmax);
+//        hash = 43 * hash + (int) (xminl ^ (xminl >>> 32));
+//        hash = 43 * hash + (int) (xmaxl ^ (xmaxl >>> 32));
+//        return hash;
+//    }
+
+    public Domain toDomainX() {
+        return this;
+    }
+
     public double xwidth() {
         return xmax - xmin;
     }
@@ -55,18 +128,8 @@ public final class DomainX extends Domain implements Cloneable {
         return Double.POSITIVE_INFINITY;
     }
 
-    public int dimension() {
-        return 1;
-    }
-
-
     public int hashCode() {
-        int hash = 7;
-        long xminl = Double.doubleToLongBits(this.xmin);
-        long xmaxl = Double.doubleToLongBits(this.xmax);
-        hash = 43 * hash + (int) (xminl ^ (xminl >>> 32));
-        hash = 43 * hash + (int) (xmaxl ^ (xmaxl >>> 32));
-        return hash;
+        return eagerHashCode;
     }
 
     @Override
@@ -77,24 +140,14 @@ public final class DomainX extends Domain implements Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Domain other = (Domain) obj;
-        if (this.xmin() != other.xmin()) {
+        final DomainX other = (DomainX) obj;
+        if (this.eagerHashCode != other.eagerHashCode) {
             return false;
         }
-        if (this.xmax() != other.xmax()) {
+        if (this.xmin != other.xmin) {
             return false;
         }
-        return true;
-    }
-
-    public boolean contains(double x, double y, double z) {
-        return x >= xmin()
-                && x < xmax()
-                ;
-    }
-
-    public boolean contains(double x, double y) {
-        return x >= xmin() && x < xmax();
+        return this.xmax == other.xmax;
     }
 
 }

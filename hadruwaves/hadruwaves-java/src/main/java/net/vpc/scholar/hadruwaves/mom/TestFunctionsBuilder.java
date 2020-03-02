@@ -342,6 +342,10 @@ public class TestFunctionsBuilder {
         return complexity;
     }
 
+    public TestFunctionsBuilder complexity(int complexity) {
+        return setComplexity(complexity);
+    }
+
     public TestFunctionsBuilder setComplexity(int complexity) {
         this.complexity = complexity;
         return this;
@@ -350,6 +354,10 @@ public class TestFunctionsBuilder {
 
     public TestFunctionsSymmetry getGpSymmetry() {
         return gpSymmetry;
+    }
+
+    public TestFunctionsBuilder gGpSymmetry(TestFunctionsSymmetry gpSymmetry) {
+        return setGpSymmetry(gpSymmetry);
     }
 
     public TestFunctionsBuilder setGpSymmetry(TestFunctionsSymmetry gpSymmetry) {

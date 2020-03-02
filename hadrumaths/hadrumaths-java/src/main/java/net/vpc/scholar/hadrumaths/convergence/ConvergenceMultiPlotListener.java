@@ -6,8 +6,8 @@ package net.vpc.scholar.hadrumaths.convergence;
 
 import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruplot.Plot;
 
 import javax.swing.*;
@@ -24,63 +24,15 @@ import java.util.logging.Logger;
  */
 public class ConvergenceMultiPlotListener implements ConvergenceListener {
 
-    private String title;
-    private Map<String, ArrayList<Object>> valuesMap = new HashMap<String, ArrayList<Object>>();
+    private final static Object[] Z_ARR = new Object[0];
+    private final String title;
+    private final Map<String, ArrayList<Object>> valuesMap = new HashMap<String, ArrayList<Object>>();
     private JPanel valuesPanel;
     private WindowManager windowManager;
     private boolean added = false;
 
-    public static interface WindowManager {
-
-        void addComponent(String title, Component comp);
-
-        void dataChanged();
-    }
-
-    public static class DefaultWindowManager implements WindowManager {
-
-        private String title;
-        private JFrame frame;
-        private JTabbedPane jtp;
-
-        public DefaultWindowManager(String title) {
-            this.title = title;
-        }
-
-
-        @Override
-        public void addComponent(String title, Component comp) {
-            getFrame();
-            jtp.addTab(title, comp);
-        }
-
-        @Override
-        public void dataChanged() {
-            getFrame().getContentPane().repaint();
-        }
-
-        public synchronized JFrame getFrame() {
-            if (frame == null) {
-                frame = new JFrame(title);
-                jtp = new JTabbedPane();
-                frame.add(jtp);
-                frame.setMinimumSize(new Dimension(600, 400));
-                frame.pack();
-                frame.setVisible(true);
-            }
-            return frame;
-        }
-    }
-
     public ConvergenceMultiPlotListener(String title) {
         this.title = title;
-    }
-
-    public Component getComponent() {
-        if (valuesPanel == null) {
-            valuesPanel = new JPanel(new BorderLayout());
-        }
-        return valuesPanel;
     }
 
     @Override
@@ -107,7 +59,7 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         }
 
 
-        double[] x0 = MathsBase.dsteps(0.0, max - 1, 1);
+        double[] x0 = Maths.dsteps(0.0, max - 1, 1);
         final double[][] x = new double[all.length][];
         final double[][] dblValues = new double[all.length][max];
 
@@ -146,6 +98,13 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
         }
     }
 
+    public Component getComponent() {
+        if (valuesPanel == null) {
+            valuesPanel = new JPanel(new BorderLayout());
+        }
+        return valuesPanel;
+    }
+
     public double toDouble(Object o) {
         return (o == null) ? 0 : (o instanceof Complex) ? ((Complex) o).absdbl() : (o instanceof ComplexMatrix) ? ((ComplexMatrix) o).norm1() : ((Number) o).doubleValue();
     }
@@ -153,8 +112,6 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
     public void setWindowManager(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
-
-    private final static Object[] Z_ARR = new Object[0];
 
     public Object[] getValues(String id) {
         ArrayList<Object> a = getValuesList(id);
@@ -168,6 +125,48 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
             valuesMap.put(id, values);
         }
         return values;
+    }
+
+    public interface WindowManager {
+
+        void addComponent(String title, Component comp);
+
+        void dataChanged();
+    }
+
+    public static class DefaultWindowManager implements WindowManager {
+
+        private final String title;
+        private JFrame frame;
+        private JTabbedPane jtp;
+
+        public DefaultWindowManager(String title) {
+            this.title = title;
+        }
+
+
+        @Override
+        public void addComponent(String title, Component comp) {
+            getFrame();
+            jtp.addTab(title, comp);
+        }
+
+        @Override
+        public void dataChanged() {
+            getFrame().getContentPane().repaint();
+        }
+
+        public synchronized JFrame getFrame() {
+            if (frame == null) {
+                frame = new JFrame(title);
+                jtp = new JTabbedPane();
+                frame.add(jtp);
+                frame.setMinimumSize(new Dimension(600, 400));
+                frame.pack();
+                frame.setVisible(true);
+            }
+            return frame;
+        }
     }
 
 }

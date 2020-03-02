@@ -18,14 +18,6 @@ public class DLineEQ {
         this.c = c;
     }
 
-    public double getValue(double x, double y) {
-        return a * x + b * y + c;
-    }
-
-    public double getValue(Point p) {
-        return getValue(p.x, p.y);
-    }
-
     public DLineEQ(Point p1, Point p2) {
         if (p1.x == p2.x && p1.y == p2.y) {
             this.a = 0;
@@ -45,6 +37,14 @@ public class DLineEQ {
             this.c = -p1.x - b * p1.y;
         }
 
+    }
+
+    public double getValue(Point p) {
+        return getValue(p.x, p.y);
+    }
+
+    public double getValue(double x, double y) {
+        return a * x + b * y + c;
     }
 
     public Point intersect(DLineEQ line) {

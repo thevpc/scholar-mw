@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HSocketClient implements HadrumathsClient {
-    private String fsId;
-    private String address;
-    private int port;
+    private final String fsId;
+    private final String address;
+    private final int port;
     private HSocketConnection connection;
 
     public HSocketClient(String fsId, String address, int port) throws UnknownHostException {
@@ -36,23 +36,6 @@ public class HSocketClient implements HadrumathsClient {
 
     public void setConnection(HSocketConnection connection) {
         this.connection = connection;
-    }
-
-
-    @Override
-    public long ping() {
-        long ret = -1;
-        Chronometer c = new Chronometer();
-        try {
-            connection.reconnectIfNecessary();
-            connection.out().writeUTF(fsId);
-            connection.out().writeByte(FSConstants.Command.PING.ordinal());
-            connection.consumeResponseHeader();
-            ret=c.stop().getTime();
-        } catch (IOException e) {
-            connection.invalidate();
-        }
-        return ret;
     }
 
     public List<String> list(String path) {
@@ -146,6 +129,22 @@ public class HSocketClient implements HadrumathsClient {
             connection.invalidate();
             throw new IllegalArgumentException(e);
         }
+    }
+
+    @Override
+    public long ping() {
+        long ret = -1;
+        Chronometer c = Chronometer.start();
+        try {
+            connection.reconnectIfNecessary();
+            connection.out().writeUTF(fsId);
+            connection.out().writeByte(FSConstants.Command.PING.ordinal());
+            connection.consumeResponseHeader();
+            ret = c.stop().getTime();
+        } catch (IOException e) {
+            connection.invalidate();
+        }
+        return ret;
     }
 
     @Override

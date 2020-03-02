@@ -5,9 +5,11 @@
 
 package net.vpc.scholar.hadruwaves.mom.util;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -42,23 +44,23 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public ComplexMatrix computeTestcoeff(ProgressMonitor monitor) {
-        return momStructure.matrixX().monitor(monitor).computeMatrix();
+    public ComplexMatrix evalXMatrix(ProgressMonitor monitor) {
+        return momStructure.matrixX().monitor(monitor).evalMatrix();
     }
 
 
-    public VDiscrete computeElectricField(double[] x, double[] y, double[] z, ProgressMonitor monitor) {
-        return momStructure.electricField().monitor(monitor).computeVDiscrete(x, y, new double[]{0});
+    public VDiscrete evalElectricField(double[] x, double[] y, double[] z, ProgressMonitor monitor) {
+        return momStructure.electricField().monitor(monitor).cartesian().evalVDiscrete(x, y, new double[]{0});
     }
 
 
-    public VDiscrete computeCurrent(double[] x, double[] y, ProgressMonitor monitor) {
-        return momStructure.current().monitor(monitor).computeVDiscrete(x, y);
+    public VDiscrete evalCurrent(double[] x, double[] y, ProgressMonitor monitor) {
+        return momStructure.current().monitor(monitor).evalVDiscrete(x, y);
     }
 
 
-    public VDiscrete computeTestField(double[] x, double[] y, ProgressMonitor monitor) {
-        return momStructure.testField().monitor(monitor).computeVDiscrete(x, y);
+    public VDiscrete evalTestField(double[] x, double[] y, ProgressMonitor monitor) {
+        return momStructure.testField().monitor(monitor).evalVDiscrete(x, y);
     }
 
 
@@ -67,24 +69,24 @@ public class MomStrHelperImpl implements MomStrHelper {
     }
 
 
-    public ComplexMatrix computeZin(ProgressMonitor monitor) {
-        return momStructure.inputImpedance().monitor(monitor).computeMatrix();
+    public ComplexMatrix evalZin(ProgressMonitor monitor) {
+        return momStructure.inputImpedance().monitor(monitor).evalMatrix();
     }
 
 
-    public ComplexMatrix computeS(ProgressMonitor monitor) {
-        return momStructure.sparameters().monitor(monitor).computeMatrix();
+    public ComplexMatrix evalS(ProgressMonitor monitor) {
+        return momStructure.sparameters().monitor(monitor).evalMatrix();
     }
 
 
-    public ComplexMatrix computeAMatrix(ProgressMonitor monitor) {
-        return momStructure.matrixA().monitor(monitor).computeMatrix();
+    public ComplexMatrix evalAMatrix(ProgressMonitor monitor) {
+        return momStructure.matrixA().monitor(monitor).evalMatrix();
     }
 
 
-    public ComplexMatrix computeBMatrix(ProgressMonitor monitor) {
+    public ComplexMatrix evalBMatrix(ProgressMonitor monitor) {
         return momStructure.matrixB()
-                .monitor(monitor).computeMatrix();
+                .monitor(monitor).evalMatrix();
     }
 
 
@@ -122,13 +124,17 @@ public class MomStrHelperImpl implements MomStrHelper {
         return momStructure.getAllCaches();
     }
 
-    public ComplexMatrix computeCapacity(ProgressMonitor monitor) {
+    public ComplexMatrix evalCapacity(ProgressMonitor monitor) {
         return momStructure
-                .capacity().monitor(monitor).computeMatrix();
+                .capacity().monitor(monitor).evalMatrix();
     }
 
-    public String getDump() {
+    public String dump() {
         return momStructure.dump();
+    }
+
+    public TsonElement toTsonElement(TsonObjectContext context){
+        return momStructure.toTsonElement(context);
     }
 
 

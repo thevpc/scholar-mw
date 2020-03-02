@@ -14,7 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import net.vpc.scholar.hadruwaves.mom.project.MomProjectListener;
-import net.vpc.scholar.hadruwaves.studio.standalone.editors.MomProjectEditor;
+import net.vpc.scholar.hadruwaves.studio.standalone.v1.editors.MomProjectEditor;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
@@ -26,9 +26,7 @@ import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.windows.TopComponent;
 
 //@MultiViewElement.Registration(
 //        displayName = "#LBL_HWSProject_VISUAL",
@@ -135,7 +133,7 @@ public final class HWSProjectVisualElement extends JPanel implements MultiViewEl
     @Override
     public Action[] getActions() {
         Action[] retValue;
-        // the multiviewObserver was passed to the element in setMultiViewCallback() method.
+        // the multiviewObserver was passed to the primitiveElement3D in setMultiViewCallback() method.
         if (callback != null) {
             retValue = callback.createDefaultActions();
             // add you own custom actions here..

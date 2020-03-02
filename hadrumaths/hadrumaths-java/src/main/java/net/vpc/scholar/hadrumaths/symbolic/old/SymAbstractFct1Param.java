@@ -8,7 +8,7 @@ import net.vpc.scholar.hadrumaths.symbolic.old.symop.SymOpMul;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public abstract class SymAbstractFct1Param extends SymFunction {
-    private SymExpression value;
+    private final SymExpression value;
 
     public SymAbstractFct1Param(String name, SymExpression value) {
         super(name);
@@ -41,8 +41,6 @@ public abstract class SymAbstractFct1Param extends SymFunction {
 
     protected abstract Complex eval(Complex value);
 
-    protected abstract SymExpression diff();
-
     protected SymAbstractFct1Param newInstance(SymExpression value) {
         try {
             return getClass().getConstructor(SymExpression.class).newInstance(value);
@@ -52,10 +50,6 @@ public abstract class SymAbstractFct1Param extends SymFunction {
         }
     }
 
-    public SymExpression getValue() {
-        return value;
-    }
-
     public String toString(SymStringContext context) {
         SymStringContext c = context.clone();
         c.setPreferParentheses(false);
@@ -63,5 +57,11 @@ public abstract class SymAbstractFct1Param extends SymFunction {
         String s = getValue().toString(c);
         return (SymUtils.formatRow(null, getName() + "(", s, ")"));
     }
+
+    public SymExpression getValue() {
+        return value;
+    }
+
+    protected abstract SymExpression diff();
 
 }

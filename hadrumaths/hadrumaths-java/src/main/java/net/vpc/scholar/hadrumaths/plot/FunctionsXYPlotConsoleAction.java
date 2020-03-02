@@ -10,17 +10,16 @@ import net.vpc.scholar.hadruplot.console.PlotConsole;
 import net.vpc.scholar.hadruplot.console.WindowPath;
 
 import javax.swing.*;
-import java.util.Set;
 
 
 public class FunctionsXYPlotConsoleAction implements ConsoleAction {
     private static final long serialVersionUID = 1L;
-    private DoubleToVector[] fn;
-    private String title;
-    private Domain domain;
-    private WindowPath preferredPath;
-    private PlotType plotType;
-    private String libraries;
+    private final DoubleToVector[] fn;
+    private final String title;
+    private final Domain domain;
+    private final WindowPath preferredPath;
+    private final PlotType plotType;
+    private final String libraries;
 
     public FunctionsXYPlotConsoleAction(String typeTitle, String title, DoubleToVector[] fn, Domain domain, WindowPath preferredPath, PlotType plotType, String libraries) {
         this.fn = fn;
@@ -35,7 +34,7 @@ public class FunctionsXYPlotConsoleAction implements ConsoleAction {
         ExpressionsPlotModel m = new ExpressionsPlotModel();
         m.setDomain(domain).setExpressions(fn)
                 .setPlotType(plotType)
-                .setLibraries(libraries)
+                //.setLibraries(libraries)
                 .setSelectedAxis(new CellPosition[]{new CellPosition(0, 0)})
                 .setTitle(title)
         ;

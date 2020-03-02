@@ -53,16 +53,12 @@ public class MeshZoneType implements Comparable<MeshZoneType>, Serializable {
      */
     public static MeshZoneTypeFilter FILTER_MXY = new MeshZoneTypeFilterAccepted(MAIN, ATTACHX, ATTACHY);
 
-    private int value;
-    private String name;
+    private final int value;
+    private final String name;
 
     public MeshZoneType(int value, String name) {
         this.value = value;
         this.name = name;
-    }
-
-    public String toString() {
-        return name;
     }
 
     public int getValue() {
@@ -73,18 +69,20 @@ public class MeshZoneType implements Comparable<MeshZoneType>, Serializable {
         return value - (o == null ? -1 : o.value);
     }
 
+    public int hashCode() {
+        return value;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         MeshZoneType that = (MeshZoneType) o;
 
-        if (value != that.value) return false;
-
-        return true;
+        return value == that.value;
     }
 
-    public int hashCode() {
-        return value;
+    public String toString() {
+        return name;
     }
 }

@@ -8,21 +8,97 @@ import java.util.*;
  * User: TAHA
  * Date: 7 fevr. 2004
  * Time: 09:11:50
- * 
  */
 public class Properties2 extends LinkedHashMap {
+    private static final String keyValueSeparators = "=: \t\r\n\f";
+    private static final String strictKeyValueSeparators = "=:";
+    private static final String specialSaveChars = "=: \t\r\n\f#!";
+    private static final String whiteSpaceChars = " \t\r\n\f";
+    private static final char[] hexDigit = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F'
+    };
     public static LoadMetaDataHandler DEFAULT_LOAD_META_DATA_HANDLER = new LoadMetaDataHandler();
     private Vector metaDataHandlers;
     private Vector metadata;
+    private File loadingFile;
 
     public Properties2() {
         super();
         addMetaDataHandler(DEFAULT_LOAD_META_DATA_HANDLER);
     }
 
+    public void addMetaDataHandler(MetaDataHandler handler) {
+        if (metaDataHandlers == null) {
+            metaDataHandlers = new Vector();
+        }
+        metaDataHandlers.add(handler);
+    }
+
     public Properties2(Map map) {
         super(map);
         addMetaDataHandler(DEFAULT_LOAD_META_DATA_HANDLER);
+    }
+
+    public static String toSpecialString(String theString, boolean escapeSpace) {
+        return toSpecialString(theString, "=: \t\r\n\f#!", escapeSpace);
+    }
+
+    public static String toSpecialString(String theString, String specialSaveChars, boolean escapeSpace) {
+        int len = theString.length();
+        StringBuilder outBuffer = new StringBuilder(len * 2);
+        for (int x = 0; x < len; x++) {
+            char aChar = theString.charAt(x);
+            switch (aChar) {
+                case 32: // ' '
+                    if (x == 0 || escapeSpace)
+                        outBuffer.append('\\');
+                    outBuffer.append(' ');
+                    break;
+
+                case 92: // '\\'
+                    outBuffer.append('\\');
+                    outBuffer.append('\\');
+                    break;
+
+                case 9: // '\t'
+                    outBuffer.append('\\');
+                    outBuffer.append('t');
+                    break;
+
+                case 10: // '\n'
+                    outBuffer.append('\\');
+                    outBuffer.append('n');
+                    break;
+
+                case 13: // '\r'
+                    outBuffer.append('\\');
+                    outBuffer.append('r');
+                    break;
+
+                case 12: // '\f'
+                    outBuffer.append('\\');
+                    outBuffer.append('f');
+                    break;
+
+                default:
+                    if (aChar < ' ' || aChar > '~') {
+                        outBuffer.append('\\');
+                        outBuffer.append('u');
+                        outBuffer.append(toHex(aChar >> 12 & 0xf));
+                        outBuffer.append(toHex(aChar >> 8 & 0xf));
+                        outBuffer.append(toHex(aChar >> 4 & 0xf));
+                        outBuffer.append(toHex(aChar & 0xf));
+                        break;
+                    }
+                    if (specialSaveChars.indexOf(aChar) != -1)
+                        outBuffer.append('\\');
+                    outBuffer.append(aChar);
+                    break;
+            }
+        }
+
+        return outBuffer.toString();
     }
 
     /**
@@ -42,16 +118,6 @@ public class Properties2 extends LinkedHashMap {
         return put(key, value);
     }
 
-    private static final String keyValueSeparators = "=: \t\r\n\f";
-
-    private static final String strictKeyValueSeparators = "=:";
-
-    private static final String specialSaveChars = "=: \t\r\n\f#!";
-
-    private static final String whiteSpaceChars = " \t\r\n\f";
-
-    private File loadingFile;
-
     public synchronized void load(File file) throws IOException {
         FileInputStream fis = null;
         loadingFile = file;
@@ -67,11 +133,11 @@ public class Properties2 extends LinkedHashMap {
     }
 
     /**
-     * Reads a property list (key and element pairs) from the input
+     * Reads a property list (key and primitiveElement3D pairs) from the input
      * stream.  The stream is assumed to be using the ISO 8859-1
      * character encoding; that is each byte is one Latin1 character.
      * Characters not in Latin1, and certain special characters, can
-     * be represented in keys and elements using escape sequences
+     * be represented in keys and primitiveElement3DS using escape sequences
      * similar to those used for character and string literals (see <a
      * href="http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#100850">&sect;3.3</a>
      * and <a
@@ -112,8 +178,8 @@ public class Properties2 extends LinkedHashMap {
      * characters (<code>\n</code> or <code>\r</code> or
      * <code>\r\n</code>) or by the end of the file.  A natural line
      * may be either a blank line, a comment line, or hold some part
-     * of a key-element pair.  The logical line holding all the data
-     * for a key-element pair may be spread out across several adjacent
+     * of a key-primitiveElement3D pair.  The logical line holding all the data
+     * for a key-primitiveElement3D pair may be spread out across several adjacent
      * natural lines by escaping the line terminator sequence with a
      * backslash character, <code>\</code>.  Note that a comment line
      * cannot be extended in this manner; every natural line that is a
@@ -128,7 +194,7 @@ public class Properties2 extends LinkedHashMap {
      * considered blank and is ignored.  A comment line has an ASCII
      * <code>'#'</code> or <code>'!'</code> as its first non-white
      * space character; comment lines are also ignored and do not
-     * encode key-element information.  In addition to line
+     * encode key-primitiveElement3D information.  In addition to line
      * terminators, this method considers the characters space
      * (<code>' '</code>, <code>'&#92;u0020'</code>), tab
      * (<code>'\t'</code>, <code>'&#92;u0009'</code>), and form feed
@@ -139,9 +205,9 @@ public class Properties2 extends LinkedHashMap {
      * If a logical line is spread across several natural lines, the
      * backslash escaping the line terminator sequence, the line
      * terminator sequence, and any white space at the start the
-     * following line have no affect on the key or element values.
-     * The remainder of the discussion of key and element parsing will
-     * assume all the characters constituting the key and element
+     * following line have no affect on the key or primitiveElement3D values.
+     * The remainder of the discussion of key and primitiveElement3D parsing will
+     * assume all the characters constituting the key and primitiveElement3D
      * appear on a single natural line after line continuation
      * characters have been removed.  Note that it is <i>not</i>
      * sufficient to only examine the character preceding a line
@@ -171,15 +237,15 @@ public class Properties2 extends LinkedHashMap {
      * the key is <code>'='</code> or <code>':'</code>, then it is
      * ignored and any white space characters after it are also
      * skipped.  All remaining characters on the line become part of
-     * the associated element string; if there are no remaining
-     * characters, the element is the empty string
+     * the associated primitiveElement3D string; if there are no remaining
+     * characters, the primitiveElement3D is the empty string
      * <code>&quot;&quot;</code>.  Once the raw character sequences
-     * constituting the key and element are identified, escape
+     * constituting the key and primitiveElement3D are identified, escape
      * processing is performed as described above.
      * <p/>
      * <p/>
      * As an example, each of the following three lines specifies the key
-     * <code>"Truth"</code> and the associated element value
+     * <code>"Truth"</code> and the associated primitiveElement3D value
      * <code>"Beauty"</code>:
      * <p/>
      * <pre>
@@ -195,7 +261,7 @@ public class Properties2 extends LinkedHashMap {
      *                                  cantaloupe, watermelon, \
      *                                  kiwi, mango
      * </pre>
-     * The key is <code>"fruits"</code> and the associated element is:
+     * The key is <code>"fruits"</code> and the associated primitiveElement3D is:
      * <p/>
      * <pre>"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"</pre>
      * Note that a componentVectorSpace appears before each <code>\</code> so that a componentVectorSpace
@@ -209,7 +275,7 @@ public class Properties2 extends LinkedHashMap {
      * <pre>cheeses
      * </pre>
      * specifies that the key is <code>"cheeses"</code> and the associated
-     * element is the empty string <code>""</code>.<p>
+     * primitiveElement3D is the empty string <code>""</code>.<p>
      *
      * @param inStream the input stream.
      * @throws IOException              if an error occurred when reading from the
@@ -252,8 +318,8 @@ public class Properties2 extends LinkedHashMap {
                         for (startIndex = 0; startIndex < nextLine.length(); startIndex++)
                             if (whiteSpaceChars.indexOf(nextLine.charAt(startIndex)) == -1)
                                 break;
-                        nextLine = nextLine.substring(startIndex, nextLine.length());
-                        line = new String(loppedLine + nextLine);
+                        nextLine = nextLine.substring(startIndex);
+                        line = loppedLine + nextLine;
                         len = line.length();
                     }
 
@@ -407,6 +473,117 @@ public class Properties2 extends LinkedHashMap {
         return outBuffer.toString();
     }
 
+    public void addMetadata(String meta) {
+        if (metadata == null) {
+            metadata = new Vector();
+        }
+        metadata.add(meta);
+    }
+
+    /**
+     * Calls the <code>store(OutputStream out, String header)</code> method
+     * and suppresses IOExceptions that were thrown.
+     *
+     * @param out    an output stream.
+     * @param header a description of the property list.
+     * @throws ClassCastException if this <code>Properties</code> object
+     *                            contains any keys or values that are not <code>Strings</code>.
+     * @deprecated This method does not throw an IOException if an I/O error
+     * occurs while saving the property list.  As of the Java 2 platform v1.2, the preferred
+     * way to save a properties list is via the <code>store(OutputStream out,
+     * String header)</code> method.
+     */
+    public synchronized void save(OutputStream out, String header) {
+        try {
+            store(out, header);
+        } catch (IOException e) {
+        }
+    }
+
+    /**
+     * Writes this property list (key and primitiveElement3D pairs) in this
+     * <code>Properties</code> table to the output stream in a format suitable
+     * for loading into a <code>Properties</code> table using the
+     * {@link #load(InputStream) load} method.
+     * The stream is written using the ISO 8859-1 character encoding.
+     * <p/>
+     * Properties from the defaults table of this <code>Properties</code>
+     * table (if any) are <i>not</i> written out by this method.
+     * <p/>
+     * If the header argument is not null, then an ASCII <code>#</code>
+     * character, the header string, and a line separator are first written
+     * to the output stream. Thus, the <code>header</code> can serve as an
+     * identifying comment.
+     * <p/>
+     * Next, a comment line is always written, consisting of an ASCII
+     * <code>#</code> character, the current date and time (as if produced
+     * by the <code>toString</code> method of <code>Date</code> for the
+     * current time), and a line separator as generated by the Writer.
+     * <p/>
+     * Then every entry in this <code>Properties</code> table is
+     * written out, one per line. For each entry the key string is
+     * written, then an ASCII <code>=</code>, then the associated
+     * primitiveElement3D string. Each character of the key and primitiveElement3D strings
+     * is examined to see whether it should be rendered as an escape
+     * sequence. The ASCII characters <code>\</code>, tab, form feed,
+     * newline, and carriage return are written as <code>\\</code>,
+     * <code>\t</code>, <code>\f</code> <code>\n</code>, and
+     * <code>\r</code>, respectively. Characters less than
+     * <code>&#92;u0020</code> and characters greater than
+     * <code>&#92;u007E</code> are written as
+     * <code>&#92;u</code><i>xxxx</i> for the appropriate hexadecimal
+     * value <i>xxxx</i>.  For the key, all space characters are
+     * written with a preceding <code>\</code> character.  For the
+     * primitiveElement3D, leading space characters, but not embedded or trailing
+     * space characters, are written with a preceding <code>\</code>
+     * character. The key and primitiveElement3D characters <code>#</code>,
+     * <code>!</code>, <code>=</code>, and <code>:</code> are written
+     * with a preceding backslash to ensure that they are properly loaded.
+     * <p/>
+     * After the entries have been written, the output stream is flushed.  The
+     * output stream remains open after this method returns.
+     *
+     * @param out    an output stream.
+     * @param header a description of the property list.
+     * @throws IOException          if writing this property list to the specified
+     *                              output stream throws an <tt>IOException</tt>.
+     * @throws ClassCastException   if this <code>Properties</code> object
+     *                              contains any keys or values that are not <code>Strings</code>.
+     * @throws NullPointerException if <code>out</code> is null.
+     * @since 1.2
+     */
+    public synchronized void store(OutputStream out, String header)
+            throws IOException {
+        BufferedWriter awriter;
+        awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
+        if (header != null)
+            writeln(awriter, "#" + header);
+        writeln(awriter, "#" + new Date().toString());
+        if (metadata != null) {
+            for (int i = 0; i < metadata.size(); i++) {
+                writeln(awriter, "#meta " + metadata.get(i));
+            }
+        }
+        for (Iterator e = entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            String key = (String) entry.getKey();
+            String val = (String) entry.getValue();
+            key = saveConvert(key, true);
+
+            /* No need to escape embedded and trailing spaces for value, hence
+             * pass false to flag.
+             */
+            val = saveConvert(val, false);
+            writeln(awriter, key + "=" + val);
+        }
+        awriter.flush();
+    }
+
+    private static void writeln(BufferedWriter bw, String s) throws IOException {
+        bw.write(s);
+        bw.newLine();
+    }
+
     /*
      * Converts unicodes to encoded &#92;uxxxx
      * and writes out any of the characters in specialSaveChars
@@ -463,123 +640,8 @@ public class Properties2 extends LinkedHashMap {
         return outBuffer.toString();
     }
 
-    /**
-     * Calls the <code>store(OutputStream out, String header)</code> method
-     * and suppresses IOExceptions that were thrown.
-     *
-     * @param out    an output stream.
-     * @param header a description of the property list.
-     * @throws ClassCastException if this <code>Properties</code> object
-     *                            contains any keys or values that are not <code>Strings</code>.
-     * @deprecated This method does not throw an IOException if an I/O error
-     * occurs while saving the property list.  As of the Java 2 platform v1.2, the preferred
-     * way to save a properties list is via the <code>store(OutputStream out,
-     * String header)</code> method.
-     */
-    public synchronized void save(OutputStream out, String header) {
-        try {
-            store(out, header);
-        } catch (IOException e) {
-        }
-    }
-
-    /**
-     * Writes this property list (key and element pairs) in this
-     * <code>Properties</code> table to the output stream in a format suitable
-     * for loading into a <code>Properties</code> table using the
-     * {@link #load(InputStream) load} method.
-     * The stream is written using the ISO 8859-1 character encoding.
-     * <p/>
-     * Properties from the defaults table of this <code>Properties</code>
-     * table (if any) are <i>not</i> written out by this method.
-     * <p/>
-     * If the header argument is not null, then an ASCII <code>#</code>
-     * character, the header string, and a line separator are first written
-     * to the output stream. Thus, the <code>header</code> can serve as an
-     * identifying comment.
-     * <p/>
-     * Next, a comment line is always written, consisting of an ASCII
-     * <code>#</code> character, the current date and time (as if produced
-     * by the <code>toString</code> method of <code>Date</code> for the
-     * current time), and a line separator as generated by the Writer.
-     * <p/>
-     * Then every entry in this <code>Properties</code> table is
-     * written out, one per line. For each entry the key string is
-     * written, then an ASCII <code>=</code>, then the associated
-     * element string. Each character of the key and element strings
-     * is examined to see whether it should be rendered as an escape
-     * sequence. The ASCII characters <code>\</code>, tab, form feed,
-     * newline, and carriage return are written as <code>\\</code>,
-     * <code>\t</code>, <code>\f</code> <code>\n</code>, and
-     * <code>\r</code>, respectively. Characters less than
-     * <code>&#92;u0020</code> and characters greater than
-     * <code>&#92;u007E</code> are written as
-     * <code>&#92;u</code><i>xxxx</i> for the appropriate hexadecimal
-     * value <i>xxxx</i>.  For the key, all space characters are
-     * written with a preceding <code>\</code> character.  For the
-     * element, leading space characters, but not embedded or trailing
-     * space characters, are written with a preceding <code>\</code>
-     * character. The key and element characters <code>#</code>,
-     * <code>!</code>, <code>=</code>, and <code>:</code> are written
-     * with a preceding backslash to ensure that they are properly loaded.
-     * <p/>
-     * After the entries have been written, the output stream is flushed.  The
-     * output stream remains open after this method returns.
-     *
-     * @param out    an output stream.
-     * @param header a description of the property list.
-     * @throws IOException          if writing this property list to the specified
-     *                              output stream throws an <tt>IOException</tt>.
-     * @throws ClassCastException   if this <code>Properties</code> object
-     *                              contains any keys or values that are not <code>Strings</code>.
-     * @throws NullPointerException if <code>out</code> is null.
-     * @since 1.2
-     */
-    public synchronized void store(OutputStream out, String header)
-            throws IOException {
-        BufferedWriter awriter;
-        awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
-        if (header != null)
-            writeln(awriter, "#" + header);
-        writeln(awriter, "#" + new Date().toString());
-        if (metadata != null) {
-            for (int i = 0; i < metadata.size(); i++) {
-                writeln(awriter, "#meta " + metadata.get(i));
-            }
-        }
-        for (Iterator e = entrySet().iterator(); e.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) e.next();
-            String key = (String) entry.getKey();
-            String val = (String) entry.getValue();
-            key = saveConvert(key, true);
-
-            /* No need to escape embedded and trailing spaces for value, hence
-             * pass false to flag.
-             */
-            val = saveConvert(val, false);
-            writeln(awriter, key + "=" + val);
-        }
-        awriter.flush();
-    }
-
-    private static void writeln(BufferedWriter bw, String s) throws IOException {
-        bw.write(s);
-        bw.newLine();
-    }
-
-    /**
-     * Searches for the property with the specified key in this property list.
-     * If the key is not found in this property list, the default property list,
-     * and its defaults, recursively, are then checked. The method returns
-     * <code>null</code> if the property is not found.
-     *
-     * @param key the property key.
-     * @return the value in this property list with the specified key value.
-     * @see #setProperty
-     */
-    public String getProperty(String key) {
-        Object oval = super.get(key);
-        return (oval instanceof String) ? (String) oval : null;
+    private static char toHex(int nibble) {
+        return hexDigit[nibble & 0xf];
     }
 
     /**
@@ -598,6 +660,20 @@ public class Properties2 extends LinkedHashMap {
         return (val == null) ? defaultValue : val;
     }
 
+    /**
+     * Searches for the property with the specified key in this property list.
+     * If the key is not found in this property list, the default property list,
+     * and its defaults, recursively, are then checked. The method returns
+     * <code>null</code> if the property is not found.
+     *
+     * @param key the property key.
+     * @return the value in this property list with the specified key value.
+     * @see #setProperty
+     */
+    public String getProperty(String key) {
+        Object oval = super.get(key);
+        return (oval instanceof String) ? (String) oval : null;
+    }
 
     /**
      * Prints this property list out to the specified output stream.
@@ -670,13 +746,6 @@ public class Properties2 extends LinkedHashMap {
         }
     }
 
-    public void addMetadata(String meta) {
-        if (metadata == null) {
-            metadata = new Vector();
-        }
-        metadata.add(meta);
-    }
-
     public void clearMetaData() {
         metadata = null;
     }
@@ -699,87 +768,10 @@ public class Properties2 extends LinkedHashMap {
         return loadingFile;
     }
 
-    public void addMetaDataHandler(MetaDataHandler handler) {
-        if (metaDataHandlers == null) {
-            metaDataHandlers = new Vector();
-        }
-        metaDataHandlers.add(handler);
-    }
-
     public void removeMetaDataHandler(MetaDataHandler handler) {
         if (metaDataHandlers != null) {
             metaDataHandlers.remove(handler);
         }
-    }
-
-    public static String toSpecialString(String theString, boolean escapeSpace) {
-        return toSpecialString(theString, "=: \t\r\n\f#!", escapeSpace);
-    }
-
-    public static String toSpecialString(String theString, String specialSaveChars, boolean escapeSpace) {
-        int len = theString.length();
-        StringBuilder outBuffer = new StringBuilder(len * 2);
-        for (int x = 0; x < len; x++) {
-            char aChar = theString.charAt(x);
-            switch (aChar) {
-                case 32: // ' '
-                    if (x == 0 || escapeSpace)
-                        outBuffer.append('\\');
-                    outBuffer.append(' ');
-                    break;
-
-                case 92: // '\\'
-                    outBuffer.append('\\');
-                    outBuffer.append('\\');
-                    break;
-
-                case 9: // '\t'
-                    outBuffer.append('\\');
-                    outBuffer.append('t');
-                    break;
-
-                case 10: // '\n'
-                    outBuffer.append('\\');
-                    outBuffer.append('n');
-                    break;
-
-                case 13: // '\r'
-                    outBuffer.append('\\');
-                    outBuffer.append('r');
-                    break;
-
-                case 12: // '\f'
-                    outBuffer.append('\\');
-                    outBuffer.append('f');
-                    break;
-
-                default:
-                    if (aChar < ' ' || aChar > '~') {
-                        outBuffer.append('\\');
-                        outBuffer.append('u');
-                        outBuffer.append(toHex(aChar >> 12 & 0xf));
-                        outBuffer.append(toHex(aChar >> 8 & 0xf));
-                        outBuffer.append(toHex(aChar >> 4 & 0xf));
-                        outBuffer.append(toHex(aChar & 0xf));
-                        break;
-                    }
-                    if (specialSaveChars.indexOf(aChar) != -1)
-                        outBuffer.append('\\');
-                    outBuffer.append(aChar);
-                    break;
-            }
-        }
-
-        return outBuffer.toString();
-    }
-
-    private static final char[] hexDigit = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'A', 'B', 'C', 'D', 'E', 'F'
-    };
-
-    private static char toHex(int nibble) {
-        return hexDigit[nibble & 0xf];
     }
 
 }

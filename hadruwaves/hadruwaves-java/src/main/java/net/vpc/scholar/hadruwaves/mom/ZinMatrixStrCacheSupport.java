@@ -22,7 +22,7 @@ class ZinMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public ComplexMatrix compute(ObjectCache momCache) {
-        return momStructure.createZinEvaluator().evaluate(momStructure, mon[1]);
+    public ComplexMatrix eval(ObjectCache momCache) {
+        return momStructure.evaluator().createZinEvaluator().evaluate(momStructure, mon[1]);
     }
 }

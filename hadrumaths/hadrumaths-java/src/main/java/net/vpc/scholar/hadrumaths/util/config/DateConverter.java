@@ -11,7 +11,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class DateConverter extends ConfigConverter {
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public DateConverter(Configuration configuration) {
         super(Date.class, "date");

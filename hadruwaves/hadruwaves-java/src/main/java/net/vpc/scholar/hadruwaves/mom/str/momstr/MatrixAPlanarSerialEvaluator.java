@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.mon.VoidMonitoredAction;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
@@ -28,16 +31,16 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
         ModeFunctions fn = str.getModeFunctions();
 //        ModeInfo[] n_eva = str.isParameter(AbstractStructure2D.HINT_REGULAR_ZN_OPERATOR) ? fn.getModes() : fn.getVanishingModes();
         final ModeInfo[] n_eva = str.getModes();
-        final TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        final ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         //boolean hermMatrix=complex;
         final String monMessage = getClass().getSimpleName();
-        Impedance scalarSurfaceImpedance=str.getSerialZs();
+        Impedance scalarSurfaceImpedance = str.getSerialZs()==null?Physics.impedance(Complex.ZERO):str.getSerialZs();
         if (symMatrix) {
-            if(sp.isConvertibleTo(Maths.$DOUBLE)){
-                final DoubleMatrix dsp=(DoubleMatrix) sp.to(Maths.$DOUBLE);
-                final ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+            if (sp.isConvertibleTo(Maths.$DOUBLE)) {
+                final DoubleMatrix dsp = (DoubleMatrix) sp.to(Maths.$DOUBLE);
+                final ProgressMonitor m = ProgressMonitors.incremental(monitor, (_g.length * _g.length));
                 Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                     @Override
                     public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -57,12 +60,12 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                                 double[] qsp = csp.getRowDouble(q);
                                 c.setZero();
                                 for (ModeInfo n : cn_eva) {
-                                    AdmittanceValue yl= Physics.computeLayersAdmittance(str.getLayers(),n.firstBoxSpaceGamma,n.secondBoxSpaceGamma,n.impedance.impedanceValue());
+                                    AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
                                     Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
                                     int nindex = n.index;
                                     double sp1 = psp[nindex];
                                     double sp2 = qsp[nindex];
-                                    c.add(zn.mul(sp1*sp2));
+                                    c.add(zn.mul(sp1 * sp2));
                                 }
                                 cb[p][q] = c.toComplex();
                                 cm.inc(cmonMessage);
@@ -76,8 +79,8 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         }
                     }
                 });
-            }else {
-                final ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+            } else {
+                final ProgressMonitor m = ProgressMonitors.incremental(monitor, (_g.length * _g.length));
                 Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                     @Override
                     public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
@@ -86,18 +89,18 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         //copied to local to nonnull performance!
                         int glength = _g.length;
                         Complex[][] cb = b;
-                        TMatrix<Complex> csp = sp;
+                        ComplexMatrix csp = sp;
                         ProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
 
                         for (int p = 0; p < glength; p++) {
-                            TVector<Complex> psp = csp.getRow(p);
+                            ComplexVector psp = csp.getRow(p);
                             for (int q = p; q < glength; q++) {
-                                TVector<Complex> qsp = csp.getRow(q);
+                                ComplexVector qsp = csp.getRow(q);
                                 c.setZero();
                                 for (ModeInfo n : cn_eva) {
-                                    AdmittanceValue yl= Physics.computeLayersAdmittance(str.getLayers(),n.firstBoxSpaceGamma,n.secondBoxSpaceGamma,n.impedance.impedanceValue());
+                                    AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
                                     Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
 //                            Complex sp1 = sp.gf(p, n.index);
 //                            Complex sp2 = sp.fg(n.index, q);
@@ -120,17 +123,17 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                 });
             }
         } else {// non symmetric
-            final ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(monitor, (_g.length * _g.length));
+            final ProgressMonitor m = ProgressMonitors.incremental(monitor, (_g.length * _g.length));
             Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                 @Override
                 public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                     for (int p = 0; p < _g.length; p++) {
-                        TVector<Complex> psp = sp.getRow(p);
+                        ComplexVector psp = sp.getRow(p);
                         for (int q = 0; q < _g.length; q++) {
-                            TVector<Complex> qsp = sp.getRow(q);
+                            ComplexVector qsp = sp.getRow(q);
                             MutableComplex c = MutableComplex.Zero();
                             for (ModeInfo n : n_eva) {
-                                AdmittanceValue yl= Physics.computeLayersAdmittance(str.getLayers(),n.firstBoxSpaceGamma,n.secondBoxSpaceGamma,n.impedance.impedanceValue());
+                                AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
                                 Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
                                 //Complex sp1 = sp.gf(p, n.index);
                                 //Complex sp2 = sp.fg(n.index, q);
@@ -150,10 +153,11 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
-    public String dump() {
-        return getClass().getName();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

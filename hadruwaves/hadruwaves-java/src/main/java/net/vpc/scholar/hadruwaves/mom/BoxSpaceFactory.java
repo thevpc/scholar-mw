@@ -6,44 +6,33 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.AbstractFactory;
+import net.vpc.scholar.hadruwaves.Material;
 
 /**
- *
  * @author vpc
  */
-public class BoxSpaceFactory extends AbstractFactory{
+public class BoxSpaceFactory extends AbstractFactory {
 
     private BoxSpaceFactory() {
     }
 
-    public static BoxSpace openCircuit(double epsr,double width){
-        return new BoxSpace(BoxLimit.OPEN, epsr,width,0);
+    public static BoxSpace openCircuit(Material material, double width) {
+        return new BoxSpace(BoxLimit.OPEN, material, width);
     }
 
-    public static BoxSpace openCircuit(double epsr,double width,double electricConductivity){
-        return new BoxSpace(BoxLimit.OPEN, epsr,width,electricConductivity);
+    public static BoxSpace matchedLoad() {
+        return matchedLoad(Material.VACUUM);
     }
 
-    public static BoxSpace matchedLoad(){
-        return matchedLoad(1);
+    public static BoxSpace matchedLoad(Material material) {
+        return new BoxSpace(BoxLimit.MATCHED_LOAD, material, Double.NaN);
     }
 
-    public static BoxSpace matchedLoad(double epsr){
-        return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN,0);
+    public static BoxSpace shortCircuit(Material material, double width) {
+        return new BoxSpace(BoxLimit.SHORT, material, width);
     }
 
-    public static BoxSpace matchedLoad(double epsr,double electricConductivity){
-        return new BoxSpace(BoxLimit.MATCHED_LOAD, epsr,Double.NaN,electricConductivity);
-    }
-
-    public static BoxSpace shortCircuit(double epsr,double width){
-        return new BoxSpace(BoxLimit.SHORT, epsr,width,0);
-    }
-    public static BoxSpace shortCircuit(double epsr,double width,double electricConductivity){
-        return new BoxSpace(BoxLimit.SHORT, epsr,width,electricConductivity);
-    }
-
-    public static BoxSpace nothing(){
-        return new BoxSpace(BoxLimit.NOTHING, 1,Double.NaN,0);
+    public static BoxSpace nothing() {
+        return new BoxSpace(BoxLimit.NOTHING, Material.VACUUM, Double.NaN);
     }
 }

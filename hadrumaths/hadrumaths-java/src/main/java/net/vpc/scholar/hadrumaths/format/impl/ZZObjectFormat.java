@@ -6,9 +6,10 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.ZObjectFormatParam;
-import net.vpc.scholar.hadrumaths.symbolic.ZZ;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.ZZ;
 
 /**
  * @author vpc
@@ -16,16 +17,17 @@ import net.vpc.scholar.hadrumaths.symbolic.ZZ;
 public class ZZObjectFormat implements ObjectFormat<ZZ> {
 
     @Override
-    public String format(ZZ o, ObjectFormatParamSet format) {
+    public String format(ZZ o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, ZZ o, ObjectFormatParamSet format) {
+    public void format(ZZ o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         ZObjectFormatParam z = format.getParam(FormatFactory.Z);
-        sb.append(z.getName());
-        FormatFactory.appendStarredDomain(sb, o, format);
+        context.append(z.getName());
+        FormatFactory.appendStarredDomain(context, o, format);
     }
 }

@@ -2,6 +2,7 @@ package net.vpc.scholar
 
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruwaves.Material
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
 import net.vpc.scholar.hadruwaves.mom._
 
@@ -20,12 +21,12 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
   //  Maths.Config.setDefaultMatrixFactory(OjalgoMatrixFactory.INSTANCE)
   var MN = 10000
   //000 // number of modes
-  var π = PI
+//  var π = PI
   // Parameters
   var freq = 4.79 * GHZ; // to change
   var wfreq = 2 * π * freq;
   var lambda = C / freq;
-  val epsr = 2.2;
+  val substrate = Material.substrate(2.2);
   val epsilon = EPS0
   val mu = U0
   val Z0 = sqrt(U0 / EPS0)
@@ -78,7 +79,7 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
 
     val dBox = domain(0.0 -> dimX, -dimY / 2 -> dimY / 2)
     val E0 = normalize(dSource)
-    st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(epsr, ep), matchedLoad(1.0))
+    st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(substrate, ep), matchedLoad(Material.VACUUM))
     st.getHintsManager.setHintAxisType(HintAxisType.X_ONLY);
     st.setSources(E0, 50)
     st.setTestFunctions(gp)

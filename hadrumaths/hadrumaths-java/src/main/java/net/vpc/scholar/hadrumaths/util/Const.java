@@ -10,11 +10,11 @@ import java.util.Map;
  * Created by vpc on 3/15/15.
  */
 public abstract class Const<T> {
-    private static Map<Class, Registry> registries = new HashMap<Class, Registry>();
-    private String name;
-    private Class type;
-    private Registry list;
+    private static final Map<Class, Registry> registries = new HashMap<Class, Registry>();
     int index;
+    private final String name;
+    private final Class type;
+    private Registry list;
 
     protected Const(String name, Class<T> type) {
         this.name = name;
@@ -40,8 +40,8 @@ public abstract class Const<T> {
     }
 
     private static class Registry {
-        private Class type;
-        private List<Const> values = new ArrayList<Const>();
+        private final Class type;
+        private final List<Const> values = new ArrayList<Const>();
 
         public Registry(Class type) {
             this.type = type;

@@ -1,18 +1,15 @@
 package net.vpc.scholar.hadrumaths.util.log;
 
+import net.vpc.common.mon.AbstractProgressMonitor;
+import net.vpc.common.mon.TaskMessage;
 import net.vpc.common.util.DoubleFormat;
-import net.vpc.common.mon.BaseProgressMonitor;
-import net.vpc.common.mon.ProgressMessage;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.util.Date;
 
-public class TLogProgressMonitor extends BaseProgressMonitor {
-    private double progress;
-    private ProgressMessage message;
-    private String messageFormat;
-    private TLog writer;
+public class TLogProgressMonitor extends AbstractProgressMonitor {
+    private final String messageFormat;
+    private final TLog writer;
 
 
     /**
@@ -22,6 +19,7 @@ public class TLogProgressMonitor extends BaseProgressMonitor {
      * @param messageFormat
      */
     public TLogProgressMonitor(String messageFormat, TLog writer) {
+        super(nextId());
         if (messageFormat == null) {
             messageFormat = "%value%";
         }
@@ -35,29 +33,14 @@ public class TLogProgressMonitor extends BaseProgressMonitor {
         this.writer = writer;
     }
 
-    public double getProgressValue() {
-        return progress;
-    }
-
-    public void setProgressImpl(double progress, ProgressMessage message) {
-        DoubleFormat sdf = MathsBase.Config.getPercentFormat();
-        this.progress = progress;
-        this.message = message;
+    public void setMessageImpl(TaskMessage message) {
+        DoubleFormat sdf = Maths.Config.getPercentFormat();
         long newd = System.currentTimeMillis();
         String formattedMessage = messageFormat
                 .replace("%date%", new Date(newd).toString())
-                .replace("%value%", Double.isNaN(progress) ? "   ?%" : sdf.formatDouble(progress))
+                .replace("%value%", Double.isNaN(getProgressValue()) ? "   ?%" : sdf.formatDouble(getProgressValue()))
                 + " " + message;
-        if (progress <= 0 || progress >= 1) {
-            writer.trace(formattedMessage);
-        } else {
-            writer.debug(formattedMessage);
-        }
-    }
-
-    @Override
-    public ProgressMessage getProgressMessage() {
-        return message;
+        writer.trace(formattedMessage);
     }
 
     @Override

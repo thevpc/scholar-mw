@@ -10,10 +10,7 @@ import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
  * To change this template use File | Settings | File Templates.
  */
 public class MatlabScalarProductFormat implements ToMatlabStringParam {
-    public static enum Type {DBLQUAD, INT}
-
-    ;
-    private Type type;
+    private final Type type;
 
     public MatlabScalarProductFormat(Type type) {
         this.type = type;
@@ -22,4 +19,6 @@ public class MatlabScalarProductFormat implements ToMatlabStringParam {
     public Type getType() {
         return type;
     }
+
+    public enum Type {DBLQUAD, INT}
 }

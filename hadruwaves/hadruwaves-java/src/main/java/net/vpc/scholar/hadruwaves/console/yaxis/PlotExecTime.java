@@ -15,9 +15,9 @@ public class PlotExecTime extends PlotAxisSeriesSingleValue implements Cloneable
         this.cacheName=cacheName;
     }
 
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
         long time = ((MomStructure)structure).getExecutionTime(cacheName);
-        return Complex.valueOf(time/1000.0);
+        return Complex.of(time/1000.0);
     }
 
     public String toString() {

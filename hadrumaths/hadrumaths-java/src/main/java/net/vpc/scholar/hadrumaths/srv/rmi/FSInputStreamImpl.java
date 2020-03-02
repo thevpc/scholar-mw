@@ -1,9 +1,8 @@
 package net.vpc.scholar.hadrumaths.srv.rmi;
 
-import java.io.UncheckedIOException;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;

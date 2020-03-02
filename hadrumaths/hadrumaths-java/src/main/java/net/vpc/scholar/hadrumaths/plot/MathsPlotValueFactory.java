@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 import net.vpc.scholar.hadruplot.DefaultPlotValueFactory;
 import net.vpc.scholar.hadruplot.PlotBuilder;
 import net.vpc.scholar.hadruplot.PlotValue;
@@ -18,11 +19,14 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
         if (obj instanceof Complex) {
             return createPlotValue("complex", obj);
         }
-        if (obj instanceof Expr && ((Expr) obj).isDouble()) {
-            return createPlotValue("number", ((Expr) obj).toDouble());
+        if (obj instanceof Expr) {
+            Expr e = ((Expr) obj);
+            if (e.isNarrow(ExprType.DOUBLE_EXPR) && e.getDomain().isUnbounded()) {
+                return createPlotValue("number", ((Expr) obj).toDouble());
+            }
         }
-        if (obj instanceof TMatrix) {
-            TMatrix m = (TMatrix) obj;
+        if (obj instanceof Matrix) {
+            Matrix m = (Matrix) obj;
             int c = m.getColumnCount();
             int r = m.getRowCount();
             if (c == 1) {
@@ -43,31 +47,31 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
             typeAndValue.set("matrix", "true");
             return typeAndValue;
         }
-        if (obj instanceof TVector) {
-            TVector vv = (TVector) obj;
-            if (TVector.class.isAssignableFrom(vv.getComponentType().getTypeClass())) {
+        if (obj instanceof Vector) {
+            Vector vv = (Vector) obj;
+            if (Vector.class.isAssignableFrom(vv.getComponentType().getTypeClass())) {
                 Object[] arr = vv.toArray();
                 return createPlotValue(arr, builder);
             }
-            if (vv.isConvertibleTo(MathsBase.$DOUBLE)) {
-                vv = vv.to(MathsBase.$DOUBLE);
-            } else if (vv.isConvertibleTo(MathsBase.$COMPLEX)) {
-                vv = vv.to(MathsBase.$COMPLEX);
-            } else if (vv.isConvertibleTo(MathsBase.$EXPR)) {
-                vv = vv.to(MathsBase.$EXPR);
+            if (vv.isConvertibleTo(Maths.$DOUBLE)) {
+                vv = vv.to(Maths.$DOUBLE);
+            } else if (vv.isConvertibleTo(Maths.$COMPLEX)) {
+                vv = vv.to(Maths.$COMPLEX);
+            } else if (vv.isConvertibleTo(Maths.$EXPR)) {
+                vv = vv.to(Maths.$EXPR);
             }
             String subType = "object";
-            if (vv.getComponentType().equals(MathsBase.$COMPLEX)) {
+            if (vv.getComponentType().equals(Maths.$COMPLEX)) {
                 subType = "complex";
-            } else if (vv.getComponentType().equals(MathsBase.$EXPR)) {
+            } else if (vv.getComponentType().equals(Maths.$EXPR)) {
                 subType = "expr";
-            } else if (vv.getComponentType().equals(MathsBase.$DOUBLE)) {
+            } else if (vv.getComponentType().equals(Maths.$DOUBLE)) {
                 subType = "number";
-            } else if (vv.getComponentType().equals(MathsBase.$BOOLEAN)) {
+            } else if (vv.getComponentType().equals(Maths.$BOOLEAN)) {
                 subType = "boolean";
-            } else if (vv.getComponentType().equals(MathsBase.$POINT)) {
+            } else if (vv.getComponentType().equals(Maths.$POINT)) {
                 subType = "point";
-            } else if (vv.getComponentType().equals(MathsBase.$FILE)) {
+            } else if (vv.getComponentType().equals(Maths.$FILE)) {
                 subType = "file";
             }
             PlotValue typeAndValue = createPlotValue(subType + "[]", obj);
@@ -87,11 +91,9 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
     }
 
     public boolean isColumn(Object obj) {
-        if (obj instanceof TVector) {
-            TVector vv = (TVector) obj;
-            if (vv.isColumn()) {
-                return true;
-            }
+        if (obj instanceof Vector) {
+            Vector vv = (Vector) obj;
+            return vv.isColumn();
         }
         return false;
     }

@@ -5,10 +5,10 @@ package net.vpc.scholar.hadrumaths.symbolic.old;
  * @creationtime 18 juil. 2007 22:06:55
  */
 public class SymMatrix extends SymAbstractExpression {
-    private SymExpression[][] value;
-    private int rows;
-    private int columns;
     public static final SymUtils.BoxFormat MATRIX_FORMAT = new SymUtils.BoxFormat().setLeft("| ").setRight(" |").setColumnsSeparator(" ");
+    private final SymExpression[][] value;
+    private final int rows;
+    private final int columns;
 
 
     public SymMatrix(SymExpression[][] value) {

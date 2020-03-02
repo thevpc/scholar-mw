@@ -6,7 +6,15 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Imag;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Real;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.Neg;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.*;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -18,7 +26,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class RealSimplifyRule implements ExpressionRewriterRule {
+public class RealSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new RealSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Real.class};
@@ -28,31 +36,33 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
 
         Real ee = (Real) e;
-        RewriteResult rbase = ruleset.rewrite(ee.getArg());
-        if (rbase.getValue() instanceof Real) {
+        RewriteResult rbase = ruleset.rewrite(ee.getArg(), targetExprType);
+        Expr rv = rbase.isUnmodified() ? ee.getArg() : rbase.getValue();
+        if (rv instanceof Real) {
             return rbase;
         }
-        if (rbase.getValue().isDD()) {
-            return rbase.isBestEffort() ? RewriteResult.bestEffort(rbase.getValue()) : RewriteResult.newVal(rbase.getValue());
+        ExprType rvd = rv.getType();
+        if (rvd == ExprType.DOUBLE_DOUBLE) {
+            return rbase.isBestEffort() ? RewriteResult.bestEffort(rv) : RewriteResult.newVal(rv);
         }
-        if (rbase.getValue().isDC()) {
-            DoubleToDouble r = rbase.getValue().toDC().getRealDD();
+        if (rvd == ExprType.DOUBLE_COMPLEX) {
+            DoubleToDouble r = rv.toDC().getRealDD();
             if (!(r instanceof Real)) {
-                return RewriteResult.bestEffort(ruleset.rewriteOrSame(r));
+                return RewriteResult.bestEffort(ruleset.rewriteOrSame(r, null));
             }
         }
-        IConstantValue ac0 = Expressions.toComplexValue(rbase.getValue());
+        Expr ac0 = Expressions.toConstantExprOrNull(rv);
         if (ac0 != null) {
-            return RewriteResult.bestEffort(new ComplexValue(Complex.valueOf(ac0.getComplexConstant().getReal()), ac0.getDomain()));
+            return RewriteResult.bestEffort(new DefaultComplexValue(Complex.of(ac0.toComplex().getReal()), ac0.getDomain()));
         }
-        if (rbase.getValue().isDD()) {
-            return rbase;
-        }
-        if (rbase.getValue() instanceof Mul) {
-            Mul m = (Mul) rbase.getValue();
+//        if (rv.isDD()) {
+//            return rbase;
+//        }
+        if (rv instanceof Mul) {
+            Mul m = (Mul) rv;
 //            List<Expr> dd = new ArrayList<>();
 //            List<Expr> ndd = new ArrayList<>();
 //            for (Expr expr : m.getSubExpressions()) {
@@ -74,21 +84,21 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
 
             return RewriteResult.newVal(getMulRealImag(m)[0]);
         }
-        if (rbase.getValue() instanceof Plus) {
-            List<Expr> e1 = rbase.getValue().getSubExpressions();
+        if (rv instanceof Plus) {
+            List<Expr> e1 = rv.getChildren();
             List<Expr> e2 = new ArrayList<Expr>();
             for (Expr expr : e1) {
-                e2.add(MathsBase.real(expr));
+                e2.add(Maths.real(expr));
             }
-            return RewriteResult.newVal(MathsBase.sum(e2.toArray(new Expr[0])));
+            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[0])));
         }
-        if (rbase.getValue() instanceof Sub) {
-            return RewriteResult.newVal(new Sub(MathsBase.real(((Sub) rbase.getValue()).getFirst()), MathsBase.real(((Sub) rbase.getValue()).getSecond())));
+        if (rv instanceof Sub) {
+            return RewriteResult.newVal(Sub.of(Maths.real(rv.getChild(0)), Maths.real(rv.getChild(1))));
         }
-        if (rbase.getValue() instanceof Div) {
-            Expr first = ((Div) rbase.getValue()).getFirst();
-            Expr second = ((Div) rbase.getValue()).getSecond();
-            if (first.isDC() && second.isDC()) {
+        if (rv instanceof Div) {
+            Expr first = ((Div) rv).getFirst();
+            Expr second = ((Div) rv).getSecond();
+            if (first.isNarrow(ExprType.DOUBLE_COMPLEX) && second.isNarrow(ExprType.DOUBLE_COMPLEX)) {
                 DoubleToComplex a = first.toDC();
                 DoubleToComplex b = second.toDC();
                 boolean aReal = a.getImagDD().isZero();
@@ -100,121 +110,91 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
                 } else if (aImag && bImag) {
                     return rbase;
                 } else if ((aReal && bImag) || (bReal && aImag)) {
-                    return RewriteResult.bestEffort(FunctionFactory.DZEROXY);
+                    return RewriteResult.bestEffort(Maths.DZEROXY);
                 }
             }
         }
-        if (rbase.getValue() instanceof Inv) {
-            Expr a = ((Inv) rbase.getValue()).getExpression();
-            if (MathsBase.isReal(a)) {
+        if (rv instanceof Inv) {
+            Expr a = rv.getChild(0);
+            if (Maths.isReal(a)) {
                 return rbase;
             }
         }
         if (rbase.isUnmodified()) {
-            return RewriteResult.unmodified(e);
+            return RewriteResult.unmodified();
         }
         if (rbase.isBestEffort()) {
-            return RewriteResult.bestEffort(new Real(rbase.getValue().toDC()));
+            return RewriteResult.bestEffort(new Real(rv.toDC()));
         }
-        return RewriteResult.newVal(new Real(rbase.getValue().toDC()));
+        return RewriteResult.newVal(new Real(rv.toDC()));
     }
-
-    private Expr[] getSimplifiedRealImag(Expr expr, ExpressionRewriter ruleset) {
-        Expr r = ruleset.rewriteOrSame(new Real(expr.toDC()));
-        if (r instanceof Real) {
-            return null;
-        }
-        Expr i = ruleset.rewriteOrSame(new Imag(expr.toDC()));
-        if (i instanceof Imag) {
-            return null;
-        }
-        return new Expr[]{r, i};
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
-
-    private Expr rewriteMul(Mul m) {
-        return getMulRealImag(m)[0];
-    }
-
 
     public static DoubleToDouble[] getMulRealImag(Mul m) {
-        List<Expr> expressions = m.getSubExpressions();
+        List<Expr> expressions = m.getChildren();
         Expr[] real = new Expr[expressions.size()];
         Expr[] imag = new Expr[expressions.size()];
-        List<Expr> realOnly=new ArrayList<>();
-        List<Expr> others=new ArrayList<>();
+        List<Expr> realOnly = new ArrayList<>();
+        List<Expr> others = new ArrayList<>();
         int someReal = 0;
         int someImag = 0;
         for (int i = 0; i < expressions.size(); i++) {
             DoubleToComplex v = expressions.get(i).toDC();
-            if(v.isZero()){
-                real[i] = FunctionFactory.DZEROXY;
-                imag[i] = FunctionFactory.DZEROXY;
+            if (v.isZero()) {
+                real[i] = Maths.DZEROXY;
+                imag[i] = Maths.DZEROXY;
                 someReal += 1;
-                return new DoubleToDouble[]{FunctionFactory.DZEROXY,FunctionFactory.DZEROXY};
-            }else {
+                return new DoubleToDouble[]{Maths.DZEROXY, Maths.DZEROXY};
+            } else {
                 real[i] = v.getRealDD();
                 imag[i] = v.getImagDD();
                 boolean br = !real[i].isZero();
                 boolean bi = !imag[i].isZero();
                 someReal += br ? 1 : 0;
                 someImag += bi ? 1 : 0;
-                if(br && !bi){
+                if (br && !bi) {
                     realOnly.add(v);
-                }else{
+                } else {
                     others.add(v);
                 }
             }
         }
         //zeros
-        if (someReal==0 && someImag==0) {
-            return new DoubleToDouble[]{FunctionFactory.DZEROXY, FunctionFactory.DZEROXY};
+        if (someReal == 0 && someImag == 0) {
+            return new DoubleToDouble[]{Maths.DZEROXY, Maths.DZEROXY};
             //pure real
-        } else if (someReal!=0 && someImag==0) {
-            return new DoubleToDouble[]{MathsBase.mul(real).toDD(), FunctionFactory.DZEROXY};
-        } else if (someReal==0 && someImag!=0) {
-            switch (someImag%4){
-                case 0:{
-                    return new DoubleToDouble[]{MathsBase.mul(imag).toDD(),FunctionFactory.DZEROXY};
+        } else if (someReal != 0 && someImag == 0) {
+            return new DoubleToDouble[]{Maths.mul(real).toDD(), Maths.DZEROXY};
+        } else if (someReal == 0 && someImag != 0) {
+            switch (someImag % 4) {
+                case 0: {
+                    return new DoubleToDouble[]{Maths.mul(imag).toDD(), Maths.DZEROXY};
                 }
-                case 1:{
-                    return new DoubleToDouble[]{FunctionFactory.DZEROXY, MathsBase.mul(imag).toDD()};
+                case 1: {
+                    return new DoubleToDouble[]{Maths.DZEROXY, Maths.mul(imag).toDD()};
                 }
-                case 2:{
-                    return new DoubleToDouble[]{new Neg(MathsBase.mul(imag).toDD()),FunctionFactory.DZEROXY};
+                case 2: {
+                    return new DoubleToDouble[]{Neg.of(Maths.mul(imag).toDD()).toDD(), Maths.DZEROXY};
                 }
-                case 3:{
-                    return new DoubleToDouble[]{FunctionFactory.DZEROXY,new Neg(MathsBase.mul(imag).toDD())};
+                case 3: {
+                    return new DoubleToDouble[]{Maths.DZEROXY, Neg.of(Maths.mul(imag).toDD()).toDD()};
                 }
             }
             throw new IllegalArgumentException("Unsupported");
-        }else{
+        } else {
 
             DoubleToComplex e = others.get(0).toDC();
             if (others.size() == 1) {
-                if(realOnly.isEmpty()) {
+                if (realOnly.isEmpty()) {
                     return new DoubleToDouble[]{
                             e.getRealDD(),
                             e.getImagDD()
                     };
-                }else{
+                } else {
                     Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[0]), e.getRealDD());
                     Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[0]), e.getImagDD());
                     return new DoubleToDouble[]{
-                            r.length==1?r[0].toDD():MathsBase.mul(r).toDD(),
-                            i.length==1?i[0].toDD():MathsBase.mul(i).toDD()
+                            r.length == 1 ? r[0].toDD() : Maths.mul(r).toDD(),
+                            i.length == 1 ? i[0].toDD() : Maths.mul(i).toDD()
                     };
                 }
             } else {
@@ -223,24 +203,40 @@ public class RealSimplifyRule implements ExpressionRewriterRule {
                 if (others.size() == 2) {
                     b = others.get(1).toDC();
                 } else {
-                    List<Expr> e2 = new ArrayList<Expr>(m.getSubExpressions());
+                    List<Expr> e2 = new ArrayList<Expr>(m.getChildren());
                     e2.remove(0);
-                    b = MathsBase.mul(e2.toArray(new Expr[0])).toDC();
+                    b = Maths.mul(e2.toArray(new Expr[0])).toDC();
                 }
-                Sub realFull = new Sub(MathsBase.mul(a.getRealDD(), b.getRealDD()), MathsBase.mul(a.getImagDD(), b.getImagDD()));
-                DoubleToDouble imagFull = MathsBase.sum(MathsBase.mul(a.getRealDD(), b.getImagDD()), MathsBase.mul(a.getImagDD(), b.getRealDD())).toDD();
-                if(realOnly.isEmpty()) {
-                    return new DoubleToDouble[]{realFull, imagFull};
-                }else{
+                Sub realFull = Sub.of(Maths.mul(a.getRealDD(), b.getRealDD()), Maths.mul(a.getImagDD(), b.getImagDD()));
+                DoubleToDouble imagFull = Maths.sum(Maths.mul(a.getRealDD(), b.getImagDD()), Maths.mul(a.getImagDD(), b.getRealDD())).toDD();
+                if (realOnly.isEmpty()) {
+                    return new DoubleToDouble[]{realFull.toDD(), imagFull};
+                } else {
                     Expr[] r = ArrayUtils.append(realOnly.toArray(new Expr[0]), realFull);
                     Expr[] i = ArrayUtils.append(realOnly.toArray(new Expr[0]), imagFull);
                     return new DoubleToDouble[]{
-                            r.length==1?r[0].toDD():MathsBase.mul(r).toDD(),
-                            i.length==1?i[0].toDD():MathsBase.mul(i).toDD()
+                            r.length == 1 ? r[0].toDD() : Maths.mul(r).toDD(),
+                            i.length == 1 ? i[0].toDD() : Maths.mul(i).toDD()
                     };
                 }
             }
         }
 
+    }
+
+    private Expr[] getSimplifiedRealImag(Expr expr, ExpressionRewriter ruleset) {
+        Expr r = ruleset.rewriteOrSame(new Real(expr.toDC()), null);
+        if (r instanceof Real) {
+            return null;
+        }
+        Expr i = ruleset.rewriteOrSame(new Imag(expr.toDC()), null);
+        if (i instanceof Imag) {
+            return null;
+        }
+        return new Expr[]{r, i};
+    }
+
+    private Expr rewriteMul(Mul m) {
+        return getMulRealImag(m)[0];
     }
 }

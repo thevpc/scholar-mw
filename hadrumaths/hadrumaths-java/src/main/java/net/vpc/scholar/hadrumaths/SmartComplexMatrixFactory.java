@@ -9,8 +9,8 @@ public class SmartComplexMatrixFactory extends AbstractComplexMatrixFactory {
     @Override
     public ComplexMatrix newMatrix(int rows, int columns) {
         ComplexMatrixFactory factory = MemComplexMatrixFactory.INSTANCE;
-        if ((rows > 100 || columns > 100) && !MathsBase.Config.memoryCanStores(rows * columns * 24L)) {
-            factory = MathsBase.Config.getLargeMatrixFactory();
+        if ((rows > 100 || columns > 100) && !Maths.Config.memoryCanStores(rows * columns * 24L)) {
+            factory = Maths.Config.getLargeMatrixFactory();
         }
         ComplexMatrix matrix = factory.newMatrix(rows, columns);
         matrix.setFactory(this);

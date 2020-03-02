@@ -1,9 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
@@ -11,7 +14,7 @@ import net.vpc.scholar.hadruwaves.str.ElectricFieldEvaluator;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.*;
 
 /**
@@ -22,15 +25,15 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
     public static final ElectricFieldParallelEvaluator INSTANCE=new ElectricFieldParallelEvaluator();
     @Override
     public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, double[] z, ProgressMonitor cmonitor) {
-        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
+        ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
         final MomStructure str=(MomStructure) structure;
-        monitor = ProgressMonitorFactory.nonnull(monitor);
+        monitor = ProgressMonitors.nonnull(monitor);
         final String clsName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, clsName, new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
-                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
+                ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
+                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -41,11 +44,11 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
                 MutableComplex ytemp;
                 for (int i = 0; i < indexes.length; i++) {
                     ModeInfo index = indexes[i];
-                    TVector<Complex> spc = sp.getColumn(index.index);
+                    ComplexVector spc = sp.getColumn(index.index);
 
-                    Complex[][] fx = index.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                    Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
-                    ProgressMonitorFactory.setProgress(monitor, i, indexes.length, clsName);
+                    Complex[][] fx = index.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                    Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
+                    ProgressMonitors.setProgress(monitor, i, indexes.length, clsName);
 //            monitor.setProgress(1.0 * i / indexes.length);
                     for (int xi = 0; xi < x.length; xi++) {
                         for (int yi = 0; yi < y.length; yi++) {
@@ -61,10 +64,11 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
                 }
 
         /*double[] */double[] z = new double[]{0};
+                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
                 return new VDiscrete(
-                        Discrete.create(new Complex[][][]{MutableComplex.toComplex(xCube)}, x, y, z),
-                        Discrete.create(new Complex[][][]{MutableComplex.toComplex(yCube)}, x, y, z),
-                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO), x, y, z)
+                        CDiscrete.of(domain,new Complex[][][]{MutableComplex.toComplex(xCube)}),
+                        CDiscrete.of(domain,new Complex[][][]{MutableComplex.toComplex(yCube)}),
+                        CDiscrete.of(domain,ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO))
                 );
             }
         });
@@ -73,11 +77,11 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

@@ -4,7 +4,7 @@
  */
 package net.vpc.scholar.hadruwaves.mom.project.gpmesher;
 
-import net.vpc.scholar.hadrumaths.symbolic.RooftopType;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
@@ -87,7 +87,7 @@ public class RooftopGpMesher extends RectGpMesher {
         int gridXX = (int) (Math.log(gridX) / Math.log(2));
         int gridYY = (int) (Math.log(gridY) / Math.log(2));
 
-        return new MeshAlgoRect(GridPrecision.forXY(gridXX, gridXX, gridYY, gridYY));
+        return new MeshAlgoRect(GridPrecision.ofXY(gridXX, gridXX, gridYY, gridYY));
 
     }
 

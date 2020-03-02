@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class HSocketServer extends HadrumathsAbstractServer {
 
-    private Map<String, HSocketServlet> servlets = new HashMap<>();
+    private final Map<String, HSocketServlet> servlets = new HashMap<>();
     private int port = HadrumathsServices.DEFAULT_SOCKET_PORT;
     private boolean started;
     private ServerSocket serverSocket;
@@ -32,10 +32,10 @@ public class HSocketServer extends HadrumathsAbstractServer {
         if (servlets.containsKey(id)) {
             throw new IllegalArgumentException("Already registered " + id + " to " + servlets.get(id));
         }
-        if(servlet instanceof FSServlet){
+        if (servlet instanceof FSServlet) {
             servlets.put(id, new FSSocketServlet((FSServlet) servlet));
-        }else{
-            throw new IllegalArgumentException("Unsupported "+servlet.getClass().getName());
+        } else {
+            throw new IllegalArgumentException("Unsupported " + servlet.getClass().getName());
         }
     }
 
@@ -51,15 +51,15 @@ public class HSocketServer extends HadrumathsAbstractServer {
         this.port = port;
     }
 
-    public boolean isStarted() {
-        return started;
-    }
-
     protected void checkNotStarted() {
         if (started) {
             throw new IllegalArgumentException("Already started");
         }
+    }    public boolean isStarted() {
+        return started;
     }
+
+
 
     public void start() {
         checkNotStarted();

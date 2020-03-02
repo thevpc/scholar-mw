@@ -7,8 +7,10 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
 
 /**
  * @author vpc
@@ -18,41 +20,42 @@ public class DoubleValueObjectFormat implements ObjectFormat<DoubleValue> {
     }
 
     @Override
-    public String format(DoubleValue o, ObjectFormatParamSet format) {
+    public String format(DoubleValue o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
 
     }
 
     @Override
-    public void format(StringBuilder sb, DoubleValue o, ObjectFormatParamSet format) {
-        double v = o.getValue();
+    public void format(DoubleValue o, ObjectFormatContext context) {
+        ObjectFormatParamSet format = context.getParams();
+        double v = o.toDouble();
         if (v == 0) {
-            FormatFactory.format(sb, 0.0, format);
+            context.format(0.0, format);
         } else if (v == 1) {
-            if (o.getDomain().isFull()) {
-                FormatFactory.format(sb, 1.0, format);
+            if (o.getDomain().isUnbounded()) {
+                context.format(1.0, format);
             } else {
-                FormatFactory.format(sb, o.getDomain(), format);
+                context.format(o.getDomain(), format);
             }
         } else if (v == -1) {
-            if (o.getDomain().isFull()) {
-                FormatFactory.format(sb, -1.0, format);
+            if (o.getDomain().isUnbounded()) {
+                context.format(-1.0, format);
             } else {
                 boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
                 if (par) {
-                    sb.append("(");
+                    context.append("(");
                 }
-                sb.append("-");
-                FormatFactory.format(sb, o.getDomain(), format.add(FormatFactory.REQUIRED_PARS));
+                context.append("-");
+                context.format(o.getDomain(), format.add(FormatFactory.REQUIRED_PARS));
                 if (par) {
-                    sb.append(")");
+                    context.append(")");
                 }
             }
         } else {
-            FormatFactory.format(sb, o.getValue(), format);
-            FormatFactory.appendStarredDomain(sb, o, format);
+            context.format(o.toDouble(), format);
+            FormatFactory.appendStarredDomain(context, o, format);
         }
     }
 }

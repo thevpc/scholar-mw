@@ -1,11 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +25,17 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                 (attachX && attachY) ? MeshZoneType.FILTER_ALL :
                         (!attachX && !attachY) ? MeshZoneType.FILTER_M :
                                 (attachX && !attachY) ? MeshZoneType.FILTER_MXEW :
-                /*(!attachX&&attachY)?*/MeshZoneType.FILTER_MYNS
+                                        /*(!attachX&&attachY)?*/MeshZoneType.FILTER_MYNS
         );
     }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("filter", context.elem(filter));
+        return h.build();
+    }
+
 
     public RectMeshAttachGpPattern(MeshZoneTypeFilter filter) {
         this.filter = filter == null ? MeshZoneType.FILTER_ALL : filter;
@@ -175,44 +185,44 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                 Domain bounds1 = area1.getDomain();
                 if (filter.accept(MeshZoneType.BORDER_NORTH)) {
                     if (isAdgacent(bounds1, globalBounds, 'N', 'N')) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin(), bounds1.getYwidth() / 2),  MeshZoneType.BORDER_NORTH);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin(), bounds1.getYwidth() / 2), MeshZoneType.BORDER_NORTH);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'N', 'S').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin(), bounds1.getYwidth() / 2),  MeshZoneType.BORDER_NORTH);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin(), bounds1.getYwidth() / 2), MeshZoneType.BORDER_NORTH);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_SOUTH)) {
                     if (isAdgacent(bounds1, globalBounds, 'S', 'S')) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'S', 'N').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth(), bounds1.getYMin() + bounds1.getYwidth() / 2, bounds1.getYwidth() / 2), MeshZoneType.BORDER_SOUTH);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_WEST)) {
                     if (isAdgacent(bounds1, globalBounds, 'W', 'W')) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()),  MeshZoneType.BORDER_WEST);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()), MeshZoneType.BORDER_WEST);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'W', 'E').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin(), bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()),  MeshZoneType.BORDER_WEST);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin(), bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()), MeshZoneType.BORDER_WEST);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
                 }
                 if (filter.accept(MeshZoneType.BORDER_EAST)) {
                     if (isAdgacent(bounds1, globalBounds, 'E', 'E')) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()),  MeshZoneType.BORDER_EAST);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()), MeshZoneType.BORDER_EAST);
                         zzone.getProperties().put("edgeType", "Box");
                         added.add(zzone);
                     } else if (findAdgacents(area, all, 'E', 'W').size() == 0) {
-                        MeshZone zzone = new MeshZone(Domain.forWidth(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()),  MeshZoneType.BORDER_EAST);
+                        MeshZone zzone = new MeshZone(Domain.ofWidth(bounds1.getXMin() + bounds1.getXwidth() / 2, bounds1.getXwidth() / 2, bounds1.getYMin(), bounds1.getYwidth()), MeshZoneType.BORDER_EAST);
                         zzone.getProperties().put("edgeType", "Nothing");
                         added.add(zzone);
                     }
@@ -239,7 +249,7 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 double h2 = Math.min(bounds1.getYMax(), bounds2.getYMax());
                                 double hh = h2 - h1;
                                 if (ww > 1 && hh > 1) {
-                                    MeshZone zzone = new MeshZone(Domain.forPoints(x0 - ww / 2, h1, ww, hh),  MeshZoneType.ATTACHX);
+                                    MeshZone zzone = new MeshZone(Domain.ofPoints(x0 - ww / 2, h1, ww, hh), MeshZoneType.ATTACHX);
                                     zzone.setProperty("Attach For", "(" + i + "," + j + ")");
                                     added.add(zzone);
                                 }
@@ -263,7 +273,7 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 double w2 = Math.min(bounds1.getXMax(), bounds2.getXMax());
                                 double ww = w2 - w1;
                                 if (hh > 1 && ww > 1) {
-                                    MeshZone zzone = new MeshZone(Domain.forPoints(w1, y0 - hh / 2, ww, hh),  MeshZoneType.ATTACHY);
+                                    MeshZone zzone = new MeshZone(Domain.ofPoints(w1, y0 - hh / 2, ww, hh), MeshZoneType.ATTACHY);
                                     zzone.setProperty("Attach For", "(" + i + "," + j + ")");
                                     added.add(zzone);
                                 }
@@ -292,12 +302,6 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
         return n + a + c;
     }
 
-    @Override
-    public Dumper getDumper() {
-        Dumper h = super.getDumper();
-        h.add("filter", filter);
-        return h;
-    }
 
     public MeshZoneTypeFilter getFilter() {
         return filter;

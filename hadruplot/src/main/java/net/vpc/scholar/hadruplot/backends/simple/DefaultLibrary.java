@@ -27,7 +27,7 @@ public class DefaultLibrary implements PlotLibrary {
 
     @Override
     public PlotComponentPanel createPlotComponentPanel(PlotComponentContext context) {
-        switch (context.getPlotType()) {
+        switch (context.getPlotType().getType()) {
             case CURVE: {
                 return new PlotCanvasCurveSimple(context.getModelProvider());
             }

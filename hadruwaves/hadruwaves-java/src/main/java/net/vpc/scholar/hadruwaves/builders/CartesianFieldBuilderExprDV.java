@@ -3,12 +3,13 @@ package net.vpc.scholar.hadruwaves.builders;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.*;
 import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DVHelper3;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DV2DM;
+import net.vpc.scholar.hadrumaths.symbolic.double2matrix.DefaultDoubleToMatrix;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.AbstractDoubleToVector;
 
 import java.util.Collections;
 import java.util.List;
 
-public class CartesianFieldBuilderExprDV extends AbstractExprPropertyAware implements DoubleToVector {
+public class CartesianFieldBuilderExprDV extends AbstractDoubleToVector implements DoubleToVector {
     private CartesianFieldBuilder builder;
     private Domain domain;
     private DoubleToComplex[] items;
@@ -27,32 +28,32 @@ public class CartesianFieldBuilderExprDV extends AbstractExprPropertyAware imple
     }
 
     @Override
-    protected Domain getDomainImpl() {
+    public Domain getDomain() {
         return domain;
     }
 
     @Override
-    protected boolean isInvariantImpl(Axis axis) {
+    public boolean isInvariant(Axis axis) {
         return false;
     }
 
     @Override
-    protected boolean isZeroImpl() {
+    public boolean isZero() {
         return false;
     }
 
     @Override
-    protected boolean isInfiniteImpl() {
+    public boolean isInfinite() {
         return false;
     }
 
     @Override
-    protected boolean isNaNImpl() {
+    public boolean isNaN() {
         return false;
     }
 
     @Override
-    public List<Expr> getSubExpressions() {
+    public List<Expr> getChildren() {
         return Collections.emptyList();
     }
 
@@ -79,28 +80,8 @@ public class CartesianFieldBuilderExprDV extends AbstractExprPropertyAware imple
     }
 
     @Override
-    protected boolean isDDImpl() {
-        return false;
-    }
-
-    @Override
-    protected boolean isDCImpl() {
-        return false;
-    }
-
-    @Override
-    protected boolean isDVImpl() {
-        return true;
-    }
-
-    @Override
-    protected boolean isDMImpl() {
-        return true;
-    }
-
-    @Override
     public DoubleToMatrix toDM() {
-        return new DV2DM(this);
+        return DefaultDoubleToMatrix.of(this);
     }
 
     @Override
@@ -114,32 +95,37 @@ public class CartesianFieldBuilderExprDV extends AbstractExprPropertyAware imple
     }
 
     @Override
-    public ComplexVector[][][] computeVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return dc2dv.computeVector(x, y, z, d0, ranges);
+    public ComplexVector[][][] evalVector(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return dc2dv.evalVector(x, y, z, d0, ranges);
     }
 
     @Override
-    public ComplexVector[][] computeVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-        return dc2dv.computeVector(x,y,d0,ranges);
+    public ComplexVector[][] evalVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return dc2dv.evalVector(x,y,d0,ranges);
     }
 
     @Override
-    public ComplexVector[] computeVector(double[] x, Domain d0, Out<Range> ranges) {
-        return dc2dv.computeVector(x,d0,ranges);
+    public ComplexVector[] evalVector(double[] x, Domain d0, Out<Range> ranges) {
+        return dc2dv.evalVector(x,d0,ranges);
     }
 
     @Override
-    public ComplexVector computeVector(double x, double y, double z, BooleanMarker defined) {
-        return dc2dv.computeVector(x,y,defined);
+    public ComplexVector evalVector(double x, double y, double z, BooleanMarker defined) {
+        return dc2dv.evalVector(x,y,defined);
     }
 
     @Override
-    public ComplexVector computeVector(double x, double y, BooleanMarker defined) {
-        return dc2dv.computeVector(x,y,defined);
+    public ComplexVector evalVector(double x, double y, BooleanMarker defined) {
+        return dc2dv.evalVector(x,y,defined);
     }
 
     @Override
-    public ComplexVector computeVector(double x, BooleanMarker defined) {
-        return dc2dv.computeVector(x,defined);
+    public ComplexVector evalVector(double x, BooleanMarker defined) {
+        return dc2dv.evalVector(x,defined);
+    }
+
+    @Override
+    public Expr newInstance(Expr... subExpressions) {
+        return this;
     }
 }

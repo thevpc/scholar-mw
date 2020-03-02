@@ -1,7 +1,14 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.TypeName;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Imag;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Real;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.*;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.*;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,15 +26,15 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) MathsBase.matrix(1, 1, new MatrixCell() {
+//            return (R) Maths.matrix(1, 1, new MatrixCell() {
 //                @Override
 //                public Complex get(int row, int column) {
 //                    return value.toComplex();
 //                }
 //            });
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return (R) MathsBase.tmatrix(Expr.class, 1, 1, new TMatrixCell<Expr>() {
+//        if(t.equals(Matrix.class)){
+//            return (R) Maths.tmatrix(Expr.class, 1, 1, new MatrixCell<Expr>() {
 //                @Override
 //                public Expr get(int row, int column) {
 //                    return value;
@@ -35,10 +42,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //            });
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) MathsBase.columnVector(new Complex[]{value.toComplex()});
+//            return (R) Maths.columnVector(new Complex[]{value.toComplex()});
 //        }
-//        if(t.equals(TVector.class)){
-//            return (R) MathsBase.columnTVector(Expr.class, 1, new TVectorCell<Expr>() {
+//        if(t.equals(Vector.class)){
+//            return (R) Maths.columnTVector(Expr.class, 1, new VectorCell<Expr>() {
 //                @Override
 //                public Expr get(int index) {
 //                    return value;
@@ -59,21 +66,26 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //        if(t.equals(Matrix.class)){
 //            return (Complex) ((Matrix)value).toComplex();
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return (Complex) ((TMatrix)value).toComplex();
+//        if(t.equals(Matrix.class)){
+//            return (Complex) ((Matrix)value).toComplex();
 //        }
 //        if(t.equals(Vector.class)){
 //            return (Complex) ((Vector)value).toComplex();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (Complex) ((TVector)value).toComplex();
+//        if(t.equals(Vector.class)){
+//            return (Complex) ((Vector)value).toComplex();
 //        }
 //        throw new ClassCastException();
 //    }
 
     @Override
+    public TypeName<Expr> getItemType() {
+        return Maths.$EXPR;
+    }
+
+    @Override
     public Expr convert(double d) {
-        return Complex.valueOf(d);
+        return Complex.of(d);
     }
 
     @Override
@@ -82,7 +94,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Expr convert(TMatrix d) {
+    public Expr convert(Matrix d) {
         return d.toComplex();
     }
 
@@ -105,118 +117,150 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     public Expr add(Expr a, Expr b) {
         if (a instanceof Plus) {
             if (b instanceof Plus) {
-                List<Expr> aa = a.getSubExpressions();
-                List<Expr> bb = b.getSubExpressions();
+                List<Expr> aa = a.getChildren();
+                List<Expr> bb = b.getChildren();
                 List<Expr> all = new ArrayList<>(aa.size() + bb.size());
                 all.addAll(aa);
                 all.addAll(bb);
-                return new Plus(all.toArray(new Expr[0]));
+                return Plus.of(all.toArray(new Expr[0]));
             } else {
-                List<Expr> aa = a.getSubExpressions();
+                List<Expr> aa = a.getChildren();
                 List<Expr> all = new ArrayList<>(aa.size() + 1);
                 all.addAll(aa);
                 all.add(b);
-                return new Plus(all.toArray(new Expr[0]));
+                return Plus.of(all.toArray(new Expr[0]));
             }
         } else {
             if (b instanceof Plus) {
-                List<Expr> bb = b.getSubExpressions();
+                List<Expr> bb = b.getChildren();
                 List<Expr> all = new ArrayList<>(bb.size() + 1);
                 all.add(a);
                 all.addAll(bb);
-                return new Plus(all.toArray(new Expr[0]));
+                return Plus.of(all.toArray(new Expr[0]));
             } else {
-                return new Plus(a, b);
+                return Plus.of(a, b);
             }
         }
+    }
+
+    @Override
+    public RepeatableOp<Expr> addRepeatableOp() {
+        return new ExprAddRepeatableOp();
+    }
+
+    @Override
+    public RepeatableOp<Expr> mulRepeatableOp() {
+        return new ExprMulRepeatableOp();
     }
 
     @Override
     public Expr sub(Expr a, Expr b) {
-        return new Sub(a, b);
+        return Sub.of(a, b);
     }
 
     @Override
     public Expr mul(Expr a, Expr b) {
-        TVector<Expr> all = MathsBase.elist();
-        //this is needed not to provoke StackOverFlow Exception on evaluation mainly if a "plus" is performed in a loop!
-        for (Expr expr : new Expr[]{a, b}) {
-            if (expr instanceof Mul) {
-                all.appendAll(expr.getSubExpressions());
-            } else {
-                all.append(expr);
-            }
-        }
-        return new Mul(all);
+        return Mul.of(a,b);
     }
 
     @Override
     public Expr div(Expr a, Expr b) {
-        return new Div(a, b);
+        return Div.of(a, b);
     }
 
     @Override
     public Expr rem(Expr a, Expr b) {
-        return new Reminder(a, b);
+        return Reminder.of(a, b);
     }
 
     @Override
     public Expr real(Expr a) {
-        if (a.isDoubleExpr()) {
-            return a;
-        }
-        if (a.isComplex()) {
-            return ((a.toComplex().real()));
+        switch (a.getType()) {
+            case DOUBLE_EXPR: {
+                return a;
+            }
+            case COMPLEX_EXPR: {
+                if (a.getDomain().isUnbounded()) {
+                    return ((a.toComplex().real()));
+                }
+                return a.getDomain().mul(a.toComplex().getReal());
+            }
         }
         return new Real(a.toDC());
     }
 
     @Override
     public Expr imag(Expr a) {
-        if (a.isDoubleExpr()) {
-            return MathsBase.DDZERO;
-        }
-        if (a.isComplex()) {
-            return ((a.toComplex().imag()));
+        switch (a.getType()) {
+            case DOUBLE_EXPR: {
+                return Maths.ZERO;
+            }
+            case COMPLEX_EXPR: {
+                if (a.getDomain().isUnbounded()) {
+                    return ((a.toComplex().real()));
+                }
+                return a.getDomain().mul(a.toComplex().getReal());
+            }
         }
         return new Imag(a.toDC());
     }
 
     @Override
-    public double absdbl(Expr a) {
-        if (a.isDouble()) {
-            return Math.abs(a.toDouble());
+    public Expr abs(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_NBR: {
+                double a = e.toDouble();
+                if (a < 0) {
+                    return Maths.expr(Math.abs(a), e.getDomain());
+                }
+                return e;
+            }
+            case COMPLEX_NBR: {
+                return Maths.expr(((e.toComplex().abs())), e.getDomain());
+            }
         }
-        if (a.isComplex()) {
-            return (a.toComplex().absdbl());
+        return Abs.of(e);
+    }
+
+    @Override
+    public double absdbl(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_NBR: {
+                return Math.abs(e.toDouble());
+            }
+            case COMPLEX_NBR: {
+                return Math.abs(e.toDouble());
+            }
         }
         throw new IllegalArgumentException("Not Supported Yet");
     }
 
     @Override
-    public double absdblsqr(Expr a) {
-        if (a.isDouble()) {
-            double d = a.toDouble();
-            return d * d;
-        }
-        if (a.isComplex()) {
-            return (a.toComplex().absdblsqr());
+    public double absdblsqr(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_NBR: {
+                double d = e.toDouble();
+                return d * d;
+            }
+            case COMPLEX_NBR: {
+                return (e.toComplex().absdblsqr());
+            }
         }
         throw new IllegalArgumentException("Not Supported Yet");
     }
 
     @Override
     public Expr abssqr(Expr a) {
-        if (a.isDouble()) {
-            return Complex.valueOf(MathsBase.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()));
-        } else if (a.isDoubleExpr()) {
-            return ComplexValue.valueOf(MathsBase.DOUBLE_VECTOR_SPACE.abssqr(a.toDouble()), a.getDomain());
-        } else if (a.isComplex()) {
-            return (a.toComplex().abssqr());
-        } else if (a.isComplexExpr()) {
-            return ComplexValue.valueOf(a.toComplex().abssqr(), a.getDomain());
-        } else if (a instanceof Discrete) {
-            return ((Discrete) a).abssqr();
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                return Maths.expr(Maths.abssqr(a.toDouble()), a.getDomain());
+            }
+            case COMPLEX_NBR: {
+                return Maths.expr(a.toDouble(), a.getDomain());
+            }
+        }
+        if (a instanceof CDiscrete) {
+            return ((CDiscrete) a).abssqr();
         } else if (a instanceof VDiscrete) {
             return ((VDiscrete) a).abssqr();
         }
@@ -224,588 +268,205 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public Expr lt(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) < 0 ? one() : zero();
-        }
-        return new LtExpr(a, b);
-    }
-
-    @Override
-    public Expr lte(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) <= 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) <= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
-        }
-        return new LteExpr(a, b);
-    }
-
-    @Override
-    public Expr gt(Expr a, Expr b) {
-        if (a.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) > 0 ? one() : zero();
-        }
-        return new GtExpr(a, b);
-    }
-
-    @Override
-    public Expr gte(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) >= 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) >= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
-        }
-        return new GteExpr(a, b);
-    }
-
-    @Override
-    public Expr eq(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) == 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) == 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) == 0 ? one() : zero();
-        }
-        return new EqExpr(a, b);
-    }
-
-    @Override
-    public Expr ne(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) != 0 ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf(Double.compare(a.toDouble(), b.toDouble()) != 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((a.toComplex().compareTo(b.toComplex()))) != 0 ? one() : zero();
-        }
-        return new NeExpr(a, b);
-    }
-
-    @Override
-    public Expr and(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf((a.toDouble() != 0 && b.toDouble() != 0) ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf((a.toDouble() != 0 && b.toDouble() != 0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((!a.toComplex().isZero() && !b.toComplex().isZero())) ? one() : zero();
-        }
-        return new AndExpr(a, b);
-    }
-
-    @Override
-    public Expr or(Expr a, Expr b) {
-        if (a.isDouble() && b.isDouble()) {
-            return DoubleValue.valueOf((a.toDouble() != 0 || b.toDouble() != 0) ? 1 : 0);
-        }
-        if (a.isDoubleExpr() && b.isDoubleExpr()) {
-            return DoubleValue.valueOf((a.toDouble() != 0 || b.toDouble() != 0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
-        }
-        if (a.isComplex() && b.isComplex()) {
-            return ((!a.toComplex().isZero() || !b.toComplex().isZero())) ? one() : zero();
-        }
-        return new OrExpr(a, b);
-    }
-
-    @Override
-    public IfExpr If(Expr cond, Expr exp1, Expr exp2) {
-        return new IfExpr(cond, exp1, exp2);
-    }
-
-    @Override
-    public Expr not(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(e.toDouble() == 0 ? 1 : 0);
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(e.toDouble() == 0 ? 1 : 0, e.getDomain());
-        }
-        if (e.isComplex()) {
-            return ((e.toComplex().isZero())) ? one() : zero();
-        }
-        return new NotExpr(e);
-    }
-
-    @Override
-    public Expr abs(Expr e) {
-        if (e.isDouble()) {
-            double a = e.toDouble();
-            if (a < 0) {
-                return DoubleValue.valueOf(Math.abs(a));
-            }
-            return e;
-        }
-        if (e.isDoubleExpr()) {
-            double a = e.toDouble();
-            if (a < 0) {
-                return DoubleValue.valueOf(Math.abs(a), e.getDomain());
-            }
-            return e;
-        }
-        if (e.isComplex()) {
-            return ((e.toComplex().abs()));
-        }
-        return new Abs(e);
-    }
-
-    @Override
     public Expr neg(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(-(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_NBR: {
+                return Maths.expr(-(e.toDouble()), e.getDomain());
+            }
+            case COMPLEX_NBR: {
+                return Maths.expr((e.toComplex().neg()), e.getDomain());
+            }
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(-(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().neg());
-        }
-        return new Neg(e);
+        return Neg.of(e);
     }
 
     @Override
     public Expr conj(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.conj(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.conj(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr((e.toComplex().conj()), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.conj(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().conj());
-        }
-        return new Conj(e);
+        return Conj.of(e);
     }
 
     @Override
     public Expr inv(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.inv(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.inv(e.toDouble()), e.getDomain());
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().inv(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.inv(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().inv());
-        }
-        return new Inv(e);
+        return Neg.of(e);
     }
 
     @Override
     public Expr sin(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.sin(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.sin(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().sin(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.sin(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sin());
-        }
-        return new Sin(e);
+        return Sin.of(e);
     }
 
     @Override
     public Expr cos(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.cos(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.cos(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().cos(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.cos(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().cos());
-        }
-        return new Cos(e);
+        return Cos.of(e);
     }
 
     @Override
     public Expr tan(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.tan(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.tan(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().tan(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.tan(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().tan());
-        }
-        return new Tan(e);
+        return Tan.of(e);
     }
 
     @Override
     public Expr cotan(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.cotan(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.cotan(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().cotan(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.cotan(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().cotan());
-        }
-        return new Cotan(e);
+        return Cotan.of(e);
     }
 
     @Override
     public Expr sinh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.sinh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.sinh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().sinh(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.sinh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sinh());
-        }
-        return new Sinh(e);
+        return Sinh.of(e);
     }
 
     @Override
     public Expr sincard(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.sincard(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.sincard(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().sincard(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.sincard(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sincard());
-        }
-        return new Sincard(e);
+        return Sincard.of(e);
     }
 
     @Override
     public Expr cosh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.cosh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.cosh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().cosh(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.cosh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().cosh());
-        }
-        return new Cosh(e);
+        return Cosh.of(e);
     }
 
     @Override
     public Expr tanh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.tanh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.tanh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().tanh(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.tanh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().tanh());
-        }
-        return new Tanh(e);
+        return Tanh.of(e);
     }
 
     @Override
     public Expr cotanh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.cotanh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.cotanh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().cotanh(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.cotanh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().cotanh());
-        }
-        return new Cotanh(e);
+        return Cotanh.of(e);
     }
 
     @Override
     public Expr asinh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.asinh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.asinh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().asinh(), e.getDomain());
         }
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.asinh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().asinh());
-        }
-        return new Asinh(e);
+        return Asinh.of(e);
     }
 
     @Override
     public Expr acosh(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.acosh(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.acosh(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().acosh(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.acosh(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().acosh());
-        }
-        return new Acosh(e);
+        return Acosh.of(e);
     }
 
     @Override
     public Expr asin(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.asin(e.toDouble()));
+        if (e.isNarrow(ExprNumberType.DOUBLE_TYPE)) {
+            return Maths.expr(Maths.asin(e.toDouble()), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.asin(e.toDouble()), e.getDomain());
+        if (e.isNarrow(ExprNumberType.COMPLEX_TYPE)) {
+            return Maths.expr(e.toComplex().asin(), e.getDomain());
         }
-        if (e.isComplex()) {
-            return (e.toComplex().asin());
-        }
-        return new Asin(e);
+        return Asin.of(e);
     }
 
     @Override
     public Expr acos(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.acos(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.acos(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().acos(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.acos(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().acos());
-        }
-        return new Acos(e);
+        return Acos.of(e);
     }
 
     @Override
     public Expr atan(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.atan(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.atan(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().atan(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.atan(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().atan());
-        }
-        return new Atan(e);
+        return Atan.of(e);
     }
 
     @Override
     public Expr arg(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.arg(e.toDouble()));
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.arg(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().arg(), e.getDomain());
         }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.arg(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().arg());
-        }
-        return new Arg(e);
-    }
-
-    @Override
-    public Expr acotan(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.acotan(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.acotan(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().acotan());
-        }
-        return new Acotan(e);
-    }
-
-    @Override
-    public Expr exp(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.exp(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.exp(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().exp());
-        }
-        return new Exp(e);
-    }
-
-    @Override
-    public Expr log(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.log(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.log(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().log());
-        }
-        return new Log(e);
-    }
-
-    @Override
-    public Expr log10(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(Math.log10(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(Math.log10(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().log10());
-        }
-        return new Log10(e);
-    }
-
-    @Override
-    public Expr db(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.db(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.db(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().db());
-        }
-        return new Db(e);
-    }
-
-    @Override
-    public Expr db2(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.db2(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.db2(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().db2());
-        }
-        return new Db2(e);
-    }
-
-    @Override
-    public Expr sqr(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.sqr(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.sqr(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sqr());
-        }
-        if (e instanceof Discrete) {
-            return ((Discrete) e).sqr();
-        }
-        if (e instanceof VDiscrete) {
-            return ((VDiscrete) e).sqr();
-        }
-        return new Sqr(e);
-    }
-
-    @Override
-    public Expr sqrt(Expr e) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble()));
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble()), e.getDomain());
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sqrt());
-        }
-        if (e instanceof Discrete) {
-            return MathsSampler.sqrt((Discrete) e);
-        }
-        if (e instanceof VDiscrete) {
-            return MathsSampler.sqrt((VDiscrete) e);
-        }
-        return new Sqrt(e);
-    }
-
-    @Override
-    public Expr sqrt(Expr e, int n) {
-        if (e.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble(), n), e.getDomain());
-        }
-        if (e.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.sqrt(e.toDouble(), n));
-        }
-        if (e.isComplex()) {
-            return (e.toComplex().sqrt(n));
-        }
-        return new Sqrtn(e, n);
-    }
-
-    @Override
-    public Expr pow(Expr a, Expr b) {
-        if (a.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b.toDouble()));
-        }
-        if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b.toDouble()), a.getDomain());
-        }
-        if (a.isComplex()) {
-            return (a.toComplex().pow(b.toComplex()));
-        }
-        return new Pow(a, b);
-    }
-
-    @Override
-    public Expr pow(Expr a, double b) {
-        if (a.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b));
-        }
-        if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b), a.getDomain());
-        }
-        if (a.isComplex()) {
-            return (a.toComplex().pow(b));
-        }
-        return new Pow(a, MathsBase.expr(b));
-    }
-
-    @Override
-    public Expr npow(Expr a, int b) {
-        if (a.isDouble()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b));
-        }
-        if (a.isDoubleExpr()) {
-            return DoubleValue.valueOf(MathsBase.pow(a.toDouble(), b), a.getDomain());
-        }
-        if (a.isComplex()) {
-            return (a.toComplex().pow(b));
-        }
-        return new Pow(a, MathsBase.expr(b));
+        return Arg.of(e);
     }
 
     @Override
@@ -814,8 +475,28 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
+    public <R> boolean is(Expr value, TypeName<R> type) {
+        if (Maths.$EXPR.equals(type)) {
+            return true;
+        }
+        if (Maths.$COMPLEX.equals(type)) {
+            return value.isNarrow(ExprType.COMPLEX_NBR);
+        }
+        if (Maths.$DOUBLE.equals(type)) {
+            return value.isNarrow(ExprType.DOUBLE_NBR);
+        }
+        if (Maths.$INTEGER.equals(type)) {
+            return value.isNarrow(ExprType.DOUBLE_NBR) && value.toDouble() == (int) value.toDouble();
+        }
+        if (Maths.$LONG.equals(type)) {
+            return value.isNarrow(ExprType.DOUBLE_NBR) && value.toDouble() == (long) value.toDouble();
+        }
+        return false;
+    }
+
+    @Override
     public boolean isComplex(Expr a) {
-        return a.isComplex();
+        return a.isNarrow(ExprType.COMPLEX_EXPR);
     }
 
     @Override
@@ -823,20 +504,421 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         return a.toComplex();
     }
 
-
     @Override
-    public Expr parse(String string) {
-        return Complex.valueOf(string);
+    public Expr acotan(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.acotan(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().acotan(), e.getDomain());
+        }
+        return Acotan.of(e);
     }
 
     @Override
-    public TypeName<Expr> getItemType() {
-        return MathsBase.$EXPR;
+    public Expr exp(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.exp(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().exp(), e.getDomain());
+        }
+        return Exp.of(e);
+    }
+
+    @Override
+    public Expr log(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.log(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().log(), e.getDomain());
+        }
+        return Log.of(e);
+    }
+
+    @Override
+    public Expr log10(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.log10(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().log10(), e.getDomain());
+        }
+        return Log10.of(e);
+    }
+
+    @Override
+    public Expr db(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.db(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().db(), e.getDomain());
+        }
+        return Db.of(e);
+    }
+
+    @Override
+    public Expr db2(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.db2(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().db2(), e.getDomain());
+        }
+        return Db2.of(e);
+    }
+
+    @Override
+    public Expr sqr(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_EXPR:
+                return Maths.expr(Maths.sqr(e.toDouble()), e.getDomain());
+            case COMPLEX_EXPR:
+                return Maths.expr(e.toComplex().sqr(), e.getDomain());
+        }
+        if (e instanceof CDiscrete) {
+            return ((CDiscrete) e).sqr();
+        }
+        if (e instanceof VDiscrete) {
+            return ((VDiscrete) e).sqr();
+        }
+        return Sqr.of(e);
+    }
+
+    @Override
+    public Expr sqrt(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR: {
+                Complex c = e.toComplex().sqrt();
+                if(c.isReal()){
+                    return Maths.expr(c.toDouble(), e.getDomain());
+                }
+                return Maths.expr(c.toComplex(), e.getDomain());
+            }
+        }
+        if (e instanceof CDiscrete) {
+            return MathsSampler.sqrt((CDiscrete) e);
+        }
+        if (e instanceof VDiscrete) {
+            return MathsSampler.sqrt((VDiscrete) e);
+        }
+        return Sqrt.of(e);
+    }
+
+    @Override
+    public Expr sqrt(Expr e, int n) {
+        switch (e.getType()) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR: {
+                Complex c = e.toComplex().sqrt(n);
+                if(c.isReal()){
+                    return Maths.expr(c.toDouble(), e.getDomain());
+                }
+                return Maths.expr(c.toComplex(), e.getDomain());
+            }
+        }
+        return Sqrtn.of(e, n);
+    }
+
+    @Override
+    public Expr pow(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+                switch (b.getType()) {
+                    case DOUBLE_EXPR: {
+                        Complex x = a.toComplex().pow(b.toComplex());
+                        if(x.isReal()){
+                            return Maths.expr(x.toDouble(), a.getDomain().intersect(b.getDomain()));
+                        }
+                        return Maths.expr(x, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_EXPR:
+                        return (a.toComplex().pow(b.toComplex())).mul(a.getDomain().intersect(b.getDomain()));
+                }
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR:
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case DOUBLE_EXPR:
+                    case COMPLEX_NBR:
+                    case COMPLEX_EXPR:
+                        return (a.toComplex().pow(b.toComplex())).mul(a.getDomain().intersect(b.getDomain()));
+                }
+        }
+        return Pow.of(a, b);
+    }
+
+    @Override
+    public Expr pow(Expr a, double b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                Complex x = a.toComplex().pow(b);
+                if(x.isReal()){
+                    return Maths.expr(x.toDouble());
+                }
+                return x;
+            }
+            case DOUBLE_EXPR: {
+                Complex x = a.toComplex().pow(b);
+                if(x.isReal()){
+                    return Maths.expr(x.toDouble(),a.getDomain());
+                }
+                return Maths.expr(x,a.getDomain());
+            }
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR: {
+                return Maths.expr(a.toComplex().pow(b), a.getDomain());
+            }
+        }
+        return Pow.of(a, Maths.expr(b));
+    }
+
+    @Override
+    public Expr npow(Expr a, int b) {
+        return pow(a,b);
+//        switch (a.getType()) {
+//            case DOUBLE_EXPR:
+//                return Maths.expr(Maths.pow(a.toDouble(), b));
+//            case COMPLEX_EXPR:
+//                return Maths.expr(a.toComplex().pow(b), a.getDomain());
+//        }
+//        return Pow.of(a, Maths.expr(b));
+    }
+
+    @Override
+    public Expr lt(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) < 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) < 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return LtExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr lte(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) <= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return LteExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr gt(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) < 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) > 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) > 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return GtExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr gte(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) >= 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) <= 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return GteExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr eq(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) == 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) == 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) == 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return EqExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr ne(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr(Double.compare(a.toDouble(), b.toDouble()) != 0 ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) != 0 ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((a.toComplex().compareTo(b.toComplex()))) != 0 ? one() : zero();
+                    }
+                }
+            }
+        }
+        return NeExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr not(Expr e) {
+        switch (e.getType()) {
+            case DOUBLE_NBR: {
+                return Maths.expr(e.toComplex().equals(Complex.ZERO) ? 1 : 0, e.getDomain());
+            }
+            case COMPLEX_NBR: {
+                return Maths.expr(e.toComplex().equals(Complex.ZERO) ? 1 : 0, e.getDomain());
+            }
+        }
+        return NotExpr.of(e);
+    }
+
+    @Override
+    public Expr and(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr((a.toDouble() != 0 && b.toDouble() != 0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return ((!a.toComplex().isZero() && !b.toComplex().isZero())) ? one() : zero();
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return ((!a.toComplex().isZero() && !b.toComplex().isZero())) ? one() : zero();
+                    }
+                }
+            }
+        }
+        return AndExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public Expr or(Expr a, Expr b) {
+        switch (a.getType()) {
+            case DOUBLE_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR: {
+                        return Maths.expr((a.toDouble() != 0 || b.toDouble() != 0) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                    case COMPLEX_NBR: {
+                        return Maths.expr((!a.toComplex().equals(Complex.ZERO) || !b.equals(Complex.ZERO)) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                }
+            }
+            case COMPLEX_NBR: {
+                switch (b.getType()) {
+                    case DOUBLE_NBR:
+                    case COMPLEX_NBR: {
+                        return Maths.expr((!a.toComplex().equals(Complex.ZERO) || !b.equals(Complex.ZERO)) ? 1 : 0, a.getDomain().intersect(b.getDomain()));
+                    }
+                }
+            }
+        }
+        return OrExpr.of(a.toDD(), b.toDD());
+    }
+
+    @Override
+    public IfExpr If(Expr cond, Expr exp1, Expr exp2) {
+        return IfExpr.of(cond, exp1, exp2);
+    }
+
+    @Override
+    public Expr parse(String string) {
+        return Complex.of(string);
     }
 
     @Override
     public Expr scalarProduct(Expr a, Expr b) {
-        return MathsBase.Config.getScalarProductOperator().eval(a, b);
+        return Maths.Config.getScalarProductOperator().eval(a, b);
     }
 
     @Override
@@ -848,16 +930,6 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             return a.setParam(paramName, ((Number) b).doubleValue());
         }
         throw new IllegalArgumentException("Unsupported param type");
-    }
-
-    @Override
-    public RepeatableOp<Expr> addRepeatableOp() {
-        return new ExprAddRepeatableOp();
-    }
-
-    @Override
-    public RepeatableOp<Expr> mulRepeatableOp() {
-        return new ExprMulRepeatableOp();
     }
 
     private static class ExprAddRepeatableOp implements RepeatableOp<Expr> {
@@ -874,9 +946,9 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             while (!t.isEmpty()) {
                 Expr e2 = t.remove();
                 if (e2 instanceof Plus) {
-                    t.addAll(e2.getSubExpressions());
+                    t.addAll(e2.getChildren());
                 } else {
-                    if (e2.isComplex()) {
+                    if (e2.isNarrow(ExprNumberType.COMPLEX_TYPE)) {
                         Complex v = e2.toComplex();
                         c.add(v);
                     } else {
@@ -892,10 +964,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (all.isEmpty()) {
                 return complex;
             }
-            if (!complex.equals(MathsBase.CONE)) {
+            if (!complex.equals(Maths.CONE)) {
                 all.add(0, complex);
             }
-            return new Plus(all.toArray(new Expr[0]));
+            return Plus.of(all.toArray(new Expr[0]));
         }
     }
 
@@ -918,9 +990,9 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             while (!t.isEmpty()) {
                 Expr e2 = t.remove();
                 if (e2 instanceof Mul) {
-                    t.addAll(e2.getSubExpressions());
+                    t.addAll(e2.getChildren());
                 } else {
-                    if (e2.isComplex()) {
+                    if (e2.isNarrow(ExprNumberType.COMPLEX_TYPE)) {
                         Complex v = e2.toComplex();
                         if (c.isZero()) {
                             zero = true;
@@ -940,30 +1012,10 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (all.isEmpty()) {
                 return complex;
             }
-            if (!complex.equals(MathsBase.CONE)) {
+            if (!complex.equals(Maths.CONE)) {
                 all.add(0, complex);
             }
-            return new Mul(all.toArray(new Expr[0]));
+            return Mul.of(all.toArray(new Expr[0]));
         }
-    }
-
-    @Override
-    public <R> boolean is(Expr value, TypeName<R> type) {
-        if (MathsBase.$EXPR.equals(type)) {
-            return true;
-        }
-        if (MathsBase.$COMPLEX.equals(type)) {
-            return value.isComplex();
-        }
-        if (MathsBase.$DOUBLE.equals(type)) {
-            return value.isDouble();
-        }
-        if (MathsBase.$INTEGER.equals(type)) {
-            return value.isDouble() && value.toDouble() == (int) value.toDouble();
-        }
-        if (MathsBase.$LONG.equals(type)) {
-            return value.isDouble() && value.toDouble() == (long) value.toDouble();
-        }
-        return false;
     }
 }

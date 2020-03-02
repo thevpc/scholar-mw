@@ -7,19 +7,9 @@ import java.io.*;
  * Created by vpc on 11/13/16.
  */
 public class FileSystemLock extends AbstractAppLock {
-    private File file;
+    private final File file;
     //new RandomAccessFile(file,"rw")
     private RandomAccessFile os;
-
-    @Override
-    public String getName() {
-        return file.getName();
-    }
-
-    @Override
-    public String toString() {
-        return file.toString();
-    }
 
     /**
      * creates a lock descriptor
@@ -30,12 +20,57 @@ public class FileSystemLock extends AbstractAppLock {
         this.file = file;
     }
 
-
     public static FileSystemLock createFileLockCompanion(File file) {
         File companion = new File(file.getPath() + ".lock");
         return new FileSystemLock(companion);
     }
 
+    /**
+     * try to release an already locked file
+     *
+     * @throws AppLockException if the file could not be released or is not yet locked
+     */
+    public void release() throws AppLockException {
+        if (os == null) {
+            throw new AppLockException("Unable to release non open Lock on " + file, this);
+        }
+        synchronized (FileSystemLock.class) {
+            try {
+                os.close();
+                os = null;
+            } catch (IOException e) {
+                throw new AppLockException("Unable to release Lock on " + file, this);
+            }
+            if (!file.delete()) {
+                throw new AppLockException("Unable to release Lock on " + file, this);
+            }
+        }
+        AppLockManager.getInstance().fireLockReleased(this);
+    }
+
+    public void forceRelease() throws AppLockException {
+        if (os == null) {
+            file.delete();
+        } else {
+            synchronized (FileSystemLock.class) {
+                try {
+                    os.close();
+                    os = null;
+                } catch (IOException e) {
+                    throw new AppLockException("Unable to release Lock on " + file, this);
+                }
+                if (!file.delete()) {
+                    throw new AppLockException("Unable to release Lock on " + file, this);
+                }
+            }
+        }
+        AppLockManager.getInstance().fireLockReleased(this);
+    }
+
+    @Override
+    public String getName() {
+        return file.getName();
+    }
 
     public boolean isLocked() {
         synchronized (FileSystemLock.class) {
@@ -85,8 +120,13 @@ public class FileSystemLock extends AbstractAppLock {
         try {
             synchronized (FileSystemLock.class) {
                 if (isLocked()) {
+                    //System.err.println("FAILED TO ACQUIRE-----" + Thread.currentThread() + " :: " + toString());
+                    AppLockManager.getInstance().fireLockAcquireFailed(this);
+//                    new Throwable().printStackTrace();
                     return false;
                 }
+                //System.err.println("ACQUIRE-----" + Thread.currentThread() + " :: " + toString());
+//                new Throwable().printStackTrace();
                 File pf = file.getParentFile();
                 if (pf != null) {
                     pf.mkdirs();
@@ -119,7 +159,10 @@ public class FileSystemLock extends AbstractAppLock {
             } catch (IOException e) {
                 return false;
             }
+            //System.err.println("RELEASE-----" + toString());
+//            new Throwable().printStackTrace();
             if (!file.delete()) {
+                AppLockManager.getInstance().fireLockReleaseFailed(this);
                 return false;
             }
         }
@@ -127,46 +170,9 @@ public class FileSystemLock extends AbstractAppLock {
         return true;
     }
 
-    /**
-     * try to release an already locked file
-     *
-     * @throws AppLockException if the file could not be released or is not yet locked
-     */
-    public void release() throws AppLockException {
-        if (os == null) {
-            throw new AppLockException("Unable to release non open Lock on " + file, this);
-        }
-        synchronized (FileSystemLock.class) {
-            try {
-                os.close();
-                os = null;
-            } catch (IOException e) {
-                throw new AppLockException("Unable to release Lock on " + file, this);
-            }
-            if (!file.delete()) {
-                throw new AppLockException("Unable to release Lock on " + file, this);
-            }
-        }
-        AppLockManager.getInstance().fireLockReleased(this);
-    }
-
-    public void forceRelease() throws AppLockException {
-        if (os == null) {
-            file.delete();
-        } else {
-            synchronized (FileSystemLock.class) {
-                try {
-                    os.close();
-                    os = null;
-                } catch (IOException e) {
-                    throw new AppLockException("Unable to release Lock on " + file, this);
-                }
-                if (!file.delete()) {
-                    throw new AppLockException("Unable to release Lock on " + file, this);
-                }
-            }
-        }
-        AppLockManager.getInstance().fireLockReleased(this);
+    @Override
+    public int hashCode() {
+        return file != null ? file.hashCode() : 0;
     }
 
 //    public static void main(String[] args) {
@@ -182,7 +188,6 @@ public class FileSystemLock extends AbstractAppLock {
 //        }
 //    }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -194,7 +199,7 @@ public class FileSystemLock extends AbstractAppLock {
     }
 
     @Override
-    public int hashCode() {
-        return file != null ? file.hashCode() : 0;
+    public String toString() {
+        return file.toString();
     }
 }

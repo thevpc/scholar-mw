@@ -6,8 +6,9 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
 
@@ -19,14 +20,15 @@ public class DoubleObjectFormat implements ObjectFormat<Double> {
     }
 
     @Override
-    public String format(Double o, ObjectFormatParamSet format) {
+    public String format(Double o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Double o, ObjectFormatParamSet format) {
+    public void format(Double o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         DoubleObjectFormatParam df = format.getParam(DoubleObjectFormatParam.class, false);
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         boolean _float = format.containsParam(FormatFactory.REQUIRED_FLOAT);
@@ -34,17 +36,17 @@ public class DoubleObjectFormat implements ObjectFormat<Double> {
             par = false;
         }
         if (par) {
-            sb.append("(");
+            context.append("(");
         }
         if (df != null) {
-            sb.append(df.getFormat().format(o));
-        } else if (!_float && MathsBase.isInt(o)) {
-            sb.append(o.intValue());
+            context.append(df.getFormat().format(o));
+        } else if (!_float && Maths.isInt(o)) {
+            context.append(o.intValue());
         } else {
-            sb.append(o.doubleValue());
+            context.append(o.doubleValue());
         }
         if (par) {
-            sb.append(")");
+            context.append(")");
         }
 
     }

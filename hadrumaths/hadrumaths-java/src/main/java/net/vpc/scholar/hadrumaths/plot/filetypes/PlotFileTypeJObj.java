@@ -1,16 +1,19 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
 import net.vpc.common.io.IOUtils;
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.vpc.scholar.hadruplot.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
-public class PlotFileTypeJObj implements PlotFileType {
+public final class PlotFileTypeJObj implements PlotFileType {
     public static final PlotFileType INSTANCE = new PlotFileTypeJObj();
+
+    private PlotFileTypeJObj() {
+    }
 
     @Override
     public String getTitle() {
@@ -47,5 +50,14 @@ public class PlotFileTypeJObj implements PlotFileType {
         } else {
             throw new IllegalArgumentException("Unsupported Type " + file);
         }
+    }
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
     }
 }

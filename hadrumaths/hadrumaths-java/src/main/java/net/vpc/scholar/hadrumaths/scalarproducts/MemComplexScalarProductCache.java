@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 public class MemComplexScalarProductCache extends AbstractScalarProductCache implements Serializable {
     private Complex[/** p index **/][/** n index **/] cache = new Complex[0][0];
-    private boolean hermitian;
-    private boolean doubleValue;
-    private boolean scalarValue;
+    private final boolean hermitian;
+    private final boolean doubleValue;
+    private final boolean scalarValue;
 
     public MemComplexScalarProductCache(boolean hermitian, boolean doubleValue, boolean scalarValue) {
         this.hermitian = hermitian;
@@ -24,7 +24,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
 
     private static Expr[] simplifyAll(Expr[] e, ProgressMonitor mon) {
         Expr[] all = new Expr[e.length];
-        MathsBase.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
+        Maths.invokeMonitoredAction(mon, "Simplify All", new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 int length = all.length;
@@ -38,26 +38,22 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
     }
 
     public ComplexMatrix toMatrix() {
-        return MathsBase.matrix(cache);
+        return Maths.matrix(cache);
     }
 
-    public TVector<Complex> getColumn(int column) {
+    public ComplexVector getColumn(int column) {
         Complex[] vmatrix = new Complex[cache.length];
         for (int i = 0; i < vmatrix.length; i++) {
             vmatrix[i] = cache[i][column];
         }
-        return MathsBase.columnVector(vmatrix);
+        return Maths.columnVector(vmatrix);
     }
 
-    public TVector<Complex> getRow(int row) {
+    public ComplexVector getRow(int row) {
 //        Complex[] vmatrix = new Complex[cache[0].length];
 //        System.arraycopy(cache[row], 0, vmatrix, 0, vmatrix.length);
-//        return MathsBase.columnVector(vmatrix);
-        return MathsBase.columnVector(cache[row]);
-    }
-
-    public Complex[][] toArray() {
-        return cache;
+//        return Maths.columnVector(vmatrix);
+        return Maths.columnVector(cache[row]);
     }
 
     public Complex apply(int p, int n) {
@@ -74,16 +70,16 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
     }
 
     public ScalarProductCache evaluate(ScalarProductOperator sp, Expr[] fn, Expr[] gp, AxisXY axis, ProgressMonitor monitor) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         String monMessage = getClass().getSimpleName();
         if (sp == null) {
-            sp = MathsBase.Config.getScalarProductOperator();
+            sp = Maths.Config.getScalarProductOperator();
         }
 //        ProgressMonitor[] hmon = emonitor.split(new double[]{2, 1, 3});
 //        if (doSimplifyAll) {
 //            Expr[] finalFn = fn;
 //            Expr[] finalGp = gp;
-//            Expr[][] fg = MathsBase.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
+//            Expr[][] fg = Maths.invokeMonitoredAction(emonitor, "Simplify All", new MonitoredAction<Expr[][]>() {
 //                @Override
 //                public Expr[][] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
 //                    Expr[][] fg = new Expr[2][];
@@ -103,12 +99,12 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
             switch (axis) {
                 case XY:
                 case X: {
-                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitors.incremental(monitor, (gp.length * maxF));
                     boolean finalDoubleValue = doubleValue;
                     Expr[] finalGp = gp;
                     ScalarProductOperator finalSp = sp;
                     Expr[] finalFn = fn;
-                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -124,7 +120,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                                 for (int q = 0; q < finalGp.length; q++) {
                                     DoubleToDouble gpq = finalGp[q].toDD();
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = Complex.valueOf(finalSp.evalDD(gpq, finalFn[n].toDD()));
+                                        gfps[q][n] = Complex.of(finalSp.evalDD(gpq, finalFn[n].toDD()));
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -135,9 +131,9 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     break;
                 }
                 case Y: {
-                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitors.incremental(monitor, (gp.length * maxF));
                     Expr[] finalGp1 = gp;
-                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -155,12 +151,12 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         } else {
             switch (axis) {
                 case XY: {
-                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitors.incremental(monitor, (gp.length * maxF));
                     boolean finalDoubleValue1 = doubleValue;
                     Expr[] finalGp2 = gp;
                     ScalarProductOperator finalSp1 = sp;
                     Expr[] finalFn1 = fn;
-                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             String _monMessage = monMessage + "({0,number,#},{1,number,#})";
@@ -168,7 +164,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                             if (!finalDoubleValue1) {
                                 for (int q = 0; q < finalGp2.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp1.eval(finalGp2[q], finalFn1[n]);
+                                        gfps[q][n] = finalSp1.eval(finalGp2[q], finalFn1[n]).toComplex();
                                         mon.inc(_monMessage, q, n);
                                     }
                                 }
@@ -178,7 +174,7 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                                     DoubleToVector gpqv = gpq.toDV();
                                     for (int n = 0; n < maxF; n++) {
                                         DoubleToVector fnndv = finalFn1[n].toDV();
-                                        gfps[q][n] = Complex.valueOf(
+                                        gfps[q][n] = Complex.of(
                                                 finalSp1.evalDD(gpqv.getComponent(Axis.X).toDC().getRealDD(), fnndv.getComponent(Axis.X).toDC().getRealDD())
                                                         + finalSp1.evalDD(gpqv.getComponent(Axis.Y).toDC().getRealDD(), fnndv.getComponent(Axis.Y).toDC().getRealDD()));
                                         mon.inc(_monMessage, q, n);
@@ -193,18 +189,18 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     break;
                 }
                 case X: {
-                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitors.incremental(monitor, (gp.length * maxF));
                     boolean finalDoubleValue2 = doubleValue;
                     Expr[] finalGp3 = gp;
                     ScalarProductOperator finalSp2 = sp;
                     Expr[] finalFn2 = fn;
-                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue2) {
                                 for (int q = 0; q < finalGp3.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp2.eval(finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X));
+                                        gfps[q][n] = finalSp2.eval(finalGp3[q].toDV().getComponent(Axis.X), finalFn2[n].toDV().getComponent(Axis.X)).toComplex();
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -221,14 +217,14 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                                     for (int n = 0; n < maxF; n++) {
                                         double[] doubles = finalSp2.evalDD(null, df[n], dg);
                                         for (int q = 0; q < finalGp3.length; q++) {
-                                            gfps[q][n] = Complex.valueOf(doubles[q]);
+                                            gfps[q][n] = Complex.of(doubles[q]);
                                             mon.inc(monMessage);
                                         }
                                     }
                                 } else {
                                     for (int q = 0; q < finalGp3.length; q++) {
                                         for (int n = 0; n < maxF; n++) {
-                                            gfps[q][n] = Complex.valueOf(finalSp2.evalDD(finalGp3[q].toDV().getComponent(Axis.X).toDC().getRealDD(), finalFn2[n].toDV().getComponent(Axis.X).toDC().getRealDD()));
+                                            gfps[q][n] = Complex.of(finalSp2.evalDD(finalGp3[q].toDV().getComponent(Axis.X).toDC().getRealDD(), finalFn2[n].toDV().getComponent(Axis.X).toDC().getRealDD()));
                                             mon.inc(monMessage);
                                         }
                                     }
@@ -240,25 +236,25 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                     break;
                 }
                 case Y: {
-                    ProgressMonitor mon = ProgressMonitorFactory.createIncrementalMonitor(monitor, (gp.length * maxF));
+                    ProgressMonitor mon = ProgressMonitors.incremental(monitor, (gp.length * maxF));
                     boolean finalDoubleValue3 = doubleValue;
                     Expr[] finalGp4 = gp;
                     ScalarProductOperator finalSp3 = sp;
                     Expr[] finalFn3 = fn;
-                    MathsBase.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
+                    Maths.invokeMonitoredAction(mon, monMessage, new VoidMonitoredAction() {
                         @Override
                         public void invoke(ProgressMonitor monitor, String monMessage) throws Exception {
                             if (!finalDoubleValue3) {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = finalSp3.eval(finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y));
+                                        gfps[q][n] = finalSp3.eval(finalGp4[q].toDV().getComponent(Axis.Y), finalFn3[n].toDV().getComponent(Axis.Y)).toComplex();
                                         mon.inc(monMessage);
                                     }
                                 }
                             } else {
                                 for (int q = 0; q < finalGp4.length; q++) {
                                     for (int n = 0; n < maxF; n++) {
-                                        gfps[q][n] = Complex.valueOf(finalSp3.evalDD(finalGp4[q].toDV().getComponent(Axis.Y).toDC().getRealDD(), finalFn3[n].toDV().getComponent(Axis.Y).toDC().getRealDD()));
+                                        gfps[q][n] = Complex.of(finalSp3.evalDD(finalGp4[q].toDV().getComponent(Axis.Y).toDC().getRealDD(), finalFn3[n].toDV().getComponent(Axis.Y).toDC().getRealDD()));
                                         mon.inc(monMessage);
                                     }
                                 }
@@ -272,6 +268,10 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
         }
         cache = gfps;
         return this;
+    }
+
+    public Complex[][] toArray() {
+        return cache;
     }
 
 //    public Complex zop(int p,int q,FnIndexes[] n_evan){

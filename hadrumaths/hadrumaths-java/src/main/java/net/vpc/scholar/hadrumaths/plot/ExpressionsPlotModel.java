@@ -80,11 +80,6 @@ public class ExpressionsPlotModel extends BasePlotModel {
         return this;
     }
 
-    @Override
-    public ExpressionsPlotModel setLibraries(String libraries) {
-        return (ExpressionsPlotModel) super.setLibraries(libraries);
-    }
-
     public Expr[] getExpressions() {
         return expressions;
     }

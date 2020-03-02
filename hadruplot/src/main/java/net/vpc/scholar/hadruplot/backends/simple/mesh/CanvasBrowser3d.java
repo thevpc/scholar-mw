@@ -106,7 +106,7 @@ class CanvasBrowser3d extends Mesh3DComponent
         if (super.md.persp) {
             super.md.minScale *= d1;
             super.md.maxScale *= d1;
-            super.md.computeMatrix();
+            super.md.evalMatrix();
         } else {
             super.md.addScale(d1, d1, d1);
         }

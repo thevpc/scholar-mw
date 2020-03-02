@@ -4,9 +4,8 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDyIntegralX;
 
 /**
  * @author vpc
@@ -14,16 +13,16 @@ import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
 public class DDyIntegralXObjectFormat extends AbstractObjectFormat<DDyIntegralX> {
 
     @Override
-    public void format(StringBuilder sb, DDyIntegralX o, ObjectFormatParamSet format) {
-        sb.append("DDyIntegralX(");
-        FormatFactory.format(sb, o.getArg(), format);
-        sb.append(",");
-        sb.append(o.getIntegralXY().toString());
-        sb.append(",");
-        FormatFactory.format(sb, o.getX0(), format);
-        sb.append(",");
-        FormatFactory.format(sb, o.getX1(), format);
-        sb.append(")");
+    public void format(DDyIntegralX o, ObjectFormatContext context) {
+        context.append("DDyIntegralX(");
+        context.format(o.getArg());
+        context.append(",");
+        context.append(o.getIntegralXY().toString());
+        context.append(",");
+        context.format(o.getX0());
+        context.append(",");
+        context.format(o.getX1());
+        context.append(")");
     }
 
 }

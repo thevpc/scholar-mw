@@ -2,6 +2,7 @@ package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.MissingAxisException;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
 
@@ -20,17 +21,15 @@ final class Domain2To1ScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         if (domain.getDimension() != 1 || !f1.isInvariant(Axis.Y) || !f1.isInvariant(Axis.Z) || !f2.isInvariant(Axis.Y) || !f2.isInvariant(Axis.Z)) {
-            throw new IllegalArgumentException("Unable to integrate over x with missing y definition");
+//            throw new IllegalArgumentException("Unable to integrate over x with missing y definition");
+            throw new MissingAxisException(Axis.Y);
         }
-        Domain d2 = Domain.forBounds(domain.xmin(), domain.xmax(), 0, 1);
+        Domain d2 = Domain.ofBounds(domain.xmin(), domain.xmax(), 0, 1);
         return sp.evalDD(d2, f1, f2);
     }
 }

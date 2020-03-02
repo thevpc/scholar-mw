@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -17,27 +17,17 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     private float arcRatio;
     private double phase;
 
-    @Override
-    public Geometry translateGeometry(double x, double y) {
-        RegularPolygon poly = new RegularPolygon();
-        poly.setCenter(center.translate(x, y));
-        poly.setSides(sides);
-        poly.setArcRatio(arcRatio);
-        poly.setPhase(phase);
-        return poly;
-    }
-
     public Point getCenter() {
         return center;
-    }
-
-    public RegularPolygon setCenter(double x, double y) {
-        return setCenter(Point.create(x, y));
     }
 
     public RegularPolygon setCenter(Point center) {
         this.center = center;
         return this;
+    }
+
+    public RegularPolygon setCenter(double x, double y) {
+        return setCenter(Point.create(x, y));
     }
 
     public double getRadius() {
@@ -77,36 +67,18 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
     @Override
-    public Polygon toPolygon() {
-        if (center == null) {
-            throw new IllegalArgumentException("Missing center");
-        }
-        if (sides < 3) {
-            throw new IllegalArgumentException("Complexity must be >2 ");
-        }
-        if (radius < 0 || Double.isInfinite(radius) || Double.isNaN(radius)) {
-            throw new IllegalArgumentException("invalid radius " + radius);
-        }
-        int max = (int) MathsBase.ceil(getValidArcRatio() * sides);
-        if (max < 3) {
-            throw new IllegalArgumentException("ratio too low " + arcRatio);
-        }
-        if (max == sides) {
-            max = sides - 1;
-        }
-        List<Point> all = new ArrayList<Point>();
-        double dblpi = 2 * MathsBase.PI;
-        for (int i = 0; i <= max; i++) {
-            double x = center.x + radius * MathsBase.cos2(i * dblpi / sides + phase);
-            double y = center.y + radius * MathsBase.sin2(i * dblpi / sides + phase);
-            all.add(Point.create(x, y));
-        }
-        return new Polygon(all.toArray(new Point[0]));
+    public Geometry clone() {
+        return super.clone();
     }
 
     @Override
-    public boolean contains(double x, double y) {
-        return toPolygon().contains(x, y);
+    public Surface toSurface() {
+        return toPolygon().toSurface();
+    }
+
+    @Override
+    public Path2D.Double getPath() {
+        return toPolygon().getPath();
     }
 
     @Override
@@ -117,18 +89,6 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     @Override
     public boolean isRectangular() {
         return sides == 4 && getValidArcRatio() == 1.0 && toPolygon().isRectangular();
-    }
-
-
-    public double getValidArcRatio() {
-        double arcRatio = this.arcRatio;
-        if (arcRatio <= 0) {
-            arcRatio = 1;
-        }
-        if (arcRatio > 1) {
-            arcRatio = 1;
-        }
-        return arcRatio;
     }
 
     @Override
@@ -142,16 +102,6 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
     @Override
-    public Geometry clone() {
-        return (Geometry) super.clone();
-    }
-
-    @Override
-    public Surface toSurface() {
-        return toPolygon().toSurface();
-    }
-
-    @Override
     public boolean isSingular() {
         return true;
     }
@@ -162,13 +112,66 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
     @Override
+    public Geometry translateGeometry(double x, double y) {
+        RegularPolygon poly = new RegularPolygon();
+        poly.setCenter(center.translate(x, y));
+        poly.setSides(sides);
+        poly.setArcRatio(arcRatio);
+        poly.setPhase(phase);
+        return poly;
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        return toPolygon().contains(x, y);
+    }
+
+    @Override
+    public Polygon toPolygon() {
+        if (center == null) {
+            throw new IllegalArgumentException("Missing center");
+        }
+        if (sides < 3) {
+            throw new IllegalArgumentException("Complexity must be >2 ");
+        }
+        if (radius < 0 || Double.isInfinite(radius) || Double.isNaN(radius)) {
+            throw new IllegalArgumentException("invalid radius " + radius);
+        }
+        int max = (int) Maths.ceil(getValidArcRatio() * sides);
+        if (max < 3) {
+            throw new IllegalArgumentException("ratio too low " + arcRatio);
+        }
+        if (max == sides) {
+            max = sides - 1;
+        }
+        List<Point> all = new ArrayList<Point>();
+        double dblpi = 2 * Maths.PI;
+        for (int i = 0; i <= max; i++) {
+            double x = center.x + radius * Maths.cos2(i * dblpi / sides + phase);
+            double y = center.y + radius * Maths.sin2(i * dblpi / sides + phase);
+            all.add(Point.create(x, y));
+        }
+        return new Polygon(all.toArray(new Point[0]));
+    }
+
+    @Override
     public Triangle toTriangle() {
         throw new IllegalArgumentException("Not Triangular");
     }
 
+    public double getValidArcRatio() {
+        double arcRatio = this.arcRatio;
+        if (arcRatio <= 0) {
+            arcRatio = 1;
+        }
+        if (arcRatio > 1) {
+            arcRatio = 1;
+        }
+        return arcRatio;
+    }
 
     @Override
-    public Path2D.Double getPath() {
-        return toPolygon().getPath();
+    public Polygon[] toPolygons() {
+        return new Polygon[]{toPolygon()};
     }
 }

@@ -1,8 +1,10 @@
 package net.vpc.scholar.hadruplot.console;
 
+import net.vpc.common.mon.AbstractProgressMonitor;
+import net.vpc.common.mon.TaskMessage;
+import net.vpc.common.mon.StringTaskMessage;
 import net.vpc.common.swings.SwingUtilities3;
 import net.vpc.common.util.Chronometer;
-import net.vpc.common.mon.*;
 import net.vpc.scholar.hadruplot.console.params.ParamSet;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
@@ -24,9 +26,8 @@ public class PlotThread extends AbstractProgressMonitor {
     private Chronometer chronometer;
     private ConsoleAxis axis;
     private PlotConsole plotter;
-    private boolean stopped;
     private PlotData plotData;
-//    private ProgressMonitorHelper ph = new ProgressMonitorHelper();
+    //    private ProgressMonitorHelper ph = new ProgressMonitorHelper();
     private Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -35,8 +36,8 @@ public class PlotThread extends AbstractProgressMonitor {
     }, "PlotThread");
 
     public PlotThread(PlotAxis currentY, PlotData plotData, ComputeTitle serieTitle, ConsoleAwareObject direct, ConsoleAwareObject modele, ConsoleAxis axis, PlotConsole plotter) {
-        super();
-        chronometer = new Chronometer();
+        super(nextId());
+        chronometer = Chronometer.start();
         this.currentY = currentY;
         this.serieTitle = serieTitle;
         this.direct = direct;
@@ -52,7 +53,7 @@ public class PlotThread extends AbstractProgressMonitor {
     }
 
     private void run() {
-        chronometer.start();
+        chronometer.restart();
         try {
             try {
                 if (currentY.containsType(YType.REFERENCE) || currentY.containsType(YType.ABSOLUTE_ERROR) || currentY.containsType(YType.RELATIVE_ERROR)) {
@@ -96,7 +97,7 @@ public class PlotThread extends AbstractProgressMonitor {
             });
             plotter.getLog().trace("End Running : " + currentY.getName(serieTitle) + " => Time=" + chronometer);
         } finally {
-            stopped = true;
+            terminate();
         }
     }
 
@@ -104,11 +105,7 @@ public class PlotThread extends AbstractProgressMonitor {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        stopped = true;
-    }
-
-    public boolean isStopped() {
-        return stopped;
+        terminate();
     }
 
     public PlotAxis getCurrentY() {
@@ -123,10 +120,9 @@ public class PlotThread extends AbstractProgressMonitor {
         return serieTitle;
     }
 
-    public ProgressMonitor cancel() {
-        stop();
+    public void cancel() {
+        super.cancel();
         thread.stop();
-        return this;
     }
 
 
@@ -136,23 +132,21 @@ public class PlotThread extends AbstractProgressMonitor {
     }
 
     @Override
-    public ProgressMessage getProgressMessage() {
+    public TaskMessage getProgressMessage() {
         PlotAxis currentY = getCurrentY();
-        return new StringProgressMessage(Level.FINE, currentY.getName() + "-" + currentY.getProgressMessage());
+        return new StringTaskMessage(Level.FINE, currentY.getName() + "-" + currentY.getProgressMessage());
+    }
+
+    protected void startImpl() {
+        super.startImpl();
+        thread.start();
     }
 
     @Override
-    public void setProgressImpl(double progress, ProgressMessage message) {
-        //
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
+    protected void terminateImpl() {
+        super.startImpl();
         thread.stop();
     }
 
-    public void start() {
-        thread.start();
-    }
+
 }

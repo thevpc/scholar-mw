@@ -14,7 +14,7 @@ public class ModeModeFunctionsConvergence extends PlotAxisSeriesSingleValue impl
         super("FnConvergence",type);
     }
 
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        return Complex.valueOf(((MomStructure)structure).getModeFunctionsCount());
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        return Complex.of(((MomStructure)structure).getModeFunctions().getSize());
     }
 }

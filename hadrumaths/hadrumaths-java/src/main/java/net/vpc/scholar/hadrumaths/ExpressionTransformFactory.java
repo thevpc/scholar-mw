@@ -19,6 +19,14 @@ public class ExpressionTransformFactory extends AbstractFactory {
 
     private static final ClassMap<Map<Class, ExpressionTransformer>> expressionToExpressionTransformers = new ClassMap<Map<Class, ExpressionTransformer>>(Expr.class, (Class) Map.class);
 
+    public static void setExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass, ExpressionTransformer expressionTransformer) {
+        if (expressionTransformer == null) {
+            getExpressionTransformerMap(expressionClass).remove(transformerClass);
+        } else {
+            getExpressionTransformerMap(expressionClass).put(transformerClass, expressionTransformer);
+        }
+    }
+
     private static Map<Class, ExpressionTransformer> getExpressionTransformerMap(Class<? extends Expr> expressionClass) {
         Map<Class, ExpressionTransformer> t = expressionToExpressionTransformers.getExact(expressionClass);
         if (t == null) {
@@ -26,6 +34,10 @@ public class ExpressionTransformFactory extends AbstractFactory {
             expressionToExpressionTransformers.put(expressionClass, t);
         }
         return t;
+    }
+
+    public static <T extends Expr> T transform(Expr e, ExpressionTransform transform) {
+        return (T) getExpressionTransformer(e.getClass(), transform.getClass()).transform(e, transform);
     }
 
     public static ExpressionTransformer getExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass) {
@@ -36,18 +48,6 @@ public class ExpressionTransformFactory extends AbstractFactory {
             }
         }
         throw new NoSuchElementException("Missing " + transformerClass + " for " + expressionClass);
-    }
-
-    public static void setExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass, ExpressionTransformer expressionTransformer) {
-        if (expressionTransformer == null) {
-            getExpressionTransformerMap(expressionClass).remove(transformerClass);
-        } else {
-            getExpressionTransformerMap(expressionClass).put(transformerClass, expressionTransformer);
-        }
-    }
-
-    public static <T extends Expr> T transform(Expr e, ExpressionTransform transform) {
-        return (T) getExpressionTransformer(e.getClass(), transform.getClass()).transform(e, transform);
     }
 
     public static DoubleMultiplierTransform doubleMul(double d) {

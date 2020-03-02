@@ -17,7 +17,7 @@ public class FormatParamArray implements Cloneable {
         for (int i = 0; i < array.length; i++) {
             ObjectFormatParam pp = array[i];
             if (paramsTable != null && paramsTable.containsKey(pp.getClass())) {
-                throw new IllegalArgumentException("Param " + pp.getClass().getSimpleName());
+                throw new IllegalArgumentException("CParam " + pp.getClass().getSimpleName());
             }
             if (paramsTable == null) {
                 paramsTable = new HashMap<>(array.length);

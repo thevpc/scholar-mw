@@ -5,7 +5,9 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Cotan;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -14,14 +16,14 @@ import net.vpc.scholar.hadrumaths.symbolic.*;
 public class CotanDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Cotan c = (Cotan) f;
-        Expr a = c.getArgument();
+        Expr a = c.getChild(0);
         return
-                new Neg(new Mul(
+                neg(mul(
                         d.derive(a, varIndex)
                         ,
-                        new Plus(
+                        add(
                                 Complex.ONE,
-                                new Sqr(c)
+                                sqr(c)
                         )
                 ))
                 ;

@@ -14,62 +14,105 @@ import net.vpc.scholar.hadrumaths.*;
  */
 public interface DoubleToMatrix extends DoubleDomainExpr {
 
-    ComponentDimension getComponentDimension();
+    default String getComponentTitle(int row, int col) {
+        return DoubleToMatrixDefaults.getMatrixExpressionTitleByChildren(this, row, col);
+    }
+
+    default ComplexMatrix[] evalMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return DoubleToMatrixDefaults.evalMatrix(this, x, y, d0, ranges);
+    }
+
+    default ComplexMatrix[] evalMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return DoubleToMatrixDefaults.evalMatrix(this, x, y, d0, ranges);
+    }
+
+    default ComplexMatrix apply(double x) {
+        return evalMatrix(x);
+
+    }
+
+    default ComplexMatrix evalMatrix(double x) {
+        return evalMatrix(x, BooleanMarker.none());
+    }
+
+    ComplexMatrix evalMatrix(double x, BooleanMarker defined);
+
+    default ComplexMatrix apply(double x, double y) {
+        return evalMatrix(x, y);
+    }
+
+    default ComplexMatrix evalMatrix(double x, double y) {
+        return evalMatrix(x, y, BooleanMarker.none());
+    }
+
+    ComplexMatrix evalMatrix(double x, double y, BooleanMarker defined);
+
+    default ComplexMatrix apply(double x, double y, double z) {
+        return evalMatrix(x, y);
+    }
+
+    default ComplexMatrix evalMatrix(double x, double y, double z) {
+        return evalMatrix(x, y, z, BooleanMarker.none());
+    }
+
+    ComplexMatrix evalMatrix(double x, double y, double z, BooleanMarker defined);
+
+    default ComplexMatrix[] evalMatrix(double[] x) {
+        return evalMatrix(x, (Domain) null, null);
+    }
+
+    default ComplexMatrix[] evalMatrix(double[] x, Domain d0, Out<Range> ranges) {
+        return DoubleToMatrixDefaults.evalMatrix(this, x, d0, ranges);
+    }
+
+    default ComplexMatrix[][] evalMatrix(double[] x, double[] y) {
+        return evalMatrix(x, y, null, null);
+    }
+
+    default ComplexMatrix[][] evalMatrix(double[] x, double[] y, Domain d0) {
+        return evalMatrix(x,y,d0,null);
+    }
+
+    default ComplexMatrix[][] evalMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+        return DoubleToMatrixDefaults.evalMatrix(this, x, y, d0, ranges);
+    }
+
+    default ComplexMatrix[][][] evalMatrix(double[] x, double[] y, double[] z) {
+        return evalMatrix(x, y, z, null, null);
+    }
+
+    default ComplexMatrix[][][] evalMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return DoubleToMatrixDefaults.evalMatrix(this, x, y, z, d0, ranges);
+    }
+
+    default ExprType getNarrowType() {
+        if (getComponentDimension().is(1, 1)) {
+            return getComponent(0, 0).getNarrowType();
+        }
+        return getType();
+    }
 
     Expr getComponent(int row, int col);
 
-    String getComponentTitle(int row, int col);
-
-    ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges);
-
-    ComplexMatrix[][] computeMatrix(double[] x, double[] y, Domain d0, Out<Range> ranges);
-
-    ComplexMatrix[] computeMatrix(double[] x, Domain d0, Out<Range> ranges);
-
-    default ComplexMatrix[] computeMatrix(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, x, y, d0, ranges);
+    default DoubleToComplex toDC() {
+        return DoubleToMatrixDefaults.toDC(this);
     }
 
-    default ComplexMatrix[] computeMatrix(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeMatrix(this, x, y, d0, ranges);
-    }
-    default ComplexMatrix computeMatrix(double x) {
-        return computeMatrix(new double[]{x}, (Domain) null, null)[0];
+    default DoubleToDouble toDD() {
+        return (DoubleToDouble) narrow(ExprType.DOUBLE_DOUBLE);
     }
 
-    default ComplexMatrix computeMatrix(double x, double y) {
-        return Expressions.computeMatrix(this, x, y);
+    default DoubleToVector toDV() {
+        return (DoubleToVector) narrow(ExprType.DOUBLE_CVECTOR);
     }
 
-    default ComplexMatrix computeMatrix(double x, double y, double z){
-        return Expressions.computeMatrix(this, x, y);
+    default DoubleToMatrix toDM() {
+        return this;
     }
 
-    default ComplexMatrix[] computeMatrix(double[] x) {
-        return computeMatrix(x, (Domain) null, null);
+    @Override
+    default ExprType getType() {
+        return ExprType.DOUBLE_CMATRIX;
     }
 
-    default ComplexMatrix[][] computeMatrix(double[] x, double[] y) {
-        return computeMatrix(x, y, (Domain) null, null);
-    }
-
-    default ComplexMatrix[][][] computeMatrix(double[] x, double[] y, double[] z) {
-        return computeMatrix(x, y, z, (Domain) null, null);
-    }
-
-//    default Matrix apply(double x) {
-//        return computeMatrix(x);
-//    }
-//
-//    default Matrix[] apply(double[] x) {
-//        return computeMatrix(x);
-//    }
-//
-//    default Matrix apply(double x, double y) {
-//        return computeMatrix(x, y);
-//    }
-//
-//    default Matrix[][] apply(double[] x, double[] y) {
-//        return computeMatrix(x, y);
-//    }
 }

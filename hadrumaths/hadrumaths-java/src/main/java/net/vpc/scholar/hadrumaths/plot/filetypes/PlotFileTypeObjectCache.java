@@ -1,15 +1,18 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
 import net.vpc.common.io.IOUtils;
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadruplot.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
-public class PlotFileTypeObjectCache implements PlotFileType {
-    public static final PlotFileType INSTANCE=new PlotFileTypeObjectCache();
+public final class PlotFileTypeObjectCache implements PlotFileType {
+    public static final PlotFileType INSTANCE = new PlotFileTypeObjectCache();
+
+    private PlotFileTypeObjectCache() {
+    }
 
     @Override
     public String getTitle() {
@@ -29,7 +32,7 @@ public class PlotFileTypeObjectCache implements PlotFileType {
 
     @Override
     public void save(File file, PlotComponent component) throws IOException {
-        save(file,new SimplePlotModelProvider(component.getModel(),component.toComponent()));
+        save(file, new SimplePlotModelProvider(component.getModel(), component.toComponent()));
     }
 
     @Override
@@ -49,5 +52,13 @@ public class PlotFileTypeObjectCache implements PlotFileType {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
+    }
 }

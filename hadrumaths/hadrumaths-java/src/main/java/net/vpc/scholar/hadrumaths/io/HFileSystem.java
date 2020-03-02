@@ -19,6 +19,8 @@ public interface HFileSystem {
 
     boolean existsOrWait(HFile file, int secondsTimeout);
 
+    byte[] loadBytes(HFile file);
+
     InputStream getInputStream(HFile file);
 
     OutputStream getOutputStream(HFile file);

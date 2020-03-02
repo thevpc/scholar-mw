@@ -10,6 +10,12 @@ public interface BooleanArray2 {
 
     BooleanArray1 get(int i);
 
+    default void setRange(int i, int jFrom, int jTo, boolean value) {
+        for (int j = jFrom; j < jTo; j++) {
+            set(i, j, value);
+        }
+    }
+
     void set(int i, int j, boolean value);
 
     void set(int i, int j);

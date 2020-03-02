@@ -31,7 +31,7 @@ public class JFreechartLibrary implements PlotLibrary {
 
     @Override
     public PlotComponentPanel createPlotComponentPanel(PlotComponentContext context) {
-        switch (context.getPlotType()) {
+        switch (context.getPlotType().getType()) {
             case CURVE: {
                 return new PlotCanvasCurveJFreeChart(context.getModelProvider());
             }

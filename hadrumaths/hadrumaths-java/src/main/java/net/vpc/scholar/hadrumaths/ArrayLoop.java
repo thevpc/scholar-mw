@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths;
 
 public class ArrayLoop implements Loop {
-    private Object[] value;
+    private final Object[] value;
     private int index;
 
     public ArrayLoop(Object[] value) {

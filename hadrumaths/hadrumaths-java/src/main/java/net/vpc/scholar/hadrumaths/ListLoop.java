@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths;
 import java.util.List;
 
 public class ListLoop<T> implements Loop {
-    private List value;
+    private final List value;
     private int index;
 
     public ListLoop(List value) {

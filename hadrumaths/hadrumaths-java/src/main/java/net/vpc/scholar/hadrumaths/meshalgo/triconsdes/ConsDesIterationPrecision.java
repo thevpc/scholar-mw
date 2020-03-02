@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triconsdes;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 
@@ -18,10 +21,17 @@ public class ConsDesIterationPrecision implements ConsDesPrecision {
         return iteration <= this.iteration;
     }
 
-    public String dump() {
-        Dumper h = new Dumper(this);
-        h.add("iteration", iteration);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("complexity", context.elem(iteration));
+        return sb.build();
     }
+
+//    public String dump() {
+//        Dumper h = new Dumper(this);
+//        h.add("iteration", iteration);
+//        return h.toString();
+//    }
 
 }

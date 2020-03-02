@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.project.series;
 
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Domain;
 
 import static net.vpc.scholar.hadrumaths.Expressions.symmetric;

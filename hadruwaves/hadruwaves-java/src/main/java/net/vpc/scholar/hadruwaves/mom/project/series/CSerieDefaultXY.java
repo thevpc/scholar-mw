@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.project.series;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 
 /**
  * Created by IntelliJ IDEA.

@@ -16,7 +16,7 @@
 // *
 // * @author vpc
 // */
-//public class DDxUxSymbolRule implements ExpressionRewriterRule {
+//public class DDxUxSymbolRule extends AbstractExpressionRewriterRule {
 //
 //    public static final ExpressionRewriterRule INSTANCE = new DDxUxSymbolRule();
 //    public static final Class<? extends Expr>[] TYPES = new Class[]{DDxUx.class};

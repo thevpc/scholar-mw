@@ -5,7 +5,8 @@ import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductHelpe
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
@@ -20,13 +21,10 @@ final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         return primi_linearcst(domain, (Linear) f1, (DoubleValue) f2);
 //        double b1 = domain.xmin;
 //        double b2 = domain.xmax;
@@ -60,10 +58,10 @@ final class LinearVsCstIntegralXY implements FormalScalarProductHelper {
         double b2 = domain.xmax();
         double b3 = domain.ymin();
         double b4 = domain.ymax();
-        double fa = f.a;
-        double fb = f.b;
-        double cst = g.value;
-        double fc = f.c;
+        double fa = f.getA();
+        double fb = f.getB();
+        double cst = g.toDouble();
+        double fc = f.getC();
 
         if (fa != 0 && fb != 0) {
 //       t0 = g.cst*x*y*(f.a*x+f.b*y+2.0*f.c)/2.0;

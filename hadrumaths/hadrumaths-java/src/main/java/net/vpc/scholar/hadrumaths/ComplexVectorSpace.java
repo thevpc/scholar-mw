@@ -12,16 +12,16 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //            return (R) Double.valueOf(value.toDouble());
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{value}});
+//            return (R) Maths.matrix(new Complex[][]{{value}});
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{value}});
+//        if(t.equals(Matrix.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
+//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{value}}).toVector();
+//        if(t.equals(Vector.class)){
+//            return (R) Maths.matrix(new Complex[][]{{value}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -37,21 +37,26 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //        if(t.equals(Matrix.class)){
 //            return (Complex) ((Matrix)value).toComplex();
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return (Complex) ((TMatrix)value).toComplex();
+//        if(t.equals(Matrix.class)){
+//            return (Complex) ((Matrix)value).toComplex();
 //        }
 //        if(t.equals(Vector.class)){
 //            return (Complex) ((Vector)value).toComplex();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (Complex) ((TVector)value).toComplex();
+//        if(t.equals(Vector.class)){
+//            return (Complex) ((Vector)value).toComplex();
 //        }
 //        throw new ClassCastException();
 //    }
 
     @Override
+    public TypeName<Complex> getItemType() {
+        return Maths.$COMPLEX;
+    }
+
+    @Override
     public Complex convert(double d) {
-        return Complex.valueOf(d);
+        return Complex.of(d);
     }
 
     @Override
@@ -60,7 +65,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public Complex convert(TMatrix d) {
+    public Complex convert(Matrix d) {
         return d.toComplex();
     }
 
@@ -85,6 +90,40 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
+    public RepeatableOp<Complex> addRepeatableOp() {
+        return new RepeatableOp<Complex>() {
+            final MutableComplex c = new MutableComplex();
+
+            @Override
+            public void append(Complex item) {
+                c.add(item);
+            }
+
+            @Override
+            public Complex eval() {
+                return c.toComplex();
+            }
+        };
+    }
+
+    @Override
+    public RepeatableOp<Complex> mulRepeatableOp() {
+        return new RepeatableOp<Complex>() {
+            final MutableComplex c = new MutableComplex(1, 0);
+
+            @Override
+            public void append(Complex item) {
+                c.mul(item);
+            }
+
+            @Override
+            public Complex eval() {
+                return c.toComplex();
+            }
+        };
+    }
+
+    @Override
     public Complex sub(Complex a, Complex b) {
         return a.sub(b);
     }
@@ -97,6 +136,11 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     @Override
     public Complex div(Complex a, Complex b) {
         return a.div(b);
+    }
+
+    @Override
+    public Complex rem(Complex a, Complex b) {
+        return a.rem(b);
     }
 
     @Override
@@ -122,6 +166,11 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     @Override
     public double absdblsqr(Complex a) {
         return a.absdblsqr();
+    }
+
+    @Override
+    public Complex abssqr(Complex a) {
+        return a.abssqr();
     }
 
     @Override
@@ -220,8 +269,26 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
+    public <R> boolean is(Complex value, TypeName<R> type) {
+        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)) {
+            return true;
+        }
+
+        if (Maths.$DOUBLE.equals(type)) {
+            return value.isReal();
+        }
+        if (Maths.$INTEGER.equals(type)) {
+            return value.isReal() && value.toDouble() == (int) value.toDouble();
+        }
+        if (Maths.$LONG.equals(type)) {
+            return value.isReal() && value.toDouble() == (long) value.toDouble();
+        }
+        return false;
+    }
+
+    @Override
     public boolean isComplex(Complex a) {
-        return a.isComplex();
+        return true;
     }
 
     @Override
@@ -290,16 +357,6 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public Complex parse(String string) {
-        return Complex.valueOf(string);
-    }
-
-    @Override
-    public TypeName<Complex> getItemType() {
-        return MathsBase.$COMPLEX;
-    }
-
-    @Override
     public Complex lt(Complex a, Complex b) {
         return a.compareTo(b) < 0 ? one() : zero();
     }
@@ -350,6 +407,11 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
+    public Complex parse(String string) {
+        return Complex.of(string);
+    }
+
+    @Override
     public Complex scalarProduct(Complex a, Complex b) {
         //return hermitian ? a.mul(b) : a.conj().mul(b);
         return a.mul(b);
@@ -358,66 +420,5 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     @Override
     public Complex setParam(Complex a, String paramName, Object b) {
         return a;
-    }
-
-    @Override
-    public RepeatableOp<Complex> addRepeatableOp() {
-        return new RepeatableOp<Complex>() {
-            MutableComplex c = new MutableComplex();
-
-            @Override
-            public void append(Complex item) {
-                c.add(item);
-            }
-
-            @Override
-            public Complex eval() {
-                return c.toComplex();
-            }
-        };
-    }
-
-    @Override
-    public RepeatableOp<Complex> mulRepeatableOp() {
-        return new RepeatableOp<Complex>() {
-            MutableComplex c = new MutableComplex(1, 0);
-
-            @Override
-            public void append(Complex item) {
-                c.mul(item);
-            }
-
-            @Override
-            public Complex eval() {
-                return c.toComplex();
-            }
-        };
-    }
-
-    @Override
-    public <R> boolean is(Complex value, TypeName<R> type) {
-        if (MathsBase.$COMPLEX.equals(type) || MathsBase.$EXPR.equals(type)) {
-            return true;
-        }
-        if (MathsBase.$DOUBLE.equals(type)) {
-            return value.isDouble();
-        }
-        if (MathsBase.$INTEGER.equals(type)) {
-            return value.isDouble() && value.toDouble() == (int) value.toDouble();
-        }
-        if (MathsBase.$LONG.equals(type)) {
-            return value.isDouble() && value.toDouble() == (long) value.toDouble();
-        }
-        return false;
-    }
-
-    @Override
-    public Complex abssqr(Complex a) {
-        return a.abssqr();
-    }
-
-    @Override
-    public Complex rem(Complex a, Complex b) {
-        return a.rem(b);
     }
 }

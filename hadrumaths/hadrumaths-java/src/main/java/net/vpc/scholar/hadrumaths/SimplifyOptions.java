@@ -1,8 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+
 public class SimplifyOptions implements Cloneable {
     public static SimplifyOptions DEFAULT = new ReadOnlySimplifyOptions();
     private boolean preserveRootName;
+    private ExprType targetExprType;
 
     public SimplifyOptions() {
 
@@ -10,6 +13,7 @@ public class SimplifyOptions implements Cloneable {
 
     public SimplifyOptions(SimplifyOptions other) {
         this.preserveRootName = other.isPreserveRootName();
+        this.targetExprType = other.getTargetExprType();
     }
 
     public boolean isPreserveRootName() {
@@ -18,6 +22,15 @@ public class SimplifyOptions implements Cloneable {
 
     public SimplifyOptions setPreserveRootName(boolean preserveRootName) {
         this.preserveRootName = preserveRootName;
+        return this;
+    }
+
+    public ExprType getTargetExprType() {
+        return targetExprType;
+    }
+
+    public SimplifyOptions setTargetExprType(ExprType targetExprType) {
+        this.targetExprType = targetExprType;
         return this;
     }
 
@@ -39,6 +52,11 @@ public class SimplifyOptions implements Cloneable {
 
         @Override
         public SimplifyOptions setPreserveRootName(boolean preserveRootName) {
+            throw new IllegalArgumentException("Read Only SimplifyOptions");
+        }
+
+        @Override
+        public SimplifyOptions setTargetExprType(ExprType targetExprType) {
             throw new IllegalArgumentException("Read Only SimplifyOptions");
         }
     }

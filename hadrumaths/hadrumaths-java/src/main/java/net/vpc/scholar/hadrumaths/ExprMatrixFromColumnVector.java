@@ -1,14 +1,12 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.common.util.TypeName;
-
 /**
  * Created by vpc on 3/23/17.
  */
-public class ExprMatrixFromColumnVector extends TMatrixFromColumnVector<Expr> implements ExprMatrix{
+public class ExprMatrixFromColumnVector extends MatrixFromColumnVector<Expr> implements ExprMatrix {
     private static final long serialVersionUID = 1L;
 
-    public ExprMatrixFromColumnVector(TVector<Expr> vector) {
+    public ExprMatrixFromColumnVector(Vector<Expr> vector) {
         super(vector);
     }
 
@@ -19,10 +17,10 @@ public class ExprMatrixFromColumnVector extends TMatrixFromColumnVector<Expr> im
 
     @Override
     public ExprMatrix simplify(SimplifyOptions options) {
-        return (ExprMatrix) getFactory().newMatrix(getRowCount(), getColumnCount(), new TMatrixCell<Expr>() {
+        return (ExprMatrix) getFactory().newMatrix(getRowCount(), getColumnCount(), new MatrixCell<Expr>() {
             @Override
             public Expr get(int row, int column) {
-                return ExprMatrixFromColumnVector.this.get(row,column).simplify(options);
+                return ExprMatrixFromColumnVector.this.get(row, column).simplify(options);
             }
         });
     }

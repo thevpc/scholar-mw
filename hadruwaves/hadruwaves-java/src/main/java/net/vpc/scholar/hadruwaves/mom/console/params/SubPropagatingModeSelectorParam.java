@@ -1,10 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadruplot.console.params.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractCParam;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel.MomStructureFractalZop;
 
-public class SubPropagatingModeSelectorParam extends AbstractParam implements Cloneable {
+public class SubPropagatingModeSelectorParam extends AbstractCParam implements Cloneable {
 
 
     public SubPropagatingModeSelectorParam() {

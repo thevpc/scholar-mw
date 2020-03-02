@@ -1,14 +1,66 @@
 package net.vpc.scholar.hadrumaths.io;
 
-import java.io.UncheckedIOException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public abstract class AbstractHFileSystem implements HFileSystem {
     public static final String WRITE_TEMP_EXT = ".writing";
+
+    @Override
+    public HFile get(String path) {
+        return new HFile(this, path);
+    }
+
+    @Override
+    public boolean existsOrWait(HFile file) {
+        return existsOrWait(file, 300);
+    }
+
+    @Override
+    public boolean existsOrWait(HFile file, int secondsTimeout) {
+        if (exists(file)) {
+            return true;
+        }
+        File file1 = new File(file.getPath() + WRITE_TEMP_EXT);
+        if (file1.exists()) {
+            for (int i = 0; i < secondsTimeout * 2; i++) {
+                if (!file1.exists()) {
+                    return exists(file);
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            throw new UncheckedIOException(new IOException("File does not exist but an associated temp file failed to finish writing to " + file));
+        }
+        return false;
+    }
+
+    @Override
+    public OutputStream getOutputStream(HFile file) {
+        return getOutputStream(file, false);
+    }
+
+    @Override
+    public long write(HFile file, InputStream is) {
+        OutputStream out = getOutputStream(file);
+        byte[] buffer = new byte[4096 * 4];
+        long x = 0;
+        try {
+            while (true) {
+                int count = is.read(buffer);
+                if (count <= 0) {
+                    break;
+                }
+                x += count;
+                out.write(buffer, 0, count);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return x;
+    }
 
     public boolean deleteFolderTree(HFile folder, HFileFilter fileFilter, FailStrategy strategy) {
         if (strategy == null) {
@@ -72,63 +124,6 @@ public abstract class AbstractHFileSystem implements HFileSystem {
             }
         }
         throw new UncheckedIOException(new IOException("Unable to Delete Folder " + folder));
-    }
-
-    @Override
-    public HFile get(String path) {
-        return new HFile(this, path);
-    }
-
-    @Override
-    public boolean existsOrWait(HFile file) {
-        return existsOrWait(file, 300);
-    }
-
-    @Override
-    public OutputStream getOutputStream(HFile file) {
-        return getOutputStream(file, false);
-    }
-
-    @Override
-    public boolean existsOrWait(HFile file, int secondsTimeout) {
-        if (exists(file)) {
-            return true;
-        }
-        File file1 = new File(file.getPath() + WRITE_TEMP_EXT);
-        if (file1.exists()) {
-            for (int i = 0; i < secondsTimeout * 2; i++) {
-                if (!file1.exists()) {
-                    return exists(file);
-                }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            throw new UncheckedIOException(new IOException("File does not exist but an associated temp file failed to finish writing to " + file));
-        }
-        return false;
-    }
-
-    @Override
-    public long write(HFile file, InputStream is) {
-        OutputStream out = getOutputStream(file);
-        byte[] buffer = new byte[4096 * 4];
-        long x = 0;
-        try {
-            while (true) {
-                int count = is.read(buffer);
-                if (count <= 0) {
-                    break;
-                }
-                x += count;
-                out.write(buffer, 0, count);
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return x;
     }
 
     @Override

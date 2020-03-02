@@ -10,10 +10,7 @@ import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
  * To change this template use File | Settings | File Templates.
  */
 public class MatlabDomainFormat implements ToMatlabStringParam {
-    public static enum Type {NONE, GATE}
-
-    ;
-    private Type type;
+    private final Type type;
 
     public MatlabDomainFormat(Type type) {
         this.type = type;
@@ -22,4 +19,6 @@ public class MatlabDomainFormat implements ToMatlabStringParam {
     public Type getType() {
         return type;
     }
+
+    public enum Type {NONE, GATE}
 }

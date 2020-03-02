@@ -8,8 +8,8 @@ import net.vpc.scholar.hadrumaths.symbolic.old.*;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymOpAdd extends SymOperator {
-    private SymExpression left;
-    private SymExpression right;
+    private final SymExpression left;
+    private final SymExpression right;
 
     public SymOpAdd(SymExpression left, SymExpression right) {
         this.left = left;

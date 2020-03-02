@@ -9,9 +9,6 @@ import java.util.List;
 class MathsArrays {
 
 
-
-
-
     /**
      * sqrt(a^2 + b^2) without under/overflow.
      *
@@ -56,7 +53,7 @@ class MathsArrays {
         }
         double[] z = new double[c.length];
         for (int i = 0; i < z.length; i++) {
-            z[i]= toDoubleConverter.toDouble(c[i]);
+            z[i] = toDoubleConverter.toDouble(c[i]);
         }
         return z;
     }
@@ -65,9 +62,9 @@ class MathsArrays {
      * range closed min (inclusive) and closed max (inclusive)
      *
      * @param orderedValues array to look for range into. must be
-     * <strong>ordered</strong>
-     * @param min min value accepted in range (inclusive)
-     * @param max max value accepted in range (inclusive)
+     *                      <strong>ordered</strong>
+     * @param min           min value accepted in range (inclusive)
+     * @param max           max value accepted in range (inclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */
@@ -100,9 +97,9 @@ class MathsArrays {
      * range closed min (inclusive) and open max (exclusive)
      *
      * @param orderedValues array to look for range into. must be
-     * <strong>ordered</strong>
-     * @param min min value accepted in range (inclusive)
-     * @param max max value accepted in range (exclusive)
+     *                      <strong>ordered</strong>
+     * @param min           min value accepted in range (inclusive)
+     * @param max           max value accepted in range (exclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */
@@ -168,7 +165,7 @@ class MathsArrays {
                 }
             }
         }
-        return r;
+        return Arrays.copyOf(r, p);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z) {
@@ -185,7 +182,7 @@ class MathsArrays {
                 }
             }
         }
-        return r;
+        return Arrays.copyOf(r, p);
     }
 
     public static double[][] cross(double[] x, double[] y, double[] z, Double3Filter filter) {

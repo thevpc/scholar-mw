@@ -1,10 +1,12 @@
 package net.vpc.scholar.hadrumaths.geom;
 
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.Maths;
 
-import java.io.Serializable;
-
-public class Point implements Serializable, Cloneable {
+public class Point implements HSerializable {
     private static final long serialVersionUID = -1010101010101001002L;
     /**
      * Created by IntelliJ IDEA.
@@ -44,6 +46,14 @@ public class Point implements Serializable, Cloneable {
         this.dimension = dim;
     }
 
+    public static Point create(double x) {
+        return new Point(x, 0, 0, 1);
+    }
+
+    public static Point create(double x, double y, double z) {
+        return new Point(x, y, z, 3);
+    }
+
     public double distance(Point q) {
         int d = Math.max(dimension, q.dimension);
         switch (d) {
@@ -77,8 +87,14 @@ public class Point implements Serializable, Cloneable {
         throw new IllegalArgumentException("Unsupported dimension");
     }
 
-    protected Point clone() {
-        return Point.create(x, y);
+    @Override
+    public int hashCode() {
+        int result = 13;
+        result = 31 * Double.hashCode(x);
+        result = 31 * result + Double.hashCode(y);
+        result = 31 * result + Double.hashCode(z);
+        result = 31 * result + dimension;
+        return result;
     }
 
     public boolean equals(Object obj) {
@@ -89,39 +105,8 @@ public class Point implements Serializable, Cloneable {
         return x == p.x && y == p.y && z == p.z && dimension == p.dimension;
     }
 
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(x);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(z);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + dimension;
-        return result;
-    }
-
-    public boolean roundEquals(Point p, double epsilon) {
-        if (p == null) {
-            return false;
-        }
-        if (dimension != p.dimension) {
-            return false;
-        }
-        switch (dimension) {
-            case 1: {
-                return MathsBase.roundEquals(x, p.x, epsilon);
-            }
-            case 2: {
-                return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon);
-            }
-            case 3: {
-                return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon) && MathsBase.roundEquals(z, p.z, epsilon);
-            }
-        }
-        return MathsBase.roundEquals(x, p.x, epsilon) && MathsBase.roundEquals(y, p.y, epsilon) && MathsBase.roundEquals(z, p.z, epsilon);
+    protected Point clone() {
+        return Point.create(x, y);
     }
 
     public String toString() {
@@ -136,15 +121,41 @@ public class Point implements Serializable, Cloneable {
         return "(" + x + "," + y + "," + z + ")";
     }
 
-    public static Point create(double x) {
-        return new Point(x, 0, 0, 1);
-    }
-
     public static Point create(double x, double y) {
         return new Point(x, y, 0, 2);
     }
 
-    public static Point create(double x, double y, double z) {
-        return new Point(x, y, z, 3);
+    public boolean roundEquals(Point p, double epsilon) {
+        if (p == null) {
+            return false;
+        }
+        if (dimension != p.dimension) {
+            return false;
+        }
+        switch (dimension) {
+            case 1: {
+                return Maths.roundEquals(x, p.x, epsilon);
+            }
+            case 2: {
+                return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon);
+            }
+            case 3: {
+                return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon) && Maths.roundEquals(z, p.z, epsilon);
+            }
+        }
+        return Maths.roundEquals(x, p.x, epsilon) && Maths.roundEquals(y, p.y, epsilon) && Maths.roundEquals(z, p.z, epsilon);
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        switch (dimension) {
+            case 1: {
+                return Tson.uplet(Tson.elem(x)).build();
+            }
+            case 2: {
+                return Tson.uplet(Tson.elem(x), Tson.elem(y)).build();
+            }
+        }
+        return Tson.uplet(Tson.elem(x), Tson.elem(y), Tson.elem(z)).build();
     }
 }

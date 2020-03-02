@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadruplot;
 
 import net.vpc.common.util.ArrayUtils;
-import net.vpc.common.util.Converter;
 import net.vpc.common.util.DoubleArrayList;
 import net.vpc.common.util.TypeReference;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 import net.vpc.scholar.hadruplot.util.PlotUtils;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class PlotLines {
     private Map<String, Map<Double, Object>> values = new LinkedHashMap<>();
@@ -142,12 +142,12 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines countPercentBy(Converter<PlotPoint, Double> group) {
+    public PlotLines countPercentBy(Function<PlotPoint, Double> group) {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             Map<Double, Double> counts = new HashMap<>();
             for (PlotPoint p : getLine(entry)) {
-                Double g = group.convert(p);
+                Double g = group.apply(p);
                 Double oldv = counts.get(g);
                 if (oldv == null) {
                     counts.put(g, 1.0);
@@ -162,12 +162,12 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines countBy(Converter<PlotPoint, Double> group) {
+    public PlotLines countBy(Function<PlotPoint, Double> group) {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             Map<Double, Double> counts = new HashMap<>();
             for (PlotPoint p : getLine(entry)) {
-                Double g = group.convert(p);
+                Double g = group.apply(p);
                 Double oldv = counts.get(g);
                 if (oldv == null) {
                     counts.put(g, 1.0);
@@ -182,12 +182,12 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines minBy(Converter<PlotPoint, Double> group) {
+    public PlotLines minBy(Function<PlotPoint, Double> group) {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             Map<Double, Object> counts = new HashMap<>();
             for (PlotPoint p : getLine(entry)) {
-                Double g = group.convert(p);
+                Double g = group.apply(p);
                 Object oldv = counts.get(g);
                 if (oldv == null) {
                     counts.put(g, p.getY());
@@ -199,12 +199,12 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines maxBy(Converter<PlotPoint, Double> group) {
+    public PlotLines maxBy(Function<PlotPoint, Double> group) {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             Map<Double, Object> counts = new HashMap<>();
             for (PlotPoint p : getLine(entry)) {
-                Double g = group.convert(p);
+                Double g = group.apply(p);
                 Object oldv = counts.get(g);
                 if (oldv == null) {
                     counts.put(g, p.getY());
@@ -216,13 +216,13 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines avgBy(Converter<PlotPoint, Double> group) {
+    public PlotLines avgBy(Function<PlotPoint, Double> group) {
         PlotLines newLines = new PlotLines();
         for (String entry : values.keySet()) {
             Map<Double, Object> vals = new HashMap<>();
             Map<Double, Double> counts = new HashMap<>();
             for (PlotPoint p : getLine(entry)) {
-                Double g = group.convert(p);
+                Double g = group.apply(p);
                 Object oldv = vals.get(g);
                 Double oldc = counts.get(g);
                 if (oldv == null) {
@@ -281,11 +281,11 @@ public class PlotLines {
         return newLines;
     }
 
-    public PlotLines transformPoints(Converter<PlotPoint, PlotPoint[]> valConverter) {
+    public PlotLines transformPoints(Function<PlotPoint, PlotPoint[]> valConverter) {
         PlotLines newLines = new PlotLines();
         for (String t : titles()) {
             for (PlotPoint plotPoint : getLine(t)) {
-                PlotPoint[] convert = valConverter.convert(plotPoint);
+                PlotPoint[] convert = valConverter.apply(plotPoint);
                 for (PlotPoint point : convert) {
                     newLines.addValue(point);
                 }

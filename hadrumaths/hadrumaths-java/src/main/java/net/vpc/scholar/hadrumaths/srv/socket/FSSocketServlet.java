@@ -17,11 +17,6 @@ public class FSSocketServlet extends AbstractHSocketServlet {
         super(id);
     }
 
-    public HFileSystem getFileSystem() {
-        FSServlet baseServlet = (FSServlet) getBaseServlet();
-        return baseServlet.getFileSystem();
-    }
-
     @Override
     public void service(DataInputStream in, DataOutputStream out) throws IOException {
         FSConstants.Command call = FSConstants.Command.values()[in.readByte()];
@@ -97,5 +92,10 @@ public class FSSocketServlet extends AbstractHSocketServlet {
                 break;
             }
         }
+    }
+
+    public HFileSystem getFileSystem() {
+        FSServlet baseServlet = (FSServlet) getBaseServlet();
+        return baseServlet.getFileSystem();
     }
 }

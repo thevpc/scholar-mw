@@ -12,14 +12,14 @@ import java.util.NoSuchElementException;
  * To change this template use File | Settings | File Templates.
  */
 public class ToMatlabStringParamArray implements Cloneable {
-    private Map<Class, ToMatlabStringParam> paramsTable;
+    private final Map<Class, ToMatlabStringParam> paramsTable;
 
     public ToMatlabStringParamArray(ToMatlabStringParam[] array) {
         paramsTable = new HashMap<Class, ToMatlabStringParam>(array.length);
         for (int i = 0; i < array.length; i++) {
             ToMatlabStringParam toMatlabStringParam = array[i];
             if (paramsTable.containsKey(toMatlabStringParam.getClass())) {
-                throw new IllegalArgumentException("Param " + toMatlabStringParam.getClass().getSimpleName());
+                throw new IllegalArgumentException("CParam " + toMatlabStringParam.getClass().getSimpleName());
             }
             paramsTable.put(toMatlabStringParam.getClass(), toMatlabStringParam);
         }
@@ -54,7 +54,7 @@ public class ToMatlabStringParamArray implements Cloneable {
     }
 
     public ToMatlabStringParam[] toArray() {
-        return (ToMatlabStringParam[]) paramsTable.values().toArray(new ToMatlabStringParam[0]);
+        return paramsTable.values().toArray(new ToMatlabStringParam[0]);
     }
 
     public ToMatlabStringParamArray clone() {

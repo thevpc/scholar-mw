@@ -6,7 +6,9 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -14,10 +16,10 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class ComplexXYSimplifyRule implements ExpressionRewriterRule {
+public class ComplexXYSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ComplexXYSimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{ComplexValue.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{DefaultComplexValue.class};
 
 
     @Override
@@ -25,25 +27,12 @@ public class ComplexXYSimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        ComplexValue ee = (ComplexValue) e;
-        if (ee.getDomain().isFull()) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
+        DefaultComplexValue ee = (DefaultComplexValue) e;
+        if (ee.getDomain().isUnbounded()) {
             return RewriteResult.bestEffort(ee.getValue());
         }
-        return RewriteResult.unmodified(e);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return RewriteResult.unmodified();
     }
 
 }

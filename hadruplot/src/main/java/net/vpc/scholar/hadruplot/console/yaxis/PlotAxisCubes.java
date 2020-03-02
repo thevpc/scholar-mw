@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruplot.console.yaxis;
 
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruplot.DefaultPlotHyperCube;
 import net.vpc.scholar.hadruplot.PlotHyperCube;
 import net.vpc.scholar.hadruplot.console.*;
@@ -31,11 +31,10 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
     }
 
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        Chronometer chronometer = new Chronometer();
-        chronometer.start();
+        Chronometer chronometer = Chronometer.start();
 //        x1values = getX(direct, modele, x_axis);
 //        x2values = getY(direct, modele, x_axis);
-        PlotHyperCube[] yvalues = compute(p);
+        PlotHyperCube[] yvalues = eval(p);
         chronometer.stop();
 
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
@@ -58,7 +57,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         return all.iterator();
     }
 
-    public PlotHyperCube[] compute(ConsoleActionParams p) {
+    public PlotHyperCube[] eval(ConsoleActionParams p) {
         ArrayList<PlotHyperCube> ret = new ArrayList<PlotHyperCube>();
         YType[] yTypes = getTypes();
         PlotHyperCube referenceMatrix = null;
@@ -94,7 +93,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
                 }
             }
         }
-        ProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        ProgressMonitor[] monitors = ProgressMonitors.split(this, new double[]{10, 10, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
         ProgressMonitor monitor0 = monitors[0];
         ProgressMonitor monitor1 = monitors[1];
         ProgressMonitor monitor2 = monitors[2];
@@ -102,7 +101,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         ParamSet theX = p.getAxis().getX();
         double xmultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
-            referenceMatrix = (PlotHyperCube) computeValue(p.getStructure(), monitor0, p);//.setTitle("[Ref]");
+            referenceMatrix = (PlotHyperCube) evalValue(p.getStructure(), monitor0, p);//.setTitle("[Ref]");
             if (!monitor0.isTerminated()) {
                 monitor0.terminate(getName() + " termination forced!");
             }
@@ -120,7 +119,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
 //            }
         }
         if (_b_modeledMatrix) {
-            modeledMatrix = (PlotHyperCube) computeValue(p.getStructure2(), monitor1, p);//.setTitle("[Model]");
+            modeledMatrix = (PlotHyperCube) evalValue(p.getStructure2(), monitor1, p);//.setTitle("[Model]");
             if (!monitor1.isTerminated()) {
                 monitor1.terminate(getName() + " termination forced!");
             }
@@ -193,7 +192,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
         return ret.toArray(new PlotHyperCube[0]);
     }
 
-    protected abstract PlotHyperCube computeValue(ConsoleAwareObject structure, net.vpc.common.mon.ProgressMonitor monitor, ConsoleActionParams p);
+    protected abstract PlotHyperCube evalValue(ConsoleAwareObject structure, net.vpc.common.mon.ProgressMonitor monitor, ConsoleActionParams p);
 
 
     public String getPlotTitle() {

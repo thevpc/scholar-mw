@@ -11,7 +11,7 @@ public class NoneOutBoolean implements BooleanMarker {
 
     }
 
-    public boolean isSet() {
-        throw new IllegalArgumentException();
+    public boolean get() {
+        throw new IllegalArgumentException("NoneOutBoolean is readonly. You should not call get");
     }
 }

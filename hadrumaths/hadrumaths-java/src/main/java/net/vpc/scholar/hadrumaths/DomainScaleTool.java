@@ -14,10 +14,10 @@ public abstract class DomainScaleTool {
 
     public static void main(String[] args) {
 
-        Domain a = Domain.forPoints(1, 1, 2, 2);
-        Domain b = Domain.forPoints(3, 1, 5, 2);
+        Domain a = Domain.ofPoints(1, 1, 2, 2);
+        Domain b = Domain.ofPoints(3, 1, 5, 2);
         Domain c = a.expand(b);
-        Domain u = Domain.forPoints(100, 100, 200, 200);
+        Domain u = Domain.ofPoints(100, 100, 200, 200);
         System.out.println("a        =" + a);
         System.out.println("b        =" + b);
         System.out.println("a+b      =" + c);
@@ -27,6 +27,16 @@ public abstract class DomainScaleTool {
         System.out.println("b scaled =" + t.rescale(b));
     }
 
+    public static DomainScaleTool create(Domain from, Domain to) {
+        if (from == null || to == null || from.equals(to)) {
+            return createIdentity();
+        } else {
+            return new SimpleDomainScaleTool(from, to);
+        }
+    }
+
+    public abstract Domain rescale(Domain domain);
+
     public static DomainScaleTool createIdentity() {
         return new NoDomainScaleTool();
     }
@@ -35,17 +45,35 @@ public abstract class DomainScaleTool {
         return DomainScaleTool.create(g.getDomain(), to).rescale(g);
     }
 
+    public abstract Geometry rescale(Geometry area);
+
     public static Geometry rescale(Geometry g, int x, int y) {
-        return DomainScaleTool.create(g.getDomain(), Domain.forBounds(0, x, 0, y)).rescale(g);
+        return DomainScaleTool.create(g.getDomain(), Domain.ofBounds(0, x, 0, y)).rescale(g);
     }
 
-    public static DomainScaleTool create(Domain from, Domain to) {
-        if (from == null || to == null || from.equals(to)) {
-            return createIdentity();
-        } else {
-            return new SimpleDomainScaleTool(from, to);
-        }
-    }
+    public abstract double rescaleX(double x);
+
+    public abstract double rescaleW(double w);
+
+    public abstract double rescaleH(double h);
+
+    public abstract double rescaleY(double y);
+
+//    public abstract java.awt.geom.Area rescale(java.awt.geom.Area area);
+
+    public abstract DomainScaleTool inv();
+
+    public abstract Path2D.Double rescale(Path2D.Double path);
+
+    public abstract Path2D.Double rescale(PathIterator area);
+
+    public abstract Point rescale(Point point);
+
+    public abstract Point[] rescale(Point[] points);
+
+    public abstract List<Point> rescale(List<Point> points);
+
+    public abstract Polygon rescale(Polygon polygon);
 
     private static class NoDomainScaleTool extends DomainScaleTool {
         @Override
@@ -69,38 +97,8 @@ public abstract class DomainScaleTool {
         }
 
         @Override
-        public Point rescale(Point point) {
-            return point;
-        }
-
-        @Override
-        public Domain rescale(Domain domain) {
-            return domain;
-        }
-
-        @Override
-        public Point[] rescale(Point[] points) {
-            return points;
-        }
-
-        @Override
-        public Polygon rescale(Polygon polygon) {
-            return polygon;
-        }
-
-//        @Override
-//        public java.awt.geom.Area rescale(java.awt.geom.Area area) {
-//            return area;
-//        }
-
-        @Override
         public Geometry rescale(Geometry area) {
             return area;
-        }
-
-        @Override
-        public List<Point> rescale(List<Point> points) {
-            return new ArrayList<Point>(points);
         }
 
         @Override
@@ -117,11 +115,41 @@ public abstract class DomainScaleTool {
         public Path2D.Double rescale(PathIterator area) {
             return GeomUtils.pathIteratorToPath(area);
         }
+
+//        @Override
+//        public java.awt.geom.Area rescale(java.awt.geom.Area area) {
+//            return area;
+//        }
+
+        @Override
+        public Point rescale(Point point) {
+            return point;
+        }
+
+        @Override
+        public Domain rescale(Domain domain) {
+            return domain;
+        }
+
+        @Override
+        public Point[] rescale(Point[] points) {
+            return points;
+        }
+
+        @Override
+        public List<Point> rescale(List<Point> points) {
+            return new ArrayList<Point>(points);
+        }
+
+        @Override
+        public Polygon rescale(Polygon polygon) {
+            return polygon;
+        }
     }
 
     private static class SimpleDomainScaleTool extends DomainScaleTool {
-        private Domain from;
-        private Domain to;
+        private final Domain from;
+        private final Domain to;
 
         public SimpleDomainScaleTool(Domain from, Domain to) {
             this.from = from;
@@ -166,7 +194,7 @@ public abstract class DomainScaleTool {
         public Path2D.Double rescale(PathIterator pi) {
             Path2D.Double d = new Path2D.Double();
             d.setWindingRule(pi.getWindingRule());
-            double coords[] = new double[6];
+            double[] coords = new double[6];
             while (!pi.isDone()) {
                 switch (pi.currentSegment(coords)) {
                     case PathIterator.SEG_MOVETO:
@@ -221,14 +249,14 @@ public abstract class DomainScaleTool {
         public Domain rescale(Domain domain) {
             switch (domain.getDimension()) {
                 case 1: {
-                    return Domain.forBounds(
+                    return Domain.ofBounds(
                             rescaleX(domain.xmin()),
                             rescaleX(domain.xmax())
                     );
 
                 }
                 case 2: {
-                    return Domain.forBounds(
+                    return Domain.ofBounds(
                             rescaleX(domain.xmin()),
                             rescaleX(domain.xmax()),
                             rescaleY(domain.ymin()),
@@ -237,7 +265,7 @@ public abstract class DomainScaleTool {
 
                 }
                 case 3: {
-                    return Domain.forBounds(
+                    return Domain.ofBounds(
                             rescaleX(domain.xmin()),
                             rescaleX(domain.xmax()),
                             rescaleY(domain.ymin()),
@@ -248,7 +276,7 @@ public abstract class DomainScaleTool {
 
                 }
             }
-            return Domain.forBounds(
+            return Domain.ofBounds(
                     rescaleX(domain.xmin()),
                     rescaleX(domain.xmax()),
                     rescaleY(domain.ymin()),
@@ -269,33 +297,5 @@ public abstract class DomainScaleTool {
             return new SimpleDomainScaleTool(to, from);
         }
     }
-
-    public abstract double rescaleX(double x);
-
-    public abstract double rescaleW(double w);
-
-    public abstract double rescaleH(double h);
-
-    public abstract double rescaleY(double y);
-
-//    public abstract java.awt.geom.Area rescale(java.awt.geom.Area area);
-
-    public abstract Geometry rescale(Geometry area);
-
-    public abstract DomainScaleTool inv();
-
-    public abstract Path2D.Double rescale(Path2D.Double path);
-
-    public abstract Path2D.Double rescale(PathIterator area);
-
-    public abstract Point rescale(Point point);
-
-    public abstract Domain rescale(Domain domain);
-
-    public abstract Point[] rescale(Point[] points);
-
-    public abstract List<Point> rescale(List<Point> points);
-
-    public abstract Polygon rescale(Polygon polygon);
 
 }

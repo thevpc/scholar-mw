@@ -1,9 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DM;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DC2DV;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2matrix.DefaultDoubleToMatrix;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 
 import java.io.IOException;
@@ -11,7 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
-public abstract class Complex extends Number implements Cloneable, IConstantValue, Normalizable, VectorSpaceItem<Complex>, DoubleToComplex {
+public abstract class Complex extends Number implements Normalizable, VectorSpaceItem<Complex>, DoubleToComplex, ComplexValue {
 
     public static final Complex NaNRI = new ComplexRI(Double.NaN, Double.NaN);
     public static final Complex NaN = new ComplexR(Double.NaN);
@@ -37,7 +41,25 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         }
     };
 
-    public static Complex valueOf(double doubleValue) {
+    public static Complex polar(double r, double t) {
+        double a = r * Math.cos(t);
+        double b = r * Math.sin(t);
+        return of(a, b);
+    }
+
+    public static Complex of(double a, double b) {
+        if (a != a && b != b) {
+            return NaNRI;
+        }
+        if (b == 0) {
+            return of(a);
+        } else if (a == 0) {
+            return I(b);
+        }
+        return new ComplexRI(a, b);
+    }
+
+    public static Complex of(double doubleValue) {
         if (doubleValue != doubleValue) {
             return NaN;
         }
@@ -59,27 +81,25 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         return new ComplexR(doubleValue);
     }
 
-    public static Complex polar(double r, double t) {
-        double a = r * Math.cos(t);
-        double b = r * Math.sin(t);
-        return valueOf(a, b);
+    public static Complex I(double iValue) {
+        if (iValue == 0) {
+            return ZERO;
+        }
+        if (iValue == 1) {
+            return I;
+        }
+        if (iValue == -1) {
+            return MINUS_I;
+        }
+        if (iValue != iValue) {
+            return NaNI;
+        }
+        return new ComplexI(iValue);
     }
 
-    public static Complex valueOf(double a, double b) {
-        if (a != a && b != b) {
-            return NaNRI;
-        }
-        if (b == 0) {
-            return valueOf(a);
-        } else if (a == 0) {
-            return I(b);
-        }
-        return new ComplexRI(a, b);
-    }
-
-    public static Complex valueOf(String complex) {
+    public static Complex of(String complex) {
         double[] d = parse(complex);
-        return valueOf(d[0], d[1]);
+        return of(d[0], d[1]);
     }
 
     private static double[] parse(String complex) {
@@ -174,25 +194,9 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
             imag.append("0");
         }
         return new double[]{
-            Double.parseDouble(real.toString()),
-            Double.parseDouble(imag.toString())
+                Double.parseDouble(real.toString()),
+                Double.parseDouble(imag.toString())
         };
-    }
-
-    public static Complex I(double iValue) {
-        if (iValue == 0) {
-            return ZERO;
-        }
-        if (iValue == 1) {
-            return I;
-        }
-        if (iValue == -1) {
-            return MINUS_I;
-        }
-        if (iValue != iValue) {
-            return NaNI;
-        }
-        return new ComplexI(iValue);
     }
 
     public static void writeObjectHelper(Complex c, ObjectOutputStream oos) throws IOException {
@@ -209,14 +213,18 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         }
     }
 
+    public abstract double getReal();
+
+    public abstract double getImag();
+
     public static Complex readObjectResolveHelper(ObjectInputStream ois) throws IOException {
         byte b = ois.readByte();
         switch (b) {
             case 0: {
-                return Complex.valueOf(ois.readDouble(), ois.readDouble());
+                return Complex.of(ois.readDouble(), ois.readDouble());
             }
             case 1: {
-                return Complex.valueOf(ois.readDouble());
+                return Complex.of(ois.readDouble());
             }
             case 2: {
                 return Complex.I(ois.readDouble());
@@ -225,75 +233,12 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         throw new IllegalArgumentException("Unsupported complex type " + b);
     }
 
-    @Override
-    public Map<String, Object> getProperties() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public Expr setProperties(Map<String, Object> map) {
-        return setProperties(map, false);
-    }
-
-    @Override
-    public Expr setMergedProperties(Map<String, Object> map) {
-        return setProperties(map, true);
-    }
-
-    @Override
-    public Expr setProperties(Map<String, Object> map, boolean merge) {
-        if (map == null || map.isEmpty()) {
-            return this;
-        }
-        return new Any(this, null, map);
-    }
-
-    @Override
-    public Expr setProperty(String name, Object value) {
-        HashMap<String, Object> m = new HashMap<>(1);
-        m.put(name, value);
-        return setProperties(m, true);
-    }
-
-    public Object getProperty(String name) {
-        return null;
-    }
-
-    @Override
-    public boolean hasProperties() {
-        return false;
-    }
-
-    public abstract double getImag();
-
-    public abstract double getReal();
-
-    public Complex imag() {
-        return Complex.valueOf(getImag());
-    }
-
-    public Complex real() {
-        return Complex.valueOf(getReal());
-    }
-
     public double realdbl() {
         return getReal();
     }
 
     public double imagdbl() {
         return getImag();
-    }
-
-    public Complex add(int c) {
-        return Complex.valueOf(getReal() + c, getImag());
-    }
-
-    public Complex add(double c) {
-        return Complex.valueOf(getReal() + c, getImag());
-    }
-
-    public Complex add(Complex c) {
-        return Complex.valueOf(getReal() + c.getReal(), getImag() + c.getImag());
     }
 
     public Complex npow(int n) {
@@ -318,33 +263,6 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         }
     }
 
-    public Complex inv() {
-        if (getReal() == 0) {
-            return Complex.valueOf(0, -1 / getImag());
-        } else if (getImag() == 0) {
-            return Complex.valueOf(1 / getReal(), 0);
-        } else {
-            double d = getReal() * getReal() + getImag() * getImag();
-            return Complex.valueOf(getReal() / d, -getImag() / d);
-        }
-    }
-
-    public Complex conj() {
-        return Complex.valueOf(getReal(), -getImag());
-    }
-
-    public Complex mul(double c) {
-        return Complex.valueOf(getReal() * c, getImag() * c);
-    }
-
-    public Complex mul(int c) {
-        return Complex.valueOf(getReal() * c, getImag() * c);
-    }
-
-    public Expr multiply(Expr c) {
-        return mul(c);
-    }
-
     public Complex mulAll(double... c) {
         double r = getReal();
         double i = getImag();
@@ -352,7 +270,7 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
             r *= aC;
             i *= aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex divAll(double... c) {
@@ -362,7 +280,7 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
             r /= aC;
             i /= aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex addAll(double... c) {
@@ -372,7 +290,7 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
             r += aC;
             i += aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex mulAll(Complex... c) {
@@ -391,14 +309,6 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         return mc.toComplex();
     }
 
-    public Complex mul(MutableComplex c) {
-        return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
-    }
-
-    public Complex mul(Complex c) {
-        return Complex.valueOf(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
-    }
-
     public CArray mul(CArray c) {
         return c.mul(this);
     }
@@ -411,81 +321,26 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         return new CArray(c).mul(this);
     }
 
-    public Complex sub(MutableComplex c) {
-        return Complex.valueOf(getReal() - c.getReal(), getImag() - c.getImag());
-    }
-
     public Complex add(MutableComplex c) {
-        return Complex.valueOf(getReal() + c.getReal(), getImag() + c.getImag());
-    }
-
-    public Complex sub(Complex c) {
-        return Complex.valueOf(getReal() - c.getReal(), getImag() - c.getImag());
-    }
-
-    public Complex sub(int c) {
-        return Complex.valueOf(getReal() - c, getImag());
-    }
-
-    public Complex sub(double c) {
-        return Complex.valueOf(getReal() - c, getImag());
-    }
-
-    public Complex div(double c) {
-        return Complex.valueOf(getReal() / c, getImag() / c);
-    }
-
-    public Complex div(int c) {
-        return Complex.valueOf(getReal() / c, getImag() / c);
+        return Complex.of(getReal() + c.getReal(), getImag() + c.getImag());
     }
 
     public Complex rem(double other) {
-        return Complex.valueOf(toDouble()%other);
+        if (isReal()) {
+            return Complex.of(toDouble() % other);
+        }
+        Complex u = this.div(other);
+        int d = (int) u.getReal();
+        return this.sub(other * d);
     }
 
     public Complex rem(Complex other) {
-        return Complex.valueOf(toDouble()%other.toDouble());
-    }
-
-    public Complex div(Complex other) {
-        double a = getReal();
-        double b = getImag();
-        double c = other.getReal();
-        double d = other.getImag();
-        double c2d2 = c * c + d * d;
-
-        return Complex.valueOf(
-                (a * c + b * d) / c2d2,
-                (b * c - a * d) / c2d2
-        );
-        //return mul(c.inv());
-    }
-
-    public Complex div(MutableComplex other) {
-        double a = getReal();
-        double b = getImag();
-        double c = other.getReal();
-        double d = other.getImag();
-        double c2d2 = c * c + d * d;
-
-        return Complex.valueOf(
-                (a * c + b * d) / c2d2,
-                (b * c - a * d) / c2d2
-        );
-        //return mul(c.inv());
-    }
-
-    public Complex exp() {
-        double e = Math.exp(getReal());
-        return Complex.valueOf(e * Math.cos(getImag()), e * Math.sin(getImag()));
-    }
-
-    public Complex abs() {
-        return Complex.valueOf(Math.sqrt(getReal() * getReal() + getImag() * getImag()));
-    }
-
-    public double absdbl() {
-        return Math.sqrt(getReal() * getReal() + getImag() * getImag());
+        if (isReal() && other.isReal()) {
+            return Complex.of(toDouble() % other.toDouble());
+        }
+        Complex u = this.div(other);
+        int d = (int) u.getReal();
+        return this.sub(other.mul(d));
     }
 
     public double absdblsqr() {
@@ -493,11 +348,15 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
     }
 
     public Complex abssqr() {
-        return Complex.valueOf(absdbl());
+        return Complex.of(absdbl());
     }
 
-    public Complex neg() {
-        return Complex.valueOf(-getReal(), -getImag());
+    public double absdbl() {
+        return Math.sqrt(getReal() * getReal() + getImag() * getImag());
+    }
+
+    public int compareTo(Object c) {
+        return compareTo((Complex) c);
     }
 
     public int compareTo(Complex c) {
@@ -530,8 +389,27 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         }
     }
 
-    public int compareTo(Object c) {
-        return compareTo((Complex) c);
+    public boolean isReal() {
+        return getImag() == 0;
+    }
+
+    public boolean isImag() {
+        return getImag() != 0 && getReal() == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 89 * 658053981 + Double.hashCode(getReal());
+        hash = 89 * hash + Double.hashCode(getImag());
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object c) {
+        if (c instanceof Complex) {
+            return equals((Complex) c);
+        }
+        return false;
     }
 
     public boolean equals(Complex c) {
@@ -545,21 +423,45 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
     }
 
     @Override
-    public boolean equals(Object c) {
-        if (c instanceof Complex) {
-            return equals((Complex) c);
+    public String toString() {
+        double real = getReal();
+        double imag = getImag();
+        if (imag == 0) {
+            return realToString(real);
+        } else if (real == 0) {
+            return imagToString(imag);
+        } else {
+            if (imag < 0) {
+                return realToString(real) + imagToString(imag);
+            }
+            return realToString(real) + "+" + imagToString(imag);
         }
-        return false;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        double imag = this.getImag();
-        double real = this.getReal();
-        hash = 89 * hash + (int) (Double.doubleToLongBits(imag) ^ (Double.doubleToLongBits(imag) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(real) ^ (Double.doubleToLongBits(real) >>> 32));
-        return hash;
+    //    public Complex angle() {
+//        //workaround
+////        if(real==0){
+////            return imag>=0?Math.PI/2:-Maths.PI/2;
+////        }else if(imag==0){
+////            return real>=0?0:Math.PI;
+////        }
+//        return Complex.valueOf(Math.atan2(getImag(), getReal()));
+//    }
+    protected String realToString(double d) {
+        return String.valueOf(d);
+    }
+
+    protected String imagToString(double d) {
+        if (Double.isNaN(d) || Double.isInfinite(d)) {
+            return d + "*î";
+        }
+        if (d == 1) {
+            return "î";
+        }
+        if (d == -1) {
+            return "-î";
+        }
+        return d + "î";
     }
 
     public int intValue() {
@@ -599,153 +501,12 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         return getReal();
     }
 
-    public Complex sincard() {
-        if (isZero()) {
-            return ONE;
-        }
-        if (isReal()) {
-            return Complex.valueOf(MathsBase.sincard(getReal()));
-        }
-        return sin().div(this);
-    }
-
-    public Complex sin() {
-        return Complex.valueOf(Math.sin(getReal()) * Math.cosh(getImag()), Math.cos(getReal()) * Math.sinh(getImag()));
-    }
-
-    public Complex cos() {
-        if (getImag() == 0) {
-            return Complex.valueOf(MathsBase.cos2(getReal()));
-        }
-        return Complex.valueOf(MathsBase.cos2(getReal()) * Math.cosh(getImag()), -MathsBase.sin(getReal()) * Math.sinh(getImag()));
-    }
-
-    public Complex tan() {
-        return sin().div(cos());
-    }
-
-    public Complex atan() {
-        if (isReal()) {
-            return Complex.valueOf(Math.atan(getReal()));
-        }
-        return Complex.MINUS_HALF_I.mul(
-                ((I.sub(this)).div(I.add(this))).log()
-        );
-    }
-
-    public Complex acos() {
-        if (isReal()) {
-            return Complex.valueOf(Math.acos(getReal()));
-        }
-        //wolfram : http://mathworld.wolfram.com/InverseCosine.html
-        // PI/2 + i ln (i *z + sqrt( 1-z2)
-        Complex z = this;
-        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
-        // -i * ln(z+sqr(z+sqrt(z^2-1))
-//        return Complex.MINUS_I.mul(
-//
-//                (
-//                        this.add(
-//                                (this.sqr().sub(ONE)).sqrt()
-//                        ).log()
-//                )
-//        );
-    }
-
-    public Complex acosh() {
-        Complex z = this;
-        return (z.add((z.sqr().sub(ONE)).sqrt())).log();
-    }
-
-    public Complex asinh() {
-        Complex z = this;
-        //z +sqrt(z^2-1)
-        return (z.add((z.sqr().add(ONE)).sqrt())).log();
-    }
-
     public Complex arg() {
-        return Complex.valueOf(Math.atan2(getImag(), getReal()));
+        return Complex.of(Math.atan2(getImag(), getReal()));
     }
 
     public double argdbl() {
         return (Math.atan2(getImag(), getReal()));
-    }
-
-    public Complex asin() {
-        if (isReal()) {
-            return Complex.valueOf(Math.asin(getReal()));
-        }
-        Complex z = this;
-        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
-//        return Complex.MINUS_I.mul(
-//
-//                (
-//                        (this.mul(I)
-//                                .add(
-//                                        (ONE.sub(this.sqr()))
-//                                                .sqrt()
-//                                )
-//                        ).log()
-//                )
-//
-//        );
-    }
-
-    public Complex acotan() {
-        if (isZero()) {
-            return HALF_PI;
-        }
-        return inv().atan();
-    }
-
-    public Complex cotan() {
-        return cos().div(sin());
-    }
-
-    public Complex sinh() {
-        return exp().sub(this.neg().exp()).div(2);
-    }
-
-    public Complex cosh() {
-        return exp().add(this.neg().exp()).div(2);
-    }
-
-    public Complex tanh() {
-        if (getImag() == 0) {
-            return Complex.valueOf(Math.tanh(getReal()));
-        }
-        Complex eplus = exp();
-        Complex eminus = this.neg().exp();
-        return (eplus.sub(eminus)).div(eplus.add(eminus));
-//        return sinh().divide(cosh());
-    }
-
-    public Complex cotanh() {
-        if (getImag() == 0) {
-            return Complex.valueOf(1 / Math.tanh(getReal()));
-        }
-        Complex eplus = exp();
-        Complex eminus = this.neg().exp();
-        return (eplus.add(eminus)).div(eplus.sub(eminus));
-//        return cosh().divide(sinh());
-    }
-
-    public Complex log() {
-        return Complex.valueOf(Math.log(absdbl()), Math.atan2(getImag(), getReal()));
-    }
-
-    public Complex log10() {
-        double imag = getImag();
-        double real = getReal();
-        if (imag == 0) {
-            return Complex.valueOf(Math.log10(real));
-        }
-        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
-    }
-
-    public Complex db() {
-        return Complex.valueOf(Math.log10(absdbl()) * (10));
-        //return log10().mul(10);
     }
 
     public double dbdbl() {
@@ -758,57 +519,6 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         //return log10().mul(10);
     }
 
-    public Complex db2() {
-        return Complex.valueOf(Math.log10(absdbl()) * (20));
-        //return log10().mul(10);
-    }
-
-    protected String imagToString(double d) {
-        if (Double.isNaN(d) || Double.isInfinite(d)) {
-            return String.valueOf(d) + "*î";
-        }
-        if (d == 1) {
-            return "î";
-        }
-        if (d == -1) {
-            return "-î";
-        }
-        return String.valueOf(d) + "î";
-    }
-
-//    public Complex angle() {
-//        //workaround
-////        if(real==0){
-////            return imag>=0?Math.PI/2:-MathsBase.PI/2;
-////        }else if(imag==0){
-////            return real>=0?0:Math.PI;
-////        }
-//        return Complex.valueOf(Math.atan2(getImag(), getReal()));
-//    }
-    protected String realToString(double d) {
-        return String.valueOf(d);
-    }
-
-    @Override
-    public String toString() {
-        double real = getReal();
-        double imag = getImag();
-        if (imag == 0) {
-            return realToString(real);
-        } else if (real == 0) {
-            return imagToString(imag);
-        } else {
-            if (imag < 0) {
-                return realToString(real) + imagToString(imag);
-            }
-            return realToString(real) + "+" + imagToString(imag);
-        }
-    }
-
-    public Complex sqr() {
-        return this.mul(this);
-    }
-
     public double dsqrt() {
         if (getImag() == 0) {
             if (getReal() >= 0) {
@@ -819,20 +529,6 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         } else {
             return Double.NaN;
         }
-    }
-
-    public Complex sqrt() {
-        if (getImag() == 0) {
-            return getReal() >= 0 ? Complex.valueOf(Math.sqrt(getReal()), 0) : Complex.valueOf(0, Math.sqrt(-getReal()));
-        } else {
-            double r = Math.sqrt(absdbl());
-            double theta = arg().toDouble() / 2;
-            return Complex.valueOf(r * Math.cos(theta), r * Math.sin(theta));
-        }
-    }
-
-    public Complex sqrt(int n) {
-        return n == 0 ? ONE : pow(1.0 / n);
     }
 
     public Complex pow(Complex y) {
@@ -853,31 +549,335 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? Complex.valueOf(MathsBase.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
+//            return real >= 0 ? Complex.valueOf(Maths.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
-            return Complex.valueOf(r * Math.cos(theta), r * Math.sin(theta));
+            return Complex.of(r * Math.cos(theta), r * Math.sin(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * Math.cos(theta), r * MathsBase.sin(theta));
+            Complex c = Complex.of(r * Math.cos(theta), r * Maths.sin(theta));
             return c.inv();
         }
     }
 
-    public boolean isNaN() {
-        return Double.isNaN(getReal()) || Double.isNaN(getImag());
+    public double toReal() {
+        if (getImag() == 0) {
+            return getReal();
+        }
+        throw new ClassCastException("Complex has imaginary value and cant be cast to double");
+    }
+
+    public boolean isInvariant(Axis axis) {
+        return true;
+    }
+
+    @Override
+    public Complex toComplex() {
+        return this;
+    }
+
+    @Override
+    public NumberExpr toNumber() {
+        return this;
+    }
+
+    public Complex inv() {
+        if (getReal() == 0) {
+            return Complex.of(0, -1 / getImag());
+        } else if (getImag() == 0) {
+            return Complex.of(1 / getReal(), 0);
+        } else {
+            double d = getReal() * getReal() + getImag() * getImag();
+            return Complex.of(getReal() / d, -getImag() / d);
+        }
+    }
+
+    @Override
+    public double toDouble() {
+        if (!isReal()) {
+            throw new ClassCastException("Not Real");
+        }
+        return getReal();
+    }
+
+    @Override
+    public Expr narrow(ExprType other) {
+        switch (other) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+            case DOUBLE_DOUBLE: {
+                return Maths.expr(toDouble());
+            }
+        }
+        return ExprDefaults.narrow(this, other);
     }
 
     public boolean isZero() {
         return getReal() == 0 && getImag() == 0;
     }
 
+    public boolean isNaN() {
+        return Double.isNaN(getReal()) || Double.isNaN(getImag());
+    }
+
+    public List<Expr> getChildren() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public boolean hasParams() {
+        return false;
+    }
+
+    @Override
+    public Expr setParam(String name, double value) {
+        return this;
+    }
+
+    @Override
+    public Expr setParam(String name, Expr value) {
+        return this;
+    }
+
+    @Override
+    public Expr setParams(ParamValues params) {
+        return this;
+    }
+
+    @Override
+    public Set<Param> getParams() {
+        return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public Expr setParam(Param paramExpr, double value) {
+        return this;
+    }
+
+    @Override
+    public Expr setParam(Param paramExpr, Expr value) {
+        return this;
+    }
+
     public boolean isInfinite() {
         return Double.isInfinite(getReal()) || Double.isInfinite(getImag());
+    }
+
+    @Override
+    public boolean isEvaluatable() {
+        return true;
+    }
+
+    @Override
+    public boolean hasProperties() {
+        return false;
+    }
+
+    @Override
+    public Integer getIntProperty(String name) {
+        Number property = (Number) getProperty(name);
+        return property == null ? null : property.intValue();
+    }
+
+    @Override
+    public Long getLongProperty(String name) {
+        Number property = (Number) getProperty(name);
+        return property == null ? null : property.longValue();
+    }
+
+    @Override
+    public String getStringProperty(String name) {
+        Object property = getProperty(name);
+        return property == null ? null : property.toString();
+    }
+
+    @Override
+    public Double getDoubleProperty(String name) {
+        Number property = (Number) getProperty(name);
+        return property == null ? null : property.doubleValue();
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Expr compose(Expr xreplacement, Expr yreplacement, Expr zreplacement) {
+        return this;
+    }
+
+    public Expr simplify(SimplifyOptions options) {
+        return ExpressionRewriterFactory.getComputationSimplifier().rewriteOrSame(this, options == null ? null : options.getTargetExprType());
+    }
+
+    @Override
+    public Expr normalize() {
+        if (isNaN() || isInfinite() || isZero()) {
+            return NaN;
+        }
+        double norm = norm();
+        if (norm == 0) {
+            return ZERO;
+        }
+        return div(norm);
+    }
+
+    public Complex mul(Complex c) {
+        return Complex.of(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
+    }
+
+    public Complex add(int c) {
+        return Complex.of(getReal() + c, getImag());
+    }
+
+    public Complex add(double c) {
+        return Complex.of(getReal() + c, getImag());
+    }
+
+    @Override
+    public Expr add(Expr other) {
+        if (other instanceof Complex) {
+            return add((Complex) other);
+        }
+        return ExprDefaults.add(this, other);
+    }
+
+    public Complex rdiv(double other) {
+        return Complex.of(other).div(this);
+    }
+
+    public Complex div(Complex other) {
+        double a = getReal();
+        double b = getImag();
+        double c = other.getReal();
+        double d = other.getImag();
+        double c2d2 = c * c + d * d;
+
+        return Complex.of(
+                (a * c + b * d) / c2d2,
+                (b * c - a * d) / c2d2
+        );
+        //return mul(c.inv());
+    }
+
+    public Complex rmul(double other) {
+        return Complex.of(other).mul(this);
+    }
+
+    public Complex radd(double other) {
+        return Complex.of(other).add(this);
+    }
+
+    public Complex rsub(double other) {
+        return Complex.of(other).sub(this);
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
+    public boolean isSmartMulDouble() {
+        return true;
+    }
+
+    @Override
+    public boolean isSmartMulComplex() {
+        return true;
+    }
+
+    @Override
+    public boolean isSmartMulDomain() {
+        return true;
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.doubleComplex(getReal(), getImag());
+    }
+
+    public Expr multiply(Domain domain) {
+        return mul(domain);
+    }
+
+    public Expr mul(Domain domain) {
+//        return mul(Maths.expr(domain));
+        if (domain.isUnbounded1()) {
+            return this;
+        }
+        return new DefaultComplexValue(this, domain);
+    }
+
+    public Expr multiply(Geometry geometry) {
+        return mul(geometry);
+    }
+
+    public Expr mul(Geometry domain) {
+        return mul(Maths.expr(domain));
+    }
+
+    public Complex mul(int c) {
+        return Complex.of(getReal() * c, getImag() * c);
+    }
+
+    public Complex mul(double c) {
+        return Complex.of(getReal() * c, getImag() * c);
+    }
+
+    public Expr multiply(Expr c) {
+        return mul(c);
+    }
+
+    @Override
+    public Expr mul(Expr other) {
+        switch (other.getType()){
+            case DOUBLE_NBR:return mul(other.toDouble());
+            case DOUBLE_EXPR:return mul(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:return mul(other.toComplex());
+            case COMPLEX_EXPR:return mul(other.toComplex()).mul(other.getDomain());
+        }
+        return ExprDefaults.mul(this, other);
+    }
+
+
+    @Override
+    public Expr pow(Expr other) {
+        switch (other.getType()){
+            case DOUBLE_NBR:return pow(other.toDouble());
+            case DOUBLE_EXPR:return pow(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:return pow(other.toComplex());
+            case COMPLEX_EXPR:return pow(other.toComplex()).mul(other.getDomain());
+        }
+        return ExprDefaults.pow(this, other);
+    }
+
+    public Complex div(int c) {
+        return Complex.of(getReal() / c, getImag() / c);
+    }
+
+    public Complex div(double c) {
+        return Complex.of(getReal() / c, getImag() / c);
+    }
+
+    @Override
+    public Expr div(Expr other) {
+        switch (other.getType()){
+            case DOUBLE_NBR:return div(other.toDouble());
+            case DOUBLE_EXPR:return div(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:return div(other.toComplex());
+            case COMPLEX_EXPR:return div(other.toComplex()).mul(other.getDomain());
+        }
+        return ExprDefaults.div(this, other);
+    }
+
+    public Complex sub(int c) {
+        return Complex.of(getReal() - c, getImag());
     }
 
 //    public boolean isDDx() {
@@ -898,213 +898,163 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
 //    public static Complex cosh(Complex c){
 //        return c.cosh();
 //    }
-    public boolean isDC() {
-        return true;
-    }
-
-    public boolean isDD() {
-        return isNaN() || getImag() == 0;
-    }
-
-    public boolean isDM() {
-        return true;
-    }
-
-    public DoubleToComplex toDC() {
-        return this;//new ComplexValue(this, Domain.FULLX);
-    }
-
-    @Override
-    public boolean isDV() {
-        return true;
-    }
-
-//    public IDDx toDDx() {
-//        if (imag == 0) {
-//            return new DDxLinear(Domain.FULLX, 0, getReal());
-//        }
-//        throw new ClassCastException();
+//    public boolean isDC() {
+//        return true;
 //    }
-    @Override
-    public DoubleToVector toDV() {
-        return new DC2DV(this);
-    }
 
-    public DoubleToDouble toDD() {
-        if (getImag() == 0) {
-            return DoubleValue.valueOf(getReal(), Domain.FULL(getDomainDimension()));
-        }
-        if (isNaN()) {
-            return DoubleValue.valueOf(Double.NaN, Domain.FULL(getDomainDimension()));
-        }
-        throw new ClassCastException();
-    }
-
-    public DoubleToMatrix toDM() {
-        return new DC2DM(this);
-    }
-
-    public boolean isReal() {
-        return getImag() == 0;
-    }
-
-    public boolean isImag() {
-        return getImag() != 0 && getReal() == 0;
-    }
-
-    public double toReal() {
-        if (getImag() == 0) {
-            return getReal();
-        }
-        throw new ClassCastException("Complex has imaginary value and cant be cast to double");
-    }
-
-    public Expr clone() {
-        Expr complex = Complex.valueOf(getReal(), getImag());
-        if (hasProperties()) {
-            complex = complex.setProperties(getProperties());
-        }
-        return complex;
-    }
-
-    public boolean isInvariant(Axis axis) {
-        return true;
-    }
-
-    public List<Expr> getSubExpressions() {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public boolean isDouble() {
-        return isReal();
-    }
-
-    @Override
-    public boolean isComplex() {
-        return true;
-    }
-
-    @Override
-    public boolean isMatrix() {
-        return true;
-    }
-
-    @Override
-    public Complex toComplex() {
-        return this;
-    }
-
-    @Override
-    public double toDouble() {
-        if (!isDouble()) {
-            throw new ClassCastException("Not Real");
-        }
-        return getReal();
-    }
-
-    @Override
-    public ComplexMatrix toMatrix() {
-        return MathsBase.Config.getComplexMatrixFactory().newMatrix(new Complex[][]{{this}});
-    }
-
-    public ComplexVector toVector() {
-        return MathsBase.columnVector(this);
-    }
-
-    @Override
-    public boolean hasParams() {
-        return false;
-    }
-
-    @Override
-    public Expr setParam(String name, double value) {
-        return setParam(name, DoubleValue.valueOf(value, Domain.FULLX));
-    }
-
-    @Override
-    public Expr setParam(String name, Expr value) {
-        return this;
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, double value) {
-        return this;
-    }
-
-    @Override
-    public Expr setParam(ParamExpr paramExpr, Expr value) {
-        return this;
+    public Complex sub(double c) {
+        return Complex.of(getReal() - c, getImag());
     }
 
 //    @Override
-//    public Expr setTitle(String title) {
-//        getProperties().put("title", title);
-//        return this;
+//    public boolean isDV() {
+//        return true;
+//    }
+
+    //    //@Override
+//    public Complex div(Complex other) {
+//        if (other instanceof Complex) {
+//            return div((Complex) other);
+//        }
+//        return Maths.div(this, other);
 //    }
     @Override
-    public Expr compose(Axis axis,Expr xreplacement) {
-        return this;
-    }
-
-    @Override
-    public Expr title(String name) {
-        return setTitle(name);
-    }
-
-    @Override
-    public Expr setTitle(String name) {
-        if (name != null) {
-            return new Any(this, name, null);
-        } else {
-            return this;
+    public Expr sub(Expr other) {
+        if (other instanceof Complex) {
+            return sub((Complex) other);
         }
+        return ExprDefaults.sub(this, other);
     }
 
-    @Override
-    public boolean isScalarExpr() {
-        return true;
+    public Complex neg() {
+        return Complex.of(-getReal(), -getImag());
     }
 
-    @Override
-    public Expr simplify() {
-        return this;
+    public Complex conj() {
+        return Complex.of(getReal(), -getImag());
     }
 
-    @Override
-    public Expr simplify(SimplifyOptions options) {
-        return this;
-    }
-
-    @Override
-    public Expr normalize() {
-        if (isNaN() || isInfinite() || isZero()) {
-            return NaN;
+    public Complex cos() {
+        if (getImag() == 0) {
+            return Complex.of(Maths.cos2(getReal()));
         }
-        double norm = norm();
-        if (norm == 0) {
-            return ZERO;
+        return Complex.of(Maths.cos2(getReal()) * Math.cosh(getImag()), -Maths.sin(getReal()) * Math.sinh(getImag()));
+    }
+
+    public Complex cosh() {
+        return exp().add(this.neg().exp()).div(2);
+    }
+
+    public Complex sin() {
+        return Complex.of(Math.sin(getReal()) * Math.cosh(getImag()), Math.cos(getReal()) * Math.sinh(getImag()));
+    }
+
+    public Complex sinh() {
+        return exp().sub(this.neg().exp()).div(2);
+    }
+
+    public Complex sincard() {
+        if (isZero()) {
+            return ONE;
         }
-        return div(norm);
+        if (isReal()) {
+            return Complex.of(Maths.sincard(getReal()));
+        }
+        return sin().div(this);
     }
 
-    public double norm() {
-        return absdbl();
+    public Complex tan() {
+        return sin().div(cos());
     }
 
-    @Override
-    public String getTitle() {
-        return null;
+    public Complex cotan() {
+        return cos().div(sin());
     }
 
-    @Override
-    public boolean isDoubleExpr() {
-        return isReal();
+    public Complex tanh() {
+        if (getImag() == 0) {
+            return Complex.of(Math.tanh(getReal()));
+        }
+        Complex eplus = exp();
+        Complex eminus = this.neg().exp();
+        return (eplus.sub(eminus)).div(eplus.add(eminus));
+//        return sinh().divide(cosh());
     }
 
-    @Override
-    public int getDomainDimension() {
-        return 1;
+    public Complex cotanh() {
+        if (getImag() == 0) {
+            return Complex.of(1 / Math.tanh(getReal()));
+        }
+        Complex eplus = exp();
+        Complex eminus = this.neg().exp();
+        return (eplus.add(eminus)).div(eplus.sub(eminus));
+//        return cosh().divide(sinh());
+    }
+
+    public Complex atan() {
+        if (isReal()) {
+            return Complex.of(Math.atan(getReal()));
+        }
+        return Complex.MINUS_HALF_I.mul(
+                ((I.sub(this)).div(I.add(this))).log()
+        );
+    }
+
+    public Complex acotan() {
+        if (isZero()) {
+            return HALF_PI;
+        }
+        return inv().atan();
+    }
+
+    public Complex acos() {
+        if (isReal()) {
+            return Complex.of(Math.acos(getReal()));
+        }
+        //wolfram : http://mathworld.wolfram.com/InverseCosine.html
+        // PI/2 + i ln (i *z + sqrt( 1-z2)
+        Complex z = this;
+        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(I).add(HALF_PI);
+        // -i * ln(z+sqr(z+sqrt(z^2-1))
+//        return Complex.MINUS_I.mul(
+//
+//                (
+//                        this.add(
+//                                (this.sqr().sub(ONE)).sqrt()
+//                        ).log()
+//                )
+//        );
+    }
+
+    public Complex asin() {
+        if (isReal()) {
+            return Complex.of(Math.asin(getReal()));
+        }
+        Complex z = this;
+        return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
+//        return Complex.MINUS_I.mul(
+//
+//                (
+//                        (this.mul(I)
+//                                .add(
+//                                        (ONE.sub(this.sqr()))
+//                                                .sqrt()
+//                                )
+//                        ).log()
+//                )
+//
+//        );
+    }
+
+    public Complex asinh() {
+        Complex z = this;
+        //z +sqrt(z^2-1)
+        return (z.add((z.sqr().add(ONE)).sqrt())).log();
+    }
+
+    public Complex acosh() {
+        Complex z = this;
+        return (z.add((z.sqr().sub(ONE)).sqrt())).log();
     }
 
     @Override
@@ -1113,19 +1063,107 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
 //        return isZero() ? Domain.EMPTYX : Domain.FULLX;
     }
 
-    @Override
-    public Domain domain() {
-        return getDomain();
+    public Object getProperty(String name) {
+        return null;
     }
 
     @Override
-    public ComponentDimension getComponentDimension() {
-        return ComponentDimension.SCALAR;
-    }
-
-    @Override
-    public Complex getComplexConstant() {
+    public Expr newInstance(Expr... subExpressions) {
         return this;
+    }
+
+    public Complex sqrt() {
+        if (getImag() == 0) {
+            return getReal() >= 0 ? Complex.of(Math.sqrt(getReal()), 0) : Complex.of(0, Math.sqrt(-getReal()));
+        } else {
+            double r = Math.sqrt(absdbl());
+            double theta = arg().toDouble() / 2;
+            return Complex.of(r * Math.cos(theta), r * Math.sin(theta));
+        }
+    }
+
+    public Complex sqrt(int n) {
+        return n == 0 ? ONE : pow(1.0 / n);
+    }
+
+    public Complex sqr() {
+        return this.mul(this);
+    }
+
+    public Complex log() {
+        return Complex.of(Math.log(absdbl()), Math.atan2(getImag(), getReal()));
+    }
+
+    public Complex log10() {
+        double imag = getImag();
+        double real = getReal();
+        if (imag == 0) {
+            return Complex.of(Math.log10(real));
+        }
+        return Complex.of(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
+    }
+
+    public Complex abs() {
+        return Complex.of(Math.sqrt(getReal() * getReal() + getImag() * getImag()));
+    }
+
+    public Complex db() {
+        return Complex.of(Math.log10(absdbl()) * (10));
+        //return log10().mul(10);
+    }
+
+    public Complex db2() {
+        return Complex.of(Math.log10(absdbl()) * (20));
+        //return log10().mul(10);
+    }
+
+    public Complex imag() {
+        return Complex.of(getImag());
+    }
+
+    public Complex real() {
+        return Complex.of(getReal());
+    }
+
+    public Complex exp() {
+        double e = Math.exp(getReal());
+        return Complex.of(e * Math.cos(getImag()), e * Math.sin(getImag()));
+    }
+
+    public Complex sub(Complex c) {
+        return Complex.of(getReal() - c.getReal(), getImag() - c.getImag());
+    }
+
+    public Complex add(Complex c) {
+        return Complex.of(getReal() + c.getReal(), getImag() + c.getImag());
+    }
+
+    public Complex add(DoubleExpr c) {
+        return add(c.toDouble());
+    }
+
+    public Complex mul(DoubleExpr c) {
+        return mul(c.toDouble());
+    }
+
+    public Complex div(DoubleExpr c) {
+        return div(c.toDouble());
+    }
+
+    public Complex sub(DoubleExpr c) {
+        return sub(c.toDouble());
+    }
+
+    public Complex rem(DoubleExpr c) {
+        return rem(c.toDouble());
+    }
+
+    public ComplexMatrix toMatrix() {
+        return Maths.Config.getComplexMatrixFactory().newMatrix(new Complex[][]{{this}});
+    }
+
+    public ComplexVector toVector() {
+        return Maths.columnVector(this);
     }
 
     @Override
@@ -1137,6 +1175,10 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
             Normalizable o = other;
             return (this.norm() - o.norm()) / o.norm();
         }
+    }
+
+    public double norm() {
+        return absdbl();
     }
 
     public double getError(Complex baseComplex) {
@@ -1152,32 +1194,8 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
     }
 
     @Override
-    public Integer getIntProperty(String name) {
-        Number property = (Number) getProperty(name);
-        return property == null ? null : property.intValue();
-    }
-
-    @Override
-    public Long getLongProperty(String name) {
-        Number property = (Number) getProperty(name);
-        return property == null ? null : property.longValue();
-    }
-
-    @Override
-    public Double getDoubleProperty(String name) {
-        Number property = (Number) getProperty(name);
-        return property == null ? null : property.doubleValue();
-    }
-
-    @Override
-    public String getStringProperty(String name) {
-        Object property = getProperty(name);
-        return property == null ? null : property.toString();
-    }
-
-    @Override
     public VectorSpace<Complex> getVectorSpace() {
-        return MathsBase.COMPLEX_VECTOR_SPACE;
+        return Maths.COMPLEX_VECTOR_SPACE;
     }
 
     public boolean isFinite() {
@@ -1185,349 +1203,27 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
     }
 
     @Override
-    public Complex computeComplex(double x) {
-        return this;
-    }
-
-    @Override
-    public Complex computeComplex(double x, BooleanMarker defined) {
-        defined.set();
-        return this;
-    }
-
-    @Override
-    public Complex computeComplex(double x, double y, BooleanMarker defined) {
-        defined.set();
-        return this;
-    }
-
-    @Override
-    public Complex computeComplex(double x, double y) {
-        return this;
-    }
-
-    @Override
-    public Complex computeComplex(double x, double y, double z) {
-        return this;
-    }
-
-    @Override
-    public Complex computeComplex(double x, double y, double z, BooleanMarker defined) {
-        defined.set();
-        return this;
-    }
-
-//    @Override
-//    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-//        Complex[] complexes = new Complex[x.length];
-//        Arrays.fill(complexes, this);
-//        if (ranges != null) {
-//            Range t = Range.forBounds(0, x.length - 1);
-//            t.setDefined1(x.length);
-//            t.getDefined1().setAll();
-//            ranges.set(t);
-//        }
-//        return complexes;
-//    }
-//    @Override
-//    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-//        Complex[] complexes = new Complex[x.length];
-//        Arrays.fill(complexes, this);
-//        if (ranges != null) {
-//            Range t = Range.forBounds(0, x.length - 1);
-//            t.setDefined1(x.length);
-//            t.getDefined1().setAll();
-//            ranges.set(t);
-//        }
-//        return complexes;
-//    }
-//
-//    @Override
-//    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-//        Complex[] complexes = new Complex[y.length];
-//        Arrays.fill(complexes, this);
-//        if (ranges != null) {
-//            Range t = Range.forBounds(0, y.length - 1);
-//            t.setDefined1(y.length);
-//            t.getDefined1().setAll();
-//            ranges.set(t);
-//        }
-//        return complexes;
-//    }
-//    @Override
-//    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
-//        Complex[][] complexes = new Complex[y.length][x.length];
-//        ArrayUtils.fill(complexes, this);
-//        if (ranges != null) {
-//            Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1);
-//            t.setDefined2(x.length,y.length);
-//            t.getDefined2().setAll();
-//            ranges.set(t);
-//        }
-//        return complexes;
-//    }
-//    @Override
-//    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-//        Complex[][][] complexes = new Complex[z.length][y.length][x.length];
-//        ArrayUtils.fill(complexes, this);
-//        if (ranges != null) {
-//            Range t = Range.forBounds(0, x.length - 1, 0, y.length - 1, 0, z.length - 1);
-//            t.setDefined3(x.length,y.length,z.length);
-//            t.getDefined3().setAll();
-//            ranges.set(t);
-//        }
-//        return complexes;
-//    }
-    @Override
-    public Complex[] computeComplex(double[] x, Domain d0) {
-        Complex[] complexes = new Complex[x.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y, Domain d0) {
-        Complex[] complexes = new Complex[x.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y, Domain d0) {
-        Complex[] complexes = new Complex[y.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0) {
-        Complex[][] complexes = new Complex[y.length][x.length];
-        ArrayUtils.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0) {
-        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
-        ArrayUtils.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x) {
-        Complex[] complexes = new Complex[x.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[] computeComplex(double[] x, double y) {
-        Complex[] complexes = new Complex[x.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[] computeComplex(double x, double[] y) {
-        Complex[] complexes = new Complex[y.length];
-        Arrays.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[][] computeComplex(double[] x, double[] y) {
-        Complex[][] complexes = new Complex[y.length][x.length];
-        ArrayUtils.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z) {
-        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
-        ArrayUtils.fill(complexes, this);
-        return complexes;
-    }
-
-    @Override
     public DoubleToDouble getRealDD() {
         double real = getReal();
-        return real == 0 ? MathsBase.DDZERO : new DoubleValue(real, Domain.FULLX);
+        return real == 0 ? Maths.ZERO : Maths.expr(real, Domain.FULLX);
     }
 
     @Override
     public DoubleToDouble getImagDD() {
         double imag = getImag();
-        return imag == 0 ? MathsBase.DDZERO : new DoubleValue(imag, Domain.FULLX);
+        return imag == 0 ? Maths.ZERO : Maths.expr(imag, Domain.FULLX);
     }
 
     @Override
-    public boolean isComplexExpr() {
-        return true;
+    public Complex[] evalComplex(double[] x, Domain d0) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
     }
 
-    public Complex rdiv(double other) {
-        return Complex.valueOf(other).div(this);
-    }
-
-    public Complex rmul(double other) {
-        return Complex.valueOf(other).mul(this);
-    }
-
-    public Complex radd(double other) {
-        return Complex.valueOf(other).add(this);
-    }
-
-    public Complex rsub(double other) {
-        return Complex.valueOf(other).sub(this);
-    }
-
-    public Expr divide(Expr other) {
-        return div(other);
-    }
-
-    public Complex divide(double other) {
-        return div(other);
-    }
-
-    public Complex divide(Complex other) {
-        return div(other);
-    }
-
-    public Complex divide(MutableComplex other) {
-        return div(other);
-    }
-
-    public Complex multiply(int c) {
-        return mul(c);
-    }
-
-    public Complex multiply(double c) {
-        return mul(c);
-    }
-
-    public Complex multiply(Complex c) {
-        return mul(c);
-    }
-
-    public Complex multiply(MutableComplex c) {
-        return mul(c);
-    }
-
-    public Complex subtract(int c) {
-        return sub(c);
-    }
-
-    public Complex subtract(double c) {
-        return sub(c);
-    }
-
-    public Complex subtract(Complex c) {
-        return sub(c);
-    }
-
-    public Complex negate() {
-        return neg();
-    }
-
-    @Override
-    public Expr divide(int other) {
-        return div(other);
-    }
-
-    @Override
-    public Expr subtract(Expr other) {
-        return sub(other);
-    }
-
-    public Complex subtract(MutableComplex c) {
-        return sub(c);
-    }
-
-    @Override
-    public Expr mul(Expr other) {
-        if (other instanceof Complex) {
-            return mul((Complex) other);
-        }
-        return MathsBase.mul(this, other);
-    }
-
-    @Override
-    public Expr add(Expr other) {
-        if (other instanceof Complex) {
-            return add((Complex) other);
-        }
-        return MathsBase.add(this, other);
-    }
-
-    @Override
-    public Expr div(Expr other) {
-        if (other instanceof Complex) {
-            return div((Complex) other);
-        }
-        return MathsBase.div(this, other);
-    }
-
-//    //@Override
-//    public Complex div(Complex other) {
-//        if (other instanceof Complex) {
-//            return div((Complex) other);
-//        }
-//        return MathsBase.div(this, other);
-//    }
-    @Override
-    public Expr sub(Expr other) {
-        if (other instanceof Complex) {
-            return sub((Complex) other);
-        }
-        return MathsBase.sub(this, other);
-    }
-
-    public Expr mul(Domain domain) {
-//        return mul(MathsBase.expr(domain));
-        if (domain.isUnconstrained()) {
-            return this;
-        }
-        return new ComplexValue(this, domain);
-    }
-
-    public Expr mul(Geometry domain) {
-        return mul(MathsBase.expr(domain));
-    }
-
-    public Expr multiply(Domain domain) {
-        return mul(domain);
-    }
-
-    public Expr multiply(Geometry domain) {
-        return mul(domain);
-    }
-
-    @Override
-    public boolean isDoubleTyped() {
-        return getImag() == 0;
-    }
-
-    @Override
-    public Set<ParamExpr> getParams() {
-        return Collections.EMPTY_SET;
-    }
-
-    @Override
-    public Complex[][][] computeComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplexFromXY(this, x, y, z, d0, ranges);
-    }
-
-    public Complex[] computeComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
-    }
-
-    public Complex[] computeComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
-        return Expressions.computeComplex(this, x, y, d0, ranges);
-    }
-
-    public Complex[] computeComplex(double[] x, Domain d0, Out<Range> ranges) {
-        if (getDomainDimension() != 1) {
-            throw new IllegalArgumentException("Missing Y");
+    public Complex[] evalComplex(double[] x, Domain d0, Out<Range> ranges) {
+        if (getDomain().getDimension() != 1) {
+            throw new MissingAxisException(Axis.Y);
         }
         Range abcd = (d0 == null ? Domain.FULLX : d0).range(x);
         if (abcd != null) {
@@ -1552,7 +1248,67 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
         }
     }
 
-    public Complex[][] computeComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
+    @Override
+    public Complex[] evalComplex(double[] x, double y, Domain d0) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    public Complex[] evalComplex(double[] x, double y, Domain d0, Out<Range> ranges) {
+        return Expressions.evalComplex(this, x, y, d0, ranges);
+    }
+
+//    @Override
+//    public boolean isComplexExpr() {
+//        return true;
+//    }
+
+    @Override
+    public Complex[] evalComplex(double x, double[] y, Domain d0) {
+        Complex[] complexes = new Complex[y.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    public Complex[] evalComplex(double x, double[] y, Domain d0, Out<Range> ranges) {
+        return Expressions.evalComplex(this, x, y, d0, ranges);
+    }
+
+    @Override
+    public Complex[][][] evalComplex(double[] x, double[] y, double[] z, Domain d0) {
+        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][][] evalComplex(double[] x, double[] y, double[] z, Domain d0, Out<Range> ranges) {
+        return DoubleToComplexDefaults.evalComplex(this, x, y, z, d0, ranges);
+    }
+
+    @Override
+    public Complex[] evalComplex(double x, double[] y) {
+        Complex[] complexes = new Complex[y.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[] evalComplex(double[] x, double y) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][] evalComplex(double[] x, double[] y, Domain d0) {
+        Complex[][] complexes = new Complex[y.length][x.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    public Complex[][] evalComplex(double[] x, double[] y, Domain d0, Out<Range> ranges) {
         Range abcd = (d0 == null ? Domain.FULLX : d0).range(x, y);
         if (abcd != null) {
             BooleanArray2 def0 = BooleanArrays.newArray(y.length, x.length);
@@ -1579,7 +1335,158 @@ public abstract class Complex extends Number implements Cloneable, IConstantValu
     }
 
     @Override
-    public String dump() {
-        return toString();
+    public Complex[][][] evalComplex(double[] x, double[] y, double[] z) {
+        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
     }
+
+    @Override
+    public Complex[] evalComplex(double[] x) {
+        Complex[] complexes = new Complex[x.length];
+        Arrays.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex[][] evalComplex(double[] x, double[] y) {
+        Complex[][] complexes = new Complex[y.length][x.length];
+        ArrayUtils.fill(complexes, this);
+        return complexes;
+    }
+
+    @Override
+    public Complex evalComplex(double x) {
+        return this;
+    }
+
+    @Override
+    public Complex evalComplex(double x, BooleanMarker defined) {
+        defined.set();
+        return this;
+    }
+
+    @Override
+    public Complex evalComplex(double x, double y) {
+        return this;
+    }
+
+    @Override
+    public Complex evalComplex(double x, double y, BooleanMarker defined) {
+        defined.set();
+        return this;
+    }
+
+    @Override
+    public Complex evalComplex(double x, double y, double z) {
+        return this;
+    }
+
+    @Override
+    public Complex evalComplex(double x, double y, double z, BooleanMarker defined) {
+        defined.set();
+        return this;
+    }
+
+    @Override
+    public ExprType getNarrowType() {
+        return isReal() ? ExprType.DOUBLE_NBR : ExprType.COMPLEX_NBR;
+    }
+
+    public DoubleToComplex toDC() {
+        return this;//new ComplexValue(this, Domain.FULLX);
+    }
+
+    public DoubleToDouble toDD() {
+        if (getImag() == 0) {
+            return Maths.expr(getReal(), Domain.FULL(getDomain().getDimension()));
+        }
+//        if (isNaN()) {
+//            return DoubleValue.valueOf(Double.NaN, Domain.FULL(getDomainDimension()));
+//        }
+        throw new ClassCastException();
+    }
+
+    //    public IDDx toDDx() {
+//        if (imag == 0) {
+//            return new DDxLinear(Domain.FULLX, 0, getReal());
+//        }
+//        throw new ClassCastException();
+//    }
+    @Override
+    public DoubleToVector toDV() {
+        return DefaultDoubleToVector.of(this);
+    }
+
+    public DoubleToMatrix toDM() {
+        return DefaultDoubleToMatrix.of(this);
+    }
+
+    @Override
+    public ComponentDimension getComponentDimension() {
+        return ComponentDimension.SCALAR;
+    }
+
+    @Override
+    public ExprType getType() {
+        return ExprType.COMPLEX_NBR;
+    }
+
+//    @Override
+//    public String dump() {
+//        return toString();
+//    }
+
+    public Complex divide(Complex other) {
+        return div(other);
+    }
+
+    public Complex divide(MutableComplex other) {
+        return div(other);
+    }
+
+    public Complex div(MutableComplex other) {
+        double a = getReal();
+        double b = getImag();
+        double c = other.getReal();
+        double d = other.getImag();
+        double c2d2 = c * c + d * d;
+
+        return Complex.of(
+                (a * c + b * d) / c2d2,
+                (b * c - a * d) / c2d2
+        );
+        //return mul(c.inv());
+    }
+
+    public Complex multiply(Complex c) {
+        return mul(c);
+    }
+
+    public Complex multiply(MutableComplex c) {
+        return mul(c);
+    }
+
+    public Complex mul(MutableComplex c) {
+        return Complex.of(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
+    }
+
+    public Complex subtract(Complex c) {
+        return sub(c);
+    }
+
+    public Complex subtract(MutableComplex c) {
+        return sub(c);
+    }
+
+    public Complex sub(MutableComplex c) {
+        return Complex.of(getReal() - c.getReal(), getImag() - c.getImag());
+    }
+
+    public boolean isOne() {
+        return getReal() == 1 && getImag() == 0;
+    }
+
+
+
 }

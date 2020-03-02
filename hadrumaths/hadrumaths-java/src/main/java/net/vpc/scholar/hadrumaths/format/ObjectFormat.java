@@ -9,12 +9,12 @@ package net.vpc.scholar.hadrumaths.format;
  */
 public interface ObjectFormat<T> {
 
-    void format(StringBuilder sb, T o, ObjectFormatParamSet format);
-
-    default String format(T o, ObjectFormatParamSet format) {
+    default String format(T o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
+
+    void format(T o, ObjectFormatContext context);
 
 }

@@ -1,30 +1,39 @@
 package net.vpc.scholar.hadrumaths.meshalgo;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.HSerializable;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class EnhancedMeshPolygons implements Serializable, Dumpable {
+public class EnhancedMeshPolygons implements HSerializable {
     private static final long serialVersionUID = 1L;
-    private double surface;
-    private Polygon[] polygon;
+    private final double surface;
+    private final Polygon[] polygon;
 
     public EnhancedMeshPolygons(Polygon[] p, double a) {
         polygon = p;
         surface = a;
     }
 
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("surface", surface);
-        h.add("polygons", polygon);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj(getClass().getSimpleName())
+                .add("surface", context.elem(surface))
+                .add("polygons", context.elem(polygon))
+                .build();
     }
+
+//    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("surface", surface);
+//        h.add("polygons", polygon);
+//        return h.toString();
+//    }
 
     public Triangle firstTriangleInZoneValide(List<Triangle> t) {
         int k = -1;
@@ -54,10 +63,6 @@ public class EnhancedMeshPolygons implements Serializable, Dumpable {
                 }
             }
         }
-        if (k == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return k == 1;
     }
 }

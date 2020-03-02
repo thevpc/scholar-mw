@@ -9,8 +9,8 @@ import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruplot.PlotEvaluator;
@@ -100,7 +100,7 @@ public class MomParamFactory extends AbstractFactory {
             return new PlotConstantVDiscrete(name, value);
         }
 
-        public static PlotAxis discrete(String name, Discrete value) {
+        public static PlotAxis discrete(String name, CDiscrete value) {
             return new PlotConstantVDiscrete(name, new VDiscrete(value));
         }
 
@@ -108,11 +108,11 @@ public class MomParamFactory extends AbstractFactory {
             return new PlotValueVDiscrete(name, value);
         }
 
-        public static PlotAxis discrete(String name, final PlotEvaluator<Discrete> value) {
+        public static PlotAxis discrete(String name, final PlotEvaluator<CDiscrete> value) {
             return new PlotValueVDiscrete(name, new PlotEvaluator<VDiscrete>() {
                 @Override
-                public VDiscrete computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
-                    return new VDiscrete(value.computeValue(source, monitor, p));
+                public VDiscrete evalValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
+                    return new VDiscrete(value.evalValue(source, monitor, p));
                 }
             });
         }
@@ -132,8 +132,8 @@ public class MomParamFactory extends AbstractFactory {
         public static PlotAxis matrix(String name, final PlotEvaluator<ComplexMatrix> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
-                public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
-                    return new PlotMatrix(value.computeValue(source, monitor, p).getArray());
+                public PlotMatrix evalValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
+                    return new PlotMatrix(value.evalValue(source, monitor, p).getArray());
                 }
             }, plotType);
         }
@@ -152,8 +152,8 @@ public class MomParamFactory extends AbstractFactory {
         public static PlotAxis vector(String name, final PlotEvaluator<ComplexVector> value, PlotType plotType) {
             return new PlotValueMatrix(name, new PlotEvaluator<PlotMatrix>() {
                 @Override
-                public PlotMatrix computeValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
-                    ComplexVector complexVector = value.computeValue(source, monitor, p);
+                public PlotMatrix evalValue(ConsoleAwareObject source, ProgressMonitor monitor, ConsoleActionParams p) {
+                    ComplexVector complexVector = value.evalValue(source, monitor, p);
                     if (complexVector.isColumn()) {
                         complexVector = complexVector.transpose();
                     }
@@ -195,183 +195,183 @@ public class MomParamFactory extends AbstractFactory {
     }
 
     public static class params {
-        public static Param modesCount() {
+        public static CParam modesCount() {
             return new ModesCountParam();
         }
 
-        public static Param modeFunctions() {
+        public static CParam modeFunctions() {
             return new ModeFunctionsParam();
         }
 
-        public static Param frequency() {
+        public static CParam frequency() {
             return new FreqParam();
         }
 
-        public static Param source() {
+        public static CParam source() {
             return new SourceParam();
         }
 
-        public static Param sources() {
+        public static CParam sources() {
             return new SourcesParam();
         }
 
-        public static Param circuitType() {
+        public static CParam circuitType() {
             return new CircuitTypeParam();
         }
 
-//        public static Param widthFactor() {
+//        public static CParam widthFactor() {
 //            return new WidthFactorParam();
 //        }
 
-        public static Param width() {
+        public static CParam width() {
             return new BoxWithParam();
         }
 
-        public static Param height() {
+        public static CParam height() {
             return new BoxHeightParam();
         }
 
-        public static Param frequencyByWidthFactor() {
+        public static CParam frequencyByWidthFactor() {
             return new FrequencyByWidthFactorParam();
         }
 
-//        public static Param xminFactor() {
+//        public static CParam xminFactor() {
 //            return new BoxXminFactorParam();
 //        }
 
-        public static Param xmin() {
+        public static CParam xmin() {
             return new BoxXminParam();
         }
 
-        public static Param ymin() {
+        public static CParam ymin() {
             return new BoxYminParam();
         }
 
-        public static Param omega() {
+        public static CParam omega() {
             return new OmegaParam();
         }
 
 
-        public static Param fractalScale() {
+        public static CParam fractalScale() {
             return new FractalScaleParam();
         }
 
-        public static Param testFunctions() {
+        public static CParam testFunctions() {
             return new TestFunctionsParam();
         }
 
 
-        public static Param hintAMatrixSparsify() {
+        public static CParam hintAMatrixSparsify() {
             return new HintAMatrixSparsifyParam();
         }
 
-        public static Param hintBMatrixSparsify() {
+        public static CParam hintBMatrixSparsify() {
             return new HintBMatrixSparsifyParam();
         }
 
-        public static Param hintDiscardFnByScalarProduct() {
+        public static CParam hintDiscardFnByScalarProduct() {
             return new HintDiscardFnByScalarProductParam();
         }
 
-        public static Param hintFnMode() {
+        public static CParam hintFnMode() {
             return new HintFnModeParam();
         }
 
-        public static Param hintGpFnAxis() {
+        public static CParam hintGpFnAxis() {
             return new HintGpFnAxisParam();
         }
 
-        public static Param hintRegularZnOperator() {
+        public static CParam hintRegularZnOperator() {
             return new HintRegularZnOperatorParam();
         }
 
-        public static Param hintSubModelEquivalent() {
+        public static CParam hintSubModelEquivalent() {
             return new HintSubModelEquivalentParam();
         }
 
-        public static Param gridPrecision() {
+        public static CParam gridPrecision() {
             return new GridPrecisionParam();
         }
     }
 
     public static class paramsets {
-//        public static DoubleArrayParamSet dtimes(Param param, double min, double max, int times) {
+//        public static DoubleArrayParamSet dtimes(CParam param, double min, double max, int times) {
 //            return new DoubleArrayParamSet(param, min, max, times);
 //        }
 //
-//        public static DoubleArrayParamSet dsteps(Param param, double min, double max, double step) {
+//        public static DoubleArrayParamSet dsteps(CParam param, double min, double max, double step) {
 //            return new DoubleArrayParamSet(param, min, max, step);
 //        }
 //
-//        public static IntArrayParamSet itimes(Param param, int min, int max, int times) {
+//        public static IntArrayParamSet itimes(CParam param, int min, int max, int times) {
 //            return new IntArrayParamSet(param, min, max, times);
 //        }
 //
-//        public static IntArrayParamSet isteps(Param param, int min, int max, int step) {
+//        public static IntArrayParamSet isteps(CParam param, int min, int max, int step) {
 //            return new IntArrayParamSet(param, min, max, (double) step);
 //        }
 //
-//        public static FloatArrayParamSet ftimes(Param param, int min, int max, int times) {
+//        public static FloatArrayParamSet ftimes(CParam param, int min, int max, int times) {
 //            return new FloatArrayParamSet(param, min, max, times);
 //        }
 //
-//        public static FloatArrayParamSet fsteps(Param param, int min, int max, int step) {
+//        public static FloatArrayParamSet fsteps(CParam param, int min, int max, int step) {
 //            return new FloatArrayParamSet(param, min, max, (float) step);
 //        }
 //
-//        public static LongArrayParamSet ltimes(Param param, int min, int max, int times) {
+//        public static LongArrayParamSet ltimes(CParam param, int min, int max, int times) {
 //            return new LongArrayParamSet(param, min, max, times);
 //        }
 //
-//        public static LongArrayParamSet lsteps(Param param, int min, int max, long step) {
+//        public static LongArrayParamSet lsteps(CParam param, int min, int max, long step) {
 //            return new LongArrayParamSet(param, min, max, step);
 //        }
 //
-//        public static DoubleArrayParamSet doubleParamSet(Param param) {
+//        public static DoubleArrayParamSet doubleParamSet(CParam param) {
 //            return new DoubleArrayParamSet(param);
 //        }
 //
-//        public static DoubleArrayParamSet doubleParamSet(Param param, double[] values) {
+//        public static DoubleArrayParamSet doubleParamSet(CParam param, double[] values) {
 //            return new DoubleArrayParamSet(param, values);
 //        }
 //
-//        public static FloatArrayParamSet floatParamSet(Param param, float[] values) {
+//        public static FloatArrayParamSet floatParamSet(CParam param, float[] values) {
 //            return new FloatArrayParamSet(param, values);
 //        }
 //
-//        public static FloatArrayParamSet floatParamSet(Param param) {
+//        public static FloatArrayParamSet floatParamSet(CParam param) {
 //            return new FloatArrayParamSet(param);
 //        }
 //
-//        public static LongArrayParamSet longParamSet(Param param, long[] values) {
+//        public static LongArrayParamSet longParamSet(CParam param, long[] values) {
 //            return new LongArrayParamSet(param, values);
 //        }
 //
-//        public static LongArrayParamSet longParamSet(Param param) {
+//        public static LongArrayParamSet longParamSet(CParam param) {
 //            return new LongArrayParamSet(param);
 //        }
 //
-//        public static <T> ArrayParamSet<T> objectParamSet(Param param, T[] values) {
+//        public static <T> ArrayParamSet<T> objectParamSet(CParam param, T[] values) {
 //            return new ArrayParamSet<T>(param, values);
 //        }
 //
-//        public static <T> ArrayParamSet<T> objectParamSet(Param param) {
+//        public static <T> ArrayParamSet<T> objectParamSet(CParam param) {
 //            return new ArrayParamSet<T>(param);
 //        }
 //
-//        public static IntArrayParamSet intParamSet(Param param, int[] values) {
+//        public static IntArrayParamSet intParamSet(CParam param, int[] values) {
 //            return new IntArrayParamSet(param, values);
 //        }
 //
-//        public static IntArrayParamSet intParamSet(Param param) {
+//        public static IntArrayParamSet intParamSet(CParam param) {
 //            return new IntArrayParamSet(param);
 //        }
 //
-//        public static BooleanArrayParamSet boolParamSet(Param param, boolean[] values) {
+//        public static BooleanArrayParamSet boolParamSet(CParam param, boolean[] values) {
 //            return new BooleanArrayParamSet(param, values);
 //        }
 //
-//        public static BooleanArrayParamSet boolParamSet(Param param) {
+//        public static BooleanArrayParamSet boolParamSet(CParam param) {
 //            return new BooleanArrayParamSet(param);
 //        }
 

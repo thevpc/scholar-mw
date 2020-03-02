@@ -12,7 +12,6 @@ public interface HadrumathsClient extends AutoCloseable {
     void get(String path, File writeTo);
 
     /**
-     *
      * @return -1 if no route, else time for ping
      */
     long ping();

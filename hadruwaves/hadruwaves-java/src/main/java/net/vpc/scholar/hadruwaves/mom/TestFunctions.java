@@ -3,8 +3,10 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
@@ -13,7 +15,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Created by vpc on 3/16/15.
  */
-public interface TestFunctions {
+public interface TestFunctions extends HSerializable {
     MomStructure getStructure();
 
     void setStructure(MomStructure structure);
@@ -24,11 +26,12 @@ public interface TestFunctions {
 
     DoubleToVector gp(int p);
 
-    TVector<Expr> list();
+    Vector<Expr> list();
 
     DoubleToVector apply(int index);
 
-    TVector<Expr> toList();
+    Vector<Expr> toList();
+
     DoubleToVector[] arr();
 
     DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache);
@@ -52,8 +55,6 @@ public interface TestFunctions {
 
     void setAxisType(HintAxisType axisType);
 
-    String dump();
-
     TestFunctionsComparator getFunctionsComparator();
 
     void setFunctionsComparator(TestFunctionsComparator functionsComparator);
@@ -62,8 +63,10 @@ public interface TestFunctions {
 
     void removePropertyChangeListener(PropertyChangeListener listener);
 
-    void addPropertyChangeListener(String property,PropertyChangeListener listener);
+    void addPropertyChangeListener(String property, PropertyChangeListener listener);
 
-    void removePropertyChangeListener(String property,PropertyChangeListener listener);
+    void removePropertyChangeListener(String property, PropertyChangeListener listener);
+
+    Geometry[] getGeometries();
 
 }

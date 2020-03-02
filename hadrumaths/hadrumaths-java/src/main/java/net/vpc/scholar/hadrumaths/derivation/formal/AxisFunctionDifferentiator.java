@@ -5,7 +5,7 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.AxisFunction;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.AxisFunction;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -16,10 +16,10 @@ public class AxisFunctionDifferentiator implements FunctionDifferentiator {
         AxisFunction c = (AxisFunction) f;
         Axis functionName = c.getAxis();
         if (functionName == varIndex) {
-            if (c.getDomain().isFull()) {
+            if (c.getDomain().isUnbounded()) {
                 return Complex.ONE;
             }
-            return c.getDomain();//MathsBase.expr(c.getDomain());
+            return c.getDomain();//Maths.expr(c.getDomain());
         }
         return Complex.ZERO;
     }

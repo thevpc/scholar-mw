@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.Domain;
@@ -17,7 +18,7 @@ public final class SicoCosiPattern extends AbstractGpPatternPQ {
     }
 
     public DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, MomStructure str) {
-        DoubleToVector f = Maths.vector(
+        Expr f = Maths.vector(
                 (
                         FunctionFactory.sinXcosY(
                                 1 / Math.sqrt(d.xwidth() * d.ywidth()),

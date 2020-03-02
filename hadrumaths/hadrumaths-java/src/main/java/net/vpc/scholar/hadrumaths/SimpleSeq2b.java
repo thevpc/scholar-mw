@@ -1,14 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
-import net.vpc.scholar.hadrumaths.symbolic.ExprCellIterator;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 
 import java.util.Arrays;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SimpleSeq2b implements TMatrixCell<Expr> {
+class SimpleSeq2b implements MatrixCell<Expr> {
     private final Expr pattern;
     private final DoubleParam m;
     private final DoubleParam n;

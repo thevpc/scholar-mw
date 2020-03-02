@@ -3,17 +3,12 @@ package net.vpc.scholar.hadruwaves;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadruplot.Plot;
 import net.vpc.scholar.hadruplot.PlotComponent;
-import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory;
-import net.vpc.scholar.hadruwaves.mom.HintAxisType;
-import net.vpc.scholar.hadruwaves.mom.BoxSpace;
-import net.vpc.scholar.hadruwaves.mom.StrLayer;
-import net.vpc.scholar.hadruwaves.mom.modes.DefaultBoxModeFunctions;
-import net.vpc.scholar.hadruwaves.mom.modes.ModeFunctionsBase;
+import net.vpc.scholar.hadruwaves.mom.*;
+import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.modes.NonPeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.modes.PeriodicBoxModes;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.CutOffModalSources;
 import net.vpc.scholar.hadruwaves.util.AdmittanceValue;
-import net.vpc.scholar.hadruwaves.util.Impedance;
 import net.vpc.scholar.hadruwaves.util.ImpedanceValue;
 
 import static java.lang.Math.PI;
@@ -209,7 +204,7 @@ public final class Physics {
                         } else if (i.type() == ModeType.TE) {
                             return (i.m() != 0 || i.n() != 0);
                         } else {
-                            throw new RuntimeException("impossible");
+                            return false;
                         }
                     }
                 };
@@ -658,16 +653,16 @@ public final class Physics {
     }
 
 
-    public static BoxSpace openCircuitBoxSpace(double epsr, double width) {
-        return BoxSpaceFactory.openCircuit(epsr, width);
+    public static BoxSpace openCircuitBoxSpace(Material material, double width) {
+        return BoxSpaceFactory.openCircuit(material, width);
     }
 
-    public static BoxSpace matchedLoadBoxSpace(double epsr) {
-        return BoxSpaceFactory.matchedLoad(epsr);
+    public static BoxSpace matchedLoadBoxSpace(Material material) {
+        return BoxSpaceFactory.matchedLoad(material);
     }
 
-    public static BoxSpace shortCircuitBoxSpace(double epsr, double width) {
-        return BoxSpaceFactory.shortCircuit(epsr, width);
+    public static BoxSpace shortCircuitBoxSpace(Material material, double width) {
+        return BoxSpaceFactory.shortCircuit(material, width);
     }
 
     public static BoxSpace nothingBoxSpace() {
@@ -680,20 +675,23 @@ public final class Physics {
     }
 
     public static void plotWallBorders(WallBorders borders, int count, double x, double y, double w, double h, double f) {
-        ModeFunctionsBase fnModeFunctions = new DefaultBoxModeFunctions(borders);
+        ModeFunctions fnModeFunctions = new BoxModeFunctions();
+        fnModeFunctions.setSize(count < 1 ? 30 : count);
+
+        DefaultModeFunctionsEnv env=new DefaultModeFunctionsEnv();
         //FnBaseFunctions fnBaseFunctions = new Fn("EMMM");
         //FnBaseFunctions fnBaseFunctions = new Fn("MEME");
-        fnModeFunctions.setDomain(Domain.forWidth(x, w, y, h));
-        fnModeFunctions.setMaxSize(count < 1 ? 30 : count);
-        fnModeFunctions.setHintFnModes(ModeType.TEM, ModeType.TM, ModeType.TE);
+        env.setBorders(borders);
+        env.setDomain(Domain.ofWidth(x, w, y, h));
+        env.setHintFnModes(ModeType.TEM, ModeType.TM, ModeType.TE);
         //fnBaseFunctions.setHintFnModeTypes(Mode.TEM, ModeType.TM);
-        fnModeFunctions.setFirstBoxSpace(BoxSpaceFactory.shortCircuit(2.2, 1.59 * 1E-3));
-        fnModeFunctions.setSecondBoxSpace(BoxSpaceFactory.matchedLoad(1));
-        fnModeFunctions.setFrequency(f);
+        env.setFirstBoxSpace(BoxSpaceFactory.shortCircuit(Material.substrate(2.2), 1.59 * 1E-3));
+        env.setSecondBoxSpace(BoxSpaceFactory.matchedLoad(Material.VACUUM));
+        env.setFrequency(f);
 //        fnBaseFunctions.setProjectType(ProjectType.PLANAR_STRUCTURE);
-        fnModeFunctions.setSources(null);
-        fnModeFunctions.setHintAxisType(HintAxisType.XY_SEPARATED);
-        fnModeFunctions.setSources(new CutOffModalSources(1));
+        env.setHintAxisType(HintAxisType.XY_SEPARATED);
+        env.setSources(new CutOffModalSources(1));
+        fnModeFunctions.setEnv(env);
 //        fnModeFunctions.a();
 //        ModeInfo ii = new ModeInfo(ModeType.TM, 2, 1);
 //        fnModeFunctions.fillIndex(ii, 0);
@@ -703,7 +701,7 @@ public final class Physics {
 //            System.out.println(DefaultBoxModeFunctions.descMode(m));
 //            //System.out.println("fx=" + fte10.fn.fx);
 //        }
-        WallBorders b = fnModeFunctions.getBorders();
+        WallBorders b = env.getBorders();
         final String ttl = fnModeFunctions.toString() + "=>E(x=" + b.getExDescription() + ",y=" + b.getEyDescription() + ") ; J(x=" + b.getJxDescription() + ",y=" + b.getJyDescription() + ")";
         PlotComponent jFrame = Plot.title(ttl).plot(fnModeFunctions.arr());
 //        jFrame.display();
@@ -715,14 +713,14 @@ public final class Physics {
 //        int progress=0;
         for (int q = 0; q < gfps.length; q++) {
             for (int n = 0; n < max; n++) {
-                gfps[q][n] = Maths.scalarProduct(indexes[n].fn, indexes[q].fn);
+                gfps[q][n] = Maths.scalarProduct(indexes[n].fn, indexes[q].fn).toComplex();
             }
         }
         Plot.title("<fn,fn>").asMatrix().plot(matrix(gfps));//.display();
 
     }
 
-    public static AdmittanceValue computeLayersAdmittance(StrLayer[] layers, Complex gamma1, Complex gamma2, Complex z0) {
+    public static AdmittanceValue evalLayersAdmittance(StrLayer[] layers, Complex gamma1, Complex gamma2, Complex z0) {
         AdmittanceValue yl = new AdmittanceValue(Complex.ZERO);
         double l = 0;
         for (StrLayer layer : layers) {

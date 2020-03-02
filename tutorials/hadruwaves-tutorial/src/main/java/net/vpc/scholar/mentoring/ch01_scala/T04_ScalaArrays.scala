@@ -12,7 +12,7 @@ object T04_ScalaArrays extends App{
   println(ss substring 2)
 
   for ( j <- 0 to a.length-1) {
-    //get array element by index (zero based)
+    //get array primitiveElement3D by index (zero based)
     println(a(j))
   }
 

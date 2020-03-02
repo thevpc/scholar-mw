@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadrumaths.util.dump;
 
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.util.PlatformUtils;
+
 import java.lang.reflect.Array;
 
 /**
@@ -14,8 +17,19 @@ public class ArrayDumpDelegate implements DumpDelegate {
     public String getDumpString(Object object) {
         Dumper h = new Dumper("", Dumper.Type.ARRAY);
         int len = Array.getLength(object);
-        for (int i = 0; i < len; i++) {
-            h.add(Array.get(object, i));
+        int dim = PlatformUtils.getArrayDimension(object.getClass());
+        Class rct = PlatformUtils.getArrayRootComponentType(object.getClass());
+        switch (len){
+            case 0:return "[]";
+            case 1:return "["+ Maths.dump(Array.get(object, 0))+"]";
+            default:{
+                StringBuilder sb=new StringBuilder();
+                sb.append("[").append(Maths.dump(Array.get(object, 0)));
+                for (int i = 1; i < len; i++) {
+                    sb.append(", ").append(Maths.dump(Array.get(object, i)));
+                }
+                sb.append("]");
+            }
         }
         return h.toString();
     }

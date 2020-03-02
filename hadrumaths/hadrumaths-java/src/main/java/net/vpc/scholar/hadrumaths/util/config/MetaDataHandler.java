@@ -8,5 +8,5 @@ package net.vpc.scholar.hadrumaths.util.config;
  * To change this template use File | Settings | File Templates.
  */
 public interface MetaDataHandler {
-    public boolean handleMetaData(Properties2 props, String command, String metadata);
+    boolean handleMetaData(Properties2 props, String command, String metadata);
 }

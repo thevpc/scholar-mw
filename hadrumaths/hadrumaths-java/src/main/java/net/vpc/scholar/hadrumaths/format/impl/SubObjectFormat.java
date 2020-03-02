@@ -6,8 +6,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Sub;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Sub;
 
 /**
  * @author vpc
@@ -15,24 +16,26 @@ import net.vpc.scholar.hadrumaths.symbolic.Sub;
 public class SubObjectFormat implements ObjectFormat<Sub> {
 
     @Override
-    public String format(Sub o, ObjectFormatParamSet format) {
+    public String format(Sub o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Sub o, ObjectFormatParamSet format) {
+    public void format(Sub o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         format = format.add(FormatFactory.REQUIRED_PARS);
         if (par) {
-            sb.append("(");
+            context.append("(");
         }
-        FormatFactory.format(sb, o.getFirst(), format);
-        sb.append(" - ");
-        FormatFactory.format(sb, o.getSecond(), format);
+        context.format( o.getChild(0), format);
+        context.append("-");
+//        sb.append(" - ");
+        context.format( o.getChild(1), format);
         if (par) {
-            sb.append(")");
+            context.append(")");
         }
     }
 }

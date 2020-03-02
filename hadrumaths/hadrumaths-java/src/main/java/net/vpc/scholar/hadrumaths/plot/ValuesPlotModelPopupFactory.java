@@ -3,8 +3,8 @@ package net.vpc.scholar.hadrumaths.plot;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.GridBagLayout2;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadrumaths.util.PlatformUtils;
 import net.vpc.scholar.hadruplot.*;
@@ -33,7 +33,7 @@ public class ValuesPlotModelPopupFactory implements PlotModelPopupFactory {
             public void actionPerformed(ActionEvent e) {
                 Complex[][] z1 = ArrayUtils.toComplex(model.getZ());
                 if (z1 != null) {
-                    ComplexMatrix c = MathsBase.matrix(z1);
+                    ComplexMatrix c = Maths.matrix(z1);
                     double n1 = Double.NaN;
                     double n2 = Double.NaN;
                     double n3 = Double.NaN;

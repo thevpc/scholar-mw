@@ -7,15 +7,15 @@ class DefaultBooleanRef implements BooleanRef {
         value = t;
     }
 
-    public void set() {
-        value = true;
+    public boolean get() {
+        return value;
     }
 
     public void reset() {
         value = false;
     }
 
-    public boolean get() {
-        return value;
+    public void set() {
+        value = true;
     }
 }

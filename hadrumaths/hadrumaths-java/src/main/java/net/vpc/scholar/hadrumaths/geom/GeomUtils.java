@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths.geom;
 
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -16,7 +16,7 @@ import java.util.*;
  * @creationtime 22 mai 2007 19:46:10
  */
 public final class GeomUtils {
-    public static Domain UNIFORM_DOMAIN = Domain.forBounds(0, 100000, 0, 100000);
+    public static Domain UNIFORM_DOMAIN = Domain.ofBounds(0, 100000, 0, 100000);
 
     private GeomUtils() {
     }
@@ -160,7 +160,7 @@ public final class GeomUtils {
 
     public static String toString(PathIterator pi) {
         StringBuilder s = new StringBuilder();
-        double coords[] = new double[6];
+        double[] coords = new double[6];
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
@@ -200,7 +200,7 @@ public final class GeomUtils {
     public static Path2D.Double pathIteratorToPath(PathIterator pi) {
         Path2D.Double d = new Path2D.Double();
         d.setWindingRule(pi.getWindingRule());
-        double coords[] = new double[6];
+        double[] coords = new double[6];
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
@@ -233,20 +233,20 @@ public final class GeomUtils {
     public static Path2D.Double round(PathIterator pi, double xprecision, double yprecision) {
         Path2D.Double d = new Path2D.Double();
         d.setWindingRule(pi.getWindingRule());
-        double coords[] = new double[6];
+        double[] coords = new double[6];
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
-                    d.moveTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision));
+                    d.moveTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision));
                     break;
                 case PathIterator.SEG_LINETO:
-                    d.lineTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision));
+                    d.lineTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision));
                     break;
                 case PathIterator.SEG_QUADTO:
-                    d.quadTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision), MathsBase.round(coords[2], xprecision), MathsBase.round(coords[3], yprecision));
+                    d.quadTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision), Maths.round(coords[2], xprecision), Maths.round(coords[3], yprecision));
                     break;
                 case PathIterator.SEG_CUBICTO:
-                    d.curveTo(MathsBase.round(coords[0], xprecision), MathsBase.round(coords[1], yprecision), MathsBase.round(coords[2], xprecision), MathsBase.round(coords[3], yprecision), MathsBase.round(coords[4], xprecision), MathsBase.round(coords[5], yprecision));
+                    d.curveTo(Maths.round(coords[0], xprecision), Maths.round(coords[1], yprecision), Maths.round(coords[2], xprecision), Maths.round(coords[3], yprecision), Maths.round(coords[4], xprecision), Maths.round(coords[5], yprecision));
                     break;
                 case PathIterator.SEG_CLOSE:
                     d.closePath();
@@ -260,7 +260,7 @@ public final class GeomUtils {
     public static Path2D.Double translate(PathIterator pi, double dx, double dy) {
         Path2D.Double d = new Path2D.Double();
         d.setWindingRule(pi.getWindingRule());
-        double coords[] = new double[6];
+        double[] coords = new double[6];
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
@@ -287,11 +287,11 @@ public final class GeomUtils {
     public static Path2D.Double simplifySingular(PathIterator pi) {
         Path2D.Double d = new Path2D.Double();
         d.setWindingRule(pi.getWindingRule());
-        double coords[] = new double[6];
+        double[] coords = new double[6];
         List<Point> visited = new ArrayList<Point>();
         class Curve {
-            int type;
-            double[] values;
+            final int type;
+            final double[] values;
 
             public Curve(int type, double... values) {
                 this.type = type;
@@ -366,7 +366,7 @@ public final class GeomUtils {
     public static List<Point> toPoints(Area a) {
         PathIterator pi = a.getPathIterator(null);
         ArrayList<Point> points = new ArrayList<Point>();
-        double coords[] = new double[23];
+        double[] coords = new double[23];
         boolean first = true;
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
@@ -412,6 +412,22 @@ public final class GeomUtils {
         return false;
     }
 
+    public static void dispatch(List<Point> points1, List<Point> points2, List<Point> left, List<Point> right, List<Point> intersection) {
+        Set<Point> sleft = new HashSet<Point>();
+        Set<Point> sright = new HashSet<Point>();
+        Set<Point> sintersection = new HashSet<Point>();
+        dispatch(points1, points2, sleft, sright, sintersection);
+
+        left.clear();
+        left.addAll(sleft);
+
+        right.clear();
+        right.addAll(sright);
+
+        intersection.clear();
+        intersection.addAll(sintersection);
+    }
+
     /**
      * @param points1
      * @param points2
@@ -432,22 +448,6 @@ public final class GeomUtils {
         intersection.retainAll(right);
         left.removeAll(intersection);
         right.removeAll(intersection);
-    }
-
-    public static void dispatch(List<Point> points1, List<Point> points2, List<Point> left, List<Point> right, List<Point> intersection) {
-        Set<Point> sleft = new HashSet<Point>();
-        Set<Point> sright = new HashSet<Point>();
-        Set<Point> sintersection = new HashSet<Point>();
-        dispatch(points1, points2, sleft, sright, sintersection);
-
-        left.clear();
-        left.addAll(sleft);
-
-        right.clear();
-        right.addAll(sright);
-
-        intersection.clear();
-        intersection.addAll(sintersection);
     }
 
     public static Domain getDomain(Point... points) {
@@ -472,7 +472,7 @@ public final class GeomUtils {
                 maxy = yy;
             }
         }
-        return Domain.forBounds(minx, maxx, miny, maxy);
+        return Domain.ofBounds(minx, maxx, miny, maxy);
     }
 
 //    private void _debug_autoFusion(Polygon polygon, ArrayList<Area> all) {

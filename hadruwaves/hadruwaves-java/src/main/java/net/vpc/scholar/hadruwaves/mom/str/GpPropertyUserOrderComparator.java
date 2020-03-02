@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -14,11 +17,11 @@ public class GpPropertyUserOrderComparator implements TestFunctionsComparator, S
         this.values=values;
     }
 
-    public String dump() {
-        Dumper d=new Dumper(this,Dumper.Type.SIMPLE);
-        d.add("propertyName",propertyName);
-        d.add("values",values);
-        return d.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add(propertyName, context.elem(values));
+        return h.build();
     }
 
     public int compare(DoubleToVector o1, DoubleToVector o2) {

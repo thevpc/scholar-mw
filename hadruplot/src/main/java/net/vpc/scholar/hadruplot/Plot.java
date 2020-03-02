@@ -396,7 +396,7 @@ public final class Plot {
             return (PlotPanel) model;
         }
         if (model instanceof PlotPanelFactory) {
-            return ((PlotPanelFactory) model).create(model);
+            return ((PlotPanelFactory) model).create();
         }
         throw new IllegalArgumentException("Unsupported Model " + model);
     }
@@ -495,7 +495,6 @@ public final class Plot {
         componentPopupMenu.addSeparator();
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         boolean enableViewMenu = true;
-        boolean enableLibMenu = true;
 
         JMenuItem selectY = new JMenuItem("Configure Series");
         selectY.addActionListener(new ActionListener() {
@@ -517,20 +516,13 @@ public final class Plot {
             componentPopupMenu.add(viewMenu);
         }
 
-        JMenu libMenu = null;
-        if (enableLibMenu) {
-            libMenu = new JMenu("Library");
-        }
-        if (libMenu != null) {
-            componentPopupMenu.add(libMenu);
-        }
         componentPopupMenu.add(extProperties);
         componentPopupMenu.add(selectY);
 
         ButtonGroup g;
         JCheckBoxMenuItem f;
         final PlotModel amodel = modelProvider.getModel();
-        PlotModelPopupFactoryContext ctx = new PlotModelPopupFactoryContext(amodel, modelProvider, functionsMenu, viewMenu, libMenu, extProperties);
+        PlotModelPopupFactoryContext ctx = new PlotModelPopupFactoryContext(amodel, modelProvider, functionsMenu, viewMenu, extProperties);
         for (PlotModelPopupFactory plotModelPopupFactory : PlotConfigManager.getPlotModelPopupFactories()) {
             plotModelPopupFactory.preparePopup(ctx);
         }
@@ -842,47 +834,19 @@ public final class Plot {
 
     public static class PlotTypeAction extends ValuesModelAction {
 
-        private PlotType plotType;
+        private LibraryPlotType plotType;
 
-        public PlotTypeAction(PlotModelProvider modelProvider, String name, PlotType plotType) {
+        public PlotTypeAction(PlotModelProvider modelProvider, String name, LibraryPlotType plotType) {
             super(name, modelProvider);
             this.plotType = plotType;
         }
 
-        public PlotType getPlotType() {
+        public LibraryPlotType getPlotType() {
             return plotType;
         }
 
         public void actionPerformed(ActionEvent e) {
             getModel().setPlotType(plotType);
-        }
-    }
-
-    public static class PlotLibraryAction extends ValuesModelAction {
-
-        private SimpleProducer<Set<String>> libs;
-
-        public PlotLibraryAction(PlotModelProvider modelProvider, String name, SimpleProducer<Set<String>> libs) {
-            super(name, modelProvider);
-            this.libs = libs;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Set<String> libs = this.libs.produce();
-            if (libs.isEmpty()) {
-                getModel().setLibraries("");
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for (PlotLibrary library : PlotBackendLibraries.getLibraries()) {
-                    if (!libs.contains(library.getName())) {
-                        if (sb.length() > 0) {
-                            sb.append(",");
-                        }
-                        sb.append("!").append(library.getName());
-                    }
-                }
-                getModel().setLibraries(sb.toString());
-            }
         }
     }
 

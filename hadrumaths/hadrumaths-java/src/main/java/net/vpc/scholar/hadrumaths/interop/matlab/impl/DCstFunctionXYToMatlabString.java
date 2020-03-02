@@ -9,7 +9,8 @@ import net.vpc.scholar.hadrumaths.interop.matlab.MatlabFactory;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 /**
  * @author vpc
@@ -20,7 +21,7 @@ public class DCstFunctionXYToMatlabString implements ToMatlabString<DoubleValue>
 
     @Override
     public String toMatlabString(DoubleValue o, ToMatlabStringParam... format) {
-        return MatlabFactory.toMatlabString(new Linear(0, 0, o.getValue(), o.getDomain()), format);
+        return MatlabFactory.toMatlabString(new Linear(0, 0, o.toDouble(), o.getDomain()), format);
     }
 
 }

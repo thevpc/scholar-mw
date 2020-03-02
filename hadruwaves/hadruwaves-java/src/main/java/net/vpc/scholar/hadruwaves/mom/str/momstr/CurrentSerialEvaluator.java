@@ -2,10 +2,13 @@ package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.VoidMonitoredAction;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.*;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
@@ -23,14 +26,14 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
     @Override
     public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, ProgressMonitor monitor) {
         final MomStructure str = (MomStructure) structure;
-//        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+//        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         final String monMessage = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, monMessage, new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2,0.5});
-                final TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
-                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[1]).computeMatrix();
+                ProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2, 0.5});
+                final ComplexMatrix sp = str.getTestModeScalarProducts(mon[0]);
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[1]).evalMatrix();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -51,9 +54,9 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                         for (int i = 0; i < indexes_length; i++) {
                             ModeInfo index = indexes[i];
                             int indexIndex = index.index;
-                            TVector<Complex> spn = sp.getColumn(indexIndex);
-                            Complex[][] fx = index.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                            Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                            ComplexVector spn = sp.getColumn(indexIndex);
+                            Complex[][] fx = index.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                            Complex[][] fy = index.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                             mon2.setProgress(i, indexes_length, monMessage);
                             for (int yi = 0; yi < y_length; yi++) {
                                 MutableComplex[] xCube_yi = xCube[yi];
@@ -76,10 +79,11 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                     }
                 });
                 double[] z = new double[]{0};
+                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
                 return new VDiscrete(
-                        Discrete.create(new Complex[][][]{MutableComplex.toComplex(xCube)}, x, y, z),
-                        Discrete.create(new Complex[][][]{MutableComplex.toComplex(yCube)}, x, y, z),
-                        Discrete.create(ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO), x, y, z)
+                        CDiscrete.of(domain, new Complex[][][]{MutableComplex.toComplex(xCube)}),
+                        CDiscrete.of(domain, new Complex[][][]{MutableComplex.toComplex(yCube)}),
+                        CDiscrete.of(domain, ArrayUtils.fill(new Complex[1][y.length][x.length], Maths.CZERO))
                 );
             }
         });
@@ -87,11 +91,11 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

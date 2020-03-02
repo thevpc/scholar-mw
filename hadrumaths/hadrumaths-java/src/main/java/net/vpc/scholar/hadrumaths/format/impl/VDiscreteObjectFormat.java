@@ -5,10 +5,10 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 
 /**
  * @author vpc
@@ -16,39 +16,43 @@ import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
 public class VDiscreteObjectFormat implements ObjectFormat<VDiscrete> {
 
     @Override
-    public String format(VDiscrete o, ObjectFormatParamSet format) {
+    public String format(VDiscrete o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
 
     }
 
     @Override
-    public void format(StringBuilder sb, VDiscrete o, ObjectFormatParamSet format) {
-        sb.append("[");
+    public void format(VDiscrete o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
+        context.append("{");
         switch (o.getComponentDimension().rows) {
             case 1: {
-                FormatFactory.format(sb, o.getComponent(Axis.X), format);
+                context.format( o.getComponent(Axis.X), format);
                 break;
             }
             case 2: {
-                FormatFactory.format(sb, o.getComponent(Axis.X), format);
-                sb.append(", ");
-                FormatFactory.format(sb, o.getComponent(Axis.Y), format);
+                context.format(o.getComponent(Axis.X), format);
+//                sb.append(", ");
+                context.append(",");
+                context.format( o.getComponent(Axis.Y), format);
                 break;
             }
             case 3: {
-                FormatFactory.format(sb, o.getComponent(Axis.X), format);
-                sb.append(", ");
-                FormatFactory.format(sb, o.getComponent(Axis.Y), format);
-                sb.append(", ");
-                FormatFactory.format(sb, o.getComponent(Axis.Z), format);
+                context.format( o.getComponent(Axis.X), format);
+//                sb.append(", ");
+                context.append(",");
+                context.format( o.getComponent(Axis.Y), format);
+//                sb.append(", ");
+                context.append(",");
+                context.format( o.getComponent(Axis.Z), format);
                 break;
             }
             default: {
-                throw new IllegalArgumentException("Unsupported dim " + o.getDomainDimension());
+                throw new IllegalArgumentException("Unsupported dim " + o.getDomain().getDimension());
             }
         }
-        sb.append("]");
+        context.append("}");
     }
 }

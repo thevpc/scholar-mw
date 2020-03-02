@@ -26,7 +26,7 @@ public class LUDecomposition implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private double[][] LU;
+    private final double[][] LU;
 
     /**
      * Row and column dimensions, and pivot sign.
@@ -35,8 +35,8 @@ public class LUDecomposition implements java.io.Serializable {
      * @serial row dimension.
      * @serial pivot sign.
      */
-    private int m;
-    private int n;
+    private final int m;
+    private final int n;
     private int pivsign;
 
     /**
@@ -44,7 +44,7 @@ public class LUDecomposition implements java.io.Serializable {
      *
      * @serial pivot vector.
      */
-    private int[] piv;
+    private final int[] piv;
 
 /* ------------------------
    Constructor
@@ -193,20 +193,6 @@ public class LUDecomposition implements java.io.Serializable {
  * ------------------------ */
 
     /**
-     * Is the matrix nonsingular?
-     *
-     * @return true if U, and hence A, is nonsingular.
-     */
-
-    public boolean isNonsingular() {
-        for (int j = 0; j < n; j++) {
-            if (LU[j][j] == 0)
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Return lower triangular factor
      *
      * @return L
@@ -273,7 +259,7 @@ public class LUDecomposition implements java.io.Serializable {
     public double[] getDoublePivot() {
         double[] vals = new double[m];
         for (int i = 0; i < m; i++) {
-            vals[i] = (double) piv[i];
+            vals[i] = piv[i];
         }
         return vals;
     }
@@ -289,7 +275,7 @@ public class LUDecomposition implements java.io.Serializable {
         if (m != n) {
             throw new IllegalArgumentException("Matrix must be square.");
         }
-        double d = (double) pivsign;
+        double d = pivsign;
         for (int j = 0; j < n; j++) {
             d *= LU[j][j];
         }
@@ -338,5 +324,19 @@ public class LUDecomposition implements java.io.Serializable {
             }
         }
         return Xmat;
+    }
+
+    /**
+     * Is the matrix nonsingular?
+     *
+     * @return true if U, and hence A, is nonsingular.
+     */
+
+    public boolean isNonsingular() {
+        for (int j = 0; j < n; j++) {
+            if (LU[j][j] == 0)
+                return false;
+        }
+        return true;
     }
 }

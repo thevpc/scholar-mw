@@ -19,14 +19,11 @@ public abstract class PlotAxis extends AbstractProgressMonitor implements Serial
 
     private WindowPath preferredPath;
     private YType[] types;
-    private String name;
     private PlotType plotType;
     private String libraries;
     private double multiplier = Double.NaN;
     private Map<YType, Double> multipliersMap = null;
     private double infiniteValue = Double.NaN;
-    private double progress = 0;
-    private ProgressMessage progressMessage = new StringProgressMessage(Level.FINE, "");
     private PlotDoubleConverter toDoubleConverter = PlotDoubleConverter.ABS;
 //    private ProgressMonitorHelper h=new ProgressMonitorHelper();
 
@@ -35,14 +32,16 @@ public abstract class PlotAxis extends AbstractProgressMonitor implements Serial
     }
 
     protected PlotAxis(String name, YType[] type, PlotType plotType) {
+        super(nextId());
         this.types = (type == null || type.length == 0) ? YType.values() : type;
-        this.name = name;
+        setName(name);
         this.plotType = plotType;
     }
 
     protected PlotAxis(String name, YType[] type, PlotType plotType, String libraries) {
+        super(nextId());
         this.types = (type == null || type.length == 0) ? YType.values() : type;
-        this.name = name;
+        setName(name);
         this.plotType = plotType;
         this.libraries = libraries;
     }
@@ -98,14 +97,9 @@ public abstract class PlotAxis extends AbstractProgressMonitor implements Serial
     }
 
     public String getName() {
+        String name=super.getName();
         return name == null ? getClass().getSimpleName() : name;
     }
-
-    protected PlotAxis setName(String name) {
-        this.name = name;
-        return this;
-    }
-
 
     public abstract Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p);
 
@@ -162,26 +156,6 @@ public abstract class PlotAxis extends AbstractProgressMonitor implements Serial
     public PlotAxis setInfiniteValue(double infiniteValue) {
         this.infiniteValue = infiniteValue;
         return this;
-    }
-
-    public double getProgressValue() {
-        if (progress < 0 || progress > 1) {
-            System.err.println("%= " + progress + "????????????");
-        }
-        return progress;
-    }
-
-    public void setProgressImpl(double progress, ProgressMessage message) {
-        if (progress < 0 || progress > 1) {
-            System.err.println("%= " + progress + "????????????");
-        }
-        this.progress = progress;
-        this.progressMessage = message;
-    }
-
-    //@Override
-    public ProgressMessage getProgressMessage() {
-        return progressMessage;
     }
 
     public String getName(ComputeTitle title) {

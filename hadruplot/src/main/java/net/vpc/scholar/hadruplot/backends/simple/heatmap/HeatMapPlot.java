@@ -5,6 +5,7 @@ import net.vpc.common.util.DoubleFormat;
 import net.vpc.common.util.MinMax;
 import net.vpc.common.util.PercentDoubleFormat;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
 import net.vpc.scholar.hadruplot.util.SimpleDoubleFormat;
 import net.vpc.scholar.hadruplot.*;
 
@@ -45,7 +46,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     }
 
     public HeatMapPlot(ValuesPlotModel model) {
-        this(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() == PlotType.HEATMAP);
+        this(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType().getType() == PlotType.HEATMAP);
         setModel(model);
     }
 
@@ -57,7 +58,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
 
     public HeatMapPlot(ValuesPlotModel model, ColorPalette palette, int preferredDim) {
         this(new ValuesPlotXYDoubleModelFace(model, null),
-                model.getPlotType() == PlotType.HEATMAP,
+                model.getPlotType().getType() == PlotType.HEATMAP,
                 palette, preferredDim);
         setModel(model);
     }
@@ -150,18 +151,18 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
         if (this.model != null) {
             this.model.removePropertyChangeListener(modelUpdatesListener);
         }
-        PlotType oldPlotType = null;
+        LibraryPlotType oldPlotType = null;
         if (this.model != null) {
             oldPlotType = this.model.getPlotType();
         }
         this.model = model;
         this.model.addPropertyChangeListener(modelUpdatesListener);
-        PlotType plotType = this.model.getPlotType();
+        LibraryPlotType plotType = this.model.getPlotType();
         updateAreaByModel();
     }
 
     private void updateAreaByModel() {
-        area.setModel(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() == PlotType.HEATMAP);
+        area.setModel(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType() .getType()== PlotType.HEATMAP);
         titleLabel.setText(StringUtils.trim(model.getTitle()));
         repaint();
     }
@@ -374,6 +375,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     @Override
     public JPopupMenu getComponentPopupMenu() {
         return area.getComponentPopupMenu();
+//        return PlotUtils.getOrCreateComponentPopupMenu(area.getComponentPopupMenu());
     }
 
     @Override

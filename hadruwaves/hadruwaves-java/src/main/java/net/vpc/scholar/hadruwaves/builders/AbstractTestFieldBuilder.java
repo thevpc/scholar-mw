@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
+import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -19,7 +19,7 @@ public abstract class AbstractTestFieldBuilder extends AbstractVDiscreteBuilder 
     }
 
     @Override
-    public TestFieldBuilder monitor(ProgressTaskMonitor monitor) {
+    public TestFieldBuilder monitor(TaskMonitorManager monitor) {
         return (TestFieldBuilder) super.monitor(monitor);
     }
 

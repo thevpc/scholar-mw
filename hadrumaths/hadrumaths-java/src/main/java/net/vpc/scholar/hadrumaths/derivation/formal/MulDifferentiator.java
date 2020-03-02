@@ -6,10 +6,12 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 
 import java.util.List;
+
+import static net.vpc.scholar.hadrumaths.Maths.add;
+import static net.vpc.scholar.hadrumaths.Maths.mul;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -18,7 +20,7 @@ import java.util.List;
 public class MulDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Mul c = (Mul) f;
-        return deriveMul(c.getSubExpressions(), varIndex, d);
+        return deriveMul(c.getChildren(), varIndex, d);
     }
 
     public Expr deriveMul(List<Expr> children, Axis varIndex, FunctionDifferentiatorManager d) {
@@ -31,8 +33,8 @@ public class MulDifferentiator implements FunctionDifferentiator {
         if (children.size() == 2) {
             return derive(children.get(0), children.get(1), varIndex, d);
         }
-        List<Expr> aL = CollectionUtils.head(children,- 1);
-        Mul a = new Mul(aL);
+        List<Expr> aL = CollectionUtils.head(children, -1);
+        Expr a = mul(aL.toArray(new Expr[0]));
         Expr b = children.get(children.size() - 1);
         return derive(a, b, varIndex, d);
 //
@@ -41,12 +43,12 @@ public class MulDifferentiator implements FunctionDifferentiator {
 //        //a,bd
 //        List<Expr> a2 = new ArrayList<Expr>(a);
 //        a2.add(bd);
-//        return new Plus(new Mul(a2.toArray(new Expr[0])), new Mul(ad, b));
+//        return Plus.of(Mul.of(a2.toArray(new Expr[0])), new Mul(ad, b));
     }
 
     public Expr derive(Expr a, Expr b, Axis varIndex, FunctionDifferentiatorManager d) {
         Expr ad = d.derive(a, varIndex);
         Expr bd = d.derive(b, varIndex);
-        return new Plus(new Mul(a, bd), new Mul(ad, b));
+        return add(mul(a, bd), mul(ad, b));
     }
 }

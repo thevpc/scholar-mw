@@ -1,17 +1,21 @@
 package net.vpc.scholar.hadruwaves.str;
 
-import net.vpc.common.mon.ProgressMonitorCreator;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
+import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadruplot.console.ConsoleLogger;
 import net.vpc.scholar.hadruwaves.builders.*;
-import net.vpc.scholar.hadruwaves.mom.ElectricFieldPart;
-import net.vpc.scholar.hadruwaves.mom.MomStructure;
+import net.vpc.scholar.hadruwaves.mom.str.MWStructureErrorHandler;
+
+import java.util.Map;
 
 /**
  * Created by vpc on 4/25/15.
  */
-public interface MWStructure {
+public interface MWStructure extends HSerializable {
     Domain domain();
 
     CurrentBuilder current();
@@ -22,7 +26,9 @@ public interface MWStructure {
 
     ElectricFieldBuilder electricField();
 
-    ElectricFieldBuilder electricField(ElectricFieldPart part);
+    PoyntingVectorBuilder poyntingVector();
+
+    DirectivityBuilder directivity();
 
     FarFieldBuilder farField();
 
@@ -36,7 +42,7 @@ public interface MWStructure {
 
     SParametersBuilder sparameters();
 
-    PoyntingVectorBuilder poyntingVector();
+    ConsoleLogger getLog();
 
     MWStructure setParameter(String name);
 
@@ -58,6 +64,8 @@ public interface MWStructure {
 
     boolean isParameter(String name);
 
+    Map<String, Object> getParameters();
+
     PersistenceCache getPersistentCache();
 
     Object getUserObject(String name, Object defaultValue);
@@ -68,17 +76,25 @@ public interface MWStructure {
 
     MWStructure setUserObject(String name, Object value);
 
-    ProgressMonitorCreator getMonitor();
+    ProgressMonitorFactory getMonitorFactory();
 
-    ProgressMonitorCreator monitor();
+    MWStructure setMonitorFactory(ProgressMonitorFactory monitors);
 
-    MWStructure setMonitor(ProgressMonitorCreator monitors);
+    ProgressMonitorFactory monitorFactory();
 
-    MWStructure monitor(ProgressMonitorCreator monitors);
+    MWStructure monitorFactory(ProgressMonitorFactory monitors);
 
     ObjectCache getCurrentCache(boolean autoCreate);
 
     String getName();
 
     MWStructure setName(String name);
+
+    CacheKey getKey();
+
+    Map<String, Object> getUserObjects();
+
+    MWStructureErrorHandler getErrorHandler();
+
+    MWStructureHintsManager getHintsManager();
 }

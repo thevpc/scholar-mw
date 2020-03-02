@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths.format.params;
 
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
 
+import java.util.Objects;
+
 /**
  * Created by IntelliJ IDEA.
  * User: vpc
@@ -10,10 +12,7 @@ import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
  * To change this template use File | Settings | File Templates.
  */
 public class ScalarProductObjectFormatParam implements ObjectFormatParam {
-    public static enum Type {DBLQUAD, INT}
-
-    ;
-    private Type type;
+    private final Type type;
 
     public ScalarProductObjectFormatParam(Type type) {
         this.type = type;
@@ -22,4 +21,19 @@ public class ScalarProductObjectFormatParam implements ObjectFormatParam {
     public Type getType() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ScalarProductObjectFormatParam that = (ScalarProductObjectFormatParam) o;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
+    }
+
+    public enum Type {DBLQUAD, INT}
 }

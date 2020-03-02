@@ -11,7 +11,7 @@ import static net.vpc.scholar.hadrumaths.Complex.ZERO;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymOpNeg extends SymOperator {
-    private SymExpression value;
+    private final SymExpression value;
 
     public SymOpNeg(SymExpression left) {
         this.value = left;

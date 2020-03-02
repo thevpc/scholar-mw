@@ -2,6 +2,8 @@ package net.vpc.scholar.hadrumaths.format.params;
 
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
 
+import java.util.Objects;
+
 /**
  * Created by IntelliJ IDEA.
  * User: vpc
@@ -10,7 +12,7 @@ import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
  * To change this template use File | Settings | File Templates.
  */
 public class ZObjectFormatParam implements ObjectFormatParam {
-    private String name;
+    private final String name;
 
     public ZObjectFormatParam(String name) {
         this.name = name;
@@ -18,5 +20,18 @@ public class ZObjectFormatParam implements ObjectFormatParam {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ZObjectFormatParam that = (ZObjectFormatParam) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

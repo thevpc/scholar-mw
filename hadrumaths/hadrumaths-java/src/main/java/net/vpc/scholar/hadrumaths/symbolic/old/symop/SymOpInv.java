@@ -7,7 +7,7 @@ import net.vpc.scholar.hadrumaths.symbolic.old.*;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymOpInv extends SymOperator {
-    private SymExpression value;
+    private final SymExpression value;
 
     public SymOpInv(SymExpression value) {
         this.value = value;

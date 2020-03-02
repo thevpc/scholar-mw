@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths;
 
 public class AdaptiveEvent {
-    private int index;
-    private int count;
-    private double error;
-    private AdaptiveResult1 samples;
-    private int type;
+    private final int index;
+    private final int count;
+    private final double error;
+    private final AdaptiveResult1 samples;
+    private final int type;
 
     public AdaptiveEvent(int index, int count, double error, int type, AdaptiveResult1 samples) {
         this.index = index;

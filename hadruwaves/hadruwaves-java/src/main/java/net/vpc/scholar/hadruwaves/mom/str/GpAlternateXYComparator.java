@@ -1,5 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 import java.io.Serializable;
@@ -27,8 +30,14 @@ public class GpAlternateXYComparator implements TestFunctionsComparator, Seriali
         return 0;
     }
 
-    public String dump() {
-        return getClass().getSimpleName();
+    @Override
+    public String toString() {
+        return dump();
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 
     @Override

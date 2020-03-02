@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths.util;
 
 import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.MathsBase;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +15,10 @@ import java.util.logging.*;
  * @creationdate 9/16/12 10:00 PM
  */
 public class LogUtils {
-    private static final Logger log = Logger.getLogger(LogUtils.class.getName());
-    private static final String NET_VPC_SCHOLAR = "";
     public static final LogFormatter LOG_FORMATTER_1 = new LogFormatter(true);
     public static final LogFormatter LOG_FORMATTER_2 = new LogFormatter(false);
+    private static final Logger log = Logger.getLogger(LogUtils.class.getName());
+    private static final String NET_VPC_SCHOLAR = "";
     private static final Filter DEFAULT_FILTER = new Filter() {
         @Override
         public boolean isLoggable(LogRecord record) {
@@ -59,7 +58,7 @@ public class LogUtils {
         if (StringUtils.trimToNull(pattern) == null) {
             pattern = "net-vpc-scholar-math-%g.log";
         }
-        pattern = MathsBase.Config.expandPath(pattern);
+        pattern = Maths.Config.expandPath(pattern);
         if (maxSize <= 0) {
             maxSize = 5;
         }
@@ -97,7 +96,7 @@ public class LogUtils {
     public static final class LogFormatter extends Formatter {
 
         private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-        private boolean sourceClassName;
+        private final boolean sourceClassName;
 
         public LogFormatter(boolean sourceClassName) {
             this.sourceClassName = sourceClassName;

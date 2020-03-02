@@ -18,9 +18,9 @@ public class ChronometerModel extends BasePlotModel implements PlotPanelFactory 
     }
 
     @Override
-    public PlotPanel create(PlotModel model) {
+    public PlotPanel create() {
         BasePlotPanel p = new ChronometerPlotPanel();
-        p.setModel(model);
+        p.setModel(this);
         return p;
     }
 

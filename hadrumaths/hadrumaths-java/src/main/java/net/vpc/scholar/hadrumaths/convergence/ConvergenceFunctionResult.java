@@ -4,8 +4,8 @@ package net.vpc.scholar.hadrumaths.convergence;
  * Created by vpc on 7/14/14.
  */
 public class ConvergenceFunctionResult<_ResultType> {
-    private _ResultType value;
-    private Object resultInfo;
+    private final _ResultType value;
+    private final Object resultInfo;
 
     public ConvergenceFunctionResult(_ResultType value, Object resultInfo) {
         this.value = value;

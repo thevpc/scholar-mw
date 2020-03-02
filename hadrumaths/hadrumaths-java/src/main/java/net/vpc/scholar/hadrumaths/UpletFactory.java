@@ -2,7 +2,7 @@ package net.vpc.scholar.hadrumaths;
 
 public class UpletFactory {
     public static <A, B> RightArrowUplet2<A, B> rightArrawUplet(A a, B b) {
-        return new RightArrowUplet2<A,B>(a, b);
+        return new RightArrowUplet2<A, B>(a, b);
     }
 
     public static RightArrowUplet2.Double rightArrawUplet(double a, double b) {
@@ -26,8 +26,6 @@ public class UpletFactory {
             this.b = b;
         }
 
-        public abstract String getName() ;
-
         @Override
         public A getFirst() {
             return a;
@@ -42,5 +40,7 @@ public class UpletFactory {
         public String toString() {
             return a + " " + getName() + " " + b;
         }
+
+        public abstract String getName();
     }
 }

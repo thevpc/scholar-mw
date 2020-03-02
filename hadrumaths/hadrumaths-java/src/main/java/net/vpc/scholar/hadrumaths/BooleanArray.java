@@ -19,6 +19,10 @@ public class BooleanArray {
         }
     }
 
+    public void add(boolean d) {
+        values.add(d);
+    }
+
     public BooleanArray(boolean[] values) {
         this.values = new ArrayList<>();
         for (boolean aDouble : values) {
@@ -38,10 +42,6 @@ public class BooleanArray {
 
     public boolean contains(boolean d) {
         return values.contains(d);
-    }
-
-    public void add(boolean d) {
-        values.add(d);
     }
 
     public void add(int pos, boolean d) {

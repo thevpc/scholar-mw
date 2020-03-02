@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadrumaths.util;
 
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,9 @@ import java.util.ArrayList;
  * Created by vpc on 1/14/15.
  */
 public class ThreadStack {
-    private Throwable throwable;
-    private int ignored;
+    private static final ArrayList<String> indents = new ArrayList<String>();
+    private final Throwable throwable;
+    private final int ignored;
     private StackTraceElement[] stackTrace;
     private ThreadStackElement[] threadStackElements;
 
@@ -22,12 +23,47 @@ public class ThreadStack {
         this.ignored = ignored;
     }
 
+    public static ThreadStackElement currentThreadStackElement() {
+        return new ThreadStack(1).currentElement();
+    }
+
     public ThreadStackElement currentElement() {
         return get(getStackTraceElements().length - 1);
     }
 
-    public int size() {
-        return getStackTraceElements().length;
+    public static ThreadStackElement getThreadStackElement(int level) {
+        return new ThreadStack(1).get(level);
+    }
+
+    public static int depth() {
+        return new ThreadStack(1).size();
+    }
+
+    public static ThreadStack current() {
+        return new ThreadStack(1);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (ThreadStackElement e : getElements()) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append("\n");
+            }
+            sb.append(e.toString());
+        }
+//            if (ignored > 0) {
+//                if (first) {
+//                    first = false;
+//                } else {
+//                    sb.append("\n");
+//                }
+//                sb.append("...ignored ").append(ignored).append(" others");
+//            }
+        return sb.toString();
     }
 
     public ThreadStackElement[] getElements() {
@@ -37,6 +73,10 @@ public class ThreadStack {
             all[i] = get(i);
         }
         return all;
+    }
+
+    public int size() {
+        return getStackTraceElements().length;
     }
 
     public ThreadStackElement get(int level) {
@@ -64,53 +104,11 @@ public class ThreadStack {
         return stackTrace;
     }
 
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (ThreadStackElement e : getElements()) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append("\n");
-            }
-            sb.append(e.toString());
-        }
-//            if (ignored > 0) {
-//                if (first) {
-//                    first = false;
-//                } else {
-//                    sb.append("\n");
-//                }
-//                sb.append("...ignored ").append(ignored).append(" others");
-//            }
-        return sb.toString();
-    }
-
-    private static ArrayList<String> indents = new ArrayList<String>();
-
-    public static ThreadStackElement currentThreadStackElement() {
-        return new ThreadStack(1).currentElement();
-    }
-
-    public static ThreadStackElement getThreadStackElement(int level) {
-        return new ThreadStack(1).get(level);
-    }
-
-    public static int depth() {
-        return new ThreadStack(1).size();
-    }
-
-    public static ThreadStack current() {
-        return new ThreadStack(1);
-    }
-
     public static class ThreadStackElement {
-        private StackTraceElement element;
+        private final StackTraceElement element;
         private boolean parsed;
-        private int depth;
-        private ThreadStack threadStack;
+        private final int depth;
+        private final ThreadStack threadStack;
 
         public ThreadStackElement(ThreadStack threadStack, StackTraceElement element, int depth) {
             this.element = element;
@@ -122,6 +120,17 @@ public class ThreadStack {
             return threadStack;
         }
 
+        public String getFileName() {
+            return element.getFileName();
+        }
+
+        public int getLineNumber() {
+            return element.getLineNumber();
+        }
+
+        public String getDump(Object... params) {
+            return getIndent() + getClassName() + "." + getMethodName() + "(" + Maths.dump(params) + ")";
+        }
 
         public String getIndent() {
             int nextLevel = depth + 1;
@@ -141,18 +150,6 @@ public class ThreadStack {
 
         public String getMethodName() {
             return element.getMethodName();
-        }
-
-        public String getFileName() {
-            return element.getFileName();
-        }
-
-        public int getLineNumber() {
-            return element.getLineNumber();
-        }
-
-        public String getDump(Object... params) {
-            return getIndent() + getClassName() + "." + getMethodName() + "(" + MathsBase.dump(params) + ")";
         }
 
         public int depth() {

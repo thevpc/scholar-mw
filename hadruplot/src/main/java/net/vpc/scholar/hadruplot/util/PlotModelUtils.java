@@ -40,8 +40,7 @@ public class PlotModelUtils {
 
     public static ValuesPlotModel _defaultPlotModelXY(PlotBuilder builder, String xtitle, String ztitle, double[][] x, Object[][] z, PlotDoubleConverter zDoubleFunction, PlotType plotType) {
         return new ValuesPlotModel(builder.getTitle(), xtitle, ztitle, builder.getTitles().toArray(new String[0]),
-                x, z, zDoubleFunction, plotType, builder.getProperties())
-                .setLibraries(builder.getLibraries())
+                x, z, zDoubleFunction, new LibraryPlotType(plotType,builder.getLibrary()), builder.getProperties())
                 .setXformat(builder.getXformat())
                 .setYformat(builder.getYformat())
                 .setZformat(builder.getZformat())
@@ -79,8 +78,8 @@ public class PlotModelUtils {
                 y = new double[][]{samples.getY()};
             }
         }
-        ValuesPlotModel mm = new ValuesPlotModel(builder.getTitle(), xtitle, ytitle, ztitle, builder.getTitles().toArray(new String[0]), x, y, z, zDoubleFunction, plotType, builder.getProperties())
-                .setLibraries(builder.getLibraries())
+        ValuesPlotModel mm = new ValuesPlotModel(builder.getTitle(), xtitle, ytitle, ztitle, builder.getTitles().toArray(new String[0]), x, y, z, zDoubleFunction,
+                new LibraryPlotType(plotType,builder.getLibrary()), builder.getProperties())
                 .setXformat(swapxy ? builder.getYformat() : builder.getXformat())
                 .setYformat(swapxy ? builder.getXformat() : builder.getYformat())
                 .setZformat(builder.getZformat())
@@ -104,8 +103,7 @@ public class PlotModelUtils {
         }
         ValuesPlotModel mm = new ValuesPlotModel(
                 builder.getTitle(), xtitle, ytitle,
-                builder.getTitles().toArray(new String[0]), x, y, preferColumn, zDoubleFunction, plotType, builder.getProperties())
-                .setLibraries(builder.getLibraries())
+                builder.getTitles().toArray(new String[0]), x, y, preferColumn, zDoubleFunction, new LibraryPlotType(plotType,builder.getLibrary()), builder.getProperties())
                 .setXformat(builder.getXformat())
                 .setYformat(builder.getYformat())
                 .setConverter(builder.getConverter());
@@ -275,7 +273,7 @@ public class PlotModelUtils {
 
     public static PlotModel _plotComplexArray3(Object[][][] z, PlotType preferredPlotType, PlotBuilder builder) {
         PlotHyperCubePlotModel mm = new PlotHyperCubePlotModel()
-                .setLibraries(builder.getLibraries())
+                //.setLibraries(builder.getLibrary())
                 .setVdiscretes(new DefaultPlotHyperCube(new PlotCube(null, null, null, z)));
         postConfigure(mm, builder);
         return mm;
@@ -283,7 +281,7 @@ public class PlotModelUtils {
 
     public static PlotModel _plotDoubleArray3(double[][][] z, PlotType preferredPlotType, PlotBuilder builder) {
         PlotHyperCubePlotModel mm = new PlotHyperCubePlotModel()
-                .setLibraries(builder.getLibraries())
+                //.setLibraries(builder.getLibrary())
                 .setVdiscretes(new DefaultPlotHyperCube(new PlotCube(null, null, null,
                         ArrayUtils.box(z))));
         postConfigure(mm, builder);

@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadrumaths.integration;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
-import static net.vpc.scholar.hadrumaths.MathsBase.cos2;
-import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 15:15:16
@@ -13,9 +13,154 @@ import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
 final class CosCosVsLinearIntegralXY {
     private static final long serialVersionUID = 1L;
 
-    public double compute(Domain domain, double famp, double fa, double fb, double fc, double fd, double ga, double gb, double gc) {
+    //STARTING---------------------------------------
+    // THIS FILE WAS GENERATED AUTOMATICALLY.
+    // DO NOT EDIT MANUALLY.
+    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*(g_a*x+g_b)
+    public static double primi_coslinear_old(Domain domain, CosXCosY f, Linear g) {
+        double x;
+        double y;
+        double value;
+        double b1 = domain.xmin();
+        double b2 = domain.xmax();
+        double b3 = domain.ymin();
+        double b4 = domain.ymax();
+
+        double famp = f.getAmp();
+        double fa = f.getA();
+        double fc = f.getC();
+        double fb = f.getB();
+        double fd = f.getD();
+
+        double ga = g.getA();
+        double gb = g.getB();
+
+        if (fa == 0 && fc == 0 && ga == 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fb) * cos2(fd) * gb * x * y);
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fb) * cos2(fd) * gb * x * y);
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fb) * cos2(fd) * gb * x * y);
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fb) * cos2(fd) * gb * x * y);
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga == 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga == 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
+            return value;
+
+        } else if (fa != 0 && fc != 0 && ga == 0) {
+            x = b1;
+            y = b3;
+            value = (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b4;
+            value += (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
+            x = b1;
+            y = b4;
+            value -= (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b3;
+            value -= (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
+            return value;
+
+        } else if (fa == 0 && fc == 0 && ga != 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
+            return value;
+
+        } else if (fa != 0 && fc == 0 && ga != 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
+            return value;
+
+        } else if (fa == 0 && fc != 0 && ga != 0) {
+            x = b1;
+            y = b3;
+            value = (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b4;
+            value += (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
+            x = b1;
+            y = b4;
+            value -= (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b3;
+            value -= (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
+            return value;
+
+        } else { //none is null
+            x = b1;
+            y = b3;
+            value = (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b4;
+            value += (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
+            x = b1;
+            y = b4;
+            value -= (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
+            x = b2;
+            y = b3;
+            value -= (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
+            return value;
+        }
+    }
+
+    public double eval(Domain domain, double famp, double fa, double fb, double fc, double fd, double ga, double gb, double gc) {
         return primi_coslinear(domain, famp, fa, fb, fc, fd, ga, gb, gc);
     }
+//ENDING---------------------------------------
 
     //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
@@ -234,149 +379,6 @@ final class CosCosVsLinearIntegralXY {
             value -= t0;
             t0 = famp * cos2(fb) * cos2(fd) * b2 * b3 * gc;
             value -= t0;
-            return value;
-        }
-    }
-//ENDING---------------------------------------
-
-    //STARTING---------------------------------------
-    // THIS FILE WAS GENERATED AUTOMATICALLY.
-    // DO NOT EDIT MANUALLY.
-    // INTEGRATION FOR f_amp*cos2(f_a*x+f_b)*cos2(f_c*y+f_d)*(g_a*x+g_b)
-    public static double primi_coslinear_old(Domain domain, CosXCosY f, Linear g) {
-        double x;
-        double y;
-        double value;
-        double b1 = domain.xmin();
-        double b2 = domain.xmax();
-        double b3 = domain.ymin();
-        double b4 = domain.ymax();
-        double fa = f.a;
-        double fc = f.c;
-        double ga = g.a;
-        double fb = f.b;
-        double fd = f.d;
-        double famp = f.amp;
-        double gb = g.b;
-
-        if (fa == 0 && fc == 0 && ga == 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fb) * cos2(fd) * gb * x * y);
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fb) * cos2(fd) * gb * x * y);
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fb) * cos2(fd) * gb * x * y);
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fb) * cos2(fd) * gb * x * y);
-            return value;
-
-        } else if (fa != 0 && fc == 0 && ga == 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fd) * gb / fa * sin2(fa * x + fb) * y);
-            return value;
-
-        } else if (fa == 0 && fc != 0 && ga == 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fb) * gb * x / fc * sin2(fc * y + fd));
-            return value;
-
-        } else if (fa != 0 && fc != 0 && ga == 0) {
-            x = b1;
-            y = b3;
-            value = (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b4;
-            value += (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
-            x = b1;
-            y = b4;
-            value -= (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b3;
-            value -= (famp * gb / fa * sin2(fa * x + fb) / fc * sin2(fc * y + fd));
-            return value;
-
-        } else if (fa == 0 && fc == 0 && ga != 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fb) * cos2(fd) * (0.5 * ga * x * x + gb * x) * y);
-            return value;
-
-        } else if (fa != 0 && fc == 0 && ga != 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fd) / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) * y);
-            return value;
-
-        } else if (fa == 0 && fc != 0 && ga != 0) {
-            x = b1;
-            y = b3;
-            value = (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b4;
-            value += (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
-            x = b1;
-            y = b4;
-            value -= (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b3;
-            value -= (famp * cos2(fb) * (0.5 * ga * x * x + gb * x) / fc * sin2(fc * y + fd));
-            return value;
-
-        } else { //none is null
-            x = b1;
-            y = b3;
-            value = (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b4;
-            value += (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
-            x = b1;
-            y = b4;
-            value -= (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
-            x = b2;
-            y = b3;
-            value -= (famp / fa * (ga / fa * (cos2(fa * x + fb) + (fa * x + fb) * sin2(fa * x + fb)) - ga / fa * fb * sin2(fa * x + fb) + gb * sin2(fa * x + fb)) / fc * sin2(fc * y + fd));
             return value;
         }
     }

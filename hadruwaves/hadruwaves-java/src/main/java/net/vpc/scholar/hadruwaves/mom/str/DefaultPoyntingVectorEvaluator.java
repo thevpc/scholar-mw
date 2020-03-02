@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
@@ -16,18 +19,18 @@ public class DefaultPoyntingVectorEvaluator implements PoyntingVectorEvaluator {
     @Override
     public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
         MomStructure str=(MomStructure) structure;
-        VDiscrete E = str.electricField().monitor(monitor).computeVDiscrete(x, y, z);
-        VDiscrete H = str.magneticField().monitor(monitor).computeVDiscrete(x, y, z);
-        return E.crossprod(H).mul(Complex.valueOf(0.5));
+        VDiscrete E = str.electricField().monitor(monitor).cartesian().evalVDiscrete(x, y, z);
+        VDiscrete H = str.magneticField().monitor(monitor).cartesian().evalVDiscrete(x, y, z);
+        return E.crossprod(H).mul(Complex.of(0.5));
     }
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

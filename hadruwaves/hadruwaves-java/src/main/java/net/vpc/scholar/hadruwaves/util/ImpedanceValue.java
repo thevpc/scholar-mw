@@ -1,7 +1,9 @@
 package net.vpc.scholar.hadruwaves.util;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.Objects;
 
@@ -53,11 +55,16 @@ public final class ImpedanceValue implements Impedance {
         return value;
     }
 
-    public String dump() {
-        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        h.add("value", value);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function("impedance", context.elem(value)).build();
     }
+
+//    public String dump() {
+//        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
+//        h.add("value", value);
+//        return h.toString();
+//    }
 
     @Override
     public String toString() {
@@ -74,6 +81,6 @@ public final class ImpedanceValue implements Impedance {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return getClass().getName().hashCode()*31+value.hashCode();
     }
 }

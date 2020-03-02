@@ -6,5 +6,5 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import java.io.Serializable;
 
 public interface FormalScalarProductHelper extends Serializable {
-    double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp);
+    double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp);
 }

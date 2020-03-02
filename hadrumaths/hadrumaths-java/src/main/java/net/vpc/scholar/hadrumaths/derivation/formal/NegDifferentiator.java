@@ -4,7 +4,9 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Neg;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.Neg;
+
+import static net.vpc.scholar.hadrumaths.Maths.neg;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -13,6 +15,6 @@ import net.vpc.scholar.hadrumaths.symbolic.Neg;
 public class NegDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Neg c = (Neg) f;
-        return new Neg(d.derive(c.getExpression(), varIndex));
+        return neg(d.derive(c.getChild(0), varIndex));
     }
 }

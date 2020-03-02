@@ -6,7 +6,16 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Imag;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Div;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Sub;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -17,7 +26,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class ImagSimplifyRule implements ExpressionRewriterRule {
+public class ImagSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ImagSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Imag.class};
@@ -28,40 +37,43 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         Imag ee = (Imag) e;
-        RewriteResult rbase = ruleset.rewrite(ee.getArg());
+        RewriteResult rbase = ruleset.rewrite(ee.getArg(), targetExprType);
 //        if(rbase instanceof Imag){
 //            return rbase;
 //        }
-        IConstantValue ac0 = Expressions.toComplexValue(rbase.getValue());
+        Expr value = rbase.isUnmodified() ? ee.getArg() : rbase.getValue();
+        Expr ac0 = Expressions.toConstantExprOrNull(value);
         if (ac0 != null) {
-            return RewriteResult.bestEffort(new ComplexValue(Complex.valueOf(ac0.getComplexConstant().getImag()), ac0.getDomain()));
+            return RewriteResult.bestEffort(new DefaultComplexValue(Complex.of(ac0.toComplex().getImag()), ac0.getDomain()));
         }
-        if (rbase.getValue().isDD()) {
-            return RewriteResult.bestEffort(FunctionFactory.DZERO(rbase.getValue().getDomainDimension()));
+        switch (value.getType()) {
+            case DOUBLE_DOUBLE: {
+                return RewriteResult.bestEffort(Maths.DZERO(value.getDomain().getDimension()));
+            }
         }
-        if (MathsBase.isReal(rbase.getValue())) {
-            return RewriteResult.bestEffort(FunctionFactory.DZEROXY);
+        if (Maths.isReal(value)) {
+            return RewriteResult.bestEffort(Maths.DZEROXY);
         }
-        if (rbase.getValue() instanceof Mul) {
-            return RewriteResult.newVal(RealSimplifyRule.getMulRealImag((Mul) rbase.getValue())[1]);
+        if (value instanceof Mul) {
+            return RewriteResult.newVal(RealSimplifyRule.getMulRealImag((Mul) value)[1]);
         }
-        if (rbase.getValue() instanceof Plus) {
-            List<Expr> e1 = rbase.getValue().getSubExpressions();
+        if (value instanceof Plus) {
+            List<Expr> e1 = value.getChildren();
             List<Expr> e2 = new ArrayList<Expr>();
             for (Expr expr : e1) {
-                e2.add(MathsBase.imag(expr));
+                e2.add(Maths.imag(expr));
             }
-            return RewriteResult.newVal(MathsBase.sum(e2.toArray(new Expr[0])));
+            return RewriteResult.newVal(Maths.sum(e2.toArray(new Expr[0])));
         }
-        if (rbase.getValue() instanceof Sub) {
-            return RewriteResult.newVal(new Sub(MathsBase.imag(((Sub) rbase.getValue()).getFirst()), MathsBase.imag(((Sub) rbase.getValue()).getSecond())));
+        if (value instanceof Sub) {
+            return RewriteResult.newVal(Sub.of(Maths.imag(value.getChild(0)), Maths.imag(value.getChild(1))));
         }
-        if (rbase.getValue() instanceof Div) {
-            Expr first = ((Div) rbase.getValue()).getFirst();
-            Expr second = ((Div) rbase.getValue()).getSecond();
-            if (first.isDC() && second.isDC()) {
+        if (value instanceof Div) {
+            Expr first = ((Div) value).getFirst();
+            Expr second = ((Div) value).getSecond();
+            if (first.isNarrow(ExprType.DOUBLE_COMPLEX) && second.isNarrow(ExprType.DOUBLE_COMPLEX)) {
                 DoubleToComplex a = first.toDC();
                 DoubleToComplex b = second.toDC();
                 boolean aReal = a.getImagDD().isZero();
@@ -69,36 +81,24 @@ public class ImagSimplifyRule implements ExpressionRewriterRule {
                 boolean bReal = b.getImagDD().isZero();
                 boolean bImag = b.getRealDD().isZero();
                 if ((aReal && bReal) || (aImag && bImag)) {
-                    return RewriteResult.bestEffort(FunctionFactory.DZEROXY);
+                    return RewriteResult.bestEffort(Maths.DZEROXY);
                 } else if ((aReal && bImag) || (bReal && aImag)) {
                     return rbase;
                 }
             }
         }
-        DoubleToDouble r = rbase.getValue().toDC().getImagDD();
+        DoubleToDouble r = value.toDC().getImagDD();
         if (!(r instanceof Imag)) {
             return RewriteResult.newVal(r);
         }
 //        if(rbase instanceof Inv){
-//            Expr a = ((Inv) rbase).getExpression();
-//            if(MathsBase.isReal(a)){
+//            Expr a = ((Inv) rbase).getChild(0);
+//            if(Maths.isReal(a)){
 //                return rbase;
 //            }
 //        }
-        return RewriteResult.unmodified(e);
+        return RewriteResult.unmodified();
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

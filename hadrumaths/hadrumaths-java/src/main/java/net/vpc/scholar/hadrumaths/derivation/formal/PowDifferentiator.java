@@ -2,9 +2,12 @@ package net.vpc.scholar.hadrumaths.derivation.formal;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Pow;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -18,15 +21,15 @@ public class PowDifferentiator implements FunctionDifferentiator {
         Expr fd = d.derive(f, varIndex);
         Expr gd = d.derive(g, varIndex);
 
-        return new Mul(
-                new Pow(f, g),
-                new Plus(
-                        new Div(
-                                new Mul(fd, g),
+        return mul(
+                pow(f, g),
+                add(
+                        div(
+                                mul(fd, g),
                                 f
                         )
                         ,
-                        new Mul(gd, new Log(f))
+                        mul(gd, Maths.log(f))
                 )
 
         );

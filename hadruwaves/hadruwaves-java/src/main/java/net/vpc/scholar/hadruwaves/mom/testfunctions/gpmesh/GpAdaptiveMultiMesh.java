@@ -2,19 +2,21 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expressions;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.GeometryList;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.common.util.MapUtils;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;
@@ -35,22 +37,6 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
         super();
         this.cells = cells;
         this.domain = domain;
-    }
-
-    @Override
-    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
-        return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
-            @Override
-            public DoubleToVector[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
-                for (int i = 0; i < cells.length; i++) {
-                    TestFunctionCell gpCell = cells[i];
-                    all.addAll(gpImpl(gpCell, monitor));
-                    monitor.setProgress(1.0 * i / cells.length, "Gp Detection");
-                }
-                return all.toArray(new DoubleToVector[all.size()]);
-            }
-        });
     }
 
     private Collection<DoubleToVector> gpImpl(TestFunctionCell cell, ProgressMonitor monitor) {
@@ -84,7 +70,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                     for (int i = 0; i < goodCount; i++) {
                         DoubleToVector fct = allGpFunctions[i];
                         if (fct != null) {
-                            fct =  fct.setProperty("Cell", partCounter).toDV();
+                            fct = fct.setProperty("Cell", partCounter).toDV();
                             f.add(fct);
                         }
                     }
@@ -96,11 +82,11 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                         if (fmotif != null) {
                             if (zone.getDomain().xmax() <= globalDomain.getCenterX()) {
                                 DoubleToVector fct = fmotif;
-                                fct =  fct.setProperty("Cell", partCounter).toDV();
+                                fct = fct.setProperty("Cell", partCounter).toDV();
                                 f.add(fct);
                             } else {
                                 DoubleToVector fct = Expressions.symmetric(fmotif, Axis.X, null);
-                                fct =  fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
+                                fct = fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
                                 f.add(fct);
                             }
                         }
@@ -113,11 +99,11 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                         if (fmotif != null) {
                             if (zone.getDomain().ymax() <= globalDomain.getCenterY()) {
                                 DoubleToVector fct = fmotif;
-                                fct =  fct.setProperty("Cell", partCounter).toDV();
+                                fct = fct.setProperty("Cell", partCounter).toDV();
                                 f.add(fct);
                             } else {
                                 DoubleToVector fct = symmetric(fmotif, Axis.Y, null);
-                                fct =  fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
+                                fct = fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
                                 f.add(fct);
                             }
                         }
@@ -135,14 +121,14 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                                     c2 = symmetric(c2, Axis.X, null);
                                     if (c2 != null) {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
-                                        fct =  fct.setProperty("Cell", partCounter).toDV();
+                                        fct = fct.setProperty("Cell", partCounter).toDV();
 //                                        fct.setProperties(properties);
                                         f.add(fct);
                                     }
                                 } else {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
-                                        fct =  fct.setProperty("Cell", partCounter).toDV();
+                                        fct = fct.setProperty("Cell", partCounter).toDV();
                                         f.add(fct);
                                     }
                                 }
@@ -166,7 +152,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                                     if (c2 != null) {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
 
-                                        fct =  fct.setMergedProperties(
+                                        fct = fct.setMergedProperties(
                                                 MapUtils.<String, Object>map(
                                                         "Cell", partCounter,
                                                         "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
@@ -177,7 +163,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                                 } else {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
-                                        fct =  fct.setProperty("Cell", partCounter).toDV();
+                                        fct = fct.setProperty("Cell", partCounter).toDV();
                                         f.add(fct);
                                     }
                                 }
@@ -198,29 +184,24 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
+    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
+        return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
+            @Override
+            public DoubleToVector[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
+                for (int i = 0; i < cells.length; i++) {
+                    TestFunctionCell gpCell = cells[i];
+                    all.addAll(gpImpl(gpCell, monitor));
+                    monitor.setProgress(1.0 * i / cells.length, "Gp Detection");
+                }
+                return all.toArray(new DoubleToVector[all.size()]);
+            }
+        });
+    }
+
+    @Override
     protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
         return super.rebuildCachedFunctions(monitor);
-    }
-
-    @Override
-    public Dumper getDumpStringHelper() {
-        arr();
-        Dumper h = super.getDumpStringHelper();
-        h.add("cells", cells);
-        h.add("domain", domain);
-        return h;
-    }
-
-    @Override
-    public String toString() {
-        if (name != null) {
-            return name;
-        }
-        return toLongString();
-    }
-
-    public String toLongString() {
-        return Arrays.asList(cells).toString();
     }
 
     @Override
@@ -234,11 +215,40 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
         return c;
     }
 
+    @Override
+    public String toString() {
+        if (name != null) {
+            return name;
+        }
+        return toLongString();
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("cells", context.elem(cells));
+        h.add("domain", context.elem(domain));
+        return h.build();
+    }
+
+    public String toLongString() {
+        return Arrays.asList(cells).toString();
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Geometry[] getGeometries() {
+        List<Geometry> all = new ArrayList<>();
+        for (TestFunctionCell cell : cells) {
+            all.add(cell.getAreaGeometryList());
+        }
+        return all.toArray(new Geometry[0]);
     }
 }

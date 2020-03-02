@@ -59,7 +59,7 @@ public class PlotBuilder {
     private int ysamples = -1;
     private int zsamples = -1;
     private Map<String, Object> properties = new HashMap<String, Object>();
-    private String libraries;
+    private String library;
     private PlotWindowManager windowManager;
     private DoubleFormat xformat;
     private DoubleFormat yformat;
@@ -107,7 +107,7 @@ public class PlotBuilder {
         zsamples = other.zsamples;
         display = other.display;
         windowManager = other.windowManager;
-        libraries = other.libraries;
+        library = other.library;
         properties = other.properties == null ? null : new HashMap<>(other.properties);
         titles = other.titles == null ? null : new ArrayList<>(other.titles);
         xformat = other.xformat;
@@ -194,8 +194,8 @@ public class PlotBuilder {
         return yformat(PlotConfigManager.Config.dblformat(format));
     }
 
-    public PlotBuilder setLibraries(String libraries) {
-        this.libraries = libraries;
+    public PlotBuilder setLibrary(String library) {
+        this.library = library;
         return this;
     }
 
@@ -533,7 +533,7 @@ public class PlotBuilder {
     }
 
     public PlotBuilder asImag() {
-        return converter(PlotDoubleConverter.valueOf("IMG"));
+        return converter(PlotDoubleConverter.of("IMG"));
     }
 
     public PlotBuilder asReal() {
@@ -541,15 +541,15 @@ public class PlotBuilder {
     }
 
     public PlotBuilder asDB() {
-        return converter(PlotDoubleConverter.valueOf("DB"));
+        return converter(PlotDoubleConverter.of("DB"));
     }
 
     public PlotBuilder asDB2() {
-        return converter(PlotDoubleConverter.valueOf("DB2"));
+        return converter(PlotDoubleConverter.of("DB2"));
     }
 
     public PlotBuilder asArg() {
-        return converter(PlotDoubleConverter.valueOf("ARG"));
+        return converter(PlotDoubleConverter.of("ARG"));
     }
 
     public PlotBuilder asComplex() {
@@ -769,24 +769,6 @@ public class PlotBuilder {
         return this;
     }
 
-    private static class ArrayDoubleFormat implements DoubleFormat {
-
-        private final Object[] format;
-
-        public ArrayDoubleFormat(Object[] format) {
-            this.format = format;
-        }
-
-        @Override
-        public String formatDouble(double value) {
-            int index = (int) value;
-            if (index < 0 || index >= format.length) {
-                return "";
-            }
-            return String.valueOf(format[index]);
-        }
-    }
-
     private void postConfigure(PlotModel mm) {
         mm.setTitle(title);
         mm.setName(name);
@@ -801,21 +783,28 @@ public class PlotBuilder {
         }
     }
 
-    public static class ListDoubleFormat implements DoubleFormat {
+    public static class ListDoubleFormat implements DoubleFormat{
 
-        private final List format;
+        private final List<String> values;
 
-        public ListDoubleFormat(List format) {
-            this.format = format;
+        public ListDoubleFormat(List values) {
+            this.values = new ArrayList<>();
+            for (Object o : values) {
+                this.values.add(String.valueOf(o));
+            }
         }
 
         @Override
         public String formatDouble(double value) {
             int index = (int) value;
-            if (index < 0 || index >= format.size()) {
+            if (index < 0 || index >= values.size()) {
                 return "";
             }
-            return String.valueOf(format.get(index));
+            return values.get(index);
+        }
+
+        public List<String> getValues() {
+            return values;
         }
     }
 
@@ -863,8 +852,8 @@ public class PlotBuilder {
         return domain;
     }
 
-    public String getLibraries() {
-        return libraries;
+    public String getLibrary() {
+        return library;
     }
 
     public int getXsamples() {

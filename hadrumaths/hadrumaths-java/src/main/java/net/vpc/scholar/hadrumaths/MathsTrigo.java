@@ -54,17 +54,17 @@ class MathsTrigo {
      * </pre> Coefficients are stored in reverse order, i.e. the zero order term
      * is last in the array. Note N is the number of coefficients, not the
      * order.
-     *
+     * <p>
      * If coefficients are for the interval a to b, x must have been transformed
      * to x -> 2(2x - b - a)/(b-a) before entering the routine. This maps x from
      * (a, b) to (-1, 1), over which the Chebyshev polynomials are defined.
-     *
+     * <p>
      * If the coefficients are for the inverted interval, in which (a, b) is
      * mapped to (1/b, 1/a), the transformation required is x -> 2(2ab/x - b -
      * a)/(b-a). If b is infinity, this becomes x -> 4a/x - 1.
-     *
+     * <p>
      * SPEED:
-     *
+     * <p>
      * Taking advantage of the recurrence properties of the Chebyshev
      * polynomials, the routine requires one more addition per loop than
      * evaluating a nested polynomial of the same degree.
@@ -73,7 +73,7 @@ class MathsTrigo {
      * @param coef the coefficients of the polynomial.
      * @param N    the number of coefficients.
      */
-    public static double chbevl(double x, double coef[], int N) throws ArithmeticException {
+    public static double chbevl(double x, double[] coef, int N) throws ArithmeticException {
         double b0, b1, b2;
 
         int p = 0;
@@ -97,7 +97,7 @@ class MathsTrigo {
             return 0.0;
         }
         double f = d / Math.PI;
-        if (MathsBase.isInt(f)) {
+        if (Maths.isInt(f)) {
             return 0;
         }
         return Math.sin(d);
@@ -108,7 +108,7 @@ class MathsTrigo {
             return 1;
         }
         double f = d / (Math.PI / 2);
-        if (MathsBase.isInt(f)) {
+        if (Maths.isInt(f)) {
             int r = ((int) Math.floor(Math.abs(f))) % 4;
             switch (r) {
                 case 0: {

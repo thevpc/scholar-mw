@@ -8,7 +8,7 @@
     <version>1.7</version>
     <url>http://scala-lang.org</url>
     <properties>
-        <scholar-version> 3.1.35</scholar-version>
+        <scholar-version>3.2.0</scholar-version>
     </properties>
     <dependencies>
         <dependency>

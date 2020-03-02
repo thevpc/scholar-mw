@@ -1,8 +1,9 @@
 package net.vpc.scholar.hadruplot;
 
 import net.vpc.common.util.ClassMap;
-import net.vpc.common.util.Converter;
 import net.vpc.scholar.hadruplot.console.PlotManager;
+
+import java.util.function.Function;
 
 //    private static class DoubleABSAction extends ValuesModelAction implements Serializable {
 //
@@ -126,7 +127,7 @@ public class PlotConfig {
 
     private int maxLegendCount = 20;
     private String defaultWindowTitle = "Hadrumaths Plot";
-    private ClassMap<Converter> objectConverters = new ClassMap<Converter>(Object.class, Converter.class);
+    private ClassMap<Function> objectConverters = new ClassMap<Function>(Object.class, Function.class);
     private PlotManager manager = null;
 
     public PlotManager getManager() {
@@ -157,14 +158,14 @@ public class PlotConfig {
         if (object == null) {
             return null;
         }
-        Converter converter = objectConverters.get(object.getClass());
+        Function converter = objectConverters.get(object.getClass());
         if (converter != null) {
-            return converter.convert(object);
+            return converter.apply(object);
         }
         return object;
     }
 
-    public   void registerConverter(Class cls, Converter converter) {
+    public   void registerConverter(Class cls, Function converter) {
         objectConverters.put(cls, converter);
     }
 

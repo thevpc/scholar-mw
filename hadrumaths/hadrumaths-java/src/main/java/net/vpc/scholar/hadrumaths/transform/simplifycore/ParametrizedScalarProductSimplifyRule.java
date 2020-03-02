@@ -6,8 +6,10 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.ParametrizedScalarProduct;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.ParametrizedScalarProduct;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -15,7 +17,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriterRule {
+public class ParametrizedScalarProductSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ParametrizedScalarProductSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{ParametrizedScalarProduct.class};
@@ -26,18 +28,20 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (e instanceof ParametrizedScalarProduct) {
             ParametrizedScalarProduct c = (ParametrizedScalarProduct) e;
-            RewriteResult rxa = ruleset.rewrite(c.getXArgument());
-            RewriteResult rya = ruleset.rewrite(c.getYArgument());
-            if (!rxa.getValue().hasParams() && !rya.getValue().hasParams()) {
-                return RewriteResult.bestEffort(MathsBase.scalarProduct(rxa.getValue(), rya.getValue()));
+            RewriteResult rxa = ruleset.rewrite(c.getChild(0), targetExprType);
+            RewriteResult rya = ruleset.rewrite(c.getChild(1), targetExprType);
+            Expr rxqv = rxa.isUnmodified() ? c.getChild(0) : rxa.getValue();
+            Expr ryav = rya.isUnmodified() ? c.getChild(1) : rya.getValue();
+            if (!rxqv.hasParams() && !ryav.hasParams()) {
+                return RewriteResult.bestEffort(Maths.scalarProduct(rxqv, ryav));
             }
-            Expr xa = rxa.getValue();
-            Expr ya = rya.getValue();
+            Expr xa = rxqv;
+            Expr ya = ryav;
             if (rxa.isUnmodified() && rya.isUnmodified()) {
-                return RewriteResult.unmodified(e);
+                return RewriteResult.unmodified();
             } else if (rxa.isBestEffort() && rya.isBestEffort()) {
                 return RewriteResult.bestEffort(e);
             } else {
@@ -46,19 +50,6 @@ public class ParametrizedScalarProductSimplifyRule implements ExpressionRewriter
             }
         }
         throw new IllegalArgumentException("Unsupported");
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
     }
 
 

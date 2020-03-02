@@ -16,9 +16,9 @@ import java.util.Locale;
  * The Java Matrix Class provides the fundamental operations of numerical
  * linear algebra.  Various constructors create Matrices from two dimensional
  * arrays of double precision floating point numbers.  Various "gets" and
- * "sets" provide access to submatrices and matrix elements.  Several methods
+ * "sets" provide access to submatrices and matrix primitiveElement3DS.  Several methods
  * implement basic matrix arithmetic, including matrix addition and
- * multiplication, matrix norms, and element-by-element array operations.
+ * multiplication, matrix norms, and primitiveElement3D-by-primitiveElement3D array operations.
  * Methods for reading and printing matrices are also included.  All the
  * operations in this version of the Matrix Class involve real matrices.
  * Complex matrices may be handled in a future version.
@@ -53,7 +53,7 @@ import java.util.Locale;
  * @version 5 August 1998
  */
 
-public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cloneable, java.io.Serializable {
+public class DMatrix extends AbstractMatrix<Double> implements DoubleMatrix, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
 /* ------------------------
@@ -61,11 +61,11 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
  * ------------------------ */
 
     /**
-     * Array for internal storage of elements.
+     * Array for internal storage of primitiveElement3DS.
      *
      * @serial internal array storage.
      */
-    private double[][] A;
+    private final double[][] A;
 
     /**
      * Row and column dimensions.
@@ -73,7 +73,8 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @serial row dimension.
      * @serial column dimension.
      */
-    private int m, n;
+    private final int m;
+    private final int n;
 
 /* ------------------------
    Constructors
@@ -169,7 +170,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
      * @throws IllegalArgumentException Array length must be a multiple of m.
      */
 
-    public DMatrix(double vals[], int m) {
+    public DMatrix(double[] vals, int m) {
         this.m = m;
         n = (m != 0 ? vals.length / m : 0);
         if (m * n != vals.length) {
@@ -182,14 +183,6 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             }
         }
     }
-
-    @Override
-    public TypeName<Double> getComponentType() {
-        return MathsBase.$DOUBLE;
-    }
-    /* ------------------------
-   Public Methods
- * ------------------------ */
 
     /**
      * Construct a matrix from a copy of a 2-D array.
@@ -214,34 +207,14 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         }
         return X;
     }
-
-    /**
-     * Make a deep copy of a matrix
-     */
-
-    public DMatrix copy() {
-        DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getDoubleArray();
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                C[i][j] = A[i][j];
-            }
-        }
-        return X;
-    }
-
-    /**
-     * Clone the Matrix object.
-     */
-
-    public Object clone() {
-        return this.copy();
-    }
+    /* ------------------------
+   Public Methods
+ * ------------------------ */
 
     /**
      * Access the internal two-dimensional array.
      *
-     * @return Pointer to the two-dimensional array of matrix elements.
+     * @return Pointer to the two-dimensional array of matrix primitiveElement3DS.
      */
 
     public double[][] getDoubleArray() {
@@ -249,9 +222,89 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
+     * Generate matrix with random primitiveElement3DS
+     *
+     * @param m Number of rows.
+     * @param n Number of colums.
+     * @return An m-by-n matrix with uniformly distributed random primitiveElement3DS.
+     */
+
+    public static DMatrix random(int m, int n) {
+        DMatrix A = new DMatrix(m, n);
+        double[][] X = A.getDoubleArray();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                X[i][j] = Maths.random();
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Read a matrix from a stream.  The format is the same the print method,
+     * so printed matrices can be read back in (provided they were printed using
+     * US Locale).  Elements are separated by
+     * whitespace, all the primitiveElement3DS for each row appear on a single line,
+     * the last row is followed by a blank line.
+     *
+     * @param input the input stream.
+     */
+
+    public static DMatrix readDMatrix(BufferedReader input) throws java.io.IOException {
+        StreamTokenizer tokenizer = new StreamTokenizer(input);
+
+        // Although StreamTokenizer will parse numbers, it doesn't recognize
+        // scientific notation (E or D); however, Double.valueOf does.
+        // The strategy here is to disable StreamTokenizer's number parsing.
+        // We'll only get whitespace delimited words, EOL's and EOF's.
+        // These words should all be numbers, for Double.valueOf to parse.
+
+        tokenizer.resetSyntax();
+        tokenizer.wordChars(0, 255);
+        tokenizer.whitespaceChars(0, ' ');
+        tokenizer.eolIsSignificant(true);
+        java.util.Vector v = new java.util.Vector();
+
+        // Ignore initial empty lines
+        while (tokenizer.nextToken() == StreamTokenizer.TT_EOL) ;
+        if (tokenizer.ttype == StreamTokenizer.TT_EOF)
+            throw new java.io.IOException("Unexpected EOF on matrix read.");
+        do {
+            v.addElement(Double.valueOf(tokenizer.sval)); // Read & store 1st row.
+        } while (tokenizer.nextToken() == StreamTokenizer.TT_WORD);
+
+        int n = v.size();  // Now we've got the number of columns!
+        double[] row = new double[n];
+        for (int j = 0; j < n; j++) {  // extract the primitiveElement3DS of the 1st row.
+            row[j] = ((Double) v.elementAt(j)).doubleValue();
+        }
+        v.removeAllElements();
+        v.addElement(row);  // Start storing rows instead of columns.
+        while (tokenizer.nextToken() == StreamTokenizer.TT_WORD) {
+            // While non-empty lines
+            v.addElement(row = new double[n]);
+            int j = 0;
+            do {
+                if (j >= n)
+                    throw new java.io.IOException
+                            ("Row " + v.size() + " is too long.");
+                row[j++] = Double.valueOf(tokenizer.sval).doubleValue();
+            } while (tokenizer.nextToken() == StreamTokenizer.TT_WORD);
+            if (j < n) {
+                throw new java.io.IOException
+                        ("Row " + v.size() + " is too short.");
+            }
+        }
+        int m = v.size();  // Now we've got the number of rows.
+        double[][] A = new double[m][];
+        v.copyInto(A);  // copy the rows out of the vector
+        return new DMatrix(A);
+    }
+
+    /**
      * Copy the internal two-dimensional array.
      *
-     * @return Two-dimensional array copy of matrix elements.
+     * @return Two-dimensional array copy of matrix primitiveElement3DS.
      */
 
     public double[][] getDoubleArrayCopy() {
@@ -267,7 +320,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     /**
      * Make a one-dimensional column packed copy of the internal array.
      *
-     * @return Matrix elements packed in a one-dimensional array by columns.
+     * @return Matrix primitiveElement3DS packed in a one-dimensional array by columns.
      */
 
     public double[] getColumnPackedCopy() {
@@ -283,7 +336,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     /**
      * Make a one-dimensional row packed copy of the internal array.
      *
-     * @return Matrix elements packed in a one-dimensional array by rows.
+     * @return Matrix primitiveElement3DS packed in a one-dimensional array by rows.
      */
 
     public double[] getRowPackedCopy() {
@@ -294,6 +347,23 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             }
         }
         return vals;
+    }
+
+    /**
+     * Get a single primitiveElement3D.
+     *
+     * @param i Row index.
+     * @param j Column index.
+     * @return A(i, j)
+     * @throws ArrayIndexOutOfBoundsException
+     */
+
+    public Double get(int i, int j) {
+        return A[i][j];
+    }
+
+    public void set(int i, int j, Double s) {
+        A[i][j] = s;
     }
 
     /**
@@ -316,21 +386,174 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         return n;
     }
 
+    @Override
+    public TypeName<Double> getComponentType() {
+        return Maths.$DOUBLE;
+    }
+
     /**
-     * Get a single element.
+     * Set a submatrix.
      *
-     * @param i Row index.
-     * @param j Column index.
-     * @return A(i, j)
-     * @throws ArrayIndexOutOfBoundsException
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param j0 Initial column index
+     * @param j1 Final column index
+     * @param X  A(i0:i1,j0:j1)
+     * @throws ArrayIndexOutOfBoundsException Submatrix indices
      */
 
-    public Double get(int i, int j) {
-        return A[i][j];
+    public void setMatrix(int i0, int i1, int j0, int j1, DMatrix X) {
+        try {
+            for (int i = i0; i <= i1; i++) {
+                for (int j = j0; j <= j1; j++) {
+                    A[i][j] = X.getDouble(i - i0, j - j0);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+        }
     }
 
     public double getDouble(int i, int j) {
         return A[i][j];
+    }
+
+    /**
+     * Set a single primitiveElement3D.
+     *
+     * @param i Row index.
+     * @param j Column index.
+     * @param s A(i,j).
+     * @throws ArrayIndexOutOfBoundsException
+     */
+
+    public void set(int i, int j, double s) {
+        A[i][j] = s;
+    }
+
+    @Override
+    public double[] getRowDouble(int row) {
+        return A[row];
+    }
+
+    @Override
+    public double[] getColumnDouble(int column) {
+        double[] all = new double[A.length];
+        for (int i = 0; i < all.length; i++) {
+            all[i] = A[i][column];
+        }
+        return all;
+    }
+
+    /**
+     * Set a submatrix.
+     *
+     * @param r Array of row indices.
+     * @param c Array of column indices.
+     * @param X A(r(:),c(:))
+     * @throws ArrayIndexOutOfBoundsException Submatrix indices
+     */
+
+    public void setMatrix(int[] r, int[] c, DMatrix X) {
+        try {
+            for (int i = 0; i < r.length; i++) {
+                for (int j = 0; j < c.length; j++) {
+                    A[r[i]][c[j]] = X.getDouble(i, j);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+        }
+    }
+
+    /**
+     * Set a submatrix.
+     *
+     * @param r  Array of row indices.
+     * @param j0 Initial column index
+     * @param j1 Final column index
+     * @param X  A(r(:),j0:j1)
+     * @throws ArrayIndexOutOfBoundsException Submatrix indices
+     */
+
+    public void setMatrix(int[] r, int j0, int j1, DMatrix X) {
+        try {
+            for (int i = 0; i < r.length; i++) {
+                for (int j = j0; j <= j1; j++) {
+                    A[r[i]][j] = X.getDouble(i, j - j0);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+        }
+    }
+
+    /**
+     * Set a submatrix.
+     *
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param c  Array of column indices.
+     * @param X  A(i0:i1,c(:))
+     * @throws ArrayIndexOutOfBoundsException Submatrix indices
+     */
+
+    public void setMatrix(int i0, int i1, int[] c, DMatrix X) {
+        try {
+            for (int i = i0; i <= i1; i++) {
+                for (int j = 0; j < c.length; j++) {
+                    A[i][c[j]] = X.getDouble(i - i0, j);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+        }
+    }
+
+    /**
+     * One norm
+     *
+     * @return maximum column sum.
+     */
+
+    public double norm1() {
+        double f = 0;
+        for (int j = 0; j < n; j++) {
+            double s = 0;
+            for (int i = 0; i < m; i++) {
+                s += Math.abs(A[i][j]);
+            }
+            f = Math.max(f, s);
+        }
+        return f;
+    }
+
+    /**
+     * Two norm
+     *
+     * @return maximum singular value.
+     */
+
+    public double norm2() {
+        return (new SingularValueDecomposition(this).norm2());
+    }
+
+    /**
+     * Infinity norm
+     *
+     * @return maximum row sum.
+     */
+
+    public double normInf() {
+        double f = 0;
+        for (int i = 0; i < m; i++) {
+            double s = 0;
+            for (int j = 0; j < n; j++) {
+                s += Math.abs(A[i][j]);
+            }
+            f = Math.max(f, s);
+        }
+        return f;
     }
 
     /**
@@ -434,108 +657,38 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Set a single element.
+     * Multiply a matrix by a scalar, C = s*A
      *
-     * @param i Row index.
-     * @param j Column index.
-     * @param s A(i,j).
-     * @throws ArrayIndexOutOfBoundsException
+     * @param s scalar
+     * @return s*A
      */
 
-    public void set(int i, int j, double s) {
-        A[i][j] = s;
-    }
-
-    public void set(int i, int j, Double s) {
-        A[i][j] = s;
+    public DMatrix mul(double s) {
+        DMatrix X = new DMatrix(m, n);
+        double[][] C = X.getDoubleArray();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] = s * A[i][j];
+            }
+        }
+        return X;
     }
 
     /**
-     * Set a submatrix.
+     * Unary minus
      *
-     * @param i0 Initial row index
-     * @param i1 Final row index
-     * @param j0 Initial column index
-     * @param j1 Final column index
-     * @param X  A(i0:i1,j0:j1)
-     * @throws ArrayIndexOutOfBoundsException Submatrix indices
+     * @return -A
      */
 
-    public void setMatrix(int i0, int i1, int j0, int j1, DMatrix X) {
-        try {
-            for (int i = i0; i <= i1; i++) {
-                for (int j = j0; j <= j1; j++) {
-                    A[i][j] = X.getDouble(i - i0, j - j0);
-                }
+    public DMatrix neg() {
+        DMatrix X = new DMatrix(m, n);
+        double[][] C = X.getDoubleArray();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] = -A[i][j];
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
         }
-    }
-
-    /**
-     * Set a submatrix.
-     *
-     * @param r Array of row indices.
-     * @param c Array of column indices.
-     * @param X A(r(:),c(:))
-     * @throws ArrayIndexOutOfBoundsException Submatrix indices
-     */
-
-    public void setMatrix(int[] r, int[] c, DMatrix X) {
-        try {
-            for (int i = 0; i < r.length; i++) {
-                for (int j = 0; j < c.length; j++) {
-                    A[r[i]][c[j]] = X.getDouble(i, j);
-                }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-        }
-    }
-
-    /**
-     * Set a submatrix.
-     *
-     * @param r  Array of row indices.
-     * @param j0 Initial column index
-     * @param j1 Final column index
-     * @param X  A(r(:),j0:j1)
-     * @throws ArrayIndexOutOfBoundsException Submatrix indices
-     */
-
-    public void setMatrix(int[] r, int j0, int j1, DMatrix X) {
-        try {
-            for (int i = 0; i < r.length; i++) {
-                for (int j = j0; j <= j1; j++) {
-                    A[r[i]][j] = X.getDouble(i, j - j0);
-                }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-        }
-    }
-
-    /**
-     * Set a submatrix.
-     *
-     * @param i0 Initial row index
-     * @param i1 Final row index
-     * @param c  Array of column indices.
-     * @param X  A(i0:i1,c(:))
-     * @throws ArrayIndexOutOfBoundsException Submatrix indices
-     */
-
-    public void setMatrix(int i0, int i1, int[] c, DMatrix X) {
-        try {
-            for (int i = i0; i <= i1; i++) {
-                for (int j = 0; j < c.length; j++) {
-                    A[i][c[j]] = X.getDouble(i - i0, j);
-                }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-        }
+        return X;
     }
 
     /**
@@ -556,21 +709,31 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * One norm
+     * Matrix determinant
      *
-     * @return maximum column sum.
+     * @return determinant
      */
 
-    public double norm1() {
-        double f = 0;
-        for (int j = 0; j < n; j++) {
-            double s = 0;
-            for (int i = 0; i < m; i++) {
-                s += Math.abs(A[i][j]);
-            }
-            f = Math.max(f, s);
-        }
-        return f;
+    public Double det() {
+        return detDouble();
+    }
+
+    public double detDouble() {
+        return new LUDecomposition(this).det();
+    }
+
+    public String toString() {
+        return toString(null, null);
+    }
+
+    /**
+     * Matrix condition (2 norm)
+     *
+     * @return ratio of largest to smallest singular value.
+     */
+
+    public double cond() {
+        return new SingularValueDecomposition(this).cond();
     }
 
     /**
@@ -592,64 +755,87 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Two norm
-     *
-     * @return maximum singular value.
+     * Make a deep copy of a matrix
      */
 
-    public double norm2() {
-        return (new SingularValueDecomposition(this).norm2());
+    public DMatrix copy() {
+        DMatrix X = new DMatrix(m, n);
+        double[][] C = X.getDoubleArray();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] = A[i][j];
+            }
+        }
+        return X;
     }
 
-    /**
-     * Infinity norm
-     *
-     * @return maximum row sum.
-     */
-
-    public double normInf() {
-        double f = 0;
-        for (int i = 0; i < m; i++) {
-            double s = 0;
-            for (int j = 0; j < n; j++) {
-                s += Math.abs(A[i][j]);
+    public String toString(String commentsChar, String varName) {
+        String[][] disp = new String[getRowCount()][getColumnCount()];
+        int[] colsWidth = new int[getColumnCount()];
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A[i].length; j++) {
+                disp[i][j] = String.valueOf(A[i][j]);
+                int len = disp[i][j].length();
+                if (len > colsWidth[j]) {
+                    colsWidth[j] = len;
+                }
             }
-            f = Math.max(f, s);
         }
-        return f;
+
+        StringBuilder sb = new StringBuilder();
+        String lineSep = System.getProperty("line.separator");
+        if (commentsChar != null) {
+            sb.append(commentsChar).append(" dimension [" + getRowCount() + "," + getColumnCount() + "]").append(lineSep);
+        }
+        if (varName != null) {
+            sb.append(varName).append(" = ");
+        }
+        sb.append("[");
+        if (disp.length > 1) {
+            sb.append(lineSep);
+        }
+
+        for (int i = 0; i < disp.length; i++) {
+            if (i > 0) {
+                sb.append(lineSep);
+            }
+            for (int j = 0; j < disp[i].length; j++) {
+                StringBuilder sbl = new StringBuilder(colsWidth[j]);
+                //sbl.clear();
+                if (j > 0) {
+                    sbl.append(' ');
+                }
+                sbl.append(disp[i][j]);
+                sbl.append(' ');
+                int x = colsWidth[j] - disp[i][j].length();
+                while (x > 0) {
+                    sbl.append(' ');
+                    x--;
+                }
+                sb.append(sbl.toString());
+            }
+        }
+        if (disp.length > 1) {
+            sb.append(lineSep);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     /**
      * Frobenius norm
      *
-     * @return sqrt of sum of squares of all elements.
+     * @return sqrt of sum of squares of all primitiveElement3DS.
      */
 
     public double normF() {
         double f = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                f = MathsBase.hypot(f, A[i][j]);
+                f = Maths.hypot(f, A[i][j]);
             }
         }
         return f;
-    }
-
-    /**
-     * Unary minus
-     *
-     * @return -A
-     */
-
-    public DMatrix neg() {
-        DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getDoubleArray();
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                C[i][j] = -A[i][j];
-            }
-        }
-        return X;
     }
 
     /**
@@ -669,6 +855,16 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             }
         }
         return X;
+    }
+
+    /**
+     * Check if size(A) == size(B) *
+     */
+
+    private void checkMatrixDimensions(DMatrix B) {
+        if (B.m != m || B.n != n) {
+            throw new IllegalArgumentException("Matrix dimensions must agree.");
+        }
     }
 
     /**
@@ -725,7 +921,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element multiplication, C = A.*B
+     * PrimitiveElement3D-by-primitiveElement3D multiplication, C = A.*B
      *
      * @param B another matrix
      * @return A.*B
@@ -744,7 +940,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element multiplication in place, A = A.*B
+     * PrimitiveElement3D-by-primitiveElement3D multiplication in place, A = A.*B
      *
      * @param B another matrix
      * @return A.*B
@@ -761,7 +957,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element right division, C = A./B
+     * PrimitiveElement3D-by-primitiveElement3D right division, C = A./B
      *
      * @param B another matrix
      * @return A./B
@@ -780,7 +976,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element right division in place, A = A./B
+     * PrimitiveElement3D-by-primitiveElement3D right division in place, A = A./B
      *
      * @param B another matrix
      * @return A./B
@@ -797,7 +993,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element left division, C = A.\B
+     * PrimitiveElement3D-by-primitiveElement3D left division, C = A.\B
      *
      * @param B another matrix
      * @return A.\B
@@ -816,7 +1012,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Element-by-element left division in place, A = A.\B
+     * PrimitiveElement3D-by-primitiveElement3D left division in place, A = A.\B
      *
      * @param B another matrix
      * @return A.\B
@@ -830,24 +1026,6 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             }
         }
         return this;
-    }
-
-    /**
-     * Multiply a matrix by a scalar, C = s*A
-     *
-     * @param s scalar
-     * @return s*A
-     */
-
-    public DMatrix mul(double s) {
-        DMatrix X = new DMatrix(m, n);
-        double[][] C = X.getDoubleArray();
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                C[i][j] = s * A[i][j];
-            }
-        }
-        return X;
     }
 
     /**
@@ -953,6 +1131,17 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
+     * Solve X*A = B, which is also A'*X' = B'
+     *
+     * @param B right hand side
+     * @return solution if A is square, least squares solution otherwise.
+     */
+
+    public DMatrix solveTranspose(DMatrix B) {
+        return transpose().solve(B.transpose());
+    }
+
+    /**
      * Solve A*X = B
      *
      * @param B right hand side
@@ -965,17 +1154,6 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Solve X*A = B, which is also A'*X' = B'
-     *
-     * @param B right hand side
-     * @return solution if A is square, least squares solution otherwise.
-     */
-
-    public DMatrix solveTranspose(DMatrix B) {
-        return transpose().solve(B.transpose());
-    }
-
-    /**
      * Matrix inverse or pseudoinverse
      *
      * @return inverse(A) if A is square, pseudoinverse otherwise.
@@ -985,72 +1163,10 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         return solve(identity(m, m));
     }
 
-    /**
-     * Matrix determinant
-     *
-     * @return determinant
-     */
-
-    public Double det() {
-        return detDouble();
-    }
-
-    public double detDouble() {
-        return new LUDecomposition(this).det();
-    }
-
-    /**
-     * Matrix rank
-     *
-     * @return effective numerical rank, obtained from SVD.
-     */
-
-    public int rank() {
-        return new SingularValueDecomposition(this).rank();
-    }
-
-    /**
-     * Matrix condition (2 norm)
-     *
-     * @return ratio of largest to smallest singular value.
-     */
-
-    public double cond() {
-        return new SingularValueDecomposition(this).cond();
-    }
-
-    /**
-     * Matrix trace.
-     *
-     * @return sum of the diagonal elements.
-     */
-
-    public double trace() {
-        double t = 0;
-        for (int i = 0; i < Math.min(m, n); i++) {
-            t += A[i][i];
-        }
-        return t;
-    }
-
-    /**
-     * Generate matrix with random elements
-     *
-     * @param m Number of rows.
-     * @param n Number of colums.
-     * @return An m-by-n matrix with uniformly distributed random elements.
-     */
-
-    public static DMatrix random(int m, int n) {
-        DMatrix A = new DMatrix(m, n);
-        double[][] X = A.getDoubleArray();
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                X[i][j] = MathsBase.random();
-            }
-        }
-        return A;
-    }
+    // DecimalFormat is a little disappointing coming from Fortran or C's printf.
+    // Since it doesn't pad on the left, the primitiveElement3DS will come out different
+    // widths.  Consequently, we'll pass the desired column width in as an
+    // argument and do the extra padding ourselves.
 
     /**
      * Generate identity matrix
@@ -1071,9 +1187,37 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
         return A;
     }
 
+    /**
+     * Matrix rank
+     *
+     * @return effective numerical rank, obtained from SVD.
+     */
+
+    public int rank() {
+        return new SingularValueDecomposition(this).rank();
+    }
+
+
+/* ------------------------
+   Private Methods
+ * ------------------------ */
 
     /**
-     * Print the matrix to stdout.   Line the elements up in columns
+     * Matrix trace.
+     *
+     * @return sum of the diagonal primitiveElement3DS.
+     */
+
+    public double trace() {
+        double t = 0;
+        for (int i = 0; i < Math.min(m, n); i++) {
+            t += A[i][i];
+        }
+        return t;
+    }
+
+    /**
+     * Print the matrix to stdout.   Line the primitiveElement3DS up in columns
      * with a Fortran-like 'Fw.d' style format.
      *
      * @param w Column width.
@@ -1085,7 +1229,7 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Print the matrix to the output stream.   Line the elements up in
+     * Print the matrix to the output stream.   Line the primitiveElement3DS up in
      * columns with a Fortran-like 'Fw.d' style format.
      *
      * @param output Output stream.
@@ -1104,35 +1248,14 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Print the matrix to stdout.  Line the elements up in columns.
-     * Use the format object, and right justify within columns of width
-     * characters.
-     * Note that is the matrix is to be read back in, you probably will want
-     * to use a NumberFormat that is set to US Locale.
-     *
-     * @param format A  Formatting object for individual elements.
-     * @param width  Field width for each column.
-     * @see java.text.DecimalFormat#setDecimalFormatSymbols
-     */
-
-    public void print(NumberFormat format, int width) {
-        print(new PrintWriter(System.out, true), format, width);
-    }
-
-    // DecimalFormat is a little disappointing coming from Fortran or C's printf.
-    // Since it doesn't pad on the left, the elements will come out different
-    // widths.  Consequently, we'll pass the desired column width in as an
-    // argument and do the extra padding ourselves.
-
-    /**
-     * Print the matrix to the output stream.  Line the elements up in columns.
+     * Print the matrix to the output stream.  Line the primitiveElement3DS up in columns.
      * Use the format object, and right justify within columns of width
      * characters.
      * Note that is the matrix is to be read back in, you probably will want
      * to use a NumberFormat that is set to US Locale.
      *
      * @param output the output stream.
-     * @param format A formatting object to format the matrix elements
+     * @param format A formatting object to format the matrix primitiveElement3DS
      * @param width  Column width.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
@@ -1153,136 +1276,19 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
     }
 
     /**
-     * Read a matrix from a stream.  The format is the same the print method,
-     * so printed matrices can be read back in (provided they were printed using
-     * US Locale).  Elements are separated by
-     * whitespace, all the elements for each row appear on a single line,
-     * the last row is followed by a blank line.
+     * Print the matrix to stdout.  Line the primitiveElement3DS up in columns.
+     * Use the format object, and right justify within columns of width
+     * characters.
+     * Note that is the matrix is to be read back in, you probably will want
+     * to use a NumberFormat that is set to US Locale.
      *
-     * @param input the input stream.
+     * @param format A  Formatting object for individual primitiveElement3DS.
+     * @param width  Field width for each column.
+     * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
 
-    public static DMatrix readDMatrix(BufferedReader input) throws java.io.IOException {
-        StreamTokenizer tokenizer = new StreamTokenizer(input);
-
-        // Although StreamTokenizer will parse numbers, it doesn't recognize
-        // scientific notation (E or D); however, Double.valueOf does.
-        // The strategy here is to disable StreamTokenizer's number parsing.
-        // We'll only get whitespace delimited words, EOL's and EOF's.
-        // These words should all be numbers, for Double.valueOf to parse.
-
-        tokenizer.resetSyntax();
-        tokenizer.wordChars(0, 255);
-        tokenizer.whitespaceChars(0, ' ');
-        tokenizer.eolIsSignificant(true);
-        java.util.Vector v = new java.util.Vector();
-
-        // Ignore initial empty lines
-        while (tokenizer.nextToken() == StreamTokenizer.TT_EOL) ;
-        if (tokenizer.ttype == StreamTokenizer.TT_EOF)
-            throw new java.io.IOException("Unexpected EOF on matrix read.");
-        do {
-            v.addElement(Double.valueOf(tokenizer.sval)); // Read & store 1st row.
-        } while (tokenizer.nextToken() == StreamTokenizer.TT_WORD);
-
-        int n = v.size();  // Now we've got the number of columns!
-        double row[] = new double[n];
-        for (int j = 0; j < n; j++) {  // extract the elements of the 1st row.
-            row[j] = ((Double) v.elementAt(j)).doubleValue();
-        }
-        v.removeAllElements();
-        v.addElement(row);  // Start storing rows instead of columns.
-        while (tokenizer.nextToken() == StreamTokenizer.TT_WORD) {
-            // While non-empty lines
-            v.addElement(row = new double[n]);
-            int j = 0;
-            do {
-                if (j >= n)
-                    throw new java.io.IOException
-                            ("Row " + v.size() + " is too long.");
-                row[j++] = Double.valueOf(tokenizer.sval).doubleValue();
-            } while (tokenizer.nextToken() == StreamTokenizer.TT_WORD);
-            if (j < n) {
-                throw new java.io.IOException
-                        ("Row " + v.size() + " is too short.");
-            }
-        }
-        int m = v.size();  // Now we've got the number of rows.
-        double[][] A = new double[m][];
-        v.copyInto(A);  // copy the rows out of the vector
-        return new DMatrix(A);
-    }
-
-
-/* ------------------------
-   Private Methods
- * ------------------------ */
-
-    /**
-     * Check if size(A) == size(B) *
-     */
-
-    private void checkMatrixDimensions(DMatrix B) {
-        if (B.m != m || B.n != n) {
-            throw new IllegalArgumentException("Matrix dimensions must agree.");
-        }
-    }
-
-    public String toString() {
-        return toString(null, null);
-    }
-
-    public String toString(String commentsChar, String varName) {
-        String[][] disp = new String[getRowCount()][getColumnCount()];
-        int[] colsWidth = new int[getColumnCount()];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[i].length; j++) {
-                disp[i][j] = String.valueOf(A[i][j]);
-                int len = disp[i][j].length();
-                if (len > colsWidth[j]) {
-                    colsWidth[j] = len;
-                }
-            }
-        }
-
-        StringBuilder sb = new StringBuilder();
-        String lineSep = System.getProperty("line.separator");
-        if (commentsChar != null) {
-            sb.append(commentsChar).append(" dimension [" + getRowCount() + "," + getColumnCount() + "]").append(lineSep);
-        }
-        if (varName != null) {
-            sb.append(varName).append(" = ");
-        }
-        sb.append("[");
-        if (disp.length > 1) {
-            sb.append(lineSep);
-        }
-
-        for (int i = 0; i < disp.length; i++) {
-            if (i > 0) {
-                sb.append(lineSep);
-            }
-            for (int j = 0; j < disp[i].length; j++) {
-                StringBuilder sbl = new StringBuilder(colsWidth[j]);
-                //sbl.clear();
-                if (j > 0) {
-                    sbl.append(' ');
-                }
-                sbl.append(disp[i][j]);
-                sbl.append(' ');
-                int x = colsWidth[j] - disp[i][j].length();
-                while (x > 0) {
-                    sbl.append(' ');
-                    x--;
-                }
-                sb.append(sbl.toString());
-            }
-        }
-        if (disp.length > 1) {
-            sb.append(lineSep);
-        }
-        sb.append("]");
-        return sb.toString();
+    public void print(NumberFormat format, int width) {
+        print(new PrintWriter(System.out, true), format, width);
     }
 
     public DMatrix rotateValuesLeft() {
@@ -1323,20 +1329,6 @@ public class DMatrix extends AbstractTMatrix<Double> implements DoubleMatrix, Cl
             }
         }
         return new DMatrix(newVals);
-    }
-
-    @Override
-    public double[] getRowDouble(int row) {
-        return A[row];
-    }
-
-    @Override
-    public double[] getColumnDouble(int column) {
-        double[] all = new double[A.length];
-        for (int i = 0; i < all.length; i++) {
-            all[i] = A[i][column];
-        }
-        return all;
     }
 
 }

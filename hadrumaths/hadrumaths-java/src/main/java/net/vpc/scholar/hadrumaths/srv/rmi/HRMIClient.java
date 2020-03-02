@@ -14,10 +14,10 @@ import java.rmi.registry.LocateRegistry;
 import java.util.List;
 
 public class HRMIClient implements HadrumathsClient {
-    private String fsId;
-    private String address;
-    private int port;
-    private FSRemote remote;
+    private final String fsId;
+    private final String address;
+    private final int port;
+    private final FSRemote remote;
 
     public HRMIClient(String fsId, String address, int port) throws RemoteException, NotBoundException {
         this.fsId = fsId;
@@ -27,19 +27,6 @@ public class HRMIClient implements HadrumathsClient {
         }
         this.port = port;
         remote = (FSRemote) LocateRegistry.getRegistry(address, port).lookup(fsId);
-    }
-
-    @Override
-    public long ping() {
-        long ret = -1;
-        Chronometer c = new Chronometer();
-        try {
-            remote.ping();
-            ret=c.stop().getTime();
-        } catch (IOException e) {
-            //
-        }
-        return ret;
     }
 
     @Override
@@ -76,6 +63,19 @@ public class HRMIClient implements HadrumathsClient {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public long ping() {
+        long ret = -1;
+        Chronometer c = Chronometer.start();
+        try {
+            remote.ping();
+            ret = c.stop().getTime();
+        } catch (IOException e) {
+            //
+        }
+        return ret;
     }
 
     @Override

@@ -4,7 +4,7 @@ import net.vpc.common.strings.StringUtils;
 import net.vpc.common.util.*;
 
 public class DoubleFormatterFactory {
-    public static DoubleFormat create(String format){
+    public static DoubleFormat create(String format) {
         if (StringUtils.isBlank(format)) {
             format = "";
         }
@@ -22,14 +22,14 @@ public class DoubleFormatterFactory {
             case "freq":
             case "frequency": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return MathsBase.Config.getFrequencyFormatter();
+                    return Maths.Config.getFrequencyFormatter();
                 }
                 return new FrequencyFormat(subFormat);
             }
             case "m":
             case "metric": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return MathsBase.Config.getMetricFormatter();
+                    return Maths.Config.getMetricFormatter();
                 }
                 return new MetricFormat(subFormat);
             }
@@ -37,27 +37,27 @@ public class DoubleFormatterFactory {
             case "mem":
             case "memory": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return MathsBase.Config.getMemorySizeFormatter();
+                    return Maths.Config.getMemorySizeFormatter();
                 }
                 return new BytesSizeFormat(subFormat);
             }
             case "%":
             case "percent": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return MathsBase.percentFormat();
+                    return Maths.percentFormat();
                 }
                 return new DecimalDoubleFormat(subFormat);
             }
             case "d":
             case "double": {
                 if (StringUtils.isBlank(subFormat)) {
-                    return MathsBase.Config.getDoubleFormat();
+                    return Maths.Config.getDoubleFormat();
                 }
                 return new DecimalDoubleFormat(subFormat);
             }
         }
         if (StringUtils.isBlank(subFormat)) {
-            return MathsBase.Config.getDoubleFormat();
+            return Maths.Config.getDoubleFormat();
         }
         return new DecimalDoubleFormat(subFormat);
     }

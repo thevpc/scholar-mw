@@ -1,19 +1,16 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 12 juin 2007 10:41:27
  */
-public interface GeometryList extends Cloneable, Iterable<Geometry>, Serializable, Dumpable, Geometry {
+public interface GeometryList extends Cloneable, Iterable<Geometry>, Geometry {
 
-    Dumper getDumpStringHelper();
+//    Dumper getDumpStringHelper();
 
     Geometry set(int index, Geometry element);
 
@@ -52,7 +49,7 @@ public interface GeometryList extends Cloneable, Iterable<Geometry>, Serializabl
 
     Collection<Geometry> toCollection();
 
-    public Domain getSmallestBounds();
+    Domain getSmallestBounds();
 
-    public void setDomain(Domain domain);
+    void setDomain(Domain domain);
 }

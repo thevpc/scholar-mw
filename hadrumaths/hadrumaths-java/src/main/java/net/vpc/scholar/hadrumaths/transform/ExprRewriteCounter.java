@@ -12,11 +12,15 @@ public class ExprRewriteCounter implements ExprRewriteListener {
 
     @Override
     public void onModifiedExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue, boolean bestEffort) {
-        if(bestEffort) {
+        if (bestEffort) {
             count.bestEffortModificationInvocationCount++;
-        }else{
+        } else {
             count.partialModificationInvocationCount++;
         }
+    }
+
+    public void reset() {
+        count = new Count();
     }
 
     public int getUnmodifiedInvocationCount() {
@@ -39,13 +43,13 @@ public class ExprRewriteCounter implements ExprRewriteListener {
         return count.getTotalInvocationCount();
     }
 
-    public Count getCount() {
-        return count;
-    }
-
     @Override
     public String toString() {
         return getCount().toString();
+    }
+
+    public Count getCount() {
+        return count;
     }
 
     public static class Count {
@@ -57,16 +61,8 @@ public class ExprRewriteCounter implements ExprRewriteListener {
             return unmodifiedInvocationCount;
         }
 
-        public int getTotalModifiedInvocationCount() {
-            return partialModificationInvocationCount + bestEffortModificationInvocationCount;
-        }
-
         public int getPartialModificationInvocationCount() {
             return partialModificationInvocationCount;
-        }
-
-        public int getTotalInvocationCount() {
-            return partialModificationInvocationCount + unmodifiedInvocationCount;
         }
 
         public int getBestEffortModificationInvocationCount() {
@@ -78,10 +74,19 @@ public class ExprRewriteCounter implements ExprRewriteListener {
             return "Count{" +
                     "newValue=" + partialModificationInvocationCount +
                     ", bestEffort=" + bestEffortModificationInvocationCount +
-                    ", totalModified=" + (bestEffortModificationInvocationCount+partialModificationInvocationCount) +
                     ", unmodified=" + unmodifiedInvocationCount +
-                    ", total=" + (partialModificationInvocationCount + unmodifiedInvocationCount) +
+                    ", totalModified=" + getTotalModifiedInvocationCount() +
+                    ", total=" + getTotalInvocationCount() +
                     '}';
         }
+
+        public int getTotalModifiedInvocationCount() {
+            return partialModificationInvocationCount + bestEffortModificationInvocationCount;
+        }
+
+        public int getTotalInvocationCount() {
+            return partialModificationInvocationCount + bestEffortModificationInvocationCount + unmodifiedInvocationCount;
+        }
     }
+
 }

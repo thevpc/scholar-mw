@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -29,7 +32,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
         ModeFunctions fn = str.getModeFunctions();
         str.getModes();//just to load it
         ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? str.getModes() : fn.getVanishingModes();
-        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         boolean hintUseOldZsStyle = str2.isHintUseOldZsStyle();
@@ -38,9 +41,9 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
         }
         if (symMatrix) {
             for (int p = 0; p < g.length; p++) {
-                TVector<Complex> spp = sp.getRow(p);
+                ComplexVector spp = sp.getRow(p);
                 for (int q = p; q < g.length; q++) {
-                    TVector<Complex> spq = sp.getRow(q);
+                    ComplexVector spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         Complex zn = n.impedance.impedanceValue();
@@ -56,14 +59,14 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                 //System.out.println(">>opValue = " + opValue.getMatrix());
                 if (hintUseOldZsStyle) {
                     Complex zs = opValue.getMatrix().get(0, 0);
-                    Domain zsdomain = opValue.getFn().getDomain();
+                    Domain zsdomain = opValue.getFn().getEnv().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain)).toDV();
                     }
-                    TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    ComplexMatrix spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                     for (int p = 0; p < g.length; p++) {
-                        TVector<Complex> spc2p = spc2.getRow(p);
+                        ComplexVector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
                             b[p][q] = b[p][q].add(zs.mul(spc2p.get(q)));
                         }
@@ -73,11 +76,11 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     if (op != null) {//op==null si k==1
                         //System.out.println("op = " + opValue.getMatrix());
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                        ComplexMatrix spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                         for (int p = 0; p < g.length; p++) {
-                            TVector<Complex> spc2p = spc2.getRow(p);
+                            ComplexVector spc2p = spc2.getRow(p);
                             for (int q = p; q < g.length; q++) {
-                                TVector<Complex> spc2q = spc2.getRow(q);
+                                ComplexVector spc2q = spc2.getRow(q);
                                 Complex c = Maths.CZERO;
                                 for (int m = 0; m < op.length; m++) {
                                     for (int n = 0; n < op[m].length; n++) {
@@ -110,9 +113,9 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
 
         } else {
             for (int p = 0; p < g.length; p++) {
-                TVector<Complex> spp = sp.getRow(p);
+                ComplexVector spp = sp.getRow(p);
                 for (int q = 0; q < g.length; q++) {
-                    TVector<Complex> spq = sp.getRow(q);
+                    ComplexVector spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         c = c.add(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
@@ -127,14 +130,14 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                 //System.out.println(">>opValue = " + opValue.getMatrix());
                 if (hintUseOldZsStyle) {
                     Complex zs = opValue.getMatrix().get(0, 0);
-                    Domain zsdomain = opValue.getFn().getDomain();
+                    Domain zsdomain = opValue.getFn().getEnv().getDomain();
                     DoubleToVector[] gzs = new DoubleToVector[g.length];
                     for (int i = 0; i < gzs.length; i++) {
                         gzs[i] = ExpressionTransformFactory.transform(g[i], ExpressionTransformFactory.domainMul(zsdomain)).toDV();
                     }
-                    TMatrix<Complex> spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                    ComplexMatrix spc2 = Maths.scalarProductCache(gzs, gzs, str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                     for (int p = 0; p < g.length; p++) {
-                        TVector<Complex> spc2p = spc2.getRow(p);
+                        ComplexVector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
                             b[p][q] = b[p][q].add(zs.mul(spc2p.get(q)));
                         }
@@ -143,11 +146,11 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                     if (op != null) {//op==null si k==1
                         ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
-                        TMatrix<Complex> spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitorFactory.none());
+                        ComplexMatrix spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                         for (int p = 0; p < g.length; p++) {
-                            TVector<Complex> spc2p = spc2.getRow(p);
+                            ComplexVector spc2p = spc2.getRow(p);
                             for (int q = 0; q < g.length; q++) {
-                                TVector<Complex> spc2q = spc2.getRow(q);
+                                ComplexVector spc2q = spc2.getRow(q);
                                 Complex c = Maths.CZERO;
                                 for (int m = 0; m < op.length; m++) {
                                     for (int n = 0; n < op[m].length; n++) {
@@ -190,12 +193,12 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 
 }

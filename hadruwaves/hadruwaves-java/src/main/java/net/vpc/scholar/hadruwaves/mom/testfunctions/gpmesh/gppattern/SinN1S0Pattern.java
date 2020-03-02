@@ -3,12 +3,15 @@ package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.PI;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -23,10 +26,11 @@ public final class SinN1S0Pattern extends RectMeshAttachGpPattern {
         this.max = complexity;
     }
 
-    public Dumper getDumper() {
-        Dumper h = super.getDumper();
-        h.add("max",max);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("max", context.elem(max));
+        return h.build();
     }
 
     public DoubleToVector createFunction(int q0, Domain globalDomain, MeshZone zone, MomStructure str) {
@@ -43,7 +47,7 @@ public final class SinN1S0Pattern extends RectMeshAttachGpPattern {
         }
         Domain d=zone.getDomain();
         double qPIbyH=q * PI / d.ywidth() /2;
-        DoubleToVector f = Maths.vector(
+        Expr f = Maths.vector(
                 FunctionFactory.sinY(
                         1 / sqrt(d.xwidth() * d.ywidth()),
                         q_i * qPIbyH,

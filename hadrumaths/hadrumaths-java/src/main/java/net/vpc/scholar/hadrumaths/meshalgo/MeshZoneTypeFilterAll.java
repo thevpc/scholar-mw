@@ -5,7 +5,9 @@
 
 package net.vpc.scholar.hadrumaths.meshalgo;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 
 /**
  * @author vpc
@@ -19,20 +21,20 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
         return true;
     }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h = new Dumper(this);
-        return h;
-    }
-
     @Override
-    public String dump() {
-        return getDumpStringHelper().toString();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName())
+                .build();
     }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+//    public Dumper getDumpStringHelper() {
+//        Dumper h = new Dumper(this);
+//        return h;
+//    }
+//
+//    @Override
+//    public String dump() {
+//        return getDumpStringHelper().toString();
+//    }
 
     @Override
     public int hashCode() {
@@ -49,6 +51,11 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
         }
         final MeshZoneTypeFilterAll other = (MeshZoneTypeFilterAll) obj;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 
 

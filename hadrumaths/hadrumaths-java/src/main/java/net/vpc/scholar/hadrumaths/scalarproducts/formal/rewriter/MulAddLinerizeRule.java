@@ -6,9 +6,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * @author vpc
  */
-public class MulAddLinerizeRule implements ExpressionRewriterRule {
+public class MulAddLinerizeRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new MulAddLinerizeRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Mul.class};
@@ -29,18 +31,19 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         Mul ee = (Mul) e;
         Expr r = null;
-        for (Expr expression : ee.getSubExpressions()) {
-            expression = ruleset.rewriteOrSame(expression);
+        ExprType nt = ee.getNarrowType();
+        for (Expr expression : ee.getChildren()) {
+            expression = ruleset.rewriteOrSame(expression, nt);
             r = (r == null) ? expression : mul(r, expression, ruleset);
         }
         if (r == null) {
             throw new IllegalArgumentException("Unexpected");
         }
         if (r.equals(e)) {
-            return RewriteResult.unmodified(e);
+            return RewriteResult.unmodified();
         }
         return RewriteResult.newVal(r);
     }
@@ -51,52 +54,40 @@ public class MulAddLinerizeRule implements ExpressionRewriterRule {
             Plus bp = ((Plus) b);
             List<Expr> n = new ArrayList<Expr>();
             List<Expr> apSimpl = new ArrayList<Expr>();
-            for (Expr ee : ap.getSubExpressions()) {
-                apSimpl.add(ruleset.rewriteOrSame(ee));
+            for (Expr ee : ap.getChildren()) {
+                apSimpl.add(ruleset.rewriteOrSame(ee, null));
             }
             List<Expr> bpSimpl = new ArrayList<Expr>();
-            for (Expr ee : bp.getSubExpressions()) {
-                bpSimpl.add(ruleset.rewriteOrSame(ee));
+            for (Expr ee : bp.getChildren()) {
+                bpSimpl.add(ruleset.rewriteOrSame(ee, null));
             }
 
             for (Expr ta : apSimpl) {
                 for (Expr tb : bpSimpl) {
-                    n.add(new Mul(ta, tb));
+                    n.add(Mul.of(ta, tb));
                 }
             }
-            return new Plus(n.toArray(new Expr[0]));
+            return Plus.of(n.toArray(new Expr[0]));
         } else if (a instanceof Plus) {
             Plus ap = ((Plus) a);
             List<Expr> n = new ArrayList<Expr>();
-            for (Expr ta : ap.getSubExpressions()) {
-                ta = ruleset.rewriteOrSame(ta);
-                n.add(new Mul(ta, b));
+            for (Expr ta : ap.getChildren()) {
+                ta = ruleset.rewriteOrSame(ta, null);
+                n.add(Mul.of(ta, b));
             }
-            return new Plus(n.toArray(new Expr[0]));
+            return Plus.of(n.toArray(new Expr[0]));
         } else if (b instanceof Plus) {
             Plus bp = ((Plus) b);
             List<Expr> n = new ArrayList<Expr>();
-            for (Expr tb : bp.getSubExpressions()) {
-                tb = ruleset.rewriteOrSame(tb);
-                n.add(new Mul(a, tb));
+            for (Expr tb : bp.getChildren()) {
+                tb = ruleset.rewriteOrSame(tb, null);
+                n.add(Mul.of(a, tb));
             }
-            return new Plus(n.toArray(new Expr[0]));
+            return Plus.of(n.toArray(new Expr[0]));
         }
-//        return new Mul(a, b);
-        return MathsBase.mul(a, b);
+//        return Mul.of(a, b);
+        return a.mul(b);
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

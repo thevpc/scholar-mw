@@ -7,18 +7,18 @@ import net.vpc.scholar.hadrumaths.io.HFile;
  * Created by vpc on 5/30/14.
  */
 public class DumpCacheFile {
-    private DumpPath dumpPath;
-    private String relativePath;
-    private String absolutePath;
-    private HFile file;
-    private AppLock lock;
-    private PersistenceCache persistenceCache;
+    private final CacheKey cacheKey;
+    private final String relativePath;
+    private final String absolutePath;
+    private final HFile file;
+    private final AppLock lock;
+    private final PersistenceCache persistenceCache;
 
 
-    public DumpCacheFile(DumpPath dumpPath, String relativePath, HFile file, PersistenceCache persistenceCache) {
-        this.dumpPath = dumpPath;
+    public DumpCacheFile(CacheKey cacheKey, String relativePath, HFile file, PersistenceCache persistenceCache) {
+        this.cacheKey = cacheKey;
         this.relativePath = relativePath;
-        this.absolutePath = dumpPath.getPath() + "/" + relativePath;
+        this.absolutePath = cacheKey.getPath() + "/" + relativePath;
         this.file = file;
         this.persistenceCache = persistenceCache;
         lock = file.lock();
@@ -45,8 +45,8 @@ public class DumpCacheFile {
         return file.existsOrWait();
     }
 
-    public DumpPath getDumpPath() {
-        return dumpPath;
+    public CacheKey getCacheKey() {
+        return cacheKey;
     }
 
     public String getRelativePath() {

@@ -8,6 +8,7 @@ import net.vpc.common.util.ArrayUtils;
 import net.vpc.common.util.MinMax;
 import net.vpc.scholar.hadruplot.backends.simple.curve.Curve;
 import net.vpc.scholar.hadruplot.backends.simple.curve.CurveStat;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,6 +80,6 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel 
 
     @Override
     public JPopupMenu getPopupMenu() {
-        return chartPanel.getComponentPopupMenu();
+        return PlotUtils.getOrCreateComponentPopupMenu(chartPanel);
     }
 }

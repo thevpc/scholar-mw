@@ -1,15 +1,19 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
 
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -42,17 +46,25 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
                     }
                     monitor.setProgress(1.0*i1/cells.length,"Gp Detection");
                 }
-                return all.toArray(new DoubleToVector[all.size()]);
+                return all.toArray(new DoubleToVector[0]);
             }
         });
     }
 
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("cells", context.elem(cells));
+        return h.build();
+    }
 
     @Override
-    public Dumper getDumpStringHelper() {
-        arr();
-        Dumper h = super.getDumpStringHelper();
-        h.add("cells",cells);
-        return h;
+    public Geometry[] getGeometries() {
+        List<Geometry> all = new ArrayList<>();
+        for (TestFunctionCell cell : cells) {
+            all.add(cell.getAreaGeometryList());
+        }
+        return all.toArray(new Geometry[0]);
     }
+
 }

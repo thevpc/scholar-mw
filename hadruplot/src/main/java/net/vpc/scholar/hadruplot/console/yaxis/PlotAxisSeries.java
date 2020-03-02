@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadruplot.console.yaxis;
 
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadruplot.console.*;
 import net.vpc.scholar.hadruplot.PlotType;
@@ -40,11 +40,10 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
 
     @Override
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        Chronometer chronometer = new Chronometer();
-        chronometer.start();
+        Chronometer chronometer = Chronometer.start();
 //        x1values = getX(direct, modele, x_axis);
 //        x2values = getY(direct, modele, x_axis);
-        PlotMatrix[] yvalues = compute(p);
+        PlotMatrix[] yvalues = eval(p);
         chronometer.stop();
 
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
@@ -68,7 +67,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
         return all.iterator();
     }
 
-    public PlotMatrix[] compute(ConsoleActionParams p) {
+    public PlotMatrix[] eval(ConsoleActionParams p) {
         ArrayList<PlotMatrix> ret = new ArrayList<PlotMatrix>();
         YType[] yTypes = getTypes();
         PlotMatrix referenceMatrix = null;
@@ -108,11 +107,11 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
                 }
             }
         }
-        final net.vpc.common.mon.ProgressMonitor[] monitors = ProgressMonitorFactory.split(this, new double[]{9, 9, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
+        final net.vpc.common.mon.ProgressMonitor[] monitors = ProgressMonitors.split(this, new double[]{9, 9, 1, 1}, new boolean[]{_b_referenceMatrix, _b_modeledMatrix, _b_relativeError, _b_absoluteError});
         ParamSet theX = p.getAxis().getX();
         double xParamMultiplier = theX == null ? 1 : theX.getMultiplier();
         if (_b_referenceMatrix) {
-            referenceMatrix = computeValue(p.getStructure(), monitors[0], p).setName("[Ref]");
+            referenceMatrix = evalValue(p.getStructure(), monitors[0], p).setName("[Ref]");
             if (!monitors[0].isTerminated()) {
                 monitors[0].terminate(getName());
             }
@@ -127,7 +126,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
             }
         }
         if (_b_modeledMatrix) {
-            modeledMatrix = computeValue(p.getStructure2(), monitors[1], p).setName("[Model]");
+            modeledMatrix = evalValue(p.getStructure2(), monitors[1], p).setName("[Model]");
             if (!monitors[1].isTerminated()) {
                 monitors[1].terminate(getName());
             }
@@ -146,7 +145,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
             final Object[][] m = modeledMatrix.getMatrix();
             if (d.length == m.length && (d.length == 0 || (d.length > 0 && d[0].length == m[0].length))) {//sinon non comparables
                 final PlotMatrix finalReferenceMatrix = referenceMatrix;
-                relativeError = ProgressMonitorFactory.invokeMonitoredAction(monitors[2], getPlotTitle() + ":relativeError", new MonitoredAction<PlotMatrix>() {
+                relativeError = ProgressMonitors.invokeMonitoredAction(monitors[2], getPlotTitle() + ":relativeError", new MonitoredAction<PlotMatrix>() {
                     @Override
                     public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Object[][] c = PlotUtils.relativeError(d,m);
@@ -160,7 +159,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
             final Object[][] m = modeledMatrix.getMatrix();
             if (d.length == m.length && (d.length == 0 || (d.length > 0 && d[0].length == m[0].length))) {//sinon non comparables
                 final PlotMatrix finalReferenceMatrix1 = referenceMatrix;
-                absoluteError = ProgressMonitorFactory.invokeMonitoredAction(monitors[3], getPlotTitle() + ":absoluteError", new MonitoredAction<PlotMatrix>() {
+                absoluteError = ProgressMonitors.invokeMonitoredAction(monitors[3], getPlotTitle() + ":absoluteError", new MonitoredAction<PlotMatrix>() {
                     @Override
                     public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                         PlotMatrix absoluteError = (new PlotMatrix(PlotUtils.sub(d,m), finalReferenceMatrix1.getColumns(), finalReferenceMatrix1.getRows()).setName("[-]"));
@@ -209,7 +208,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
         return ret.toArray(new PlotMatrix[0]);
     }
 
-    protected abstract PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p);
+    protected abstract PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p);
 
 
     public String getPlotTitle() {

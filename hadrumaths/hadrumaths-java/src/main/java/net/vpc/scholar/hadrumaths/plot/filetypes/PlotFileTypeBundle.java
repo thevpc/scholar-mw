@@ -1,19 +1,18 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.filetypes.PlotFileTypePng;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class PlotFileTypeBundle implements PlotFileType {
-    public static final PlotFileType INSTANCE=new PlotFileTypeBundle();
+public final class PlotFileTypeBundle implements PlotFileType {
+    public static final PlotFileType INSTANCE = new PlotFileTypeBundle();
+
+    private PlotFileTypeBundle() {
+    }
 
     @Override
     public String getTitle() {
@@ -87,7 +86,7 @@ public class PlotFileTypeBundle implements PlotFileType {
 
     @Override
     public void save(File file, PlotComponent component) throws IOException {
-        save(file,new SimplePlotModelProvider(component.getModel(),component.toComponent()));
+        save(file, new SimplePlotModelProvider(component.getModel(), component.toComponent()));
     }
 
     @Override
@@ -139,5 +138,13 @@ public class PlotFileTypeBundle implements PlotFileType {
         throw new UnsupportedOperationException("Unknown file format");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
+    }
 }

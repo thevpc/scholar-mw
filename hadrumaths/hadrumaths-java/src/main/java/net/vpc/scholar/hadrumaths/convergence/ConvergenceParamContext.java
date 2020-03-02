@@ -6,10 +6,10 @@ import java.util.Map;
  * @author taha.bensalah@gmail.com on 7/21/16.
  */
 public class ConvergenceParamContext {
-    private Object source;
-    private Object value;
-    private int index;
-    private Map<String, Object> config;
+    private final Object source;
+    private final Object value;
+    private final int index;
+    private final Map<String, Object> config;
 
     public ConvergenceParamContext(Object source, Object value, int index, Map<String, Object> config) {
         this.source = source;

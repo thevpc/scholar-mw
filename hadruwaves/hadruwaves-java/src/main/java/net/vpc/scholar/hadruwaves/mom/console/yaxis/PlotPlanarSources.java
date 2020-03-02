@@ -20,8 +20,8 @@ public class PlotPlanarSources extends PlotAxisSeries implements Cloneable {
         this.axis = axis;
     }
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
     public PlotPlanarSources(Axis axis, YType[] type, PlotType plotType) {
@@ -30,11 +30,11 @@ public class PlotPlanarSources extends PlotAxisSeries implements Cloneable {
         setPlotType(PlotType.HEATMAP);
     }
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
-        Complex[][] c = structure.source().monitor(monitor).computeMatrix(axis, x, y, 0).getArray();
+        Complex[][] c = structure.source().monitor(monitor).evalMatrix(axis, x, y, 0).getArray();
         return new PlotMatrix(c, x, y);
     }
 

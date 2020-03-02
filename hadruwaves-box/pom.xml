@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.vpc.app.nuts.toolbox</groupId>
     <artifactId>hadruwaves-box</artifactId>
-    <version> 3.1.35.0</version>
+    <version>3.2.0.0</version>
     <packaging>jar</packaging>
     <name>net.vpc.scholar.hadruwaves.hadruwaves-box</name>
 

@@ -10,19 +10,19 @@ public class DoubleArrayParamSet extends ParamSet<Double> implements Cloneable {
     private double[] values;
     private int index = -1;
 
-    public DoubleArrayParamSet(Param configurator) {
+    public DoubleArrayParamSet(CParam configurator) {
         this(configurator, new double[0]);
     }
 
-    public DoubleArrayParamSet(Param configurator, double value) {
+    public DoubleArrayParamSet(CParam configurator, double value) {
         this(configurator, new double[]{value});
     }
 
-    public DoubleArrayParamSet(Param configurator, double min, double max, int times) {
+    public DoubleArrayParamSet(CParam configurator, double min, double max, int times) {
         this(configurator, ArrayUtils.dtimes(min, max, times));
     }
 
-    public DoubleArrayParamSet(Param configurator, double min, double max, double step) {
+    public DoubleArrayParamSet(CParam configurator, double min, double max, double step) {
         this(configurator, ArrayUtils.dsteps(min, max, step));
     }
 
@@ -41,7 +41,7 @@ public class DoubleArrayParamSet extends ParamSet<Double> implements Cloneable {
         return this;
     }
 
-    public DoubleArrayParamSet(Param configurator, double[] values) {
+    public DoubleArrayParamSet(CParam configurator, double[] values) {
         super(configurator);
         this.values = values;
     }

@@ -1,14 +1,16 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
-import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.RWG;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.RWG;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
@@ -50,13 +52,14 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
         this(true, true, 100, 100);
     }
 
-    public Dumper getDumper() {
-        Dumper h = super.getDumper();
-        h.add("x", x);
-        h.add("y", y);
-        h.add("gridx", gridx);
-        h.add("gridy", gridy);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("x", context.elem(x));
+        h.add("y", context.elem(y));
+        h.add("gridx", context.elem(gridx));
+        h.add("gridy", context.elem(gridy));
+        return h.build();
     }
 
     public int getCount() {
@@ -67,10 +70,10 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
         Polygon p = zone.getPolygon();
         DoubleToVector f = Maths.vector(
                 (
-                        x ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
+                        x ? DDiscrete.of(new RWG(1, p), gridx, gridy) : Maths.DZEROXY
                 ),
                 (
-                        y ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
+                        y ? DDiscrete.of(new RWG(1, p), gridx, gridy) : Maths.DZEROXY
                 )
         )
                 .setProperty("Type", (x & y) ? "Polyedre" : x ? "PolyedreX" : y ? "PolyedreY" : "0")
@@ -83,7 +86,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
 //        switch (zone.getShape()) {
 //            default: {
 //                Polygon p = zone.getPolygon();
-////                List<Point> ps = p.getPoints();
+////                PList<Point> ps = p.getPoints();
 ////                Point p1 = ps.get(1);
 ////                Point p2 = ps.get(3);
 //                try {
@@ -230,7 +233,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
 //
 //                    Geometry area =  m1.getGeometry().add(m2.getGeometry());
 //                    if(area.isPolygonal() && area.toPolygon().is4Edges()) {
-//                        List<Point> polyPoints = area.toPolygon().getPoints();
+//                        PList<Point> polyPoints = area.toPolygon().getPoints();
 //                        MeshZone meshZone = new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN);
 //                        Point p1ok = GeomUtils.closest(p1, polyPoints);
 //                        Point p2ok = GeomUtils.closest(p2, polyPoints);

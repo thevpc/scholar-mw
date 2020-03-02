@@ -5,10 +5,10 @@
 package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Real;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Real;
 
 /**
  * @author vpc
@@ -16,18 +16,19 @@ import net.vpc.scholar.hadrumaths.symbolic.Real;
 public class RealObjectFormat implements ObjectFormat<Real> {
 
     @Override
-    public String format(Real o, ObjectFormatParamSet format) {
+    public String format(Real o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
 
     }
 
     @Override
-    public void format(StringBuilder sb, Real o, ObjectFormatParamSet format) {
+    public void format(Real o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         Expr arg = o.getArg();
-        sb.append("real(");
-        FormatFactory.format(sb, arg, format);
-        sb.append(")");
+        context.append("real(");
+        context.format(arg, format);
+        context.append(")");
     }
 }

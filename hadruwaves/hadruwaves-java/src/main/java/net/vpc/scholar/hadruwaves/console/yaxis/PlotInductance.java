@@ -15,9 +15,9 @@ public class PlotInductance extends PlotAxisSeriesMatrixValue implements Cloneab
     }
 
     @Override
-    protected Object[][] computeMatrixItems(ConsoleAwareObject structure, ParamSet x) {
+    protected Object[][] evalMatrixItems(ConsoleAwareObject structure, ParamSet x) {
         MomStructure s=(MomStructure) structure;
-        return s.self().monitor(this).computeMatrix().getArray();
+        return s.self().monitor(this).evalMatrix().getArray();
     }
 
 }

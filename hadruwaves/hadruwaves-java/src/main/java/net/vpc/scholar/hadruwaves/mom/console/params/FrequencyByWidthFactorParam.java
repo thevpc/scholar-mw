@@ -1,11 +1,11 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
-import net.vpc.scholar.hadruplot.console.params.AbstractParam;
+import net.vpc.scholar.hadruplot.console.params.AbstractCParam;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import static net.vpc.scholar.hadrumaths.Maths.C;
 
-public class FrequencyByWidthFactorParam extends AbstractParam implements Cloneable {
+public class FrequencyByWidthFactorParam extends AbstractCParam implements Cloneable {
     public FrequencyByWidthFactorParam() {
         super("xdim/lamda");
     }

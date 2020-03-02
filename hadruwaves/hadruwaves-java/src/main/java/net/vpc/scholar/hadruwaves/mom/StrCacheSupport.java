@@ -11,44 +11,44 @@ abstract class StrCacheSupport<T> extends CacheSupport<T> {
     private MomStructure momStructure;
 
     protected StrCacheSupport(MomStructure momStructure, String cacheItemName,ProgressMonitor monitor) {
-        super(momStructure.persistentCache, cacheItemName,monitor);
+        super(momStructure.getPersistentCache(), cacheItemName,monitor);
         this.momStructure = momStructure;
     }
 
     public T get() {
         if (getPersistenceCache().isEnabled()) {
             String cacheItemName = getCacheItemName();
-            T t = computeCached(momStructure.hashValue(), (T) momStructure.memoryCache.get(cacheItemName));
-            momStructure.memoryCache.set(cacheItemName,t);
+            T t = evalCached(momStructure.getKey(), (T) momStructure.getMemoryCache().get(cacheItemName));
+            momStructure.getMemoryCache().set(cacheItemName,t);
             return t;
         }
         init();
-        return compute(null);
+        return eval(null);
     }
 
     public T getOrNull() {
         String cacheItemName = getCacheItemName();
-        T v = (T)momStructure.memoryCache.get(cacheItemName);
+        T v = (T)momStructure.getMemoryCache().get(cacheItemName);
         if(v!=null){
             return v;
         }
-        return super.getOrNull(momStructure.hashValue());
+        return super.getOrNull(momStructure.getKey());
     }
 
     public boolean isCached() {
         String cacheItemName = getCacheItemName();
-        T v = (T)momStructure.memoryCache.get(cacheItemName);
+        T v = (T)momStructure.getMemoryCache().get(cacheItemName);
         if(v!=null){
             return true;
         }
-        return super.isCached(momStructure.hashValue());
+        return super.isCached(momStructure.getKey());
     }
 
     public T getNoMem(T oldValue) {
         if (getPersistenceCache().isEnabled()) {
-            return computeCached(momStructure.hashValue(), oldValue);
+            return evalCached(momStructure.getKey(), oldValue);
         }
         init();
-        return compute(null);
+        return eval(null);
     }
 }

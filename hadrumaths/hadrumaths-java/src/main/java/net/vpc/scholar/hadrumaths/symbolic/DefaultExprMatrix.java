@@ -1,5 +1,7 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
+import net.vpc.scholar.hadrumaths.symbolic.old.AbstractExprMatrix2;
+
 /**
  * Created by vpc on 2/14/15.
  */

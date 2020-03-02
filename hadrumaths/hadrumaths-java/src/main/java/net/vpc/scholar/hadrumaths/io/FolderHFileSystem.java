@@ -1,16 +1,22 @@
 package net.vpc.scholar.hadrumaths.io;
 
-import java.io.UncheckedIOException;
 import net.vpc.scholar.hadrumaths.concurrent.AppLock;
 import net.vpc.scholar.hadrumaths.concurrent.FileSystemLock;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class FolderHFileSystem extends AbstractHFileSystem {
-    private File root;
+    private final File root;
 
     public FolderHFileSystem(File root) {
         this.root = root;
+    }
+
+    @Override
+    public boolean exists(HFile file) {
+        return resolveFile(file).exists();
     }
 
     private File resolveFile(HFile path) {
@@ -19,11 +25,6 @@ public class FolderHFileSystem extends AbstractHFileSystem {
 
     private File resolveFile(String path) {
         return new File(root, path);
-    }
-
-    @Override
-    public boolean exists(HFile file) {
-        return resolveFile(file).exists();
     }
 
     @Override
@@ -37,23 +38,30 @@ public class FolderHFileSystem extends AbstractHFileSystem {
     }
 
     @Override
-    public InputStream getInputStream(HFile file) {
+    public byte[] loadBytes(HFile file) {
         try {
-            return new FileInputStream(resolveFile(file));
-        } catch (FileNotFoundException e) {
+            return Files.readAllBytes(resolvePath(file));
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Path resolvePath(HFile path) {
+        return resolvePath(path.getPath());
+    }
+
+    private Path resolvePath(String path) {
+        return new File(root, path).toPath();
     }
 
     @Override
-    public Reader getReader(HFile file) {
+    public InputStream getInputStream(HFile file) {
         try {
-            return new FileReader(resolveFile(file));
-        } catch (FileNotFoundException e) {
+            return Files.newInputStream(resolvePath(file));
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
-
 
     @Override
     public OutputStream getOutputStream(HFile file, boolean append) {
@@ -92,6 +100,15 @@ public class FolderHFileSystem extends AbstractHFileSystem {
             throw new UncheckedIOException(new IOException("Unable to mkdir " + path.getPath() + " as " + file.getPath()));
         }
         return false;
+    }
+
+    @Override
+    public Reader getReader(HFile file) {
+        try {
+            return new FileReader(resolveFile(file));
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override

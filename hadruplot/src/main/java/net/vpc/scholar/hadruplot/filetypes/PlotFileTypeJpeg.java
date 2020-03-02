@@ -7,8 +7,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class PlotFileTypeJpeg implements PlotFileType {
+public final class PlotFileTypeJpeg implements PlotFileType {
     public static final PlotFileType INSTANCE=new PlotFileTypeJpeg();
+
+    private PlotFileTypeJpeg() {
+    }
+
     @Override
     public String getTitle() {
         return "JPG";
@@ -41,4 +45,13 @@ public class PlotFileTypeJpeg implements PlotFileType {
         throw new IllegalArgumentException("Unsupported");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
+    }
 }

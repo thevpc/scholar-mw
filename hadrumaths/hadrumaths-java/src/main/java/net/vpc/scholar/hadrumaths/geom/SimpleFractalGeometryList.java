@@ -40,11 +40,10 @@ public abstract class SimpleFractalGeometryList extends DefaultFractalGeometryLi
     }
 
     @Override
-    public abstract Polygon[] getMotif();
-
-
-    @Override
     public String toString() {
         return getClass().getSimpleName();
     }
+
+    @Override
+    public abstract Polygon[] getMotif();
 }

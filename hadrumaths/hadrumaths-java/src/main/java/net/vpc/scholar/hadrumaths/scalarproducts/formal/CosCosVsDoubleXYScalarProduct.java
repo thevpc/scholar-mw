@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 
-import static net.vpc.scholar.hadrumaths.MathsBase.cos2;
-import static net.vpc.scholar.hadrumaths.MathsBase.sin2;
+import static net.vpc.scholar.hadrumaths.Maths.cos2;
+import static net.vpc.scholar.hadrumaths.Maths.sin2;
 
 
 /**
@@ -22,13 +22,10 @@ final class CosCosVsDoubleXYScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         CosXCosY f = (CosXCosY) f1;
         DoubleValue g = (DoubleValue) f2;
 //        return primi_coscst(domain, f, g);
@@ -47,12 +44,12 @@ final class CosCosVsDoubleXYScalarProduct implements FormalScalarProductHelper {
         double b2 = domain.xmax();
         double b3 = domain.ymin();
         double b4 = domain.ymax();
-        double fa = f.a;
-        double fc = f.c;
-        double famp = f.amp;
-        double fb = f.b;
-        double fd = f.d;
-        double gvalue = g.value;
+        double fa = f.getA();
+        double fc = f.getC();
+        double famp = f.getAmp();
+        double fb = f.getB();
+        double fd = f.getD();
+        double gvalue = g.toDouble();
 
         if (fa == 0 && fc == 0) {
             x = b1;

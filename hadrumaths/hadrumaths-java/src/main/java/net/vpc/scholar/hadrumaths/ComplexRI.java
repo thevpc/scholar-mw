@@ -1,15 +1,16 @@
 package net.vpc.scholar.hadrumaths;
 
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 
 /**
  * Created by vpc on 4/7/17.
  */
-public final class ComplexRI extends Complex {
+final class ComplexRI extends Complex {
     private static final long serialVersionUID = 1;
-    private double real;
-    private double imag;
+    private final double real;
+    private final double imag;
 
     ComplexRI(double real, double imag) {
         this.real = real;
@@ -31,11 +32,11 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex imag() {
-        return Complex.valueOf(imag);
+        return Complex.of(imag);
     }
 
     public Complex real() {
-        return Complex.valueOf(real);
+        return Complex.of(real);
     }
 
     public double realdbl() {
@@ -47,11 +48,11 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex add(double c) {
-        return Complex.valueOf(real + c, imag);
+        return Complex.of(real + c, imag);
     }
 
     public Complex add(Complex c) {
-        return Complex.valueOf(real + c.getReal(), imag + c.getImag());
+        return Complex.of(real + c.getReal(), imag + c.getImag());
     }
 
     public Complex npow(int n) {
@@ -78,21 +79,26 @@ public final class ComplexRI extends Complex {
 
     public Complex inv() {
         if (real == 0) {
-            return Complex.valueOf(0, -1 / imag);
+            return Complex.of(0, -1 / imag);
         } else if (imag == 0) {
-            return Complex.valueOf(1 / real, 0);
+            return Complex.of(1 / real, 0);
         } else {
             double d = real * real + imag * imag;
-            return Complex.valueOf(real / d, -imag / d);
+            return Complex.of(real / d, -imag / d);
         }
     }
 
     public Complex conj() {
-        return Complex.valueOf(real, -imag);
+        return Complex.of(real, -imag);
     }
 
     public Complex mul(double c) {
-        return Complex.valueOf(real * c, imag * c);
+        return Complex.of(real * c, imag * c);
+    }
+
+    @Override
+    public boolean isSmartMulDouble() {
+        return true;
     }
 
     public Complex mulAll(double... c) {
@@ -102,7 +108,7 @@ public final class ComplexRI extends Complex {
             r *= aC;
             i *= aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex divAll(double... c) {
@@ -112,7 +118,7 @@ public final class ComplexRI extends Complex {
             r /= aC;
             i /= aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex addAll(double... c) {
@@ -122,11 +128,16 @@ public final class ComplexRI extends Complex {
             r += aC;
             i += aC;
         }
-        return Complex.valueOf(r, i);
+        return Complex.of(r, i);
     }
 
     public Complex mul(Complex c) {
-        return Complex.valueOf(real * c.getReal() - imag * c.getImag(), real * c.getImag() + imag * c.getReal());
+        return Complex.of(real * c.getReal() - imag * c.getImag(), real * c.getImag() + imag * c.getReal());
+    }
+
+    @Override
+    public boolean isSmartMulComplex() {
+        return true;
     }
 
     public CArray mul(CArray c) {
@@ -142,15 +153,15 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex sub(Complex c) {
-        return Complex.valueOf(real - c.getReal(), imag - c.getImag());
+        return Complex.of(real - c.getReal(), imag - c.getImag());
     }
 
     public Complex sub(double c) {
-        return Complex.valueOf(real - c, imag);
+        return Complex.of(real - c, imag);
     }
 
     public Complex div(double c) {
-        return Complex.valueOf(real / c, imag / c);
+        return Complex.of(real / c, imag / c);
     }
 
     public Complex div(Complex other) {
@@ -160,7 +171,7 @@ public final class ComplexRI extends Complex {
         double d = other.getImag();
         double c2d2 = c * c + d * d;
 
-        return Complex.valueOf(
+        return Complex.of(
                 (a * c + b * d) / c2d2,
                 (b * c - a * d) / c2d2
         );
@@ -168,16 +179,16 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex exp() {
-        double e = MathsBase.exp(real);
-        return Complex.valueOf(e * MathsBase.cos2(imag), e * MathsBase.sin2(imag));
+        double e = Maths.exp(real);
+        return Complex.of(e * Maths.cos2(imag), e * Maths.sin2(imag));
     }
 
     public Complex abs() {
-        return Complex.valueOf(MathsBase.sqrt(real * real + imag * imag));
+        return Complex.of(Maths.sqrt(real * real + imag * imag));
     }
 
     public double absdbl() {
-        return MathsBase.sqrt(real * real + imag * imag);
+        return Maths.sqrt(real * real + imag * imag);
     }
 
     public double absdblsqr() {
@@ -185,7 +196,7 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex neg() {
-        return Complex.valueOf(-real, -imag);
+        return Complex.of(-real, -imag);
     }
 
     public int compareTo(Complex c) {
@@ -234,8 +245,8 @@ public final class ComplexRI extends Complex {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.imag) ^ (Double.doubleToLongBits(this.imag) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.real) ^ (Double.doubleToLongBits(this.real) >>> 32));
+        hash = 89 * hash + Double.hashCode(this.real);
+        hash = 89 * hash + Double.hashCode(this.imag);
         return hash;
     }
 
@@ -284,14 +295,14 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex sin() {
-        return Complex.valueOf(MathsBase.sin2(real) * Math.cosh(imag), MathsBase.cos2(real) * Math.sinh(imag));
+        return Complex.of(Maths.sin2(real) * Math.cosh(imag), Maths.cos2(real) * Math.sinh(imag));
     }
 
     public Complex cos() {
         if (imag == 0) {
-            return Complex.valueOf(MathsBase.cos2(real));
+            return Complex.of(Maths.cos2(real));
         }
-        return Complex.valueOf(MathsBase.cos2(real) * Math.cosh(imag), -MathsBase.sin2(real) * Math.sinh(imag));
+        return Complex.of(Maths.cos2(real) * Math.cosh(imag), -Maths.sin2(real) * Math.sinh(imag));
     }
 
     public Complex tan() {
@@ -300,7 +311,7 @@ public final class ComplexRI extends Complex {
 
     public Complex atan() {
         if (isReal()) {
-            return Complex.valueOf(Math.atan(real));
+            return Complex.of(Math.atan(real));
         }
         return Complex.MINUS_HALF_I.mul(
 
@@ -310,7 +321,7 @@ public final class ComplexRI extends Complex {
 
     public Complex acos() {
         if (isReal()) {
-            return Complex.valueOf(Math.acos(real));
+            return Complex.of(Math.acos(real));
         }
         //wolfram : http://mathworld.wolfram.com/InverseCosine.html
         // PI/2 + i ln (i *z + sqrt( 1-z2)
@@ -339,12 +350,12 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex arg() {
-        return Complex.valueOf(MathsBase.atan2(getImag(), getReal()));
+        return Complex.of(Maths.atan2(getImag(), getReal()));
     }
 
     public Complex asin() {
         if (isReal()) {
-            return Complex.valueOf(Math.asin(real));
+            return Complex.of(Math.asin(real));
         }
         Complex z = this;
         return z.mul(I).add(ONE.sub(z.sqr()).sqrt()).log().mul(MINUS_I);
@@ -383,7 +394,7 @@ public final class ComplexRI extends Complex {
 
     public Complex tanh() {
         if (imag == 0) {
-            return Complex.valueOf(Math.tanh(real));
+            return Complex.of(Math.tanh(real));
         }
         Complex eplus = exp();
         Complex eminus = this.neg().exp();
@@ -393,7 +404,7 @@ public final class ComplexRI extends Complex {
 
     public Complex cotanh() {
         if (imag == 0) {
-            return Complex.valueOf(1 / Math.tanh(real));
+            return Complex.of(1 / Math.tanh(real));
         }
         Complex eplus = exp();
         Complex eminus = this.neg().exp();
@@ -402,20 +413,20 @@ public final class ComplexRI extends Complex {
     }
 
     public Complex log() {
-        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real));
+        return Complex.of(Math.log(absdbl()), Math.atan2(imag, real));
     }
 
     public Complex log10() {
-        return Complex.valueOf(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
+        return Complex.of(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
     }
 
     public Complex db() {
-        return Complex.valueOf(Math.log10(absdbl()) * (10));
+        return Complex.of(Math.log10(absdbl()) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.valueOf(Math.log10(absdbl()) * (20));
+        return Complex.of(Math.log10(absdbl()) * (20));
         //return log10().mul(10);
     }
 
@@ -437,11 +448,11 @@ public final class ComplexRI extends Complex {
 //    public Complex angle() {
 //        //workaround
 ////        if(real==0){
-////            return imag>=0?MathsBase.PI/2:-MathsBase.PI/2;
+////            return imag>=0?Maths.PI/2:-Maths.PI/2;
 ////        }else if(imag==0){
-////            return real>=0?0:MathsBase.PI;
+////            return real>=0?0:Maths.PI;
 ////        }
-//        return Complex.valueOf(MathsBase.atan2(imag, real));
+//        return Complex.valueOf(Maths.atan2(imag, real));
 //    }
 
     public Complex sqr() {
@@ -451,7 +462,7 @@ public final class ComplexRI extends Complex {
     public double dsqrt() {
         if (imag == 0) {
             if (real >= 0) {
-                return MathsBase.sqrt(real);
+                return Maths.sqrt(real);
             } else {
                 return Double.NaN;
             }
@@ -462,11 +473,11 @@ public final class ComplexRI extends Complex {
 
     public Complex sqrt() {
         if (imag == 0) {
-            return real >= 0 ? Complex.valueOf(MathsBase.sqrt(real), 0) : Complex.valueOf(0, MathsBase.sqrt(-real));
+            return real >= 0 ? Complex.of(Maths.sqrt(real), 0) : Complex.of(0, Maths.sqrt(-real));
         } else {
-            double r = MathsBase.sqrt(absdbl());
+            double r = Maths.sqrt(absdbl());
             double theta = arg().toDouble() / 2;
-            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
+            return Complex.of(r * Maths.cos2(theta), r * Maths.sin2(theta));
         }
     }
 
@@ -492,17 +503,17 @@ public final class ComplexRI extends Complex {
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(MathsBase.pow(real, power), 0) : new Complex(0, MathsBase.pow(-real, power));
+//            return real >= 0 ? new Complex(Maths.pow(real, power), 0) : new Complex(0, Maths.pow(-real, power));
         } else if (power >= 0) {
-            double r = MathsBase.pow(absdbl(), power);
+            double r = Maths.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
-            return Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
+            return Complex.of(r * Maths.cos2(theta), r * Maths.sin2(theta));
         } else { //n<0
             power = -power;
-            double r = MathsBase.pow(absdbl(), power);
+            double r = Maths.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.valueOf(r * MathsBase.cos2(theta), r * MathsBase.sin2(theta));
+            Complex c = Complex.of(r * Maths.cos2(theta), r * Maths.sin2(theta));
             return c.inv();
         }
     }
@@ -534,20 +545,25 @@ public final class ComplexRI extends Complex {
 //    public static Complex cosh(Complex c){
 //        return c.cosh();
 //    }
-    public boolean isDD() {
-        return isNaN() || imag == 0;
-    }
-
+//    @Override
+//    public boolean isNarrow(ExprDefinitionType other) {
+//        switch (other){
+//            case DOUBLE_DOUBLE:{
+//                return isNaN() || imag == 0;
+//            }
+//        }
+//        return is(other);
+//    }
 //    public boolean isDDx() {
 //        return isNaN() || imag == 0;
 //    }
 
     public DoubleToDouble toDD() {
         if (imag == 0) {
-            return DoubleValue.valueOf(getReal(), Domain.FULL(getDomainDimension()));
+            return Maths.expr(getReal(), Domain.FULL(getDomain().getDimension()));
         }
         if (isNaN()) {
-            return DoubleValue.valueOf(Double.NaN, Domain.FULL(getDomainDimension()));
+            return Maths.expr(Double.NaN, Domain.FULL(getDomain().getDimension()));
         }
         throw new ClassCastException();
     }
@@ -574,8 +590,28 @@ public final class ComplexRI extends Complex {
         throw new ClassCastException("Complex has imaginary value and cant be cast to double");
     }
 
+//    @Override
+//    public boolean isDoubleTyped() {
+//        return imag == 0;
+//    }
+
     @Override
-    public boolean isDoubleTyped() {
-        return imag == 0;
+    public ExprType getNarrowType() {
+        if (imag == 0) {
+            return ExprType.DOUBLE_NBR;
+        }
+        return ExprType.COMPLEX_NBR;
+    }
+
+    @Override
+    public Expr narrow(ExprType other) {
+        switch (other){
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
+            case DOUBLE_DOUBLE:{
+                return Maths.expr(toReal());
+            }
+        }
+        return ExprDefaults.narrow(this, other);
     }
 }

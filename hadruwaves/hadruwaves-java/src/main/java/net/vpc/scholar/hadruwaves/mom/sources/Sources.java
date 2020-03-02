@@ -4,15 +4,14 @@
  */
 package net.vpc.scholar.hadruwaves.mom.sources;
 
-import java.io.Serializable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.HSerializable;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
  *
  * @author vpc
  */
-public interface Sources extends Serializable, Dumpable, Cloneable {
+public interface Sources extends HSerializable, Cloneable {
 
     Sources clone();
 

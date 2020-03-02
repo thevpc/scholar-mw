@@ -3,7 +3,7 @@ package net.vpc.scholar.hadrumaths.integration;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 
 /**
@@ -14,7 +14,7 @@ import net.vpc.scholar.hadrumaths.symbolic.Linear;
 final class LinearVsLinearIntegralXY {
     private static final long serialVersionUID = 1L;
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         return primi_linear2(domain, (Linear) f1, (Linear) f2);
     }
 
@@ -28,12 +28,12 @@ final class LinearVsLinearIntegralXY {
         double b2 = domain.xmax();
         double b3 = domain.ymin();
         double b4 = domain.ymax();
-        double fa = f.a;
-        double fb = f.b;
-        double fc = f.c;
-        double ga = g.a;
-        double gb = g.b;
-        double gc = g.c;
+        double fa = f.getA();
+        double fb = f.getB();
+        double fc = f.getC();
+        double ga = g.getA();
+        double gb = g.getB();
+        double gc = g.getC();
 
         if (fa != 0 && fb != 0 && ga != 0 && gb != 0) {
             //       t0 = g.a*f.a*x*x*x*y/3.0+x*x*g.a*f.b*y*y/4.0+x*x*g.a*f.c*y/2.0+x*x*f.a*g.b*y*y/4.0+x*x*f.a*g.c*y/2.0+x*f.b*g.b*y*y*y/3.0+x*y*y*f.c*g.b/2.0+x*y*y*f.b*g.c/2.0+x*f.c*g.c*y;

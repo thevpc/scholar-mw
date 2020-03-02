@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by vpc on 3/23/17.
  */
 public class DefaultCacheObjectSerializedForm implements CacheObjectSerializedForm {
-    private Serializable object;
+    private final Serializable object;
 
     public DefaultCacheObjectSerializedForm(Serializable object) {
         this.object = object;

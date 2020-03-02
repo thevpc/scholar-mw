@@ -45,8 +45,16 @@ public class ConfigOptions implements Serializable, Cloneable {
         return dateFormat != null ? dateFormat : DateFormat.getInstance();
     }
 
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
     public NumberFormat getNumberFormat() {
         return numberFormat != null ? numberFormat : NumberFormat.getInstance();
+    }
+
+    public void setNumberFormat(NumberFormat numberFormat) {
+        this.numberFormat = numberFormat;
     }
 
     public boolean isHelpAsEntry() {
@@ -55,14 +63,6 @@ public class ConfigOptions implements Serializable, Cloneable {
 
     public void setHelpAsEntry(boolean enable) {
         helpAsEntry = enable;
-    }
-
-    public void setDateFormat(DateFormat dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public void setNumberFormat(NumberFormat numberFormat) {
-        this.numberFormat = numberFormat;
     }
 
     public boolean isReadOnly() {

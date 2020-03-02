@@ -42,7 +42,7 @@ public class Configuration
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             'A', 'B', 'C', 'D', 'E', 'F'
     };
-    private static PropertyChangeSupport configChangeSupport = new PropertyChangeSupport("Configuration");
+    private static final PropertyChangeSupport configChangeSupport = new PropertyChangeSupport("Configuration");
     private static boolean static_persistenceEnabled = true;
     private static Configuration globalConfig;
     private static Configuration userConfig;
@@ -926,9 +926,7 @@ public class Configuration
             return true;
         } else if (aClass.isArray()) {
             Class elementClass = aClass.getComponentType();
-            if (classesToConverters.containsKey(elementClass)) {
-                return true;
-            }
+            return classesToConverters.containsKey(elementClass);
         }
         return false;
     }

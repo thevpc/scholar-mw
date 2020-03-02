@@ -9,15 +9,15 @@ public class MathsPlotConsoleCacheSupport implements PlotConsoleCacheSupport {
     private boolean cacheByIteration = false;
 
     @Override
-    public void prepareObject(Object obj,String type,String title) {
+    public void prepareObject(Object obj, String type, String title) {
         if (cachePrefix != null) {
             if (cacheByIteration) {
                 if (obj instanceof CacheAware) {
-                    ((CacheAware) obj).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/"+type+"/" + title));
+                    ((CacheAware) obj).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/" + type + "/" + title));
                 }
             } else {
                 if (obj instanceof CacheAware) {
-                    ((CacheAware) obj).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/"+type));
+                    ((CacheAware) obj).getCacheConfig().setCacheBaseFolder(new HFile(cachePrefix, "/" + type));
                 }
             }
         }

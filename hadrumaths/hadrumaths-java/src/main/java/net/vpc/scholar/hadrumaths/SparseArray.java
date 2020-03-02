@@ -9,9 +9,11 @@ public interface SparseArray<T> {
 
     void set(int i, T value);
 
-    int length();
+    int size();
 
     int getEffectiveSize();
 
-    int getCurrentLength();
+    int getCurrentSize();
+
+    void resize(int newSize);
 }

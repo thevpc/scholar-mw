@@ -1,12 +1,13 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultCustomDDFunctionXExpr;
 
 public class CustomDDFunctionXDefinition implements CustomFunctionDefinition {
     private static final long serialVersionUID = 1L;
-    private String name;
-    private CustomDDFunctionX eval;
+    private final String name;
+    private final CustomDDFunctionX eval;
 
     public CustomDDFunctionXDefinition(String name, CustomDDFunctionX eval) {
         this.name = name;
@@ -22,11 +23,18 @@ public class CustomDDFunctionXDefinition implements CustomFunctionDefinition {
     }
 
     public CustomDDFunctionXExpr fct() {
-        return compose(MathsBase.X);
+        return compose(Maths.X);
     }
 
     public CustomDDFunctionXExpr compose(Expr expr) {
         return new DefaultCustomDDFunctionXExpr(expr.toDD(), this);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (eval != null ? eval.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -38,12 +46,5 @@ public class CustomDDFunctionXDefinition implements CustomFunctionDefinition {
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         return eval != null ? eval.equals(that.eval) : that.eval == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (eval != null ? eval.hashCode() : 0);
-        return result;
     }
 }

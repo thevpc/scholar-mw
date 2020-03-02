@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.mon.VoidMonitoredAction;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
@@ -18,7 +21,7 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
 
     @Override
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         final String monitorMessage = getClass().getSimpleName();
         TestFunctions gpTestFunctions = str.getTestFunctions();
         final DoubleToVector[] _g = gpTestFunctions.arr();
@@ -27,14 +30,14 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
             throw new IllegalArgumentException("WAVE_GUIDE Structure with no Propagative modes");
         }
         final Complex[][] b = new Complex[_g.length][n_propa.length];
-        ProgressMonitor[] mon = ProgressMonitorFactory.split(emonitor, new double[]{2, 8});
-        final TMatrix<Complex> sp = str.getTestModeScalarProducts(mon[0]);
-        ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * n_propa.length));
+        ProgressMonitor[] mon = ProgressMonitors.split(emonitor, new double[]{2, 8});
+        final ComplexMatrix sp = str.getTestModeScalarProducts(mon[0]);
+        ProgressMonitor m = ProgressMonitors.incremental(mon[1], (_g.length * n_propa.length));
         Maths.invokeMonitoredAction(m, monitorMessage, new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 for (int p = 0; p < _g.length; p++) {
-                    TVector<Complex> spp = sp.getRow(p);
+                    ComplexVector spp = sp.getRow(p);
                     for (int n = 0; n < n_propa.length; n++) {
                         //[vpc/20140801] removed neg, don't know why i used to use it
 //                b[p][n] = sp.gf(p, n_propa[n].index).neg();
@@ -57,8 +60,8 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
             double normCol = cMatrix.getColumn(n).toMatrix().norm1();
             double x = normCol / norm;
             if (x < 1E-5) {
-                emonitor.setMessage("MatrixB has column " + n + " badly normed : mode is " + n_propa[n].getMode() + "/" + str.getModeFunctions().getBorders() + " (error " + (x * 100) + "%)");
-                System.err.println("MatrixB has column " + n + " badly normed : mode is " + n_propa[n].getMode() + "/" + str.getModeFunctions().getBorders() + " (error " + (x * 100) + "%)");
+                emonitor.setMessage("MatrixB has column " + n + " badly normed : mode is " + n_propa[n].getMode() + "/" + str.getBorders() + " (error " + (x * 100) + "%)");
+                System.err.println("MatrixB has column " + n + " badly normed : mode is " + n_propa[n].getMode() + "/" + str.getBorders() + " (error " + (x * 100) + "%)");
             }
         }
         return cMatrix;
@@ -66,11 +69,11 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

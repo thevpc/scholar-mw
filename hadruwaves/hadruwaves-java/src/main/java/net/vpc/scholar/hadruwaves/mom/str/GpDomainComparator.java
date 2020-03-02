@@ -1,10 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.str;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DDxyAbstractSum;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.io.Serializable;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -28,17 +30,8 @@ public class GpDomainComparator implements TestFunctionsComparator, Serializable
         DoubleToDouble[] all={f.getComponent(Axis.X).toDC().getRealDD(),f.getComponent(Axis.Y).toDC().getRealDD(),f.getComponent(Axis.X).toDC().getImagDD(),f.getComponent(Axis.Y).toDC().getImagDD()};
         Domain o=null;
         for (DoubleToDouble dFunctionXY : all) {
-            if(dFunctionXY instanceof DDxyAbstractSum){
-                DDxyAbstractSum sum=(DDxyAbstractSum)dFunctionXY;
-                for (DoubleToDouble functionXY : sum.getSegments()) {
-                    if(o==null || compare(o,functionXY.getDomain())>0){
-                        o=functionXY.getDomain();
-                    }
-                }
-            }else{
-                if(o==null || compare(o,dFunctionXY.getDomain())>0){
-                    o=dFunctionXY.getDomain();
-                }
+            if(o==null || compare(o,dFunctionXY.getDomain())>0){
+                o=dFunctionXY.getDomain();
             }
         }
         return o;
@@ -88,10 +81,11 @@ public class GpDomainComparator implements TestFunctionsComparator, Serializable
         return 0;
     }
 
-    public String dump() {
-        Dumper d=new Dumper(this, Dumper.Type.SIMPLE);
-        d.add("compareXFirst",compareXFirst);
-        return d.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("compareXFirst", context.elem(compareXFirst));
+        return h.build();
     }
 
     @Override

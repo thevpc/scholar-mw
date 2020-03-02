@@ -7,7 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class AbstractHSocketServlet implements HSocketServlet {
-    private HadrumathsServlet baseServlet;
+    private final HadrumathsServlet baseServlet;
 
     public AbstractHSocketServlet(HadrumathsServlet baseServlet) {
         this.baseServlet = baseServlet;

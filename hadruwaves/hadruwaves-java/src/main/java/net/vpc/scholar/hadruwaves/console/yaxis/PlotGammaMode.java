@@ -25,7 +25,7 @@ public class PlotGammaMode extends PlotAxisSeriesSingleValue implements Cloneabl
         this.mode = mode;
     }
 
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
         ModeInfo fnIndexes = ((MomStructure)structure).getModeFunctions().getMode(mode, m, n);
         return fnIndexes==null?Complex.NaN : fnIndexes.firstBoxSpaceGamma;
     }

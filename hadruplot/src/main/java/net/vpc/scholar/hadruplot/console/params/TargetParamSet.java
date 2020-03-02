@@ -16,7 +16,7 @@ public class TargetParamSet<T> extends ParamSet<CoupleValue<T>> {
     private ParamSet<T> paramMod;
 
     public TargetParamSet(final ParamSet<T> ref, ParamSet<T> mod) {
-        super(new Param() {
+        super(new CParam() {
             @Override
             public String getName() {
                 return "DistinctParam(" + ref.getName() + ")";

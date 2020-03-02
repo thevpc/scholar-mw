@@ -4,11 +4,13 @@
  */
 package net.vpc.scholar.hadruwaves.mom.sources.planar;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.logging.Level;
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * @author vpc
  */
-public class ExprPlanarSource implements PlanarSource, Dumpable, Cloneable {
+public class ExprPlanarSource implements PlanarSource, Cloneable {
 
     private DoubleToVector fct;
     private Complex characteristicImpedance;
@@ -36,23 +38,20 @@ public class ExprPlanarSource implements PlanarSource, Dumpable, Cloneable {
         return fct;
     }
 
-  
-    public Dumper getDumpHelper() {
-        return new Dumper(this)
-                .add("fct", fct)
-                .add("characteristicImpedance", characteristicImpedance)
-                ;
-    }
 
-    public String dump() {
-        return getDumpHelper().toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("fct", context.elem(fct));
+        h.add("z0", context.elem(characteristicImpedance));
+        return h.build();
     }
 
     @Override
     public PlanarSource clone() {
         try {
             ExprPlanarSource d = (ExprPlanarSource) super.clone();
-            d.fct = (DoubleToVector) d.fct.clone();
+//            d.fct = (DoubleToVector) d.fct.clone();
             return d;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(ExprPlanarSource.class.getName()).log(Level.SEVERE, null, ex);

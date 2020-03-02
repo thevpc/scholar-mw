@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractCapacityBuilder;
 
@@ -19,9 +19,9 @@ class DefaultCapacityBuilder extends AbstractCapacityBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix computeMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl() {
         MomStructure momStructure = (MomStructure)getStructure();
-        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).computeMatrix();
+        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).evalMatrix();
         Complex[][] cc = z.getArrayCopy();
         double o = omega(momStructure.getFrequency());
         for (int i = 0; i < cc.length; i++) {

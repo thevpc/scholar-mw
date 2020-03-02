@@ -42,12 +42,16 @@ public class IntPoint implements Serializable, Cloneable {
         this.dimension = dim;
     }
 
-    public IntPoint clone() {
-        try {
-            return (IntPoint) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+    public static IntPoint create(int x) {
+        return new IntPoint(x, 0, 0, 1);
+    }
+
+    public static IntPoint create(int x, int y) {
+        return new IntPoint(x, y, 0, 2);
+    }
+
+    public static IntPoint create(int x, int y, int z) {
+        return new IntPoint(x, y, z, 3);
     }
 
     public boolean equals(Object obj) {
@@ -56,6 +60,14 @@ public class IntPoint implements Serializable, Cloneable {
         }
         IntPoint p = (IntPoint) obj;
         return x == p.x && y == p.y && z == p.z && dimension == p.dimension;
+    }
+
+    public IntPoint clone() {
+        try {
+            return (IntPoint) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String toString() {
@@ -68,17 +80,5 @@ public class IntPoint implements Serializable, Cloneable {
             }
         }
         return "(" + x + "," + y + "," + z + ")";
-    }
-
-    public static IntPoint create(int x) {
-        return new IntPoint(x, 0, 0, 1);
-    }
-
-    public static IntPoint create(int x, int y) {
-        return new IntPoint(x, y, 0, 2);
-    }
-
-    public static IntPoint create(int x, int y, int z) {
-        return new IntPoint(x, y, z, 3);
     }
 }

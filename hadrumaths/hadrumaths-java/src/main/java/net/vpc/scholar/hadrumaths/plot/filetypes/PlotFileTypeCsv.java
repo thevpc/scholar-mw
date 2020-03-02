@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
 
@@ -11,8 +11,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class PlotFileTypeCsv implements PlotFileType {
-    public static final PlotFileType INSTANCE=new PlotFileTypeCsv();
+public final class PlotFileTypeCsv implements PlotFileType {
+    public static final PlotFileType INSTANCE = new PlotFileTypeCsv();
+
+    private PlotFileTypeCsv() {
+    }
+
     @Override
     public String getTitle() {
         return "Csv";
@@ -93,7 +97,7 @@ public class PlotFileTypeCsv implements PlotFileType {
                         }
                     }
                     if (z != null && z.length > 0) {
-                        Complex[][] cz= ArrayUtils.toComplex(z);
+                        Complex[][] cz = ArrayUtils.toComplex(z);
                         for (int i = 0; i < cz.length; i++) {
                             if (!newLine) {
                                 printStream.print(endCell);
@@ -129,12 +133,22 @@ public class PlotFileTypeCsv implements PlotFileType {
 
     @Override
     public void save(File file, PlotComponent component) throws IOException {
-        save(file,new SimplePlotModelProvider(component.getModel(),component.toComponent()));
+        save(file, new SimplePlotModelProvider(component.getModel(), component.toComponent()));
     }
 
     @Override
     public PlotModel loadModel(File file) {
-        ComplexMatrix matrix = MathsBase.loadMatrix(file);
+        ComplexMatrix matrix = Maths.loadMatrix(file);
         return Plot.title(file.getName()).asMatrix().createModel(matrix);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
     }
 }

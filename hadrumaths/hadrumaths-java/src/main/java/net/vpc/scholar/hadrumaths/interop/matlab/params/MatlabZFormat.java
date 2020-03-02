@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
  * To change this template use File | Settings | File Templates.
  */
 public class MatlabZFormat implements ToMatlabStringParam {
-    private String name;
+    private final String name;
 
     public MatlabZFormat(String name) {
         this.name = name;

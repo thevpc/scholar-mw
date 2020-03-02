@@ -17,8 +17,8 @@ object MicrostripLineMoMExample extends App {
   var l = 5 * MM // length of the strip line
   var w = 1 * MM // width (along y) of the strip line
   var f = 3 * GHZ // frequency
-  val space = matchedLoadBoxSpace(1) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
-  val mass = shortCircuitBoxSpace(2.2, 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
+  val space = matchedLoadBoxSpace(Material.VACUUM) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
+  val mass = shortCircuitBoxSpace(Material.substrate(2.2), 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
 
   var lineDomain = domain(0.0 -> l * 1.5, -w -> w) // line domain
   var box = domain(0.0 -> a, -b / 2 -> b / 2) // box domain
@@ -48,8 +48,8 @@ object MicrostripLineMoMExample extends App {
   var e0 = 1 * domain(0.0 -> v, -w / 2 -> w / 2) // source
 
   // B matrix according to the MoM method is
-  // a column vector of P elements
-  // the i'th element is defined as the scalar product
+  // a column vector of P primitiveElement3DS
+  // the i'th primitiveElement3D is defined as the scalar product
   // of g(i) and e0
   // thus, <g(i) , e0> is evaluated using the ** operator
   var B = columnMatrix(P, (i: Int) => complex(g(i) ** e0))

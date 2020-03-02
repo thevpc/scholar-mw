@@ -15,13 +15,13 @@ public class PlotMatrixACond extends PlotAxisSeriesSingleValue implements Clonea
     }
 
     @Override
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        double cond = ((MomStructure)structure).matrixA().monitor(this).computeMatrix().cond();
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        double cond = ((MomStructure)structure).matrixA().monitor(this).evalMatrix().cond();
         //int ndx=x.getMode();
         //if(cond>2000){
         //    structure.wdebug(plotTitle, new Throwable(),structure.computeMatrixA());
         //}
-        return Complex.valueOf(cond);
+        return Complex.of(cond);
     }
 
     @Override

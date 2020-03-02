@@ -7,16 +7,18 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 
 /**
  * @author vpc
  */
-public interface ExpressionRewriter {
-    RewriteResult rewrite(Expr e);
+public interface ExpressionRewriter extends HSerializable {
+    RewriteResult rewrite(Expr e, ExprType targetExprType);
 
-    Expr rewriteOrSame(Expr e);
+    Expr rewriteOrSame(Expr e, ExprType targetExprType);
 
-    Expr rewriteOrNull(Expr e);
+    Expr rewriteOrNull(Expr e, ExprType targetExprType);
 
     ExprRewriteSuccessListener[] getRewriteSuccessListeners();
 

@@ -8,11 +8,17 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class ArrayLongVector extends AbstractTVector<Long> implements LongVector {
+public class ArrayLongVector extends AbstractVector<Long> implements LongVector {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final long[] ZERO_ELEMENTS = new long[0];
+    /**
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
+     * OutOfMemoryError: Requested array size exceeds VM limit
+     */
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     private long[] elementData;
     private int size;
 
@@ -40,95 +46,29 @@ public class ArrayLongVector extends AbstractTVector<Long> implements LongVector
         appendAll(values);
     }
 
-    public LongVector appendAll(long[] e) {
-        int increment = e.length;
-        ensureCapacityInternal(size + increment);  // Increments modCount!!
-        System.arraycopy(e, 0, elementData, this.size, increment);
-        this.size += increment;
-        return this;
-    }
-
-    public long[] toLongArray() {
-        if (size == 0) {
-            return ZERO_ELEMENTS;
+    public ArrayLongVector(boolean row, VectorModel<Long> model) {
+        super(row);
+        this.elementData = new long[model.size()];
+        for (int i = 0; i < elementData.length; i++) {
+            elementData[i] = model.get(i);
         }
-        long[] ret = new long[size];
-        System.arraycopy(elementData, 0, ret, 0, size);
-        return ret;
     }
 
-    public Long sum() {
-        if (size == 0) {
-            return 0L;
+    private static int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) { // overflow
+            throw new OutOfMemoryError();
         }
-        long d = elementData[0];
-        for (int i = 1; i < size; i++) {
-            d += elementData[i];
-        }
-        return d;
+        return (minCapacity > MAX_ARRAY_SIZE)
+                ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
     }
 
-    public Long prod() {
-        if (size == 0) {
-            return 0L;
-        }
-        long d = elementData[0];
-        for (int i = 1; i < size; i++) {
-            d *= elementData[i];
-        }
-        return d;
+    public static ArrayLongVector row(long[] values) {
+        return new ArrayLongVector(true, values);
     }
 
-    @Override
-    public TypeName<Long> getComponentType() {
-        return MathsBase.$LONG;
-    }
-
-    @Override
-    public Long get(int i) {
-        return elementData[i];
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public LongVector append(Long e) {
-        return append(e.longValue());
-    }
-
-    public LongVector append(long e) {
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        elementData[size++] = e;
-        return this;
-    }
-
-    @Override
-    public LongVector appendAll(TVector<Long> e) {
-        int esize = e.size();
-        if (e instanceof ArrayLongVector) {
-            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
-            ArrayLongVector e0 = (ArrayLongVector) e;
-            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
-            this.size += esize;
-        } else {
-            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
-            for (Long a : e) {
-                elementData[this.size++] = a;
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public LongVector appendAll(Collection<? extends Long> e) {
-        ensureCapacityInternal(this.size + e.size());  // Increments modCount!!
-        for (Long a : e) {
-            elementData[this.size++] = a;
-        }
-        return this;
+    public static ArrayLongVector column(long[] values) {
+        return new ArrayLongVector(false, values);
     }
 
     private void ensureCapacityInternal(int minCapacity) {
@@ -149,15 +89,8 @@ public class ArrayLongVector extends AbstractTVector<Long> implements LongVector
     }
 
     /**
-     * The maximum size of array to allocate. Some VMs reserve some header words
-     * in an array. Attempts to allocate larger arrays may result in
-     * OutOfMemoryError: Requested array size exceeds VM limit
-     */
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
-
-    /**
      * Increases the capacity to ensure that it can hold at least the number of
-     * elements specified by the minimum capacity argument.
+     * primitiveElement3DS specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -173,84 +106,6 @@ public class ArrayLongVector extends AbstractTVector<Long> implements LongVector
         }
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
-    }
-
-    private static int hugeCapacity(int minCapacity) {
-        if (minCapacity < 0) { // overflow
-            throw new OutOfMemoryError();
-        }
-        return (minCapacity > MAX_ARRAY_SIZE)
-                ? Integer.MAX_VALUE
-                : MAX_ARRAY_SIZE;
-    }
-
-    public void trimToSize() {
-        modCount++;
-        if (size < elementData.length) {
-            elementData = (size == 0)
-                    ? ZERO_ELEMENTS
-                    : Arrays.copyOf(elementData, size);
-        }
-    }
-
-    public static class ReadOnlyLongVector extends ReadOnlyTList<Long> implements LongVector {
-
-        public ReadOnlyLongVector(boolean row, TVectorModel<Long> model) {
-            super(MathsBase.$LONG, row, model);
-        }
-
-        @Override
-        public long[] toLongArray() {
-            long[] d = new long[size()];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = get(i);
-            }
-            return d;
-        }
-
-        @Override
-        public TVector<Long> concat(TVector<Long> e) {
-            ArrayLongVector v=new ArrayLongVector(isRow(),size()+(e==null?0:e.size()));
-            v.appendAll(this);
-            if(e!=null) {
-                v.appendAll(e);
-            }
-            return v;
-        }
-
-        @Override
-        public LongVector sort() {
-            long[] vals = toLongArray();
-            Arrays.sort(vals);
-            return new ArrayLongVector(isRow(), vals);
-        }
-
-        @Override
-        public LongVector removeDuplicates() {
-            long[] vals = toLongArray();
-            long[] vals2 = ((LongVector) sort()).toLongArray();
-            long[] vals3 = new long[vals.length];
-            int x = 0;
-            for (long val : vals2) {
-                if (x == 0 || vals3[x - 1] != val) {
-                    vals3[x] = val;
-                    x++;
-                }
-            }
-            return new ArrayLongVector(isRow(), Arrays.copyOf(vals3, x));
-        }
-
-        @Override
-        public LongVector append(long value) {
-            throwUnmodifiable();
-            return this;
-        }
-
-        @Override
-        public LongVector appendAll(long[] values) {
-            throwUnmodifiable();
-            return this;
-        }
     }
 
     @Override
@@ -277,13 +132,262 @@ public class ArrayLongVector extends AbstractTVector<Long> implements LongVector
     }
 
     @Override
-    public TVector<Long> concat(TVector<Long> e) {
-        ArrayLongVector v=new ArrayLongVector(isRow(),size()+(e==null?0:e.size()));
+    public LongVector concat(Vector<Long> e) {
+        ArrayLongVector v = new ArrayLongVector(isRow(), size() + (e == null ? 0 : e.size()));
         v.appendAll(this);
-        if(e!=null) {
+        if (e != null) {
             v.appendAll(e);
         }
         return v;
+    }
+
+    public Long sum() {
+        if (size == 0) {
+            return 0L;
+        }
+        long d = elementData[0];
+        for (int i = 1; i < size; i++) {
+            d += elementData[i];
+        }
+        return d;
+    }
+
+    public Long prod() {
+        if (size == 0) {
+            return 0L;
+        }
+        long d = elementData[0];
+        for (int i = 1; i < size; i++) {
+            d *= elementData[i];
+        }
+        return d;
+    }
+
+    @Override
+    public LongVector removeAt(int index) {
+        int n = size - 1 - index;
+        if (n > 0) {
+            System.arraycopy(elementData, index + 1, elementData, index, n);
+            elementData[--size] = 0;
+        }
+        return this;
+    }
+
+    @Override
+    public LongVector appendAt(int index, Long e) {
+        ensureCapacityInternal(size + 1);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = e;
+        size++;
+        return this;
+    }
+
+    @Override
+    public LongVector appendAt(int index, long e) {
+        ensureCapacityInternal(size + 1);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = e;
+        size++;
+        return this;
+    }
+
+    public LongVector append(long e) {
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        elementData[size++] = e;
+        return this;
+    }
+
+    public LongVector appendAll(long[] e) {
+        int increment = e.length;
+        ensureCapacityInternal(size + increment);  // Increments modCount!!
+        System.arraycopy(e, 0, elementData, this.size, increment);
+        this.size += increment;
+        return this;
+    }
+
+    public long[] toLongArray() {
+        if (size == 0) {
+            return ZERO_ELEMENTS;
+        }
+        long[] ret = new long[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
+        return ret;
+    }
+
+    public void trimToSize() {
+        modCount++;
+        if (size < elementData.length) {
+            elementData = (size == 0)
+                    ? ZERO_ELEMENTS
+                    : Arrays.copyOf(elementData, size);
+        }
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
+
+    @Override
+    public LongVector toReadOnly() {
+        return new ReadOnlyLongVector(isRow(), this);
+    }
+
+    @Override
+    public LongVector toMutable() {
+        return this;
+    }
+
+    @Override
+    public LongVector append(Long e) {
+        return append(e.longValue());
+    }
+
+    @Override
+    public LongVector appendAll(Collection<? extends Long> e) {
+        ensureCapacityInternal(this.size + e.size());  // Increments modCount!!
+        for (Long a : e) {
+            elementData[this.size++] = a;
+        }
+        return this;
+    }
+
+    @Override
+    public LongVector appendAll(Vector<Long> e) {
+        int esize = e.size();
+        if (e instanceof ArrayLongVector) {
+            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
+            ArrayLongVector e0 = (ArrayLongVector) e;
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
+            this.size += esize;
+        } else {
+            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
+            for (Long a : e) {
+                elementData[this.size++] = a;
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public TypeName<Long> getComponentType() {
+        return Maths.$LONG;
+    }
+
+    @Override
+    public Long get(int i) {
+        return elementData[i];
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    public static class ReadOnlyLongVector extends ReadOnlyVector<Long> implements LongVector {
+
+        public ReadOnlyLongVector(boolean row, VectorModel<Long> model) {
+            super(Maths.$LONG, row, model);
+        }
+
+        @Override
+        public LongVector concat(Vector<Long> e) {
+            ArrayLongVector v = new ArrayLongVector(isRow(), size() + (e == null ? 0 : e.size()));
+            v.appendAll(this);
+            if (e != null) {
+                v.appendAll(e);
+            }
+            return v;
+        }
+
+
+        @Override
+        public long[] toLongArray() {
+            long[] d = new long[size()];
+            for (int i = 0; i < d.length; i++) {
+                d[i] = get(i);
+            }
+            return d;
+        }
+
+        @Override
+        public LongVector appendAt(int index, long value) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector append(long value) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector appendAll(long[] values) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector appendAll(Vector<Long> e) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector append(Long e) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector appendAll(Collection<? extends Long> e) {
+            throw throwReadOnly();
+        }
+        @Override
+        public LongVector removeAt(int index) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector appendAt(int index, Long e) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public LongVector sort() {
+            long[] vals = toLongArray();
+            Arrays.sort(vals);
+            return new ArrayLongVector(isRow(), vals);
+        }
+
+        @Override
+        public LongVector removeDuplicates() {
+            long[] vals = toLongArray();
+            long[] vals2 = sort().toLongArray();
+            long[] vals3 = new long[vals.length];
+            int x = 0;
+            for (long val : vals2) {
+                if (x == 0 || vals3[x - 1] != val) {
+                    vals3[x] = val;
+                    x++;
+                }
+            }
+            return new ArrayLongVector(isRow(), Arrays.copyOf(vals3, x));
+        }
+
+        @Override
+        public boolean isMutable() {
+            return false;
+        }
+
+        @Override
+        public LongVector toReadOnly() {
+            return this;
+        }
+
+        @Override
+        public LongVector toMutable() {
+            return new ArrayLongVector(isRow(), this);
+        }
+
+
+
     }
 
 }

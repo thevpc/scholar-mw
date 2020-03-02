@@ -4,22 +4,22 @@ package net.vpc.scholar.hadrumaths;
  * Created by vpc on 5/14/16.
  */
 public class AxisDomain {
-    private Axis axis;
+    private final Axis axis;
     private Domain domainX;
 
     public AxisDomain(Axis axis, Domain domainX) {
         this.axis = axis;
-        this.domainX = Domain.forBounds(domainX.getXMin(), domainX.getXMax());
+        this.domainX = Domain.ofBounds(domainX.getXMin(), domainX.getXMax());
         switch (axis) {
             case X: {
-                this.domainX = Domain.forBounds(domainX.getXMin(), domainX.getXMax());
+                this.domainX = Domain.ofBounds(domainX.getXMin(), domainX.getXMax());
             }
             case Y: {
-                this.domainX = Domain.forBounds(domainX.getYMin(), domainX.getYMax()
+                this.domainX = Domain.ofBounds(domainX.getYMin(), domainX.getYMax()
                 );
             }
             case Z: {
-                this.domainX = Domain.forBounds(domainX.getZMin(), domainX.getZMax());
+                this.domainX = Domain.ofBounds(domainX.getZMin(), domainX.getZMax());
             }
             default: {
                 throw new IllegalArgumentException("Unsupported");
@@ -50,12 +50,12 @@ public class AxisDomain {
                 return domainX;
             }
             case Y: {
-                return Domain.forBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
+                return Domain.ofBounds(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
                         , domainX.getXMin(), domainX.getXMax()
                 );
             }
             case Z: {
-                return Domain.forBounds(
+                return Domain.ofBounds(
                         Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
                         , Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
                         , domainX.getXMin(), domainX.getXMax()

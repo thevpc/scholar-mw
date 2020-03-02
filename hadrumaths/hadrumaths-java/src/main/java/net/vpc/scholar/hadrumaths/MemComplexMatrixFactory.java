@@ -15,21 +15,21 @@ public class MemComplexMatrixFactory extends AbstractComplexMatrixFactory {
     }
 
     @Override
-    public ComplexMatrix newIdentity(int rows, int cols) {
-        return new AbstractUnmodifiableComplexMatrix(rows, cols, this) {
-            @Override
-            public Complex get(int row, int col) {
-                return (row == col) ? Complex.ONE : Complex.ZERO;
-            }
-        };
-    }
-
-    @Override
     public ComplexMatrix newConstant(int rows, int cols, Complex value) {
         return new AbstractUnmodifiableComplexMatrix(rows, cols, this) {
             @Override
             public Complex get(int row, int col) {
                 return value;
+            }
+        };
+    }
+
+    @Override
+    public ComplexMatrix newIdentity(int rows, int cols) {
+        return new AbstractUnmodifiableComplexMatrix(rows, cols, this) {
+            @Override
+            public Complex get(int row, int col) {
+                return (row == col) ? Complex.ONE : Complex.ZERO;
             }
         };
     }

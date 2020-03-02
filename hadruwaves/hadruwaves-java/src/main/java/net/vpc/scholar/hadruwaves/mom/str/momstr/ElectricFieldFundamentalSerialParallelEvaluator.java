@@ -1,10 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 
 import static net.vpc.scholar.hadrumaths.Maths.exp;
 
@@ -22,7 +25,7 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
     public static final ElectricFieldFundamentalSerialParallelEvaluator INSTANCE=new ElectricFieldFundamentalSerialParallelEvaluator();
     @Override
     public VDiscrete evaluate(MomStructure str, final double[] x, final double[] y, final double[] z, ProgressMonitor cmonitor) {
-        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
+        ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
 
         final ModeInfo[] indexes = str.getModes(monitor);
         ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
@@ -56,8 +59,8 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
 
                 for (int i = 0; i < prop_length; i++) {
                     mode = finalProp[i];
-                    xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                    yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                    xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                    yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                     monitor.setProgress((1.0 * (i + evan_length) / indexes_length), clsName);
                     for (int zi = 0; zi < z_length; zi++) {
                         Z = z[zi];
@@ -71,19 +74,22 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
                         }
                     }
                 }
-                return new VDiscrete(Discrete.create(MutableComplex.toComplex(fx), x, y, z), Discrete.create(MutableComplex.toComplex(fy), x, y, z), Discrete.create(MutableComplex.toComplex(fz), x, y, z));
+                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                return new VDiscrete(CDiscrete.of(domain,MutableComplex.toComplex(fx)),
+                        CDiscrete.of(domain,MutableComplex.toComplex(fy)),
+                        CDiscrete.of(domain,MutableComplex.toComplex(fz)));
             }
         });
         }
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 
 }

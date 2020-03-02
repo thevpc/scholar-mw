@@ -1,10 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.List;
 
@@ -22,19 +25,16 @@ public abstract class AbstractGpPattern implements GpPattern {
         return zones;
     }
 
-    public Dumper getDumper() {
-        return new Dumper(this, Dumper.Type.SIMPLE);
-    }
-
-
-    public String dump() {
-        return getDumper().toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        return h.build();
     }
 
     public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str) {
-        DoubleToVector[] all=new DoubleToVector[getCount()];
+        DoubleToVector[] all = new DoubleToVector[getCount()];
         for (int i = 0; i < all.length; i++) {
-            all[i]=createFunction(i, globalDomain, zone, str);
+            all[i] = createFunction(i, globalDomain, zone, str);
         }
         return all;
     }

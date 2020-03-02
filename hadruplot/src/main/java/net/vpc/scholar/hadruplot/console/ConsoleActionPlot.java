@@ -5,7 +5,6 @@ import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadruplot.*;
 
 import javax.swing.*;
-import java.util.Set;
 
 public class ConsoleActionPlot implements ConsoleAction {
     private static final long serialVersionUID = 1L;
@@ -16,10 +15,10 @@ public class ConsoleActionPlot implements ConsoleAction {
     private PlotType plotType;
     private WindowPath preferredPath;
     private PlotDoubleConverter toDoubleConverter;
-    private String libraries;
+    private String library;
 
 
-    public ConsoleActionPlot(PlotMatrix yvalues, String plotTitle, String plotGroup, double infiniteValue, PlotType plotType, PlotDoubleConverter toDoubleConverter, WindowPath preferredPath, String libraries) {
+    public ConsoleActionPlot(PlotMatrix yvalues, String plotTitle, String plotGroup, double infiniteValue, PlotType plotType, PlotDoubleConverter toDoubleConverter, WindowPath preferredPath, String library) {
         this.yvalues = yvalues;
         this.plotTitle = plotTitle;
         this.infiniteValue = infiniteValue;
@@ -27,7 +26,7 @@ public class ConsoleActionPlot implements ConsoleAction {
         this.plotGroup = plotGroup;
         this.preferredPath = preferredPath;
         this.toDoubleConverter = toDoubleConverter;
-        this.libraries = libraries;
+        this.library = library;
     }
 
     public void execute(PlotConsole plotter) {
@@ -57,8 +56,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                 JListCardPanel list = (JListCardPanel) component;
                 JComponent pageComponent = list.getPageComponent(plotGroup);
                 if (pageComponent == null) {
-                    pageComponent = (JComponent) Plot.create(new ValuesPlotModel().setLibraries(libraries), Plot.getDefaultWindowManager());
-                    ((ValuesPlotPanel) pageComponent).getModel().setPlotType(PlotType.CURVE);
+                    pageComponent = (JComponent) Plot.create(new ValuesPlotModel().setPlotType(new LibraryPlotType(PlotType.CURVE,library)), Plot.getDefaultWindowManager());
                     window.addChild(plotGroup, pageComponent);
                 }
                 ValuesPlotModel model = (ValuesPlotModel) ((ValuesPlotPanel) pageComponent).getModel();
@@ -78,7 +76,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                         (JComponent) Plot.create(new ValuesPlotModel(
                                 plotTitle,
                                 null, null, null, yvalues.getRows(), yvalues.getColumns(), yvalues.getMatrix(),
-                                toDoubleConverter, PlotType.HEATMAP, null).setLibraries(libraries), Plot.getDefaultWindowManager())
+                                toDoubleConverter, new LibraryPlotType(PlotType.HEATMAP, library), null), Plot.getDefaultWindowManager())
                 );
                 break;
             }
@@ -89,7 +87,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                                 (JComponent) Plot.create(new ValuesPlotModel(
                                         plotTitle,
                                         null, null, null, yvalues.getRows(), yvalues.getColumns(), yvalues.getMatrix(),
-                                        toDoubleConverter, PlotType.MESH, null).setLibraries(libraries), Plot.getDefaultWindowManager())
+                                        toDoubleConverter, new LibraryPlotType(PlotType.MESH,library), null), Plot.getDefaultWindowManager())
                         );
                 break;
             }

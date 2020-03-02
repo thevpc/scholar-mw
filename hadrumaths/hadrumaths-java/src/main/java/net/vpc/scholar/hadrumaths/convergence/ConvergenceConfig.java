@@ -32,8 +32,18 @@ public class ConvergenceConfig implements Cloneable {
         return threshold;
     }
 
+    public ConvergenceConfig setThreshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
     public int getStabilityIterations() {
         return stabilityIterations;
+    }
+
+    public ConvergenceConfig setStabilityIterations(int stabilityIterations) {
+        this.stabilityIterations = stabilityIterations;
+        return this;
     }
 
     public ConvergenceConfig copy() {
@@ -52,24 +62,13 @@ public class ConvergenceConfig implements Cloneable {
         return maxIterations;
     }
 
-    public ConvergenceListener getListener() {
-        return listener;
-    }
-
-
-    public ConvergenceConfig setThreshold(double threshold) {
-        this.threshold = threshold;
-        return this;
-    }
-
-    public ConvergenceConfig setStabilityIterations(int stabilityIterations) {
-        this.stabilityIterations = stabilityIterations;
-        return this;
-    }
-
     public ConvergenceConfig setMaxIterations(int maxIterations) {
         this.maxIterations = maxIterations;
         return this;
+    }
+
+    public ConvergenceListener getListener() {
+        return listener;
     }
 
     public ConvergenceConfig setListener(ConvergenceListener listener) {

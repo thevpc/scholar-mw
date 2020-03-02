@@ -48,7 +48,7 @@ public class MomCache {
         HashMap<String, String> parsedValues = new HashMap<String, String>();
         BufferedReader in = null;
         try {
-            in = new BufferedReader(new StringReader(cache.getDump()));
+            in = new BufferedReader(new StringReader(cache.getKey().getDump()));
             String line;
             while ((line = in.readLine()) != null) {
                 //TODO

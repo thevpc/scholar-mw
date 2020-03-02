@@ -1,42 +1,48 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.numeric;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.vpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 import net.vpc.scholar.hadrumaths.scalarproducts.AbstractScalarProductOperator;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.vpc.scholar.hadrumaths.transform.IdentityExpressionRewriterRule;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+
+import java.util.Objects;
 
 public class SimpleNumericScalarProductOperator extends AbstractScalarProductOperator {
 
-    private DIntegralXY integrator;
+    private final DIntegralXY integrator;
     private ExpressionRewriterRuleSet simplifier;
 
     public SimpleNumericScalarProductOperator(boolean hermitian) {
-        this(hermitian,new DQuadIntegralXY());
+        this(hermitian, new DQuadIntegralXY());
     }
 
-    public SimpleNumericScalarProductOperator(boolean hermitian,DIntegralXY integrator) {
+    public SimpleNumericScalarProductOperator(boolean hermitian, DIntegralXY integrator) {
         super(hermitian);
         this.integrator = integrator;
     }
 
     public double evalDD(Domain domain, DoubleToDouble f1, DoubleToDouble f2) {
         Domain inter = f1.getDomain().intersect(f2.getDomain()).intersect(domain);
-        Expr f0 = MathsBase.mul(f1, f2);
-        DoubleToDouble sf = getExpressionRewriter().rewriteOrSame(f0).toDD();
+        Expr f0 = Maths.mul(f1, f2);
+        DoubleToDouble sf = getSimplifier().rewriteOrSame(f0, ExprType.DOUBLE_DOUBLE).toDD();
 //        Plot.title(f0.toString()).plot(f0,sf);
         switch (inter.getDimension()) {
             case 1: {
                 return integrator.integrateX(sf, inter.xmin(), inter.xmax());
 //                double v1 = integrator.integrateX(sf, inter.xmin(), inter.xmax());
 //                double v2 = integrator.integrateX(f0.toDD(), inter.xmin(), inter.xmax());
-//                System.out.println(MathsBase.rerr(v1,v2)+" -- "+v1+" -- "+v2);
+//                System.out.println(Maths.rerr(v1,v2)+" -- "+v1+" -- "+v2);
 //                return v1;
             }
             case 2: {
@@ -44,7 +50,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 //                double v1 = integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
 //                double v2 = integrator.integrateXY(f0.toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
 //                if(v1!=v2) {
-//                    System.out.println(MathsBase.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
+//                    System.out.println(Maths.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
 //                }
 //                return v1;
             }
@@ -55,50 +61,58 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
         throw new IllegalArgumentException("Unsupported dimension");
     }
 
-    public String dump() {
-        return getDumpStringHelper().toString();
-    }
-
-    public Dumper getDumpStringHelper() {
-        Dumper sb = new Dumper(getClass().getSimpleName());
-        sb.add("integrator", integrator);
-        sb.add("hermitian", isHermitian());
-        sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
-        return sb;
-    }
-
-    @Override
-    public String toString() {
-        return "SimpleNumericScalarProductOperator{" +
-                "integrator=" + integrator +
-                ",hermitian=" + isHermitian() +
-                '}';
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SimpleNumericScalarProductOperator)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         SimpleNumericScalarProductOperator that = (SimpleNumericScalarProductOperator) o;
-
-        if (integrator != null ? !integrator.equals(that.integrator) : that.integrator != null) return false;
-
-        return true;
+        return Objects.equals(integrator, that.integrator) &&
+                Objects.equals(simplifier, that.simplifier);
     }
+
+//    public String dump() {
+//        return getDumpStringHelper().toString();
+//    }
+//
+//    public Dumper getDumpStringHelper() {
+//        Dumper sb = new Dumper(getClass().getSimpleName());
+//        sb.add("integrator", integrator);
+//        sb.add("hermitian", isHermitian());
+//        sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
+//        return sb;
+//    }
 
     @Override
     public int hashCode() {
-        return integrator != null ? integrator.hashCode() : 0;
+        return Objects.hash(super.hashCode(), integrator, simplifier);
     }
 
-    public ExpressionRewriter getExpressionRewriter() {
+    public ExpressionRewriter getSimplifier() {
         if (simplifier == null) {
             simplifier = new ExpressionRewriterRuleSet("SimpleNumericScalarProductNoSimplifyRuleSet");
             simplifier.addRule(IdentityExpressionRewriterRule.INSTANCE);
             simplifier.setCacheEnabled(false);
         }
         return simplifier;
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("integrator", context.elem(integrator));
+        sb.add("hermitian", context.elem(isHermitian()));
+        sb.add("simplifier", context.elem(getSimplifier()));
+        return sb.build();
+    }
+
+    @Override
+    public String toString() {
+        return dump();
+//        return "SimpleNumericScalarProductOperator{" +
+//                "integrator=" + integrator +
+//                ",hermitian=" + isHermitian() +
+//                '}';
     }
 
 }

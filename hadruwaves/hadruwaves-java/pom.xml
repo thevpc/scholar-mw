@@ -5,11 +5,11 @@
     <groupId>net.vpc.scholar</groupId>
     <artifactId>hadruwaves</artifactId>
     <name>net.vpc.scholar.hadruwaves</name>
-    <version> 3.1.35</version>
+    <version>3.2.0</version>
     <packaging>jar</packaging>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version> 3.1.35</scholar-version>
+        <scholar-version>3.2.0</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>
@@ -32,11 +32,16 @@
             <version>${scholar-version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
+            <groupId>net.vpc.common</groupId>
+            <artifactId>vpc-common-prop-binding</artifactId>
+            <version>1.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>junit</groupId>-->
+<!--            <artifactId>junit</artifactId>-->
+<!--            <version>3.8.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>

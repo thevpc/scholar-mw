@@ -6,9 +6,11 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal.rewriter;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
-import net.vpc.scholar.hadrumaths.symbolic.XX;
-import net.vpc.scholar.hadrumaths.symbolic.YY;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.XX;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.YY;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -16,7 +18,7 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class ToDDxyLinearRule implements ExpressionRewriterRule {
+public class ToDDxyLinearRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new ToDDxyLinearRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{XX.class, YY.class};
@@ -26,26 +28,14 @@ public class ToDDxyLinearRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
         if (e instanceof XX) {
-            return RewriteResult.bestEffort(new Linear(1, 0, 0, ((XX) e).getDomain()));
+            return RewriteResult.bestEffort(new Linear(1, 0, 0, e.getDomain()));
         } else if (e instanceof YY) {
-            return RewriteResult.bestEffort(new Linear(0, 1, 0, ((YY) e).getDomain()));
+            return RewriteResult.bestEffort(new Linear(0, 1, 0, e.getDomain()));
         }
-        return RewriteResult.unmodified(e);
+        return RewriteResult.unmodified();
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

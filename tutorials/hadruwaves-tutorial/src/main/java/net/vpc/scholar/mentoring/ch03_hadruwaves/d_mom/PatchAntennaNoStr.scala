@@ -36,7 +36,7 @@ object PatchAntennaNoStr {
   val TE = 0
   val TM = 1
   val p = param("p")
-  val t = param("t")
+//  val t = param("t")
   val m = param("m")
   val n = param("n")
 
@@ -57,7 +57,7 @@ object PatchAntennaNoStr {
   // Matrix A (Z operator), B (Source Projection)n sp (gp fn scalar product matrix)
   var A, B, sp: ComplexMatrix = null;
   // gp (test functions list), zmn (modes impedance list), fm (mode functions : Green Function)
-  var gp, fmn: EList = null;
+  var gp, fmn: ExprVector = null;
   var zmn : ComplexVector =null
 
   //Unknown coefficients of Surface Current Density
@@ -81,10 +81,10 @@ object PatchAntennaNoStr {
 
     val gpDef = ((cos((2 * p + 1) * PI * X / (2 * l)))  * lineDomain).setTitle("gl${p}")
     gp = gpDef.inflate(p.in(0,P - 1)).normalize()
-    val fmnDef = If(t === TE, n / b, -m / a) *
+    val fmnDef = If(p === TE, n / b, -m / a) *
       sqrt(2 * If(m <> 0 && n <> 0, 2, 1) / (a * b * (sqr(n * PI / b) + sqr(m * PI / a)))) *
       sin((n * PI / b) * (Y - box.ymin)) * cos((m * PI / a) * (X - box.xmin)) * box
-    fmn = fmnDef.inflate(m.in(0,N - 1).and(n.in(0,N - 1)).and(t.in(0,1)).where((p === TE && (n <> 0)) || (p === TM && (m <> 0 && n <> 0))))
+    fmn = fmnDef.inflate(m.in(0,N - 1).and(n.in(0,N - 1)).and(p.in(0,1)).where((p === TE && (n <> 0)) || (p === TM && (m <> 0 && n <> 0))))
 
     zmn = columnVector(fmn.size, (i:Int)=>{
       val mm = fmn(i).getIntProperty("m")
@@ -104,8 +104,9 @@ object PatchAntennaNoStr {
     B = columnMatrix(gp.size, (i: Int) => complex(gp(i) ** srcexpr))
     Xp = inv(A) * B
     Zin =complex(inv(tr(B) * inv(A) * B))
-    // discrete scalar product between two vectors is the sum of each element's product
+    // discrete scalar product between two vectors is the sum of each primitiveElement3D's product
     Jt= Xp ** gp ;
+    var tt=(Xp :** sp.columns);
     Jm=(Xp :** sp.columns) ** fmn
     var yyy=sp.columns
     Em=elist(Xp :** sp.columns) ** (elist(zmn) :* fmn) // elist: complex to expression zmn

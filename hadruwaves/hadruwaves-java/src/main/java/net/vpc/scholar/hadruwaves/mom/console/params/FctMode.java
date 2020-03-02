@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.params;
 
 import net.vpc.scholar.hadrumaths.Maths;
-
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 
 /**

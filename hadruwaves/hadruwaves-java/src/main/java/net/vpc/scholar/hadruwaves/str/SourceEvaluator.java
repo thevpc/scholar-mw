@@ -9,5 +9,5 @@ import net.vpc.common.mon.ProgressMonitor;
  * @creationtime 24 mai 2007 21:49:35
  */
 public interface SourceEvaluator extends MWStructureEvaluator {
-    public ComplexMatrix computePlanarSources(MWStructure str, double[] x, double[] y, Axis axis, ProgressMonitor monitor) ;
+    public ComplexMatrix evalPlanarSources(MWStructure str, double[] x, double[] y, Axis axis, ProgressMonitor monitor) ;
 }

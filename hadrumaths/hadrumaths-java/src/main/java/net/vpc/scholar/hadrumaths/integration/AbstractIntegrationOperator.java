@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.integration;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -55,13 +55,16 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     }
 
     public Complex eval(Domain domain, Expr f1) {
-        if (f1.isDD()) {
-            return Complex.valueOf(evalDD(domain, f1.toDD()));
+        switch (f1.getType()) {
+            case DOUBLE_DOUBLE:
+                return Complex.of(evalDD(domain, f1.toDD()));
+            case DOUBLE_COMPLEX:
+                return evalDC(domain, f1.toDC());
+            case DOUBLE_CVECTOR:
+            case DOUBLE_CMATRIX:
+                return evalDM(domain, f1.toDM());
         }
-        if (f1.isDC()) {
-            return evalDC(domain, f1.toDC());
-        }
-        return evalDM(domain, f1.toDM());
+        throw new IllegalArgumentException("Unsupported " + f1);
     }
 
     public Complex eval(Expr f1) {
@@ -105,7 +108,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     @Override
     public Complex[] eval(Expr[] g, ProgressMonitor monitor) {
-        ProgressMonitor m = ProgressMonitorFactory.nonnull(monitor);
+        ProgressMonitor m = ProgressMonitors.nonnull(monitor);
         m.start(null);
         Complex[] r = new Complex[g.length];
         for (int i = 0; i < g.length; i++) {
@@ -117,16 +120,16 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     }
 
     @Override
-    public Complex[] eval(TVector<Expr> g, ProgressMonitor monitor) {
+    public Complex[] eval(Vector<Expr> g, ProgressMonitor monitor) {
         return eval(g.toArray(), monitor);
     }
 
-//    public TMatrix<Complex> eval(boolean hermitian, TVector<Expr> g, TVector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
-//        return MathsBase.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
+//    public ComplexMatrix eval(boolean hermitian, Vector<Expr> g, Vector<Expr> f, AxisXY axis, ProgressMonitor monitor) {
+//        return Maths.scalarProductCache(hermitian, this, g.toArray(), f.toArray(), axis,monitor);
 //    }
 //
 //    public Complex[] eval(boolean hermitian, Expr[] g, Expr[] f, AxisXY axis, ProgressMonitor monitor) {
-//        ProgressMonitor m = ProgressMonitorFactory.nonnull(monitor);
+//        ProgressMonitor m = ProgressMonitors.nonnull(monitor);
 //        m.start(null);
 //        Complex[] r=new Complex[g.length];
 //        for (int i = 0; i < g.length; i++) {
@@ -140,7 +143,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
     public Complex evalDC(Domain domain, DoubleToComplex f1) {
         DoubleToDouble r1 = f1.getRealDD();
         DoubleToDouble i1 = f1.getImagDD();
-        return Complex.valueOf(evalDD(domain, r1), evalDD(domain, i1));
+        return Complex.of(evalDD(domain, r1), evalDD(domain, i1));
     }
 
     @Override
@@ -148,7 +151,7 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
         return evalDC(null, f1);
     }
 
-    public abstract ExpressionRewriter getExpressionRewriter();
+    public abstract ExpressionRewriter getSimplifier();
 
 
     public Complex evalVDC(DoubleToVector f1) {

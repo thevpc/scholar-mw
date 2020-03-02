@@ -15,13 +15,13 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static net.vpc.scholar.math.MathsBase.*;
+//import static net.vpc.scholar.math.Maths.*;
 //
 ///**
 // *
 // * @author vpc
 // */
-//public class DDxLinearSymbolRule implements ExpressionRewriterRule {
+//public class DDxLinearSymbolRule extends AbstractExpressionRewriterRule {
 //
 //    public static final ExpressionRewriterRule INSTANCE = new DDxLinearSymbolRule();
 //    public static final Class<? extends Expr>[] TYPES = new Class[]{DDxLinear.class};

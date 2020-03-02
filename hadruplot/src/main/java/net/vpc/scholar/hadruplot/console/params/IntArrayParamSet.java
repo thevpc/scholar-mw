@@ -11,23 +11,23 @@ public class IntArrayParamSet extends ParamSet<Integer> implements Cloneable {
     private int[] values;
     private int index = -1;
 
-    public IntArrayParamSet(Param configurator, int value) {
+    public IntArrayParamSet(CParam configurator, int value) {
         this(configurator, new int[]{value});
     }
 
-    public IntArrayParamSet(Param configurator) {
+    public IntArrayParamSet(CParam configurator) {
         this(configurator, new int[0]);
     }
 
-    public IntArrayParamSet(Param configurator, int min, int max, int times) {
+    public IntArrayParamSet(CParam configurator, int min, int max, int times) {
         this(configurator, ArrayUtils.itimes(min, max, times));
     }
 
-    public IntArrayParamSet(Param configurator, int min, int max, double step) {
+    public IntArrayParamSet(CParam configurator, int min, int max, double step) {
         this(configurator, ArrayUtils.isteps(min, max, (int) step));
     }
 
-    public IntArrayParamSet(Param configurator, int[] values) {
+    public IntArrayParamSet(CParam configurator, int[] values) {
         super(configurator);
         this.values = values;
     }

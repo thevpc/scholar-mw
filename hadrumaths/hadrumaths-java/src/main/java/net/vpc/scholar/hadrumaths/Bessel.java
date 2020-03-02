@@ -12,11 +12,6 @@ It is provided "as is" without expressed or implied warranty.
  * Bessel and Airy functions.
  */
 public class Bessel {
-    private static final double EPSILON = 1.11022302462515654042E-16;
-    /****************************************
-     *    COEFFICIENTS FOR METHODS i0, i0e  *
-     ****************************************/
-
     /**
      * Chebyshev coefficients for exp(-x) I0(x)
      * in the interval [0,8].
@@ -55,8 +50,9 @@ public class Bessel {
             -3.04682672343198398683E-1,
             6.76795274409476084995E-1
     };
-
-
+    /****************************************
+     *    COEFFICIENTS FOR METHODS i0, i0e  *
+     ****************************************/
     /**
      * Chebyshev coefficients for exp(-x) sqrt(x) I0(x)
      * in the inverted interval [8,infinity].
@@ -90,10 +86,6 @@ public class Bessel {
             3.36911647825569408990E-3,
             8.04490411014108831608E-1
     };
-
-    /****************************************
-     *    COEFFICIENTS FOR METHODS i1, i1e  *
-     ****************************************/
     /**
      * Chebyshev coefficients for exp(-x) I1(x) / x
      * in the interval [0,8].
@@ -132,6 +124,9 @@ public class Bessel {
             2.52587186443633654823E-1
     };
 
+    /****************************************
+     *    COEFFICIENTS FOR METHODS i1, i1e  *
+     ****************************************/
     /*
      * Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
      * in the inverted interval [8,infinity].
@@ -165,8 +160,6 @@ public class Bessel {
             -9.76109749136146840777E-3,
             7.78576235018280120474E-1
     };
-
-
     /**
      * *************************************
      * COEFFICIENTS FOR METHODS k0, k0e  *
@@ -190,7 +183,6 @@ public class Bessel {
             3.44289899924628486886E-1,
             -5.35327393233902768720E-1
     };
-
     /* Chebyshev coefficients for exp(x) sqrt(x) K0(x)
      * in the inverted interval [2,infinity].
      *
@@ -223,8 +215,6 @@ public class Bessel {
             -3.14481013119645005427E-2,
             2.44030308206595545468E0
     };
-
-
     /**
      * *************************************
      * COEFFICIENTS FOR METHODS k1, k1e  *
@@ -248,7 +238,6 @@ public class Bessel {
             -3.53155960776544875667E-1,
             1.52530022733894777053E0
     };
-
     /* Chebyshev coefficients for exp(x) sqrt(x) K1(x)
      * in the interval [2,infinity].
      *
@@ -281,34 +270,12 @@ public class Bessel {
             1.03923736576817238437E-1,
             2.72062619048444266945E0
     };
+    private static final double EPSILON = 1.11022302462515654042E-16;
 
     /**
      * Makes this class non instantiable, but still let's others inherit from it.
      */
     protected Bessel() {
-    }
-
-    /**
-     * Returns the modified Bessel function of order 0 of the
-     * argument.
-     * <p/>
-     * The function is defined as <tt>i0(x) = j0( ix )</tt>.
-     * <p/>
-     * The range is partitioned into the two intervals [0,8] and
-     * (8, infinity).  Chebyshev polynomial expansions are employed
-     * in each interval.
-     *
-     * @param x the value to compute the bessel function of.
-     */
-    static public double i0(double x) throws ArithmeticException {
-        double y;
-        if (x < 0) x = -x;
-        if (x <= 8.0) {
-            y = (x / 2.0) - 2.0;
-            return (Math.exp(x) * MathsBase.chbevl(y, A_i0, 30));
-        }
-
-        return (Math.exp(x) * MathsBase.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -325,37 +292,10 @@ public class Bessel {
         if (x < 0) x = -x;
         if (x <= 8.0) {
             y = (x / 2.0) - 2.0;
-            return (MathsBase.chbevl(y, A_i0, 30));
+            return (Maths.chbevl(y, A_i0, 30));
         }
 
-        return (MathsBase.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
-    }
-
-    /**
-     * Returns the modified Bessel function of order 1 of the
-     * argument.
-     * <p/>
-     * The function is defined as <tt>i1(x) = -i j1( ix )</tt>.
-     * <p/>
-     * The range is partitioned into the two intervals [0,8] and
-     * (8, infinity).  Chebyshev polynomial expansions are employed
-     * in each interval.
-     *
-     * @param x the value to compute the bessel function of.
-     */
-    static public double i1(double x) throws ArithmeticException {
-        double y, z;
-
-        z = Math.abs(x);
-        if (z <= 8.0) {
-            y = (z / 2.0) - 2.0;
-            z = MathsBase.chbevl(y, A_i1, 29) * z * Math.exp(z);
-        } else {
-            z = Math.exp(z) * MathsBase.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
-        }
-        if (x < 0.0)
-            z = -z;
-        return (z);
+        return (Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -372,13 +312,70 @@ public class Bessel {
         z = Math.abs(x);
         if (z <= 8.0) {
             y = (z / 2.0) - 2.0;
-            z = MathsBase.chbevl(y, A_i1, 29) * z;
+            z = Maths.chbevl(y, A_i1, 29) * z;
         } else {
-            z = MathsBase.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
+            z = Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
         }
         if (x < 0.0)
             z = -z;
         return (z);
+    }
+
+    /**
+     * Returns the Bessel function of the first kind of order <tt>n</tt> of the argument.
+     *
+     * @param n the order of the Bessel function.
+     * @param x the value to compute the bessel function of.
+     */
+    static public double jn(int n, double x) throws ArithmeticException {
+        int j, m;
+        double ax, bj, bjm, bjp, sum, tox, ans;
+        boolean jsum;
+
+        final double ACC = 40.0;
+        final double BIGNO = 1.0e+10;
+        final double BIGNI = 1.0e-10;
+
+        if (n == 0) return j0(x);
+        if (n == 1) return j1(x);
+
+        ax = Math.abs(x);
+        if (ax == 0.0) return 0.0;
+
+        if (ax > (double) n) {
+            tox = 2.0 / ax;
+            bjm = j0(ax);
+            bj = j1(ax);
+            for (j = 1; j < n; j++) {
+                bjp = j * tox * bj - bjm;
+                bjm = bj;
+                bj = bjp;
+            }
+            ans = bj;
+        } else {
+            tox = 2.0 / ax;
+            m = 2 * ((n + (int) Math.sqrt(ACC * n)) / 2);
+            jsum = false;
+            bjp = ans = sum = 0.0;
+            bj = 1.0;
+            for (j = m; j > 0; j--) {
+                bjm = j * tox * bj - bjp;
+                bjp = bj;
+                bj = bjm;
+                if (Math.abs(bj) > BIGNO) {
+                    bj *= BIGNI;
+                    bjp *= BIGNI;
+                    ans *= BIGNI;
+                    sum *= BIGNI;
+                }
+                if (jsum) sum += bj;
+                jsum = !jsum;
+                if (j == n) ans = bjp;
+            }
+            sum = 2.0 * sum - bj;
+            ans /= sum;
+        }
+        return x < 0.0 && n % 2 == 1 ? -ans : ans;
     }
 
     /**
@@ -448,63 +445,6 @@ public class Bessel {
     }
 
     /**
-     * Returns the Bessel function of the first kind of order <tt>n</tt> of the argument.
-     *
-     * @param n the order of the Bessel function.
-     * @param x the value to compute the bessel function of.
-     */
-    static public double jn(int n, double x) throws ArithmeticException {
-        int j, m;
-        double ax, bj, bjm, bjp, sum, tox, ans;
-        boolean jsum;
-
-        final double ACC = 40.0;
-        final double BIGNO = 1.0e+10;
-        final double BIGNI = 1.0e-10;
-
-        if (n == 0) return j0(x);
-        if (n == 1) return j1(x);
-
-        ax = Math.abs(x);
-        if (ax == 0.0) return 0.0;
-
-        if (ax > (double) n) {
-            tox = 2.0 / ax;
-            bjm = j0(ax);
-            bj = j1(ax);
-            for (j = 1; j < n; j++) {
-                bjp = j * tox * bj - bjm;
-                bjm = bj;
-                bj = bjp;
-            }
-            ans = bj;
-        } else {
-            tox = 2.0 / ax;
-            m = 2 * ((n + (int) Math.sqrt(ACC * n)) / 2);
-            jsum = false;
-            bjp = ans = sum = 0.0;
-            bj = 1.0;
-            for (j = m; j > 0; j--) {
-                bjm = j * tox * bj - bjp;
-                bjp = bj;
-                bj = bjm;
-                if (Math.abs(bj) > BIGNO) {
-                    bj *= BIGNI;
-                    bjp *= BIGNI;
-                    ans *= BIGNI;
-                    sum *= BIGNI;
-                }
-                if (jsum) sum += bj;
-                jsum = !jsum;
-                if (j == n) ans = bjp;
-            }
-            sum = 2.0 * sum - bj;
-            ans /= sum;
-        }
-        return x < 0.0 && n % 2 == 1 ? -ans : ans;
-    }
-
-    /**
      * Returns the modified Bessel function of the third kind
      * of order 0 of the argument.
      * <p/>
@@ -520,13 +460,36 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = MathsBase.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
+            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
             return (y);
         }
 
         z = 8.0 / x - 2.0;
-        y = Math.exp(-x) * MathsBase.chbevl(z, B_k0, 25) / Math.sqrt(x);
+        y = Math.exp(-x) * Maths.chbevl(z, B_k0, 25) / Math.sqrt(x);
         return (y);
+    }
+
+    /**
+     * Returns the modified Bessel function of order 0 of the
+     * argument.
+     * <p/>
+     * The function is defined as <tt>i0(x) = j0( ix )</tt>.
+     * <p/>
+     * The range is partitioned into the two intervals [0,8] and
+     * (8, infinity).  Chebyshev polynomial expansions are employed
+     * in each interval.
+     *
+     * @param x the value to compute the bessel function of.
+     */
+    static public double i0(double x) throws ArithmeticException {
+        double y;
+        if (x < 0) x = -x;
+        if (x <= 8.0) {
+            y = (x / 2.0) - 2.0;
+            return (Math.exp(x) * Maths.chbevl(y, A_i0, 30));
+        }
+
+        return (Math.exp(x) * Maths.chbevl(32.0 / x - 2.0, B_i0, 25) / Math.sqrt(x));
     }
 
     /**
@@ -541,11 +504,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = MathsBase.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
+            y = Maths.chbevl(y, A_k0, 10) - Math.log(0.5 * x) * i0(x);
             return (y * Math.exp(x));
         }
 
-        y = MathsBase.chbevl(8.0 / x - 2.0, B_k0, 25) / Math.sqrt(x);
+        y = Maths.chbevl(8.0 / x - 2.0, B_k0, 25) / Math.sqrt(x);
         return (y);
     }
 
@@ -566,11 +529,38 @@ public class Bessel {
         if (z <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Math.log(z) * i1(x) + MathsBase.chbevl(y, A_k1, 11) / x;
+            y = Math.log(z) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
             return (y);
         }
 
-        return (Math.exp(-x) * MathsBase.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
+        return (Math.exp(-x) * Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
+    }
+
+    /**
+     * Returns the modified Bessel function of order 1 of the
+     * argument.
+     * <p/>
+     * The function is defined as <tt>i1(x) = -i j1( ix )</tt>.
+     * <p/>
+     * The range is partitioned into the two intervals [0,8] and
+     * (8, infinity).  Chebyshev polynomial expansions are employed
+     * in each interval.
+     *
+     * @param x the value to compute the bessel function of.
+     */
+    static public double i1(double x) throws ArithmeticException {
+        double y, z;
+
+        z = Math.abs(x);
+        if (z <= 8.0) {
+            y = (z / 2.0) - 2.0;
+            z = Maths.chbevl(y, A_i1, 29) * z * Math.exp(z);
+        } else {
+            z = Math.exp(z) * Maths.chbevl(32.0 / z - 2.0, B_i1, 25) / Math.sqrt(z);
+        }
+        if (x < 0.0)
+            z = -z;
+        return (z);
     }
 
     /**
@@ -587,11 +577,11 @@ public class Bessel {
         if (x <= 0.0) throw new ArithmeticException();
         if (x <= 2.0) {
             y = x * x - 2.0;
-            y = Math.log(0.5 * x) * i1(x) + MathsBase.chbevl(y, A_k1, 11) / x;
+            y = Math.log(0.5 * x) * i1(x) + Maths.chbevl(y, A_k1, 11) / x;
             return (y * Math.exp(x));
         }
 
-        return (MathsBase.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
+        return (Maths.chbevl(8.0 / x - 2.0, B_k1, 25) / Math.sqrt(x));
     }
 
     /**
@@ -765,6 +755,29 @@ asymptotically, where
     }
 
     /**
+     * Returns the Bessel function of the second kind of order <tt>n</tt> of the argument.
+     *
+     * @param n the order of the Bessel function.
+     * @param x the value to compute the bessel function of.
+     */
+    static public double yn(int n, double x) throws ArithmeticException {
+        double by, bym, byp, tox;
+
+        if (n == 0) return y0(x);
+        if (n == 1) return y1(x);
+
+        tox = 2.0 / x;
+        by = y1(x);
+        bym = y0(x);
+        for (int j = 1; j < n; j++) {
+            byp = j * tox * by - bym;
+            bym = by;
+            by = byp;
+        }
+        return by;
+    }
+
+    /**
      * Returns the Bessel function of the second kind of order 0 of the argument.
      *
      * @param x the value to compute the bessel function of.
@@ -820,28 +833,5 @@ asymptotically, where
             return Math.sqrt(0.636619772 / x) *
                     (Math.sin(xx) * ans1 + z * Math.cos(xx) * ans2);
         }
-    }
-
-    /**
-     * Returns the Bessel function of the second kind of order <tt>n</tt> of the argument.
-     *
-     * @param n the order of the Bessel function.
-     * @param x the value to compute the bessel function of.
-     */
-    static public double yn(int n, double x) throws ArithmeticException {
-        double by, bym, byp, tox;
-
-        if (n == 0) return y0(x);
-        if (n == 1) return y1(x);
-
-        tox = 2.0 / x;
-        by = y1(x);
-        bym = y0(x);
-        for (int j = 1; j < n; j++) {
-            byp = j * tox * by - bym;
-            bym = by;
-            by = byp;
-        }
-        return by;
     }
 }

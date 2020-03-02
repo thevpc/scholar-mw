@@ -21,5 +21,7 @@ public interface BooleanMarker {
 
     void set();
 
+//    boolean get();
+
 
 }

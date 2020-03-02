@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadrumaths.plot.filetypes;
 
-import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.DMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
 
@@ -13,8 +13,12 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PlotFileTypeMatlab implements PlotFileType {
-    public static final PlotFileType INSTANCE=new PlotFileTypeMatlab();
+public final class PlotFileTypeMatlab implements PlotFileType {
+    public static final PlotFileType INSTANCE = new PlotFileTypeMatlab();
+
+    private PlotFileTypeMatlab() {
+    }
+
     @Override
     public String getTitle() {
         return "Matlab";
@@ -43,7 +47,7 @@ public class PlotFileTypeMatlab implements PlotFileType {
             printStream.println();
             printStream.println(((model.getY() == null || model.getY().length == 0 || model.getY()[0] == null) ? ("y =" + lineSep) : (new DMatrix(model.getY()).toString(commentChar, "y"))) + endLine);
             printStream.println();
-            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (MathsBase.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
+            printStream.println(((model.getZ() == null || model.getZ().length == 0 || model.getZ()[0] == null) ? ("z =" + lineSep) : (Maths.matrix(ArrayUtils.toComplex(model.getZ())).format(commentChar, "z"))) + endLine);
 //            printStream.println("title =" + (model.getTitle() == null ? "" : model.getTitle()) + endLine);
 //            printStream.println("xlabel =" + (model.getXtitle() == null ? "" : model.getXtitle()) + endLine);
 //            printStream.println("ylabel =" + (model.getYtitle() == null ? "" : model.getYtitle()) + endLine);
@@ -69,12 +73,22 @@ public class PlotFileTypeMatlab implements PlotFileType {
 
     @Override
     public void save(File file, PlotComponent component) throws IOException {
-        save(file,new SimplePlotModelProvider(component.getModel(),component.toComponent()));
+        save(file, new SimplePlotModelProvider(component.getModel(), component.toComponent()));
     }
 
     @Override
     public PlotModel loadModel(File file) {
-        ComplexMatrix matrix = MathsBase.loadMatrix(file);
+        ComplexMatrix matrix = Maths.loadMatrix(file);
         return Plot.title(file.getName()).asMatrix().createModel(matrix);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
     }
 }

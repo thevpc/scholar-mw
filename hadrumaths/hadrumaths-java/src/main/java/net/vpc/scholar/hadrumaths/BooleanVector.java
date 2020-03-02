@@ -1,6 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
-public interface BooleanVector extends TVector<Boolean>, ToBooleanArrayAware {
+public interface BooleanVector extends Vector<Boolean>, ToBooleanArrayAware {
+
+    BooleanVector removeAt(int index);
+
+    BooleanVector appendAt(int index, boolean value);
 
     BooleanVector append(boolean value);
 
@@ -9,5 +13,6 @@ public interface BooleanVector extends TVector<Boolean>, ToBooleanArrayAware {
     BooleanVector sort();
 
     BooleanVector removeDuplicates();
+
 
 }

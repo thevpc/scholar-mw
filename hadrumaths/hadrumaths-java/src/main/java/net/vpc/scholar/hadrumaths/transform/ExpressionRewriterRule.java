@@ -6,6 +6,7 @@
 package net.vpc.scholar.hadrumaths.transform;
 
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
 
 /**
  * @author vpc
@@ -14,5 +15,5 @@ public interface ExpressionRewriterRule {
 
     Class<? extends Expr>[] getTypes();
 
-    RewriteResult rewrite(Expr e, ExpressionRewriter ruleset);
+    RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType);
 }

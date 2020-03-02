@@ -4,7 +4,7 @@ import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
+import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -22,7 +22,7 @@ public abstract class AbstractFarFieldBuilder extends AbstractValueBuilder imple
     }
 
     @Override
-    public FarFieldBuilder monitor(ProgressTaskMonitor monitor) {
+    public FarFieldBuilder monitor(TaskMonitorManager monitor) {
         return (FarFieldBuilder) super.monitor(monitor);
     }
 
@@ -33,19 +33,19 @@ public abstract class AbstractFarFieldBuilder extends AbstractValueBuilder imple
     }
 
     @Override
-    public TMatrix<Complex> computeMatrix(final SAxis axis, final double[] theta, final double[] phi, final double r) {
+    public ComplexMatrix evalMatrix(final SAxis axis, final double[] theta, final double[] phi, final double r) {
         if (axis != null) {
             switch (axis) {
                 case THETA:
                 case PHI:{
                     ConvergenceEvaluator conv = getConvergenceEvaluator();
                     if (conv == null) {
-                        return computeMatrices(theta, phi, r).get(axis);
+                        return evalMatrices(theta, phi, r).get(axis);
                     } else {
                         return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                             @Override
-                            public TMatrix<Complex> evaluate(Object momStructure, ProgressMonitor monitor) {
-                                return computeMatrices(theta, phi, r).get(axis);
+                            public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
+                                return evalMatrices(theta, phi, r).get(axis);
                             }
                         }, getMonitor()));
                     }
@@ -55,19 +55,19 @@ public abstract class AbstractFarFieldBuilder extends AbstractValueBuilder imple
         throw new IllegalArgumentException("Unsupported Spherical Axis " + axis);
     }
 
-    public TVector<TMatrix<Complex>> computeMatrices(final double[] theta, final double[] phi, final double r) {
+    public Vector<ComplexMatrix> evalMatrices(final double[] theta, final double[] phi, final double r) {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return computeFarFieldThetaPhiImpl(theta, phi, r, getMonitor());
+            return evalFarFieldThetaPhiImpl(theta, phi, r, getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
-                public TVector<TMatrix<Complex>> evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return computeFarFieldThetaPhiImpl(theta, phi, r, monitor);
+                public Vector<ComplexMatrix> evaluate(Object momStructure, ProgressMonitor monitor) {
+                    return evalFarFieldThetaPhiImpl(theta, phi, r, monitor);
                 }
             }, getMonitor()));
         }
     }
 
-    protected abstract TVector<TMatrix<Complex>> computeFarFieldThetaPhiImpl(double[] theta, double[] phi, final double r, ProgressMonitor monitor);
+    protected abstract Vector<ComplexMatrix> evalFarFieldThetaPhiImpl(double[] theta, double[] phi, final double r, ProgressMonitor monitor);
 }

@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadruplot.PlotType;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.PlotMatrix;
@@ -23,12 +23,12 @@ public class PlotTestSrcScalarProducts extends PlotAxisSeries implements Cloneab
         }
     }
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
-        ProgressMonitor monitor = ProgressMonitorFactory.nonnull(cmonitor);
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
+        ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
 //        monitor.startm(getClass().getSimpleName());
         PlotMatrix namedMatrix = new PlotMatrix(structure.getTestSourceScalarProducts(monitor).getArray());
 //        monitor.terminatem(getClass().getSimpleName());

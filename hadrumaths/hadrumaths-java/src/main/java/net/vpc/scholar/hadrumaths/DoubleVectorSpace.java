@@ -12,16 +12,16 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //            return (R) value;
 //        }
 //        if(t.equals(Matrix.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}});
+//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}});
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}});
+//        if(t.equals(Matrix.class)){
+//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}});
 //        }
 //        if(t.equals(Vector.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
+//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
 //        }
-//        if(t.equals(TVector.class)){
-//            return (R) MathsBase.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
+//        if(t.equals(Vector.class)){
+//            return (R) Maths.matrix(new Complex[][]{{Complex.valueOf(value)}}).toVector();
 //        }
 //        throw new ClassCastException();
 //    }
@@ -37,17 +37,22 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //        if(t.equals(Matrix.class)){
 //            return ((Matrix)value).toComplex().toDouble();
 //        }
-//        if(t.equals(TMatrix.class)){
-//            return ((TMatrix)value).toComplex().toDouble();
+//        if(t.equals(Matrix.class)){
+//            return ((Matrix)value).toComplex().toDouble();
 //        }
 //        if(t.equals(Vector.class)){
 //            return ((Vector)value).toComplex().toDouble();
 //        }
-//        if(t.equals(TVector.class)){
-//            return ((TVector)value).toComplex().toDouble();
+//        if(t.equals(Vector.class)){
+//            return ((Vector)value).toComplex().toDouble();
 //        }
 //        throw new ClassCastException();
 //    }
+
+    @Override
+    public TypeName<Double> getItemType() {
+        return Maths.$DOUBLE;
+    }
 
     @Override
     public Double convert(double d) {
@@ -60,7 +65,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public Double convert(TMatrix d) {
+    public Double convert(Matrix d) {
         return d.toDouble();
     }
 
@@ -85,6 +90,40 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
+    public RepeatableOp<Double> addRepeatableOp() {
+        return new RepeatableOp<Double>() {
+            double c = 0;
+
+            @Override
+            public void append(Double item) {
+                c += item;
+            }
+
+            @Override
+            public Double eval() {
+                return c;
+            }
+        };
+    }
+
+    @Override
+    public RepeatableOp<Double> mulRepeatableOp() {
+        return new RepeatableOp<Double>() {
+            double c = 1;
+
+            @Override
+            public void append(Double item) {
+                c *= item;
+            }
+
+            @Override
+            public Double eval() {
+                return c;
+            }
+        };
+    }
+
+    @Override
     public Double sub(Double a, Double b) {
         return a - (b);
     }
@@ -97,6 +136,11 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     @Override
     public Double div(Double a, Double b) {
         return a / (b);
+    }
+
+    @Override
+    public Double rem(Double a, Double b) {
+        return a % b;
     }
 
     @Override
@@ -121,7 +165,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public double absdblsqr(Double a) {
-        return a*a;
+        return a * a;
+    }
+
+    @Override
+    public Double abssqr(Double a) {
+        return a * a;
     }
 
     @Override
@@ -141,7 +190,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double sin(Double a) {
-        return MathsBase.sin(a);
+        return Maths.sin(a);
     }
 
     @Override
@@ -156,7 +205,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cotan(Double a) {
-        return MathsBase.cotan(a);
+        return Maths.cotan(a);
     }
 
     @Override
@@ -166,7 +215,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double sincard(Double a) {
-        return MathsBase.sincard(a);
+        return Maths.sincard(a);
     }
 
     @Override
@@ -181,22 +230,22 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double cotanh(Double a) {
-        return MathsBase.cotanh(a);
+        return Maths.cotanh(a);
     }
 
     @Override
     public Double asinh(Double a) {
-        return MathsBase.asinh(a);
+        return Maths.asinh(a);
     }
 
     @Override
     public Double acosh(Double a) {
-        return MathsBase.acosh(a);
+        return Maths.acosh(a);
     }
 
     @Override
     public Double asin(Double a) {
-        return MathsBase.asinh(a);
+        return Maths.asinh(a);
     }
 
     @Override
@@ -211,12 +260,26 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double arg(Double a) {
-        return MathsBase.arg(a);
+        return Maths.arg(a);
     }
 
     @Override
     public boolean isZero(Double a) {
         return a == 0;
+    }
+
+    @Override
+    public <R> boolean is(Double value, TypeName<R> type) {
+        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)) {
+            return true;
+        }
+        if (Maths.$INTEGER.equals(type)) {
+            return value == (int) value.doubleValue();
+        }
+        if (Maths.$LONG.equals(type)) {
+            return value == (long) value.doubleValue();
+        }
+        return false;
     }
 
     @Override
@@ -226,12 +289,12 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Complex toComplex(Double a) {
-        return Complex.valueOf(a);
+        return Complex.of(a);
     }
 
     @Override
     public Double acotan(Double a) {
-        return MathsBase.acotan(a);
+        return Maths.acotan(a);
     }
 
     @Override
@@ -251,52 +314,42 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 
     @Override
     public Double db(Double a) {
-        return MathsBase.db(a);
+        return Maths.db(a);
     }
 
     @Override
     public Double db2(Double a) {
-        return MathsBase.db2(a);
+        return Maths.db2(a);
     }
 
     @Override
     public Double sqr(Double a) {
-        return MathsBase.sqr(a);
+        return Maths.sqr(a);
     }
 
     @Override
     public Double sqrt(Double a) {
-        return MathsBase.sqrt(a);
+        return Maths.sqrt(a);
     }
 
     @Override
     public Double sqrt(Double a, int n) {
-        return MathsBase.sqrt(n);
+        return Maths.sqrt(n);
     }
 
     @Override
     public Double pow(Double a, Double b) {
-        return MathsBase.pow(a, b);
+        return Maths.pow(a, b);
     }
 
     @Override
     public Double pow(Double a, double b) {
-        return MathsBase.pow(a, b);
+        return Maths.pow(a, b);
     }
 
     @Override
     public Double npow(Double a, int n) {
-        return MathsBase.pow(a, n);
-    }
-
-    @Override
-    public Double parse(String string) {
-        return Double.valueOf(string);
-    }
-
-    @Override
-    public TypeName<Double> getItemType() {
-        return MathsBase.$DOUBLE;
+        return Maths.pow(a, n);
     }
 
     @Override
@@ -350,6 +403,11 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
+    public Double parse(String string) {
+        return Double.valueOf(string);
+    }
+
+    @Override
     public Double scalarProduct(Double a, Double b) {
         return mul(conj(a), b);
     }
@@ -357,63 +415,5 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     @Override
     public Double setParam(Double a, String paramName, Object b) {
         return a;
-    }
-
-    @Override
-    public RepeatableOp<Double> addRepeatableOp() {
-        return new RepeatableOp<Double>() {
-            double c = 0;
-
-            @Override
-            public void append(Double item) {
-                c += item;
-            }
-
-            @Override
-            public Double eval() {
-                return c;
-            }
-        };
-    }
-
-    @Override
-    public RepeatableOp<Double> mulRepeatableOp() {
-        return new RepeatableOp<Double>() {
-            double c = 1;
-
-            @Override
-            public void append(Double item) {
-                c *= item;
-            }
-
-            @Override
-            public Double eval() {
-                return c;
-            }
-        };
-    }
-
-    @Override
-    public <R> boolean is(Double value, TypeName<R> type) {
-        if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)) {
-            return true;
-        }
-        if (Maths.$INTEGER.equals(type)) {
-            return value == (int) value.doubleValue();
-        }
-        if (Maths.$LONG.equals(type)) {
-            return value == (long) value.doubleValue();
-        }
-        return false;
-    }
-
-    @Override
-    public Double abssqr(Double a) {
-        return a*a;
-    }
-
-    @Override
-    public Double rem(Double a, Double b) {
-        return a%b;
     }
 }

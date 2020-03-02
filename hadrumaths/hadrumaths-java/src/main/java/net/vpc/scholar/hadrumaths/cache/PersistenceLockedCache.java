@@ -1,15 +1,18 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonObjectBuilder;
 import net.vpc.common.util.Chronometer;
 import net.vpc.common.util.DatePart;
+import net.vpc.common.util.TimeDuration;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class PersistenceLockedCache<T> implements Callable<T> {
-    private static Logger log = Logger.getLogger(PersistenceLockedCache.class.getName());
+    private static final Logger log = Logger.getLogger(PersistenceLockedCache.class.getName());
     private final PersistenceCache persistenceCache;
     private final ObjectCache objCache;
     private final String cacheItemName;
@@ -33,16 +36,15 @@ class PersistenceLockedCache<T> implements Callable<T> {
         boolean cacheEnabled = persistenceCache.isEnabled();
         long timeThresholdMilli = persistenceCache.getTaskTimeThreshold();
         if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
-            Chronometer c = new Chronometer();
-            c.start();
+            Chronometer c = Chronometer.start();
             try {
                 oldValue = (T) objCache.load(cacheItemName, null);
                 if (oldValue != null) {
                     c.stop();
-                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c+" ("+objCache.getObjectCacheFile(cacheItemName).getFile()+")");
+                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
                 }
             } catch (Exception e) {
-                log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")"+" ("+objCache.getObjectCacheFile(cacheItemName).getFile()+")");
+                log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
                 //
             }
             if (!c.isStopped()) {
@@ -50,43 +52,65 @@ class PersistenceLockedCache<T> implements Callable<T> {
             }
             if (oldValue != null) {
                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli, DatePart.SECOND) + ")"+" ("+objCache.getObjectCacheFile(cacheItemName).getFile()+")");
+                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + new TimeDuration(timeThresholdMilli).toString(DatePart.SECOND) + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
                 }
             }
         }
         if (oldValue == null) {
             evaluator.init();
-            Chronometer computeChrono = new Chronometer();
-            computeChrono.start();
+            Chronometer computeChrono = Chronometer.start();
             oldValue = (T) evaluator.evaluate(args);
             computeChrono.stop();
             if (objCache != null && cacheEnabled && cacheMode != CacheMode.READ_ONLY) {
                 long computeTime = computeChrono.getTime();
                 if (computeTime >= persistenceCache.getMinimumTimeForCache()) {
-                    Chronometer storeChrono = new Chronometer();
-                    storeChrono.start();
+                    Chronometer storeChrono = Chronometer.start();
                     objCache.store(cacheItemName, oldValue, monitor);
                     storeChrono.stop();
-                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono+" ("+objCache.getObjectCacheFile(cacheItemName).getFile()+")");
-                    objCache.addStat(cacheItemName, computeTime);
-                    objCache.addStat(cacheItemName + "#storecache", storeChrono.getTime());
+                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                    TsonObjectBuilder stat = Tson.obj();
+                    stat.add(Tson.pair("name", Tson.elem(cacheItemName)));
+                    stat.add(Tson.pair("eval",
+                            Tson.obj(
+                                    Tson.pair("nanos", Tson.elem(computeChrono.getTime())),
+                                    Tson.pair("str", Tson.elem(computeChrono.getDuration().toString()))
+                            ))
+                    );
+                    stat.add(Tson.pair("store",
+                            Tson.obj(
+                                    Tson.pair("nanos", Tson.elem(storeChrono.getTime())),
+                                    Tson.pair("str", Tson.elem(computeChrono.getDuration().toString()))
+                            ))
+                    );
                     if (persistenceCache.isLogLoadStatsEnabled()) {
-                        Chronometer loadChrono = new Chronometer();
-                        loadChrono.start();
+                        Chronometer loadChrono = Chronometer.start();
                         try {
                             oldValue = (T) objCache.load(cacheItemName, null);
                         } catch (Exception e) {
                             //
                         }
                         loadChrono.stop();
-                        objCache.addStat(cacheItemName + "#loadcache", loadChrono.getTime());
-                        if (timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000) {
-                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + Chronometer.formatPeriodMilli(timeThresholdMilli,DatePart.SECOND) + ")");
+                        boolean longLoadNDetected = timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000;
+                        stat.add(Tson.pair(
+                                "load",
+                                Tson.obj(
+                                        Tson.pair("nanos", Tson.elem(loadChrono.getTime())),
+                                        Tson.pair("str", Tson.elem(computeChrono.getDuration().toString()))
+                                )));
+                        if (longLoadNDetected) {
+                            stat.add(Tson.pair("slowLoading", Tson.elem(true)));
+                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + new TimeDuration(timeThresholdMilli).toString(DatePart.SECOND) + ")");
                         }
                     }
+                    objCache.addStat(stat.build());
                 }
             }
         }
         return oldValue;
+    }
+
+    @Override
+    public String toString() {
+        return "PersistenceLockedCache(" + cacheItemName + ":" + objCache.getKey().getPath() + " ;; " + ')';
     }
 }

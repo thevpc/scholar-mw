@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.DoubleParam;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 
 import java.util.Arrays;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SimpleSeq1 implements TVectorCell<Expr> {
+class SimpleSeq1 implements VectorModel<Expr> {
     private final Expr pattern;
     private final DoubleParam m;
     private final double[] values;
@@ -18,9 +18,14 @@ class SimpleSeq1 implements TVectorCell<Expr> {
         this.pattern = pattern;
     }
 
+    @Override
+    public int size() {
+        return values.length;
+    }
+
     public Expr get(int index) {
         double value = values[index];
-        String mname = m.getParamName();
+        String mname = m.getName();
         Expr e = pattern.setParam(mname, value);
 //                e.getProperties().put(mname, value);
         return e;

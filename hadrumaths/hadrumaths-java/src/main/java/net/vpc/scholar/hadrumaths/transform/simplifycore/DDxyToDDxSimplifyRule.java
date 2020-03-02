@@ -16,7 +16,7 @@
 // * @author vpc
 // */
 //@Deprecated
-//public class DDxyToDDxSimplifyRule implements ExpressionRewriterRule {
+//public class DDxyToDDxSimplifyRule extends AbstractExpressionRewriterRule {
 //
 //    public static final ExpressionRewriterRule INSTANCE = new DDxyToDDxSimplifyRule();
 //    public static final Class<? extends Expr>[] TYPES = new Class[]{DDxyToDDx.class};

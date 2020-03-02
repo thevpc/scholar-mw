@@ -13,7 +13,7 @@ import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabDoubleFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabVectorizeFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabXFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabYFormat;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 /**
  * @author vpc
@@ -26,8 +26,8 @@ public class DLinearFunctionXYToMatlabString implements ToMatlabString<Linear> {
         double b = o.getB();
         double c = o.getC();
         ToMatlabStringParamArray formatArray = new ToMatlabStringParamArray(format);
-        MatlabXFormat x = (MatlabXFormat) formatArray.getParam(MatlabFactory.X);
-        MatlabYFormat y = (MatlabYFormat) formatArray.getParam(MatlabFactory.Y);
+        MatlabXFormat x = formatArray.getParam(MatlabFactory.X);
+        MatlabYFormat y = formatArray.getParam(MatlabFactory.Y);
         MatlabDoubleFormat df = (MatlabDoubleFormat) formatArray.getParam(MatlabDoubleFormat.class, false);
         String mul = formatArray.getParam(MatlabVectorizeFormat.class, false) == null ? " * " : " .* ";
 

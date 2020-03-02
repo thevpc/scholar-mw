@@ -9,5 +9,5 @@ package net.vpc.scholar.hadrumaths.interop.matlab;
  * @author vpc
  */
 public interface ToMatlabString<T> {
-    public String toMatlabString(T o, ToMatlabStringParam... format);
+    String toMatlabString(T o, ToMatlabStringParam... format);
 }

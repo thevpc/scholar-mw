@@ -25,16 +25,16 @@ object T02_ScalaTypes extends App{
   // int array of size 5 initialized with 1, ...5 values
   var b1 : Array[Int] =Array(1,2,3,4,5)
   //int[] b1={1,2,3,4,5}
-  println(b1(0)) // prints first element
+  println(b1(0)) // prints first primitiveElement3D
   println(b1.length) // prints 5, le array length
   // b1(0)++  not allowed
-  b1(0)=b1(0)+1 //increments the first element
+  b1(0)=b1(0)+1 //increments the first primitiveElement3D
 
   //-------------------------------
   // MULTI DIMENSIONAL ARRAYS
   // int array of size 5 initialized with 1, ...5 values
   var b2 : Array[Array[Double]] =Array.ofDim[Double](2,3)
-  println(b2(0)(0)) // prints first element
+  println(b2(0)(0)) // prints first primitiveElement3D
   b2(0)(0)=3.8
   println(b2(0)(0))
   println(b2.length) // prints 2, le array length of the first dim

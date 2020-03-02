@@ -23,7 +23,7 @@ public class DomainXYToMatlabString implements ToMatlabString<Domain> {
     @Override
     public String toMatlabString(Domain o, ToMatlabStringParam... format) {
         ToMatlabStringParamArray formatArray = new ToMatlabStringParamArray(format);
-        MatlabDomainFormat d = (MatlabDomainFormat) formatArray.getParam(MatlabFactory.GATE_DOMAIN);
+        MatlabDomainFormat d = formatArray.getParam(MatlabFactory.GATE_DOMAIN);
         MatlabDoubleFormat df = (MatlabDoubleFormat) formatArray.getParam(MatlabDoubleFormat.class, false);
         String xf = formatArray.getParam(MatlabFactory.X).getName();
         String yf = formatArray.getParam(MatlabFactory.Y).getName();

@@ -1,11 +1,14 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triflip;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.geom.Triangle;
 import net.vpc.scholar.hadrumaths.meshalgo.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,12 +24,6 @@ public class MeshFlipAlgo implements MeshAlgo {
 
     public Collection<MeshZone> meshPolygon(Geometry polygon) {
         return meshPolygon(new Geometry[]{polygon});
-    }
-
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("options", option);
-        return h.toString();
     }
 
     public Collection<MeshZone> meshPolygon(Geometry[] polygons) {
@@ -45,17 +42,11 @@ public class MeshFlipAlgo implements MeshAlgo {
         return ret;
     }
 
-    public void setOption(MeshOptions op) {
-        //
-    }
-
-    public void setOption(OptionFlip op) {
-        this.option = op;
-    }
-
-    public OptionFlip getOption() {
-        return option;
-    }
+//    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("options", option);
+//        return h.toString();
+//    }
 
     private void initPolygon(Geometry geom) {
         Polygon pg = geom.toPolygon();
@@ -178,6 +169,26 @@ public class MeshFlipAlgo implements MeshAlgo {
         for (Triangle aNewTriangle : newTriangle) {
             listeTriangle.add(aNewTriangle);
         }
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("options", context.elem(option));
+        sb.add("triangles", context.elem(listeTriangle));
+        return sb.build();
+    }
+
+    public OptionFlip getOption() {
+        return option;
+    }
+
+    public void setOption(MeshOptions op) {
+        //
+    }
+
+    public void setOption(OptionFlip op) {
+        this.option = op;
     }
 
     @Override

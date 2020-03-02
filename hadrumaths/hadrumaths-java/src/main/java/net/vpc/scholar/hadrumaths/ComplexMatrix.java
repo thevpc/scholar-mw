@@ -1,10 +1,28 @@
 package net.vpc.scholar.hadrumaths;
 
+import java.util.Iterator;
+
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
+public interface ComplexMatrix extends Normalizable, Matrix<Complex> {
 
+
+    ComplexMatrix rem(Complex other);
+
+    ComplexMatrix pow(int exp);
+
+    DMatrix getRealDMatrix();
+
+    DMatrix getImagDMatrix();
+
+    DMatrix getAbsDMatrix();
+
+    DMatrix getAbsSquareDMatrix();
+
+    void set(int row, int col, double real, double imag);
+
+    void set(Complex[][] values);
 
     /**
      * Get a submatrix.
@@ -72,18 +90,18 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
     ComplexMatrix sub(Complex c);
 
     //
-    ComplexMatrix div(TMatrix<Complex> other);
+    ComplexMatrix div(Matrix<Complex> other);
 
-    ComplexMatrix rem(TMatrix<Complex> other);
-
-    //
-    ComplexMatrix mul(TMatrix<Complex> other);
+    ComplexMatrix rem(Matrix<Complex> other);
 
     //
-    ComplexMatrix dotmul(TMatrix<Complex> other);
+    ComplexMatrix mul(Matrix<Complex> other);
 
     //
-    ComplexMatrix dotdiv(TMatrix<Complex> other);
+    ComplexMatrix dotmul(Matrix<Complex> other);
+
+    //
+    ComplexMatrix dotdiv(Matrix<Complex> other);
 
     //
     ComplexMatrix conj();
@@ -92,7 +110,7 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
     ComplexMatrix dotinv();
 
     //
-    ComplexMatrix add(TMatrix<Complex> other);
+    ComplexMatrix add(Matrix<Complex> other);
 
     //
     ComplexMatrix add(Complex[][] other);
@@ -101,7 +119,7 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 
     ComplexMatrix mul(Complex[][] other);
 
-    ComplexMatrix sub(TMatrix<Complex> other);
+    ComplexMatrix sub(Matrix<Complex> other);
 
     Complex getScalar();
 
@@ -125,11 +143,11 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 //
 //    void update(int row, int col, Complex val);
 //
-    void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols);
+    void set(int row, int col, Matrix<Complex> src, int srcRow, int srcCol, int rows, int cols);
 
-    void set(int row, int col, TMatrix<Complex> subMatrix);
+    void set(int row, int col, Matrix<Complex> subMatrix);
 
-    void update(int row, int col, TMatrix<Complex> subMatrix);
+    void update(int row, int col, Matrix<Complex> subMatrix);
 
     ComplexMatrix subMatrix(int row, int col, int rows, int cols);
 
@@ -188,27 +206,15 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 
     ComplexMatrix coMatrix(int row, int col);
 
-    ComplexMatrix pow(int exp);
-
     ComplexMatrix adjoint();
 
     Complex det();
 
     ComplexMatrix upperTriangle();
 
-    //
-//    @Override
-//    String toString();
-//
-//    String format();
-//
-//    String format(String commentsChar, String varName);
-//
-    ComplexMatrix copy();
+    ComplexMatrix solve(Matrix<Complex> B);
 
-    ComplexMatrix solve(TMatrix<Complex> B);
-
-    ComplexMatrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy);
+    ComplexMatrix solve(Matrix<Complex> B, SolveStrategy solveStrategy);
 
     //
 //
@@ -249,6 +255,12 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
     //
     ComplexMatrix abs();
 
+    ComplexMatrix sqr();
+
+    ComplexMatrix sqrt();
+
+    ComplexMatrix sqrt(int n);
+
     //
 //    double cond();
 //
@@ -277,10 +289,12 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 //
 //    double minAbs();
 //
-    ComplexMatrix pow(TMatrix<Complex> power);
+    ComplexMatrix pow(Matrix<Complex> power);
 
     //
     ComplexMatrix pow(Complex power);
+
+    void set(Matrix<Complex> values);
 
     //
 //    boolean isScalar();
@@ -329,6 +343,10 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 
     ComplexMatrix sinh();
 
+//    Matrix dotabs();
+
+    ComplexMatrix sincard();
+
     ComplexMatrix arg();
 
     ComplexMatrix atan();
@@ -341,19 +359,9 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 
     ComplexMatrix cotanh();
 
-//    Matrix dotabs();
-
     ComplexMatrix getImag();
 
     ComplexMatrix getReal();
-
-    DMatrix getRealDMatrix();
-
-    DMatrix getImagDMatrix();
-
-    DMatrix getAbsDMatrix();
-
-    DMatrix getAbsSquareDMatrix();
 
     ComplexMatrix imag();
 
@@ -383,16 +391,20 @@ public interface ComplexMatrix extends Normalizable, TMatrix<Complex> {
 
     ComplexMatrix dotpow(Complex n);
 
-    void set(int row, int col, double real, double imag);
-
-    void set(Complex[][] values);
+    //
+//    @Override
+//    String toString();
+//
+//    String format();
+//
+//    String format(String commentsChar, String varName);
+//
+    ComplexMatrix copy();
 
     void set(int row, int col, MutableComplex value);
 
     void set(MutableComplex[][] values);
 
     void set(double[][] values);
-
-    void set(TMatrix<Complex> values);
 
 }

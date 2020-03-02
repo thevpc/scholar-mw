@@ -1,12 +1,11 @@
 package net.vpc.scholar.hadrumaths.integration;
 
-import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
-import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-
-import java.io.Serializable;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDyIntegralX;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDzIntegralXY;
 
 
 /**
@@ -16,7 +15,7 @@ import java.io.Serializable;
  * Time: 18:55:20
  * To change this template use File | Settings | File Templates.
  */
-public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
+public class DQuadIntegralXY implements DIntegralXY {
     private static final long serialVersionUID = 1L;
     private static final int ERR_MAX_STEP_REACHED = 1;
     private static final int ERR_MAX_FCT_COUNT = 2;
@@ -30,11 +29,6 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
 
     }
 
-
-    @Override
-    public double integrateX(DoubleToDouble f, double xmin, double xmax) {
-        return integrateX(f, 0, xmin, xmax);
-    }
 
     public DQuadIntegralXY(double tolerance, double minWindow, double maxWindow, int maxfcnt) {
         if (tolerance > 0) {
@@ -51,28 +45,9 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
         }
     }
 
-    public double integrateXYZ(DoubleToDouble f, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
-//        DFunctionXY simp=FunctionFactory.simplify(f);
-//        if(simp==null){
-//            simp=f;
-//        }else{
-//            System.out.println("simplification");
-//        }
-        //g(z)= intx_(z)
-        DDzIntegralXY f2 = new DDzIntegralXY(f, this, xmin, xmax, ymin, ymax);
-        return integrateX(f2, 0, zmin, zmax);
-    }
-
-    public double integrateXY(DoubleToDouble f, double xmin, double xmax, double ymin, double ymax) {
-//        DFunctionXY simp=FunctionFactory.simplify(f);
-//        if(simp==null){
-//            simp=f;
-//        }else{
-//            System.out.println("simplification");
-//        }
-
-        DDyIntegralX f2 = new DDyIntegralX(f, this, xmin, xmax);
-        return integrateX(f2, 0, ymin, ymax);
+    @Override
+    public double integrateX(DoubleToDouble f, double xmin, double xmax) {
+        return integrateX(f, 0, xmin, xmax);
     }
 
     public double integrateX(DoubleToDouble f, double y0, double xmin, double xmax) {
@@ -80,20 +55,20 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
         if (f.isZero()) {
             return 0;
         }
-        double[] y = f.computeDouble(x, y0, null, null);
+        double[] y = f.evalDouble(x, y0, null, null);
         if (Double.isInfinite(y[2])) {
-            y = f.computeDouble(x, y0, null, null);
+            y = f.evalDouble(x, y0, null, null);
         }
         int fcnt = 3;
         double hmin = hminCoeff * Math.abs(xmax - xmin);
         double hmax = hmaxCoeff * Math.abs(xmax - xmin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
-            y[0] = f.computeDouble(xmin + hmin, y0);
+            y[0] = f.evalDouble(xmin + hmin, y0);
             fcnt = fcnt + 1;
         }
         if (Double.isInfinite(y[2]) || Double.isNaN(y[2])) {
-            y[0] = f.computeDouble(xmin - hmin, y0);
+            y[0] = f.evalDouble(xmin - hmin, y0);
             fcnt = fcnt + 1;
         }
 
@@ -120,24 +95,23 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
         return o[0];
     }
 
-
     public double integrateY(DoubleToDouble f, double x0, double ymin, double ymax) {
 
         double[] yy = new double[]{ymin, (ymin + ymax) / 2.0, ymax};
         if (f.isZero()) {
             return 0;
         }
-        double[] y = f.computeDouble(x0, yy, null, null);
+        double[] y = f.evalDouble(x0, yy, null, null);
         int fcnt = 3;
         double hmin = hminCoeff * Math.abs(ymax - ymin);
         double hmax = hmaxCoeff * Math.abs(ymax - ymin);
 
         if (Double.isInfinite(y[0]) || Double.isNaN(y[0])) {
-            y[0] = f.computeDouble(x0, ymin + hmin);
+            y[0] = f.evalDouble(x0, ymin + hmin);
             fcnt = fcnt + 1;
         }
         if (Double.isInfinite(y[2]) || Double.isNaN(y[2])) {
-            y[0] = f.computeDouble(x0, ymin - hmin);
+            y[0] = f.evalDouble(x0, ymin - hmin);
             fcnt = fcnt + 1;
         }
 
@@ -164,6 +138,30 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
         return o[0];
     }
 
+    public double integrateXY(DoubleToDouble f, double xmin, double xmax, double ymin, double ymax) {
+//        DFunctionXY simp=FunctionFactory.simplify(f);
+//        if(simp==null){
+//            simp=f;
+//        }else{
+//            System.out.println("simplification");
+//        }
+
+        DDyIntegralX f2 = new DDyIntegralX(f, this, xmin, xmax);
+        return integrateX(f2, 0, ymin, ymax);
+    }
+
+    public double integrateXYZ(DoubleToDouble f, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
+//        DFunctionXY simp=FunctionFactory.simplify(f);
+//        if(simp==null){
+//            simp=f;
+//        }else{
+//            System.out.println("simplification");
+//        }
+        //g(z)= intx_(z)
+        DDzIntegralXY f2 = new DDzIntegralXY(f, this, xmin, xmax, ymin, ymax);
+        return integrateX(f2, 0, zmin, zmax);
+    }
+
     private double[] quadstepX(DoubleToDouble f, double y0, double a, double b, double fa, double fc, double fb, int fcnt, double hmin, double hmax) {
 //QUADSTEP  Recursive core routine for function QUAD.
 
@@ -179,7 +177,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
 
         }
         double[] x = {(a + c) / 2, (c + b) / 2};
-        double[] y = f.computeDouble(x, y0, null, null);
+        double[] y = f.evalDouble(x, y0, null, null);
 
         fcnt = fcnt + 2;
         if (fcnt > maxfcnt) {//% Maximum function count exceeded; singularity likely.
@@ -232,7 +230,7 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
 
         }
         double[] y = {(a + c) / 2, (c + b) / 2};
-        double[] v = f.computeDouble(x0, y, null, null);
+        double[] v = f.evalDouble(x0, y, null, null);
 
         fcnt = fcnt + 2;
         if (fcnt > maxfcnt) {//% Maximum function count exceeded; singularity likely.
@@ -271,6 +269,16 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int result;
+        result = Double.hashCode(tolerance);
+        result = 31 * result + Double.hashCode(hminCoeff);
+        result = 31 * result + Double.hashCode(hmaxCoeff);
+        result = 31 * result + maxfcnt;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DQuadIntegralXY)) return false;
@@ -280,38 +288,32 @@ public class DQuadIntegralXY implements DIntegralXY, Dumpable, Serializable {
         if (Double.compare(that.hmaxCoeff, hmaxCoeff) != 0) return false;
         if (Double.compare(that.hminCoeff, hminCoeff) != 0) return false;
         if (maxfcnt != that.maxfcnt) return false;
-        if (Double.compare(that.tolerance, tolerance) != 0) return false;
-
-        return true;
+        return Double.compare(that.tolerance, tolerance) == 0;
     }
 
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(tolerance);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(hminCoeff);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(hmaxCoeff);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + maxfcnt;
-        return result;
-    }
-
-    @Override
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("tolerance", tolerance);
-        h.add("hminCoeff", hminCoeff);
-        h.add("hmaxCoeff", hmaxCoeff);
-        h.add("maxfcnt", maxfcnt);
-        return h.toString();
-    }
+//    @Override
+//    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("tolerance", tolerance);
+//        h.add("hminCoeff", hminCoeff);
+//        h.add("hmaxCoeff", hmaxCoeff);
+//        h.add("maxfcnt", maxfcnt);
+//        return h.toString();
+//    }
 
     @Override
     public String toString() {
         return "DQuadIntegralXY";
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName(),
+                Tson.pair("tolerance", Tson.elem(tolerance)),
+                Tson.pair("hminCoeff", Tson.elem(hminCoeff)),
+                Tson.pair("hmaxCoeff", Tson.elem(hmaxCoeff)),
+                Tson.pair("maxfcnt", Tson.elem(maxfcnt))
+        ).build();
     }
 }
 

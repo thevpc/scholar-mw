@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 
 
 /**
@@ -19,17 +19,14 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 //    public double compute0(DomainXY domain, IDDxy f1, IDDxy f2, FormalScalarProductOperator sp) {
 //        DDiscrete n = (DDiscrete) f1;
 //        return sp.evalDD(domain, n.discretize(), f2);
 //    }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         DDiscrete n = (DDiscrete) f1;
         switch (domain.getDimension()) {
             case 1: {
@@ -42,8 +39,8 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                 double[] values = n.getValues()[0][0];
                 for (int xi = 0; xi < x.length; xi++) {
                     if (values[xi] != 0) {
-                        dom = Domain.forBounds(x[xi], x[xi] + dx);
-                        DoubleValue seg = DoubleValue.valueOf(values[xi], dom);
+                        dom = Domain.ofBounds(x[xi], x[xi] + dx);
+                        DoubleToDouble seg = Maths.expr(values[xi], dom);
                         d += sp.eval(domain, seg, f2).toDouble();
                     }
                 }
@@ -62,8 +59,8 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                 for (int yi = 0; yi < y.length; yi++) {
                     for (int xi = 0; xi < x.length; xi++) {
                         if (values[yi][xi] != 0) {
-                            dom = Domain.forBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy);
-                            DoubleValue seg = DoubleValue.valueOf(values[yi][xi], dom);
+                            dom = Domain.ofBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy);
+                            DoubleToDouble seg = Maths.expr(values[yi][xi], dom);
                             d += sp.eval(domain, seg, f2).toDouble();
                         }
                     }
@@ -84,8 +81,8 @@ final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
                     for (int yi = 0; yi < y.length; yi++) {
                         for (int xi = 0; xi < x.length; xi++) {
                             if (values[zi][yi][xi] != 0) {
-                                dom = Domain.forBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy, z[yi], z[yi] + dz);
-                                DoubleValue seg = DoubleValue.valueOf(values[zi][yi][xi], dom);
+                                dom = Domain.ofBounds(x[xi], x[xi] + dx, y[yi], y[yi] + dy, z[yi], z[yi] + dz);
+                                DoubleToDouble seg = Maths.expr(values[zi][yi][xi], dom);
                                 d += sp.eval(domain, seg, f2).toDouble();
                             }
                         }

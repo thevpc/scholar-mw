@@ -19,10 +19,10 @@ public abstract class PlotAxisSeriesSingleValue extends PlotAxisSeriesRow {
         super(name, type, graphix);
     }
 
-    protected abstract Object computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p);
+    protected abstract Object evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p);
 
     @Override
-    protected final PlotNamedVector computeComplexes(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        return new PlotNamedVector(toString()+"-"+p.getSerieTitle(), new Object[]{computeComplex(structure, x, p)}, new double[]{1}, new String[]{toString()});
+    protected final PlotNamedVector evalComplexes(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+        return new PlotNamedVector(toString()+"-"+p.getSerieTitle(), new Object[]{evalComplex(structure, x, p)}, new double[]{1}, new String[]{toString()});
     }
 }

@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.plot;
 
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,12 +22,12 @@ class _old_HeatMapPlot extends JComponent {
     double[][] sourceMatrix;
     private Object[] xAxis;
     private Object[] yAxis;
-    private float H = 180f / 240f;
+    private final float H = 180f / 240f;
     //    private float H = 134f / 240f;
-    private float S = 210f / 240f;
+    private final float S = 210f / 240f;
     //    private float S = 203f / 240f;
-    private float B = (125f + 40) / 240f;
-    private float D = 40f / 240f;
+    private final float B = (125f + 40) / 240f;
+    private final float D = 40f / 240f;
 
     private int current_i = -1;
     private int current_j = -1;
@@ -59,14 +59,14 @@ class _old_HeatMapPlot extends JComponent {
         });
     }
 
-    public void setPreferredDimension(int preferredDimension) {
-        float factor = (matrix.length > 0 && matrix[0].length > 0) ? ((float) matrix.length / (float) matrix[0].length) : 1;
-        Dimension dim = (factor <= 1) ?
-                new Dimension(preferredDimension, (int) (preferredDimension * factor))
-                : new Dimension((int) (preferredDimension / factor), preferredDimension);
-        setMinimumSize(dim);
-        setPreferredSize(dim);
-        setSize(dim);
+    private static double[][] toAbs(ComplexMatrix m) {
+        double[][] d = new double[m.getRowCount()][m.getColumnCount()];
+        for (int i = 0; i < d.length; i++) {
+            for (int j = 0; j < d[i].length; j++) {
+                d[i][j] = m.get(i, j).absdbl();
+            }
+        }
+        return d;
     }
 
     public void setData(double[][] matrix) {
@@ -105,6 +105,16 @@ class _old_HeatMapPlot extends JComponent {
                 }
             }
         }
+    }
+
+    public void setPreferredDimension(int preferredDimension) {
+        float factor = (matrix.length > 0 && matrix[0].length > 0) ? ((float) matrix.length / (float) matrix[0].length) : 1;
+        Dimension dim = (factor <= 1) ?
+                new Dimension(preferredDimension, (int) (preferredDimension * factor))
+                : new Dimension((int) (preferredDimension / factor), preferredDimension);
+        setMinimumSize(dim);
+        setPreferredSize(dim);
+        setSize(dim);
     }
 
     private void onMouseMove(MouseEvent e) {
@@ -155,15 +165,15 @@ class _old_HeatMapPlot extends JComponent {
                 float f = 1 - (float) matrix[line][column];
                 Color baseColor = new Color(Color.HSBtoRGB(H * (f), S, B));
                 g.setColor(baseColor);
-                int xx = (int) MathsBase.round(column * x);
-                int yy = (int) MathsBase.round(line * y);
+                int xx = (int) Maths.round(column * x);
+                int yy = (int) Maths.round(line * y);
                 int ixx = ix;
                 int iyy = iy;
-                if (column > 0 && (xx > ((int) MathsBase.round((column - 1) * x)))) {
+                if (column > 0 && (xx > ((int) Maths.round((column - 1) * x)))) {
                     xx--;
                     ixx += 2;
                 }
-                if (line > 0 && (yy > ((int) MathsBase.round((line - 1) * y)))) {
+                if (line > 0 && (yy > ((int) Maths.round((line - 1) * y)))) {
                     yy--;
                     iyy += 2;
                 }
@@ -183,22 +193,23 @@ class _old_HeatMapPlot extends JComponent {
         }
     }
 
-    private static double[][] toAbs(ComplexMatrix m) {
-        double[][] d = new double[m.getRowCount()][m.getColumnCount()];
-        for (int i = 0; i < d.length; i++) {
-            for (int j = 0; j < d[i].length; j++) {
-                d[i][j] = m.get(i, j).absdbl();
-            }
-        }
-        return d;
-    }
-
     public Object[] getxAxis() {
         return xAxis;
     }
 
     public void setxAxis(Object[] xAxis) {
         this.xAxis = xAxis;
+    }
+
+    public void setxAxis(double[] xAxis) {
+        if (xAxis == null) {
+            this.xAxis = null;
+        } else {
+            this.xAxis = new Double[xAxis.length];
+            for (int i = 0; i < xAxis.length; i++) {
+                this.xAxis[i] = new Double(xAxis[i]);
+            }
+        }
     }
 
     public Object[] getyAxis() {
@@ -216,17 +227,6 @@ class _old_HeatMapPlot extends JComponent {
             this.yAxis = new Double[yAxis.length];
             for (int i = 0; i < yAxis.length; i++) {
                 this.yAxis[i] = new Double(yAxis[i]);
-            }
-        }
-    }
-
-    public void setxAxis(double[] xAxis) {
-        if (xAxis == null) {
-            this.xAxis = null;
-        } else {
-            this.xAxis = new Double[xAxis.length];
-            for (int i = 0; i < xAxis.length; i++) {
-                this.xAxis[i] = new Double(xAxis[i]);
             }
         }
     }

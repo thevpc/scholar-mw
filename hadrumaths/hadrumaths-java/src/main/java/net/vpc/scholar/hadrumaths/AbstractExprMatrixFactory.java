@@ -2,24 +2,34 @@ package net.vpc.scholar.hadrumaths;
 
 import java.io.File;
 
-public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<Expr> implements ExprMatrixFactory {
+public abstract class AbstractExprMatrixFactory extends AbstractMatrixFactory<Expr> implements ExprMatrixFactory {
 
     public AbstractExprMatrixFactory() {
-        super(MathsBase.EXPR_VECTOR_SPACE);
+        super(Maths.EXPR_VECTOR_SPACE);
     }
 
-    protected ExprMatrix ensureExprMatrix(TMatrix<Expr> e) {
+    @Override
+    public ExprMatrix newMatrix(Matrix<Expr> other) {
+        return ensureExprMatrix(super.newMatrix(other));
+    }
+
+    @Override
+    public ExprMatrix newMatrix(Matrix<Expr>[][] blocs) {
+        return ensureExprMatrix(super.newMatrix(blocs));
+    }
+
+    @Override
+    public ExprMatrix newZeros(Matrix<Expr> other) {
+        return ensureExprMatrix(super.newZeros(other));
+    }
+
+    protected ExprMatrix ensureExprMatrix(Matrix<Expr> e) {
         if (e instanceof ExprMatrix) {
             return (ExprMatrix) e;
         }
         ExprMatrix m = newMatrix(e.getRowCount(), e.getColumnCount());
         m.set(e);
         return m;
-    }
-
-    @Override
-    public ExprMatrix newZeros(TMatrix<Expr> other) {
-        return ensureExprMatrix(super.newZeros(other));
     }
 
     @Override
@@ -38,11 +48,6 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
     }
 
     @Override
-    public ExprMatrix newImmutableConstant(int rows, int cols, Expr value) {
-        return ensureExprMatrix(super.newImmutableConstant(rows, cols, value));
-    }
-
-    @Override
     public ExprMatrix newConstant(int rows, int cols, Expr value) {
         return ensureExprMatrix(super.newConstant(rows, cols, value));
     }
@@ -58,7 +63,7 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
     }
 
     @Override
-    public ExprMatrix newIdentity(TMatrix<Expr> c) {
+    public ExprMatrix newIdentity(Matrix<Expr> c) {
         return ensureExprMatrix(super.newIdentity(c));
     }
 
@@ -93,8 +98,13 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
     }
 
     @Override
-    public ExprMatrix newMatrix(int rows, int cols, TMatrixCell<Expr> cellFactory) {
+    public ExprMatrix newMatrix(int rows, int cols, MatrixCell<Expr> cellFactory) {
         return ensureExprMatrix(super.newMatrix(rows, cols, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newMatrix(int rows, int columns, CellIteratorType it, MatrixCell<Expr> item) {
+        return ensureExprMatrix(super.newMatrix(rows, columns, it, item));
     }
 
     @Override
@@ -108,8 +118,53 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
     }
 
     @Override
+    public ExprMatrix newColumnMatrix(int rows, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newColumnMatrix(rows, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newRowMatrix(int columns, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newRowMatrix(columns, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newSymmetric(int rows, int cols, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newSymmetric(rows, cols, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newHermitian(int rows, int cols, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newHermitian(rows, cols, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newDiagonal(int rows, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newDiagonal(rows, cellFactory));
+    }
+
+    @Override
     public ExprMatrix newDiagonal(Expr... c) {
         return ensureExprMatrix(super.newDiagonal(c));
+    }
+
+    @Override
+    public ExprMatrix newMatrix(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newMatrix(dim, cellFactory));
+    }
+
+//    @Override
+//    public ExprMatrix newDiagonal(int rows, int cols, MatrixCell<Expr> cellFactory) {
+//        return ensureExprMatrix(super.newDiagonal(rows, cols, cellFactory));
+//    }
+
+    @Override
+    public ExprMatrix newSymmetric(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newSymmetric(dim, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newHermitian(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newHermitian(dim, cellFactory));
     }
 
     @Override
@@ -118,241 +173,27 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
     }
 
     @Override
-    public ExprMatrix newMatrix(TMatrix<Expr> other) {
-        return ensureExprMatrix(super.newMatrix(other));
-    }
-
-    @Override
-    public ExprMatrix newMatrix(TMatrix<Expr>[][] blocs) {
-        return ensureExprMatrix(super.newMatrix(blocs));
-    }
-
-    @Override
-    public ExprMatrix newMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Expr> item) {
-        return ensureExprMatrix(super.newMatrix(rows, columns, it, item));
-    }
-
-    @Override
-    public ExprMatrix newColumnMatrix(int rows, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newColumnMatrix(rows, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newRowMatrix(int columns, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newRowMatrix(columns, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newSymmetric(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newSymmetric(rows, cols, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newHermitian(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newHermitian(rows, cols, cellFactory));
-    }
-
-//    @Override
-//    public ExprMatrix newDiagonal(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-//        return ensureExprMatrix(super.newDiagonal(rows, cols, cellFactory));
-//    }
-
-    @Override
-    public ExprMatrix newDiagonal(int rows, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newDiagonal(rows, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newMatrix(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newMatrix(dim, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newSymmetric(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newSymmetric(dim, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newHermitian(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newHermitian(dim, cellFactory));
-    }
-
-//    @Override
-//    public ExprMatrix newDiagonal(int dim, TMatrixCell<Expr> cellFactory) {
-//        return ensureExprMatrix(super.newDiagonal(dim, cellFactory));
-//    }
-
-    @Override
-    public ExprMatrix newImmutableMatrix(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableMatrix(rows, cols, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableColumnMatrix(int rows, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableColumnMatrix(rows, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableSymmetric(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableSymmetric(rows, cols, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableHermitian(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableHermitian(rows, cols, cellFactory));
-    }
-
-//    @Override
-//    public ExprMatrix newImmutableDiagonal(int rows, int cols, TMatrixCell<Expr> cellFactory) {
-//        return ensureExprMatrix(super.newImmutableDiagonal(rows, cols, cellFactory));
-//    }
-
-    @Override
-    public ExprMatrix newImmutableDiagonal(int rows, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableDiagonal(rows, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableMatrix(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableMatrix(dim, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableSymmetric(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableSymmetric(dim, cellFactory));
-    }
-
-    @Override
-    public ExprMatrix newImmutableHermitian(int dim, TMatrixCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableHermitian(dim, cellFactory));
-    }
-
-//    @Override
-//    public ExprMatrix newImmutableDiagonal(int dim, TMatrixCell<Expr> cellFactory) {
-//        return ensureExprMatrix(super.newImmutableDiagonal(dim, cellFactory));
-//    }
-
-    @Override
     public ExprMatrix newImmutableIdentity(int dim) {
         return ensureExprMatrix(super.newImmutableIdentity(dim));
     }
 
+//    @Override
+//    public ExprMatrix newDiagonal(int dim, MatrixCell<Expr> cellFactory) {
+//        return ensureExprMatrix(super.newDiagonal(dim, cellFactory));
+//    }
+
     @Override
-    public ExprMatrix newImmutableColumnMatrix(Expr... values) {
-        return ensureExprMatrix(super.newImmutableColumnMatrix(values));
+    public ExprMatrix newImmutableConstant(int rows, int cols, Expr value) {
+        return ensureExprMatrix(super.newImmutableConstant(rows, cols, value));
     }
 
     @Override
-    public ExprMatrix newImmutableRowMatrix(int columns, TVectorCell<Expr> cellFactory) {
-        return ensureExprMatrix(super.newImmutableRowMatrix(columns, cellFactory));
+    public ExprMatrix newImmutableMatrix(int rows, int cols, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableMatrix(rows, cols, cellFactory));
     }
 
     @Override
-    public ExprMatrix newImmutableRowMatrix(Expr... values) {
-        return ensureExprMatrix(super.newImmutableRowMatrix(values));
-    }
-
-    @Override
-    public ExprMatrix newImmutableDiagonal(Expr... values) {
-        return ensureExprMatrix(super.newImmutableDiagonal(values));
-    }
-
-    @Override
-    public ExprMatrix newImmutableIdentity(int rows, int cols) {
-        return ensureExprMatrix(super.newImmutableIdentity(rows, cols));
-    }
-
-    @Override
-    public String getId() {
-        return "MemExpr";
-    }
-
-    @Override
-    public ExprMatrix newMatrix(ExprMatrix[][] blocs) {
-        return (ExprMatrix) newMatrix((TMatrix<Expr>[][]) blocs);
-    }
-
-    @Override
-    public ExprMatrix newMatrix(double[][] values) {
-        return (ExprMatrix) super.newMatrix(values.length, values[0].length, (row, column) -> MathsBase.expr(values[row][column]));
-    }
-
-    @Override
-    public ExprMatrix newRandomReal(int m, int n) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.random()
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandomImag(int m, int n) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
-                MathsBase.random()
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandom(int m, int n, int minReal, int maxReal, int minImag, int maxImag) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(minReal, maxReal),
-                MathsBase.randomDouble(minImag, maxImag)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandom(int m, int n, double minReal, double maxReal, double minImag, double maxImag) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(minReal, maxReal),
-                MathsBase.randomDouble(minImag, maxImag)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandomReal(int m, int n, int min, int max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandomImag(int m, int n, int min, int max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandomReal(int m, int n, double min, double max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandomImag(int m, int n, double min, double max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandom(int m, int n, double min, double max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(min, max),
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newRandom(int m, int n, int min, int max) {
-        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.valueOf(
-                MathsBase.randomDouble(min, max),
-                MathsBase.randomDouble(min, max)
-        ));
-    }
-
-    @Override
-    public ExprMatrix newImmutableMatrix(int rows, int columns, CellIteratorType it, TMatrixCell<Expr> item) {
+    public ExprMatrix newImmutableMatrix(int rows, int columns, CellIteratorType it, MatrixCell<Expr> item) {
         switch (it) {
             case FULL: {
                 return new AbstractUnmodifiableExprMatrix(rows, columns, this) {
@@ -366,7 +207,7 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
                 return new AbstractUnmodifiableExprMatrix(rows, columns, this) {
                     @Override
                     public Expr get(int row, int col) {
-                        return row == col ? item.get(row, col) : MathsBase.EXPR_VECTOR_SPACE.zero();
+                        return row == col ? item.get(row, col) : Maths.EXPR_VECTOR_SPACE.zero();
                     }
                 };
             }
@@ -382,7 +223,7 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
                 return new AbstractUnmodifiableExprMatrix(rows, columns, this) {
                     @Override
                     public Expr get(int row, int col) {
-                        return row <= col ? item.get(row, col) : MathsBase.EXPR_VECTOR_SPACE.conj(item.get(col, row));
+                        return row <= col ? item.get(row, col) : Maths.EXPR_VECTOR_SPACE.conj(item.get(col, row));
                     }
                 };
             }
@@ -390,5 +231,164 @@ public abstract class AbstractExprMatrixFactory extends AbstractTMatrixFactory<E
                 throw new IllegalArgumentException("Unsupported " + it);
             }
         }
+    }
+
+    @Override
+    public ExprMatrix newImmutableColumnMatrix(Expr... values) {
+        return ensureExprMatrix(super.newImmutableColumnMatrix(values));
+    }
+
+//    @Override
+//    public ExprMatrix newImmutableDiagonal(int rows, int cols, MatrixCell<Expr> cellFactory) {
+//        return ensureExprMatrix(super.newImmutableDiagonal(rows, cols, cellFactory));
+//    }
+
+    @Override
+    public ExprMatrix newImmutableRowMatrix(Expr... values) {
+        return ensureExprMatrix(super.newImmutableRowMatrix(values));
+    }
+
+    @Override
+    public ExprMatrix newImmutableColumnMatrix(int rows, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableColumnMatrix(rows, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableRowMatrix(int columns, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableRowMatrix(columns, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableSymmetric(int rows, int cols, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableSymmetric(rows, cols, cellFactory));
+    }
+
+//    @Override
+//    public ExprMatrix newImmutableDiagonal(int dim, MatrixCell<Expr> cellFactory) {
+//        return ensureExprMatrix(super.newImmutableDiagonal(dim, cellFactory));
+//    }
+
+    @Override
+    public ExprMatrix newImmutableHermitian(int rows, int cols, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableHermitian(rows, cols, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableDiagonal(int rows, VectorCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableDiagonal(rows, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableDiagonal(Expr... values) {
+        return ensureExprMatrix(super.newImmutableDiagonal(values));
+    }
+
+    @Override
+    public ExprMatrix newImmutableMatrix(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableMatrix(dim, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableSymmetric(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableSymmetric(dim, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableHermitian(int dim, MatrixCell<Expr> cellFactory) {
+        return ensureExprMatrix(super.newImmutableHermitian(dim, cellFactory));
+    }
+
+    @Override
+    public ExprMatrix newImmutableIdentity(int rows, int cols) {
+        return ensureExprMatrix(super.newImmutableIdentity(rows, cols));
+    }
+
+    @Override
+    public String getId() {
+        return "MemExpr";
+    }
+
+    @Override
+    public ExprMatrix newMatrix(ExprMatrix[][] blocs) {
+        return newMatrix((Matrix<Expr>[][]) blocs);
+    }
+
+    @Override
+    public ExprMatrix newMatrix(double[][] values) {
+        return (ExprMatrix) super.newMatrix(values.length, values[0].length, (row, column) -> Maths.expr(values[row][column]));
+    }
+
+    @Override
+    public ExprMatrix newRandomReal(int m, int n) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.random()
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandomReal(int m, int n, int min, int max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandomReal(int m, int n, double min, double max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandomImag(int m, int n, double min, double max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandomImag(int m, int n, int min, int max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandom(int m, int n, int minReal, int maxReal, int minImag, int maxImag) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(minReal, maxReal),
+                Maths.randomDouble(minImag, maxImag)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandom(int m, int n, double minReal, double maxReal, double minImag, double maxImag) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(minReal, maxReal),
+                Maths.randomDouble(minImag, maxImag)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandom(int m, int n, double min, double max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(min, max),
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandom(int m, int n, int min, int max) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.of(
+                Maths.randomDouble(min, max),
+                Maths.randomDouble(min, max)
+        ));
+    }
+
+    @Override
+    public ExprMatrix newRandomImag(int m, int n) {
+        return (ExprMatrix) super.newMatrix(m, n, (row, column) -> Complex.I(
+                Maths.random()
+        ));
     }
 }

@@ -7,9 +7,12 @@
 package net.vpc.scholar.mentoring.ch0x.s4
 
 import net.vpc.scholar.hadrumaths.MathScala._
-
 import net.vpc.scholar.hadrumaths._
-import net.vpc.scholar.hadruwaves.mom._;import net.vpc.common.util.Chronometer;import net.vpc.common.mon.{ProgressMonitor, ProgressMonitorFactory}
+import net.vpc.scholar.hadruwaves.mom._
+import net.vpc.common.util.Chronometer
+import net.vpc.common.mon.{ProgressMonitor, ProgressMonitors}
+import net.vpc.scholar.hadruwaves.{Material, WallBorders}
+import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions
 
 object MomMicrostripAntennaMoMExample3 {
 
@@ -34,19 +37,20 @@ object MomMicrostripAntennaMoMExample3 {
     val epsilon_air = 1
     val epsilon_epoxy = 2.2
 
-    val modesFunctions: ModeFunctions = ModeFunctionsFactory.createBox("EEEE")
-    modesFunctions.setDomain(d)
-    modesFunctions.setFrequency(f)
+    val modesFunctions: ModeFunctions = new  BoxModeFunctions()
+    var env=new DefaultModeFunctionsEnv
+    modesFunctions.setEnv(env)
+    env.setBorders(WallBorders.EEEE)
+    env.setDomain(d)
+    env.setFrequency(f)
     modesFunctions.setSize(nbModeFunctions)
-    modesFunctions.setFirstBoxSpace(BoxSpaceFactory
-      .shortCircuit(
-        1 * MM,
-        epsilon_epoxy
+    env.setFirstBoxSpace(BoxSpaceFactory
+      .shortCircuit(Material.substrate(2.2),
+        1 * MM
       ))
-    modesFunctions.setSecondBoxSpace(BoxSpaceFactory
-      .shortCircuit(
-        100 * MM,
-        epsilon_air
+    env.setSecondBoxSpace(BoxSpaceFactory
+      .shortCircuit(Material.VACUUM,
+        100 * MM
       ))
 
     val src = 1.0 * sd
@@ -68,7 +72,7 @@ object MomMicrostripAntennaMoMExample3 {
             v += complex((gp1 ** fn) * zn * (fn ** gp2))
             mn += 1
           }
-          v
+          complex(v)
         }
       )
     tr(B)

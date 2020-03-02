@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths;
 
 public abstract class AbstractUnmodifiableComplexMatrix extends AbstractComplexMatrix {
     private static final long serialVersionUID = 1L;
-    private int rowsCount;
-    private int columnsCount;
+    private final int rowsCount;
+    private final int columnsCount;
 
     public AbstractUnmodifiableComplexMatrix(int rowsCount, int columnsCount, ComplexMatrixFactory factory) {
         this.rowsCount = rowsCount;

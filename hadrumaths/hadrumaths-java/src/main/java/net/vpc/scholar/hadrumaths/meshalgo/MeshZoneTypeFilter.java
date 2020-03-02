@@ -5,11 +5,11 @@
 
 package net.vpc.scholar.hadrumaths.meshalgo;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
+import net.vpc.scholar.hadrumaths.HSerializable;
 
 /**
  * @author vpc
  */
-public interface MeshZoneTypeFilter extends Dumpable {
+public interface MeshZoneTypeFilter extends HSerializable {
     boolean accept(MeshZoneType type);
 }

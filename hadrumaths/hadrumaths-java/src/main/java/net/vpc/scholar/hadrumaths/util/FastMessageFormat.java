@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FastMessageFormat {
-    private Map<String, Evaluator> vars = new HashMap<>();
-    private List<Evaluator> items = new ArrayList<>();
+    private final Map<String, Evaluator> vars = new HashMap<>();
+    private final List<Evaluator> items = new ArrayList<>();
 
     public FastMessageFormat parse(String message) {
         char[] chars = message.toCharArray();
@@ -80,7 +80,7 @@ public class FastMessageFormat {
     }
 
     private class ConstItem implements Evaluator {
-        private String value;
+        private final String value;
 
         public ConstItem(String value) {
             this.value = value;
@@ -93,7 +93,7 @@ public class FastMessageFormat {
     }
 
     private class VarItem implements Evaluator {
-        private String name;
+        private final String name;
         private Evaluator evaluator;
 
         public VarItem(String name, Evaluator evaluator) {

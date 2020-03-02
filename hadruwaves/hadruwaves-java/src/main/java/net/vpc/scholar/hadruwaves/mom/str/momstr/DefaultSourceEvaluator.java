@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
@@ -18,9 +21,9 @@ import net.vpc.scholar.hadruwaves.str.SourceEvaluator;
 public class DefaultSourceEvaluator implements SourceEvaluator {
     public static final DefaultSourceEvaluator INSTANCE = new DefaultSourceEvaluator();
 
-    public ComplexMatrix computePlanarSources(MWStructure structure, final double[] x, final double[] y, final Axis axis, ProgressMonitor monitor) {
+    public ComplexMatrix evalPlanarSources(MWStructure structure, final double[] x, final double[] y, final Axis axis, ProgressMonitor monitor) {
         MomStructure str = (MomStructure) structure;
-        final ProgressMonitor mon = ProgressMonitorFactory.nonnull(monitor);
+        final ProgressMonitor mon = ProgressMonitors.nonnull(monitor);
         final Sources ss = str.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();
@@ -35,7 +38,7 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
                     mon.setProgress(i, _g.length, monName);
                     //            monitor.setProgress(((double) i) / _g.length);
                     DoubleToVector g = _g[i];
-                    Complex[][] vals = g.getComponent(axis).toDC().computeComplex(x, y);
+                    Complex[][] vals = g.getComponent(axis).toDC().evalComplex(x, y);
                     if (ret == null) {
                         ret = vals;
                     } else {
@@ -54,11 +57,11 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

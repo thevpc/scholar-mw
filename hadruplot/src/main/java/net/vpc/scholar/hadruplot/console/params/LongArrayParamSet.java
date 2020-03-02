@@ -11,19 +11,19 @@ public class LongArrayParamSet extends ParamSet implements Cloneable {
     private long[] values;
     private int index = -1;
 
-    public LongArrayParamSet(Param configurator) {
+    public LongArrayParamSet(CParam configurator) {
         this(configurator, new long[0]);
     }
 
-    public LongArrayParamSet(Param configurator, long value) {
+    public LongArrayParamSet(CParam configurator, long value) {
         this(configurator, new long[]{value});
     }
 
-    public LongArrayParamSet(Param configurator, long min, long max, int times) {
+    public LongArrayParamSet(CParam configurator, long min, long max, int times) {
         this(configurator, ArrayUtils.ltimes(min, max, times));
     }
 
-    public LongArrayParamSet(Param configurator, long min, long max, long step) {
+    public LongArrayParamSet(CParam configurator, long min, long max, long step) {
         this(configurator, ArrayUtils.lsteps(min, max, step));
     }
 
@@ -42,7 +42,7 @@ public class LongArrayParamSet extends ParamSet implements Cloneable {
         return this;
     }
 
-    public LongArrayParamSet(Param configurator, long[] values) {
+    public LongArrayParamSet(CParam configurator, long[] values) {
         super(configurator);
         this.values = values;
     }

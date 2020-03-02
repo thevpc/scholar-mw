@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruplot.console.params;
 
 
-public class VoidParam extends AbstractParam implements Cloneable {
+public class VoidParam extends AbstractCParam implements Cloneable {
 
     public VoidParam(String name) {
         super(name);

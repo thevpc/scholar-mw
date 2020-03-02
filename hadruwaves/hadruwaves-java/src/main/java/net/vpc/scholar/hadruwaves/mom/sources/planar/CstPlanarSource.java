@@ -4,8 +4,11 @@
  */
 package net.vpc.scholar.hadruwaves.mom.sources.planar;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.GeometryList;
@@ -15,11 +18,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
 /**
  * @author vpc
  */
-public class CstPlanarSource implements PlanarSource, Dumpable, Cloneable {
+public class CstPlanarSource implements PlanarSource, Cloneable {
 
     private GeometryList geometryList;
     private Complex characteristicImpedance;
@@ -78,13 +77,13 @@ public class CstPlanarSource implements PlanarSource, Dumpable, Cloneable {
         for (MeshZone zone : allZonesInit) {
             switch (zone.getShape()) {
                 case RECTANGLE: {
-                    xf = (polarization == null || polarization.equals(Axis.X)) ? (DoubleValue.valueOf(xvalue, zone.getDomain())).toDC() : FunctionFactory.CZEROXY;
-                    yf = (polarization == null || polarization.equals(Axis.Y)) ? (DoubleValue.valueOf(yvalue, zone.getDomain())).toDC() : FunctionFactory.CZEROXY;
+                    xf = (polarization == null || polarization.equals(Axis.X)) ? (Maths.expr(xvalue, zone.getDomain())).toDC() : Maths.CZEROXY;
+                    yf = (polarization == null || polarization.equals(Axis.Y)) ? (Maths.expr(yvalue, zone.getDomain())).toDC() : Maths.CZEROXY;
                     break;
                 }
                 default: {
-                    xf = (polarization == null || polarization.equals(Axis.X)) ? expr(xvalue, zone.getPolygon()).toDC() : FunctionFactory.CZEROXY;
-                    yf = (polarization == null || polarization.equals(Axis.Y)) ? expr(yvalue, zone.getPolygon()).toDC() : FunctionFactory.CZEROXY;
+                    xf = (polarization == null || polarization.equals(Axis.X)) ? expr(xvalue, zone.getPolygon()).toDC() : Maths.CZEROXY;
+                    yf = (polarization == null || polarization.equals(Axis.Y)) ? expr(yvalue, zone.getPolygon()).toDC() : Maths.CZEROXY;
                 }
             }
             if (!xf.isZero()) {
@@ -94,9 +93,9 @@ public class CstPlanarSource implements PlanarSource, Dumpable, Cloneable {
                 ally.add(yf);
             }
         }
-        DoubleToComplex fx = allx.isEmpty()?FunctionFactory.CZEROXY: allx.size()==1? allx.get(0): (Maths.sum(allx.toArray(new Expr[allx.size()])).toDC());
-        DoubleToComplex fy = ally.isEmpty()?FunctionFactory.CZEROXY: ally.size()==1? ally.get(0): (Maths.sum(ally.toArray(new Expr[ally.size()])).toDC());
-        return Maths.vector(fx, fy);
+        DoubleToComplex fx = allx.isEmpty()?Maths.CZEROXY: allx.size()==1? allx.get(0): (Maths.sum(allx.toArray(new Expr[0])).toDC());
+        DoubleToComplex fy = ally.isEmpty()?Maths.CZEROXY: ally.size()==1? ally.get(0): (Maths.sum(ally.toArray(new Expr[0])).toDC());
+        return Maths.vector(fx, fy).toDV();
     }
 
     public Axis getPolarization() {
@@ -115,18 +114,17 @@ public class CstPlanarSource implements PlanarSource, Dumpable, Cloneable {
         return yvalue;
     }
 
-    public Dumper getDumpHelper() {
-        return new Dumper(this)
-                .add("xvalue", xvalue)
-                .add("yvalue", yvalue)
-                .add("polarization", polarization)
-                .add("characteristicImpedance", characteristicImpedance)
-                .add("geometryList", geometryList);
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("xvalue", context.elem(xvalue));
+        h.add("yvalue", context.elem(yvalue));
+        h.add("polarization", context.elem(polarization));
+        h.add("z0", context.elem(characteristicImpedance));
+        h.add("geometries", context.elem(geometryList));
+        return h.build();
     }
 
-    public String dump() {
-        return getDumpHelper().toString();
-    }
 
     @Override
     public PlanarSource clone() {
@@ -157,14 +155,11 @@ public class CstPlanarSource implements PlanarSource, Dumpable, Cloneable {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
+        int result=getClass().getName().hashCode();
         result = geometryList != null ? geometryList.hashCode() : 0;
         result = 31 * result + (characteristicImpedance != null ? characteristicImpedance.hashCode() : 0);
-        temp = Double.doubleToLongBits(xvalue);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(yvalue);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + Double.hashCode(xvalue);
+        result = 31 * result + Double.hashCode(yvalue);
         result = 31 * result + (polarization != null ? polarization.hashCode() : 0);
         return result;
     }

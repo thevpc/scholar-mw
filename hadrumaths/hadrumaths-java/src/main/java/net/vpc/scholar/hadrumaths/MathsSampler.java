@@ -1,11 +1,10 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.symbolic.DDiscrete;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadruplot.AbsoluteSamples;
-import net.vpc.scholar.hadruplot.Samples;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 class MathsSampler {
-    public static DoubleVector refineSamples(TVector<Double> values, int n) {
-        DoubleVector values2 = (DoubleVector) values.to(MathsBase.$DOUBLE);
-        return (DoubleVector) MathsBase.dlist(refineSamples(values2.toDoubleArray(), n));
+    public static DoubleVector refineSamples(Vector<Double> values, int n) {
+        DoubleVector values2 = (DoubleVector) values.to(Maths.$DOUBLE);
+        return (DoubleVector) Maths.dvector(refineSamples(values2.toDoubleArray(), n));
     }
 
     /**
@@ -31,7 +30,7 @@ class MathsSampler {
         double[] d2 = new double[values.length + n * (values.length - 1)];
         for (int i = 0; i < values.length - 1; i++) {
             int s = i * (1 + n);
-            double[] d3 = MathsBase.dtimes(values[i], values[i + 1], n + 2);
+            double[] d3 = Maths.dtimes(values[i], values[i + 1], n + 2);
             System.arraycopy(d3, 0, d2, s, d3.length - 1);
         }
         d2[d2.length - 1] = values[values.length - 1];
@@ -48,7 +47,7 @@ class MathsSampler {
         int maxSamples = config.getMaximumXSamples();
         double err = config.getError();
         SamplifyListener listener = config.getListener();
-        double[] dsteps = MathsBase.dtimes(xmin, xmax, minSteps);
+        double[] dsteps = Maths.dtimes(xmin, xmax, minSteps);
         if (err <= 0) {
             err = 0.1;
         }
@@ -72,8 +71,8 @@ class MathsSampler {
         }
 
         class Diff implements Comparable<Diff> {
-            String name;
-            int type;
+            final String name;
+            final int type;
             int minIndex = -1;
             int maxIndex = -1;
             double minValue = 0;
@@ -88,16 +87,6 @@ class MathsSampler {
             void regRegular(int index, double v) {
                 if (Double.isNaN(v) || Double.isInfinite(v)) {
                     return;
-                }
-                reg(index, v);
-            }
-
-            void regRegularOrMax(int index, double v, double max) {
-                if (Double.isNaN(v) || Double.isInfinite(v)) {
-                    return;
-                }
-                if (v > max) {
-                    v = max;
                 }
                 reg(index, v);
             }
@@ -120,6 +109,16 @@ class MathsSampler {
                 } else {
                     ratio = (maxValue - minValue) / minValue;
                 }
+            }
+
+            void regRegularOrMax(int index, double v, double max) {
+                if (Double.isNaN(v) || Double.isInfinite(v)) {
+                    return;
+                }
+                if (v > max) {
+                    v = max;
+                }
+                reg(index, v);
             }
 
             @Override
@@ -210,33 +209,36 @@ class MathsSampler {
     }
 
 
-    public static Expr discrete(Expr expr, int xSamples) {
-        if (expr instanceof Discrete || expr instanceof VDiscrete) {
+    public static Expr discrete(Expr expr, Domain domain, int xSamples) {
+        if (expr instanceof CDiscrete || expr instanceof VDiscrete) {
             return expr;
         }
-        if (expr.isScalarExpr()) {
-            AbsoluteSamples samples = expr.getDomain().times(xSamples);
-            Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-            return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
+        if (domain == null) {
+            domain = expr.getDomain();
+        }
+        if (expr.is(ExprDim.SCALAR)) {
+            AbsoluteSamples samples = domain.times(xSamples);
+            Complex[][][] model = expr.toDC().evalComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
+            return CDiscrete.of(domain, model);
         } else {
             DoubleToVector v = expr.toDV();
             ComponentDimension d = v.getComponentDimension();
             if (d.columns == 1) {
                 if (d.rows == 1) {
-                    AbsoluteSamples samples = expr.getDomain().times(xSamples);
-                    Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-                    return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
+                    AbsoluteSamples samples = domain.times(xSamples);
+                    Complex[][][] model = expr.toDC().evalComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
+                    return CDiscrete.of(domain, model);
                 } else if (d.rows == 2) {
                     return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.X), domain, xSamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Y), domain, xSamples),
                             null
                     );
                 } else if (d.rows == 3) {
                     return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples),
-                            (Discrete) discrete(v.getComponent(Axis.Z), xSamples)
+                            (CDiscrete) discrete(v.getComponent(Axis.X), domain, xSamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Y), domain, xSamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Z), domain, xSamples)
                     );
                 }
             }
@@ -245,33 +247,36 @@ class MathsSampler {
         }
     }
 
-    public static Expr discrete(Expr expr, int xSamples, int ySamples) {
-        if (expr instanceof Discrete || expr instanceof VDiscrete) {
+    public static Expr discrete(Expr expr, Domain domain, int xSamples, int ySamples) {
+        if (expr instanceof CDiscrete || expr instanceof VDiscrete) {
             return expr;
         }
-        if (expr.isScalarExpr()) {
-            AbsoluteSamples samples = expr.getDomain().times(xSamples, ySamples);
-            Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-            return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
+        if (domain == null) {
+            domain = expr.getDomain();
+        }
+        if (expr.is(ExprDim.SCALAR)) {
+            AbsoluteSamples samples = domain.times(xSamples, ySamples);
+            Complex[][][] model = expr.toDC().evalComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
+            return CDiscrete.of(domain, model);
         } else {
             DoubleToVector v = expr.toDV();
             ComponentDimension d = v.getComponentDimension();
             if (d.columns == 1) {
                 if (d.rows == 1) {
-                    AbsoluteSamples samples = expr.getDomain().times(xSamples, ySamples);
-                    Complex[][][] model = expr.toDC().computeComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
-                    return Discrete.create(model, samples.getX(), samples.getY(), samples.getZ());
+                    AbsoluteSamples samples = domain.times(xSamples, ySamples);
+                    Complex[][][] model = expr.toDC().evalComplex(samples.getX(), samples.getY(), samples.getZ(), null, null);
+                    return CDiscrete.of(domain, model);
                 } else if (d.rows == 2) {
                     return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples, ySamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.X), domain, xSamples, ySamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Y), domain, xSamples, ySamples),
                             null
                     );
                 } else if (d.rows == 3) {
                     return new VDiscrete(
-                            (Discrete) discrete(v.getComponent(Axis.X), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Y), xSamples, ySamples),
-                            (Discrete) discrete(v.getComponent(Axis.Z), xSamples, ySamples)
+                            (CDiscrete) discrete(v.getComponent(Axis.X), domain, xSamples, ySamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Y), domain, xSamples, ySamples),
+                            (CDiscrete) discrete(v.getComponent(Axis.Z), domain, xSamples, ySamples)
                     );
                 }
             }
@@ -280,56 +285,48 @@ class MathsSampler {
         }
     }
 
-    public static Expr discrete(Expr expr, int xSamples, int ySamples, int zSamples) {
-        if (expr.isScalarExpr()) {
-            if (expr.isDD()) {
-                return DDiscrete.discretize(expr, xSamples, ySamples, zSamples);
-            } else {
-                return Discrete.discretize(expr, xSamples, ySamples, zSamples);
-            }
-        } else {
-            return VDiscrete.discretize(expr, xSamples, ySamples, zSamples);
-        }
+    public static CDiscrete discrete(Expr expr) {
+        return (CDiscrete) expr.simplify();
     }
 
-    public static Discrete discrete(Expr expr) {
-        return (Discrete) expr.simplify();
-    }
     public static VDiscrete vdiscrete(Expr expr) {
         return (VDiscrete) expr.simplify();
     }
 
-    public static Expr discrete(Expr expr, Samples samples) {
-        if (expr.isScalarExpr()) {
-            if (expr.isDD()) {
-                return DDiscrete.discretize(expr, null, samples);
-            } else {
-                return Discrete.discretize(expr, null, samples);
+    public static Expr discrete(Expr expr, Domain domain, int nx, int ny, int nz) {
+        if (expr.is(ExprDim.SCALAR)) {
+            switch (expr.getType()) {
+                case DOUBLE_DOUBLE: {
+                    return DDiscrete.of(expr, domain, nx, ny, nz);
+                }
             }
+            return CDiscrete.discretize(expr, domain, nx, ny, nz);
         } else {
-            return VDiscrete.discretize(expr, null, samples);
+            return VDiscrete.discretize(expr, domain, nx, ny, nz);
         }
     }
 
     public static Complex avg(VDiscrete d) {
         return d.avg();
     }
+
     public static Complex sum(VDiscrete d) {
         return d.sum();
     }
-    public static Complex sum(Discrete d) {
+
+    public static Complex sum(CDiscrete d) {
         return d.sum();
     }
 
-    public static Complex avg(Discrete d) {
+    public static Complex avg(CDiscrete d) {
         return d.avg();
     }
 
-    public static Discrete sqr(Discrete d) {
+    public static CDiscrete sqr(CDiscrete d) {
         return d.sqr();
     }
 
-    public static Discrete sqrt(Discrete d) {
+    public static CDiscrete sqrt(CDiscrete d) {
         return d.sqrt();
     }
 
@@ -353,7 +350,7 @@ class MathsSampler {
         return e.abssqr();
     }
 
-    public static Discrete abssqr(Discrete e) {
+    public static CDiscrete abssqr(CDiscrete e) {
         return e.abssqr();
     }
 

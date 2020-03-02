@@ -1,17 +1,12 @@
 package net.vpc.scholar.hadrumaths.io;
 
 import net.vpc.common.io.FileUtils;
-import java.io.UncheckedIOException;
-
 import net.vpc.common.io.IOUtils;
-import net.vpc.common.strings.StringUtils;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.common.mon.ProgressMonitorOutputStream;
+import net.vpc.common.strings.StringUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
@@ -25,19 +20,17 @@ import java.util.zip.GZIPOutputStream;
  */
 public final class HadrumathsIOUtils {
 
-      private static StringSerializer DEFAULT_STRING_SERIALIZER = new DefaultStringSerializer();
     public static final String WRITE_TEMP_EXT = ".temp";
+    private static final StringSerializer DEFAULT_STRING_SERIALIZER = new DefaultStringSerializer();
 
-
-
-    public static void saveObject(String physicalName, Object object){
+    public static void saveObject(String physicalName, Object object) {
         try {
             IOUtils.saveObject(physicalName, object);
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
     }
-   
+
 
     public static boolean existsOrWaitIfStillWritingInto(File file) {
         return existsOrWaitIfStillWritingInto(file, 180);
@@ -65,7 +58,6 @@ public final class HadrumathsIOUtils {
     }
 
 
-
     public static String serializeObjectToString(Object object) throws UncheckedIOException {
         try {
             return DEFAULT_STRING_SERIALIZER.serialize(object);
@@ -84,36 +76,6 @@ public final class HadrumathsIOUtils {
 
     public static void saveZippedObject(String physicalName, Object object) throws UncheckedIOException {
         saveZippedObject(physicalName, object, null, null);
-    }
-
-    public static void saveZippedObject(HFile physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
-        try {
-            if (monitor == null) {
-                ObjectOutputStream oos = null;
-                try {
-                    oos = new ObjectOutputStream(new GZIPOutputStream(physicalName.getOutputStream()));
-                    oos.writeObject(object);
-                    oos.close();
-                } finally {
-                    if (oos != null) {
-                        oos.close();
-                    }
-                }
-            } else {
-                ObjectOutputStream oos = null;
-                try {
-                    oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(physicalName.getOutputStream(), monitor, messagePrefix)));
-                    oos.writeObject(object);
-                    oos.close();
-                } finally {
-                    if (oos != null) {
-                        oos.close();
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
     }
 
     public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
@@ -154,7 +116,37 @@ public final class HadrumathsIOUtils {
         }
     }
 
-//    public static void main(String[] args) {
+    public static void saveZippedObject(HFile physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
+        try {
+            if (monitor == null) {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream(new GZIPOutputStream(physicalName.getOutputStream()));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) {
+                        oos.close();
+                    }
+                }
+            } else {
+                ObjectOutputStream oos = null;
+                try {
+                    oos = new ObjectOutputStream(new GZIPOutputStream(new ProgressMonitorOutputStream(physicalName.getOutputStream(), monitor, messagePrefix)));
+                    oos.writeObject(object);
+                    oos.close();
+                } finally {
+                    if (oos != null) {
+                        oos.close();
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
+    //    public static void main(String[] args) {
 //        try {
 //            replaceInFolder(new File("/home/vpc/xprojects/dbclient/src"),new FileFilter() {
 //                public boolean accept(File pathname) {
@@ -211,7 +203,6 @@ public final class HadrumathsIOUtils {
         }
     }
 
-    
 
     public static HFile createHFile(String absolutePath) {
         return new FolderHFileSystem(new File(FileUtils.expandPath(absolutePath))).get("/");

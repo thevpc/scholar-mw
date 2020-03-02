@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.symbolic;
 
-import net.vpc.scholar.hadrumaths.CellIteratorType;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.TMatrixCell;
+import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.symbolic.old.AbstractExprMatrixFactory2;
+import net.vpc.scholar.hadrumaths.symbolic.old.ExprMatrix2;
+import net.vpc.scholar.hadrumaths.symbolic.old.ExprMatrixFactory2;
 
 /**
  * Created by vpc on 2/14/15.
@@ -11,77 +11,8 @@ import net.vpc.scholar.hadrumaths.TMatrixCell;
 public class DefaultExprMatrixFactory2 extends AbstractExprMatrixFactory2 {
     public static final ExprMatrixFactory2 INSTANCE = new DefaultExprMatrixFactory2();
 
-
     @Override
-    public ExprMatrix2 newCachedMatrix(final int rows, final int columns, final CellIteratorType it, final TMatrixCell<Expr> item) {
-        ExprMatrixStore store = new ExprMatrixStore() {
-            Expr[][] elements = new Expr[rows][columns];
-
-            @Override
-            public int getColumnsDimension() {
-                return rows;
-            }
-
-            @Override
-            public int getRows() {
-                return columns;
-            }
-
-            @Override
-            public Expr get(int row, int col) {
-
-                Expr val = elements[row][col];
-                if (val == null) {
-                    switch (it) {
-                        case FULL: {
-                            val = item.get(row, col);
-                            break;
-                        }
-                        case SYMETRIC: {
-                            if (col >= row) {
-                                val = get(row, col);
-                            } else {
-                                val = item.get(col, row);
-                            }
-                            break;
-                        }
-                        case HERMITIAN: {
-                            if (col > row) {
-                                val = new Conj(get(row, col));
-                            } else {
-                                val = item.get(col, row);
-                            }
-                            break;
-                        }
-                        case DIAGONAL: {
-                            if (col == row) {
-                                val = item.get(col, row);
-                            } else {
-                                val = Complex.ZERO;
-                            }
-                            break;
-                        }
-                        default: {
-                            throw new IllegalArgumentException("Unsupported");
-                        }
-                    }
-                    elements[row][col] = val;
-                }
-                return val;
-            }
-
-            @Override
-            public void set(Expr exp, int row, int col) {
-                elements[row][col] = exp;
-            }
-        };
-        return new DefaultExprMatrix(store);
-
-    }
-
-
-    @Override
-    public ExprMatrix2 newPreloadedMatrix(final int rows, final int columns, CellIteratorType it, TMatrixCell<Expr> item) {
+    public ExprMatrix2 newPreloadedMatrix(final int rows, final int columns, CellIteratorType it, MatrixCell<Expr> item) {
 
 
         Expr[][] elements = new Expr[rows][columns];
@@ -120,7 +51,7 @@ public class DefaultExprMatrixFactory2 extends AbstractExprMatrixFactory2 {
             case HERMITIAN: {
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < i; j++) {
-                        elements[i][j] = new Conj(elements[j][i]);
+                        elements[i][j] = Maths.conj(elements[j][i]);
                     }
                     for (int j = i; j < columns; j++) {
                         elements[i][j] = item.get(i, j);
@@ -133,7 +64,7 @@ public class DefaultExprMatrixFactory2 extends AbstractExprMatrixFactory2 {
             }
         }
         ExprMatrixStore store = new ExprMatrixStore() {
-            Expr[][] elements = new Expr[rows][columns];
+            final Expr[][] elements = new Expr[rows][columns];
 
             @Override
             public int getColumnsDimension() {
@@ -160,7 +91,74 @@ public class DefaultExprMatrixFactory2 extends AbstractExprMatrixFactory2 {
     }
 
     @Override
-    public ExprMatrix2 newUnmodifiableMatrix(final int rows, final int columns, final TMatrixCell<Expr> item) {
+    public ExprMatrix2 newCachedMatrix(final int rows, final int columns, final CellIteratorType it, final MatrixCell<Expr> item) {
+        ExprMatrixStore store = new ExprMatrixStore() {
+            final Expr[][] elements = new Expr[rows][columns];
+
+            @Override
+            public int getColumnsDimension() {
+                return rows;
+            }
+
+            @Override
+            public int getRows() {
+                return columns;
+            }
+
+            @Override
+            public Expr get(int row, int col) {
+
+                Expr val = elements[row][col];
+                if (val == null) {
+                    switch (it) {
+                        case FULL: {
+                            val = item.get(row, col);
+                            break;
+                        }
+                        case SYMETRIC: {
+                            if (col >= row) {
+                                val = get(row, col);
+                            } else {
+                                val = item.get(col, row);
+                            }
+                            break;
+                        }
+                        case HERMITIAN: {
+                            if (col > row) {
+                                val = Maths.conj(get(row, col));
+                            } else {
+                                val = item.get(col, row);
+                            }
+                            break;
+                        }
+                        case DIAGONAL: {
+                            if (col == row) {
+                                val = item.get(col, row);
+                            } else {
+                                val = Complex.ZERO;
+                            }
+                            break;
+                        }
+                        default: {
+                            throw new IllegalArgumentException("Unsupported");
+                        }
+                    }
+                    elements[row][col] = val;
+                }
+                return val;
+            }
+
+            @Override
+            public void set(Expr exp, int row, int col) {
+                elements[row][col] = exp;
+            }
+        };
+        return new DefaultExprMatrix(store);
+
+    }
+
+    @Override
+    public ExprMatrix2 newUnmodifiableMatrix(final int rows, final int columns, final MatrixCell<Expr> item) {
         ExprMatrixStore store = new ExprMatrixStore() {
             @Override
             public int getColumnsDimension() {

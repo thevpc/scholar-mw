@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.FormatFactory;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.ComplexIObjectFormatParam;
 
@@ -17,82 +18,12 @@ public class ComplexObjectFormat extends AbstractObjectFormat<Complex> {
     public ComplexObjectFormat() {
     }
 
-    protected void imagToString(double d, StringBuilder sb, ObjectFormatParamSet format) {
-        ComplexIObjectFormatParam i = format.getParam(ComplexIObjectFormatParam.class,FormatFactory.I_HAT);
-        if (Double.isNaN(d) || Double.isInfinite(d)) {
-            FormatFactory.format(sb, d, format);
-            sb.append("*").append(i.getName());
-        } else if (d == 1) {
-            sb.append(i.getName());
-        } else if (d == -1) {
-            sb.append("-").append(i.getName());
-        } else {
-            FormatFactory.format(sb, d, format);
-            sb.append(i.getName());
-        }
-    }
-
-    protected void realToString(double d, StringBuilder sb, ObjectFormatParamSet format) {
-        FormatFactory.format(sb, d, format);
-    }
-
-    private void format(double real, double imag, StringBuilder sb, ObjectFormatParamSet format) {
-        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
-        ObjectFormatParamSet subParams = format.remove(FormatFactory.REQUIRED_PARS);
-        if (imag == 0) {
-            if (real >= 0) {
-                par = false;
-            }
-            if (par) {
-                sb.append("(");
-            }
-            realToString(real, sb, subParams);
-            if (par) {
-                sb.append(")");
-            }
-
-        } else if (real == 0) {
-            if (imag >= 0) {
-                par = false;
-            }
-            if (par) {
-                sb.append("(");
-            }
-            imagToString(imag, sb, subParams);
-            if (par) {
-                sb.append(")");
-            }
-        } else {
-            if (imag < 0) {
-                if (par) {
-                    sb.append("(");
-                }
-                realToString(real, sb, subParams);
-                sb.append("-");
-                imagToString(-imag, sb, subParams);
-                if (par) {
-                    sb.append(")");
-                }
-            } else {
-                if (par) {
-                    sb.append("(");
-                }
-                realToString(real, sb, subParams);
-                sb.append("+");
-                imagToString(imag, sb, subParams);
-                if (par) {
-                    sb.append(")");
-                }
-            }
-        }
-    }
-
-
     @Override
-    public void format(StringBuilder sb, Complex o, ObjectFormatParamSet format) {
+    public void format(Complex o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         double real = o.getReal();
         double imag = o.getImag();
-        format(real, imag, sb, format);
+        format(real, imag, context, format);
 //        if (Double.isNaN(real) && Double.isNaN(imag)) {
 //            sb.append("NaN");//FormatFactory.format(imag,format);
 //            return;
@@ -163,5 +94,75 @@ public class ComplexObjectFormat extends AbstractObjectFormat<Complex> {
 //            return;
 //        }
 
+    }
+
+    private void format(double real, double imag, ObjectFormatContext context, ObjectFormatParamSet format) {
+        boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
+        ObjectFormatParamSet subParams = format.remove(FormatFactory.REQUIRED_PARS);
+        if (imag == 0) {
+            if (real >= 0) {
+                par = false;
+            }
+            if (par) {
+                context.append("(");
+            }
+            realToString(real, context, subParams);
+            if (par) {
+                context.append(")");
+            }
+
+        } else if (real == 0) {
+            if (imag >= 0) {
+                par = false;
+            }
+            if (par) {
+                context.append("(");
+            }
+            imagToString(imag, context, subParams);
+            if (par) {
+                context.append(")");
+            }
+        } else {
+            if (imag < 0) {
+                if (par) {
+                    context.append("(");
+                }
+                realToString(real, context, subParams);
+                context.append("-");
+                imagToString(-imag, context, subParams);
+                if (par) {
+                    context.append(")");
+                }
+            } else {
+                if (par) {
+                    context.append("(");
+                }
+                realToString(real, context, subParams);
+                context.append("+");
+                imagToString(imag, context, subParams);
+                if (par) {
+                    context.append(")");
+                }
+            }
+        }
+    }
+
+    protected void realToString(double d, ObjectFormatContext context, ObjectFormatParamSet format) {
+        context.format( d, format);
+    }
+
+    protected void imagToString(double d,ObjectFormatContext context, ObjectFormatParamSet format) {
+        ComplexIObjectFormatParam i = format.getParam(ComplexIObjectFormatParam.class, FormatFactory.I_HAT);
+        if (Double.isNaN(d) || Double.isInfinite(d)) {
+            context.format(d, format);
+            context.append("*").append(i.getName());
+        } else if (d == 1) {
+            context.append(i.getName());
+        } else if (d == -1) {
+            context.append("-").append(i.getName());
+        } else {
+            context.format( d, format);
+            context.append(i.getName());
+        }
     }
 }

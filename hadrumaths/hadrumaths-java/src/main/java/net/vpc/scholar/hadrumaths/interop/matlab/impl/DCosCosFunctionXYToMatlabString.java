@@ -12,8 +12,8 @@ import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParamArray;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabVectorizeFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabXFormat;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabYFormat;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.Linear;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 
 /**
  * @author vpc
@@ -48,7 +48,7 @@ public class DCosCosFunctionXYToMatlabString implements ToMatlabString<CosXCosY>
             if (c != 0 || d != 0) {
                 sb.append("cos(");
                 sb.append(MatlabFactory.toMatlabString(new Linear(0, c, d, domain),
-                        formatArray.clone().set(new MatlabXFormat(((MatlabYFormat) formatArray.getParam(MatlabFactory.Y)).getName())).set(MatlabFactory.NO_DOMAIN).toArray()));
+                        formatArray.clone().set(new MatlabXFormat(formatArray.getParam(MatlabFactory.Y).getName())).set(MatlabFactory.NO_DOMAIN).toArray()));
                 sb.append(")");
             }
             String s = MatlabFactory.toMatlabString(domain, format);

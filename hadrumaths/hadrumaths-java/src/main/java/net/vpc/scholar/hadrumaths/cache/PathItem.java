@@ -28,6 +28,12 @@ public class PathItem {
         }
     }
 
+    private static void checkName(String name) {
+        if (name == null || name.length() == 0 || name.contains("/") || name.contains("\\")) {
+            throw new IllegalArgumentException("Invalid " + name);
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -132,10 +138,12 @@ public class PathItem {
         return parent.getPath() + "/" + name;
     }
 
-    private static void checkName(String name) {
-        if (name == null || name.length() == 0 || name.contains("/") || name.contains("\\")) {
-            throw new IllegalArgumentException("Invalid " + name);
-        }
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (folder ? 1 : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -147,16 +155,6 @@ public class PathItem {
 
         if (folder != pathItem.folder) return false;
         if (name != null ? !name.equals(pathItem.name) : pathItem.name != null) return false;
-        if (parent != null ? !parent.equals(pathItem.parent) : pathItem.parent != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (folder ? 1 : 0);
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-        return result;
+        return parent != null ? parent.equals(pathItem.parent) : pathItem.parent == null;
     }
 }

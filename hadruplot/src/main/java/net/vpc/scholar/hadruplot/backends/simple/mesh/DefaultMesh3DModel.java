@@ -54,7 +54,7 @@ class DefaultMesh3DModel extends Mesh3DTransformable {
             return -1;
         obj[cobj] = object3d;
         if (cobj == nobj - 1)
-            computeMatrix();
+            evalMatrix();
         return cobj++;
     }
 
@@ -115,12 +115,12 @@ class DefaultMesh3DModel extends Mesh3DTransformable {
         if (cobj != nobj) {
             return;
         } else {
-            computeMatrix();
+            evalMatrix();
             return;
         }
     }
 
-    synchronized void computeMatrix() {
+    synchronized void evalMatrix() {
         if (bb == null)
             computeBoundingBox();
         Mesh3DVector vector3d = bb.getCenter();

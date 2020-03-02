@@ -3,14 +3,14 @@ package net.vpc.scholar.hadrumaths.interop.ojalgo;
 import net.vpc.scholar.hadrumaths.AbstractComplexMatrix;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
-import net.vpc.scholar.hadrumaths.TMatrix;
+import net.vpc.scholar.hadrumaths.Matrix;
 import org.ojalgo.matrix.MutableComplexMatrix;
 
 import static net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoConverter.*;
 
 public class OjalgoComplexMatrix extends AbstractComplexMatrix {
     private static final long serialVersionUID = 1L;
-    private MutableComplexMatrix base;
+    private final MutableComplexMatrix base;
 
     public OjalgoComplexMatrix(int rows, int cols) {
         base = (MutableComplexMatrix) MutableComplexMatrix.FACTORY.makeZero(rows, cols);
@@ -30,10 +30,6 @@ public class OjalgoComplexMatrix extends AbstractComplexMatrix {
         base.put(row, col, fromVpcComplex(val));
     }
 
-    public MutableComplexMatrix getBase() {
-        return base;
-    }
-
     @Override
     public int getRowCount() {
         return base.getRowDim();
@@ -44,43 +40,23 @@ public class OjalgoComplexMatrix extends AbstractComplexMatrix {
         return base.getColDim();
     }
 
-    public ComplexMatrix inv() {
-        return invSolve();
+    public MutableComplexMatrix getBase() {
+        return base;
     }
 
     @Override
-    public ComplexMatrix invSolve() {
-        return toVpcCMatrix(base.invert());
+    public double norm1() {
+        return base.getOneNorm().getModulus();
     }
 
     @Override
-    public ComplexMatrix add(Complex c) {
-        return toVpcCMatrix(base.add(fromVpcComplex(c)));
+    public double norm2() {
+        return base.getFrobeniusNorm().getModulus();
     }
 
     @Override
-    public ComplexMatrix add(TMatrix<Complex> c) {
-        return toVpcCMatrix(base.add(fromVpcCMatrix(c)));
-    }
-
-    @Override
-    public ComplexMatrix mul(TMatrix<Complex> c) {
-        return toVpcCMatrix(base.multiplyRight(fromVpcCMatrix(c)));
-    }
-
-    @Override
-    public ComplexMatrix sub(TMatrix<Complex> c) {
-        return toVpcCMatrix(base.subtract(fromVpcCMatrix(c)));
-    }
-
-    @Override
-    public ComplexMatrix dotdiv(TMatrix<Complex> other) {
-        return toVpcCMatrix(base.divideElements(fromVpcCMatrix(other)));
-    }
-
-    @Override
-    public ComplexMatrix dotmul(TMatrix<Complex> other) {
-        return toVpcCMatrix(base.multiplyElements(fromVpcCMatrix(other)));
+    public double normInf() {
+        return base.getInfinityNorm().getModulus();
     }
 
     @Override
@@ -94,28 +70,52 @@ public class OjalgoComplexMatrix extends AbstractComplexMatrix {
     }
 
     @Override
+    public ComplexMatrix add(Complex c) {
+        return toVpcCMatrix(base.add(fromVpcComplex(c)));
+    }
+
+    @Override
     public ComplexMatrix sub(Complex c) {
         return toVpcCMatrix(base.subtract(fromVpcComplex(c.neg())));
     }
 
     @Override
-    public double norm1() {
-        return base.getOneNorm().getModulus();
+    public ComplexMatrix mul(Matrix<Complex> c) {
+        return toVpcCMatrix(base.multiplyRight(fromVpcCMatrix(c)));
     }
 
     @Override
-    public double normInf() {
-        return base.getInfinityNorm().getModulus();
+    public ComplexMatrix dotmul(Matrix<Complex> other) {
+        return toVpcCMatrix(base.multiplyElements(fromVpcCMatrix(other)));
     }
 
     @Override
-    public double norm2() {
-        return base.getFrobeniusNorm().getModulus();
+    public ComplexMatrix dotdiv(Matrix<Complex> other) {
+        return toVpcCMatrix(base.divideElements(fromVpcCMatrix(other)));
     }
 
     @Override
     public ComplexMatrix conj() {
         return toVpcCMatrix(base.conjugate());
+    }
+
+    @Override
+    public ComplexMatrix add(Matrix<Complex> c) {
+        return toVpcCMatrix(base.add(fromVpcCMatrix(c)));
+    }
+
+    @Override
+    public ComplexMatrix sub(Matrix<Complex> c) {
+        return toVpcCMatrix(base.subtract(fromVpcCMatrix(c)));
+    }
+
+    public ComplexMatrix inv() {
+        return invSolve();
+    }
+
+    @Override
+    public ComplexMatrix invSolve() {
+        return toVpcCMatrix(base.invert());
     }
 
     @Override

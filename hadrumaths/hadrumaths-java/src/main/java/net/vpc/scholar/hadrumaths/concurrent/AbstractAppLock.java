@@ -138,10 +138,12 @@ public abstract class AbstractAppLock implements AppLock {
             if (System.currentTimeMillis() > maxTime) {
                 break;
             }
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                break;
+            if (sleepTime > 10) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
         }
         return false;

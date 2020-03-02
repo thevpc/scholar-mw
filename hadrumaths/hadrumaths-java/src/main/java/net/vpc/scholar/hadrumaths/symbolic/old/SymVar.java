@@ -8,7 +8,7 @@ public class SymVar extends SymAbstractExpression {
     public static final SymVar x = new SymVar("x");
     public static final SymVar y = new SymVar("y");
     public static final SymVar z = new SymVar("z");
-    private String name;
+    private final String name;
 
     public SymVar(String name) {
         this.name = name;

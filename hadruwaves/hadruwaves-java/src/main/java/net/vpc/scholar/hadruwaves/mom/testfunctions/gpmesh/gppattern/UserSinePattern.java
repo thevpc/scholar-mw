@@ -1,11 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import static java.lang.Math.PI;
@@ -228,7 +230,12 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
         return null;
     }
 
-    public Dumper getDumper() {
-        return super.getDumper().add("XBoundaries", xboundaries).add("YBoundaries", yboundaries);
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("xboundaries", context.elem(xboundaries));
+        h.add("yboundaries", context.elem(yboundaries));
+        return h.build();
     }
+
 }

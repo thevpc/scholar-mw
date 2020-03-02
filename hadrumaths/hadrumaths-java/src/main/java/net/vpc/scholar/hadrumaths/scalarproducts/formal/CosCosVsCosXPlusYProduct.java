@@ -1,13 +1,13 @@
 package net.vpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
-import net.vpc.scholar.hadrumaths.symbolic.CosXPlusY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXPlusY;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
-import static net.vpc.scholar.hadrumaths.MathsBase.sin;
+import static net.vpc.scholar.hadrumaths.Maths.sin;
 
 /**
  * User: taha
@@ -16,6 +16,15 @@ import static net.vpc.scholar.hadrumaths.MathsBase.sin;
  */
 final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
 
+    private static boolean tolerantEqual(double a, double b, double tolerance) {
+        double diff = (a - b);
+        return
+                diff == 0 ||
+//                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
+                        (diff < 0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
+                ;
+    }
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();
@@ -23,29 +32,48 @@ final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
-
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
-        CosXCosY f1ok = (CosXCosY) f1;
-        CosXPlusY f2ok = (CosXPlusY) f2;
-        double d = computeTolerant(domain, f1ok, f2ok, 1E-15);
-        if (Double.isNaN(d)) {
-            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            double d0 = compute(domain, f1ok, f2ok);
-            d = d0;
-        }
-        return d;
+        return obj != null && obj.getClass().equals(getClass());
     }
 //    public double compute(Domain domain, DFunction f1, DFunction f2) {
 //        return new CosCosVsCosCosScalarProductOld2().compute(domain, f1, f2);
 //    }
 
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+        CosXCosY f1ok = (CosXCosY) f1;
+        CosXPlusY f2ok = (CosXPlusY) f2;
+        double d = eval(domain, f1ok, f2ok, 1E-15);
+        if (Double.isNaN(d)) {
+            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<??????>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            double d0 = eval(domain, f1ok, f2ok);
+            d = d0;
+        }
+        return d;
+    }
 
-    static double compute(Domain domain, CosXCosY f, CosXPlusY g) {
+    private static double eval(Domain domain, CosXCosY f, CosXPlusY g, double tolerance) {
+        return eval(domain, f, g);
+//        if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
+//            return primi_cos4_fa_fc(domain, f, g);
+//        } else if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
+//            return primi_cos4_fa_cf(domain, f, g);
+//        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
+//            return primi_cos4_af_fc(domain, f, g);
+//        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
+//            return primi_cos4_af_cf(domain, f, g);
+//        } else if (tolerantEqual(f.a, g.a, tolerance)) {
+//            return primi_cos4_fa_fgc(domain, f, g);
+//        } else if (tolerantEqual(f.a, -g.a, tolerance)) {
+//            return primi_cos4_af_fgc(domain, f, g);
+//        } else if (tolerantEqual(f.c, g.c, tolerance)) {
+//            return primi_cos4_fga_fc(domain, f, g);
+//        } else if (tolerantEqual(f.c, -g.c, tolerance)) {
+//            return primi_cos4_fga_cf(domain, f, g);
+//        } else {
+//            return primi_cos4_fga_fgc(domain, f, g);
+//        }
+    }
+
+    static double eval(Domain domain, CosXCosY f, CosXPlusY g) {
         double a1 = g.getA();
         double b1 = g.getB();
         double c1 = g.getC();
@@ -179,39 +207,6 @@ final class CosCosVsCosXPlusYProduct implements FormalScalarProductHelper {
             }
         }
         return v * f.getAmp() * g.getAmp();
-    }
-
-
-    private static boolean tolerantEqual(double a, double b, double tolerance) {
-        double diff = (a - b);
-        return
-                diff == 0 ||
-//                (diff != 0 ? (absdbl((diff) / a) < tolerance) : (absdbl((diff) / b) < tolerance))
-                        (diff < 0 ? (abs((diff) / a) < tolerance) : (abs((diff) / b) < tolerance))
-                ;
-    }
-
-    private static double computeTolerant(Domain domain, CosXCosY f, CosXPlusY g, double tolerance) {
-        return compute(domain, f, g);
-//        if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
-//            return primi_cos4_fa_fc(domain, f, g);
-//        } else if (tolerantEqual(f.a, g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
-//            return primi_cos4_fa_cf(domain, f, g);
-//        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, g.c, tolerance)) {
-//            return primi_cos4_af_fc(domain, f, g);
-//        } else if (tolerantEqual(f.a, -g.a, tolerance) && tolerantEqual(f.c, -g.c, tolerance)) {
-//            return primi_cos4_af_cf(domain, f, g);
-//        } else if (tolerantEqual(f.a, g.a, tolerance)) {
-//            return primi_cos4_fa_fgc(domain, f, g);
-//        } else if (tolerantEqual(f.a, -g.a, tolerance)) {
-//            return primi_cos4_af_fgc(domain, f, g);
-//        } else if (tolerantEqual(f.c, g.c, tolerance)) {
-//            return primi_cos4_fga_fc(domain, f, g);
-//        } else if (tolerantEqual(f.c, -g.c, tolerance)) {
-//            return primi_cos4_fga_cf(domain, f, g);
-//        } else {
-//            return primi_cos4_fga_fgc(domain, f, g);
-//        }
     }
 
 }

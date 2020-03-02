@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadruplot.PlotMatrix;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisSeries;
@@ -22,14 +22,14 @@ public class PlotTestCoeff extends PlotAxisSeries implements Cloneable {
         }
     }
     @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return computeMatrix((MomStructure) structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return evalMatrix((MomStructure) structure,monitor,p);
     }
 
-    protected PlotMatrix computeMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        ProgressMonitor emonitor = ProgressMonitorFactory.nonnull(monitor);
+    protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
 //        emonitor.startm(getClass().getSimpleName());
-        PlotMatrix namedMatrix = new PlotMatrix(structure.matrixX().monitor(monitor).computeMatrix().getArray());
+        PlotMatrix namedMatrix = new PlotMatrix(structure.matrixX().monitor(monitor).evalMatrix().getArray());
 //        emonitor.terminatem(getClass().getSimpleName());
         return namedMatrix;
     }

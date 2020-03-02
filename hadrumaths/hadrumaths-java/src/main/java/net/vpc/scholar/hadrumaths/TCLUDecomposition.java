@@ -27,7 +27,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      *
      * @serial internal array storage.
      */
-    private TMatrix<T> LU;
+    private final Matrix<T> LU;
     /**
      * Row and column dimensions, and pivot sign.
      *
@@ -35,16 +35,18 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      * @serial row dimension.
      * @serial pivot sign.
      */
-    private int m, n, pivsign;
+    private final int m;
+    private final int n;
+    private int pivsign;
     /**
      * Internal storage of pivot vector.
      *
      * @serial pivot vector.
      */
-    private int[] piv;
-    private VectorSpace<T> space;
-    private TMatrixFactory<T> matrixFactory;
-    private TypeName<T> componentType;
+    private final int[] piv;
+    private final VectorSpace<T> space;
+    private final MatrixFactory<T> matrixFactory;
+    private final TypeName<T> componentType;
     /*
      * ------------------------ Constructor ------------------------
      */
@@ -54,7 +56,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      *
      * @param A Rectangular matrix return Structure to access L, U and piv.
      */
-    public TCLUDecomposition(TMatrix<T> A) {
+    public TCLUDecomposition(Matrix<T> A) {
         space = A.getComponentVectorSpace();
         matrixFactory = A.getFactory();
         // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
@@ -140,7 +142,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      * matrix @param linpackflag Use Gaussian elimination. Actual value ignored.
      * @return Structure to access L, U and piv. \
      *
-     * public LUDecomposition (TMatrix<T> A, int linpackflag) { // Initialize. LU =
+     * public LUDecomposition (Matrix<T> A, int linpackflag) { // Initialize. LU =
      * A.getArrayCopy(); m = A.getRowCount(); n = A.getColumnCount();
      * piv = new int[m]; for (int i = 0; i < m; i++) { piv[i] = i; } pivsign =
      * 1; // Main loop. for (int k = 0; k < n; k++) { // Find pivot. int p = k;
@@ -161,26 +163,12 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      */
 
     /**
-     * Is the matrix nonsingular?
-     *
-     * @return true if U, and hence A, is nonsingular.
-     */
-    public boolean isNonsingular() {
-        for (int j = 0; j < n; j++) {
-            if (LU.get(j, j).equals(space.zero())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Return lower triangular factor
      *
      * @return L
      */
-    public TMatrix<T> getL() {
-        TMatrix<T> X = matrixFactory.newMatrix(m, n);
+    public Matrix<T> getL() {
+        Matrix<T> X = matrixFactory.newMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (i > j) {
@@ -200,8 +188,8 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      *
      * @return U
      */
-    public TMatrix<T> getU() {
-        TMatrix<T> X = matrixFactory.newMatrix(n, n);
+    public Matrix<T> getU() {
+        Matrix<T> X = matrixFactory.newMatrix(n, n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i <= j) {
@@ -235,7 +223,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
     public double[] getDoublePivot() {
         double[] vals = new double[m];
         for (int i = 0; i < m; i++) {
-            vals[i] = (double) piv[i];
+            vals[i] = piv[i];
         }
         return vals;
     }
@@ -244,11 +232,11 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
      * Determinant
      *
      * @return det(A)
-     * @throws IllegalArgumentException TMatrix<T> must be square
+     * @throws IllegalArgumentException Matrix<T> must be square
      */
     public T det() {
         if (m != n) {
-            throw new IllegalArgumentException("TMatrix<T> must be square.");
+            throw new IllegalArgumentException("Matrix<T> must be square.");
         }
         T d = space.convert(pivsign);
         for (int j = 0; j < n; j++) {
@@ -260,22 +248,22 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
     /**
      * Solve A*X = B
      *
-     * @param B A TMatrix<T> with as many rows as A and any number of columns.
+     * @param B A Matrix<T> with as many rows as A and any number of columns.
      * @return X so that L*U*X = B(piv,:)
-     * @throws IllegalArgumentException TMatrix<T> row dimensions must agree.
-     * @throws RuntimeException         TMatrix<T> is singular.
+     * @throws IllegalArgumentException Matrix<T> row dimensions must agree.
+     * @throws RuntimeException         Matrix<T> is singular.
      */
-    public TMatrix<T> solve(TMatrix<T> B) {
+    public Matrix<T> solve(Matrix<T> B) {
         if (B.getRowCount() != m) {
-            throw new IllegalArgumentException("TMatrix<T> row dimensions must agree.");
+            throw new IllegalArgumentException("Matrix<T> row dimensions must agree.");
         }
         if (!this.isNonsingular()) {
-            throw new RuntimeException("TMatrix<T> is singular.");
+            throw new RuntimeException("Matrix<T> is singular.");
         }
 
         // Copy right hand side with pivoting
         int nx = B.getColumnCount();
-        TMatrix<T> Xmat = B.getMatrix(piv, 0, nx - 1);
+        Matrix<T> Xmat = B.getMatrix(piv, 0, nx - 1);
 
         for (int k = 0; k < n; k++) {
             for (int i = k + 1; i < n; i++) {
@@ -296,5 +284,19 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
             }
         }
         return Xmat;
+    }
+
+    /**
+     * Is the matrix nonsingular?
+     *
+     * @return true if U, and hence A, is nonsingular.
+     */
+    public boolean isNonsingular() {
+        for (int j = 0; j < n; j++) {
+            if (LU.get(j, j).equals(space.zero())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

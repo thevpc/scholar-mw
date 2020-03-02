@@ -8,11 +8,17 @@ import java.util.Collection;
 /**
  * Created by vpc on 5/7/14.
  */
-public class ArrayIntVector extends AbstractTVector<Integer> implements IntVector {
+public class ArrayIntVector extends AbstractVector<Integer> implements IntVector {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_CAPACITY = 10;
     private static final int[] ZERO_ELEMENTS = new int[0];
+    /**
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
+     * OutOfMemoryError: Requested array size exceeds VM limit
+     */
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     private int[] elementData;
     private int size;
 
@@ -40,95 +46,29 @@ public class ArrayIntVector extends AbstractTVector<Integer> implements IntVecto
         appendAll(values);
     }
 
-    public IntVector appendAll(int[] e) {
-        int increment = e.length;
-        ensureCapacityInternal(size + increment);  // Increments modCount!!
-        System.arraycopy(e, 0, elementData, this.size, increment);
-        this.size += increment;
-        return this;
-    }
-
-    public int[] toIntArray() {
-        if (size == 0) {
-            return ZERO_ELEMENTS;
+    public ArrayIntVector(boolean row, VectorModel<Integer> model) {
+        super(row);
+        this.elementData = new int[model.size()];
+        for (int i = 0; i < elementData.length; i++) {
+            elementData[i] = model.get(i);
         }
-        int[] ret = new int[size];
-        System.arraycopy(elementData, 0, ret, 0, size);
-        return ret;
     }
 
-    public Integer sum() {
-        if (size == 0) {
-            return 0;
+    private static int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) { // overflow
+            throw new OutOfMemoryError();
         }
-        int d = elementData[0];
-        for (int i = 1; i < size; i++) {
-            d += elementData[i];
-        }
-        return d;
+        return (minCapacity > MAX_ARRAY_SIZE)
+                ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
     }
 
-    public Integer prod() {
-        if (size == 0) {
-            return 0;
-        }
-        int d = elementData[0];
-        for (int i = 1; i < size; i++) {
-            d *= elementData[i];
-        }
-        return d;
+    public static ArrayIntVector row(int[] values) {
+        return new ArrayIntVector(true, values);
     }
 
-    @Override
-    public TypeName<Integer> getComponentType() {
-        return MathsBase.$INTEGER;
-    }
-
-    @Override
-    public Integer get(int i) {
-        return elementData[i];
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public IntVector append(Integer e) {
-        return append(e.intValue());
-    }
-
-    public IntVector append(int e) {
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        elementData[size++] = e;
-        return this;
-    }
-
-    @Override
-    public IntVector appendAll(TVector<Integer> e) {
-        int esize = e.size();
-        if (e instanceof ArrayIntVector) {
-            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
-            ArrayIntVector e0 = (ArrayIntVector) e;
-            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
-            this.size += esize;
-        } else {
-            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
-            for (Integer a : e) {
-                elementData[this.size++] = a;
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public IntVector appendAll(Collection<? extends Integer> e) {
-        ensureCapacityInternal(this.size + e.size());  // Increments modCount!!
-        for (Integer a : e) {
-            elementData[this.size++] = a;
-        }
-        return this;
+    public static ArrayIntVector column(int[] values) {
+        return new ArrayIntVector(false, values);
     }
 
     private void ensureCapacityInternal(int minCapacity) {
@@ -149,15 +89,8 @@ public class ArrayIntVector extends AbstractTVector<Integer> implements IntVecto
     }
 
     /**
-     * The maximum size of array to allocate. Some VMs reserve some header words
-     * in an array. Attempts to allocate larger arrays may result in
-     * OutOfMemoryError: Requested array size exceeds VM limit
-     */
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
-
-    /**
      * Increases the capacity to ensure that it can hold at least the number of
-     * elements specified by the minimum capacity argument.
+     * primitiveElement3DS specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
      */
@@ -175,83 +108,63 @@ public class ArrayIntVector extends AbstractTVector<Integer> implements IntVecto
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
 
-    private static int hugeCapacity(int minCapacity) {
-        if (minCapacity < 0) { // overflow
-            throw new OutOfMemoryError();
+    @Override
+    public IntVector removeAt(int index) {
+        int n = size - 1 - index;
+        if (n > 0) {
+            System.arraycopy(elementData, index + 1, elementData, index, n);
+            elementData[--size] = 0;
         }
-        return (minCapacity > MAX_ARRAY_SIZE)
-                ? Integer.MAX_VALUE
-                : MAX_ARRAY_SIZE;
+        return this;
     }
 
-    public void trimToSize() {
-        modCount++;
-        if (size < elementData.length) {
-            elementData = (size == 0)
-                    ? ZERO_ELEMENTS
-                    : Arrays.copyOf(elementData, size);
-        }
+    @Override
+    public IntVector appendAt(int index, int e) {
+        ensureCapacityInternal(size + 1);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = e;
+        size++;
+        return this;
     }
 
-    public static class ReadOnlyIntVector extends ReadOnlyTList<Integer> implements IntVector {
+    @Override
+    public IntVector appendAt(int index, Integer e) {
+        ensureCapacityInternal(size + 1);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = e;
+        size++;
+        return this;
+    }
 
-        public ReadOnlyIntVector(boolean row, TVectorModel<Integer> model) {
-            super(MathsBase.$INTEGER, row, model);
+    @Override
+    public IntVector append(Integer e) {
+        return append(e.intValue());
+    }
+
+    @Override
+    public IntVector appendAll(Collection<? extends Integer> e) {
+        ensureCapacityInternal(this.size + e.size());  // Increments modCount!!
+        for (Integer a : e) {
+            elementData[this.size++] = a;
         }
+        return this;
+    }
 
-        @Override
-        public int[] toIntArray() {
-            int[] d = new int[size()];
-            for (int i = 0; i < d.length; i++) {
-                d[i] = get(i);
+    @Override
+    public IntVector appendAll(Vector<Integer> e) {
+        int esize = e.size();
+        if (e instanceof ArrayIntVector) {
+            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
+            ArrayIntVector e0 = (ArrayIntVector) e;
+            System.arraycopy(e0.elementData, 0, elementData, this.size, esize);
+            this.size += esize;
+        } else {
+            ensureCapacityInternal(this.size + esize);  // Increments modCount!!
+            for (Integer a : e) {
+                elementData[this.size++] = a;
             }
-            return d;
         }
-
-        @Override
-        public TVector<Integer> concat(TVector<Integer> e) {
-            ArrayIntVector v = new ArrayIntVector(isRow(), size() + (e == null ? 0 : e.size()));
-            v.appendAll(this);
-            if (e != null) {
-                v.appendAll(e);
-            }
-            return v;
-        }
-
-        @Override
-        public IntVector sort() {
-            int[] vals = toIntArray();
-            Arrays.sort(vals);
-            return new ArrayIntVector(isRow(), vals);
-        }
-
-        @Override
-        public IntVector removeDuplicates() {
-            int[] vals = toIntArray();
-            int[] vals2 = sort().toIntArray();
-            int[] vals3 = new int[vals.length];
-            int x = 0;
-            for (int i = 0; i < vals2.length; i++) {
-                int val = vals2[i];
-                if (x == 0 || vals3[x - 1] != val) {
-                    vals3[x] = val;
-                    x++;
-                }
-            }
-            return new ArrayIntVector(isRow(), Arrays.copyOf(vals3, x));
-        }
-
-        @Override
-        public IntVector append(int value) {
-            throwUnmodifiable();
-            return this;
-        }
-
-        @Override
-        public IntVector appendAll(int[] values) {
-            throwUnmodifiable();
-            return this;
-        }
+        return this;
     }
 
     @Override
@@ -278,13 +191,203 @@ public class ArrayIntVector extends AbstractTVector<Integer> implements IntVecto
     }
 
     @Override
-    public TVector<Integer> concat(TVector<Integer> e) {
+    public IntVector concat(Vector<Integer> e) {
         ArrayIntVector v = new ArrayIntVector(isRow(), size() + (e == null ? 0 : e.size()));
         v.appendAll(this);
         if (e != null) {
             v.appendAll(e);
         }
         return v;
+    }
+
+    public Integer sum() {
+        if (size == 0) {
+            return 0;
+        }
+        int d = elementData[0];
+        for (int i = 1; i < size; i++) {
+            d += elementData[i];
+        }
+        return d;
+    }
+
+    public Integer prod() {
+        if (size == 0) {
+            return 0;
+        }
+        int d = elementData[0];
+        for (int i = 1; i < size; i++) {
+            d *= elementData[i];
+        }
+        return d;
+    }
+
+    public IntVector append(int e) {
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        elementData[size++] = e;
+        return this;
+    }
+
+    public IntVector appendAll(int[] e) {
+        int increment = e.length;
+        ensureCapacityInternal(size + increment);  // Increments modCount!!
+        System.arraycopy(e, 0, elementData, this.size, increment);
+        this.size += increment;
+        return this;
+    }
+
+    public int[] toIntArray() {
+        if (size == 0) {
+            return ZERO_ELEMENTS;
+        }
+        int[] ret = new int[size];
+        System.arraycopy(elementData, 0, ret, 0, size);
+        return ret;
+    }
+
+    public void trimToSize() {
+        modCount++;
+        if (size < elementData.length) {
+            elementData = (size == 0)
+                    ? ZERO_ELEMENTS
+                    : Arrays.copyOf(elementData, size);
+        }
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
+
+    @Override
+    public IntVector toReadOnly() {
+        return new ArrayIntVector.ReadOnlyIntVector(isRow(), this);
+    }
+
+    @Override
+    public IntVector toMutable() {
+        return this;
+    }
+
+    @Override
+    public TypeName<Integer> getComponentType() {
+        return Maths.$INTEGER;
+    }
+
+    @Override
+    public Integer get(int i) {
+        return elementData[i];
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    public static class ReadOnlyIntVector extends ReadOnlyVector<Integer> implements IntVector {
+
+        public ReadOnlyIntVector(boolean row, VectorModel<Integer> model) {
+            super(Maths.$INTEGER, row, model);
+        }
+
+        @Override
+        public IntVector concat(Vector<Integer> e) {
+            ArrayIntVector v = new ArrayIntVector(isRow(), size() + (e == null ? 0 : e.size()));
+            v.appendAll(this);
+            if (e != null) {
+                v.appendAll(e);
+            }
+            return v;
+        }
+
+        @Override
+        public IntVector appendAt(int index, int value) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public IntVector append(int value) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public IntVector appendAll(int[] values) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public boolean isMutable() {
+            return false;
+        }
+
+        @Override
+        public IntVector toReadOnly() {
+            return this;
+        }
+
+        @Override
+        public IntVector toMutable() {
+            return new ArrayIntVector(isRow(), this);
+        }
+
+        @Override
+        public int[] toIntArray() {
+            int[] d = new int[size()];
+            for (int i = 0; i < d.length; i++) {
+                d[i] = get(i);
+            }
+            return d;
+        }
+
+
+        @Override
+        public IntVector sort() {
+            int[] vals = toIntArray();
+            Arrays.sort(vals);
+            return new ArrayIntVector(isRow(), vals);
+        }
+
+
+        @Override
+        public IntVector removeDuplicates() {
+            int[] vals = toIntArray();
+            int[] vals2 = sort().toIntArray();
+            int[] vals3 = new int[vals.length];
+            int x = 0;
+            for (int i = 0; i < vals2.length; i++) {
+                int val = vals2[i];
+                if (x == 0 || vals3[x - 1] != val) {
+                    vals3[x] = val;
+                    x++;
+                }
+            }
+            return new ArrayIntVector(isRow(), Arrays.copyOf(vals3, x));
+        }
+
+        @Override
+        public IntVector appendAll(Vector<Integer> e) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public IntVector append(Integer e) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public IntVector appendAll(Collection<? extends Integer> e) {
+            throw throwReadOnly();
+        }
+        @Override
+        public IntVector removeAt(int index) {
+            throw throwReadOnly();
+        }
+
+        @Override
+        public IntVector appendAt(int index, Integer e) {
+            throw throwReadOnly();
+        }
+
     }
 
 }

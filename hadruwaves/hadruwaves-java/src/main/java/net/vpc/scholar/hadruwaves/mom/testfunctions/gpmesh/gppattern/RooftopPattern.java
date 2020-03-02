@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
@@ -55,7 +55,7 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
                 DoubleToVector f = Maths.vector(
                         FunctionFactory.rooftop(Axis.X, 1, false, zone.getDomain())
                         ,
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.X, 1, false, zone.getDomain())
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.X, 1, false, zone.getDomain())
                 )
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
@@ -64,7 +64,7 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_ATTACHY: {
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, zone.getDomain())
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, zone.getDomain())
                         ,
                         FunctionFactory.rooftop(Axis.Y, 1, false, zone.getDomain())
                 )
@@ -76,9 +76,9 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
             case MeshZoneType.ID_BORDER_NORTH: {
                 Domain dd = zone.getDomain();
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin,dd.ymin-dd.height*1,dd.width,dd.height*2, DomainXY.Type.LENGTH)).getSegmentAt(1)
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin,dd.ymin-dd.height*1,dd.width,dd.height*2, DomainXY.Type.LENGTH)).getSegmentAt(1)
                         ,
-                        FunctionFactory.rooftop(Axis.Y, 1, false, Domain.forWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1)
+                        FunctionFactory.rooftop(Axis.Y, 1, false, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1)
                 )
 
                         .setProperty("Type", getClass().getSimpleName())
@@ -89,9 +89,9 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
             case MeshZoneType.ID_BORDER_SOUTH: {
                 Domain dd = zone.getDomain();
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin,dd.ymax-dd.height,dd.width,dd.height*2, DomainXY.Type.LENGTH)).getSegmentAt(0)
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin,dd.ymax-dd.height,dd.width,dd.height*2, DomainXY.Type.LENGTH)).getSegmentAt(0)
                         ,
-                        FunctionFactory.rooftop(Axis.Y, 1, false, Domain.forWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth(), dd.ywidth() * 2)).getSegmentAt(0)
+                        FunctionFactory.rooftop(Axis.Y, 1, false, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth(), dd.ywidth() * 2)).getSegmentAt(0)
                 )
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
@@ -101,9 +101,9 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
             case MeshZoneType.ID_BORDER_EAST: {
                 Domain dd = zone.getDomain();
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.rooftop(Axis.X, 1, false, Domain.forWidth(dd.xmax() - dd.xwidth(), dd.xwidth() * 2, dd.ymin(), dd.ywidth())).getSegmentAt(0)
+                        FunctionFactory.rooftop(Axis.X, 1, false, Domain.ofWidth(dd.xmax() - dd.xwidth(), dd.xwidth() * 2, dd.ymin(), dd.ywidth())).getSegmentAt(0)
                         ,
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmax-dd.width,dd.ymin,dd.width*2,dd.height, DomainXY.Type.LENGTH)).getSegmentAt(0)
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmax-dd.width,dd.ymin,dd.width*2,dd.height, DomainXY.Type.LENGTH)).getSegmentAt(0)
                 )
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)
@@ -113,9 +113,9 @@ public final class RooftopPattern extends RectMeshAttachGpPattern {
             case MeshZoneType.ID_BORDER_WEST: {
                 Domain dd = zone.getDomain();
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.rooftop(Axis.X, 1, false, Domain.forWidth(dd.xmin() - dd.xwidth(), dd.xwidth() * 2, dd.ymin(), dd.ywidth())).getSegmentAt(1)
+                        FunctionFactory.rooftop(Axis.X, 1, false, Domain.ofWidth(dd.xmin() - dd.xwidth(), dd.xwidth() * 2, dd.ymin(), dd.ywidth())).getSegmentAt(1)
                         ,
-                        FunctionFactory.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin-dd.width,dd.ymin,dd.width*2,dd.height, DomainXY.Type.LENGTH)).getSegmentAt(1)
+                        Maths.DZEROXY// FunctionFactory.rooftop(Axis.Y, 1, false, new DomainXY(dd.xmin-dd.width,dd.ymin,dd.width*2,dd.height, DomainXY.Type.LENGTH)).getSegmentAt(1)
                 )
                         .setProperty("Type", getClass().getSimpleName())
                         .setProperty("p", index)

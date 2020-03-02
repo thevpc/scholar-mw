@@ -5,8 +5,9 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Sqr;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Sqr;
+
+import static net.vpc.scholar.hadrumaths.Maths.mul;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -16,8 +17,8 @@ public class SqrDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Sqr c = (Sqr) f;
         return
-                new Mul(
-                        Complex.valueOf(2),
+                mul(
+                        Complex.of(2),
                         d.derive(f, varIndex),
                         f
                 );

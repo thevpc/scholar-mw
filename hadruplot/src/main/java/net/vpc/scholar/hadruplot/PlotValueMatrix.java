@@ -14,8 +14,8 @@ public class PlotValueMatrix extends PlotAxisSeries implements Cloneable {
     }
 
    @Override
-    protected PlotMatrix computeValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
-        return value.computeValue(structure,monitor,p);
+    protected PlotMatrix evalValue(ConsoleAwareObject structure, ProgressMonitor monitor, ConsoleActionParams p) {
+        return value.evalValue(structure,monitor,p);
     }
 
 }

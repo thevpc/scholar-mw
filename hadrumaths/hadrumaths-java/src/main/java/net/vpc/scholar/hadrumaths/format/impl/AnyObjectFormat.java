@@ -4,11 +4,11 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
-import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.Any;
 
 /**
  * @author vpc
@@ -16,21 +16,15 @@ import net.vpc.scholar.hadrumaths.symbolic.Any;
 public class AnyObjectFormat implements ObjectFormat<Any> {
 
     @Override
-    public void format(StringBuilder sb, Any o, ObjectFormatParamSet format) {
+    public void format(Any o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         DebugObjectFormatParam d = format.getParam(DebugObjectFormatParam.class, false);
         if (d == null) {
-            FormatFactory.format(sb, o.getObject(), format);
+            context.format( o.getReference(), format);
         } else {
-            sb.append("any(");
-            FormatFactory.format(sb, o.getObject(), format);
-            sb.append(")");
+            context.append("any(");
+            context.format( o.getReference(), format);
+            context.append(")");
         }
-    }
-
-    @Override
-    public String format(Any o, ObjectFormatParamSet format) {
-        StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
-        return sb.toString();
     }
 }

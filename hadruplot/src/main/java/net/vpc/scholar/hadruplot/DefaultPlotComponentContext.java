@@ -4,17 +4,17 @@ import net.vpc.scholar.hadruplot.backends.simple.heatmap.PlotNormalizer;
 
 public class DefaultPlotComponentContext implements PlotComponentContext{
     private PlotModelProvider modelProvider;
-    private PlotType plotType;
+    private LibraryPlotType plotType;
     private PlotBackendLibraryFilter filter;
     private PlotNormalizer normalizer;
     private Integer preferredWidth;
     private Integer preferredHeight;
 
-    public DefaultPlotComponentContext(PlotType plotType, PlotModel model) {
+    public DefaultPlotComponentContext(LibraryPlotType plotType, PlotModel model) {
         this(plotType,new SimplePlotModelProvider(model,null));
     }
 
-    public DefaultPlotComponentContext(PlotType plotType, PlotModelProvider modelProvider) {
+    public DefaultPlotComponentContext(LibraryPlotType plotType, PlotModelProvider modelProvider) {
         this.plotType =plotType;
         this.modelProvider = modelProvider;
     }
@@ -49,7 +49,7 @@ public class DefaultPlotComponentContext implements PlotComponentContext{
         return this;
     }
 
-    public PlotType getPlotType() {
+    public LibraryPlotType getPlotType() {
         return plotType;
     }
 

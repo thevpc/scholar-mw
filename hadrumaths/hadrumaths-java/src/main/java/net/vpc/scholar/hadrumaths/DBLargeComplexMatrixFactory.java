@@ -11,10 +11,10 @@ import java.util.logging.Logger;
  * Created by vpc on 2/5/15.
  */
 public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
-    private static Logger log = Logger.getLogger(DBLargeComplexMatrixFactory.class.getName());
+    private static final Logger log = Logger.getLogger(DBLargeComplexMatrixFactory.class.getName());
+    int hits = 0;
     private Connection connection;
     private Map<String, PreparedStatement> cachedPreparedStatements;
-    int hits = 0;
 
 //    public static DBLargeMatrixFactory createStorage(String id, Connection connexion) {
 //        DBLargeMatrixFactory factory = new DBLargeMatrixFactory(id, connexion, false, Complex.ZERO);
@@ -115,6 +115,38 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
 //        }
 //    }
 
+    private static Connection createConnection(DBLargeMatrixId id) {
+        try {
+            if (id.getDriver().length() > 0) {
+                Class.forName(id.getDriver());
+            } else if (id.getType().equals("derbynet")) {
+                Class.forName("org.apache.derby.jdbc.ClientDriver");
+            } else if (id.getType().equals("derby")) {
+                Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            }
+            String url = Maths.Config.replaceVars(id.getUrl());
+            return DriverManager.getConnection(url, id.getLogin(), id.getPassword());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void prepare() {
+        try {
+            String sql = "create table matrix(id integer NOT NULL GENERATED ALWAYS AS IDENTITY,r int, c int, creation_time timestamp)";
+            log.log(Level.FINEST, getId() + " : sql = " + sql);
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            //ignore
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
     public static String createId(String id) {
         DBLargeMatrixId id2 = DBLargeMatrixId.parse(id);
         if (id2 == null) {
@@ -144,53 +176,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
                 "jdbc:derby://" + server + "/" + name,
                 sparse, defaultValue
         ).toString();
-    }
-
-    private static Connection createConnection(DBLargeMatrixId id) {
-        try {
-            if (id.getDriver().length() > 0) {
-                Class.forName(id.getDriver());
-            } else if (id.getType().equals("derbynet")) {
-                Class.forName("org.apache.derby.jdbc.ClientDriver");
-            } else if (id.getType().equals("derby")) {
-                Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            }
-            String url = MathsBase.Config.replaceVars(id.getUrl());
-            return DriverManager.getConnection(url, id.getLogin(), id.getPassword());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected void prepare() {
-        try {
-            String sql = "create table matrix(id integer NOT NULL GENERATED ALWAYS AS IDENTITY,r int, c int, creation_time timestamp)";
-            log.log(Level.FINEST, getId() + " : sql = " + sql);
-            PreparedStatement ps = getConnection().prepareStatement(sql);
-            ps.executeUpdate();
-            ps.close();
-        } catch (Exception e) {
-            //ignore
-        }
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void dispose() {
-        if (connection != null) {
-            log.log(Level.FINE, "disposing Large Matrix Factory " + connection);
-            try {
-                if (!connection.isClosed()) {
-                    connection.commit();
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            connection = null;
-        }
     }
 
     @Override
@@ -241,9 +226,31 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
         return new DBLargeComplexMatrix(id, rows, columns, this);
     }
 
+    private void dataUpdated() throws SQLException {
+        hits = (hits + 1) % 1000;
+        if (hits == 0) {
+            connection.commit();
+        }
+    }
+
     @Override
     public void close() {
         dispose();
+    }
+
+    public void dispose() {
+        if (connection != null) {
+            log.log(Level.FINE, "disposing Large Matrix Factory " + connection);
+            try {
+                if (!connection.isClosed()) {
+                    connection.commit();
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
     }
 
     public ComplexMatrix findMatrix(long id) {
@@ -263,11 +270,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
             throw new RuntimeException(e);
         }
         return null;
-    }
-
-    @Override
-    public void reset() {
-        clear();
     }
 
     public void clear() {
@@ -309,7 +311,7 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
             ps.setInt(2, col);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                c = Complex.valueOf(rs.getDouble(1), rs.getDouble(2));
+                c = Complex.of(rs.getDouble(1), rs.getDouble(2));
             }
             rs.close();
             //ps.close();
@@ -339,7 +341,7 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
                     c[lastCol - fromCol] = defaultValue;
                     lastCol++;
                 }
-                c[cc - fromCol] = Complex.valueOf(rs.getDouble(2), rs.getDouble(3));
+                c[cc - fromCol] = Complex.of(rs.getDouble(2), rs.getDouble(3));
                 lastCol++;
             }
             while (lastCol < toCol) {
@@ -372,7 +374,7 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
                     c[lastRow - fromRow] = getDefaultValue();
                     lastRow++;
                 }
-                c[cc - fromRow] = Complex.valueOf(rs.getDouble(2), rs.getDouble(3));
+                c[cc - fromRow] = Complex.of(rs.getDouble(2), rs.getDouble(3));
                 lastRow++;
             }
             while (lastRow < toRow) {
@@ -480,6 +482,16 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
         }
     }
 
+    @Override
+    public String toString() {
+        return "LargeMatrixFactory{" +
+                "connection=" + connection +
+                ", resetOnClose=" + isResetOnClose() +
+                ", sparse=" + isSparse() +
+                ", defaultValue=" + getDefaultValue() +
+                '}';
+    }
+
     private PreparedStatement preparedStatement(String sql) throws SQLException {
         if (cachedPreparedStatements == null) {
             cachedPreparedStatements = new HashMap<String, PreparedStatement>();
@@ -492,21 +504,9 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
         return preparedStatement;
     }
 
-    private void dataUpdated() throws SQLException {
-        hits = (hits + 1) % 1000;
-        if (hits == 0) {
-            connection.commit();
-        }
-    }
-
     @Override
-    public String toString() {
-        return "LargeMatrixFactory{" +
-                "connection=" + connection +
-                ", resetOnClose=" + isResetOnClose() +
-                ", sparse=" + isSparse() +
-                ", defaultValue=" + getDefaultValue() +
-                '}';
+    public void reset() {
+        clear();
     }
 
 }

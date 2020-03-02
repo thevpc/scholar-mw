@@ -7,8 +7,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
 
 import java.util.List;
 
@@ -18,31 +19,33 @@ import java.util.List;
 public class PlusObjectFormat implements ObjectFormat<Plus> {
 
     @Override
-    public String format(Plus o, ObjectFormatParamSet format) {
+    public String format(Plus o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Plus o, ObjectFormatParamSet format) {
+    public void format(Plus o, ObjectFormatContext context) {
+        ObjectFormatParamSet format = context.getParams();
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         format = format.add(FormatFactory.REQUIRED_PARS);
-        List<Expr> segments = o.getSubExpressions();
+        List<Expr> segments = o.getChildren();
         int size = segments.size();
         if (size > 1 && par) {
-            sb.append("(");
+            context.append("(");
         }
         for (int i = 0; i < size; i++) {
             Expr e = segments.get(i);
             if (i > 0) {
-                sb.append(" + ");
+//                sb.append(" + ");
+                context.append("+");
             }
-            FormatFactory.format(sb, e, format.add(FormatFactory.GATE_DOMAIN));
+            context.format(e, format.add(FormatFactory.GATE_DOMAIN));
         }
 
         if (size > 1 && par) {
-            sb.append(")");
+            context.append(")");
         }
     }
 

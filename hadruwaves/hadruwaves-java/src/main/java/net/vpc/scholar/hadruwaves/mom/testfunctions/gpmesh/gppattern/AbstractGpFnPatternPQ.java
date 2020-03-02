@@ -1,11 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -22,11 +24,12 @@ public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern {
     }
 
 
-    public Dumper getDumper() {
-        Dumper h = super.getDumper();
-        h.add("max",max);
-        h.add("modes",modes);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+        h.add("max", context.elem(max));
+        h.add("modes", context.elem(modes));
+        return h.build();
     }
 
     public final DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {

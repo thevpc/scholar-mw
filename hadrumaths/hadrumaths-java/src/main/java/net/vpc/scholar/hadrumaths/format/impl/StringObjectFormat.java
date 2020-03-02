@@ -4,7 +4,7 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 
 /**
  * @author vpc
@@ -12,8 +12,8 @@ import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 public class StringObjectFormat extends AbstractObjectFormat<String> {
 
     @Override
-    public void format(StringBuilder sb, String o, ObjectFormatParamSet format) {
-        sb.append(o);
+    public void format(String o, ObjectFormatContext context) {
+        context.append(o);
     }
 
 }

@@ -28,14 +28,15 @@ public class SingularValueDecomposition implements java.io.Serializable {
      * @serial internal storage of U.
      * @serial internal storage of V.
      */
-    private double[][] U, V;
+    private final double[][] U;
+    private final double[][] V;
 
     /**
      * Array for internal storage of singular values.
      *
      * @serial internal storage of singular values.
      */
-    private double[] s;
+    private final double[] s;
 
     /**
      * Row and column dimensions.
@@ -43,7 +44,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
      * @serial row dimension.
      * @serial column dimension.
      */
-    private int m, n;
+    private final int m;
+    private final int n;
 
 /* ------------------------
    Constructor
@@ -72,8 +74,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
         boolean wantu = true;
         boolean wantv = true;
 
-        // Reduce A to bidiagonal form, storing the diagonal elements
-        // in s and the super-diagonal elements in e.
+        // Reduce A to bidiagonal form, storing the diagonal primitiveElement3DS
+        // in s and the super-diagonal primitiveElement3DS in e.
 
         int nct = Math.min(m - 1, n);
         int nrt = Math.max(0, Math.min(n - 2, m));
@@ -86,7 +88,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                 // Compute 2-norm of k-th column without under/overflow.
                 s[k] = 0;
                 for (int i = k; i < m; i++) {
-                    s[k] = MathsBase.hypot(s[k], A[i][k]);
+                    s[k] = Maths.hypot(s[k], A[i][k]);
                 }
                 if (s[k] != 0.0) {
                     if (A[k][k] < 0.0) {
@@ -135,7 +137,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                 // Compute 2-norm without under/overflow.
                 e[k] = 0;
                 for (int i = k + 1; i < n; i++) {
-                    e[k] = MathsBase.hypot(e[k], e[i]);
+                    e[k] = Maths.hypot(e[k], e[i]);
                 }
                 if (e[k] != 0.0) {
                     if (e[k + 1] < 0.0) {
@@ -256,14 +258,14 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
         int pp = p - 1;
         int iter = 0;
-        double eps = MathsBase.pow(2.0, -52.0);
+        double eps = Maths.pow(2.0, -52.0);
         while (p > 0) {
             int k, kase;
 
             // Here is where a test for too many iterations would go.
 
             // This section of the program inspects for
-            // negligible elements in the s and e arrays.  On
+            // negligible primitiveElement3DS in the s and e arrays.  On
             // completion the variables kase and k are set as follows.
 
             // kase = 1     if s(p) and e[k-1] are negligible and k<p
@@ -317,7 +319,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                     double f = e[p - 2];
                     e[p - 2] = 0.0;
                     for (int j = p - 2; j >= k; j--) {
-                        double t = MathsBase.hypot(s[j], f);
+                        double t = Maths.hypot(s[j], f);
                         double cs = s[j] / t;
                         double sn = f / t;
                         s[j] = t;
@@ -342,7 +344,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                     double f = e[k - 1];
                     e[k - 1] = 0.0;
                     for (int j = k; j < p; j++) {
-                        double t = MathsBase.hypot(s[j], f);
+                        double t = Maths.hypot(s[j], f);
                         double cs = s[j] / t;
                         double sn = f / t;
                         s[j] = t;
@@ -389,7 +391,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                     // Chase zeros.
 
                     for (int j = k; j < p - 1; j++) {
-                        double t = MathsBase.hypot(f, g);
+                        double t = Maths.hypot(f, g);
                         double cs = f / t;
                         double sn = g / t;
                         if (j != k) {
@@ -406,7 +408,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
                                 V[i][j] = t;
                             }
                         }
-                        t = MathsBase.hypot(f, g);
+                        t = Maths.hypot(f, g);
                         cs = f / t;
                         sn = g / t;
                         s[j] = t;

@@ -5,18 +5,23 @@
  */
 package net.vpc.scholar.hadrumaths.transform;
 
+import net.vpc.common.tson.*;
 import net.vpc.common.util.ClassMap;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
+import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DebugObjectFormatParam;
-import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.Any;
+import net.vpc.scholar.hadrumaths.transform.navigaterules.ExprNavRule;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author vpc
@@ -28,41 +33,32 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     public List<ExpressionRewriterRule> rules = new ArrayList<ExpressionRewriterRule>();
     public ClassMap<List<ExpressionRewriterRule>> mapRules = new ClassMap<List<ExpressionRewriterRule>>(Expr.class, (Class) List.class);
     public Map<Class, List<ExpressionRewriterRule>> cachedMapRules = new HashMap<Class, List<ExpressionRewriterRule>>();
-    public int maxIterations = 100;
-    public ExpressionRewriterRule fallbackRule = null;
-    private String name;
+    public ExpressionRewriterRule fallbackRule = ExprNavRule.INSTANCE;
+    public List<ExpressionRuleSource> sources = new ArrayList<>();
 
     public ExpressionRewriterRuleSet(String name) {
-        this.name = name;
+        super(name);
     }
 
-    public void addAllRules(ExpressionRewriterRule[] rules) {
-        if (rules != null) {
-            addAllRules(Arrays.asList(rules));
-        }
-    }
-
-    public void addAllRules(Collection<ExpressionRewriterRule> rules) {
-        if (rules != null) {
-            for (ExpressionRewriterRule rule : rules) {
-                addRule(rule);
-            }
-        }
+    public void addAllRules(ExpressionRuleSource source) {
+        sources.add(source);
+        source.addListener(new InternalExpressionRuleSourceListener());
+        addAllRules(source.getRules());
     }
 
     public void addRule(ExpressionRewriterRule rule) {
         if (rule == null) {
             return;
         }
-        boolean some=false;
+        boolean some = false;
         for (Class<? extends Expr> c : rule.getTypes()) {
-            if(c.equals(Expr.class)){
-                fallbackRule=rule;
-            }else {
-                some=true;
-                if (c.isInterface()) {
-                    throw new IllegalArgumentException("Cannot define Rule for interface " + c);
-                }
+            if (c.equals(Expr.class)) {
+                fallbackRule = rule;
+            } else {
+                some = true;
+//                if (c.isInterface()) {
+//                    throw new IllegalArgumentException("Cannot define Rule for interface " + c);
+//                }
                 List<ExpressionRewriterRule> list = mapRules.getExact(c);
                 if (list == null) {
                     list = new ArrayList<ExpressionRewriterRule>();
@@ -74,7 +70,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 ((ArrayList) list).trimToSize();
             }
         }
-        if(some) {
+        if (some) {
             rules.add(rule);
             ((ArrayList) rules).trimToSize();
             cachedMapRules.clear();
@@ -95,14 +91,29 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         cachedMapRules.clear();
     }
 
-    public int getMaxIterations() {
-        return maxIterations;
+    public void addAllRules(Collection<ExpressionRewriterRule> rules) {
+        if (rules != null) {
+            for (ExpressionRewriterRule rule : rules) {
+                addRule(rule);
+            }
+        }
     }
 
-    public void setMaxIterations(int maxIterations) {
-        this.maxIterations = maxIterations;
+    public void addAllRules(ExpressionRewriterRule[] rules) {
+        if (rules != null) {
+            addAllRules(Arrays.asList(rules));
+        }
     }
 
+    @Override
+    public void setCacheEnabled(boolean enabled) {
+        super.setCacheEnabled(enabled);
+        for (ExpressionRewriterRule rule : rules) {
+            if (rule instanceof CacheEnabled) {
+                ((CacheEnabled) rule).setCacheEnabled(enabled);
+            }
+        }
+    }
 
     public void clearCache() {
         super.clearCache();
@@ -113,53 +124,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         }
     }
 
-    @Override
-    public RewriteResult rewriteImpl(Expr e) {
-        Expr curr = e;
-        int maxIterations = this.maxIterations;
-        if (maxIterations <= 0) {
-            maxIterations = 1;
-        }
-        boolean simplified = false;
-        RewriteResult next = null;
-        while (maxIterations > 0) {
-//            String msg = DumpManager.getStackDepthWhites()+name+" :: REWRITE "+maxIterations+" :: "+e;
-//            System.out.println(msg);
-            next = rewriteOnce(curr);
-            if (next.isRewritten() /*&& !next.equals(curr)*/) {
-                simplified = true;
-                if (next.isBestEffort()) {
-                    return next;
-                }
-                curr = next.getValue();
-                maxIterations--;
-            } else {
-                if (simplified) {
-                    return RewriteResult.newVal(curr);
-                }
-                return next;
-            }
-        }
-        return next;
-    }
-
-    public List<ExpressionRewriterRule> getRulesByClass(Class<? extends Expr> cls) {
-        List<ExpressionRewriterRule> list = cachedMapRules.get(cls);
-        if (list == null) {
-            //should be cached!
-            list = new ArrayList<ExpressionRewriterRule>();
-            for (List<ExpressionRewriterRule> ruleList : mapRules.getAll(cls)) {
-                list.addAll(ruleList);
-            }
-            cachedMapRules.put(cls, list);
-        }
-        if(list.isEmpty() && fallbackRule!=null){
-            return Arrays.asList(fallbackRule);
-        }
-        return list;
-    }
-
-    public RewriteResult rewriteOnce(Expr e) {
+    public RewriteResult rewriteImpl(Expr e, ExprType targetExprType) {
 //        DEBUG_REWRITE_ONCE++;
         Expr curr = e;
         boolean modified = false;
@@ -167,9 +132,10 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         int appliedRulesCount = 0;
         List<ExpressionRewriterRule> rulesByClass = getRulesByClass(cls);
         int bestEfforts = 0;
-        boolean debugExpressionRewrite = MathsBase.Config.isDebugExpressionRewrite();
+        boolean debugExpressionRewrite = Maths.Config.isDebugExpressionRewrite();
+        boolean lastIsBestEffort=false;
         for (ExpressionRewriterRule rule : rulesByClass) {
-
+            lastIsBestEffort=false;
             appliedRulesCount++;
 
             boolean _debug = false;
@@ -178,17 +144,27 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             if (debugExpressionRewrite) {
 //                    if (ThreadStack.depth() > 200) {
                 _debug = true;
-                _debug_msg = DumpManager.getStackDepthWhites() + name + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + MathsBase.dump(curr);
+                _debug_msg = DumpManager.getStackDepthWhites() + getName() + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + Maths.dump(curr);
 //                    msg = DumpManager.getStackDepthWhites() + name + " :: " + rule.getClass().getSimpleName() + "  :  " + System.identityHashCode(curr) + "  :  " + curr.getClass().getSimpleName() + " :: " + curr;
                 System.out.println("_" + _debug_msg);
 //                    }
             }
-            RewriteResult nextResult = rule.rewrite(curr, this);
+            RewriteResult nextResult = rule.rewrite(curr, this, targetExprType);
+            if(debugExpressionRewrite) {
+                if (nextResult == null) {
+                    throw new IllegalArgumentException("[BUG] Expected non Null simplification result");
+                }
+                if (nextResult.isRewritten()) {
+                    if (curr.equals(nextResult.getValue())) {
+                        nextResult = rule.rewrite(curr, this, targetExprType);
+                        throw new IllegalArgumentException("Expected Expression Unmodified but simplification returned : " + nextResult.getType());
+                    }
+                }
+            }
 //                if(next!=null && !next.getClass().equals(curr.getClass())){
 //                    System.out.println("???");
 //                }
             if (nextResult != null) {
-                Expr next = nextResult.getValue();
                 if (nextResult.isUnmodified()) {//next next != null && !next.equals(curr)
 //                    DEBUG_REWRITE_FAIL++;
                     for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
@@ -197,6 +173,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 } else if (nextResult.isRewritten()) {//next next != null && !next.equals(curr)
 //                    DEBUG_REWRITE_SUCCESS++;
                     boolean bestEffort = nextResult.isBestEffort();
+                    Expr next = nextResult.getValue();
                     for (ExprRewriteSuccessListener rewriteListener : rewriteSuccessListeners) {
                         rewriteListener.onModifiedExpr(this, e, next, bestEffort);
                     }
@@ -208,12 +185,11 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                                 if (curr.getClass().getSimpleName().equals(next.getClass().getSimpleName())) {
                                     if (curr.equals(next)) {
                                         System.out.println("<" + _debug_msg + " : Who come?");
-                                        rule.rewrite(curr, this);
+                                        rule.rewrite(curr, this, targetExprType);
                                     } else {
 //                                next.equals(curr)
                                         System.out.println("<" + _debug_msg + s1 + " transformed to same class with different content");
                                     }
-                                    ;
                                 } else {
                                     System.out.println("<" + _debug_msg + s1 + " transformed from " + curr.getClass().getSimpleName() + " to " + (next.getClass().getSimpleName()));
                                 }
@@ -222,6 +198,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     }
                     curr = next;
                     if (bestEffort) {
+                        lastIsBestEffort=true;
                         bestEfforts++;
                     }
                     modified = true;
@@ -233,6 +210,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     break;
                 }
             } else {
+                lastIsBestEffort=true;
 //                DEBUG_REWRITE_FAIL++;
                 for (ExprRewriteFailListener rewriteListener : rewriteFailListeners) {
                     rewriteListener.onUnmodifiedExpr(this, e);
@@ -246,56 +224,97 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 
         }
         if (appliedRulesCount == 0) {
-            if (curr.getSubExpressions().size() > 0) {
-                throw new NoSuchElementException("No rule found for " + curr.getClass().getSimpleName() + " in " + name);
+            if (curr.getChildren().size() > 0) {
+                throw new NoSuchElementException("No rule found for " + curr.getClass().getSimpleName() + " in " + getName());
             }
         }
         if (!modified) {
-            return RewriteResult.unmodified(e);
+            return RewriteResult.unmodified();
         }
-        curr = Any.copyProperties(e, curr);
-        if (rulesByClass.size() == 1 && bestEfforts == 1) {
+        curr = ExprDefaults.copyProperties(e, curr);
+        if (lastIsBestEffort/*rulesByClass.size() == 1 && bestEfforts == 1*/) {
             return RewriteResult.bestEffort(curr);
         }
         return RewriteResult.newVal(curr);
     }
 
+    public int getMaxIterations() {
+        return maxIterations;
+    }
+
+    public void setMaxIterations(int maxIterations) {
+        this.maxIterations = maxIterations;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ExpressionRewriterRuleSet)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         ExpressionRewriterRuleSet that = (ExpressionRewriterRuleSet) o;
-
-        if (maxIterations != that.maxIterations) return false;
-        if (mapRules != null ? !mapRules.equals(that.mapRules) : that.mapRules != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (rules != null ? !rules.equals(that.rules) : that.rules != null) return false;
-
-        return true;
+        return rules.equals(that.rules) &&
+                Objects.equals(fallbackRule, that.fallbackRule);
     }
 
     @Override
     public int hashCode() {
-        int result = rules != null ? rules.hashCode() : 0;
-        result = 31 * result + (mapRules != null ? mapRules.hashCode() : 0);
-        result = 31 * result + maxIterations;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), rules, fallbackRule);
     }
 
-    @Override
-    public void setCacheEnabled(boolean enabled) {
-        super.setCacheEnabled(enabled);
-        for (ExpressionRewriterRule rule : rules) {
-            if (rule instanceof CacheEnabled) {
-                ((CacheEnabled) rule).setCacheEnabled(enabled);
+    public List<ExpressionRewriterRule> getRulesByClass(Class<? extends Expr> cls) {
+        List<ExpressionRewriterRule> list = cachedMapRules.get(cls);
+        if (list == null) {
+            //should be cached!
+            list = new ArrayList<ExpressionRewriterRule>();
+            for (List<ExpressionRewriterRule> ruleList : mapRules.getAll(cls)) {
+                list.addAll(ruleList);
             }
+            cachedMapRules.put(cls, list);
         }
+        if (list.isEmpty() && fallbackRule != null) {
+            return Arrays.asList(fallbackRule);
+        }
+        return list;
     }
 
     @Override
     public String toString() {
-        return "RuleSet{" + name + "}";
+        return "RuleSet{" + getName() + "}";
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder obj = Tson.obj(getClass().getSimpleName(), new TsonElementBase[]{
+                Tson.pair("name", Tson.elem(getName())),
+                Tson.pair("itr", Tson.elem(getMaxIterations()))
+        });
+        TreeSet<String> allRuleNames = new TreeSet<>(rules.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
+        if (fallbackRule != null) {
+            allRuleNames.add(fallbackRule.getClass().getName());
+        }
+        obj.add("rulesCount", Tson.elem(allRuleNames.size()));
+        obj.add("fingerPrint", context.elem(CacheKey.toHashString(String.join(";", allRuleNames))));
+        return obj.build();
+    }
+
+    private class InternalExpressionRuleSourceListener implements ExpressionRuleSourceListener {
+        @Override
+        public void onAddRule(ExpressionRewriterRule rule) {
+            ExpressionRewriterRuleSet.this.addRule(rule);
+        }
+
+        @Override
+        public void onRemoveRule(ExpressionRewriterRule rule) {
+            ExpressionRewriterRuleSet.this.removeRule(rule);
+        }
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
     }
 }

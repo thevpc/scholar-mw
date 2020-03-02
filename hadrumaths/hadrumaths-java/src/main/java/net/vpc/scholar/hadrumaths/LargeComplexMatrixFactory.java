@@ -9,27 +9,11 @@ import java.util.logging.Logger;
  * Created by vpc on 2/5/15.
  */
 public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFactory implements Closeable {
-    private static Logger log = Logger.getLogger(LargeComplexMatrixFactory.class.getName());
+    private static final Logger log = Logger.getLogger(LargeComplexMatrixFactory.class.getName());
     private boolean resetOnClose;
     private boolean sparse;
     private Complex defaultValue;
     private String id;
-
-    public boolean isSparse() {
-        return sparse;
-    }
-
-    public Complex getDefaultValue() {
-        return defaultValue;
-    }
-
-    public boolean isResetOnClose() {
-        return resetOnClose;
-    }
-
-    public void setResetOnClose(boolean resetOnClose) {
-        this.resetOnClose = resetOnClose;
-    }
 
     protected LargeComplexMatrixFactory() {
 
@@ -52,6 +36,21 @@ public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFac
 
     }
 
+    public boolean isSparse() {
+        return sparse;
+    }
+
+    public Complex getDefaultValue() {
+        return defaultValue;
+    }
+
+    public boolean isResetOnClose() {
+        return resetOnClose;
+    }
+
+    public void setResetOnClose(boolean resetOnClose) {
+        this.resetOnClose = resetOnClose;
+    }
 
     public abstract void dispose();
 
@@ -74,15 +73,6 @@ public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFac
     public abstract void disposeMatrix(long id);
 
     @Override
-    public String toString() {
-        return "LargeMatrixFactory{" +
-                ", resetOnClose=" + resetOnClose +
-                ", sparse=" + sparse +
-                ", defaultValue=" + defaultValue +
-                '}';
-    }
-
-    @Override
     protected void finalize() throws Throwable {
         super.finalize();
         close();
@@ -90,6 +80,16 @@ public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFac
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public ComplexMatrix newConstant(int rows, int cols, Complex value) {
+        return new AbstractUnmodifiableComplexMatrix(rows, cols, this) {
+            @Override
+            public Complex get(int row, int col) {
+                return value;
+            }
+        };
     }
 
     @Override
@@ -103,12 +103,11 @@ public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFac
     }
 
     @Override
-    public ComplexMatrix newConstant(int rows, int cols, Complex value) {
-        return new AbstractUnmodifiableComplexMatrix(rows, cols, this) {
-            @Override
-            public Complex get(int row, int col) {
-                return value;
-            }
-        };
+    public String toString() {
+        return "LargeMatrixFactory{" +
+                ", resetOnClose=" + resetOnClose +
+                ", sparse=" + sparse +
+                ", defaultValue=" + defaultValue +
+                '}';
     }
 }

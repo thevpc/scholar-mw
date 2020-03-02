@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.geom;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
@@ -13,13 +13,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Triangle extends AbstractGeometry implements Serializable, PolygonBuilder, Cloneable {
-    private static final long serialVersionUID = 1L;
     public static final Comparator<Triangle> SURFACE_COMPARATOR = new Comparator<Triangle>() {
         public int compare(Triangle o1, Triangle o2) {
             double s = o1.getSurface() - o2.getSurface();
             return s > 0 ? 1 : s < 0 ? -1 : 0;
         }
     };
+    private static final long serialVersionUID = 1L;
 
 //    public static void main(String[] args) {
 ////        p1 = {Point@2401} "(0.011174111111111109,-8.333333333333332E-4)"
@@ -35,26 +35,11 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 //        System.out.println(t.toPolygon().getPoints().size()+" :: "+t.toPolygon().getPoints());
 //        System.out.println(t.toSurface().getPoints().size()+" :: "+t.toSurface().getPoints());
 //    }
-
-    public static void main(String[] args) {
-        Polygon p = new Polygon(
-                Point.create(0, 0),
-                Point.create(2, 2),
-                Point.create(2, 0),
-                Point.create(0, 2)
-        );
-        System.out.println(GeomUtils.toString(p.toSurface().getPath()));
-        System.out.println(GeomUtils.toString(new Area(p.toSurface().getPath()).getPathIterator(null)));
-        System.out.println(p.toSurface().isSingular());
-        AreaComponent.showDialog(p.scale(400, 400));
-    }
-
     public Point p1;
     public Point p2;
     public Point p3;
     private Polygon cachedPolygon;
-    private Domain domain;
-
+    private final Domain domain;
     public Triangle(List<Point> points) {
         this(
                 points.get(0),
@@ -64,39 +49,6 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         if (points.size() > 3) {
             throw new IllegalArgumentException("Its not a polygon");
         }
-    }
-
-    public Triangle(Polygon polygon) {
-        this(
-                Point.create(polygon.xpoints[0], polygon.ypoints[0]),
-                Point.create(polygon.xpoints[1], polygon.ypoints[1]),
-                Point.create(polygon.xpoints[2], polygon.ypoints[2])
-        );
-        if (polygon.npoints > 3) {
-            throw new IllegalArgumentException("Its not a polygon");
-        }
-    }
-
-    @Override
-    public Geometry translateGeometry(double x, double y) {
-        return new Triangle(
-                getPoint(0).translate(x, y),
-                getPoint(1).translate(x, y),
-                getPoint(2).translate(x, y)
-        );
-    }
-
-    public int indexOfPoint(Point p) {
-        if (p1.equals(p)) {
-            return 1;
-        }
-        if (p2.equals(p)) {
-            return 2;
-        }
-        if (p3.equals(p)) {
-            return 3;
-        }
-        return -1;
     }
 
     public Triangle(Point p1, Point p2, Point p3) {
@@ -112,27 +64,41 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         }
     }
 
-    public Polygon toPolygon() {
-        if (cachedPolygon == null) {
-            cachedPolygon = new Polygon(
-                    new double[]{p1.x, p2.x, p3.x},
-                    new double[]{p1.y, p2.y, p3.y}
-            );
+    public Triangle(Polygon polygon) {
+        this(
+                Point.create(polygon.xpoints[0], polygon.ypoints[0]),
+                Point.create(polygon.xpoints[1], polygon.ypoints[1]),
+                Point.create(polygon.xpoints[2], polygon.ypoints[2])
+        );
+        if (polygon.npoints > 3) {
+            throw new IllegalArgumentException("Its not a polygon");
         }
-        return cachedPolygon;
     }
 
-    public boolean contains(double x, double y) {
-        return toPolygon().contains(x, y);
+    public static void main(String[] args) {
+        Polygon p = new Polygon(
+                Point.create(0, 0),
+                Point.create(2, 2),
+                Point.create(2, 0),
+                Point.create(0, 2)
+        );
+        System.out.println(GeomUtils.toString(p.toSurface().getPath()));
+        System.out.println(GeomUtils.toString(new Area(p.toSurface().getPath()).getPathIterator(null)));
+        System.out.println(p.toSurface().isSingular());
+        AreaComponent.showDialog(p.scale(400, 400));
     }
 
-    public double getSurface() {
-        double dp1p2, dp1p3, dp2p3, s;
-        dp1p2 = MathsBase.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
-        dp1p3 = MathsBase.sqrt((p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y) * (p3.y - p1.y));
-        dp2p3 = MathsBase.sqrt((p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y) * (p3.y - p2.y));
-        s = (1.0 / 2.0) * (dp1p2 + dp1p3 + dp2p3);
-        return (MathsBase.sqrt(s * (s - dp1p2) * (s - dp1p3) * (s - dp2p3)));
+    public int indexOfPoint(Point p) {
+        if (p1.equals(p)) {
+            return 1;
+        }
+        if (p2.equals(p)) {
+            return 2;
+        }
+        if (p3.equals(p)) {
+            return 3;
+        }
+        return -1;
     }
 
     public Point getBarycenter() {
@@ -140,6 +106,13 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
                 (1.0 / 3.0) * (p1.x + p2.x + p3.x),
                 (1.0 / 3.0) * (p1.y + p2.y + p3.y)
         );
+    }
+
+    public double getRayonCercle() {
+        Point o;
+        o = getCenter();
+        return (o.distance(p1));
+
     }
 
     public Point getCenter() {
@@ -202,13 +175,6 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         return Point.create(ox, oy);
     }
 
-    public double getRayonCercle() {
-        Point o;
-        o = getCenter();
-        return (o.distance(p1));
-
-    }
-
     public boolean isNeighberhood(Triangle t) {
         ArrayList<Point> l = new ArrayList<Point>();
         ArrayList<Point> lt = new ArrayList<Point>();
@@ -231,10 +197,7 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
             }
         }
-        if (k == 2)
-            return (true);
-        else
-            return (false);
+        return k == 2;
 
     }
 
@@ -274,20 +237,8 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
             }
         }
-        if (k == 3) {
-            return (true);
-        } else {
-            return (false);
-        }
+        return k == 3;
 
-    }
-
-    private boolean isSameLine(Line2D l, Line2D m) {
-        return ((l.getP1().getX() == m.getP1().getX()) && (l.getP2().getX() == m.getP2().getX()) && (l.getP1().getY() == m.getP1().getY()) && (l.getP2().getY() == m.getP2().getY())) || ((l.getP1().getX() == m.getP2().getX()) && (l.getP2().getX() == m.getP1().getX()) && (l.getP1().getY() == m.getP2().getY()) && (l.getP2().getY() == m.getP1().getY()));
-    }
-
-    private boolean isValidLine(Line2D l, Line2D m) {
-        return ((l.getP1().getX() == m.getP1().getX()) && (l.getP1().getY() == m.getP1().getY())) || ((l.getP2().getX() == m.getP2().getX()) && (l.getP2().getY() == m.getP2().getY())) || ((l.getP1().getX() == m.getP2().getX()) && (l.getP1().getY() == m.getP2().getY())) || ((l.getP2().getX() == m.getP1().getX()) && (l.getP2().getY() == m.getP1().getY()));
     }
 
     public boolean intersection(Triangle t) {
@@ -318,22 +269,18 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         return k != 0;
     }
 
+    private boolean isSameLine(Line2D l, Line2D m) {
+        return ((l.getP1().getX() == m.getP1().getX()) && (l.getP2().getX() == m.getP2().getX()) && (l.getP1().getY() == m.getP1().getY()) && (l.getP2().getY() == m.getP2().getY())) || ((l.getP1().getX() == m.getP2().getX()) && (l.getP2().getX() == m.getP1().getX()) && (l.getP1().getY() == m.getP2().getY()) && (l.getP2().getY() == m.getP1().getY()));
+    }
+
+    private boolean isValidLine(Line2D l, Line2D m) {
+        return ((l.getP1().getX() == m.getP1().getX()) && (l.getP1().getY() == m.getP1().getY())) || ((l.getP2().getX() == m.getP2().getX()) && (l.getP2().getY() == m.getP2().getY())) || ((l.getP1().getX() == m.getP2().getX()) && (l.getP1().getY() == m.getP2().getY())) || ((l.getP2().getX() == m.getP1().getX()) && (l.getP2().getY() == m.getP1().getY()));
+    }
+
     public List<Point> getPoints() {
         return Arrays.asList(
                 p1, p2, p3
         );
-    }
-
-    public Point getPoint(int index) {
-        switch (index) {
-            case 1:
-                return p1;
-            case 2:
-                return p2;
-            case 3:
-                return p3;
-        }
-        return null;
     }
 
     public double getHeight(int index) {
@@ -362,30 +309,19 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         return 2 * getSurface() / pp2.distance(pp3);
     }
 
-    @Override
-    public boolean isRectangular() {
-        return false;
-    }
-
-    @Override
-    public Domain getDomain() {
-        return domain;
-    }
-
-    @Override
-    public boolean isPolygonal() {
-        return true;
-    }
-
-    @Override
-    public boolean isTriangular() {
-        return true;
+    public double getSurface() {
+        double dp1p2, dp1p3, dp2p3, s;
+        dp1p2 = Maths.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+        dp1p3 = Maths.sqrt((p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y) * (p3.y - p1.y));
+        dp2p3 = Maths.sqrt((p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y) * (p3.y - p2.y));
+        s = (1.0 / 2.0) * (dp1p2 + dp1p3 + dp2p3);
+        return (Maths.sqrt(s * (s - dp1p2) * (s - dp1p3) * (s - dp2p3)));
     }
 
     @Override
     public Geometry clone() {
         try {
-            return (Geometry) super.clone();
+            return super.clone();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -401,6 +337,36 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
     }
 
     @Override
+    public Path2D.Double getPath() {
+        Path2D.Double p = new Path2D.Double();
+        p.moveTo(p1.x, p1.y);
+        p.lineTo(p2.x, p2.y);
+        p.lineTo(p3.x, p3.y);
+        p.closePath();
+        return p;
+    }
+
+    @Override
+    public Domain getDomain() {
+        return domain;
+    }
+
+    @Override
+    public boolean isRectangular() {
+        return false;
+    }
+
+    @Override
+    public boolean isPolygonal() {
+        return true;
+    }
+
+    @Override
+    public boolean isTriangular() {
+        return true;
+    }
+
+    @Override
     public boolean isSingular() {
         return toSurface().isSingular();
     }
@@ -411,18 +377,48 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
     }
 
     @Override
+    public Geometry translateGeometry(double x, double y) {
+        return new Triangle(
+                getPoint(0).translate(x, y),
+                getPoint(1).translate(x, y),
+                getPoint(2).translate(x, y)
+        );
+    }
+
+    public boolean contains(double x, double y) {
+        return toPolygon().contains(x, y);
+    }
+
+    public Polygon toPolygon() {
+        if (cachedPolygon == null) {
+            cachedPolygon = new Polygon(
+                    new double[]{p1.x, p2.x, p3.x},
+                    new double[]{p1.y, p2.y, p3.y}
+            );
+        }
+        return cachedPolygon;
+    }
+
+    @Override
     public Triangle toTriangle() {
         return this;
     }
 
+    public Point getPoint(int index) {
+        switch (index) {
+            case 1:
+                return p1;
+            case 2:
+                return p2;
+            case 3:
+                return p3;
+        }
+        return null;
+    }
+
     @Override
-    public Path2D.Double getPath() {
-        Path2D.Double p = new Path2D.Double();
-        p.moveTo(p1.x, p1.y);
-        p.lineTo(p2.x, p2.y);
-        p.lineTo(p3.x, p3.y);
-        p.closePath();
-        return p;
+    public Polygon[] toPolygons() {
+        return new Polygon[]{toPolygon()};
     }
 }
     

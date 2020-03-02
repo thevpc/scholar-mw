@@ -2,14 +2,23 @@ package net.vpc.scholar.hadrumaths;
 
 import net.vpc.common.util.ClassMap;
 import net.vpc.common.util.LRUMap;
-import net.vpc.scholar.hadrumaths.format.ObjectFormat;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.*;
 import net.vpc.scholar.hadrumaths.format.impl.*;
 import net.vpc.scholar.hadrumaths.format.params.*;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DefaultDoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Imag;
+import net.vpc.scholar.hadrumaths.symbolic.conv.Real;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CExp;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.*;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.Any;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.AbstractComparatorExpr;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.Neg;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,6 +36,15 @@ public class FormatFactory extends AbstractFactory {
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final ClassMap<ObjectFormat> map = new ClassMap<ObjectFormat>(Object.class, ObjectFormat.class, 30);
     private static final LRUMap<String, SimpleDateFormat> dateFormats = new LRUMap<String, SimpleDateFormat>(10);
+    private static final PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            boolean b = (boolean) evt.getNewValue();
+            if (!b) {
+                dateFormats.clear();
+            }
+        }
+    };
     public static XObjectFormatParam X = new XObjectFormatParam("X");
     public static YObjectFormatParam Y = new YObjectFormatParam("Y");
     public static ZObjectFormatParam Z = new ZObjectFormatParam("Z");
@@ -42,36 +60,33 @@ public class FormatFactory extends AbstractFactory {
     public static ProductObjectFormatParam PRODUCT_NONE = new ProductObjectFormatParam(null);
     public static ProductObjectFormatParam PRODUCT_DOTSTAR = new ProductObjectFormatParam(".*");
     public static ObjectFormatParamSet toStringFormat = new ObjectFormatParamSet();
-    private static PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            boolean b = (boolean) evt.getNewValue();
-            if (!b) {
-                dateFormats.clear();
-            }
-        }
-    };
 
     static {
         dateFormats.put("date", DATE_FORMAT);
         dateFormats.put("datetime", DATE_TIME_FORMAT);
         dateFormats.put("timestamp", TIMESTAMP_FORMAT);
-        MathsBase.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
+        Maths.Config.addConfigChangeListener("cacheEnabled", cacheEnabledListener);
     }
 
     static {
+        register(Enum.class, new AbstractObjectFormat() {
+            @Override
+            public void format(Object o, ObjectFormatContext context) {
+                context.append(o);
+            }
+        });
         register(ComplexMatrix.class, new MatrixObjectFormat());
-        register(DD2DC.class, new CFunctionXYObjectFormat());
+        register(DefaultDoubleToComplex.class, new CFunctionXYObjectFormat());
         register(CExp.class, new CExpObjectFormat());
 //        register(DCxyAbstractSum.class, new CAbstractSumFunctionXYFormatter());
         register(Linear.class, new LinearObjectFormat());
         register(CosXCosY.class, new CosCosObjectFormat());
         register(CosXPlusY.class, new CosXPlusYObjectFormat());
-        register(DDxyAbstractSum.class, new DAbstractSumFunctionXYObjectFormat());
 //        register(DomainX.class, new DomainXFormatter());
         register(Domain.class, new DomainObjectFormat());
         register(DomainExpr.class, new DomainExprObjectFormat());
-        register(DoubleToVector.class, new VDCxyObjectFormat());
+        register(DoubleToVector.class, new DoubleToVectorObjectFormat());
+        register(DoubleToMatrix.class, new DoubleToMatrixObjectFormat());
         register(Inv.class, new InvObjectFormat());
         register(Neg.class, new NegObjectFormat());
         register(Plus.class, new PlusObjectFormat());
@@ -81,28 +96,24 @@ public class FormatFactory extends AbstractFactory {
         register(Reminder.class, new ReminderObjectFormat());
         register(Sub.class, new SubObjectFormat());
         register(Any.class, new AnyObjectFormat());
-        register(DDx.class, new DDxObjectFormat());
-        register(DDy.class, new DDyObjectFormat());
-        register(DDz.class, new DDzObjectFormat());
-        register(ComparatorExpr.class, new ComparatorExprObjectFormat());
+        register(AbstractComparatorExpr.class, new ComparatorExprObjectFormat());
         register(UFunction.class, new UFunctionObjectFormat());
 //        register(DDxToDDxy.class, new DDxToDDxyFormatter());
         register(Complex.class, new ComplexObjectFormat());
         register(DDyIntegralX.class, new DDyIntegralXObjectFormat());
-        register(AbstractComposedFunction.class, new GenericFunctionObjectFormat());
-        register(ParamExpr.class, new ParamObjectFormat());
+        register(DoubleParam.class, new ParamObjectFormat());
+        register(Param.class, new ParamObjectFormat());
         register(DoubleValue.class, new DoubleValueObjectFormat());
 //        register(DoubleX.class, new DoubleXFormatter());
         register(Double.class, new DoubleObjectFormat());
         register(Number.class, new NumberObjectFormat());
 //        register(DDxyToDDx.class, new DDxyToDDxFormatter());
-        register(ComplexValue.class, new ComplexXYObjectFormat());
+        register(DefaultComplexValue.class, new ComplexXYObjectFormat());
         register(YY.class, new YYObjectFormat());
         register(XX.class, new XXObjectFormat());
         register(ZZ.class, new ZZObjectFormat());
-        register(AxisTransform.class, new AxisTransformObjectFormat());
         register(Shape2D.class, new Shape2DObjectFormat());
-        register(Discrete.class, new DiscreteObjectFormat());
+        register(CDiscrete.class, new CDiscreteObjectFormat());
         register(Polygon.class, new PolygonObjectFormat());
         register(Polyhedron.class, new PolyhedronObjectFormat());
         register(String.class, new StringObjectFormat());
@@ -110,7 +121,21 @@ public class FormatFactory extends AbstractFactory {
         register(VDiscrete.class, new VDiscreteObjectFormat());
         register(Real.class, new RealObjectFormat());
         register(Imag.class, new ImagObjectFormat());
-//        register(ComparatorExpr.class, new ObjectFormat() {
+        register(FunctionExpr.class, (ObjectFormat<FunctionExpr>) (o, context) -> ExprDefaults.formatFunction(o.getName(), o.getChildren(), context));
+        register(Vector.class,(ObjectFormat<Vector>)(o, context) -> {
+            context.append("{");
+            boolean first=true;
+            for (Object o1 : o) {
+                if(first){
+                    first=false;
+                }else{
+                    context.append(",");
+                }
+                context.format(o1);
+            }
+            context.append("}");
+        });
+//        register(AbstractComparatorExpr.class, new ObjectFormat() {
 //            @Override
 //            public String format(Object o, ObjectFormatParamSet format) {
 //                StringBuilder sb = new StringBuilder();
@@ -123,14 +148,7 @@ public class FormatFactory extends AbstractFactory {
 //                sb.append(o.toString());
 //            }
 //        });
-        register(NotExpr.class, new AbstractObjectFormat<NotExpr>() {
-            @Override
-            public void format(StringBuilder sb, NotExpr o, ObjectFormatParamSet format) {
-                sb.append("not(");
-                FormatFactory.format(sb, o.getArgument(), format);
-                sb.append(")");
-            }
-        });
+
     }
 
     private FormatFactory() {
@@ -144,7 +162,7 @@ public class FormatFactory extends AbstractFactory {
         return format(o, toStringFormat);
     }
 
-//    public static String dblquadString(DD2DC f, boolean useGate) {
+//    public static String dblquadString(DefaultDoubleToComplex f, boolean useGate) {
 //        if (useGate) {
 //            DomainXY d = f.getDomain();
 //            return ("dblquad('"
@@ -192,7 +210,7 @@ public class FormatFactory extends AbstractFactory {
 //        }
 //    }
 //
-//    public static String symdblquadString(DD2DC f) {
+//    public static String symdblquadString(DefaultDoubleToComplex f) {
 //        f = f.simplify();
 //        DDxy r = f.getReal();
 //        DDxy i = f.getImag();
@@ -270,14 +288,14 @@ public class FormatFactory extends AbstractFactory {
 //        return putInto;
 //    }
 //
-//    public static String formatScalarProduct(DomainXY domain0, DD2DC f1, DD2DC f2, ObjectFormatParam... format) {
+//    public static String formatScalarProduct(DomainXY domain0, DefaultDoubleToComplex f1, DefaultDoubleToComplex f2, ObjectFormatParam... format) {
 //        FormatParamArray formatArray = new FormatParamArray(format);
 //        DomainXY domain = domain0 == null ? f1.intersect(f2) : f1.intersect(f2, domain0);
 //        if (domain.isEmpty()) {
 //            return "0";
 //        }
-//        ArrayList<DD2DC> a1 = linearize(new DD2DC[]{f1}, null);
-//        ArrayList<DD2DC> a2 = linearize(new DD2DC[]{f2}, null);
+//        ArrayList<DefaultDoubleToComplex> a1 = linearize(new DefaultDoubleToComplex[]{f1}, null);
+//        ArrayList<DefaultDoubleToComplex> a2 = linearize(new DefaultDoubleToComplex[]{f2}, null);
 //
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < a1.size(); i++) {
@@ -302,25 +320,33 @@ public class FormatFactory extends AbstractFactory {
 //
 //    }
 //
-//    private static ArrayList<DD2DC> linearize(DD2DC[] sum, ArrayList<DD2DC> putInto) {
+//    private static ArrayList<DefaultDoubleToComplex> linearize(DefaultDoubleToComplex[] sum, ArrayList<DefaultDoubleToComplex> putInto) {
 //        if (putInto == null) {
-//            putInto = new ArrayList<DD2DC>();
+//            putInto = new ArrayList<DefaultDoubleToComplex>();
 //        }
 //        for (int i = 0; i < sum.length; i++) {
-//            DD2DC cFunctionXY = sum[i];
+//            DefaultDoubleToComplex cFunctionXY = sum[i];
 //            if (cFunctionXY instanceof DCxyAbstractSum) {
 //                linearize(((DCxyAbstractSum) cFunctionXY).getSegments(), putInto);
 //            } else {
 //                if (cFunctionXY.getReal() != FunctionFactory.DZEROXY) {
-//                    putInto.add(new DD2DC(cFunctionXY.getReal(), FunctionFactory.DZEROXY));
+//                    putInto.add(new DefaultDoubleToComplex(cFunctionXY.getReal(), FunctionFactory.DZEROXY));
 //                }
 //                if (cFunctionXY.getImag() != FunctionFactory.DZEROXY) {
-//                    putInto.add(new DD2DC(FunctionFactory.DZEROXY, cFunctionXY.getImag()));
+//                    putInto.add(new DefaultDoubleToComplex(FunctionFactory.DZEROXY, cFunctionXY.getImag()));
 //                }
 //            }
 //        }
 //        return putInto;
 //    }
+
+    public static String format(Object o, ObjectFormatParamSet format) {
+        ObjectFormat best = map.getRequired(o.getClass());
+        StringBuilder sb = new StringBuilder();
+        DefaultObjectFormatContext u = new DefaultObjectFormatContext(sb, format);
+        best.format(o, u);
+        return sb.toString();
+    }
 
     public static String format(Object o) {
         return format(o, ObjectFormatParamSet.EMPTY);
@@ -328,17 +354,7 @@ public class FormatFactory extends AbstractFactory {
 
     @SuppressWarnings("unchecked")
     public static String format(Object o, ObjectFormatParam... format) {
-        return format(o,new ObjectFormatParamSet(format));
-    }
-
-    public static String format(Object o, ObjectFormatParamSet format) {
-        ObjectFormat best = map.getRequired(o.getClass());
-        return best.format(o, format);
-    }
-
-    public static void format(StringBuilder sb, Object o, ObjectFormatParamSet format) {
-        ObjectFormat best = map.getRequired(o.getClass());
-        best.format(sb, o, format);
+        return format(o, new ObjectFormatParamSet(format));
     }
 
     public static String toParamString(double b, DoubleObjectFormatParam df, boolean prefixWithSign, boolean zeroIsEmpty, boolean prefixWithSpace) {
@@ -348,14 +364,16 @@ public class FormatFactory extends AbstractFactory {
         }
         if (prefixWithSign) {
             if (prefixWithSpace) {
-                sb.append(" ");
+//                sb.append(" ");
             }
             double b0 = b;
             if (b < 0) {
-                sb.append("- ");
+                sb.append("-");
+//                sb.append(" ");
                 b0 = -b;
             } else if (b > 0 || Double.isNaN(b)) {
-                sb.append("+ ");
+                sb.append("+");
+//                sb.append(" ");
             }
             if (df != null) {
                 sb.append(df.getFormat().format(b0));
@@ -364,7 +382,7 @@ public class FormatFactory extends AbstractFactory {
             }
         } else {
             if (prefixWithSpace) {
-                sb.append(" ");
+//                sb.append(" ");
             }
             if (df != null) {
                 sb.append(df.getFormat().format(b));
@@ -373,6 +391,27 @@ public class FormatFactory extends AbstractFactory {
             }
         }
         return sb.toString();
+    }
+
+    public static String format(Date d, String format) {
+        return getDateFormat(format).format(d);
+    }
+
+    public static SimpleDateFormat getDateFormat(String format) {
+        SimpleDateFormat found = dateFormats.get(format);
+        if (found == null) {
+            if ("date".equals(format)) {
+                found = DATE_FORMAT;
+            } else if ("datetime".equals(format)) {
+                found = DATE_TIME_FORMAT;
+            } else if ("datetime".equals(format)) {
+                found = TIMESTAMP_FORMAT;
+            } else {
+                found = new SimpleDateFormat(format);
+            }
+            dateFormats.put(format, found);
+        }
+        return found;
     }
 
 //    public static String formatArg(Expr e, ObjectFormatParamSet format) {
@@ -423,47 +462,57 @@ public class FormatFactory extends AbstractFactory {
 //        return false;
 //    }
 
-
-    public static SimpleDateFormat getDateFormat(String format) {
-        SimpleDateFormat found = dateFormats.get(format);
-        if (found == null) {
-            if ("date".equals(format)) {
-                found = DATE_FORMAT;
-            } else if ("datetime".equals(format)) {
-                found = DATE_TIME_FORMAT;
-            } else if ("datetime".equals(format)) {
-                found = TIMESTAMP_FORMAT;
-            } else {
-                found = new SimpleDateFormat(format);
-            }
-            dateFormats.put(format, found);
-        }
-        return found;
-    }
-
-    public static String format(Date d, String format) {
-        return getDateFormat(format).format(d);
-    }
-
     public static boolean requireAppendDomain(Expr o, ObjectFormatParamSet format) {
-        return (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN));
+        return (!o.getDomain().isUnbounded() && !format.containsParam(FormatFactory.NO_DOMAIN));
     }
 
-    public static boolean appendStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
-        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+//    public static boolean appendStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
+//        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+//
+//            ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
+////            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
+//            String mul = pp.getOp() == null || pp.getOp().isEmpty() ? " " : (pp.getOp());
+//            sb.append(mul);
+//            FormatFactory.format(sb, o.getDomain(), format);
+//            return true;
+//        }
+//        return false;
+//    }
+
+    public static boolean appendStarredDomain(ObjectFormatContext context, Expr o, ObjectFormatParamSet format) {
+        if (!o.getDomain().isUnbounded() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
 
             ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
-            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
-            sb.append(mul);
-            FormatFactory.format(sb, o.getDomain(), format);
+//            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
+            String mul = pp.getOp() == null || pp.getOp().isEmpty() ? " " : (pp.getOp());
+            context.append(mul);
+            context.format(o.getDomain(), format);
             return true;
         }
         return false;
     }
 
-    public static boolean appendNonStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
-        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
-            FormatFactory.format(sb, o.getDomain(), format);
+//    public static boolean appendNonStarredDomain(StringBuilder sb, Expr o, ObjectFormatParamSet format) {
+//        if (!o.getDomain().isFull() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+//            FormatFactory.format(sb, o.getDomain(), format);
+//            return true;
+//        }
+//        return false;
+//    }
+
+//    public static void format(StringBuilder sb, Object o, ObjectFormatParamSet format) {
+//        DefaultObjectFormatContext u = new DefaultObjectFormatContext(sb, format);
+//        format(o, u);
+//    }
+
+    public static void format(Object o, ObjectFormatContext context) {
+        ObjectFormat best = map.getRequired(o.getClass());
+        best.format(o, context);
+    }
+
+    public static boolean appendNonStarredDomain(ObjectFormatContext context, Expr o, ObjectFormatParamSet format) {
+        if (!o.getDomain().isUnbounded() && !format.containsParam(FormatFactory.NO_DOMAIN)) {
+            context.format(o.getDomain(), format);
             return true;
         }
         return false;

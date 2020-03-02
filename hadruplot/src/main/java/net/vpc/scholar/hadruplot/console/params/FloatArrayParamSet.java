@@ -10,19 +10,19 @@ public class FloatArrayParamSet extends ParamSet<Float> implements Cloneable {
     private float[] values;
     private int index = -1;
 
-    public FloatArrayParamSet(Param configurator) {
+    public FloatArrayParamSet(CParam configurator) {
         this(configurator, new float[0]);
     }
 
-    public FloatArrayParamSet(Param configurator, float value) {
+    public FloatArrayParamSet(CParam configurator, float value) {
         this(configurator, new float[]{value});
     }
 
-    public FloatArrayParamSet(Param configurator, float min, float max, int times) {
+    public FloatArrayParamSet(CParam configurator, float min, float max, int times) {
         this(configurator, ArrayUtils.ftimes(min, max, times));
     }
 
-    public FloatArrayParamSet(Param configurator, float min, float max, float step) {
+    public FloatArrayParamSet(CParam configurator, float min, float max, float step) {
         this(configurator, ArrayUtils.fsteps(min, max, step));
     }
 
@@ -41,7 +41,7 @@ public class FloatArrayParamSet extends ParamSet<Float> implements Cloneable {
         return this;
     }
 
-    public FloatArrayParamSet(Param configurator, float[] values) {
+    public FloatArrayParamSet(CParam configurator, float[] values) {
         super(configurator);
         this.values = values;
     }

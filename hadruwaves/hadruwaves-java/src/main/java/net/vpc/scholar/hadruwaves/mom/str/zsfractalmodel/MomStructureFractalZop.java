@@ -1,10 +1,12 @@
 package net.vpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceConfig;
 import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
@@ -13,7 +15,6 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.*;
-import net.vpc.scholar.hadruwaves.mom.modes.DefaultBoxModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
@@ -41,15 +42,53 @@ public class MomStructureFractalZop extends MomStructure {
 
     public MomStructureFractalZop() {
         setHintSubModelEquivalent(true);
+        evaluator=new MomStructureEvaluator(this){
+            @Override
+            public MatrixAEvaluator createMatrixAEvaluator() {
+                switch (getProjectType()) {
+                    case WAVE_GUIDE: {
+                        switch (getCircuitType()) {
+                            case SERIAL: {
+                                return new ZsFactalMatrixAWaveguideSerialEvaluator();
+                            }
+                            case PARALLEL: {
+                                return new ZsFactalMatrixAWaveguideParallelEvaluator();
+                            }
+                        }
+                        break;
+                    }
+                    case PLANAR_STRUCTURE: {
+                        switch (getCircuitType()) {
+                            case SERIAL: {
+                                //??
+                                break;
+                            }
+                            case PARALLEL: {
+                                //?
+                                break;
+                            }
+                        }
+                    }
+                }
+                throw new IllegalArgumentException("Impossible");
+            }
+        };
     }
 
     @Override
-    public Dumper getDumpStringHelper() {
-        Dumper helper = super.getDumpStringHelper();
-        helper.add("realK", realK);
-        helper.add("directGp", directMesh);
-        return helper;
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder o=super.toTsonElement(context).toObject().builder();
+        o.add("realK", context.elem(realK));
+        o.add("directGp", context.elem(directMesh));
+        return o.build();
     }
+//    @Override
+//    public Dumper getDumpStringHelper() {
+//        Dumper helper = super.getDumpStringHelper();
+//        helper.add("realK", realK);
+//        helper.add("directGp", directMesh);
+//        return helper;
+//    }
 
     private static GeometryList asRect(GeometryList other) {
         Geometry[] transform = ((FractalAreaGeometryList) other).getTransform();
@@ -94,35 +133,7 @@ public class MomStructureFractalZop extends MomStructure {
         return directMesh;
     }
 
-    @Override
-    public MatrixAEvaluator createMatrixAEvaluator() {
-        switch (getProjectType()) {
-            case WAVE_GUIDE: {
-                switch (getCircuitType()) {
-                    case SERIAL: {
-                        return new ZsFactalMatrixAWaveguideSerialEvaluator();
-                    }
-                    case PARALLEL: {
-                        return new ZsFactalMatrixAWaveguideParallelEvaluator();
-                    }
-                }
-                break;
-            }
-            case PLANAR_STRUCTURE: {
-                switch (getCircuitType()) {
-                    case SERIAL: {
-                        //??
-                        break;
-                    }
-                    case PARALLEL: {
-                        //?
-                        break;
-                    }
-                }
-            }
-        }
-        throw new IllegalArgumentException("Impossible");
-    }
+
 
     ComplexMatrix getAMatrix(ComplexMatrix ZopValue) {
         TestFunctions gpTestFunctions = getTestFunctions();
@@ -132,11 +143,11 @@ public class MomStructureFractalZop extends MomStructure {
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         ModeInfo[] n_propa = fn.getPropagatingModes();
-        TMatrix<Complex> sp = getTestModeScalarProducts(ProgressMonitorFactory.none());
+        ComplexMatrix sp = getTestModeScalarProducts(ProgressMonitors.none());
         for (int p = 0; p < g.length; p++) {
-            TVector<Complex> spp = sp.getRow(p);
+            ComplexVector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
-                TVector<Complex> spq = sp.getRow(q);
+                ComplexVector spq = sp.getRow(q);
                 Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
                     Complex zn = n.impedance.impedanceValue();
@@ -150,9 +161,9 @@ public class MomStructureFractalZop extends MomStructure {
 
         Complex[][] zop = ZopValue == null ? null : ZopValue.getArray();
         for (int p = 0; p < g.length; p++) {
-            TVector<Complex> spp = sp.getRow(p);
+            ComplexVector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
-                TVector<Complex> spq = sp.getRow(q);
+                ComplexVector spq = sp.getRow(q);
                 Complex c = Maths.CZERO;
                 if (zop != null) {//zop==null si k==1
                     for (int m = 0; m < zop.length; m++) {
@@ -178,11 +189,11 @@ public class MomStructureFractalZop extends MomStructure {
         ModeFunctions fn = getModeFunctions();
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
-        TMatrix<Complex> sp = getTestModeScalarProducts(ProgressMonitorFactory.none());
+        ComplexMatrix sp = getTestModeScalarProducts(ProgressMonitors.none());
         for (int p = 0; p < g.length; p++) {
-            TVector<Complex> spp = sp.getRow(p);
+            ComplexVector spp = sp.getRow(p);
             for (int q = 0; q < g.length; q++) {
-                TVector<Complex> spq = sp.getRow(q);
+                ComplexVector spq = sp.getRow(q);
                 Complex c = Maths.CZERO;
                 for (ModeInfo n : n_evan) {
                     Complex zn = n.impedance.impedanceValue();
@@ -266,9 +277,9 @@ public class MomStructureFractalZop extends MomStructure {
             }
             double metalQuotient = 1.0 / 3;
             Domain d = getDomain();
-            setDomain(Domain.forWidth(d.xmin(),a * Math.pow(metalQuotient, (kInit - ki)),d.xmin(),d.ywidth()));
+            setDomain(Domain.ofWidth(d.xmin(),a * Math.pow(metalQuotient, (kInit - ki)),d.xmin(),d.ywidth()));
             ComplexMatrix A_ = getAMatrix(Zinit);
-            ComplexMatrix B_ = matrixB().computeMatrix();
+            ComplexMatrix B_ = matrixB().evalMatrix();
             ComplexMatrix ZinCond;
             try {
                 ComplexMatrix aInv = A_.inv(this.getInvStrategy(), this.getCondStrategy(), this.getNormStrategy());
@@ -391,7 +402,7 @@ public class MomStructureFractalZop extends MomStructure {
                 globalDomain = getDomain();
             }
             if (globalWallBorders == null) {
-                globalWallBorders = getModeFunctions().getBorders();
+                globalWallBorders = getBorders();
             }
             for (int i = 0; i < transform.length; i++) {
                 MomStructure str = isSimple ? null : str2.clone();
@@ -402,7 +413,7 @@ public class MomStructureFractalZop extends MomStructure {
                 str.setParameter("globalDomain", globalDomain);
                 str.setParameter("globalWallBorders", globalWallBorders);
                 str.setDomain(polygon.getDomain(transform[i].getDomain(), domain));
-                str.setModeFunctions(new DefaultBoxModeFunctions(BoxModesPattern.getVirtualWalls(str.getDomain(), globalDomain, getCircuitType(), globalWallBorders)));
+                str.setBorders(BoxModesPattern.getVirtualWalls(str.getDomain(), globalDomain, getCircuitType(), globalWallBorders));
                 if (subModeSelector != null) {
                     str.setSources(subModeSelector);
                     str.removeParameter(PARAM_SUB_PROPAGATING_MODE_SELECTOR);
@@ -435,10 +446,10 @@ public class MomStructureFractalZop extends MomStructure {
                     if (isHintZsConvergence()) {
                         cMatrix = str
                                 .inputImpedance()
-                                .converge(ConvergenceEvaluator.create(MomParamFactory.params.modesCount(), getHintZsConvergenceFnMax()).setConfig(getHintZsConvergenceParameters()))
-                                .computeMatrix();
+                                .converge(ConvergenceEvaluator.of(MomParamFactory.params.modesCount(), getHintZsConvergenceFnMax()).setConfig(getHintZsConvergenceParameters()))
+                                .evalMatrix();
                     } else {
-                        cMatrix = str.inputImpedance().computeMatrix();
+                        cMatrix = str.inputImpedance().evalMatrix();
                     }
                     boolean useZParity = str.getProjectType() == ProjectType.WAVE_GUIDE;
                     //TODO pourquoi paire ?
@@ -501,10 +512,10 @@ public class MomStructureFractalZop extends MomStructure {
                     if (isHintZsConvergence()) {
                         cMatrix = str
                                 .inputImpedance()
-                                .converge(ConvergenceEvaluator.create(MomParamFactory.params.modesCount(), getHintZsConvergenceFnMax()).setConfig(getHintZsConvergenceParameters()))
-                                .computeMatrix();
+                                .converge(ConvergenceEvaluator.of(MomParamFactory.params.modesCount(), getHintZsConvergenceFnMax()).setConfig(getHintZsConvergenceParameters()))
+                                .evalMatrix();
                     } else {
-                        cMatrix = str.inputImpedance().computeMatrix();
+                        cMatrix = str.inputImpedance().evalMatrix();
                     }
                     cMatrix = cMatrix.inv();
                 }

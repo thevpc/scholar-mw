@@ -56,7 +56,7 @@ object PatchComparisonMatlab1_article_nostr_old {
   var n = param("n")
   var t = param("t")
   var A, B, sp: ComplexMatrix = null;
-  var gp, zmn, ymn1, ymn2, fmnx: EList = null;
+  var gp, zmn, ymn1, ymn2, fmnx: ExprVector = null;
 
   def build(plot: Boolean): Boolean = {
     Maths.Config.setCacheEnabled(false)
@@ -91,8 +91,8 @@ object PatchComparisonMatlab1_article_nostr_old {
     val expr = (f0 ** g0) !!;
     println(expr);
 
-    val f0r = ScalarProductOperatorFactory.formal().asInstanceOf[FormalScalarProductOperator].getExpressionRewriter.rewrite(f0)
-    val g0r = ScalarProductOperatorFactory.formal().asInstanceOf[FormalScalarProductOperator].getExpressionRewriter.rewrite(g0)
+    val f0r = ScalarProductOperatorFactory.formal().asInstanceOf[FormalScalarProductOperator].getSimplifier.rewrite(f0, null)
+    val g0r = ScalarProductOperatorFactory.formal().asInstanceOf[FormalScalarProductOperator].getSimplifier.rewrite(g0, null)
     println(f0r);
     println(g0r);
     println(g0);

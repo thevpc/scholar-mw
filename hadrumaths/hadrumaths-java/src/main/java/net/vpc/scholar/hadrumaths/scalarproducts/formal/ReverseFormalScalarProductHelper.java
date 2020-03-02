@@ -8,18 +8,23 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
  * @creationtime 10 juin 2007 13:48:04
  */
 public class ReverseFormalScalarProductHelper implements FormalScalarProductHelper {
-    private FormalScalarProductHelper reversed;
+    private final FormalScalarProductHelper reversed;
 
     public ReverseFormalScalarProductHelper(FormalScalarProductHelper reversed) {
         this.reversed = reversed;
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
-        return reversed.compute(domain, f2, f1, sp);
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+        return reversed.eval(domain, f2, f1, sp);
     }
 
     public FormalScalarProductHelper getReversed() {
         return reversed;
+    }
+
+    @Override
+    public int hashCode() {
+        return reversed != null ? reversed.hashCode() : 0;
     }
 
     @Override
@@ -29,13 +34,6 @@ public class ReverseFormalScalarProductHelper implements FormalScalarProductHelp
 
         ReverseFormalScalarProductHelper that = (ReverseFormalScalarProductHelper) o;
 
-        if (reversed != null ? !reversed.equals(that.reversed) : that.reversed != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return reversed != null ? reversed.hashCode() : 0;
+        return reversed != null ? reversed.equals(that.reversed) : that.reversed == null;
     }
 }

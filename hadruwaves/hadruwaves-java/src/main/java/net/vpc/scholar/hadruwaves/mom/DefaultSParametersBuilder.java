@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractSParametersBuilder;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -18,9 +18,9 @@ class DefaultSParametersBuilder extends AbstractSParametersBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix computeMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl() {
         MomStructure momStructure=(MomStructure) getStructure();
-        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).computeMatrix();
+        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).evalMatrix();
         ComplexMatrix z0 = null;
         switch (momStructure.getProjectType()) {
             case WAVE_GUIDE: {

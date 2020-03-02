@@ -2,6 +2,7 @@ package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom
 
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruwaves.Material
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.mom._
 
@@ -17,8 +18,8 @@ object MicrostripLineMoMExampleLayer extends App {
   var l = 5 * MM   // length of the strip line
   var w = 1 * MM   // width (along y) of the strip line
   var f = 3 * GHZ     // frequency
-  val space = matchedLoadBoxSpace(1) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
-  val mass = shortCircuitBoxSpace(2.2, 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
+  val space = matchedLoadBoxSpace(Material.VACUUM) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
+  val mass = shortCircuitBoxSpace(Material.substrate(2.2), 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
 
   var lineDomain = domain(0.0 -> l * 1.5, -w -> w) // line domain
   var box = domain(0.0 -> a, -b / 2 -> b / 2) // box domain
@@ -31,7 +32,7 @@ object MicrostripLineMoMExampleLayer extends App {
   ) * lineDomain
 
   //if(true) System.exit(0);
-  private val console = Plot.console().setDefaultPlotManager()
+  private val console = Plot.console().setGlobal()
 //  Plot.setDefaultWindowManager(console)
   println(gp)
 
@@ -42,16 +43,16 @@ object MicrostripLineMoMExampleLayer extends App {
 
   var P = g.length()     // test functions count
   var e0 = 1 * domain(0.0 -> v, -w / 2 -> w / 2)  // source
-  var str=MomStructure.EEEE(box,f,N,mass,space).sources(e0).testFunctions(g).monitor(console)
+  var str=MomStructure.EEEE(box,f,N,mass,space).sources(e0).testFunctions(g).monitorFactory(console)
 //  str.setScalarSurfaceImpedance(impedance(î*1E-3)) //serial
-  str.setLayers(Array(new StrLayer(1*MM,1*î))) //parallel
+  str.setLayers(new StrLayer(1*MM,1*î)) //parallel
   Plot.title("fn").plot(str.getModeFunctions.fn())
   var xprec=100
   var yprec=50
   Plot.title("schema").xsamples(1000).plot(lineDomain+lineDomain.scale(Align.CENTER,1.2)+box)
   var plotDomain=(lineDomain+lineDomain.scale(Align.CENTER,1.2)+box).domain();
   private val JJ: Expr = str.current().expr()
-  private val EE: Expr = str.electricField().expr()
+  private val EE: Expr = str.electricField().cartesian().expr()
   Plot.title("JJ").asHeatMap().domain(plotDomain).plot(JJ)
   Plot.title("EE").asHeatMap().domain(plotDomain).plot(EE)
 }

@@ -6,7 +6,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
@@ -17,69 +19,45 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
  */
 public class CFunctionXYObjectFormat implements ObjectFormat<DoubleToComplex> {
 
-    @Override
-    public String format(DoubleToComplex o, ObjectFormatParamSet format) {
-        StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
-        return sb.toString();
-//        DoubleToDouble real = o.getReal();
-//        DoubleToDouble imag = o.getImag();
-//        //DomainXY domain=o.getDomain();
-//        ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
-//        String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
-//        StringBuilder sb = new StringBuilder();
-//        boolean noReal = real.getDomain().isEmpty() || real.isZero();
-//        boolean noImag = imag.getDomain().isEmpty() || imag.isZero();
-//        if (noReal && noImag) {
-//            return FormatFactory.format(FunctionFactory.DZEROXY, format);
-//        }
-//        if (!noReal) {
-//            sb.append(FormatFactory.format(real, format));
-//        }
-//        if (!noImag) {
-//            String s = FormatFactory.format(imag, format);
-//            if (!s.startsWith("-") && !noReal) {
-//                sb.append("+");
-//            }
-//            sb.append(s);
-//            sb.append(mul).append(" i");
-//        }
-//        return sb.toString();
-    }
 
     @Override
-    public void format(StringBuilder sb, DoubleToComplex o, ObjectFormatParamSet format) {
+    public void format(DoubleToComplex o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         DoubleToDouble real = o.getRealDD();
         DoubleToDouble imag = o.getImagDD();
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
         //DomainXY domain=o.getDomain();
         ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
-        String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
-        boolean noReal = real.getDomain().isEmpty() || real.isZero();
-        boolean noImag = imag.getDomain().isEmpty() || imag.isZero();
+//            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
+        String mul = pp.getOp() == null || pp.getOp().isEmpty() ? " " : (pp.getOp());
+        boolean noReal = false;//real.getDomain().isEmpty() || real.isZero();
+        boolean noImag = false;//imag.getDomain().isEmpty() || imag.isZero();
         if (noReal && noImag) {
-            FormatFactory.format(sb, FunctionFactory.DZEROXY, format);
+            context.format( Maths.DZEROXY, format);
             return;
         }
         if (par) {
-            sb.append("(");
+            context.append("(");
         }
         if (!noReal) {
-            FormatFactory.format(sb, real, format);
+            context.format( real, format);
         }
         if (!noImag) {
 
             String s = FormatFactory.format(imag, format);
             if (!s.startsWith("-") && !noReal) {
-                sb.append(" + ");
+//                sb.append(" + ");
+                context.append("+");
             } else if (!noReal) {
-                sb.append(" ");
+//                sb.append(" ");
+                context.append("");
             }
-            sb.append(s);
-            sb.append(mul).append(" i");
+            context.append(s);
+//            sb.append(mul).append(" i");
+            context.append(mul).append("i");
         }
         if (par) {
-            sb.append(")");
+            context.append(")");
         }
     }
 }

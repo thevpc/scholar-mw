@@ -12,7 +12,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
  */
 public interface PlanarSources extends Sources {
 
-    public PlanarSources add(PlanarSource source);
+    PlanarSources add(PlanarSource source);
 
     PlanarSource[] getPlanarSources();
 

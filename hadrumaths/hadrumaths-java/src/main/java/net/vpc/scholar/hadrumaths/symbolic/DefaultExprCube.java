@@ -7,20 +7,10 @@ import net.vpc.scholar.hadrumaths.Expr;
  */
 public class DefaultExprCube extends AbstractExprCube {
     private static final long serialVersionUID = 1L;
-    private ExprCubeStore store;
+    private final ExprCubeStore store;
 
     public DefaultExprCube(ExprCubeStore store) {
         this.store = store;
-    }
-
-    @Override
-    public Expr get(int row, int column, int h) {
-        return store.get(row, column, h);
-    }
-
-    @Override
-    public void set(Expr exp, int row, int col, int h) {
-        store.set(exp, row, col, h);
     }
 
     @Override
@@ -36,5 +26,15 @@ public class DefaultExprCube extends AbstractExprCube {
     @Override
     public int getHeightDimension() {
         return store.getHeight();
+    }
+
+    @Override
+    public Expr get(int row, int column, int h) {
+        return store.get(row, column, h);
+    }
+
+    @Override
+    public void set(Expr exp, int row, int col, int h) {
+        store.set(exp, row, col, h);
     }
 }

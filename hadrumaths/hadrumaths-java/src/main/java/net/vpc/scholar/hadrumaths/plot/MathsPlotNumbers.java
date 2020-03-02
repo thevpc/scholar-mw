@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
+import net.vpc.scholar.hadrumaths.DMatrix;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruplot.PlotDoubleComplex;
 import net.vpc.scholar.hadruplot.PlotDoubleConverter;
 import net.vpc.scholar.hadruplot.PlotNumbers;
@@ -30,24 +30,6 @@ public class MathsPlotNumbers implements PlotNumbers {
             d = 0;
         }
         return d;
-    }
-
-    @Override
-    public Object mul(Object o, double b) {
-        if (o instanceof BigDecimal) {
-            return ((BigDecimal) o).multiply(new BigDecimal(b));
-        } else if (o instanceof BigInteger) {
-            return new BigDecimal((BigInteger) o).multiply(new BigDecimal(b));
-        } else if (o instanceof Complex) {
-            return ((Complex) o).mul(b);
-        } else if (o instanceof ComplexMatrix) {
-            return ((ComplexMatrix) o).mul(b);
-        } else if (o instanceof DMatrix) {
-            return ((DMatrix) o).mul(b);
-        } else if (o instanceof Number) {
-            return ((Number) o).doubleValue() * b;
-        }
-        throw new IllegalArgumentException("Unsupported");
     }
 
     @Override
@@ -86,6 +68,24 @@ public class MathsPlotNumbers implements PlotNumbers {
     }
 
     @Override
+    public Object mul(Object o, double b) {
+        if (o instanceof BigDecimal) {
+            return ((BigDecimal) o).multiply(new BigDecimal(b));
+        } else if (o instanceof BigInteger) {
+            return new BigDecimal((BigInteger) o).multiply(new BigDecimal(b));
+        } else if (o instanceof Complex) {
+            return ((Complex) o).mul(b);
+        } else if (o instanceof ComplexMatrix) {
+            return ((ComplexMatrix) o).mul(b);
+        } else if (o instanceof DMatrix) {
+            return ((DMatrix) o).mul(b);
+        } else if (o instanceof Number) {
+            return ((Number) o).doubleValue() * b;
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    @Override
     public int compare(Object aa, Object bb) {
         Complex a = (Complex) aa;
         Complex b = (Complex) bb;
@@ -99,7 +99,7 @@ public class MathsPlotNumbers implements PlotNumbers {
         Complex b = (Complex) bb;
         if (a.equals(b) || (a.isNaN() && b.isNaN()) || (a.isInfinite() && b.isInfinite())) {
             return 0;
-        } else if (a.isNaN() || b.isInfinite() || b.equals(MathsBase.CZERO)) {
+        } else if (a.isNaN() || b.isInfinite() || b.equals(Maths.CZERO)) {
             return (a.sub(b)).absdbl();
         } else {
             return (((a.sub(b)).absdbl() * 100 / (a.absdbl())));

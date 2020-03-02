@@ -1,6 +1,6 @@
 package net.vpc.scholar.hadruwaves.console.yaxis;
 
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCubes;
@@ -16,14 +16,14 @@ public class PlotElectricFieldFondamental3D extends PlotAxisCubes implements Clo
         super("ElectricFieldFondamental3D",type);
     }
 
-    protected VDiscrete computeValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
+    protected VDiscrete evalValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
         MomStructure structure=(MomStructure) o;
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
         double[] z = structure.toZForDomainCoeff(xAxis.getZ());
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
 
-        return structure.electricField(ElectricFieldPart.FUNDAMENTAL).monitor(monitor)
-                .computeVDiscrete(x, y, z);
+        return structure.electricField().electricPart(ElectricFieldPart.FUNDAMENTAL).monitor(monitor)
+                .cartesian().evalVDiscrete(x, y, z);
     }
 }

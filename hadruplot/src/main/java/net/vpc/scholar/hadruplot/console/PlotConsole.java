@@ -1,29 +1,25 @@
 package net.vpc.scholar.hadruplot.console;
 
 import net.vpc.common.io.FileUtils;
-import net.vpc.common.mon.ProgressMonitorCreator;
-import net.vpc.common.swings.LogAreaComponent;
+import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.*;
 import net.vpc.common.strings.StringUtils;
 import net.vpc.common.swings.ExtensionFileChooserFilter;
+import net.vpc.common.swings.JInternalFrameHelper;
+import net.vpc.common.swings.LogAreaComponent;
 import net.vpc.common.swings.SwingUtilities3;
-import net.vpc.common.util.Chronometer;
-import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
-import net.vpc.scholar.hadruplot.PlotConfig;
+import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.console.params.ParamSet;
 import net.vpc.scholar.hadruplot.console.yaxis.PlotAxis;
-import net.vpc.scholar.hadruplot.*;
+import net.vpc.scholar.hadruplot.filetypes.PlotFileTypeJpeg;
+import net.vpc.scholar.hadruplot.filetypes.PlotFileTypePng;
 
 import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
-import net.vpc.common.swings.JInternalFrameHelper;
-import net.vpc.scholar.hadruplot.filetypes.PlotFileTypeJpeg;
-import net.vpc.scholar.hadruplot.filetypes.PlotFileTypePng;
 
-public class PlotConsole implements PlotComponentDisplayer,PlotManager, ProgressMonitorCreator,PlotWindowManagerProvider {
+public class PlotConsole implements PlotComponentDisplayer, PlotManager, ProgressMonitorFactory, PlotWindowManagerProvider {
 
     public static int debugFramesCount = 0;
     public static String PLOT_CONSOLE_FILE_EXTENSION = "plotconsole";
@@ -31,19 +27,25 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
     public static SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmmss");
     public static ExtensionFileChooserFilter CHOOSER_FILTER = new ExtensionFileChooserFilter(PLOT_CONSOLE_FILE_EXTENSION, PLOT_CONSOLE_FILE_DESC);
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+
+    static {
+        PlotConfigManager.addPlotFileTypes(
+                PlotFileTypePng.INSTANCE,
+                PlotFileTypeJpeg.INSTANCE
+        );
+    }
+
     private final Object autoSaving = new Object();
     boolean disposing;
     private long startTime = 0;
     private String frameTitle = "NO_NAME";
-    private Chronometer globalChronometer;
-    private int globalProgressIndex;
     private LogAreaComponent logger;
-//    private JInternalFrame logFrame;
+    //    private JInternalFrame logFrame;
     private ConsoleLogger log = new DefaultConsoleLogger(this);
     private PlotConsoleFrame plotConsoleFrame;
     private CloseOption closeOption = CloseOption.EXIT;
-    private ProgressTaskMonitorImpl taskMonitor;
-    private List<PlotConsoleTool> tools=new ArrayList<>();
+    private TaskMonitorManagerComponent taskMonitorComponent;
+    private List<PlotConsoleTool> tools = new ArrayList<>();
     private boolean readOnly = false;
     private String autoSavingFilePattern;
     private File currentAutoSavingFile;
@@ -52,19 +54,11 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
     private long progressPeriod = 2000;
     private File currentDirectory = null;
     private ProgressMonitorThread progressMonitorThread;
-
-
     private List<PlotConsoleCacheSupport> plotConsoleCacheSupports = new ArrayList<>();
     private PlotConsoleWindowManager windowManager = null;
     private List<PlotConsoleFileSupport> fileSupportList = new ArrayList<>();
     private List<PlotConsoleMenuItem> menus = new ArrayList<>();
-
-    static{
-        PlotConfigManager.addPlotFileTypes(
-                PlotFileTypePng.INSTANCE,
-                PlotFileTypeJpeg.INSTANCE
-        );
-    }
+    private TaskMonitorManager taskMonitor;
 
     public PlotConsole() {
         this(new File("."), false);
@@ -88,7 +82,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         this.currentDirectory = folder;
         this.windowManager = new PlotConsoleWindowManager(this);
 
-        ServiceLoader<PlotConsoleCacheSupport> sl=ServiceLoader.load(PlotConsoleCacheSupport.class);
+        ServiceLoader<PlotConsoleCacheSupport> sl = ServiceLoader.load(PlotConsoleCacheSupport.class);
         for (PlotConsoleCacheSupport sup : sl) {
             plotConsoleCacheSupports.add(sup);
         }
@@ -115,8 +109,8 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
     public void dispose() {
 
         disposing = true;
-        if (taskMonitor != null) {
-            taskMonitor.killAll();
+        if (taskMonitorComponent != null) {
+            getTaskMonitor().terminateAll();
         }
         try {
             if (progressMonitorThread != null) {
@@ -130,7 +124,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 
     }
 
-//    public JInternalFrameHelper getTaskMonitorFrame() {
+    //    public JInternalFrameHelper getTaskMonitorFrame() {
 //        getTaskMonitor();
 //        return new JInternalFrameHelper(taskMonitorFrame);
 //    }
@@ -159,7 +153,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         dispose();
     }
 
-//    /**
+    //    /**
 //     * @param obj        used to get Title name
 //     * @param direct     first Structure instance
 //     * @param modele     xmax Structure instance
@@ -174,7 +168,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 //        run(new PlotValue(windowTitle, direct, modele, axisList, parameters));
 //    }
     public ProgressMonitor logger(String title) {
-        ProgressMonitor logger = ProgressMonitorFactory.logger(5 * 1000);
+        ProgressMonitor logger = ProgressMonitors.logger(5 * 1000);
         getTaskMonitor().addTask(logger, title, null);
         return logger;
     }
@@ -191,7 +185,14 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         Plot.Config.setManager(this);
         return this;
     }
-    public PlotConsole setDefaultWindowManager(){
+
+    public PlotConsole setGlobal() {
+        setDefaultPlotManager();
+        setDefaultWindowManager();
+        return this;
+    }
+
+    public PlotConsole setDefaultWindowManager() {
         Plot.setDefaultWindowManager(this);
         return this;
     }
@@ -284,12 +285,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                 params0[params0.length - i - 1] = x;
             }
             int level = params0.length - 1;
-            getPlotConsoleFrame().setGlobalInfo(plotData.getWindowTitle(), maxIterations);
-            getPlotConsoleFrame().setGlobalProgress(0, -1);
-            globalChronometer = new Chronometer();
-            globalChronometer.start();
-//        ProgressMonitor monitor = new ProgressMonitor(null, "Progression", null, 0, maxIterations);
-            globalProgressIndex = 0;
+            getPlotConsoleFrame().setGlobalInfo(plotData.getWindowTitle() + " [" + maxIterations + "]");
             boolean firstShow = true;
             if (params0.length == 0) {
                 ComputeTitle serieTitle = new ComputeTitle(false);
@@ -300,7 +296,6 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                     serieTitle.add(param);
                 }
 
-                getPlotConsoleFrame().setGlobalProgress(++globalProgressIndex, globalChronometer.getTime());
                 for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
                     if (disposing) {
                         return;
@@ -314,7 +309,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                         }
                         getLog().trace("Start Running : " + yParam.getName(serieTitle));
                         getLog().trace("Setting Y : " + yParam);
-                        getTaskMonitor().addTask(new PlotThread(
+                        PlotThread plotThread = new PlotThread(
                                 yParam.clone(),
                                 plotData.clone(),
                                 serieTitle,
@@ -322,7 +317,9 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                                 (plotData.getStructure2() == null ? null : plotData.getStructure2().clone()),
                                 consoleAxise,
                                 this
-                        ));
+                        );
+                        getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
+                        plotThread.start();
                         if (disposing) {
                             return;
                         }
@@ -360,7 +357,6 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                                 serieTitle.add(param);
                             }
 
-                            getPlotConsoleFrame().setGlobalProgress(++globalProgressIndex, globalChronometer.getTime());
                             for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
                                 if (disposing) {
                                     return;
@@ -379,7 +375,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                                     ConsoleAwareObject directClone = (direct == null ? null : direct.clone());
                                     if (directClone != null) {
                                         for (PlotConsoleCacheSupport plotConsoleCacheSupport : plotConsoleCacheSupports) {
-                                            plotConsoleCacheSupport.prepareObject(directClone,"Direct",serieTitle.toString());
+                                            plotConsoleCacheSupport.prepareObject(directClone, "Direct", serieTitle.toString());
                                         }
                                     }
                                     ConsoleAwareObject modelClone = (plotData.getStructure2() == null ? null : plotData.getStructure2().clone());
@@ -388,7 +384,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                                             plotConsoleCacheSupport.prepareObject(modelClone, "Model", serieTitle.toString());
                                         }
                                     }
-                                    getTaskMonitor().addTask(new PlotThread(
+                                    PlotThread plotThread = new PlotThread(
                                             yParam.clone(),
                                             plotData.clone(),
                                             serieTitle,
@@ -396,7 +392,9 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                                             modelClone,
                                             consoleAxise,
                                             this
-                                    ));
+                                    );
+                                    getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
+                                    plotThread.start();
                                     if (disposing) {
                                         return;
                                     }
@@ -411,11 +409,8 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                     }
                 }
             }
-            globalChronometer.stop();
-            getLog().trace("End Execution [" + globalChronometer + "]");
             ticMonitor();
         } finally {
-            globalChronometer = null;
         }
     }
 
@@ -445,7 +440,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
                     break;
                 }
             }
-            ServiceLoader<PlotConsoleTool> sl=ServiceLoader.load(PlotConsoleTool.class);
+            ServiceLoader<PlotConsoleTool> sl = ServiceLoader.load(PlotConsoleTool.class);
             for (PlotConsoleTool plotConsoleTool : sl) {
                 addTool(plotConsoleTool);
             }
@@ -496,22 +491,25 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         }
     }
 
-    public ProgressTaskMonitor taskMonitor() {
+    public TaskMonitorManager taskMonitor() {
         return getTaskMonitor();
     }
 
-    public ProgressTaskMonitor getTaskMonitor() {
-        if (taskMonitor == null) {
-            taskMonitor = new ProgressTaskMonitorImpl(this);
-            JScrollPane comp = new JScrollPane(taskMonitor);
-            FrameInfo info = new FrameInfo().setTitle("Task Monitor").setResizable(true).setClosable(true).setMaximizable(true).setIconifiable(true)
+    public TaskMonitorManager getTaskMonitor() {
+        if (taskMonitorComponent == null) {
+            if (taskMonitor == null) {
+                taskMonitor = new DefaultTaskMonitorManager();
+            }
+            taskMonitorComponent = new TaskMonitorManagerComponent(taskMonitor);
+            JScrollPane comp = new JScrollPane(taskMonitorComponent);
+            FrameInfo info = new FrameInfo().setTitle("TaskMonitor Monitor").setResizable(true).setClosable(true).setMaximizable(true).setIconifiable(true)
                     .setFrameIcon(SwingUtilities3.getScaledIcon(
                             PlotConsole.class.getResource("Tasks.png"),
                             16, 16
                     ))
                     .setComponent(comp);
 
-            //JInternalFrame f = new JInternalFrame("Task Monitor", true, true, true, true);
+            //JInternalFrame f = new JInternalFrame("TaskMonitor Monitor", true, true, true, true);
             //f.add(comp);
             //f.setPreferredSize(new Dimension(600, 300));
             //f.pack();
@@ -521,8 +519,8 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 //            } catch (PropertyVetoException e) {
 //                e.printStackTrace();
 //            }
-            taskMonitor.setFrame(getPlotConsoleFrame().addToolsFrame(info));
-            taskMonitor.getFrame().setClosed(true);
+            taskMonitorComponent.setFrame(getPlotConsoleFrame().addToolsFrame(info));
+            taskMonitorComponent.getFrame().setClosed(true);
         }
         return taskMonitor;
     }
@@ -549,7 +547,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 //                e.printStackTrace();
 //            }
             JInternalFrame f = getPlotConsoleFrame().addToolsFrame(info);
-            JInternalFrameHelper h=new JInternalFrameHelper(f);
+            JInternalFrameHelper h = new JInternalFrameHelper(f);
             h.setClosed(true);
         }
         return logger;
@@ -774,6 +772,11 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
         return disposing;
     }
 
+    public PlotConsole setDisposing(boolean disposing) {
+        this.disposing = disposing;
+        return this;
+    }
+
     public String getFrameTitle() {
         return "Hadhrumaths Console :: " + frameTitle;
     }
@@ -891,12 +894,7 @@ public class PlotConsole implements PlotComponentDisplayer,PlotManager, Progress
 
     @Override
     public ProgressMonitor createMonitor(String name, String description) {
-        return taskMonitor().createMonitor(name,description);
-    }
-
-    public PlotConsole setDisposing(boolean disposing) {
-        this.disposing = disposing;
-        return this;
+        return taskMonitor().createMonitor(name, description);
     }
 
     //    public JInternalFrameHelper getLogFrame() {

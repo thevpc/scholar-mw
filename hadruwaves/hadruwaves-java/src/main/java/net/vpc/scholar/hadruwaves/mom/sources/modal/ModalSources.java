@@ -11,7 +11,7 @@ import net.vpc.scholar.hadruwaves.mom.sources.Sources;
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
  * @creationtime 21 nov. 2006 13:49:53
  */
-public interface ModalSources extends  Dumpable, Sources {
+public interface ModalSources extends  Sources {
 
     public int getSourceCountForDimensions(ModeFunctions fn);
 

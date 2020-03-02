@@ -1,19 +1,21 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Axis;
+import net.vpc.scholar.hadrumaths.HSerializable;
 import net.vpc.scholar.hadrumaths.geom.GeometryList;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 11 juil. 2007 22:38:33
  */
-public class TestFunctionCell implements Dumpable {
+public class TestFunctionCell implements HSerializable {
     private MeshAlgo meshAlgo;
     private GpPattern pattern;
     private Domain domain;
@@ -53,20 +55,17 @@ public class TestFunctionCell implements Dumpable {
         return pattern;
     }
 
-    protected Dumper getDumpStringHelper() {
-        return new Dumper(this)
-                .add("name", name)
-                .add("domain", domain)
-                .add("pattern", pattern)
-                .add("polygonList", areaGeometryList)
-                .add("symmetry", symmetry)
-                .add("meshAlgo", meshAlgo)
-                .add("invariance", invariance)
-                ;
-    }
-
-    public String dump() {
-        return getDumpStringHelper().toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj(getClass().getSimpleName())
+                .add("name", context.elem(name))
+                .add("domain", context.elem(domain))
+                .add("pattern", context.elem(pattern))
+                .add("polygonList", context.elem(areaGeometryList))
+                .add("symmetry", context.elem(symmetry))
+                .add("meshAlgo", context.elem(meshAlgo))
+                .add("invariance", context.elem(invariance))
+                .build();
     }
 
     public MeshAlgo getMeshAlgo() {

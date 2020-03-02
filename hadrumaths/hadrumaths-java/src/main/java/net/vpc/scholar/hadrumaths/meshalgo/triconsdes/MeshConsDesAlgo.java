@@ -1,8 +1,11 @@
 package net.vpc.scholar.hadrumaths.meshalgo.triconsdes;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,14 +24,19 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
         this.option = options;
     }
 
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("options", option);
-        return h.toString();
+    public MeshConsDesAlgo() {
     }
 
-
-    public MeshConsDesAlgo() {
+    //    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("options", option);
+//        return h.toString();
+//    }
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("options", context.elem(option));
+        return sb.build();
     }
 
     public Collection<MeshZone> meshPolygon(Geometry polygon) {
@@ -62,18 +70,6 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
             ret.add(z);
         }
         return ret;
-    }
-
-    public void setOption(MeshOptions op) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setOption(MeshOptionsConsDes op) {
-        this.option = op;
-    }
-
-    public MeshOptionsConsDes getOption() {
-        return option;
     }
 
     private void initPolygon(Geometry geom, AlgoInfo info) {
@@ -288,6 +284,18 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
         }
     }
 
+    public MeshOptionsConsDes getOption() {
+        return option;
+    }
+
+    public void setOption(MeshOptions op) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setOption(MeshOptionsConsDes op) {
+        this.option = op;
+    }
+
     public MeshConsDesAlgo clone() {
         try {
             return (MeshConsDesAlgo) super.clone();
@@ -297,8 +305,8 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
     }
 
     private static class AlgoInfo {
-        private List<Triangle> triangles = new ArrayList<Triangle>();
-        private List<Triangle> listeDetruite = new ArrayList<Triangle>();
+        private final List<Triangle> triangles = new ArrayList<Triangle>();
+        private final List<Triangle> listeDetruite = new ArrayList<Triangle>();
         private Triangle selectedTriangle;
 
         public AlgoInfo() {

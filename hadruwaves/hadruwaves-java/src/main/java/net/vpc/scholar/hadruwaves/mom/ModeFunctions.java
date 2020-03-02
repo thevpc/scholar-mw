@@ -3,22 +3,17 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.*;
-import net.vpc.scholar.hadruwaves.mom.sources.Sources;
-import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.ModeInfoComparator;
 
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by vpc on 3/16/15.
  */
-public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
-    void invalidateCache();
+public interface ModeFunctions extends Cloneable, HSerializable {
+    ModeFunctions invalidateCache();
 
     int length();
 
@@ -36,26 +31,35 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     boolean isHintEnableFunctionProperties();
 
-    void setHintEnableFunctionProperties(boolean disableDefaultFunctionProperties);
+    ModeFunctions setHintEnableFunctionProperties(boolean disableDefaultFunctionProperties);
 
-    int getMaxSize();
+    int getSize();
 
-    ModeFunctions setMaxSize(int maxSize);
-
-    /**
-     * @param maxSize
-     * @return
-     */
-    @Deprecated
     ModeFunctions setSize(int maxSize);
 
-    TVector<Expr> list();
+    HintAxisType getHintAxisType();
+
+    ModeFunctions setHintAxisType(HintAxisType hintAxisType);
+
+    ModeFunctions setHintInvariance(Axis invariantAxis);
+
+    Axis getHintInvariantAxis();
+
+    AxisXY getHintSymmetry();
+
+    ModeFunctions setHintSymmetry(AxisXY symmetryAxis);
+
+    ModeType[] getHintFnModes();
+
+    ModeFunctions setHintFnModes(ModeType... hintFnModeTypes);
+
+    Vector<Expr> list();
 
     DoubleToVector get(int index);
 
     DoubleToVector apply(int index);
 
-    TVector<Expr> toList();
+    Vector<Expr> toList();
 
     DoubleToVector[] toArray();
 
@@ -83,10 +87,6 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     ModeType[] getAvailableModes();
 
-    double getFrequency();
-
-    ModeFunctions setFrequency(double frequency);
-
     int getPropagativeModesCount();
 
     ModeInfo getMode(ModeType mode, int m, int n);
@@ -103,49 +103,9 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     double getCutoffFrequency(ModeIndex i);
 
-    BoxSpace getFirstBoxSpace();
-
-    ModeFunctions setFirstBoxSpace(BoxSpace firstBoxSpace);
-
-    BoxSpace getSecondBoxSpace();
-
-    ModeFunctions setSecondBoxSpace(BoxSpace secondBoxSpace);
-
-    ModeFunctions setHintInvariance(Axis invariantAxis);
-
-    Axis getHintInvariantAxis();
-
-    AxisXY getHintSymmetry();
-
-    ModeFunctions setHintSymmetry(AxisXY symmetryAxis);
-
-    Domain getDomain();
-
-    ModeFunctions setDomain(Domain domain);
-
-    double getK0();
-
-    double getOmega();
-
-    HintAxisType getHintAxisType();
-
-    ModeFunctions setHintAxisType(HintAxisType hintAxisType);
-
-    ModalSources getSources();
-
-    ModeFunctions setSources(Sources sources);
-
-    ModeType[] getHintFnModes();
-
-    ModeFunctions setHintFnModes(ModeType... hintFnModeTypes);
-
-    Dumper getDumpStringHelper();
-
-    String dump();
-
     boolean isComplex();
 
-    WallBorders getBorders();
+//    Dumper getDumpStringHelper();
 
     ModeInfoFilter[] getModeInfoFilters();
 
@@ -159,34 +119,40 @@ public interface ModeFunctions extends Cloneable, Serializable, Dumpable {
 
     ModeFunctions addModeIndexFilter(ModeIndexFilter modeIndexFilter);
 
-    StrLayer[] getLayers();
-
-    ModeFunctions setLayers(StrLayer[] couches);
-
     boolean isHintInvertTETMForZmode();
 
     @Deprecated
     ModeFunctions setHintInvertTETMForZmode(boolean hintInvertTETMForZmode);
 
-    ModeIteratorFactory getModeIteratorFactory();
+    ModeIterator getModeIterator();
 
-    ModeFunctions setModeIteratorFactory(ModeIteratorFactory modeIteratorFactory);
+    ModeFunctions setModeIterator(ModeIterator modeIterator);
 
-    ModeInfoComparator getModeInfoComparator();
+    ModeInfoComparator getModeComparator();
 
-    void setModeInfoComparator(ModeInfoComparator modeInfoComparator);
+    ModeFunctions setModeComparator(ModeInfoComparator modeInfoComparator);
 
-    void addPropertyChangeListener(PropertyChangeListener listener);
+    ModeFunctions addPropertyChangeListener(PropertyChangeListener listener);
 
-    void removePropertyChangeListener(PropertyChangeListener listener);
+    PropertyChangeListener[] getPropertyChangeListeners();
 
-    void addPropertyChangeListener(String property, PropertyChangeListener listener);
+    PropertyChangeListener[] getPropertyChangeListeners(String property);
 
-    void removePropertyChangeListener(String property, PropertyChangeListener listener);
+    ModeFunctions removePropertyChangeListener(PropertyChangeListener listener);
 
-    TVector<Complex> scalarProduct(Expr testFunction);
+    ModeFunctions addPropertyChangeListener(String property, PropertyChangeListener listener);
 
-    TMatrix<Complex> scalarProduct(TVector<Expr> testFunctions, ProgressMonitor monitor);
+    ModeFunctions removePropertyChangeListener(String property, PropertyChangeListener listener);
 
-    void setObjectCacheResolver(ObjectCacheResolver cacheResolver);
+    ComplexVector scalarProduct(Expr testFunction, ProgressMonitor monitor);
+
+    ComplexMatrix scalarProduct(Vector<Expr> testFunctions, ProgressMonitor monitor);
+
+    ModeFunctions setObjectCacheResolver(ObjectCacheResolver cacheResolver);
+
+    ModeFunctionsEnv getEnv();
+
+    ModeFunctions setEnv(ModeFunctionsEnv env);
+
+    Axis getPolarization();
 }

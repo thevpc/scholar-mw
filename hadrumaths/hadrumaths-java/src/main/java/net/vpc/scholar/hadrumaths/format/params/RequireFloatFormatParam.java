@@ -14,4 +14,13 @@ public class RequireFloatFormatParam implements ObjectFormatParam {
 
     public RequireFloatFormatParam() {
     }
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().getName().equals(obj.getClass().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().getName().hashCode();
+    }
 }

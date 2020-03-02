@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.sources.modal;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.mom.str.ModeInfoComparator;
 
@@ -46,14 +49,12 @@ public class PropagatingIndexModeComparator implements ModeInfoComparator {
             return 0;
         }
     }
-    public String dump() {
-        return getDumpStringHelper().toString();
-    }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h=new Dumper(this,Dumper.Type.SIMPLE);
-        h.add("sources", sources);
-        return h;
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("sources", context.elem(sources));
+        return h.build();
     }
 
     @Override

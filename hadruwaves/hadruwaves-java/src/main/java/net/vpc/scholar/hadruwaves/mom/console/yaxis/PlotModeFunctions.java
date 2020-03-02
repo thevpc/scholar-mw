@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadruplot.console.ConsoleAction;
 import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadrumaths.plot.FunctionsXYPlotConsoleAction;
@@ -20,7 +20,7 @@ public class PlotModeFunctions extends PlotAxisCustom implements Cloneable {
     }
 
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        ProgressMonitor mon = ProgressMonitorFactory.nonnull(this);
+        ProgressMonitor mon = ProgressMonitors.nonnull(this);
 //        mon.startm(getName());
         ArrayList<ConsoleAction> all = new ArrayList<ConsoleAction>();
         if (containsType(YType.REFERENCE)) {

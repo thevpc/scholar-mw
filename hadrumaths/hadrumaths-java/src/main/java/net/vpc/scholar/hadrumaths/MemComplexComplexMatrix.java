@@ -22,25 +22,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         elements = new Complex[rows][cols];
     }
 
-
-    private static MemComplexComplexMatrix newMemMatrix(Complex[][] e) {
-        return new MemComplexComplexMatrix(e);
-    }
-
-    /*To exchange two rows in a matrix*/
-    public static void exchange_row(Complex[][] M, int k, int l, int m, int n) {
-        if (k <= 0 || l <= 0 || k > n || l > n || k == l) {
-            return;
-        }
-        Complex tmp;
-        for (int j = 0; j < n; j++) {
-            tmp = M[k - 1][j];
-            M[k - 1][j] = M[l - 1][j];
-            M[l - 1][j] = tmp;
-        }
-    }
-
-
     /**
      * One norm
      *
@@ -99,6 +80,47 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             f = Math.max(f, s);
         }
         return f;
+    }
+
+    @Override
+    public void set(Matrix<Complex>[][] subMatrixes) {
+        int rows = 0;
+        int cols = 0;
+        for (Matrix<Complex>[] subMatrixe : subMatrixes) {
+            int r = 0;
+            int c = 0;
+            for (Matrix<Complex> aSubMatrixe : subMatrixe) {
+                c += aSubMatrixe.getColumnCount();
+                if (r == 0) {
+                    r = aSubMatrixe.getRowCount();
+                } else if (r != aSubMatrixe.getRowCount()) {
+                    throw new IllegalArgumentException("Column count does not match");
+                }
+            }
+            if (cols == 0) {
+                cols = c;
+            } else if (cols != c) {
+                throw new IllegalArgumentException("Column count does not match");
+            }
+            rows += r;
+        }
+        if (rows == 0 || cols == 0) {
+            throw new EmptyMatrixException();
+        }
+
+        if (rows != getColumnCount() || rows != getRowCount()) {
+            throw new IllegalArgumentException("Columns or Rows count does not match");
+        }
+        int row = 0;
+        int col;
+        for (Matrix<Complex>[] subMatrixe1 : subMatrixes) {
+            col = 0;
+            for (Matrix<Complex> aSubMatrixe1 : subMatrixe1) {
+                set(row, col, aSubMatrixe1);
+                col += aSubMatrixe1.getColumnCount();
+            }
+            row += subMatrixe1[0].getRowCount();
+        }
     }
 
     @Override
@@ -227,6 +249,10 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         return newMemMatrix(e);
     }
 
+    private static MemComplexComplexMatrix newMemMatrix(Complex[][] e) {
+        return new MemComplexComplexMatrix(e);
+    }
+
     @Override
     public ComplexMatrix div(Complex c) {
         Complex[][] e = new Complex[elements.length][];
@@ -300,7 +326,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public ComplexMatrix mul(TMatrix<Complex> other) {
+    public ComplexMatrix mul(Matrix<Complex> other) {
         if (getColumnCount() != other.getRowCount()) {
             throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
         }
@@ -314,7 +340,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < b_cols; j++) {
                     sum.setZero();
-                    ;
                     for (int k = 0; k < b_rows; k++) {
                         sum.add(elements[i][k].mul(mm.elements[k][j]));
                     }
@@ -331,7 +356,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < b_cols; j++) {
                     sum.setZero();
-                    ;
                     for (int k = 0; k < b_rows; k++) {
                         sum.add(elements[i][k].mul(other.get(k, j)));
                     }
@@ -343,7 +367,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public ComplexMatrix dotmul(TMatrix<Complex> other) {
+    public ComplexMatrix dotmul(Matrix<Complex> other) {
         if (other instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) other;
             Complex[][] newElements = new Complex[elements.length][mm.elements[0].length];
@@ -365,7 +389,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public ComplexMatrix dotdiv(TMatrix<Complex> other) {
+    public ComplexMatrix dotdiv(Matrix<Complex> other) {
         if (other instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) other;
             Complex[][] newElements = new Complex[elements.length][mm.elements[0].length];
@@ -387,7 +411,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public ComplexMatrix add(TMatrix<Complex> other) {
+    public ComplexMatrix add(Matrix<Complex> other) {
         if (other instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) other;
             Complex[][] e = new Complex[elements.length][];
@@ -411,7 +435,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public ComplexMatrix sub(TMatrix<Complex> other) {
+    public ComplexMatrix sub(Matrix<Complex> other) {
         if (other instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) other;
             Complex[][] e = new Complex[elements.length][];
@@ -442,6 +466,21 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     @Override
     public Complex get(int row, int col) {
         return elements[row][col];
+    }
+
+    @Override
+    public void set(int row, int col, Complex val) {
+        elements[row][col] = val;
+    }
+
+    @Override
+    public int getRowCount() {
+        return elements.length;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return elements.length == 0 ? 0 : elements[0].length;
     }
 
     @Override
@@ -476,12 +515,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public void set(int row, int col, Complex val) {
-        elements[row][col] = val;
-    }
-
-    @Override
-    public void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols) {
+    public void set(int row, int col, Matrix<Complex> src, int srcRow, int srcCol, int rows, int cols) {
         if (src instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) src;
             for (int i = 0; i < rows; i++) {
@@ -495,26 +529,16 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public void set(int row, int col, TMatrix<Complex> subMatrix) {
+    public void set(int row, int col, Matrix<Complex> subMatrix) {
         set(row, col, subMatrix, 0, 0, subMatrix.getRowCount(), subMatrix.getColumnCount());
     }
 
     @Override
-    public int getRowCount() {
-        return elements.length;
-    }
-
-    @Override
     public ComponentDimension getComponentDimension() {
-        return ComponentDimension.create(
+        return ComponentDimension.of(
                 elements.length,
                 elements.length == 0 ? 0 : elements[0].length
         );
-    }
-
-    @Override
-    public int getColumnCount() {
-        return elements.length == 0 ? 0 : elements[0].length;
     }
 
     /**
@@ -535,10 +559,10 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
                 e[j][i] = elements[i][j].conj();
             }
 //            for (int j = 0; j < i; j++) {
-//                e[j][i] = elements[i][j];
+//                e[j][i] = primitiveElement3DS[i][j];
 //            }
 //            for (int j = i+1; j < c; j++) {
-//                e[j][i] = elements[i][j];
+//                e[j][i] = primitiveElement3DS[i][j];
 //            }
         }
         return newMemMatrix(e);
@@ -718,6 +742,19 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         }
     }
 
+    /*To exchange two rows in a matrix*/
+    public static void exchange_row(Complex[][] M, int k, int l, int m, int n) {
+        if (k <= 0 || l <= 0 || k > n || l > n || k == l) {
+            return;
+        }
+        Complex tmp;
+        for (int j = 0; j < n; j++) {
+            tmp = M[k - 1][j];
+            M[k - 1][j] = M[l - 1][j];
+            M[l - 1][j] = tmp;
+        }
+    }
+
     /**
      * Formula used to Calculate Inverse: inv(A) = 1/det(A) * adj(A)
      *
@@ -755,7 +792,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     @Override
     public MemComplexComplexMatrix coMatrix(int row, int col) {
         int tms = elements.length;
-        Complex ap[][] = new Complex[tms - 1][tms - 1];
+        Complex[][] ap = new Complex[tms - 1][tms - 1];
         int ia = 0;
         int ja;
         for (int ii = 0; ii < row; ii++) {
@@ -788,7 +825,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         }
         return newMemMatrix(ap);
     }
-
 
     @Override
     public MemComplexComplexMatrix adjoint() {
@@ -836,7 +872,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
     @Override
     public ComplexMatrix upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + elements.length + ")");
+//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         MemComplexComplexMatrix o = newMemMatrix(this.getArrayCopy());
 
         Complex f1;
@@ -884,7 +920,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         return o;
     }
 
-
     @Override
     public Complex[][] getArrayCopy() {
         Complex[][] C = new Complex[getRowCount()][getColumnCount()];
@@ -910,7 +945,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         Complex[][] d = new Complex[getRowCount()][getColumnCount()];
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
-                d[i][j] = Complex.valueOf(elements[i][j].absdbl());
+                d[i][j] = Complex.of(elements[i][j].absdbl());
             }
         }
         return newMemMatrix(d);
@@ -921,12 +956,11 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         Complex[][] d = new Complex[getRowCount()][getColumnCount()];
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
-                d[i][j] = Complex.valueOf(elements[i][j].absdblsqr());
+                d[i][j] = Complex.of(elements[i][j].absdblsqr());
             }
         }
         return newMemMatrix(d);
     }
-
 
     @Override
     public double condHadamard() {
@@ -938,7 +972,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             for (Complex complex : element) {
                 alpha = alpha + complex.absdblsqr();
             }
-            x *= MathsBase.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
         return det.absdbl() / x;
     }
@@ -1014,7 +1048,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
     @Override
     public boolean isDouble() {
-        return isComplex() && toComplex().isDouble();
+        return isComplex() && toComplex().isReal();
     }
 
     @Override
@@ -1030,21 +1064,8 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         return toComplex().toDouble();
     }
 
-
     @Override
-    public boolean isZero() {
-        for (Complex[] row : elements) {
-            for (Complex cell : row) {
-                if (!cell.isZero()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void set(TMatrix<Complex> other) {
+    public void set(Matrix<Complex> other) {
         int cols = other.getColumnCount();
         int rows = other.getRowCount();
         if (cols != getColumnCount() || rows != getRowCount()) {
@@ -1058,44 +1079,15 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     @Override
-    public void set(TMatrix<Complex>[][] subMatrixes) {
-        int rows = 0;
-        int cols = 0;
-        for (TMatrix<Complex>[] subMatrixe : subMatrixes) {
-            int r = 0;
-            int c = 0;
-            for (TMatrix<Complex> aSubMatrixe : subMatrixe) {
-                c += aSubMatrixe.getColumnCount();
-                if (r == 0) {
-                    r = aSubMatrixe.getRowCount();
-                } else if (r != aSubMatrixe.getRowCount()) {
-                    throw new IllegalArgumentException("Column count does not match");
+    public boolean isZero() {
+        for (Complex[] row : elements) {
+            for (Complex cell : row) {
+                if (!cell.isZero()) {
+                    return false;
                 }
             }
-            if (cols == 0) {
-                cols = c;
-            } else if (cols != c) {
-                throw new IllegalArgumentException("Column count does not match");
-            }
-            rows += r;
         }
-        if (rows == 0 || cols == 0) {
-            throw new EmptyMatrixException();
-        }
-
-        if (rows != getColumnCount() || rows != getRowCount()) {
-            throw new IllegalArgumentException("Columns or Rows count does not match");
-        }
-        int row = 0;
-        int col;
-        for (TMatrix<Complex>[] subMatrixe1 : subMatrixes) {
-            col = 0;
-            for (TMatrix<Complex> aSubMatrixe1 : subMatrixe1) {
-                set(row, col, aSubMatrixe1);
-                col += aSubMatrixe1.getColumnCount();
-            }
-            row += subMatrixe1[0].getRowCount();
-        }
+        return true;
     }
 
     public void dispose() {
@@ -1143,10 +1135,10 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 //        ois.defaultReadObject();
 //        int rowCount = ois.readInt(); // Replace with real deserialization
 //        int columnCount = ois.readInt(); // Replace with real deserialization
-//        elements=new Complex[rowCount][columnCount];
+//        primitiveElement3DS=new Complex[rowCount][columnCount];
 //        for (int i = 0; i < rowCount; i++) {
 //            for (int j = 0; j < columnCount; j++) {
-//                elements[i][j]=Complex.readObjectResolveHelper(ois);
+//                primitiveElement3DS[i][j]=Complex.readObjectResolveHelper(ois);
 //            }
 //        }
 //    }

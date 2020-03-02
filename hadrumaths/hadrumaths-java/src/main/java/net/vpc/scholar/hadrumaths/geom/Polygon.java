@@ -16,7 +16,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
     public double[] xpoints;
     public double[] ypoints;
     public int npoints;
-    private Domain domain;
+    private final Domain domain;
     private boolean rect = false;
     private int color = 1;
     private Map<String, Object> properties;
@@ -26,8 +26,32 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         rect = true;
     }
 
-    public Polygon(double[] x, double[] y) {
-        this(x, y, 1);
+    public Polygon(double[] x, double[] y, int color) {
+        this.xpoints = x;
+        this.ypoints = y;
+        this.npoints = x.length;
+        this.color = color;
+
+        double minx = Double.NaN;
+        double maxx = Double.NaN;
+        double miny = Double.NaN;
+        double maxy = Double.NaN;
+        for (int i = 0; i < x.length; i++) {
+            if (Double.isNaN(minx) || minx > x[i]) {
+                minx = x[i];
+            }
+            if (Double.isNaN(miny) || miny > y[i]) {
+                miny = y[i];
+            }
+            if (Double.isNaN(maxx) || maxx < x[i]) {
+                maxx = x[i];
+            }
+            if (Double.isNaN(maxy) || maxy < y[i]) {
+                maxy = y[i];
+            }
+        }
+        domain = Domain.ofBounds(minx, maxx, miny, maxy);
+        rect = isRectangular();
     }
 
 
@@ -85,32 +109,8 @@ public class Polygon extends AbstractGeometry implements Cloneable {
 //
 //    }
 
-    public Polygon(double[] x, double[] y, int color) {
-        this.xpoints = x;
-        this.ypoints = y;
-        this.npoints = x.length;
-        this.color = color;
-
-        double minx = Double.NaN;
-        double maxx = Double.NaN;
-        double miny = Double.NaN;
-        double maxy = Double.NaN;
-        for (int i = 0; i < x.length; i++) {
-            if (Double.isNaN(minx) || minx > x[i]) {
-                minx = x[i];
-            }
-            if (Double.isNaN(miny) || miny > y[i]) {
-                miny = y[i];
-            }
-            if (Double.isNaN(maxx) || maxx < x[i]) {
-                maxx = x[i];
-            }
-            if (Double.isNaN(maxy) || maxy < y[i]) {
-                maxy = y[i];
-            }
-        }
-        domain = Domain.forBounds(minx, maxx, miny, maxy);
-        rect = isRectangular();
+    public Polygon(double[] x, double[] y) {
+        this(x, y, 1);
     }
 
 
@@ -145,7 +145,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
                 maxy = ypoints[i];
             }
         }
-        domain = Domain.forBounds(minx, maxx, miny, maxy);
+        domain = Domain.ofBounds(minx, maxx, miny, maxy);
     }
 
     public Polygon shift(double x, double y) {
@@ -175,11 +175,26 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         return Arrays.asList(p);
     }
 
-    public Point getPoint(int index) {
+    public Path2D.Double getPath(double dx, double dy, double multiplier) {
+        Path2D.Double p = new Path2D.Double();
+        float xx = (float) ((xpoints[0] + dx) * multiplier);
+        float yy = (float) ((ypoints[0] + dy) * multiplier);
+        p.moveTo(xx, yy);
+        for (int i = 1; i < xpoints.length; i++) {
+            xx = (float) ((xpoints[i] + dx) * multiplier);
+            yy = (float) ((ypoints[i] + dy) * multiplier);
+            p.lineTo(xx, yy);
+        }
+        p.closePath();
+        return p;
+    }    public Point getPoint(int index) {
         return Point.create(xpoints[index], ypoints[index]);
     }
 
-    public Path2D.Double getPath() {
+    @Override
+    public Geometry clone() {
+        return super.clone();
+    }    public Path2D.Double getPath() {
         Path2D.Double p = new Path2D.Double();
         double xx = (xpoints[0]);
         double yy = (ypoints[0]);
@@ -193,31 +208,8 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         return p;
     }
 
-    public Path2D.Double getPath(double dx, double dy, double multiplier) {
-        Path2D.Double p = new Path2D.Double();
-        float xx = (float) ((xpoints[0] + dx) * multiplier);
-        float yy = (float) ((ypoints[0] + dy) * multiplier);
-        p.moveTo(xx, yy);
-        for (int i = 1; i < xpoints.length; i++) {
-            xx = (float) ((xpoints[i] + dx) * multiplier);
-            yy = (float) ((ypoints[i] + dy) * multiplier);
-            p.lineTo(xx, yy);
-        }
-        p.closePath();
-        return p;
-    }
-
     public Surface toSurface() {
         return new Surface(getPath());
-    }
-
-    @Override
-    public Geometry clone() {
-        return (Geometry) super.clone();
-    }
-
-    public Domain getDomain() {
-        return domain;
     }
 
     public int getColor() {
@@ -228,7 +220,62 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         this.color = color;
     }
 
-    public boolean contains(double x, double y) {
+    public Map<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        return properties;
+    }    public Domain getDomain() {
+        return domain;
+    }
+
+    public int hashCode() {
+        int result;
+        result = (xpoints != null ? Arrays.hashCode(xpoints) : 0);
+        result = 31 * result + (ypoints != null ? Arrays.hashCode(ypoints) : 0);
+        result = 31 * result + npoints;
+        result = 31 * result + (domain != null ? domain.hashCode() : 0);
+        result = 31 * result + (rect ? 1 : 0);
+        result = 31 * result + color;
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        return result;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Polygon)) {
+            return false;
+        }
+
+        Polygon dPolygon = (Polygon) o;
+
+        if (color != dPolygon.color) {
+            return false;
+        }
+        if (npoints != dPolygon.npoints) {
+            return false;
+        }
+        if (rect != dPolygon.rect) {
+            return false;
+        }
+        if (domain != null ? !domain.equals(dPolygon.domain) : dPolygon.domain != null) {
+            return false;
+        }
+        if (properties != null ? !properties.equals(dPolygon.properties) : dPolygon.properties != null) {
+            return false;
+        }
+        if (!Arrays.equals(xpoints, dPolygon.xpoints)) {
+            return false;
+        }
+        return Arrays.equals(ypoints, dPolygon.ypoints);
+    }
+
+    @Override
+    public String toString() {
+        return FormatFactory.format(this);
+    }    public boolean contains(double x, double y) {
         if (npoints <= 2 || !domain.contains(x, y)) {
             return false;
         }
@@ -294,14 +341,16 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         return ((hits & 1) != 0);
     }
 
-    public boolean isRectangular() {
+    public boolean is4Edges() {
+        if (!isSingular()) {
+            return false;
+        }
+        return npoints == 4 || (npoints == 5 && xpoints[0] == xpoints[4] && ypoints[0] == ypoints[4]);
+    }    public boolean isRectangular() {
         return rect;
     }
 
-    @Override
-    public String toString() {
-        return FormatFactory.format(this);
-    }
+
 
     @Override
     public Geometry translateGeometry(double x, double y) {
@@ -317,59 +366,11 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         return (new Polygon(dPoints));
     }
 
-    public Map<String, Object> getProperties() {
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
-        }
-        return properties;
-    }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Polygon)) {
-            return false;
-        }
 
-        Polygon dPolygon = (Polygon) o;
 
-        if (color != dPolygon.color) {
-            return false;
-        }
-        if (npoints != dPolygon.npoints) {
-            return false;
-        }
-        if (rect != dPolygon.rect) {
-            return false;
-        }
-        if (domain != null ? !domain.equals(dPolygon.domain) : dPolygon.domain != null) {
-            return false;
-        }
-        if (properties != null ? !properties.equals(dPolygon.properties) : dPolygon.properties != null) {
-            return false;
-        }
-        if (!Arrays.equals(xpoints, dPolygon.xpoints)) {
-            return false;
-        }
-        if (!Arrays.equals(ypoints, dPolygon.ypoints)) {
-            return false;
-        }
 
-        return true;
-    }
 
-    public int hashCode() {
-        int result;
-        result = (xpoints != null ? Arrays.hashCode(xpoints) : 0);
-        result = 31 * result + (ypoints != null ? Arrays.hashCode(ypoints) : 0);
-        result = 31 * result + npoints;
-        result = 31 * result + (domain != null ? domain.hashCode() : 0);
-        result = 31 * result + (rect ? 1 : 0);
-        result = 31 * result + color;
-        result = 31 * result + (properties != null ? properties.hashCode() : 0);
-        return result;
-    }
 
     @Override
     public boolean isPolygonal() {
@@ -381,10 +382,7 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         if (npoints == 3) {
             return true;
         }
-        if (npoints == 4 && getPoint(0).equals(getPoint(npoints - 1))) {
-            return true;
-        }
-        return false;
+        return npoints == 4 && getPoint(0).equals(getPoint(npoints - 1));
     }
 
     @Override
@@ -410,10 +408,9 @@ public class Polygon extends AbstractGeometry implements Cloneable {
         throw new IllegalArgumentException("Not a Triangle");
     }
 
-    public boolean is4Edges() {
-        if (!isSingular()) {
-            return false;
-        }
-        return npoints == 4 || (npoints == 5 && xpoints[0] == xpoints[4] && ypoints[0] == ypoints[4]);
+    @Override
+    public Polygon[] toPolygons() {
+        return new Polygon[]{this};
     }
+
 }

@@ -6,7 +6,9 @@
 package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.symbolic.Any;
+import net.vpc.scholar.hadrumaths.symbolic.ExprRef;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -14,32 +16,24 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class AnySimplifyRule implements ExpressionRewriterRule {
+public class AnySimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new AnySimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{Any.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{ExprRef.class};
 
     @Override
     public Class<? extends Expr>[] getTypes() {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        Any f = (Any) e;
-        return RewriteResult.newVal(f.getObject());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
+        ExprRef f = (ExprRef) e;
+        RewriteResult r = ruleset.rewrite(f.getReference(), targetExprType);
+        if (r.isUnmodified()) {
+            return RewriteResult.bestEffort(f.getReference());
         }
-        return true;
+        return RewriteResult.bestEffort(r.getValue());
     }
+
 
 }

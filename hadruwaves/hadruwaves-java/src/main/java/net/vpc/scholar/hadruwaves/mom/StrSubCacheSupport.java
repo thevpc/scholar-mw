@@ -1,38 +1,28 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.CacheSupport;
-import net.vpc.scholar.hadrumaths.cache.HashValue;
-import net.vpc.scholar.hadrumaths.io.HFile;
 import net.vpc.common.mon.ProgressMonitor;
 
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-abstract class StrSubCacheSupport<T> extends CacheSupport<T> {
+public abstract class StrSubCacheSupport<T> extends CacheSupport<T> {
 
     private MomStructure momStructure;
-    private HashValue subdump;
+    private CacheKey subdump;
 
-    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, String subdump,ProgressMonitor monitor) {
-        this(momStructure,cacheItemName, new HashValue(subdump), monitor);
-    }
-
-    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, HashValue subdump,ProgressMonitor monitor) {
-        super(new PersistenceCache(
-                new HFile(momStructure.persistentCache.getDumpFolder(momStructure.dump(), true),cacheItemName),
-                cacheItemName + ".dump",
-                momStructure.persistentCache
-        ), cacheItemName, monitor);
+    protected StrSubCacheSupport(MomStructure momStructure, String cacheItemName, CacheKey subdump,ProgressMonitor monitor) {
+        super(momStructure.getPersistentCache().derive(momStructure.getKey(),cacheItemName), cacheItemName, monitor);
         this.momStructure = momStructure;
         this.subdump = subdump;
     }
 
-    public T computeCached(T oldValue) {
-        return computeCached(subdump, oldValue);
+    public T evalCached(T oldValue) {
+        return evalCached(subdump, oldValue);
     }
 
-    public T computeCached() {
-        return computeCached(subdump);
+    public T evalCached() {
+        return evalCached(subdump);
     }
 }

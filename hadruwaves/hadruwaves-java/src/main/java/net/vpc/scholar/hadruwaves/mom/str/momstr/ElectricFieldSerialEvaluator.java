@@ -1,11 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.scholar.hadruwaves.ModeInfo;
@@ -28,18 +31,18 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        VDiscrete v2=null;
 //        MomStructure str=(MomStructure) structure;
 //        str.getTestFunctions().arr();
-//        Matrix Testcoeff = str.matrixX().monitor(ProgressMonitorFactory.none()).computeMatrix();
+//        Matrix Testcoeff = str.matrixX().monitor(ProgressMonitors.none()).computeMatrix();
 //        Testcoeff.getColumn(0).toArray();
 //        ModeInfo[] indexes = str.getModes();
 //        ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
 //        ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
-//        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+//        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitors.none());
 //        for (int i = 0; i < 4; i++) {
 //            Chronometer cr1=chrono();
-//            VDiscrete v1=evaluate__01(structure, x, y, z, ProgressMonitorFactory.none());
+//            VDiscrete v1=evaluate__01(structure, x, y, z, ProgressMonitors.none());
 //            cr1.stop();
 //            Chronometer cr2=chrono();
-//            v2=evaluate__02(structure, x, y, z, ProgressMonitorFactory.none());
+//            v2=evaluate__02(structure, x, y, z, ProgressMonitors.none());
 //            cr2.stop();
 //            System.out.println(cr1+" vs "+cr2);
 //        }
@@ -56,7 +59,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        this.invalidateCache();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).evalMatrix();
 
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -83,7 +86,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                         MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
                         MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
                         MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO, z.length, y.length, x.length);
-                        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                        ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
                         MutableComplex tempx;
                         MutableComplex tempy;
                         Complex zmnGammaZ;
@@ -100,16 +103,16 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                         int g_length = _g.length;
                         for (int i = 0; i < evan_length; i++) {
                             mode = finalEvan[i];
-                            TVector<Complex> spn = sp.getColumn(mode.index);
-                            xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                            yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                            ComplexVector spn = sp.getColumn(mode.index);
+                            xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                            yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                             mon1.setProgress(i, indexes_length, monText);
                             for (int zi = 0; zi < z_length; zi++) {
                                 Z = z[zi];
                                 //TODO Check if Z is always abs
-                                if(Z < 0){
+                                if (Z < 0) {
                                     zmnGammaZ = mode.firstBoxSpaceGamma.mul(Z).exp().mul(mode.impedance.impedanceValue());
-                                }else{
+                                } else {
                                     zmnGammaZ = mode.secondBoxSpaceGamma.mul(-Z).exp().mul(mode.impedance.impedanceValue());
                                 }
 
@@ -118,7 +121,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                                         tempx = fx[zi][yi][xi];
                                         tempy = fy[zi][yi][xi];
                                         for (int gi = 0; gi < g_length; gi++) {
-                                            MutableComplex val = MutableComplex.forComplex(J[gi]);
+                                            MutableComplex val = MutableComplex.of(J[gi]);
                                             val.mul(zmnGammaZ);
                                             val.mul(spn.get(gi));
                                             tempx.addProduct(val, xvals[yi][xi]);
@@ -130,8 +133,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                         }
                         for (int i = 0; i < finalProp.length; i++) {
                             mode = finalProp[i];
-                            xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                            yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                            xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                            yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                             mon1.setProgress((1.0 * (i + evan_length) / indexes_length), monText);
                             for (int zi = 0; zi < z_length; zi++) {
                                 Z = z[zi];
@@ -144,7 +147,10 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                                 }
                             }
                         }
-                        return new VDiscrete(Discrete.create(MutableComplex.toComplex(fx), x, y, z), Discrete.create(MutableComplex.toComplex(fy), x, y, z), Discrete.create(MutableComplex.toComplex(fz), x, y, z));
+                        Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                        return new VDiscrete(CDiscrete.of(domain, MutableComplex.toComplex(fx)),
+                                CDiscrete.of(domain, MutableComplex.toComplex(fy)),
+                                CDiscrete.of(domain, MutableComplex.toComplex(fz)));
                     }
                 });
             }
@@ -162,7 +168,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //        this.invalidateCache();
                 final DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).evalMatrix();
 
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -183,7 +189,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 final MutableComplex[][][] fx = new MutableComplex[z.length][y.length][x.length];
                 final MutableComplex[][][] fy = new MutableComplex[z.length][y.length][x.length];
                 final MutableComplex[][][] fz = new MutableComplex[z.length][y.length][x.length];
-                final TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                final ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
                 final ModeInfo[] finalEvan = evan;
                 final ModeInfo[] finalProp = prop;
                 return invokeMonitoredAction(mon[1], "???", new MonitoredAction<VDiscrete>() {
@@ -208,9 +214,9 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                         String monText = getClass().getSimpleName();
                         for (int i = 0; i < finalEvan.length; i++) {
                             mode = finalEvan[i];
-                            TVector<Complex> spc = sp.getColumn(mode.index);
-                            xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                            yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                            ComplexVector spc = sp.getColumn(mode.index);
+                            xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                            yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                             monitor.setProgress(i, indexes.length, monText);
 //            monitor.setProgress((1.0 * i / (indexes.length)));
 //            System.out.println("progress = " + monitor.getProgressValue());
@@ -232,8 +238,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                         }
                         for (int i = 0; i < finalProp.length; i++) {
                             mode = finalProp[i];
-                            xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                            yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                            xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                            yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
 //            ComputationMonitorUtils.setProgress(monitor,q,n,gfps.length,max);
                             monitor.setProgress((1.0 * (i + finalEvan.length) / (indexes.length)), monText);
                             for (int zi = 0; zi < z.length; zi++) {
@@ -247,7 +253,11 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                                 }
                             }
                         }
-                        return new VDiscrete(Discrete.create(MutableComplex.toImmutable(fx), x, y, z), Discrete.create(MutableComplex.toImmutable(fy), x, y, z), Discrete.create(MutableComplex.toImmutable(fz), x, y, z));
+                        Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                        return new VDiscrete(CDiscrete.of(domain,MutableComplex.toImmutable(fx)),
+                                CDiscrete.of(domain,MutableComplex.toImmutable(fy)),
+                                CDiscrete.of(domain,MutableComplex.toImmutable(fz))
+                        );
                     }
                 });
 
@@ -258,11 +268,11 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

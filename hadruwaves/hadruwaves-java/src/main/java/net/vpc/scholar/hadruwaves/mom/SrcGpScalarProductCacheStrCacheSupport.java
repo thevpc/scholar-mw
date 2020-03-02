@@ -1,9 +1,8 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.Complex;
+import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.TMatrix;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -12,7 +11,7 @@ import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 /**
  * @author taha.bensalah@gmail.com on 7/17/16.
  */
-class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Complex>> {
+class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     private MomStructure momStructure;
 
@@ -22,12 +21,12 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<TMatrix<Com
     }
 
     @Override
-    public TMatrix<Complex> compute(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache) {
         Sources ss = momStructure.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();
         }
         DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
-        return Maths.scalarProductCache(momStructure.getTestFunctions().arr(), _g, getMonitor());
+        return (ComplexMatrix) Maths.scalarProductCache(momStructure.getTestFunctions().arr(), _g, getMonitor()).to(Maths.$COMPLEX);
     }
 }

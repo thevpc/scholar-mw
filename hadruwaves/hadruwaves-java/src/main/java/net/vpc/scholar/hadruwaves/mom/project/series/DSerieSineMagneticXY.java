@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadruwaves.mom.project.series;
 
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.symbolic.AbstractDoubleToDouble;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
 
 /**
  * Created by IntelliJ IDEA.

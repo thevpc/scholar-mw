@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths.geom;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 
 /**
  * @author : vpc
@@ -16,27 +18,6 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
         this.level = level;
         this.basePolygon = basePolygon;
         rebuild();
-    }
-
-    @Override
-    public Dumper getDumpStringHelper() {
-        Dumper h = super.getDumpStringHelper();
-        h.add("level", level);
-        h.add("base", basePolygon);
-        return h;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-        rebuild();
-    }
-
-    public Geometry getBasePolygon() {
-        return basePolygon;
     }
 
     public void rebuild() {
@@ -74,18 +55,47 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
         }
     }
 
+//    @Override
+//    public Dumper getDumpStringHelper() {
+//        Dumper h = super.getDumpStringHelper();
+//        h.add("level", level);
+//        h.add("base", basePolygon);
+//        return h;
+//    }
+
+    public abstract Polygon[] getMotif();
+
     public abstract DefaultFractalGeometryList newInstance(int level, Geometry domain);
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder r = super.toTsonElement(context).toObject().builder();
+        return r.add("level", context.elem(level))
+                .add("base", context.elem(basePolygon))
+                .build();
     }
-
-    public abstract Polygon[] getMotif();
 
     @Override
     public FractalAreaGeometryList clone() {
         return (FractalAreaGeometryList) super.clone();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+        rebuild();
+    }
+
+    public Geometry getBasePolygon() {
+        return basePolygon;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 
 }

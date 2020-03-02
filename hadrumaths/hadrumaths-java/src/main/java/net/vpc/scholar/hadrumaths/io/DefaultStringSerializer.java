@@ -7,16 +7,6 @@ public class DefaultStringSerializer implements StringSerializer {
     public static final StringSerializer[] BASE_SERIALIZERS = {IdStringSerializer.INSTANCE, SimpleStringSerializer.INSTANCE, Base64StringSerializer.INSTANCE};
 
     @Override
-    public boolean acceptDeserialize(String value) {
-        for (StringSerializer stringSerializer : BASE_SERIALIZERS) {
-            if (stringSerializer.acceptDeserialize(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public int acceptSerialize(Object value) {
         int stringSerializerBestLevel = 0;
         for (StringSerializer stringSerializer : BASE_SERIALIZERS) {
@@ -26,6 +16,16 @@ public class DefaultStringSerializer implements StringSerializer {
             }
         }
         return stringSerializerBestLevel;
+    }
+
+    @Override
+    public boolean acceptDeserialize(String value) {
+        for (StringSerializer stringSerializer : BASE_SERIALIZERS) {
+            if (stringSerializer.acceptDeserialize(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

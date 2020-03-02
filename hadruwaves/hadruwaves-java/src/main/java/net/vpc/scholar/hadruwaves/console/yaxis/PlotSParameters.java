@@ -13,9 +13,9 @@ public class PlotSParameters extends PlotAxisSeriesMatrixValue implements Clonea
     }
 
     @Override
-    protected Object[][] computeMatrixItems(ConsoleAwareObject structure, ParamSet x) {
+    protected Object[][] evalMatrixItems(ConsoleAwareObject structure, ParamSet x) {
         MomStructure s=(MomStructure) structure;
-        return s.sparameters().monitor(this).computeMatrix().getArray();
+        return s.sparameters().monitor(this).evalMatrix().getArray();
     }
 
 }

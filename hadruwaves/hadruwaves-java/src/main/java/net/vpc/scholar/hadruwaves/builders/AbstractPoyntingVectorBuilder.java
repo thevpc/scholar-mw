@@ -1,14 +1,14 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruplot.console.ProgressTaskMonitor;
+import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
-public abstract class AbstractPoyntingVectorBuilder extends AbstractVDiscreteBuilder implements PoyntingVectorBuilder{
+public abstract class AbstractPoyntingVectorBuilder extends AbstractValueBuilder implements PoyntingVectorBuilder {
     public AbstractPoyntingVectorBuilder(MWStructure structure) {
         super(structure);
     }
@@ -19,7 +19,7 @@ public abstract class AbstractPoyntingVectorBuilder extends AbstractVDiscreteBui
     }
 
     @Override
-    public PoyntingVectorBuilder monitor(ProgressTaskMonitor monitor) {
+    public PoyntingVectorBuilder monitor(TaskMonitorManager monitor) {
         return (PoyntingVectorBuilder) super.monitor(monitor);
     }
 
@@ -27,4 +27,6 @@ public abstract class AbstractPoyntingVectorBuilder extends AbstractVDiscreteBui
     public PoyntingVectorBuilder converge(ConvergenceEvaluator convergenceEvaluator) {
         return (PoyntingVectorBuilder) super.converge(convergenceEvaluator);
     }
+
+
 }

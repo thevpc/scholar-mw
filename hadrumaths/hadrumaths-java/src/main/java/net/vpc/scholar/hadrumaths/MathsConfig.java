@@ -1,9 +1,13 @@
 package net.vpc.scholar.hadrumaths;
 
+import com.sun.org.apache.regexp.internal.RE;
+import net.vpc.common.mon.LogProgressMonitor;
 import net.vpc.common.strings.StringConverter;
 import net.vpc.common.strings.StringUtils;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.common.tson.TsonSerializer;
 import net.vpc.common.util.*;
-import net.vpc.common.mon.LogProgressMonitor;
 import net.vpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
 import net.vpc.scholar.hadrumaths.derivation.FormalDifferentiation;
@@ -15,12 +19,16 @@ import net.vpc.scholar.hadrumaths.io.FailStrategy;
 import net.vpc.scholar.hadrumaths.io.FolderHFileSystem;
 import net.vpc.scholar.hadrumaths.io.HFileSystem;
 import net.vpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DefaultExprCubeFactory;
+import net.vpc.scholar.hadrumaths.symbolic.ExprCubeFactory;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.util.LogUtils;
+import net.vpc.scholar.hadrumaths.util.ToStringDoubleFormat;
 import net.vpc.scholar.hadrumaths.util.dump.DumpManager;
 import net.vpc.scholar.hadruplot.ColorPalette;
+import net.vpc.scholar.hadruplot.PlotBuilder;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
+import net.vpc.scholar.hadruplot.util.SimpleDoubleFormat;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -28,6 +36,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,12 +44,10 @@ import java.util.logging.Logger;
 
 public final class MathsConfig {
     public static final MathsConfig INSTANCE = new MathsConfig();
-
-    private MathsConfig() {
-    }
-
+    public static ColorPalette DEFAULT_PALETTE = PlotConfigManager.DEFAULT_PALETTE;
     private final DumpManager dumpManager = new DumpManager();
-    private final String defaultRootCachePath = "${user.home}/.cache/mathcache";
+    private final String defaultRootCachePath = "${user.home}/.cache/hadrumaths";
+    private TsonSerializer tsonSerializer;
     private ComplexMatrixFactory defaultLargeComplexMatrixFactory = null;
     private String largeMatrixCachePath = "${cache.folder}/large-matrix";
     private int simplifierCacheSize = 2000;
@@ -51,9 +58,8 @@ public final class MathsConfig {
     private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
     private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
     private MetricFormat metricFormatter = new MetricFormat();
-    private net.vpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
-    private ExprSequenceFactory exprSequenceFactory = DefaultExprSequenceFactory.INSTANCE;
-    private ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
+    private final net.vpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
+    private final ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
     private SolveStrategy defaultMatrixSolveStrategy = SolveStrategy.DEFAULT;
@@ -73,41 +79,49 @@ public final class MathsConfig {
     private ScalarProductOperator defaultScalarProductOperator = null;
     private IntegrationOperator defaultIntegrationOperator = null;
     private FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
-    private Map<ClassPair, Converter> converters = new HashMap<>();
-    private Map<String, TMatrixFactory> matrixFactories = new HashMap<>();
-
-    public static ColorPalette DEFAULT_PALETTE = PlotConfigManager.DEFAULT_PALETTE;
-
-
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
-    private DoubleFormat defaultDblFormat = new DoubleFormat() {
-        @Override
-        public String formatDouble(double value) {
-            return String.valueOf(value);
-        }
-    };
-    private DoubleFormat percentFormat = new DecimalDoubleFormat("0.00%");
+    private final Map<ClassPair, Function> converters = new HashMap<>();
+    private final Map<String, MatrixFactory> matrixFactories = new HashMap<>();
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
+    private final DoubleFormat defaultDblFormat = new ToStringDoubleFormat();
+    private final DoubleFormat percentFormat = new DecimalDoubleFormat("0.00%");
 
     {
-        registerConverter(Double.class, Complex.class, MathsBase.DOUBLE_TO_COMPLEX);
-        registerConverter(Complex.class, Double.class, MathsBase.COMPLEX_TO_DOUBLE);
-        registerConverter(Double.class, TVector.class, MathsBase.DOUBLE_TO_TVECTOR);
-        registerConverter(TVector.class, Double.class, MathsBase.TVECTOR_TO_DOUBLE);
-        registerConverter(Double.class, Expr.class, MathsBase.DOUBLE_TO_EXPR);
-        registerConverter(Expr.class, Double.class, MathsBase.EXPR_TO_DOUBLE);
+        registerConverter(Double.class, Complex.class, Maths.DOUBLE_TO_COMPLEX);
+        registerConverter(Complex.class, Double.class, Maths.COMPLEX_TO_DOUBLE);
+        registerConverter(Double.class, Vector.class, Maths.DOUBLE_TO_TVECTOR);
+        registerConverter(Vector.class, Double.class, Maths.TVECTOR_TO_DOUBLE);
+        registerConverter(Double.class, Expr.class, Maths.DOUBLE_TO_EXPR);
+        registerConverter(Expr.class, Double.class, Maths.EXPR_TO_DOUBLE);
 
-        registerConverter(Complex.class, TVector.class, MathsBase.COMPLEX_TO_TVECTOR);
-        registerConverter(TVector.class, Complex.class, MathsBase.TVECTOR_TO_COMPLEX);
-        registerConverter(Complex.class, Expr.class, MathsBase.COMPLEX_TO_EXPR);
-        registerConverter(Expr.class, Complex.class, MathsBase.EXPR_TO_COMPLEX);
+        registerConverter(Complex.class, Vector.class, Maths.COMPLEX_TO_TVECTOR);
+        registerConverter(Vector.class, Complex.class, Maths.TVECTOR_TO_COMPLEX);
+        registerConverter(Complex.class, Expr.class, Maths.COMPLEX_TO_EXPR);
+        registerConverter(Expr.class, Complex.class, Maths.EXPR_TO_COMPLEX);
+    }
+
+    private MathsConfig() {
+        Tson.setSerializer(Tson.serializer()
+                .builder()
+                .setToElement(DefaultTimePeriodFormat.class, (DefaultTimePeriodFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                .setToElement(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                .setToElement(SimpleDoubleFormat.class, (SimpleDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                .setToElement(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                .setToElement(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                .setToElement(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                .setToElement(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                .setToElement(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                .setToElement(PlotBuilder.ListDoubleFormat.class, (PlotBuilder.ListDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), context.elem(object.getValues())))
+                .build()
+        );
     }
 
     public boolean isCompressCache() {
         return compressCache;
     }
 
-    public void setCompressCache(boolean compressCache) {
+    public MathsConfig setCompressCache(boolean compressCache) {
         this.compressCache = compressCache;
+        return this;
     }
 
     public boolean memoryCanStores(long bytesToStore) {
@@ -115,40 +129,41 @@ public final class MathsConfig {
         if (maxMemoryThreshold <= 0) {
             return true;
         }
-        return (bytesToStore <= (MathsBase.maxFreeMemory() * ((double) maxMemoryThreshold)));
+        return (bytesToStore <= (Maths.maxFreeMemory() * ((double) maxMemoryThreshold)));
     }
 
     public float getMaxMemoryThreshold() {
         return maxMemoryThreshold;
     }
 
-    public void setMaxMemoryThreshold(float maxMemoryThreshold) {
+    public MathsConfig setMaxMemoryThreshold(float maxMemoryThreshold) {
         this.maxMemoryThreshold = maxMemoryThreshold;
+        return this;
     }
 
-    public TMatrixFactory getTMatrixFactory(String id) {
-        TMatrixFactory fac = matrixFactories.get(id);
+    public MatrixFactory getTMatrixFactory(String id) {
+        MatrixFactory fac = matrixFactories.get(id);
         if (fac == null) {
             if (SmartComplexMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(SmartComplexMatrixFactory.INSTANCE);
+                registerMatrixFactory(SmartComplexMatrixFactory.INSTANCE);
                 return SmartComplexMatrixFactory.INSTANCE;
             }
             if (MemComplexMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(MemComplexMatrixFactory.INSTANCE);
+                registerMatrixFactory(MemComplexMatrixFactory.INSTANCE);
                 return MemComplexMatrixFactory.INSTANCE;
             }
             if (OjalgoComplexMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(OjalgoComplexMatrixFactory.INSTANCE);
+                registerMatrixFactory(OjalgoComplexMatrixFactory.INSTANCE);
                 return OjalgoComplexMatrixFactory.INSTANCE;
             }
             if (JBlasComplexMatrixFactory.INSTANCE.getId().equals(id)) {
-                registerTMatrixFactory(JBlasComplexMatrixFactory.INSTANCE);
+                registerMatrixFactory(JBlasComplexMatrixFactory.INSTANCE);
                 return JBlasComplexMatrixFactory.INSTANCE;
             }
             String id1 = DBLargeComplexMatrixFactory.createId(id);
             if (id1 != null) {
                 DBLargeComplexMatrixFactory dbLargeMatrixFactory = new DBLargeComplexMatrixFactory(id);
-                registerTMatrixFactory(dbLargeMatrixFactory);
+                registerMatrixFactory(dbLargeMatrixFactory);
                 return dbLargeMatrixFactory;
             }
             throw new IllegalArgumentException("Factory not Found : " + id);
@@ -157,16 +172,17 @@ public final class MathsConfig {
         }
     }
 
-    public void registerTMatrixFactory(TMatrixFactory factory) {
-        TMatrixFactory fac = matrixFactories.get(factory.getId());
+    public MathsConfig registerMatrixFactory(MatrixFactory factory) {
+        MatrixFactory fac = matrixFactories.get(factory.getId());
         if (fac == null) {
             matrixFactories.put(factory.getId(), factory);
         } else {
             throw new IllegalArgumentException("Already registered");
         }
+        return this;
     }
 
-    public <A, B> void registerConverter(Class<A> a, Class<B> b, Converter<A, B> c) {
+    public <A, B> void registerConverter(Class<A> a, Class<B> b, Function<A, B> c) {
         ClassPair k = new ClassPair(a, b);
         if (c == null) {
             converters.remove(k);
@@ -175,80 +191,86 @@ public final class MathsConfig {
         }
     }
 
-    public <A, B> Converter<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
-        ClassPair k = new ClassPair(a, b);
-        return converters.get(k);
+    public <A, B> Function<A, B> getConverter(TypeName<A> a, TypeName<B> b) {
+        return getConverter(a.getTypeClass(), b.getTypeClass());
     }
 
-    public <A, B> Converter<A, B> getConverter(Class<A> a, Class<B> b) {
+    public <A, B> Function<A, B> getConverter(Class<A> a, Class<B> b) {
         if (a.equals(b)) {
-            return MathsBase.IDENTITY;
+            return Maths.IDENTITY;
         }
-        Converter converter = getRegisteredConverter(a, b);
+        Function converter = getRegisteredConverter(a, b);
         if (converter == null) {
-            throw new NoSuchElementException("No such element : converter for " + a + " and " + b);
+            throw new NoSuchElementException("No such primitiveElement3D : converter for " + a + " and " + b);
         }
         return converter;
     }
 
-    public <A, B> Converter<A, B> getConverter(TypeName<A> a, TypeName<B> b) {
-        return getConverter(a.getTypeClass(), b.getTypeClass());
+    public <A, B> Function<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
+        ClassPair k = new ClassPair(a, b);
+        return converters.get(k);
     }
 
     public boolean isDevelopmentMode() {
         return developmentMode;
     }
 
-    public void setDevelopmentMode(boolean developmentMode) {
+    public MathsConfig setDevelopmentMode(boolean developmentMode) {
         this.developmentMode = developmentMode;
+        return this;
     }
 
     public FrequencyFormat getFrequencyFormatter() {
         return frequencyFormatter;
     }
 
-    public void setFrequencyFormatter(FrequencyFormat frequencyFormatter) {
+    public MathsConfig setFrequencyFormatter(FrequencyFormat frequencyFormatter) {
         this.frequencyFormatter = frequencyFormatter;
+        return this;
     }
 
     public BytesSizeFormat getMemorySizeFormatter() {
         return memorySizeFormatter;
     }
 
-    public void setMemorySizeFormatter(BytesSizeFormat memorySizeFormatter) {
+    public MathsConfig setMemorySizeFormatter(BytesSizeFormat memorySizeFormatter) {
         this.memorySizeFormatter = memorySizeFormatter;
+        return this;
     }
 
     public MetricFormat getMetricFormatter() {
         return metricFormatter;
     }
 
-    public void setMetricFormatter(MetricFormat metricFormatter) {
+    public MathsConfig setMetricFormatter(MetricFormat metricFormatter) {
         this.metricFormatter = metricFormatter;
+        return this;
     }
 
     public ComplexMatrixFactory getComplexMatrixFactory() {
         return complexMatrixFactory;
     }
 
-    public void setComplexMatrixFactory(ComplexMatrixFactory defaultComplexMatrixFactory) {
+    public MathsConfig setComplexMatrixFactory(ComplexMatrixFactory defaultComplexMatrixFactory) {
         this.complexMatrixFactory = defaultComplexMatrixFactory;
+        return this;
     }
 
     public ExprMatrixFactory getExprMatrixFactory() {
         return exprMatrixFactory;
     }
 
-    public void setExprMatrixFactory(ExprMatrixFactory factory) {
+    public MathsConfig setExprMatrixFactory(ExprMatrixFactory factory) {
         this.exprMatrixFactory = factory;
+        return this;
     }
 
-    public <T> TMatrixFactory<T> getComplexMatrixFactory(TypeName<T> baseType) {
-        TMatrixFactory<T> r = null;
-        if (baseType == MathsBase.$EXPR) {
-            r = (TMatrixFactory<T>) exprMatrixFactory;
-        } else if (baseType == MathsBase.$COMPLEX) {
-            r = (TMatrixFactory<T>) complexMatrixFactory;
+    public <T> MatrixFactory<T> getComplexMatrixFactory(TypeName<T> baseType) {
+        MatrixFactory<T> r = null;
+        if (baseType == Maths.$EXPR) {
+            r = (MatrixFactory<T>) exprMatrixFactory;
+        } else if (baseType == Maths.$COMPLEX) {
+            r = (MatrixFactory<T>) complexMatrixFactory;
         }
         if (r == null) {
             throw new IllegalArgumentException("Not Supported Matrices for " + baseType);
@@ -260,16 +282,18 @@ public final class MathsConfig {
         return expand ? this.expandPath(rootCachePath) : rootCachePath;
     }
 
-    public void setRootCachePath(String rootCachePath) {
+    public MathsConfig setRootCachePath(String rootCachePath) {
         this.rootCachePath = rootCachePath;
+        return this;
     }
 
     public String getDefaultCacheFolderName(boolean expand) {
         return expand ? this.expandPath(appCacheName) : appCacheName;
     }
 
-    public void setAppCacheName(String appCacheName) {
+    public MathsConfig setAppCacheName(String appCacheName) {
         this.appCacheName = appCacheName;
+        return this;
     }
 
 
@@ -308,17 +332,18 @@ public final class MathsConfig {
         return cacheEnabled && expressionWriterCacheEnabled;
     }
 
-    public void setExpressionWriterCacheEnabled(boolean enabled) {
+    public MathsConfig setExpressionWriterCacheEnabled(boolean enabled) {
         boolean old = expressionWriterCacheEnabled;
         expressionWriterCacheEnabled = enabled;
         pcs.firePropertyChange("expressionWriterCacheEnabled", old, enabled);
+        return this;
     }
 
     public CacheMode getPersistenceCacheMode() {
         return cacheEnabled ? persistenceCacheMode : CacheMode.DISABLED;
     }
 
-    public void setPersistenceCacheMode(CacheMode persistenceCacheMode) {
+    public MathsConfig setPersistenceCacheMode(CacheMode persistenceCacheMode) {
         if (persistenceCacheMode == null) {
             persistenceCacheMode = CacheMode.DISABLED;
         }
@@ -330,74 +355,11 @@ public final class MathsConfig {
         }
         this.persistenceCacheMode = persistenceCacheMode;
 
+        return this;
     }
 
     public ExpressionRewriter getScalarProductSimplifier() {
-        return getScalarProductOperator().getExpressionRewriter();
-    }
-
-    public ExpressionRewriter getIntegrationSimplifier() {
-        return getIntegrationOperator().getExpressionRewriter();
-    }
-
-    public ExpressionRewriter getComputationSimplifier() {
-        return ExpressionRewriterFactory.getComputationSimplifier();
-    }
-
-
-    public void addConfigChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-
-    public void addConfigChangeListener(String property, PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(property, listener);
-    }
-
-    public void removeConfigChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
-    }
-
-    public void removeConfigChangeListener(String property, PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(property, listener);
-    }
-
-    public boolean isCacheEnabled() {
-        return cacheEnabled;
-    }
-
-    public void setCacheEnabled(boolean enabled) {
-        boolean old = cacheEnabled;
-        cacheEnabled = enabled;
-        cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
-        pcs.firePropertyChange("cacheEnabled", old, cacheEnabled);
-    }
-
-    public boolean isCacheExpressionPropertiesEnabled() {
-        return cacheExpressionPropertiesEnabledEff;
-    }
-
-    public void setCacheExpressionPropertiesEnabled(boolean cacheExpressionPropertiesEnabled) {
-        boolean old = this.cacheExpressionPropertiesEnabled;
-        this.cacheExpressionPropertiesEnabled = cacheExpressionPropertiesEnabled;
-        cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
-        pcs.firePropertyChange("cacheEnabled", old, this.cacheExpressionPropertiesEnabled);
-    }
-
-    public void setCacheExpressionRewriterSize(ExpressionRewriter ew, int size) {
-        if (ew instanceof CacheEnabled) {
-            ((CacheEnabled) ew).setCacheSize(size);
-        }
-    }
-
-    public FunctionDifferentiatorManager getFunctionDerivatorManager() {
-        if (getFunctionDifferentiatorManager() == null) {
-            setFunctionDifferentiatorManager(new FormalDifferentiation());
-        }
-        return getFunctionDifferentiatorManager();
-    }
-
-    public void setFunctionDerivatorManager(FunctionDifferentiatorManager manager) {
-        setFunctionDifferentiatorManager(manager);
+        return getScalarProductOperator().getSimplifier();
     }
 
     public ScalarProductOperator getScalarProductOperator() {
@@ -407,8 +369,13 @@ public final class MathsConfig {
         return defaultScalarProductOperator;
     }
 
-    public void setScalarProductOperator(ScalarProductOperator sp) {
+    public MathsConfig setScalarProductOperator(ScalarProductOperator sp) {
         defaultScalarProductOperator = sp == null ? ScalarProductOperatorFactory.defaultValue() : sp;
+        return this;
+    }
+
+    public ExpressionRewriter getIntegrationSimplifier() {
+        return getIntegrationOperator().getSimplifier();
     }
 
     public IntegrationOperator getIntegrationOperator() {
@@ -418,10 +385,86 @@ public final class MathsConfig {
         return defaultIntegrationOperator;
     }
 
-    public void setIntegrationOperator(IntegrationOperator op) {
+    public MathsConfig setIntegrationOperator(IntegrationOperator op) {
         defaultIntegrationOperator = op == null ? IntegrationOperatorFactory.defaultValue() : op;
+        return this;
     }
 
+    public ExpressionRewriter getComputationSimplifier() {
+        return ExpressionRewriterFactory.getComputationSimplifier();
+    }
+
+    public MathsConfig addConfigChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+        return this;
+    }
+
+    public MathsConfig addConfigChangeListener(String property, PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(property, listener);
+        return this;
+    }
+
+    public MathsConfig removeConfigChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+        return this;
+    }
+
+    public MathsConfig removeConfigChangeListener(String property, PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(property, listener);
+        return this;
+    }
+
+    public boolean isCacheEnabled() {
+        return cacheEnabled;
+    }
+
+    public MathsConfig setCacheEnabled(boolean enabled) {
+        boolean old = cacheEnabled;
+        cacheEnabled = enabled;
+        cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
+        pcs.firePropertyChange("cacheEnabled", old, cacheEnabled);
+        return this;
+    }
+
+    public boolean isCacheExpressionPropertiesEnabled() {
+        return cacheExpressionPropertiesEnabledEff;
+    }
+
+    public MathsConfig setCacheExpressionPropertiesEnabled(boolean cacheExpressionPropertiesEnabled) {
+        boolean old = this.cacheExpressionPropertiesEnabled;
+        this.cacheExpressionPropertiesEnabled = cacheExpressionPropertiesEnabled;
+        cacheExpressionPropertiesEnabledEff = cacheExpressionPropertiesEnabled && cacheEnabled;
+        pcs.firePropertyChange("cacheExpressionPropertiesEnabled", old, this.cacheExpressionPropertiesEnabled);
+        return this;
+    }
+
+    public MathsConfig setCacheExpressionRewriterSize(ExpressionRewriter ew, int size) {
+        if (ew instanceof CacheEnabled) {
+            ((CacheEnabled) ew).setCacheSize(size);
+        }
+        return this;
+    }
+
+    public FunctionDifferentiatorManager getFunctionDerivatorManager() {
+        if (getFunctionDifferentiatorManager() == null) {
+            setFunctionDifferentiatorManager(new FormalDifferentiation());
+        }
+        return getFunctionDifferentiatorManager();
+    }
+
+    public MathsConfig setFunctionDerivatorManager(FunctionDifferentiatorManager manager) {
+        setFunctionDifferentiatorManager(manager);
+        return this;
+    }
+
+    public FunctionDifferentiatorManager getFunctionDifferentiatorManager() {
+        return functionDifferentiatorManager;
+    }
+
+    public MathsConfig setFunctionDifferentiatorManager(FunctionDifferentiatorManager functionDifferentiatorManager) {
+        this.functionDifferentiatorManager = functionDifferentiatorManager;
+        return this;
+    }
 
     public String getLargeMatrixCachePath(boolean expand) {
         if (expand) {
@@ -430,10 +473,10 @@ public final class MathsConfig {
         return largeMatrixCachePath;
     }
 
-    public void seLargeMatrixCachePath(String largeMatrixPath) {
+    public MathsConfig seLargeMatrixCachePath(String largeMatrixPath) {
         largeMatrixCachePath = largeMatrixPath;
+        return this;
     }
-
 
     public ComplexMatrixFactory getLargeMatrixFactory() {
         if (defaultLargeComplexMatrixFactory == null) {
@@ -450,16 +493,17 @@ public final class MathsConfig {
         return defaultLargeComplexMatrixFactory;
     }
 
-    public void setLargeMatrixFactory(ComplexMatrixFactory m) {
+    public MathsConfig setLargeMatrixFactory(ComplexMatrixFactory m) {
         synchronized (MathsConfig.class) {
             if (defaultLargeComplexMatrixFactory != null) {
                 defaultLargeComplexMatrixFactory.close();
             }
             defaultLargeComplexMatrixFactory = m;
         }
+        return this;
     }
 
-    public void setLogMonitorLevel(Level level) {
+    public MathsConfig setLogMonitorLevel(Level level) {
         Logger logger = LogProgressMonitor.getDefaultLogger();
         logger.setLevel(level);
         Handler handler = null;
@@ -473,6 +517,7 @@ public final class MathsConfig {
             handler.setFormatter(LogUtils.LOG_FORMATTER_2);
             logger.addHandler(handler);
         }
+        return this;
     }
 
     public String expandPath(String format) {
@@ -529,64 +574,58 @@ public final class MathsConfig {
         return matrixBlockPrecision;
     }
 
-    public void setMatrixBlockPrecision(int matrixBlockPrecision) {
+    public MathsConfig setMatrixBlockPrecision(int matrixBlockPrecision) {
         this.matrixBlockPrecision = matrixBlockPrecision;
+        return this;
     }
 
     public InverseStrategy getDefaultMatrixInverseStrategy() {
         return defaultMatrixInverseStrategy;
     }
 
-    public void setDefaultMatrixInverseStrategy(InverseStrategy defaultMatrixInverseStrategy) {
+    public MathsConfig setDefaultMatrixInverseStrategy(InverseStrategy defaultMatrixInverseStrategy) {
         this.defaultMatrixInverseStrategy = defaultMatrixInverseStrategy;
+        return this;
     }
 
     public SolveStrategy getDefaultMatrixSolveStrategy() {
         return defaultMatrixSolveStrategy;
     }
 
-    public void setDefaultMatrixSolveStrategy(SolveStrategy defaultMatrixSolveStrategy) {
+    public MathsConfig setDefaultMatrixSolveStrategy(SolveStrategy defaultMatrixSolveStrategy) {
         this.defaultMatrixSolveStrategy = defaultMatrixSolveStrategy;
-    }
-
-    public FunctionDifferentiatorManager getFunctionDifferentiatorManager() {
-        return functionDifferentiatorManager;
-    }
-
-    public void setFunctionDifferentiatorManager(FunctionDifferentiatorManager functionDifferentiatorManager) {
-        this.functionDifferentiatorManager = functionDifferentiatorManager;
+        return this;
     }
 
     public int getSimplifierCacheSize() {
         return simplifierCacheSize;
     }
 
-    public void setSimplifierCacheSize(int simplifierCacheSize) {
+    public MathsConfig setSimplifierCacheSize(int simplifierCacheSize) {
         this.simplifierCacheSize = simplifierCacheSize;
+        return this;
     }
 
     public boolean isDebugExpressionRewrite() {
         return debugExpressionRewrite;
     }
 
-    public void setDebugExpressionRewrite(boolean debugExpressionRewrite) {
+    public MathsConfig setDebugExpressionRewrite(boolean debugExpressionRewrite) {
         this.debugExpressionRewrite = debugExpressionRewrite;
+        return this;
     }
 
     public boolean isStrictComputationMonitor() {
         return strictComputationMonitor;
     }
 
-    public void setStrictComputationMonitor(boolean strictComputationMonitor) {
+    public MathsConfig setStrictComputationMonitor(boolean strictComputationMonitor) {
         this.strictComputationMonitor = strictComputationMonitor;
+        return this;
     }
 
     public DumpManager getDumpManager() {
         return dumpManager;
-    }
-
-    public ExprSequenceFactory getExprSequenceFactory() {
-        return exprSequenceFactory;
     }
 
     public ExprCubeFactory getExprCubeFactory() {
@@ -606,7 +645,7 @@ public final class MathsConfig {
         return defaultDblFormat;
     }
 
-    public void close() {
+    public MathsConfig close() {
         if (defaultLargeComplexMatrixFactory != null) {
             try {
                 defaultLargeComplexMatrixFactory.close();
@@ -614,6 +653,17 @@ public final class MathsConfig {
                 ex.printStackTrace();
             }
         }
+        return this;
     }
+
+    public TsonSerializer getTsonSerializer() {
+        return tsonSerializer == null ? Tson.serializer() : tsonSerializer;
+    }
+
+    public MathsConfig setTsonSerializer(TsonSerializer tsonSerializer) {
+        this.tsonSerializer = tsonSerializer;
+        return this;
+    }
+
 }
 

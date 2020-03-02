@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 
 import net.vpc.common.jeep.*;
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
 import net.vpc.scholar.hadruwaves.mom.ProjectType;
 import net.vpc.scholar.hadruwaves.Wall;
@@ -297,7 +297,7 @@ public class VarEvaluator {
         parser.configureDefaults();
         parser.declareVar("DIM_UNIT", Double.class,dimensionUnit);
         parser.declareVar("FREQ_UNIT", Double.class,frequencyUnit);
-        parser.declareVar("C", Double.class,Maths.C);
+        parser.declareVar("C", Double.class, Maths.C);
         parser.declareVar("U0", Double.class,Maths.U0);
         parser.declareVar("EPS0", Double.class,Maths.EPS0);
 
@@ -320,7 +320,7 @@ public class VarEvaluator {
                 if (n instanceof Complex) {
                     return (Complex) n;
                 } else if (n instanceof Number) {
-                    return Complex.valueOf(((Number) n).doubleValue());
+                    return Complex.of(((Number) n).doubleValue());
                 }
                 return Complex.NaN;
             } catch (NoSuchVariableException var) {
@@ -338,7 +338,7 @@ public class VarEvaluator {
         }
 
         @Override
-        public Object evaluate(ExpressionNode[] args, ExpressionEvaluator evaluator) {
+        public Object eval(ExpressionNode[] args, ExpressionEvaluator evaluator) {
             MomStructure str = null;
             try {
                 String n = (String) args[0].evaluate(evaluator);
@@ -402,7 +402,7 @@ public class VarEvaluator {
                 ii = ((Number) params[1]).intValue() - 1;
                 jj = ((Number) params[2]).intValue() - 1;
             }
-            return str.self().computeMatrix().get(ii, jj);
+            return str.self().evalMatrix().get(ii, jj);
         }
     }
 
@@ -420,7 +420,7 @@ public class VarEvaluator {
                 ii = ((Number) params[1]).intValue() - 1;
                 jj = ((Number) params[2]).intValue() - 1;
             }
-            return str.capacity().computeMatrix().get(ii, jj);
+            return str.capacity().evalMatrix().get(ii, jj);
         }
     }
 
@@ -438,7 +438,7 @@ public class VarEvaluator {
                 ii = ((Number) params[1]).intValue() - 1;
                 jj = ((Number) params[2]).intValue() - 1;
             }
-            return str.sparameters().computeMatrix().get(ii, jj);
+            return str.sparameters().evalMatrix().get(ii, jj);
         }
     }
 

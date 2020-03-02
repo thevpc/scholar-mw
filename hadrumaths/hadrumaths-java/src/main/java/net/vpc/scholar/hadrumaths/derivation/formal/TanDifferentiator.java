@@ -5,10 +5,9 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiator;
 import net.vpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
-import net.vpc.scholar.hadrumaths.symbolic.Plus;
-import net.vpc.scholar.hadrumaths.symbolic.Sqr;
-import net.vpc.scholar.hadrumaths.symbolic.Tan;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.Tan;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -17,14 +16,14 @@ import net.vpc.scholar.hadrumaths.symbolic.Tan;
 public class TanDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Tan c = (Tan) f;
-        Expr a = c.getArgument();
+        Expr a = c.getChild(0);
         return
-                new Mul(
+                mul(
                         d.derive(a, varIndex)
                         ,
-                        new Plus(
+                        add(
                                 Complex.ONE,
-                                new Sqr(c)
+                                sqr(c)
                         )
                 )
                 ;

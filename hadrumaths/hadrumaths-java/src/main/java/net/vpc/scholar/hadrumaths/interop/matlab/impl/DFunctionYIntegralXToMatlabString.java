@@ -7,7 +7,7 @@ package net.vpc.scholar.hadrumaths.interop.matlab.impl;
 import net.vpc.scholar.hadrumaths.interop.matlab.MatlabFactory;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
-import net.vpc.scholar.hadrumaths.symbolic.DDyIntegralX;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDyIntegralX;
 
 /**
  * @author vpc

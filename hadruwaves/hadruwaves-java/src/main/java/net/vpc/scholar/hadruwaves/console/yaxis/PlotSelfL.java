@@ -24,9 +24,9 @@ public class PlotSelfL extends PlotAxisSeriesSingleValue implements Cloneable {
     }
 
     @Override
-    protected Complex computeComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
+    protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
         MomStructure ss = (MomStructure) structure;
-        Complex z = ss.self().monitor(this).computeMatrix().get(this.x, this.y);
+        Complex z = ss.self().monitor(this).evalMatrix().get(this.x, this.y);
         return z.div(Complex.I(Physics.omega(ss.getFrequency())));
     }
 }

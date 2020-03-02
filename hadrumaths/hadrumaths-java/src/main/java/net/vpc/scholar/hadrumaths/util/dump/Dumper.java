@@ -1,7 +1,7 @@
 package net.vpc.scholar.hadrumaths.util.dump;
 
 
-import net.vpc.scholar.hadrumaths.MathsBase;
+import net.vpc.scholar.hadrumaths.Maths;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -14,26 +14,11 @@ import java.util.StringTokenizer;
  */
 public class Dumper {
     private Object baseRef;
-    private StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
     private String name;
-    private String elementSeparator=";";
+    private String elementSeparator = ";";
     private Type type = Type.OBJECT;
-    private boolean containsLineSeparator= false;
-
-    public enum Type {
-        SIMPLE,
-        OBJECT,
-        ARRAY
-    }
-
-    public String getElementSeparator() {
-        return elementSeparator;
-    }
-
-    public Dumper setElementSeparator(String elementSeparator) {
-        this.elementSeparator = elementSeparator==null?";":elementSeparator;
-        return this;
-    }
+    private boolean containsLineSeparator = false;
 
     public Dumper(Object c) {
         this(c, Type.OBJECT);
@@ -52,13 +37,13 @@ public class Dumper {
         this("", Type.OBJECT);
     }
 
-    public Dumper(String name) {
-        this(name, Type.OBJECT);
-    }
-
     public Dumper(String name, Type type) {
         this.name = name == null ? "" : name;
         this.type = type;
+    }
+
+    public Dumper(String name) {
+        this(name, Type.OBJECT);
     }
 
     public String getName() {
@@ -118,13 +103,6 @@ public class Dumper {
         return add(null, value);
     }
 
-    public Dumper addNonNull(String varName, Object value) {
-        if (value != null) {
-            add(varName, value);
-        }
-        return this;
-    }
-
     public Dumper add(String varName, Object value) {
         boolean first = sb.length() == 0;
         if (!first) {
@@ -133,27 +111,27 @@ public class Dumper {
             }
         }
         String p = null;
-        if(varName!=null) {
+        if (varName != null) {
             if (type == Type.SIMPLE) {
                 sb.append(varName).append("=");
             } else {
                 sb.append("  ").append(varName).append(" = ");
             }
-        }else{
+        } else {
             if (type != Type.SIMPLE) {
                 sb.append("  ");
             }
         }
-        String str = (type == Type.SIMPLE) ? MathsBase.dumpSimple(value) : MathsBase.dump(value);
-        sb.ensureCapacity(sb.length()+str.length());
+        String str = (type == Type.SIMPLE) ? Maths.dumpSimple(value) : Maths.dump(value);
+        sb.ensureCapacity(sb.length() + str.length());
         StringTokenizer stok = new StringTokenizer(str, "\r\n");
-        if(stok.hasMoreTokens()){
+        if (stok.hasMoreTokens()) {
             sb.append(stok.nextToken());
-            boolean b=stok.hasMoreTokens();
+            boolean b = stok.hasMoreTokens();
             if (b || !(type == Type.SIMPLE)) {
                 sb.append("\n");
-                if(b){
-                    containsLineSeparator=true;
+                if (b) {
+                    containsLineSeparator = true;
                     sb.append("  ");
                     sb.append(stok.nextToken());
                     sb.append("\n");
@@ -164,6 +142,22 @@ public class Dumper {
                     }
                 }
             }
+        }
+        return this;
+    }
+
+    public String getElementSeparator() {
+        return elementSeparator;
+    }
+
+    public Dumper setElementSeparator(String elementSeparator) {
+        this.elementSeparator = elementSeparator == null ? ";" : elementSeparator;
+        return this;
+    }
+
+    public Dumper addNonNull(String varName, Object value) {
+        if (value != null) {
+            add(varName, value);
         }
         return this;
     }
@@ -190,5 +184,11 @@ public class Dumper {
             }
         }
         throw new IllegalArgumentException("Unsupported");
+    }
+
+    public enum Type {
+        SIMPLE,
+        OBJECT,
+        ARRAY
     }
 }

@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.common.util.TypeName;
 import net.vpc.scholar.hadrumaths.DoubleVector;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadruplot.PlotBuilder;
 import net.vpc.scholar.hadruplot.PlotBuilderSupport;
 
@@ -14,8 +14,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean xsamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TVector) {
-            TVector lxvalue = (TVector) xvalue;
+        if (xvalue instanceof Vector) {
+            Vector lxvalue = (Vector) xvalue;
             if (lxvalue.length() == 0) {
                 builder.xsamples(new double[0]);
                 return true;
@@ -23,11 +23,11 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
             TypeName componentType = lxvalue.getComponentType();
             if (componentType.getTypeClass().equals(Double.TYPE)
                     || componentType.getTypeClass().equals(Double.class)) {
-                DoubleVector to = (DoubleVector) lxvalue.to(MathsBase.$DOUBLE);
+                DoubleVector to = (DoubleVector) lxvalue.to(Maths.$DOUBLE);
                 builder.xsamples(to.toDoubleArray());
             } else {
                 builder.samples(null);
-                builder.xformat(new PlotBuilder.ListDoubleFormat(lxvalue.toJList()));
+                builder.xformat(new PlotBuilder.ListDoubleFormat(lxvalue.toList()));
             }
             return true;
         }
@@ -36,8 +36,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean ysamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TVector) {
-            DoubleVector to = (DoubleVector) ((TVector) xvalue).to(MathsBase.$DOUBLE);
+        if (xvalue instanceof Vector) {
+            DoubleVector to = (DoubleVector) ((Vector) xvalue).to(Maths.$DOUBLE);
             builder.ysamples(to.toDoubleArray());
             return true;
         }
@@ -46,8 +46,8 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean zsamples(Object xvalue, PlotBuilder builder) {
-        if (xvalue instanceof TVector) {
-            DoubleVector to = (DoubleVector) ((TVector) xvalue).to(MathsBase.$DOUBLE);
+        if (xvalue instanceof Vector) {
+            DoubleVector to = (DoubleVector) ((Vector) xvalue).to(Maths.$DOUBLE);
             builder.zsamples(to.toDoubleArray());
             return true;
         }
@@ -62,7 +62,7 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 //            builder.xsamples(y.xsamples());
 //            any = y.getValues();
 //        }
-//        TVector a2 = toTVectorD(any);
+//        Vector a2 = toTVectorD(any);
 //        if (a2 != null) {
 //            any = a2;
 //        }

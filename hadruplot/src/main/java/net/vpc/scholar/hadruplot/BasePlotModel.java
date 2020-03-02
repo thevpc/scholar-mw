@@ -9,7 +9,6 @@ import java.util.Set;
 public abstract class BasePlotModel implements PlotModel {
 
     private PropertyChangeSupport changeSupport;
-    private String libraries;
     private String title = "";
     private String name = "";
     private String colorPalette = "";
@@ -23,17 +22,6 @@ public abstract class BasePlotModel implements PlotModel {
         Object old = this.title;
         this.title = title;
         firePropertyChange("title", old, this.title);
-        return this;
-    }
-
-    public String getLibraries() {
-        return libraries;
-    }
-
-    public PlotModel setLibraries(String libraries) {
-        String old=this.libraries;
-        this.libraries = libraries;
-        firePropertyChange("libraries", old, this.libraries);
         return this;
     }
 

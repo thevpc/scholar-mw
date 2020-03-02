@@ -17,45 +17,45 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         super(structure);
     }
 
-    protected abstract ComplexMatrix computeMatrixImpl();
+    protected abstract ComplexMatrix evalMatrixImpl();
 
-    protected final ComplexMatrix computeMatrixImplLog(){
+    protected final ComplexMatrix evalMatrixImplLog(){
         return Maths.invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
             @Override
             public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                return computeMatrixImpl();
+                return evalMatrixImpl();
             }
         });
     }
 
-    public Complex computeComplexImpl() {
-        return computeMatrixImplLog().toComplex();
+    public Complex evalComplexImpl() {
+        return evalMatrixImplLog().toComplex();
     }
 
-    public ComplexMatrix computeMatrix() {
+    public ComplexMatrix evalMatrix() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return computeMatrixImplLog();
+            return evalMatrixImplLog();
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return computeMatrixImplLog();
+                    return evalMatrixImplLog();
                 }
             }, getMonitor()));
         }
     }
 
 
-    public Complex computeComplex() {
+    public Complex evalComplex() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return computeComplexImpl();
+            return evalComplexImpl();
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Complex evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return computeComplexImpl();
+                    return evalComplexImpl();
                 }
             }, getMonitor()));
         }

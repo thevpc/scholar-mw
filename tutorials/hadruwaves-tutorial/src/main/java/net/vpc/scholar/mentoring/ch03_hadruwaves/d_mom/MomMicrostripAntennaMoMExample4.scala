@@ -7,8 +7,11 @@ package net.vpc.scholar.mentoring.ch0x.s4
 
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
+import net.vpc.scholar.hadruwaves.{Material, WallBorders}
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.DefaultModeFunctionsEnv
 import net.vpc.scholar.hadruwaves.mom.ModeFunctionsFactory._
+import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions
 
 object MomMicrostripAntennaMoMExample4 {
   def main(args: Array[String]): Unit = {
@@ -24,12 +27,14 @@ object MomMicrostripAntennaMoMExample4 {
     var dBox = domain(0.0 -> a, -b / 2 -> b / 2)
     var dLgn = domain((a / 2 - lx / 2) -> (a / 2 + lx / 2), -b / 2 -> (-b / 2 + L))
     var dSrc = domain((a / 2 - lx / 2) -> (a / 2 + lx / 2), -b / 2 -> (-b / 2 + w))
-    var modes = createBox("EEEE")
-              .setDomain(dBox)
-              .setFrequency(freq)
-              .setSize(1000)
-              .setFirstBoxSpace(shortCircuit(2.2, ep))
-              .setSecondBoxSpace(shortCircuit(1, 0.1))
+    var env=new DefaultModeFunctionsEnv()
+      .setBorders(WallBorders.EEEE)
+      .setDomain(dBox)
+      .setFrequency(freq)
+      .setFirstBoxSpace(shortCircuit(Material.substrate(2.2), ep))
+      .setSecondBoxSpace(shortCircuit(Material.VACUUM, 0.1))
+    var modes = new BoxModeFunctions().setEnv(env).setSize(1000)
+
 
     Plot.title("Mode functions").plot(modes.fn)
 

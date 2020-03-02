@@ -1,10 +1,13 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.common.util.MapUtils;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.DefaultDoubleToVector;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
@@ -15,7 +18,6 @@ import net.vpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.util.*;
 
@@ -315,19 +317,20 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    public Dumper getDumpStringHelper() {
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
         arr();
-        Dumper h = super.getDumpStringHelper();
         for (CircuitType circuitType : CircuitType.values()) {
-            h.add(circuitType.toString(), polygons[circuitType.ordinal()]);
+            h.add(circuitType.toString(), context.elem(polygons[circuitType.ordinal()]));
         }
-        h.add("symmetry", getSymmetry());
-        h.add("pattern", getPattern());
-        h.addNonNull("invariance", getInvariance());
+        h.add("symmetry", context.elem(getSymmetry()));
+        h.add("pattern", context.elem(getPattern()));
+        h.add("invariance", context.elem(getInvariance()));
 //        System.out.println("meshAlgo = " + meshAlgo.dump());
-        h.add("meshAlgo", meshAlgo);
-        return h;
+        h.add("meshAlgo", context.elem(meshAlgo));
+        return h.build();
     }
+
 
     @Override
     public String toString() {
@@ -382,5 +385,8 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         this.name = name;
     }
 
-
+    @Override
+    public Geometry[] getGeometries() {
+        return polygons;
+    }
 }

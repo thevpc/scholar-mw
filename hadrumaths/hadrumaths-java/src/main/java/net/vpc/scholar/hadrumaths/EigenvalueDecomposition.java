@@ -29,7 +29,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
      *
      * @serial matrix dimension.
      */
-    private int n;
+    private final int n;
 
     /**
      * Symmetry flag.
@@ -43,14 +43,15 @@ public class EigenvalueDecomposition implements java.io.Serializable {
      *
      * @serial internal storage of eigenvalues.
      */
-    private double[] d, e;
+    private final double[] d;
+    private final double[] e;
 
     /**
      * Array for internal storage of eigenvectors.
      *
      * @serial internal storage of eigenvectors.
      */
-    private double[][] V;
+    private final double[][] V;
 
     /**
      * Array for internal storage of nonsymmetric Hessenberg form.
@@ -71,6 +72,63 @@ public class EigenvalueDecomposition implements java.io.Serializable {
  * ------------------------ */
 
     // Symmetric Householder reduction to tridiagonal form.
+    private transient double cdivr, cdivi;
+
+    // Symmetric tridiagonal QL algorithm.
+
+    /**
+     * Check for symmetry, then construct the eigenvalue decomposition
+     * Structure to access D and V.
+     *
+     * @param Arg Square matrix
+     */
+
+    public EigenvalueDecomposition(DMatrix Arg) {
+        double[][] A = Arg.getDoubleArray();
+        n = Arg.getColumnCount();
+        V = new double[n][n];
+        d = new double[n];
+        e = new double[n];
+
+        issymmetric = true;
+        for (int j = 0; (j < n) && issymmetric; j++) {
+            for (int i = 0; (i < n) && issymmetric; i++) {
+                issymmetric = (A[i][j] == A[j][i]);
+            }
+        }
+
+        if (issymmetric) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    V[i][j] = A[i][j];
+                }
+            }
+
+            // Tridiagonalize.
+            tred2();
+
+            // Diagonalize.
+            tql2();
+
+        } else {
+            H = new double[n][n];
+            ort = new double[n];
+
+            for (int j = 0; j < n; j++) {
+                for (int i = 0; i < n; i++) {
+                    H[i][j] = A[i][j];
+                }
+            }
+
+            // Reduce to Hessenberg form.
+            orthes();
+
+            // Reduce Hessenberg to real Schur form.
+            hqr2();
+        }
+    }
+
+    // Nonsymmetric reduction to Hessenberg form.
 
     private void tred2() {
 
@@ -110,7 +168,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     h += d[k] * d[k];
                 }
                 double f = d[i - 1];
-                double g = MathsBase.sqrt(h);
+                double g = Maths.sqrt(h);
                 if (f > 0) {
                     g = -g;
                 }
@@ -187,7 +245,8 @@ public class EigenvalueDecomposition implements java.io.Serializable {
         e[0] = 0.0;
     }
 
-    // Symmetric tridiagonal QL algorithm.
+
+    // Complex scalar division.
 
     private void tql2() {
 
@@ -203,10 +262,10 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
         double f = 0.0;
         double tst1 = 0.0;
-        double eps = MathsBase.pow(2.0, -52.0);
+        double eps = Maths.pow(2.0, -52.0);
         for (int l = 0; l < n; l++) {
 
-            // Find small subdiagonal element
+            // Find small subdiagonal primitiveElement3D
 
             tst1 = Math.max(tst1, Math.abs(d[l]) + Math.abs(e[l]));
             int m = l;
@@ -229,7 +288,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
                     double g = d[l];
                     double p = (d[l + 1] - g) / (2.0 * e[l]);
-                    double r = MathsBase.hypot(p, 1.0);
+                    double r = Maths.hypot(p, 1.0);
                     if (p < 0) {
                         r = -r;
                     }
@@ -257,7 +316,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                         s2 = s;
                         g = c * e[i];
                         h = c * p;
-                        r = MathsBase.hypot(p, e[i]);
+                        r = Maths.hypot(p, e[i]);
                         e[i + 1] = s * r;
                         s = e[i] / r;
                         c = p / r;
@@ -307,8 +366,6 @@ public class EigenvalueDecomposition implements java.io.Serializable {
         }
     }
 
-    // Nonsymmetric reduction to Hessenberg form.
-
     private void orthes() {
 
         //  This is derived from the Algol procedures orthes and ortran,
@@ -336,7 +393,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     ort[i] = H[i][m - 1] / scale;
                     h += ort[i] * ort[i];
                 }
-                double g = MathsBase.sqrt(h);
+                double g = Maths.sqrt(h);
                 if (ort[m] > 0) {
                     g = -g;
                 }
@@ -401,26 +458,6 @@ public class EigenvalueDecomposition implements java.io.Serializable {
     }
 
 
-    // Complex scalar division.
-
-    private transient double cdivr, cdivi;
-
-    private void cdiv(double xr, double xi, double yr, double yi) {
-        double r, d;
-        if (Math.abs(yr) > Math.abs(yi)) {
-            r = yi / yr;
-            d = yr + r * yi;
-            cdivr = (xr + r * xi) / d;
-            cdivi = (xi - r * xr) / d;
-        } else {
-            r = yr / yi;
-            d = yi + r * yr;
-            cdivr = (r * xr + xi) / d;
-            cdivi = (r * xi - xr) / d;
-        }
-    }
-
-
     // Nonsymmetric reduction from Hessenberg to real Schur form.
 
     private void hqr2() {
@@ -436,7 +473,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
         int n = nn - 1;
         int low = 0;
         int high = nn - 1;
-        double eps = MathsBase.pow(2.0, -52.0);
+        double eps = Maths.pow(2.0, -52.0);
         double exshift = 0.0;
         double p = 0, q = 0, r = 0, s = 0, z = 0, t, w, x, y;
 
@@ -458,7 +495,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
         int iter = 0;
         while (n >= low) {
 
-            // Look for single small sub-diagonal element
+            // Look for single small sub-diagonal primitiveElement3D
 
             int l = n;
             while (l > low) {
@@ -512,7 +549,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                     s = Math.abs(x) + Math.abs(z);
                     p = x / s;
                     q = z / s;
-                    r = MathsBase.sqrt(p * p + q * q);
+                    r = Maths.sqrt(p * p + q * q);
                     p = p / r;
                     q = q / r;
 
@@ -598,7 +635,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
                 iter = iter + 1;   // (Could check iteration count here.)
 
-                // Look for two consecutive small sub-diagonal elements
+                // Look for two consecutive small sub-diagonal primitiveElement3DS
 
                 int m = n - 2;
                 while (m >= l) {
@@ -868,55 +905,18 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    Constructor
  * ------------------------ */
 
-    /**
-     * Check for symmetry, then construct the eigenvalue decomposition
-     * Structure to access D and V.
-     *
-     * @param Arg Square matrix
-     */
-
-    public EigenvalueDecomposition(DMatrix Arg) {
-        double[][] A = Arg.getDoubleArray();
-        n = Arg.getColumnCount();
-        V = new double[n][n];
-        d = new double[n];
-        e = new double[n];
-
-        issymmetric = true;
-        for (int j = 0; (j < n) && issymmetric; j++) {
-            for (int i = 0; (i < n) && issymmetric; i++) {
-                issymmetric = (A[i][j] == A[j][i]);
-            }
-        }
-
-        if (issymmetric) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    V[i][j] = A[i][j];
-                }
-            }
-
-            // Tridiagonalize.
-            tred2();
-
-            // Diagonalize.
-            tql2();
-
+    private void cdiv(double xr, double xi, double yr, double yi) {
+        double r, d;
+        if (Math.abs(yr) > Math.abs(yi)) {
+            r = yi / yr;
+            d = yr + r * yi;
+            cdivr = (xr + r * xi) / d;
+            cdivi = (xi - r * xr) / d;
         } else {
-            H = new double[n][n];
-            ort = new double[n];
-
-            for (int j = 0; j < n; j++) {
-                for (int i = 0; i < n; i++) {
-                    H[i][j] = A[i][j];
-                }
-            }
-
-            // Reduce to Hessenberg form.
-            orthes();
-
-            // Reduce Hessenberg to real Schur form.
-            hqr2();
+            r = yr / yi;
+            d = yi + r * yr;
+            cdivr = (r * xr + xi) / d;
+            cdivi = (r * xi - xr) / d;
         }
     }
 

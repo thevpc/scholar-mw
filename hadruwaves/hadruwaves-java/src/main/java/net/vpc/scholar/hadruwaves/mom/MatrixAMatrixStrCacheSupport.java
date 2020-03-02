@@ -22,8 +22,8 @@ class MatrixAMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public ComplexMatrix compute(ObjectCache momCache) {
-        ComplexMatrix matrix = momStructure.createMatrixAEvaluator().evaluate(momStructure, mon[1]);
+    public ComplexMatrix eval(ObjectCache momCache) {
+        ComplexMatrix matrix = momStructure.evaluator().createMatrixAEvaluator().evaluate(momStructure, mon[1]);
         Number ceil = momStructure.getHintsManager().getHintAMatrixSparsify();
         if (ceil != null && !Double.isNaN(ceil.doubleValue()) && ceil.doubleValue() > 0) {
             matrix = matrix.sparsify(ceil.doubleValue());

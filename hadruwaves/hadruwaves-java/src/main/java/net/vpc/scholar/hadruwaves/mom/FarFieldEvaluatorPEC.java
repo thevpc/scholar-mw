@@ -2,10 +2,14 @@ package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
+import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.*;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 import net.vpc.scholar.hadruwaves.Physics;
 import net.vpc.scholar.hadruwaves.str.FarFieldEvaluator;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
@@ -16,34 +20,35 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
     public static final FarFieldEvaluator INSTANCE = new FarFieldEvaluatorPEC();
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 
     @Override
-    public TVector<TMatrix<Complex>> evaluate(final MWStructure str, final double[] thetaArr, final double[] phiArr, final double r, ProgressMonitor monitor) {
-        return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<TVector<TMatrix<Complex>>>() {
+    public Vector<ComplexMatrix> evaluate(final MWStructure str, final double[] thetaArr, final double[] phiArr, final double r, ProgressMonitor monitor) {
+        return invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
             @Override
-            public TVector<TMatrix<Complex>> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
+            public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                 final MomStructure structure = (MomStructure) str;
                 final double k0 = Physics.K0(structure.getFrequency());
-                final Complex C1 = (î.mul(-k0).mul(Maths.exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
-                final TMatrix<Complex> SPM = structure.getTestModeScalarProducts();
-                final ComplexMatrix Xj = structure.matrixX().computeMatrix();
+                final Complex C1 = (î.mul(-k0).mul(exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
+                final ComplexMatrix SPM = structure.getTestModeScalarProducts();
+                final ComplexMatrix Xj = structure.matrixX().evalMatrix();
                 Complex[][] EthetaMatrix = new Complex[thetaArr.length][phiArr.length];
                 Complex[][] EphiMatrix = new Complex[thetaArr.length][phiArr.length];
                 final String monText = getClass().getSimpleName();
                 for (int i = 0; i < thetaArr.length; i++) {
                     for (int j = 0; j < phiArr.length; j++) {
                         monitor.setProgress(i, j,thetaArr.length,phiArr.length,monText);
-                        Dumper p = new Dumper("computeFarFieldThetaPhiElement").add("theta", thetaArr[i]).add("phi", phiArr[i]).add("r", r);
                         final int finalI = i;
                         final int finalJ = j;
                         System.out.println("TRY EXEC="+monitor.getProgressValue()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
-                        Complex[] rr= new StrSubCacheSupport<Complex[]>(structure, "far-field-angle", p.toString(),monitor) {
+                        Complex[] rr= new StrSubCacheSupport<Complex[]>(structure, "far-field-angle",
+                                CacheKey.obj("computeFarFieldThetaPhiElement","theta",thetaArr[i],"phi", phiArr[i],"r",r)
+                                ,monitor) {
 
                             @Override
-                            public Complex[] compute(ObjectCache momCache) {
+                            public Complex[] eval(ObjectCache momCache) {
                                 monitor.setProgress(finalI, finalJ,thetaArr.length,phiArr.length,monText);
                                 System.out.println("EXEC="+monitor.getProgressValue()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
                                 double sin_theta = sin(thetaArr[finalI]);
@@ -52,11 +57,11 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                                 double cos_phi = cos(phiArr[finalJ]);
                                 double ttheta = k0 * sin_theta;
                                 Linear ftheta = FunctionFactory.segment(ttheta * cos_phi, ttheta * sin_phi, 0, structure.getDomain());
-                                Expr rtheta = new Plus(new Cos(ftheta), new Sin(ftheta).mul(î));
+                                Expr rtheta = add(cos(ftheta), sin(ftheta).mul(î));
 
                                 double tphi = k0 * sin_phi;
                                 Linear fphi = FunctionFactory.segment(tphi * cos_phi, tphi * sin_phi, 0, structure.getDomain());
-                                Expr rphi = new Plus(new Cos(fphi), new Sin(fphi).mul(î));
+                                Expr rphi = add(cos(fphi), sin(fphi).mul(î));
 
                                 int mm = 0;
 
@@ -68,7 +73,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                                 DoubleToVector[] fn = structure.fn();
                                 while (mm < fn.length) {
                                     DoubleToVector fmn = fn[mm];
-                                    TVector<Complex> gp_fmn = SPM.getColumn(mm);
+                                    ComplexVector gp_fmn = SPM.getColumn(mm);
                                     Expr Ee = fmn.mul(gp_fmn.scalarProduct(Xj).mul(zmns[mm]));
                                     DoubleToVector Eev = Ee.toDV();
                                     fxtheta.add(integrate(Eev.getY().mul(rtheta)));
@@ -93,18 +98,18 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                                 Complex Ephi = (px_phi.mul(cos_theta * cos_phi).add(py_phi.mul(cos_theta * sin_phi))).mul(C1); // Etheta
                                 return new Complex[]{Etheta,Ephi};
                             }
-                        }.computeCached();
+                        }.evalCached();
 
                         EthetaMatrix[i][j] = rr[0];
                         EphiMatrix[i][j] = rr[1];
                     }
                 }
-                TVector<ComplexMatrix> tMatrices = Maths.columnTVector(
-                        Maths.$MATRIX,
-                        Maths.matrix(EthetaMatrix),
-                                Maths.matrix(EphiMatrix)
+                Vector<ComplexMatrix> tMatrices = Maths.columnVector(
+                        $MATRIX,
+                        matrix(EthetaMatrix),
+                                matrix(EphiMatrix)
                 );
-                return (TVector) tMatrices;
+                return (Vector) tMatrices;
             }
         });
     }
@@ -112,15 +117,15 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
 //    public Complex[] electricFieldThetaPhi(double r, double theta, double phi) {
 //        double k0 = Physics.K0(structure.getFrequency());
 //        Complex C1 = (î.mul(-k0).mul(Maths.exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
-//        TMatrix<Complex> SPM = structure.getTestModeScalarProducts();
+//        ComplexMatrix SPM = structure.getTestModeScalarProducts();
 //
 //        double ttheta = k0 * sin(theta) ;
 //        Linear ftheta = FunctionFactory.segment(ttheta * cos(phi), ttheta * sin(phi), 0, structure.getDomain());
-//        Expr rtheta = new Plus(new Cos(ftheta),new Sin(ftheta).mul(î));
+//        Expr rtheta = Plus.of(new Cos(ftheta),new Sin(ftheta).mul(î));
 //
 //        double tphi = k0 * sin(theta) ;
 //        Linear fphi = FunctionFactory.segment( tphi * cos(phi), tphi * sin(phi), 0, structure.getDomain());
-//        Expr rphi = new Plus(new Cos(fphi),new Sin(fphi).mul(î));
+//        Expr rphi = Plus.of(new Cos(fphi),new Sin(fphi).mul(î));
 //
 //        int mm = 0;
 //        Matrix Xj = structure.matrixX().computeMatrix();
@@ -133,7 +138,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
 //        DoubleToVector[] fn = structure.fn();
 //        while (mm < fn.length) {
 //            DoubleToVector fmn = fn[mm];
-//            TVector<Complex> gp_fmn = SPM.getColumn(mm);
+//            ComplexVector gp_fmn = SPM.getColumn(mm);
 //            Expr Ee = fmn.mul(gp_fmn.scalarProduct(Xj).mul(zmns[mm]));
 //            DoubleToVector Eev = Ee.toDV();
 //            fxtheta.add(integrate(Eev.getY().mul(rtheta)));

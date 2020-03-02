@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadrumaths;
 
-public interface LongVector extends TVector<Long>, ToLongArrayAware {
+public interface LongVector extends Vector<Long>, ToLongArrayAware {
+    LongVector appendAt(int index, long value);
+
     LongVector append(long value);
 
     LongVector appendAll(long[] values);

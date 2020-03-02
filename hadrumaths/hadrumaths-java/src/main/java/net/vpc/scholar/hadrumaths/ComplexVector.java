@@ -1,67 +1,33 @@
 package net.vpc.scholar.hadrumaths;
 
-import java.io.UncheckedIOException;
+import net.vpc.scholar.hadrumaths.symbolic.Param;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Collection;
 
 
-public interface ComplexVector extends Normalizable, TVector<Complex> {
+public interface ComplexVector extends Normalizable, Vector<Complex> {
 
     double[] toDoubleArray();
 
     ComplexVector scalarProductToVector(ComplexVector... other);
 
+    ComplexVector mul(Vector<Complex> other);
 
-    boolean isRow();
+    ComplexVector transpose();
 
-    boolean isColumn();
+    ComplexVector vscalarProduct(Vector<Complex>... other);
 
-    boolean isComplex();
+    ComplexVector dotmul(Vector<Complex> other);
 
-    Complex toComplex();
+    ComplexVector dotdiv(Vector<Complex> other);
 
-    ComplexMatrix toMatrix();
+    ComplexVector dotpow(Vector<Complex> other);
 
-    Complex get(int i);
+    ComplexVector add(Vector<Complex> other);
 
-    Complex apply(int i);
-
-    ComplexVector set(int i, Complex complex);
-
-    ComplexVector update(int i, Complex complex);
-
-    Complex[] toArray();
-
-    int size();
-
-
-    void store(String file) throws UncheckedIOException;
-
-    void store(File file) throws UncheckedIOException;
-
-    void store(PrintStream stream) throws UncheckedIOException;
-
-    void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException;
-
-
-    ComplexVector vscalarProduct(TVector<Complex>... other);
-
-//    Complex scalarProduct(Vector other);
-//
-//    Complex scalarProductAll(Vector... other);
-
-    ComplexVector dotmul(TVector<Complex> other);
-
-    ComplexVector dotdiv(TVector<Complex> other);
-
-    ComplexVector dotpow(TVector<Complex> other);
-
-    ComplexVector add(TVector<Complex> other);
-
-    ComplexVector sub(TVector<Complex> other);
-
-    ComplexVector pow(TVector<Complex> other);
+    ComplexVector sub(Vector<Complex> other);
 
     ComplexVector add(Complex other);
 
@@ -75,25 +41,13 @@ public interface ComplexVector extends Normalizable, TVector<Complex> {
 
     ComplexVector dotpow(Complex other);
 
-    ComplexVector inv();
-
-    ComplexVector neg();
-
-    Complex sum();
-
-    Complex prod();
-
-    Complex avg();
-
-    double maxAbs();
-
-    double minAbs();
-
-    ComplexVector transpose();
-
     ComplexVector conj();
 
     ComplexVector cos();
+
+//    Complex scalarProduct(Vector other);
+//
+//    Complex scalarProductAll(Vector... other);
 
     ComplexVector cosh();
 
@@ -125,15 +79,6 @@ public interface ComplexVector extends Normalizable, TVector<Complex> {
 
     ComplexVector abssqr();
 
-    /**
-     * double absdbl square
-     *
-     * @return
-     */
-    double[] dabs();
-
-    double[] dabsSqr();
-
     ComplexVector log();
 
     ComplexVector log10();
@@ -156,4 +101,144 @@ public interface ComplexVector extends Normalizable, TVector<Complex> {
 
     ComplexVector acotan();
 
+    boolean isRow();
+
+    boolean isColumn();
+
+    boolean isComplex();
+
+    Complex toComplex();
+
+    ComplexMatrix toMatrix();
+
+    Complex get(int i);
+
+    Complex apply(int i);
+
+    ComplexVector set(int i, Complex complex);
+
+    ComplexVector update(int i, Complex complex);
+
+    Complex[] toArray();
+
+    int size();
+
+    void store(String file);
+
+    void store(File file);
+
+    void store(PrintStream stream);
+
+    void store(PrintStream stream, String commentsChar, String varName);
+
+    ComplexVector inv();
+
+    Complex sum();
+
+    Complex prod();
+
+    Complex avg();
+
+    double maxAbs();
+
+    double minAbs();
+
+    ComplexVector neg();
+
+    ComplexVector sincard();
+
+    ComplexVector sqrt(int n);
+
+    ComplexVector pow(Vector<Complex> other);
+
+    ComplexVector arg();
+
+    /**
+     * double absdbl square
+     *
+     * @return
+     */
+    double[] dabs();
+
+    double[] dabsSqr();
+
+    @Override
+    ComplexVector eval(VectorOp<Complex> op);
+
+    @Override
+    ComplexVector copy(CopyStrategy strategy);
+
+    @Override
+    ComplexVector copy();
+
+    @Override
+    ComplexVector toReadOnly();
+
+    @Override
+    ComplexVector toMutable();
+
+    @Override
+    ComplexVector setParam(Param param, Object value);
+
+    @Override
+    ComplexVector setParam(String name, Object value);
+
+    @Override
+    ComplexVector scalarProduct(Complex other);
+
+    @Override
+    ComplexVector rscalarProduct(Complex other);
+
+    @Override
+    ComplexVector filter(VectorFilter<Complex> filter);
+
+    @Override
+    ComplexVector transform(VectorTransform<Complex, Complex> op);
+
+    @Override
+    ComplexVector removeAt(int index);
+
+    @Override
+    ComplexVector appendAt(int index, Complex e);
+
+    @Override
+    ComplexVector removeFirst();
+
+    @Override
+    ComplexVector removeLast();
+
+    @Override
+    ComplexVector append(Complex e);
+
+    @Override
+    ComplexVector appendAll(Collection<? extends Complex> e);
+
+    @Override
+    default ComplexVector appendAll(VectorModel<Complex> e) {
+        return null;
+    }
+
+    @Override
+    ComplexVector appendAll(Vector<Complex> e);
+
+    @Override
+    ComplexVector sublist(int fromIndex, int toIndex);
+
+    @Override
+    ComplexVector sort();
+
+    @Override
+    ComplexVector removeDuplicates();
+
+    @Override
+    ComplexVector concat(Complex e);
+
+    @Override
+    ComplexVector concat(Vector<Complex> e);
+
+    @Override
+    ComplexVector set(Enum i, Complex value);
+
+    @Override
+    ComplexVector update(Enum i, Complex value);
 }

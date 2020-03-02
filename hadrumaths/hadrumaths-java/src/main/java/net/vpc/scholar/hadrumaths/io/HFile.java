@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HFile {
-    private String path;
-    private HFileSystem fs;
+    private final String path;
+    private final HFileSystem fs;
 
     public HFile(HFileSystem fs, String path) {
         if (!path.startsWith("/")) {
@@ -19,19 +19,6 @@ public class HFile {
         }
         this.fs = fs;
         this.path = validatePath(path);
-    }
-
-    public HFile(HFile parent, String path) {
-        String spath = validatePath(path);
-        if (spath.equals("/")) {
-            throw new IllegalArgumentException("Invalid path " + path);
-        }
-        String ppath = parent.getPath();
-        if (ppath.equals("/")) {
-            spath = spath.substring(1);
-        }
-        this.path = ppath + spath;
-        this.fs = parent.getFs();
     }
 
     protected String validatePath(String path) {
@@ -58,6 +45,27 @@ public class HFile {
         }
     }
 
+    public HFile(HFile parent, String path) {
+        String spath = validatePath(path);
+        if (spath.equals("/")) {
+            throw new IllegalArgumentException("Invalid path " + path);
+        }
+        String ppath = parent.getPath();
+        if (ppath.equals("/")) {
+            spath = spath.substring(1);
+        }
+        this.path = ppath + spath;
+        this.fs = parent.getFs();
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public HFileSystem getFs() {
+        return fs;
+    }
+
     public String getLongName() {
         String n = getName();
         int i = n.lastIndexOf('.');
@@ -65,6 +73,14 @@ public class HFile {
             return n.substring(0, i);
         }
         return n;
+    }
+
+    public String getName() {
+        if (path.equals("/")) {
+            return "/";
+        }
+        int i = path.lastIndexOf("/");
+        return path.substring(i + 1);
     }
 
     public String getSimpleName() {
@@ -94,30 +110,6 @@ public class HFile {
         return n;
     }
 
-    public String getName() {
-        if (path.equals("/")) {
-            return "/";
-        }
-        int i = path.lastIndexOf("/");
-        return path.substring(i + 1);
-    }
-
-    public HFile getParent() {
-        if (path.equals("/")) {
-            return null;
-        }
-        int i = path.lastIndexOf("/");
-        return new HFile(fs, path.substring(0, i));
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public HFileSystem getFs() {
-        return fs;
-    }
-
     public boolean exists() {
         return fs.exists(this);
     }
@@ -132,6 +124,10 @@ public class HFile {
 
     public Reader getReader() {
         return fs.getReader(this);
+    }
+
+    public byte[] loadBytes() {
+        return fs.loadBytes(this);
     }
 
     public InputStream getInputStream() {
@@ -156,6 +152,14 @@ public class HFile {
             return fs.mkdirs(p);
         }
         return false;
+    }
+
+    public HFile getParent() {
+        if (path.equals("/")) {
+            return null;
+        }
+        int i = path.lastIndexOf("/");
+        return new HFile(fs, path.substring(0, i));
     }
 
     public boolean mkdirs() {

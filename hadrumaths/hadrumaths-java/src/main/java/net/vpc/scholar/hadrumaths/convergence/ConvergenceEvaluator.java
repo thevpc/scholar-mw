@@ -6,13 +6,12 @@
 package net.vpc.scholar.hadrumaths.convergence;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.common.mon.VoidMonitoredAction;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.MathsBase;
 import net.vpc.scholar.hadrumaths.Normalizable;
-import net.vpc.scholar.hadruplot.console.params.Param;
+import net.vpc.scholar.hadruplot.console.params.CParam;
 import net.vpc.scholar.hadruplot.console.params.ParamSet;
 
 import java.io.PrintStream;
@@ -24,12 +23,21 @@ import java.util.Map;
  */
 public class ConvergenceEvaluator {
 
-    private ParamSet paramSet;
+    private final ParamSet paramSet;
     private ConvergenceConfig config = new ConvergenceConfig();
     private ConvergenceEvaluator subEvaluator;
 
 
-    public static ConvergenceEvaluator create(ParamSet[] params, ConvergenceConfig config) {
+    public ConvergenceEvaluator(ParamSet paramSet) {
+        this(paramSet, null);
+    }
+
+    public ConvergenceEvaluator(ParamSet paramSet, ConvergenceConfig config) {
+        this.paramSet = paramSet;
+        this.config = config == null ? new ConvergenceConfig() : config;
+    }
+
+    public static ConvergenceEvaluator of(ParamSet[] params, ConvergenceConfig config) {
         ConvergenceEvaluator c = null;
         for (int i = 0; i < params.length; i++) {
             if (c == null) {
@@ -41,41 +49,8 @@ public class ConvergenceEvaluator {
         return c;
     }
 
-    public static ConvergenceEvaluator create(ParamSet paramSet, ConvergenceConfig config) {
-        return new ConvergenceEvaluator(paramSet, config);
-    }
-
-    public static ConvergenceEvaluator create(Param param, Object[] var) {
-        return create(MathsBase.paramSet(param, var));
-    }
-
-    public static ConvergenceEvaluator create(Param param, int[] var) {
-        return create(MathsBase.paramSet(param, var));
-    }
-
-    public static ConvergenceEvaluator create(Param param, double[] var) {
-        return create(MathsBase.paramSet(param, var));
-    }
-
-    public static ConvergenceEvaluator create(Param param, float[] var) {
-        return create(MathsBase.paramSet(param, var));
-    }
-
-    public static ConvergenceEvaluator create(Param param, long[] var) {
-        return create(MathsBase.paramSet(param, var));
-    }
-
-    public static ConvergenceEvaluator create(ParamSet paramSet) {
-        return new ConvergenceEvaluator(paramSet);
-    }
-
-    public ConvergenceEvaluator(ParamSet paramSet) {
-        this(paramSet, null);
-    }
-
-    public ConvergenceEvaluator(ParamSet paramSet, ConvergenceConfig config) {
-        this.paramSet = paramSet;
-        this.config = config == null ? new ConvergenceConfig() : config;
+    public ConvergenceEvaluator combine(ParamSet scf) {
+        return combine(scf, config);
     }
 
     public ConvergenceEvaluator combine(ParamSet paramSet, ConvergenceConfig convPars) {
@@ -84,29 +59,52 @@ public class ConvergenceEvaluator {
         return x;
     }
 
-
-    public ConvergenceEvaluator combine(ParamSet scf) {
-        return combine(scf, config);
+    public static ConvergenceEvaluator of(ParamSet paramSet, ConvergenceConfig config) {
+        return new ConvergenceEvaluator(paramSet, config);
     }
 
-    public ConvergenceEvaluator combine(Param scf, Object[] var) {
-        return combine(MathsBase.paramSet(scf, var), config);
+    public static ConvergenceEvaluator of(CParam param, Object[] var) {
+        return of(Maths.paramSet(param, var));
     }
 
-    public ConvergenceEvaluator combine(Param scf, int[] var) {
-        return combine(MathsBase.paramSet(scf, var), config);
+    public static ConvergenceEvaluator of(ParamSet paramSet) {
+        return new ConvergenceEvaluator(paramSet);
     }
 
-    public ConvergenceEvaluator combine(Param scf, long[] var) {
-        return combine(MathsBase.paramSet(scf, var), config);
+    public static ConvergenceEvaluator of(CParam param, int[] var) {
+        return of(Maths.paramSet(param, var));
     }
 
-    public ConvergenceEvaluator combine(Param scf, float[] var) {
-        return combine(MathsBase.paramSet(scf, var), config);
+    public static ConvergenceEvaluator of(CParam param, double[] var) {
+        return of(Maths.paramSet(param, var));
     }
 
-    public ConvergenceEvaluator combine(Param scf, double[] var) {
-        return combine(MathsBase.paramSet(scf, var), config);
+    public static ConvergenceEvaluator of(CParam param, float[] var) {
+        return of(Maths.paramSet(param, var));
+    }
+
+    public static ConvergenceEvaluator of(CParam param, long[] var) {
+        return of(Maths.paramSet(param, var));
+    }
+
+    public ConvergenceEvaluator combine(CParam scf, Object[] var) {
+        return combine(Maths.paramSet(scf, var), config);
+    }
+
+    public ConvergenceEvaluator combine(CParam scf, int[] var) {
+        return combine(Maths.paramSet(scf, var), config);
+    }
+
+    public ConvergenceEvaluator combine(CParam scf, long[] var) {
+        return combine(Maths.paramSet(scf, var), config);
+    }
+
+    public ConvergenceEvaluator combine(CParam scf, float[] var) {
+        return combine(Maths.paramSet(scf, var), config);
+    }
+
+    public ConvergenceEvaluator combine(CParam scf, double[] var) {
+        return combine(Maths.paramSet(scf, var), config);
     }
 
 
@@ -115,7 +113,7 @@ public class ConvergenceEvaluator {
     }
 
     public ConvergenceResult evaluate(Object source, int startIndex, ObjectEvaluator evaluator, ProgressMonitor monitor) {
-        ProgressMonitor monitor0 = ProgressMonitorFactory.nonnull(monitor);
+        ProgressMonitor monitor0 = ProgressMonitors.nonnull(monitor);
         //split into  99 and 1  to disable reaching 100% of the evaluation
         if (startIndex < 0) {
             startIndex = 0;
@@ -145,7 +143,7 @@ public class ConvergenceEvaluator {
         convInfo.subResult = null;
 
         double epsilon = config.getThreshold();
-        MathsBase.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
+        Maths.invokeMonitoredAction(monitor0, "Convergence", new VoidMonitoredAction() {
             @Override
             public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor monitor99 = monitor.translate(0.8, 0);
@@ -230,10 +228,10 @@ public class ConvergenceEvaluator {
             return ((Normalizable) newerValue).getDistance((Normalizable) olderValue);
         }
         if (olderValue instanceof Number) {
-            olderValue = Complex.valueOf(((Number) olderValue).doubleValue());
+            olderValue = Complex.of(((Number) olderValue).doubleValue());
         }
         if (newerValue instanceof Number) {
-            newerValue = Complex.valueOf(((Number) newerValue).doubleValue());
+            newerValue = Complex.of(((Number) newerValue).doubleValue());
         }
         return ((Normalizable) newerValue).getDistance((Normalizable) olderValue);
     }
@@ -247,17 +245,17 @@ public class ConvergenceEvaluator {
                 '}';
     }
 
+    public ConvergenceEvaluator setThreshold(double epsilon) {
+        getConfig().setThreshold(epsilon);
+        return this;
+    }
+
     public ConvergenceConfig getConfig() {
         return config;
     }
 
     public ConvergenceEvaluator setConfig(ConvergenceConfig config) {
         this.config = config == null ? new ConvergenceConfig() : config;
-        return this;
-    }
-
-    public ConvergenceEvaluator setThreshold(double epsilon) {
-        getConfig().setThreshold(epsilon);
         return this;
     }
 

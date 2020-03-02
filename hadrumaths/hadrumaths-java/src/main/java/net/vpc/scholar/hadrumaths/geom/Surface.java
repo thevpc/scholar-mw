@@ -1,10 +1,11 @@
 package net.vpc.scholar.hadrumaths.geom;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.common.util.MinMax;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.DomainScaleTool;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -17,12 +18,12 @@ import java.util.List;
 /**
  * Created by vpc on 2/27/17.
  */
-public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
-    private Domain domain;
-    private double precision = 1.0 / 100000;
-    private Domain uniformDomain = Domain.forBounds(0, 100000, 0, 100000);
-    private List<Point> points;
-    private Path2D.Double path;
+public class Surface extends AbstractGeometry implements Cloneable {
+    private final Domain domain;
+    private final double precision = 1.0 / 100000;
+    private final Domain uniformDomain = Domain.ofBounds(0, 100000, 0, 100000);
+    private final List<Point> points;
+    private final Path2D.Double path;
 
 //    public static void main(String[] args) {
 ////        Point ap1 = Point.create(0.050283499999999995,-0.0075);
@@ -78,16 +79,8 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
 //
 //    }
 
-    public Surface(PathIterator pathIterator) {
-        this(GeomUtils.pathIteratorToPath(pathIterator));
-    }
-
     public Surface(Geometry other) {
         this(other.getPath());
-    }
-
-    public Surface(Shape shape) {
-        this(shape.getPathIterator(null));
     }
 
     public Surface(Path2D.Double path) {
@@ -135,14 +128,14 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         if (points2.size() > 1 && points2.get(0).equals(points2.get(points2.size() - 1))) {
             points2.remove(points2.size() - 1);
         }
-        domain = Domain.forBounds(xm.getMin(), xm.getMax(), ym.getMin(), ym.getMax());
+        domain = Domain.ofBounds(xm.getMin(), xm.getMax(), ym.getMin(), ym.getMax());
 //        UNIFORM_DOMAIN=domain;
         this.points = points2;
     }
 
     private void _add(List<Point> points,
                       List<Double> xs,
-                      List<Double> ys, double[] old, double coords[], boolean noDuplicate, int pos) {
+                      List<Double> ys, double[] old, double[] coords, boolean noDuplicate, int pos) {
         if (noDuplicate && !Double.isNaN(coords[pos + 0])) {
             if (coords[pos + 0] == old[0] && coords[pos + 1] == old[1]) {
                 return;
@@ -156,68 +149,31 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         old[1] = coords[pos + 1];
     }
 
+    public Surface(Shape shape) {
+        this(shape.getPathIterator(null));
+    }
+
+    public Surface(PathIterator pathIterator) {
+        this(GeomUtils.pathIteratorToPath(pathIterator));
+    }
+
 
 //    public Surface(Area awtArea) {
 //        this(awtArea.getPathIterator(null));
 //    }
 
-    public Path2D.Double getPath() {
-        return path;
-    }
-
-
-    @Override
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public Path2D.Double getUniformPath() {
-        return DomainScaleTool.create(domain, uniformDomain).rescale(path);
-    }
-
-    public Area getUniformArea() {
-        return new Area(getUniformPath());
-    }
-
-//    public Domain getUniformDomain() {
-//        return UNIFORM_DOMAIN;
-//    }
-
-    @Override
-    public boolean isRectangular() {
-        Area awtArea = getUniformArea();
-        return awtArea.isSingular() && (awtArea.isRectangular() || awtArea.contains(awtArea.getBounds2D()));
-    }
-
-    public boolean isPolygonal() {
-        return getUniformArea().isPolygonal();
-    }
-
-    public boolean isTriangular() {
-        if (!getUniformArea().isPolygonal()) {
-            return false;
-        }
-        if (points.size() == 3) {
-            return true;
-        }
-        if (points.size() == 4 && points.get(0).equals(points.get(points.size() - 1))) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean contains(double x, double y) {
-        return path.contains(x, y);
-    }
-
     public List<Point> getPoints() {
         return Collections.unmodifiableList(points);
+    }    public Path2D.Double getPath() {
+        return path;
     }
 
     @Override
     public Surface clone() {
         return (Surface) super.clone();
+    }    @Override
+    public Domain getDomain() {
+        return domain;
     }
 
     public Surface intersectGeometry(Geometry geometry) {
@@ -239,11 +195,8 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
 
         return new Surface(path2);
 
-    }
-
-    @Override
-    public Geometry translateGeometry(double x, double y) {
-        return new Surface(GeomUtils.translate(getPath().getPathIterator(null), x, y));
+    }    public Path2D.Double getUniformPath() {
+        return DomainScaleTool.create(domain, uniformDomain).rescale(path);
     }
 
     public Surface subtractGeometry(Geometry geometry) {
@@ -261,33 +214,13 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         Path2D.Double path2 = t2.rescale(a1.getPathIterator(null));
 
         return new Surface(path2);
+    }    public Area getUniformArea() {
+        return new Area(getUniformPath());
     }
 
-    public Surface addGeometry_(Geometry geometry) {
-        Surface other = geometry.toSurface();
-        Domain d1 = this.domain;
-        Domain d2 = other.domain;
-        Domain d = d1.expand(d2);
-
-        DomainScaleTool t1 = DomainScaleTool.create(d, uniformDomain);
-        DomainScaleTool t2 = t1.inv();
-        Area a1 = new Area(GeomUtils.round(t1.rescale(path), precision, precision));
-
-        Area a2 = new Area(GeomUtils.round(t1.rescale(other.path), precision, precision));
-        a1.add(a2);
-
-        Path2D.Double path2;
-        if (a1.isSingular()) {
-            path2 = t2.rescale(GeomUtils.simplifySingular(a1.getPathIterator(null)));
-        } else {
-            path2 = t2.rescale(a1.getPathIterator(null));
-        }
-
-
-        Surface surface = new Surface(path2);
-//        Surface surface0 = add0(geometry);
-        return surface;
-    }
+//    public Domain getUniformDomain() {
+//        return UNIFORM_DOMAIN;
+//    }
 
     public Surface addGeometry(Geometry geometry) {
         Surface other = geometry.toSurface();
@@ -324,6 +257,10 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
 
 //        Path2D.Double path2 = t2.rescale(a3.getPathIterator(null));
         return new Surface(path2);
+    }    @Override
+    public boolean isRectangular() {
+        Area awtArea = getUniformArea();
+        return awtArea.isSingular() && (awtArea.isRectangular() || awtArea.contains(awtArea.getBounds2D()));
     }
 
     public Surface exclusiveOrGeometry(Geometry geometry) {
@@ -341,12 +278,81 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         Path2D.Double path2 = t2.rescale(a1.getPathIterator(null));
 
         return new Surface(path2);
+    }    public boolean isPolygonal() {
+        return getUniformArea().isPolygonal();
     }
 
     @Override
     public Surface toSurface() {
         return this;
+    }    public boolean isTriangular() {
+        if (!getUniformArea().isPolygonal()) {
+            return false;
+        }
+        if (points.size() == 3) {
+            return true;
+        }
+        return points.size() == 4 && points.get(0).equals(points.get(points.size() - 1));
     }
+
+    public Surface addGeometry_(Geometry geometry) {
+        Surface other = geometry.toSurface();
+        Domain d1 = this.domain;
+        Domain d2 = other.domain;
+        Domain d = d1.expand(d2);
+
+        DomainScaleTool t1 = DomainScaleTool.create(d, uniformDomain);
+        DomainScaleTool t2 = t1.inv();
+        Area a1 = new Area(GeomUtils.round(t1.rescale(path), precision, precision));
+
+        Area a2 = new Area(GeomUtils.round(t1.rescale(other.path), precision, precision));
+        a1.add(a2);
+
+        Path2D.Double path2;
+        if (a1.isSingular()) {
+            path2 = t2.rescale(GeomUtils.simplifySingular(a1.getPathIterator(null)));
+        } else {
+            path2 = t2.rescale(a1.getPathIterator(null));
+        }
+
+
+        Surface surface = new Surface(path2);
+//        Surface surface0 = add0(geometry);
+        return surface;
+    }    @Override
+    public boolean contains(double x, double y) {
+        return path.contains(x, y);
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj("surface").addAll(
+                Tson.pair("domain", context.elem(domain)),
+                Tson.pair("points", context.elem(points))
+        ).build();
+    }
+
+    @Override
+    public String toString() {
+        return dump();
+    }
+
+
+
+    @Override
+    public Geometry translateGeometry(double x, double y) {
+        return new Surface(GeomUtils.translate(getPath().getPathIterator(null), x, y));
+    }
+
+
+
+
+
+
+
+
+
+
 
     public Polygon toPolygon() {
         if (isPolygonal()) {
@@ -354,6 +360,14 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         }
         throw new IllegalArgumentException("Not a Polygon");
     }
+
+
+    @Override
+    public Polygon[] toPolygons() {
+        //should replace with multi polygons!!
+        return new Polygon[]{toPolygon()};
+    }
+
 
     public Triangle toTriangle() {
         if (isTriangular()) {
@@ -372,16 +386,15 @@ public class Surface extends AbstractGeometry implements Cloneable, Dumpable {
         return getUniformArea().isEmpty();
     }
 
-    @Override
-    public String dump() {
-        return new Dumper(this)
-                .add("domain", domain)
-                .add("points", points)
-                .toString();
-    }
+//    @Override
+//    public String dump() {
+//        return new Dumper(this)
+//                .add("domain", domain)
+//                .add("points", points)
+//                .toString();
+//    }
 
-    @Override
-    public String toString() {
-        return dump();
-    }
+
+
+
 }

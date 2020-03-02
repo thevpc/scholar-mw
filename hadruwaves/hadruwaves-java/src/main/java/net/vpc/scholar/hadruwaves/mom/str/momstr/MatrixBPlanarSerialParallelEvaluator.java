@@ -1,7 +1,10 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
@@ -28,16 +31,16 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         if (_src.length != 1) {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
         }
-        ProgressMonitor[] mon = ProgressMonitorFactory.split(monitor, new double[]{2, 8});
-        final TMatrix<Complex> sp = str.getTestSourceScalarProducts(mon[0]);
+        ProgressMonitor[] mon = ProgressMonitors.split(monitor, new double[]{2, 8});
+        final ComplexMatrix sp = str.getTestSourceScalarProducts(mon[0]);
 
-        ProgressMonitor m = ProgressMonitorFactory.createIncrementalMonitor(mon[1], (_g.length * _src.length));
+        ProgressMonitor m = ProgressMonitors.incremental(mon[1], (_g.length * _src.length));
         return Maths.invokeMonitoredAction(m, monitorMessage, new MonitoredAction<ComplexMatrix>() {
             @Override
             public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 Complex[][] b = new Complex[_g.length][_src.length];
                 for (int n = 0; n < _src.length; n++) {
-                    TVector<Complex> cc = sp.getColumn(n);
+                    ComplexVector cc = sp.getColumn(n);
                     for (int p = 0; p < _g.length; p++) {
                         //[vpc/20140801] removed neg, don't know why i used to use it
 //                b[p][n] = sp.gf(p, n).neg();
@@ -53,10 +56,12 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
-    public String dump() {
-        return getClass().getName();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
+
 }

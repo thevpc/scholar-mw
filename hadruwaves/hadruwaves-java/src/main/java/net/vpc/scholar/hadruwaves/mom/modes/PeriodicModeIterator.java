@@ -2,13 +2,13 @@ package net.vpc.scholar.hadruwaves.mom.modes;
 
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadruwaves.ModeIndex;
-import net.vpc.scholar.hadruwaves.ModeIterator;
 import net.vpc.scholar.hadruwaves.ModeType;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
-public class PeriodicModeIterator implements ModeIterator {
+public class PeriodicModeIterator implements Iterator<ModeIndex> {
     private ModeType[] zeroModes;
     private ModeType[] nonZeroModes;
     private LinkedList<ModeIndex> list = new LinkedList<ModeIndex>();
@@ -16,39 +16,44 @@ public class PeriodicModeIterator implements ModeIterator {
     private Axis axis = Axis.X;
 
     public PeriodicModeIterator(ModeType[] modes, Axis axis) {
-        this.axis=axis==null?Axis.X : axis;
-        ArrayList<ModeType> zeroModesList=new ArrayList<ModeType>(modes.length);
-        ArrayList<ModeType> nonZeroModesList=new ArrayList<ModeType>(modes.length);
+        this.axis = axis == null ? Axis.X : axis;
+        ArrayList<ModeType> zeroModesList = new ArrayList<ModeType>(modes.length);
+        ArrayList<ModeType> nonZeroModesList = new ArrayList<ModeType>(modes.length);
         for (ModeType mode : modes) {
-            switch (mode){
-                case TEM:{
+            switch (mode) {
+                case TEM: {
                     zeroModesList.add(mode);
                     break;
                 }
-                case TE:{
+                case TE: {
                     zeroModesList.add(mode);//??????????? TODO verify it
                     nonZeroModesList.add(mode);
                     break;
                 }
-                case TM:{
+                case TM: {
                     zeroModesList.add(mode);//??????????? TODO verify it
                     nonZeroModesList.add(mode);
                     break;
                 }
-                default:{
-                    throw new IllegalArgumentException("Unsupported Mode "+mode);
+                default: {
+                    throw new IllegalArgumentException("Unsupported Mode " + mode);
                 }
             }
         }
-        this.zeroModes = zeroModesList.toArray(new ModeType[zeroModesList.size()]);
-        this.nonZeroModes = nonZeroModesList.toArray(new ModeType[nonZeroModesList.size()]);
+        this.zeroModes = zeroModesList.toArray(new ModeType[0]);
+        this.nonZeroModes = nonZeroModesList.toArray(new ModeType[0]);
     }
 
-    public ModeIndex next() {
+    @Override
+    public boolean hasNext() {
         if (list.size() == 0) {
             nextModeInfos();
             index++;
         }
+        return !list.isEmpty();
+    }
+
+    public ModeIndex next() {
         ModeIndex m = list.getFirst();
         list.removeFirst();
         return m;

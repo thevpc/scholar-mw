@@ -4,9 +4,9 @@
  */
 package net.vpc.scholar.hadrumaths.format.impl;
 
-import net.vpc.scholar.hadrumaths.FormatFactory;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DDzIntegralXY;
 
 /**
  * @author vpc
@@ -14,20 +14,21 @@ import net.vpc.scholar.hadrumaths.symbolic.DDzIntegralXY;
 public class DDzIntegralXYObjectFormat extends AbstractObjectFormat<DDzIntegralXY> {
 
     @Override
-    public void format(StringBuilder sb, DDzIntegralXY o, ObjectFormatParamSet format) {
-        sb.append("DDzIntegralXY(");
-        FormatFactory.format(sb, o.getArg(), format);
-        sb.append(",");
-        FormatFactory.format(sb, o.getIntegral().toString(), format);
-        sb.append(",");
-        FormatFactory.format(sb, o.getX0(), format);
-        sb.append("->");
-        FormatFactory.format(sb, o.getX1(), format);
-        sb.append(",");
-        FormatFactory.format(sb, o.getY0(), format);
-        sb.append("->");
-        FormatFactory.format(sb, o.getY1(), format);
-        sb.append(")");
+    public void format(DDzIntegralXY o, ObjectFormatContext context) {
+        ObjectFormatParamSet format = context.getParams();
+        context.append("DDzIntegralXY(");
+        context.format(o.getArg(), format);
+        context.append(",");
+        context.format(o.getIntegral().toString(), format);
+        context.append(",");
+        context.format(o.getX0(), format);
+        context.append("->");
+        context.format(o.getX1(), format);
+        context.append(",");
+        context.format(o.getY0(), format);
+        context.append("->");
+        context.format(o.getY1(), format);
+        context.append(")");
     }
 
 }

@@ -1,6 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeInfoFilter;
 
@@ -22,10 +25,11 @@ class DiscardFnByScalarProductModeInfoFilter implements ModeInfoFilter {
         return (!excluded.contains(info.index));
     }
 
-    public String dump() {
-        Dumper h = new Dumper(this, Dumper.Type.SIMPLE);
-        h.add("exclude", excluded);
-        return h.toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        sb.add("exclude", context.elem(excluded));
+        return sb.build();
     }
 
     @Override

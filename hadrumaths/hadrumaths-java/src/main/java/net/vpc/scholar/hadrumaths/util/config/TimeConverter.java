@@ -14,8 +14,8 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class TimeConverter extends ConfigConverter {
-    private DecimalFormat hms = new DecimalFormat("00");
-    private DecimalFormat S = new DecimalFormat("000");
+    private final DecimalFormat hms = new DecimalFormat("00");
+    private final DecimalFormat S = new DecimalFormat("000");
 
     public TimeConverter() {
         super(Time.class, "time");

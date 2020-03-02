@@ -1,17 +1,21 @@
 package net.vpc.scholar.hadrumaths;
 
-import net.vpc.scholar.hadrumaths.geom.AbstractGeometry;
-import net.vpc.scholar.hadrumaths.geom.Geometry;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
-import net.vpc.scholar.hadrumaths.geom.Triangle;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.common.tson.TsonSerializable;
+import net.vpc.scholar.hadrumaths.geom.*;
 
 import java.awt.geom.Path2D;
 
-class DomainGeometry extends AbstractGeometry implements Cloneable {
-    private Domain domain;
+class DomainGeometry extends AbstractGeometry implements Cloneable,TsonSerializable {
+    private final Domain domain;
 
     public DomainGeometry(Domain domain) {
         this.domain = domain;
+        if (domain.getDimension() != 2 || domain.isInfinite()) {
+            throw new IllegalArgumentException("Invalid Geometry");
+        }
     }
 
     @Override
@@ -65,13 +69,18 @@ class DomainGeometry extends AbstractGeometry implements Cloneable {
     }
 
     @Override
+    public Polygon[] toPolygons() {
+        return new Polygon[]{toPolygon()};
+    }
+
+    @Override
     public Triangle toTriangle() {
         return domain.toTriangle();
     }
 
     @Override
-    public String toString() {
-        return domain.toString();
+    public int hashCode() {
+        return domain != null ? domain.hashCode() : 0;
     }
 
     @Override
@@ -85,7 +94,12 @@ class DomainGeometry extends AbstractGeometry implements Cloneable {
     }
 
     @Override
-    public int hashCode() {
-        return domain != null ? domain.hashCode() : 0;
+    public String toString() {
+        return domain.toString();
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj("Geometry", null, context.elem(domain)).build();
     }
 }

@@ -61,7 +61,7 @@ public abstract class PlotDoubleConverter {
         return registered.values().toArray(new PlotDoubleConverter[0]);
     }
 
-    public static PlotDoubleConverter valueOf(String n) {
+    public static PlotDoubleConverter of(String n) {
         return registered.get(n);
     }
 

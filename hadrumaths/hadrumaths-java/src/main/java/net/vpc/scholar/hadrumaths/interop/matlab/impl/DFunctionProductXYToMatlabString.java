@@ -10,7 +10,7 @@ import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabString;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParam;
 import net.vpc.scholar.hadrumaths.interop.matlab.ToMatlabStringParamArray;
 import net.vpc.scholar.hadrumaths.interop.matlab.params.MatlabVectorizeFormat;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 
 /**
  * @author vpc
@@ -25,7 +25,7 @@ public class DFunctionProductXYToMatlabString implements ToMatlabString<Mul> {
         ToMatlabStringParamArray formatArray = new ToMatlabStringParamArray(format);
         String mul = formatArray.getParam(MatlabVectorizeFormat.class, false) == null ? " * " : " .* ";
         StringBuilder sb = new StringBuilder();
-        for (Expr expression : o.getSubExpressions()) {
+        for (Expr expression : o.getChildren()) {
             if (sb.length() > 0) {
                 sb.append(mul);
             }

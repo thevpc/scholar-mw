@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author vpc
  */
 public class ConvergenceListenerCollection implements ConvergenceListener {
-    private ArrayList<ConvergenceListener> others = new ArrayList<ConvergenceListener>();
+    private final ArrayList<ConvergenceListener> others = new ArrayList<ConvergenceListener>();
 
     public ConvergenceListenerCollection(ConvergenceListener... others) {
         this.others.addAll(Arrays.asList(others));

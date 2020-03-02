@@ -1,14 +1,13 @@
 package net.vpc.scholar.hadruplot.console;
 
+import net.vpc.common.mon.AbstractProgressMonitor;
+import net.vpc.common.mon.TaskMessage;
 import net.vpc.common.util.DoubleFormat;
-import net.vpc.common.mon.BaseProgressMonitor;
-import net.vpc.common.mon.ProgressMessage;
 
 import java.util.Date;
 
-public class PlotConsoleLogProgressMonitor extends BaseProgressMonitor {
+public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
     private double progress;
-    private ProgressMessage message;
     private String messageFormat;
     private ConsoleLogger writer;
 
@@ -20,6 +19,7 @@ public class PlotConsoleLogProgressMonitor extends BaseProgressMonitor {
      * @param messageFormat
      */
     public PlotConsoleLogProgressMonitor(String messageFormat, ConsoleLogger writer) {
+        super(nextId());
         if (messageFormat == null) {
             messageFormat = "%value%";
         }
@@ -37,10 +37,8 @@ public class PlotConsoleLogProgressMonitor extends BaseProgressMonitor {
         return progress;
     }
 
-    public void setProgressImpl(double progress, ProgressMessage message) {
+    public void setMessageImpl(TaskMessage message) {
         DoubleFormat sdf = PlotConfigManager.Config.dblformat("%");
-        this.progress = progress;
-        this.message = message;
         long newd = System.currentTimeMillis();
         String formattedMessage = messageFormat
                 .replace("%date%", new Date(newd).toString())
@@ -55,9 +53,8 @@ public class PlotConsoleLogProgressMonitor extends BaseProgressMonitor {
         }
     }
 
-    @Override
-    public ProgressMessage getProgressMessage() {
-        return message;
+    public void setProgressImpl(double progress) {
+        this.progress = progress;
     }
 
     @Override

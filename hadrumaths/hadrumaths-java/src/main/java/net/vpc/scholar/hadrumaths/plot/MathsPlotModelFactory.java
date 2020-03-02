@@ -2,8 +2,8 @@ package net.vpc.scholar.hadrumaths.plot;
 
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.console.PlotConfigManager;
@@ -17,10 +17,34 @@ import java.util.UUID;
 import static net.vpc.scholar.hadruplot.Plot.update;
 
 public class MathsPlotModelFactory implements PlotModelFactory {
-    public static final PlotModelFactory INSTANCE=new MathsPlotModelFactory();
+    public static final PlotModelFactory INSTANCE = new MathsPlotModelFactory();
 
     @Override
     public PlotModel createModel(PlotValue data, PlotBuilder builder) {
+        if (data.getType().getName().equals("PlotLines")) {
+            PlotLines y = (PlotLines) data.getValue();
+            builder.titles(y.titles());
+            builder.xsamples(y.xsamples());
+            List<List<Object>> any = y.getValues();
+            Complex[][] oo = new Complex[any.size()][];
+            for (int i = 0; i < oo.length; i++) {
+                oo[i] = new Complex[any.get(i).size()];
+                for (int j = 0; j < oo[i].length; j++) {
+                    Object o = any.get(i).get(j);
+                    if (o instanceof Complex) {
+                        oo[i][j] = (Complex) o;
+                    } else {
+                        oo[i][j] = Complex.of(((Number) o).doubleValue());
+                    }
+                }
+            }
+            PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
+            if (oo.length == 1) {
+                return PlotModelUtils._plotComplexArray1(oo[0], PlotType.CURVE, false, builder, complexType);
+            }
+            return PlotModelUtils._plotComplexArray2(oo, PlotType.CURVE, false, builder, complexType);
+
+        }
         PlotValueType type = data.getType();
         PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
         switch (type.getName()) {
@@ -37,25 +61,25 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 boolean matrix = "true".equals(data.get("matrix"));
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 return PlotModelUtils._plotComplexArray2(
-                        (Complex[][]) oo.toArray(data.getValue(), Complex[][].class), matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder,complexType);
+                        (Complex[][]) oo.toArray(data.getValue(), Complex[][].class), matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder, complexType);
             }
             case "number[][]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 boolean matrix = "true".equals(data.get("matrix"));
                 Complex[][] z = (Complex[][]) oo.toArray(data.getValue(), Complex[][].class);
-                boolean real=true;
+                boolean real = true;
                 for (int i = 0; i < z.length; i++) {
                     for (int j = 0; j < z[i].length; j++) {
-                        if(!z[i][j].isReal()){
-                            real=false;
+                        if (!z[i][j].isReal()) {
+                            real = false;
                             break;
                         }
                     }
                 }
-                if(real){
+                if (real) {
                     builder.asReal();
                 }
-                return PlotModelUtils._plotComplexArray2(z, matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder,complexType);
+                return PlotModelUtils._plotComplexArray2(z, matrix ? PlotType.MATRIX : PlotType.HEATMAP, false, builder, complexType);
             }
             case "expr[]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
@@ -65,17 +89,17 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 Complex[] y = (Complex[]) oo.toArray(data.getValue(), Complex[].class);
                 boolean col = "true".equals(data.get("column"));
-                return PlotModelUtils._plotComplexArray1(y, PlotType.CURVE, col, builder,complexType);
+                return PlotModelUtils._plotComplexArray1(y, PlotType.CURVE, col, builder, complexType);
             }
             case "number[]": {
                 builder.asReal();
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 Complex[] y = (Complex[]) oo.toArray(data.getValue(), Complex[].class);
                 boolean col = "true".equals(data.get("column"));
-                return PlotModelUtils._plotComplexArray1(y, PlotType.CURVE, col, builder,complexType);
+                return PlotModelUtils._plotComplexArray1(y, PlotType.CURVE, col, builder, complexType);
             }
             case "point":
-                return _plotPoints(new Point[][]{{(Point) type.toValue(data.getValue(),Point.class)}}, builder);
+                return _plotPoints(new Point[][]{{(Point) type.toValue(data.getValue(), Point.class)}}, builder);
             case "point[][]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 return _plotPoints((Point[][]) oo.toArray(type.toValue(data.getValue(), Point[][].class), Point[][].class), builder);
@@ -85,20 +109,20 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 return _plotPoints(new Point[][]{(Point[]) oo.toArray(type.toValue(data.getValue(), Point[].class), Point[].class)}, builder);
             }
             case "expr":
-                return _plotExprArray(new Expr[]{(Expr) type.toValue(data.getValue(),Expr.class)}, builder);
+                return _plotExprArray(new Expr[]{(Expr) type.toValue(data.getValue(), Expr.class)}, builder);
             case "complex":
-                return PlotModelUtils._plotComplexArray2((new Complex[][]{{(Complex) type.toValue(data.getValue(), Complex.class)}}), PlotType.CURVE, true, builder,complexType);
+                return PlotModelUtils._plotComplexArray2((new Complex[][]{{(Complex) type.toValue(data.getValue(), Complex.class)}}), PlotType.CURVE, true, builder, complexType);
             case "number": {
                 builder.asReal();
-                return PlotModelUtils._plotComplexArray2((new Complex[][]{{(Complex) type.toValue(data.getValue(), Complex.class)}}), PlotType.CURVE, true, builder,complexType);
+                return PlotModelUtils._plotComplexArray2((new Complex[][]{{(Complex) type.toValue(data.getValue(), Complex.class)}}), PlotType.CURVE, true, builder, complexType);
             }
             case "expr[][]":
                 throw new IllegalArgumentException("Not Supported Plot " + type.getName());
             case "null[][]":
-                return PlotModelUtils._plotComplexArray2(new Complex[0][], builder.getPlotType(), false, builder,complexType);
+                return PlotModelUtils._plotComplexArray2(new Complex[0][], builder.getPlotType(), false, builder, complexType);
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             case "null[]": {
-                return PlotModelUtils._plotComplexArray2(new Complex[0][], builder.getPlotType(), false, builder,complexType);
+                return PlotModelUtils._plotComplexArray2(new Complex[0][], builder.getPlotType(), false, builder, complexType);
 //                throw new IllegalArgumentException("Nothing to plot ... (" + s + ")");
             }
             case "file": {
@@ -146,15 +170,12 @@ public class MathsPlotModelFactory implements PlotModelFactory {
 
                 double[] y = {((PlotValueDoubleType) data).toDouble(data.getValue())};
                 builder.asReal();
-                return PlotModelUtils._plotComplexArray2((ArrayUtils.toComplex(new double[][]{y})), PlotType.CURVE, false, builder,complexType);
+                return PlotModelUtils._plotComplexArray2((ArrayUtils.toComplex(new double[][]{y})), PlotType.CURVE, false, builder, complexType);
             }
             default:
                 throw new IllegalArgumentException("Not Supported Plot " + type.getName());
         }
     }
-
-
-
 
 
 //    private PlotType _getPlotType(PlotType plotType, PlotBuilder builder) {
@@ -163,8 +184,6 @@ public class MathsPlotModelFactory implements PlotModelFactory {
 //        }
 //        return plotType;
 //    }
-
-
 
 
     private PlotModel _plotPoints(Point[][] xy, PlotBuilder builder) {
@@ -193,7 +212,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         return plotType;
     }
 
-    private TVector toTVectorD(Object any) {
+    private Vector toTVectorD(Object any) {
         if (any instanceof double[]) {
             return ArrayDoubleVector.row((double[]) any);
         } else if (any instanceof int[]) {
@@ -207,7 +226,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 }
                 d2[i] = d[i][0];
             }
-            return ArrayDoubleVector.column((double[]) d2);
+            return ArrayDoubleVector.column(d2);
         } else if (any instanceof int[][]) {
             int[][] d = (int[][]) any;
             int[] d2 = new int[d.length];
@@ -217,7 +236,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 }
                 d2[i] = d[i][0];
             }
-            return new ArrayIntVector(false, (int[]) d2);
+            return new ArrayIntVector(false, d2);
         }
         return null;
     }
@@ -231,7 +250,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 update(updateName0);
             }
             Object[] ref = new Object[1];
-            MathsBase.adaptiveEval(expressions[0], new AdaptiveConfig()
+            Maths.adaptiveEval(expressions[0], new AdaptiveConfig()
                     .setError(adaptiveSamples.getError())
                     .setMinimumXSamples(adaptiveSamples.getMinimumXSamples())
                     .setMaximumXSamples(adaptiveSamples.getMaximumXSamples())
@@ -257,29 +276,53 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         for (Expr expression : expressions) {
             if (expression instanceof VDiscrete) {
                 discretes.add((VDiscrete) expression);
-            } else if (expression instanceof Discrete) {
-                discretes.add(new VDiscrete((Discrete) expression));
-            } else if (expression.getDomainDimension() == 3) {
-                if (expression.isScalarExpr()) {
+            } else if (expression instanceof CDiscrete) {
+                discretes.add(new VDiscrete((CDiscrete) expression));
+            } else if (expression.getDomain().getDimension() == 3) {
+                if (expression.is(ExprDim.SCALAR)) {
                     if (builder.getSamples() != null) {
-                        Discrete discretized = (Discrete) MathsBase.discrete(expression, builder.getSamples());
+                        PlotDomain d = builder.getDomain();
+                        if (d == null) {
+                            d = expression.getDomain();
+                        }
+                        Samples samples = builder.getSamples();
+                        AbsoluteSamples a = d.toAbsolute(samples);
+                        int xs = a.getX().length;
+                        int ys = a.getY().length;
+                        int zs = a.getZ().length;
+                        CDiscrete discretized = (CDiscrete) Maths.discrete(expression,
+                                (Domain) d,
+                                xs, ys, zs);
                         discretes.add(new VDiscrete(discretized));
                     } else {
+                        PlotDomain d = builder.getDomain();
+                        if (d == null) {
+                            d = expression.getDomain();
+                        }
                         int xs = builder.getXsamples() <= 0 ? 10 : builder.getXsamples();
                         int ys = builder.getYsamples() <= 0 ? 10 : builder.getYsamples();
                         int zs = builder.getZsamples() <= 0 ? 10 : builder.getZsamples();
-                        Discrete discretized = (Discrete) MathsBase.discrete(expression, xs, ys, zs);
+                        CDiscrete discretized = (CDiscrete) Maths.discrete(expression, (Domain) d, xs, ys, zs);
                         discretes.add(new VDiscrete(discretized));
                     }
                 } else {
+                    PlotDomain d = builder.getDomain();
+                    if (d == null) {
+                        d = expression.getDomain();
+                    }
                     if (builder.getSamples() != null) {
-                        Expr discretized = MathsBase.discrete(expression, builder.getSamples());
+                        Samples samples = builder.getSamples();
+                        AbsoluteSamples a = d.toAbsolute(samples);
+                        int xs = a.getX().length;
+                        int ys = a.getY().length;
+                        int zs = a.getZ().length;
+                        Expr discretized = Maths.discrete(expression, (Domain) d, xs, ys, zs);
                         discretes.add((VDiscrete) discretized);
                     } else {
                         int xs = builder.getXsamples() <= 0 ? 10 : builder.getXsamples();
                         int ys = builder.getYsamples() <= 0 ? 10 : builder.getYsamples();
                         int zs = builder.getZsamples() <= 0 ? 10 : builder.getZsamples();
-                        Expr discretized = MathsBase.discrete(expression, xs, ys, zs);
+                        Expr discretized = Maths.discrete(expression, (Domain) d, xs, ys, zs);
                         discretes.add((VDiscrete) discretized);
                     }
                 }
@@ -296,7 +339,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
             if (pt == null) {
                 int dd = 1;
                 for (Expr expr : other) {
-                    int domainDimension = expr.getDomain().getDomainDimension();
+                    int domainDimension = expr.getDomain().getDomain().getDimension();
                     if (domainDimension > dd) {
                         dd = domainDimension;
                     }
@@ -324,7 +367,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
             return m;
         } else if (other.size() == 0) {
             PlotHyperCubePlotModel mm = new PlotHyperCubePlotModel()
-                    .setLibraries(builder.getLibraries())
+                    //.setLibraries(builder.getLibrary())
                     .setHyperCubes(discretes)
                     .setConverter(builder.getConverter());
             PlotModelUtils.postConfigure(mm, builder);
@@ -332,7 +375,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         } else {
             PlotModelList list = new PlotModelList("Expressions");
             PlotHyperCubePlotModel mm = new PlotHyperCubePlotModel()
-                    .setLibraries(builder.getLibraries())
+                    //.setLibraries(builder.getLibrary())
                     .setHyperCubes(discretes)
                     .setConverter(builder.getConverter());
             PlotModelUtils.postConfigure(mm, builder);
@@ -352,15 +395,14 @@ public class MathsPlotModelFactory implements PlotModelFactory {
 
     private ExpressionsPlotModel _createExpressionsPlotModel(PlotBuilder builder) {
         ExpressionsPlotModel mm = new ExpressionsPlotModel().setDomain((Domain) builder.getDomain()).setSamples(builder.getSamples()).setXprec(builder.getXsamples()).setYprec(builder.getYsamples())
-                .setPlotType(_getPlotType(PlotType.CURVE,builder))
+                .setPlotType(_getPlotType(PlotType.CURVE, builder))
                 .setConstX(builder.isConstX())
-                .setLibraries(builder.getLibraries())
+                //.setLibraries(builder.getLibrary())
                 .setProperties(builder.getProperties())
                 .setComplexAsDouble(builder.getConverter(PlotDoubleConverter.ABS));
-        PlotModelUtils.postConfigure(mm,builder);
+        PlotModelUtils.postConfigure(mm, builder);
         return mm;
     }
-
 
 
 }

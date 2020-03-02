@@ -83,7 +83,7 @@ public class ConstantGpMesher extends RectGpMesher {
         int gridXX = (int) (Math.log(gridX) / Math.log(2));
         int gridYY = (int) (Math.log(gridY) / Math.log(2));
 
-        return new MeshAlgoRect(GridPrecision.forXY(gridXX, gridXX, gridYY, gridYY));
+        return new MeshAlgoRect(GridPrecision.ofXY(gridXX, gridXX, gridYY, gridYY));
 
     }
 

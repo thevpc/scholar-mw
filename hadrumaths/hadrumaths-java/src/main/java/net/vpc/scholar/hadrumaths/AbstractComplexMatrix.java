@@ -2,7 +2,6 @@ package net.vpc.scholar.hadrumaths;
 
 //import net.vpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
-import java.io.UncheckedIOException;
 import net.vpc.common.util.TypeName;
 
 import java.io.*;
@@ -13,14 +12,14 @@ import java.util.StringTokenizer;
 /**
  * User: taha Date: 2 juil. 2003 Time: 10:40:39
  */
-public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> implements ComplexMatrix {
+public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> implements ComplexMatrix {
 
     private static final long serialVersionUID = 1L;
     private transient ComplexMatrixFactory factory;
     private String factoryId;
 
 //    /*To exchange two rows in a matrix*/
-//    public static void exchange_row(TMatrix<Complex> M, int k, int l, int m, int n) {
+//    public static void exchange_row(Matrix<Complex> M, int k, int l, int m, int n) {
 //        if (k <= 0 || l <= 0 || k > n || l > n || k == l) {
 //            return;
 //        }
@@ -32,8 +31,57 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
 //        }
 //    }
 
+    @Override
+    public double getDistance(Normalizable other) {
+        return getError((Matrix<Complex>) other);
+    }
+
     public double norm() {
         return norm(NormStrategy.DEFAULT);
+    }
+
+    protected ComplexMatrix createMatrix(int rows, int cols) {
+        ComplexMatrixFactory f = getFactory();
+        if (f == null) {
+            f = Maths.Config.getComplexMatrixFactory();
+        }
+        return f.newMatrix(rows, cols);
+    }
+
+    public DMatrix getErrorMatrix(Matrix<Complex> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy) {
+        switch (strategy) {
+            case ABSOLUTE: {
+                return getErrorMatrix(baseMatrix, minErrorForZero);
+            }
+            case RELATIVE: {
+                return getErrorMatrix2(baseMatrix, minErrorForZero);
+            }
+            case RELATIVE_RI: {
+                return getErrorMatrix3(baseMatrix, minErrorForZero);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported");
+    }
+
+    public DMatrix getErrorMatrix(Matrix<Complex> baseMatrix) {
+        return getErrorMatrix(baseMatrix, Double.NaN);
+    }
+
+    public DMatrix getErrorMatrix(Matrix<Complex> baseMatrix, double minErrorForZero) {
+        Matrix<Complex> m = baseMatrix.sub(this).div(baseMatrix.norm3());
+        Complex[][] mm = m.getArray();
+        double[][] d = new double[mm.length][mm[0].length];
+        for (int i = 0; i < mm.length; i++) {
+            Complex[] complexes = mm[i];
+            for (int j = 0; j < complexes.length; j++) {
+                if (!Double.isNaN(minErrorForZero) && complexes[j].absdbl() < minErrorForZero) {
+                    d[i][j] = 0;
+                } else {
+                    d[i][j] = complexes[j].absdbl();
+                }
+            }
+        }
+        return new DMatrix(d);
     }
 
     public double norm(NormStrategy ns) {
@@ -103,53 +151,12 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return f;
     }
 
-    public double getError(TMatrix<Complex> baseMatrix) {
+    public double getError(Matrix<Complex> baseMatrix) {
         double norm = baseMatrix.norm(NormStrategy.DEFAULT);
         if (norm == 0) {
             return this.norm(NormStrategy.DEFAULT);
         }
         return (this.sub(baseMatrix).norm(NormStrategy.DEFAULT) / norm);
-    }
-
-    @Override
-    public double getDistance(Normalizable other) {
-        return getError((TMatrix<Complex>) other);
-    }
-
-    public DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero, ErrorMatrixStrategy strategy) {
-        switch (strategy) {
-            case ABSOLUTE: {
-                return getErrorMatrix(baseMatrix, minErrorForZero);
-            }
-            case RELATIVE: {
-                return getErrorMatrix2(baseMatrix, minErrorForZero);
-            }
-            case RELATIVE_RI: {
-                return getErrorMatrix3(baseMatrix, minErrorForZero);
-            }
-        }
-        throw new IllegalArgumentException("Unsupported");
-    }
-
-    public DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix) {
-        return getErrorMatrix(baseMatrix, Double.NaN);
-    }
-
-    public DMatrix getErrorMatrix(TMatrix<Complex> baseMatrix, double minErrorForZero) {
-        TMatrix<Complex> m = baseMatrix.sub(this).div(baseMatrix.norm3());
-        Complex[][] mm = m.getArray();
-        double[][] d = new double[mm.length][mm[0].length];
-        for (int i = 0; i < mm.length; i++) {
-            Complex[] complexes = mm[i];
-            for (int j = 0; j < complexes.length; j++) {
-                if (!Double.isNaN(minErrorForZero) && complexes[j].absdbl() < minErrorForZero) {
-                    d[i][j] = 0;
-                } else {
-                    d[i][j] = complexes[j].absdbl();
-                }
-            }
-        }
-        return new DMatrix(d);
     }
 
     /**
@@ -159,8 +166,8 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
      * @param minErrorForZero
      * @return
      */
-    public DMatrix getErrorMatrix2(TMatrix<Complex> baseMatrix, double minErrorForZero) {
-        TMatrix<Complex> m = baseMatrix.sub(this);
+    public DMatrix getErrorMatrix2(Matrix<Complex> baseMatrix, double minErrorForZero) {
+        Matrix<Complex> m = baseMatrix.sub(this);
         Complex[][] mm = m.getArray();
         double[][] d = new double[mm.length][mm[0].length];
         for (int i = 0; i < mm.length; i++) {
@@ -179,8 +186,8 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return new DMatrix(d);
     }
 
-    public DMatrix getErrorMatrix3(TMatrix<Complex> baseMatrix, double minErrorForZero) {
-        TMatrix<Complex> m = baseMatrix.sub(this);
+    public DMatrix getErrorMatrix3(Matrix<Complex> baseMatrix, double minErrorForZero) {
+        Matrix<Complex> m = baseMatrix.sub(this);
         Complex[][] mm = m.getArray();
         double[][] d = new double[mm.length][mm[0].length];
         for (int i = 0; i < mm.length; i++) {
@@ -264,6 +271,56 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return f.toComplex();
     }
 
+    public void set(Matrix<Complex>[][] subMatrixes) {
+        int rows = 0;
+        int cols = 0;
+        for (Matrix<Complex>[] subMatrixe : subMatrixes) {
+            int r = 0;
+            int c = 0;
+            for (Matrix<Complex> aSubMatrixe : subMatrixe) {
+                c += aSubMatrixe.getColumnCount();
+                if (r == 0) {
+                    r = aSubMatrixe.getRowCount();
+                } else if (r != aSubMatrixe.getRowCount()) {
+                    throw new IllegalArgumentException("Column count does not match");
+                }
+            }
+            if (cols == 0) {
+                cols = c;
+            } else if (cols != c) {
+                throw new IllegalArgumentException("Column count does not match");
+            }
+            rows += r;
+        }
+        if (rows == 0 || cols == 0) {
+            throw new EmptyMatrixException();
+        }
+        if (rows != getColumnCount() || rows != getRowCount()) {
+            throw new IllegalArgumentException("Columns or Rows count does not match");
+        }
+        int row = 0;
+        int col;
+        for (Matrix<Complex>[] subMatrixe1 : subMatrixes) {
+            col = 0;
+            for (Matrix<Complex> aSubMatrixe1 : subMatrixe1) {
+                set(row, col, aSubMatrixe1);
+                col += aSubMatrixe1.getColumnCount();
+            }
+            row += subMatrixe1[0].getRowCount();
+        }
+    }
+
+    @Override
+    public void set(Complex[][] values) {
+        int rows = values.length;
+        int cols = values[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.set(i, j, values[i][j]);
+            }
+        }
+    }
+
     public void setAll(Complex value) {
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
@@ -282,14 +339,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return arr;
     }
 
-    protected ComplexMatrix createMatrix(int rows, int cols) {
-        ComplexMatrixFactory f = getFactory();
-        if (f == null) {
-            f = MathsBase.Config.getComplexMatrixFactory();
-        }
-        return f.newMatrix(rows, cols);
-    }
-
     /**
      * Get a submatrix.
      * TODO check me pleaze
@@ -303,7 +352,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
      */
     public ComplexMatrix getMatrix(int i0, int i1, int j0, int j1) {
         ComplexMatrix X = createMatrix(i1 - i0 + 1, j1 - j0 + 1);
-        //Complex[][] B = X.elements;// X.getArray();
+        //Complex[][] B = X.primitiveElement3DS;// X.getArray();
         try {
             for (int i = i0; i <= i1; i++) {
 
@@ -469,15 +518,15 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return X;
     }
 
-    public ComplexMatrix div(TMatrix<Complex> other) {
+    public ComplexMatrix div(Matrix<Complex> other) {
         return mul(other.inv());
     }
 
-    public ComplexMatrix rem(TMatrix<Complex> other) {
+    public ComplexMatrix rem(Matrix<Complex> other) {
         return toComplex().rem(other.toComplex()).toMatrix();
     }
 
-    public ComplexMatrix mul(TMatrix<Complex> other) {
+    public ComplexMatrix mul(Matrix<Complex> other) {
         if (getColumnCount() != other.getRowCount()) {
             throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.getRowCount() + " of the right matrix!");
         }
@@ -497,27 +546,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return newElements;
     }
 
-    public ComplexMatrix mul(Complex[][] other) {
-        if (getColumnCount() != other.length) {
-            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.length + " of the right matrix!");
-        }
-        int a_rows = getRowCount();
-        int b_cols = other[0].length;
-        int b_rows = other.length;
-        ComplexMatrix newElements = createMatrix(a_rows, b_cols);
-        for (int i = 0; i < a_rows; i++) {
-            for (int j = 0; j < b_cols; j++) {
-                MutableComplex sum = MutableComplex.Zero();
-                for (int k = 0; k < b_rows; k++) {
-                    sum.addProduct(get(i, k), (other[k][j]));
-                }
-                newElements.set(i, j, sum);
-            }
-        }
-        return newElements;
-    }
-
-    public ComplexMatrix dotmul(TMatrix<Complex> other) {
+    public ComplexMatrix dotmul(Matrix<Complex> other) {
         int rows = getRowCount();
         int columns = getColumnCount();
         ComplexMatrix X = createMatrix(rows, columns);
@@ -529,7 +558,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return X;
     }
 
-    public ComplexMatrix dotdiv(TMatrix<Complex> other) {
+    public ComplexMatrix dotdiv(Matrix<Complex> other) {
         int rows = getRowCount();
         int columns = getColumnCount();
         ComplexMatrix X = createMatrix(rows, columns);
@@ -565,490 +594,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return X;
     }
 
-    public ComplexMatrix cos() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).cos());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix acos() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).acos());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix asin() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).asin());
-            }
-        }
-        return X;
-    }
-
-
-    public ComplexMatrix sin() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sin());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix acosh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).acosh());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix cosh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).cosh());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix asinh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).asinh());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix sinh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sinh());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix sincard() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sincard());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix arg() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).arg());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix atan() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).atan());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix cotan() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).cotan());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix tan() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).tan());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix tanh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).tanh());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix cotanh() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).cotanh());
-            }
-        }
-        return X;
-    }
-
-    //    public Matrix dotabs() {
-//        int rows = getRowCount();
-//        int columns = getColumnCount();
-//        Matrix X = createMatrix(rows, columns);
-//        for (int i = 0; i < rows; i++) {
-//            for (int j = 0; j < columns; j++) {
-//                X.set(i, j, new Complex(get(i, j).absdbl()));
-//            }
-//        }
-//        return X;
-//    }
-//
-    public ComplexMatrix getImag() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, Complex.valueOf(get(i, j).getImag()));
-            }
-        }
-        return X;
-    }
-
-    @Override
-    public DMatrix getRealDMatrix() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = (get(i, j).getReal());
-            }
-        }
-        return new DMatrix(X);
-    }
-
-    @Override
-    public DMatrix getImagDMatrix() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = (get(i, j).getImag());
-            }
-        }
-        return new DMatrix(X);
-    }
-
-    @Override
-    public DMatrix getAbsDMatrix() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = (get(i, j).absdbl());
-            }
-        }
-        return new DMatrix(X);
-    }
-
-    @Override
-    public DMatrix getAbsSquareDMatrix() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = (get(i, j).absdblsqr());
-            }
-        }
-        return new DMatrix(X);
-    }
-
-    @Override
-    public ComplexMatrix imag() {
-        return getImag();
-    }
-
-    @Override
-    public ComplexMatrix real() {
-        return getReal();
-    }
-
-    public ComplexMatrix getReal() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, Complex.valueOf(get(i, j).getReal()));
-            }
-        }
-        return X;
-    }
-
-    public double[][] getDoubleArray() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).toDouble();
-            }
-        }
-        return X;
-    }
-
-    public double[][] getRealArray() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).getReal();
-            }
-        }
-        return X;
-    }
-
-    public double[][] getImagArray() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).getReal();
-            }
-        }
-        return X;
-    }
-
-    public double[][] getAbsArray() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).absdbl();
-            }
-        }
-        return X;
-    }
-
-    public double[][] getAbsSquareArray() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        double[][] X = new double[rows][columns];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).absdblsqr();
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix acotan() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).acotan());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix exp() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).exp());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix log() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).log());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix log10() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).log10());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix db() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).db());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix db2() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).db2());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotsqr() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sqr());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotsqrt() {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sqrt());
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotsqrt(int n) {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).sqrt(n));
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotnpow(int n) {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).npow(n));
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotpow(double n) {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).pow(n));
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix dotpow(Complex n) {
-        int rows = getRowCount();
-        int columns = getColumnCount();
-        ComplexMatrix X = createMatrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                X.set(i, j, get(i, j).pow(n));
-            }
-        }
-        return X;
-    }
-
-    public ComplexMatrix add(TMatrix<Complex> other) {
+    public ComplexMatrix add(Matrix<Complex> other) {
         int rows = getRowCount();
         int columns = getColumnCount();
         ComplexMatrix X = createMatrix(rows, columns);
@@ -1084,7 +630,27 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return X;
     }
 
-    public ComplexMatrix sub(TMatrix<Complex> other) {
+    public ComplexMatrix mul(Complex[][] other) {
+        if (getColumnCount() != other.length) {
+            throw new IllegalArgumentException("The column dimension " + getColumnCount() + " of the left matrix does not match the row dimension " + other.length + " of the right matrix!");
+        }
+        int a_rows = getRowCount();
+        int b_cols = other[0].length;
+        int b_rows = other.length;
+        ComplexMatrix newElements = createMatrix(a_rows, b_cols);
+        for (int i = 0; i < a_rows; i++) {
+            for (int j = 0; j < b_cols; j++) {
+                MutableComplex sum = MutableComplex.Zero();
+                for (int k = 0; k < b_rows; k++) {
+                    sum.addProduct(get(i, k), (other[k][j]));
+                }
+                newElements.set(i, j, sum);
+            }
+        }
+        return newElements;
+    }
+
+    public ComplexMatrix sub(Matrix<Complex> other) {
         int rows = getRowCount();
         int columns = getColumnCount();
         ComplexMatrix X = createMatrix(rows, columns);
@@ -1100,11 +666,9 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return get(0, 0);
     }
 
-    public ComponentDimension getComponentDimension() {
-        return ComponentDimension.create(
-                getRowCount(),
-                getColumnCount()
-        );
+    @Override
+    public Complex apply(int row, int col) {
+        return get(row, col);
     }
 
     public Complex get(int vectorIndex) {
@@ -1115,6 +679,11 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
             return get(0, vectorIndex);
         }
         throw new IllegalArgumentException("No a valid vector");
+    }
+
+    @Override
+    public Complex apply(int vectorIndex) {
+        return get(vectorIndex);
     }
 
     public void add(int row, int col, Complex val) {
@@ -1133,8 +702,12 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         set(row, col, get(row, col).sub(val));
     }
 
+    @Override
+    public void update(int row, int col, Complex val) {
+        set(row, col, val);
+    }
 
-    public void set(int row, int col, TMatrix<Complex> src, int srcRow, int srcCol, int rows, int cols) {
+    public void set(int row, int col, Matrix<Complex> src, int srcRow, int srcCol, int rows, int cols) {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 set(r + row, col + c, src.get(r + srcRow, c + srcCol));
@@ -1142,14 +715,56 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         }
     }
 
-    public void set(int row, int col, TMatrix<Complex> subMatrix) {
+    public void set(int row, int col, Matrix<Complex> subMatrix) {
         set(row, col, subMatrix, 0, 0, subMatrix.getRowCount(), subMatrix.getColumnCount());
+    }
+
+    @Override
+    public void update(int row, int col, Matrix<Complex> subMatrix) {
+        set(row, col, subMatrix);
     }
 
     public ComplexMatrix subMatrix(int row, int col, int rows, int cols) {
         ComplexMatrix m = createMatrix(rows, cols);
         m.set(row, col, this);
         return m;
+    }
+
+    @Override
+    public Vector<Vector<Complex>> getRows() {
+        return Maths.columnVector(Maths.$CVECTOR, new VectorModel<Vector<Complex>>() {
+            @Override
+            public int size() {
+                return getRowCount();
+            }
+
+            @Override
+            public Vector<Complex> get(int index) {
+                return getRow(index);
+            }
+        });
+    }
+
+    @Override
+    public Vector<Vector<Complex>> getColumns() {
+        return Maths.columnVector(Maths.$CVECTOR, new VectorModel<Vector<Complex>>() {
+            @Override
+            public int size() {
+                return getColumnCount();
+            }
+
+            @Override
+            public Vector<Complex> get(int index) {
+                return getColumn(index);
+            }
+        });
+    }
+
+    public ComponentDimension getComponentDimension() {
+        return ComponentDimension.of(
+                getRowCount(),
+                getColumnCount()
+        );
     }
 
     public final ComplexMatrix transpose() {
@@ -1206,7 +821,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     public ComplexMatrix invCond() {
-        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
+        return inv(Maths.Config.getDefaultMatrixInverseStrategy(), ConditioningStrategy.DEFAULT, NormStrategy.DEFAULT);
     }
 
     public ComplexMatrix inv(InverseStrategy invStr, ConditioningStrategy condStr, NormStrategy normStr) {
@@ -1224,22 +839,22 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     public ComplexMatrix inv() {
-        return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
+        return inv(Maths.Config.getDefaultMatrixInverseStrategy());
     }
 
     public ComplexMatrix inv(InverseStrategy st) {
         switch (st) {
             case DEFAULT: {
-                return inv(MathsBase.Config.getDefaultMatrixInverseStrategy());
+                return inv(Maths.Config.getDefaultMatrixInverseStrategy());
             }
             case BLOCK_SOLVE: {
-                return invBlock(InverseStrategy.SOLVE, MathsBase.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.SOLVE, Maths.Config.getMatrixBlockPrecision());
             }
             case BLOCK_ADJOINT: {
-                return invBlock(InverseStrategy.ADJOINT, MathsBase.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.ADJOINT, Maths.Config.getMatrixBlockPrecision());
             }
             case BLOCK_GAUSS: {
-                return invBlock(InverseStrategy.GAUSS, MathsBase.Config.getMatrixBlockPrecision());
+                return invBlock(InverseStrategy.GAUSS, Maths.Config.getMatrixBlockPrecision());
             }
             case SOLVE: {
                 return invSolve();
@@ -1261,7 +876,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     public ComplexMatrix invSolve() {
-        return solve(MathsBase.identityMatrix(getRowCount()));
+        return solve(Maths.identityMatrix(getRowCount()));
     }
 
     /**
@@ -1290,7 +905,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
                 Complex DCABi = D.sub(C.mul(Ai).mul(B)).inv();
                 Complex mDCABi = DCABi.mul(-1);
                 Complex AiBmDCABi = AiB.mul(mDCABi);
-                return MathsBase.matrix(new Complex[][]{
+                return Maths.matrix(new Complex[][]{
                         {Ai.sub(AiBmDCABi.mul(CAi)), AiBmDCABi},
                         {mDCABi.mul(CAi), DCABi}
                 });
@@ -1482,38 +1097,13 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return ap;
     }
 
-    public ComplexMatrix pow(int exp) {
-        switch (exp) {
-            case 0: {
-                return MathsBase.identityMatrix(this);
-            }
-            case 1: {
-                return this;
-            }
-            case -1: {
-                return inv();
-            }
-            default: {
-                if (exp > 0) {
-                    ComplexMatrix m = this;
-                    while (exp > 1) {
-                        m = m.mul(this);
-                        exp--;
-                    }
-                    return m;
-                } else {
-                    ComplexMatrix m = this;
-                    int t = -exp;
-                    while (t > 1) {
-                        m = m.mul(this);
-                        t--;
-                    }
-                    ;
-                    m = m.inv();
-                    return m;
-                }
-            }
+    public ComplexMatrix pow(double rexp) {
+        checkSquare();
+        int exp = (int) rexp;
+        if (exp != rexp) {
+            throw new IllegalArgumentException("Unable to raise Matrix to Non integer power");
         }
+        return pow(exp);
     }
 
     public ComplexMatrix adjoint() {
@@ -1551,7 +1141,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     public ComplexMatrix upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + elements.length + ")");
+//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         ComplexMatrix o = createMatrix(getRowCount(), getColumnCount());
         o.set(this);
 
@@ -1598,11 +1188,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
 
 //        System.out.println(new java.util.Date() + " upperTriangle OUT");
         return o;
-    }
-
-    @Override
-    public String toString() {
-        return format();
     }
 
     @Override
@@ -1672,18 +1257,11 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return arr;
     }
 
-    public ComplexMatrix solve(TMatrix<Complex> B) {
-        return solve(B, MathsBase.Config.getDefaultMatrixSolveStrategy());
+    public ComplexMatrix solve(Matrix<Complex> B) {
+        return solve(B, Maths.Config.getDefaultMatrixSolveStrategy());
     }
 
-    protected ComplexMatrix castToMatrix(TMatrix<Complex> a) {
-        if (a instanceof ComplexMatrix) {
-            return (ComplexMatrix) a;
-        }
-        throw new IllegalArgumentException("Not Supported yet");
-    }
-
-    public ComplexMatrix solve(TMatrix<Complex> B, SolveStrategy solveStrategy) {
+    public ComplexMatrix solve(Matrix<Complex> B, SolveStrategy solveStrategy) {
         switch (solveStrategy) {
             case DEFAULT: {
                 if (getRowCount() == getColumnCount()) {
@@ -1764,7 +1342,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
 //        return B;
     //    }
     public void store(String file) throws UncheckedIOException {
-        store(new File(MathsBase.Config.expandPath(file)));
+        store(new File(Maths.Config.expandPath(file)));
     }
 
     public void store(File file) throws UncheckedIOException {
@@ -1785,7 +1363,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     public void store(PrintStream stream) throws UncheckedIOException {
         store(stream, null, null);
     }
-
 
     public void store(String file, String commentsChar, String varName) throws UncheckedIOException {
         PrintStream out = null;
@@ -1818,7 +1395,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
             throw new UncheckedIOException(ex);
         }
     }
-
 
     public void store(PrintStream stream, String commentsChar, String varName) throws UncheckedIOException {
         int columns = getColumnCount();
@@ -1855,7 +1431,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
                 if (j > 0) {
                     sbl.append(' ');
                 }
-                String disp = FormatFactory.format(get(i, j),FormatFactory.I);
+                String disp = FormatFactory.format(get(i, j), FormatFactory.I);
                 sbl.append(disp);
                 sbl.append(' ');
                 int x = colsWidth[j] - disp.length();
@@ -1869,36 +1445,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         stream.println();
         stream.print("]");
 
-    }
-
-    public void read(String reader) {
-        BufferedReader r = null;
-        try {
-            read(r = new BufferedReader(new StringReader(reader)));
-        } finally {
-            if (r != null) {
-                try {
-                    r.close();
-                } catch (IOException e) {
-                    e.printStackTrace(); // should'nt be thrown
-                }
-            }
-        }
-    }
-
-    public void read(File file) throws UncheckedIOException {
-        BufferedReader r = null;
-        try {
-            try {
-                read(r = new BufferedReader(new FileReader(file)));
-            } finally {
-                if (r != null) {
-                    r.close();
-                }
-            }
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
     }
 
     public void read(BufferedReader reader) throws UncheckedIOException {
@@ -1924,7 +1470,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
                         if (!isFirstLine) {
                             throw new UncheckedIOException(new IOException("Expected a '[' but found '" + line + "'"));
                         }
-                        line = line.substring(1, line.length());
+                        line = line.substring(1);
                         pos = LINE;
                     }
                     if (line.endsWith("]")) {
@@ -1937,7 +1483,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
                         ArrayList<Complex> c = new ArrayList<Complex>();
                         int someCols = 0;
                         while (stRow.hasMoreTokens()) {
-                            c.add(Complex.valueOf(stRow.nextToken()));
+                            c.add(Complex.of(stRow.nextToken()));
                             someCols++;
                         }
                         cols = Math.max(cols, someCols);
@@ -1967,34 +1513,38 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         }
     }
 
-    @Override
-    public TVector<TVector<Complex>> getRows() {
-        return (TVector<TVector<Complex>>) MathsBase.<TVector<Complex>>columnTVector(MathsBase.$CVECTOR, new TVectorModel<TVector<Complex>>() {
-            @Override
-            public int size() {
-                return getRowCount();
+    public void read(File file) throws UncheckedIOException {
+        BufferedReader r = null;
+        try {
+            try {
+                read(r = new BufferedReader(new FileReader(file)));
+            } finally {
+                if (r != null) {
+                    r.close();
+                }
             }
-
-            @Override
-            public TVector<Complex> get(int index) {
-                return getRow(index);
-            }
-        });
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
     }
 
-    @Override
-    public TVector<TVector<Complex>> getColumns() {
-        return (TVector<TVector<Complex>>) MathsBase.<TVector<Complex>>columnTVector(MathsBase.$CVECTOR, new TVectorModel<TVector<Complex>>() {
-            @Override
-            public int size() {
-                return getColumnCount();
+    public void read(String reader) {
+        BufferedReader r = null;
+        try {
+            read(r = new BufferedReader(new StringReader(reader)));
+        } finally {
+            if (r != null) {
+                try {
+                    r.close();
+                } catch (IOException e) {
+                    e.printStackTrace(); // should'nt be thrown
+                }
             }
+        }
+    }
 
-            @Override
-            public TVector<Complex> get(int index) {
-                return getColumn(index);
-            }
-        });
+    public ComplexVector getRow(final int row) {
+        return DefaultComplexVector.of(new MatrixRow<Complex>(row, this));
     }
 
     @Override
@@ -2002,31 +1552,13 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return getRow(row);
     }
 
+    public ComplexVector getColumn(final int column) {
+        return DefaultComplexVector.of(new MatrixColumn<Complex>(column, this));
+    }
+
     @Override
     public ComplexVector column(int column) {
         return getColumn(column);
-    }
-
-    public ComplexVector getRow(final int row) {
-        return new ComplexMatrixRow(row, this);
-    }
-
-    public ComplexVector toVector() {
-        if (isColumn()) {
-            return getColumn(0);
-        }
-        if (isRow()) {
-            return getRow(0);
-        }
-        throw new RuntimeException("Not a vector " + getRowCount() + "x" + getColumnCount());
-    }
-
-    public Complex scalarProduct(TMatrix<Complex> m) {
-        return toVector().scalarProduct(castToMatrix(m).toVector());
-    }
-
-    public Complex scalarProduct(TVector<Complex> v) {
-        return toVector().scalarProduct(v);
     }
 
     public boolean isColumn() {
@@ -2035,20 +1567,6 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
 
     public boolean isRow() {
         return getRowCount() == 1;
-    }
-
-    @Override
-    public void update(int row, int col, Complex val) {
-        set(row, col, val);
-    }
-
-    @Override
-    public void update(int row, int col, TMatrix<Complex> subMatrix) {
-        set(row, col, subMatrix);
-    }
-
-    public ComplexVector getColumn(final int column) {
-        return new ComplexMatrixColumn(column, this);
     }
 
     public double[][] absdbls() {
@@ -2085,6 +1603,42 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return X;
     }
 
+    public ComplexMatrix sqr() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqr());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix sqrt() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqrt());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix sqrt(int n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqrt(n));
+            }
+        }
+        return X;
+    }
+
     public double cond() {
         return this.norm1() * this.inv().norm1();
     }
@@ -2104,7 +1658,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
             for (int c = 0; c < cols; c++) {
                 alpha = alpha + get(r, c).absdblsqr();
             }
-            x *= MathsBase.sqrt(alpha);
+            x *= Maths.sqrt(alpha);
         }
 
         return det.absdbl() / x;
@@ -2193,19 +1747,19 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return f;
     }
 
-    public ComplexMatrix pow(ComplexMatrix power) {
+    @Override
+    public ComplexMatrix pow(Matrix<Complex> power) {
         if (power.isScalar()) {
             return pow(power.get(0, 0));
         } else {
             throw new IllegalArgumentException("Unable to raise Matrix to Matrix Power");
         }
-
     }
 
     @Override
     public ComplexMatrix pow(Complex power) {
         if (isScalar()) {
-            return MathsBase.constantMatrix(1, get(0, 0).pow(power));
+            return Maths.constantMatrix(1, get(0, 0).pow(power));
         } else {
             if (power.isReal()) {
                 double r = power.getReal();
@@ -2230,7 +1784,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     public boolean isDouble() {
-        return isComplex() && toComplex().isDouble();
+        return isComplex() && toComplex().isReal();
     }
 
     public Complex toComplex() {
@@ -2244,6 +1798,18 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return toComplex().toDouble();
     }
 
+    public void set(Matrix<Complex> other) {
+        int cols = other.getColumnCount();
+        int rows = other.getRowCount();
+        if (cols != getColumnCount() || rows != getRowCount()) {
+            throw new IllegalArgumentException("Columns or Rows count does not match");
+        }
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                set(r, c, other.get(r, c));
+            }
+        }
+    }
 
     public boolean isZero() {
         int columns = getColumnCount();
@@ -2259,64 +1825,13 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         return true;
     }
 
-    public void set(ComplexMatrix[][] subMatrixes) {
-        set((TMatrix<Complex>[][]) subMatrixes);
-    }
-
-    public void set(TMatrix<Complex>[][] subMatrixes) {
-        int rows = 0;
-        int cols = 0;
-        for (TMatrix<Complex>[] subMatrixe : subMatrixes) {
-            int r = 0;
-            int c = 0;
-            for (TMatrix<Complex> aSubMatrixe : subMatrixe) {
-                c += aSubMatrixe.getColumnCount();
-                if (r == 0) {
-                    r = aSubMatrixe.getRowCount();
-                } else if (r != aSubMatrixe.getRowCount()) {
-                    throw new IllegalArgumentException("Column count does not match");
-                }
-            }
-            if (cols == 0) {
-                cols = c;
-            } else if (cols != c) {
-                throw new IllegalArgumentException("Column count does not match");
-            }
-            rows += r;
-        }
-        if (rows == 0 || cols == 0) {
-            throw new EmptyMatrixException();
-        }
-        if (rows != getColumnCount() || rows != getRowCount()) {
-            throw new IllegalArgumentException("Columns or Rows count does not match");
-        }
-        int row = 0;
-        int col;
-        for (TMatrix<Complex>[] subMatrixe1 : subMatrixes) {
-            col = 0;
-            for (TMatrix<Complex> aSubMatrixe1 : subMatrixe1) {
-                set(row, col, aSubMatrixe1);
-                col += aSubMatrixe1.getColumnCount();
-            }
-            row += subMatrixe1[0].getRowCount();
-        }
-    }
-
-    public void set(TMatrix<Complex> other) {
-        int cols = other.getColumnCount();
-        int rows = other.getRowCount();
-        if (cols != getColumnCount() || rows != getRowCount()) {
-            throw new IllegalArgumentException("Columns or Rows count does not match");
-        }
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                set(r, c, other.get(r, c));
-            }
-        }
-    }
-
     public void dispose() {
 
+    }
+
+    @Override
+    public void resize(int rows, int columns) {
+        throw new IllegalArgumentException("Unsupported resize Matrix");
     }
 
     @Override
@@ -2330,9 +1845,9 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
             return factory;
         }
         if (factoryId != null) {
-            return factory = (ComplexMatrixFactory) MathsBase.Config.getTMatrixFactory(factoryId);
+            return factory = (ComplexMatrixFactory) Maths.Config.getTMatrixFactory(factoryId);
         }
-        ComplexMatrixFactory df = MathsBase.Config.getComplexMatrixFactory();
+        ComplexMatrixFactory df = Maths.Config.getComplexMatrixFactory();
         if (df == null) {
             throw new IllegalArgumentException("Invalid Factory");
         }
@@ -2340,83 +1855,430 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     @Override
-    public void setFactory(TMatrixFactory<Complex> factory) {
+    public void setFactory(MatrixFactory<Complex> factory) {
         this.factory = (ComplexMatrixFactory) factory;
         this.factoryId = factory == null ? null : factory.getId();
     }
 
-    @Override
-    public Complex apply(int row, int col) {
-        return get(row, col);
-    }
-
-    @Override
-    public Complex apply(int vectorIndex) {
-        return get(vectorIndex);
-    }
-
-
-    private void checkSquare() {
-        if (!isSquare()) {
-            throw new IllegalArgumentException("Expected Square Matrix");
+    public ComplexVector toVector() {
+        if (isColumn()) {
+            return getColumn(0);
         }
+        if (isRow()) {
+            return getRow(0);
+        }
+        throw new RuntimeException("Not a vector " + getRowCount() + "x" + getColumnCount());
     }
 
-    public ComplexMatrix pow(double rexp) {
-        checkSquare();
-        int exp = (int) rexp;
-        if (exp != rexp) {
-            throw new IllegalArgumentException("Unable to raise Matrix to Non integer power");
+    public Complex scalarProduct(Matrix<Complex> m) {
+        return toVector().scalarProduct(castToMatrix(m).toVector());
+    }
+
+    protected ComplexMatrix castToMatrix(Matrix<Complex> a) {
+        if (a instanceof ComplexMatrix) {
+            return (ComplexMatrix) a;
         }
-        return pow(exp);
+        throw new IllegalArgumentException("Not Supported yet");
+    }
+
+    public Complex scalarProduct(Vector<Complex> v) {
+        return toVector().scalarProduct(v);
+    }
+
+    public ComplexMatrix cos() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).cos());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix acos() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).acos());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix asin() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).asin());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix sin() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sin());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix acosh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).acosh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix cosh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).cosh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix asinh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).asinh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix sinh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sinh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix sincard() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sincard());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix arg() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).arg());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix atan() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).atan());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix cotan() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).cotan());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix tan() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).tan());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix tanh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).tanh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix cotanh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).cotanh());
+            }
+        }
+        return X;
+    }
+
+    //    public Matrix dotabs() {
+//        int rows = getRowCount();
+//        int columns = getColumnCount();
+//        Matrix X = createMatrix(rows, columns);
+//        for (int i = 0; i < rows; i++) {
+//            for (int j = 0; j < columns; j++) {
+//                X.set(i, j, new Complex(get(i, j).absdbl()));
+//            }
+//        }
+//        return X;
+//    }
+//
+    public ComplexMatrix getImag() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, Complex.of(get(i, j).getImag()));
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix getReal() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, Complex.of(get(i, j).getReal()));
+            }
+        }
+        return X;
     }
 
     @Override
-    public ComplexMatrix pow(TMatrix<Complex> power) {
-        if (power.isScalar()) {
-            return pow(power.get(0, 0));
-        } else {
-            throw new IllegalArgumentException("Unable to raise Matrix to Matrix Power");
-        }
+    public ComplexMatrix imag() {
+        return getImag();
     }
 
     @Override
-    public TypeName getComponentType() {
-        return MathsBase.$COMPLEX;
+    public ComplexMatrix real() {
+        return getReal();
+    }
+
+    public ComplexMatrix acotan() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).acotan());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix exp() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).exp());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix log() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).log());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix log10() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).log10());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix db() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).db());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix db2() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).db2());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotsqr() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqr());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotsqrt() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqrt());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotsqrt(int n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).sqrt(n));
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotnpow(int n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).npow(n));
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotpow(double n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).pow(n));
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix dotpow(Complex n) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).pow(n));
+            }
+        }
+        return X;
     }
 
     @Override
     public VectorSpace<Complex> getComponentVectorSpace() {
-        return MathsBase.COMPLEX_VECTOR_SPACE;
+        return Maths.COMPLEX_VECTOR_SPACE;
     }
 
-    //////////////////////////////////////////////////////////////////
-
+    @Override
+    public ComplexMatrix copy() {
+        return getFactory().newMatrix(this);
+    }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || !(o instanceof TMatrix)) {
-            return false;
+    public <R> boolean isConvertibleTo(TypeName<R> other) {
+        if (
+                Maths.$COMPLEX.equals(other)
+                        || Maths.$EXPR.equals(other)
+        ) {
+            return true;
         }
-
-        TMatrix<?> that = (TMatrix<?>) o;
-        int columnCount = getColumnCount();
-        int rowCount = getRowCount();
-        if (that.getColumnCount() != columnCount) {
-            return false;
+        if (other.isAssignableFrom(getComponentType())) {
+            return true;
         }
-        if (that.getRowCount() != rowCount) {
-            return false;
-        }
-        if (!that.getComponentType().equals(getComponentType())) {
-            return false;
-        }
-        for (int c = 0; c < columnCount; c++) {
-            for (int r = 0; r < rowCount; r++) {
-                if (!Objects.equals(get(r, c), that.get(r, c))) {
-                    return false;
-                }
+        for (Vector<Complex> ts : getRows()) {
+            if (!ts.isConvertibleTo(other)) {
+                return false;
             }
         }
         return true;
@@ -2442,18 +2304,143 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
     }
 
     @Override
-    public void resize(int rows, int columns) {
-        throw new IllegalArgumentException("Unsupported resize Matrix");
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Matrix)) {
+            return false;
+        }
+
+        Matrix<?> that = (Matrix<?>) o;
+        int columnCount = getColumnCount();
+        int rowCount = getRowCount();
+        if (that.getColumnCount() != columnCount) {
+            return false;
+        }
+        if (that.getRowCount() != rowCount) {
+            return false;
+        }
+        if (!that.getComponentType().equals(getComponentType())) {
+            return false;
+        }
+        for (int c = 0; c < columnCount; c++) {
+            for (int r = 0; r < rowCount; r++) {
+                if (!Objects.equals(get(r, c), that.get(r, c))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
+    @Override
+    public String toString() {
+        return format();
+    }
 
     @Override
-    public ComplexMatrix copy() {
-        return getFactory().newMatrix(this);
+    public TypeName getComponentType() {
+        return Maths.$COMPLEX;
+    }
+
+    public ComplexMatrix rem(Complex c) {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).rem(c));
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix pow(int exp) {
+        switch (exp) {
+            case 0: {
+                return Maths.identityMatrix(this);
+            }
+            case 1: {
+                return this;
+            }
+            case -1: {
+                return inv();
+            }
+            default: {
+                if (exp > 0) {
+                    ComplexMatrix m = this;
+                    while (exp > 1) {
+                        m = m.mul(this);
+                        exp--;
+                    }
+                    return m;
+                } else {
+                    ComplexMatrix m = this;
+                    int t = -exp;
+                    while (t > 1) {
+                        m = m.mul(this);
+                        t--;
+                    }
+                    m = m.inv();
+                    return m;
+                }
+            }
+        }
+    }
+
+    @Override
+    public DMatrix getRealDMatrix() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = (get(i, j).getReal());
+            }
+        }
+        return new DMatrix(X);
+    }
+
+    @Override
+    public DMatrix getImagDMatrix() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = (get(i, j).getImag());
+            }
+        }
+        return new DMatrix(X);
+    }
+
+    @Override
+    public DMatrix getAbsDMatrix() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = (get(i, j).absdbl());
+            }
+        }
+        return new DMatrix(X);
+    }
+
+    @Override
+    public DMatrix getAbsSquareDMatrix() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = (get(i, j).absdblsqr());
+            }
+        }
+        return new DMatrix(X);
     }
 
     public void set(int row, int col, double real, double imag) {
-        set(row, col, Complex.valueOf(real, imag));
+        set(row, col, Complex.of(real, imag));
     }
 
     @Override
@@ -2461,16 +2448,7 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         set(row, col, value.getReal(), value.getImag());
     }
 
-    @Override
-    public void set(Complex[][] values) {
-        int rows = values.length;
-        int cols = values[0].length;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                this.set(i, j, values[i][j]);
-            }
-        }
-    }
+    //////////////////////////////////////////////////////////////////
 
     @Override
     public void set(MutableComplex[][] values) {
@@ -2495,23 +2473,82 @@ public abstract class AbstractComplexMatrix extends AbstractTMatrix<Complex> imp
         }
     }
 
-
-    @Override
-    public <R> boolean isConvertibleTo(TypeName<R> other) {
-        if (
-                MathsBase.$COMPLEX.equals(other)
-                        || MathsBase.$EXPR.equals(other)
-                ) {
-            return true;
-        }
-        if (other.isAssignableFrom(getComponentType())) {
-            return true;
-        }
-        for (TVector<Complex> ts : getRows()) {
-            if (!ts.isConvertibleTo(other)) {
-                return false;
+    public double[][] getDoubleArray() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = get(i, j).toDouble();
             }
         }
-        return true;
+        return X;
+    }
+
+    public double[][] getRealArray() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = get(i, j).getReal();
+            }
+        }
+        return X;
+    }
+
+    public double[][] getImagArray() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = get(i, j).getReal();
+            }
+        }
+        return X;
+    }
+
+    public double[][] getAbsArray() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = get(i, j).absdbl();
+            }
+        }
+        return X;
+    }
+
+    public double[][] getAbsSquareArray() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X[i][j] = get(i, j).absdblsqr();
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix pow(ComplexMatrix power) {
+        if (power.isScalar()) {
+            return pow(power.get(0, 0));
+        } else {
+            throw new IllegalArgumentException("Unable to raise Matrix to Matrix Power");
+        }
+
+    }
+
+    public void set(ComplexMatrix[][] subMatrixes) {
+        set((Matrix<Complex>[][]) subMatrixes);
+    }
+
+    private void checkSquare() {
+        if (!isSquare()) {
+            throw new IllegalArgumentException("Expected Square Matrix");
+        }
     }
 }

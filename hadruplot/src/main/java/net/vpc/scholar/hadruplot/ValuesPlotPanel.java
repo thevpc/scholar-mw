@@ -27,7 +27,11 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
 //            if ("plotType".equals(evt.getPropertyName())) {
-            setup();
+            try {
+                setup();
+            }catch (Exception ex){
+                JOptionPane.showMessageDialog(frame,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }
             firePlotPropertyEvent(PlotPropertyListener.COMPONENT_DISPLAY_TYPE, evt.getOldValue(), evt.getNewValue());
 //            }
         }
@@ -87,14 +91,14 @@ public class ValuesPlotPanel extends BasePlotComponent implements PlotModelProvi
     }
 
     private void setup() {
-        PlotType type = this.model.getPlotType();
+        LibraryPlotType type = this.model.getPlotType();
         double[][] z = getZ();
         PlotComponentPanel oldComponent = mainComponent;
-        if (type == PlotType.AUTO || type == PlotType.ALL || type == null) {
+        if (type==null || type.getType() == PlotType.AUTO || type.getType() == PlotType.ALL || type.getType() == null) {
             if (model.getZ() == null) {
-                type = PlotType.CURVE;
+                type = new LibraryPlotType(PlotType.CURVE,null);
             } else {
-                type = PlotType.HEATMAP;
+                type = new LibraryPlotType(PlotType.HEATMAP,null);
             }
         }
         this.mainComponent = PlotBackendLibraries.createPlotComponentPanel(

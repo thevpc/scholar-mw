@@ -9,14 +9,12 @@
 
 package net.vpc.scholar.hadruwaves;
 
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-
-import java.io.Serializable;
+import net.vpc.scholar.hadrumaths.HSerializable;
 
 /**
  * @author vpc
  */
-public interface ModeIndexFilter extends Serializable, Dumpable {
+public interface ModeIndexFilter extends HSerializable {
     boolean acceptModeIndex(ModeIndex mode);
 
     boolean isFrequencyDependent();

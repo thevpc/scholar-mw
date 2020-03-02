@@ -1,6 +1,7 @@
 package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.tson.TsonElement;
 import net.vpc.scholar.hadrumaths.io.HFile;
 
 import java.util.concurrent.Callable;
@@ -23,7 +24,7 @@ public interface ObjectCache {
 
     boolean exists(String name);
 
-    <V> V invokeLocked(String name, long lockTimeout, Callable<V> runnable);
+    <V> V invokeLocked(String name, long lockTimeout, Callable<V> runnable, ProgressMonitor monitor);
 
     boolean isLocked(String name);
 
@@ -31,9 +32,9 @@ public interface ObjectCache {
 
     Object load(String name, Object o);
 
-    void addStat(String statName, long statValueNano);
+    void addStat(TsonElement statName);
 
-    void addSetItem(String setName, String item);
+    void addSetItem(String setName, TsonElement item);
 
     long getStat(String statName);
 
@@ -41,7 +42,7 @@ public interface ObjectCache {
 
     boolean delete();
 
-    String getDump();
+    CacheKey getKey();
 
     void store(String name, Object o, ProgressMonitor computationMonitor);
 }

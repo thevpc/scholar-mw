@@ -5,11 +5,11 @@ public class ArrayParamSet<T> extends ParamSet<T> implements Cloneable {
     private T[] values;
     private int index = -1;
 
-    public ArrayParamSet(Param configurator) {
+    public ArrayParamSet(CParam configurator) {
         super(configurator);
     }
 
-    public ArrayParamSet(Param configurator, T... values) {
+    public ArrayParamSet(CParam configurator, T... values) {
         super(configurator);
         this.values = values;
     }

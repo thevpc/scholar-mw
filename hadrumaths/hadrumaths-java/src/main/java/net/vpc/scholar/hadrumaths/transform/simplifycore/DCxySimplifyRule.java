@@ -7,11 +7,14 @@ package net.vpc.scholar.hadrumaths.transform.simplifycore;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
-import net.vpc.scholar.hadrumaths.MathsBase;
-import net.vpc.scholar.hadrumaths.symbolic.ComplexValue;
-import net.vpc.scholar.hadrumaths.symbolic.conv.DD2DC;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.ExprType;
+import net.vpc.scholar.hadrumaths.symbolic.conv.DefaultDoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.vpc.scholar.hadrumaths.transform.AbstractExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.vpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.vpc.scholar.hadrumaths.transform.RewriteResult;
@@ -19,10 +22,10 @@ import net.vpc.scholar.hadrumaths.transform.RewriteResult;
 /**
  * @author vpc
  */
-public class DCxySimplifyRule implements ExpressionRewriterRule {
+public class DCxySimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new DCxySimplifyRule();
-    public static final Class<? extends Expr>[] TYPES = new Class[]{DD2DC.class};
+    public static final Class<? extends Expr>[] TYPES = new Class[]{DefaultDoubleToComplex.class};
 
 
     @Override
@@ -30,40 +33,34 @@ public class DCxySimplifyRule implements ExpressionRewriterRule {
         return TYPES;
     }
 
-    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset) {
-        DD2DC ee = (DD2DC) e;
+    public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
+        DefaultDoubleToComplex ee = (DefaultDoubleToComplex) e;
         DoubleToDouble real = ee.getRealDD();
         DoubleToDouble imag = ee.getImagDD();
-        RewriteResult exreal = ruleset.rewrite(real);
-        RewriteResult eximag = ruleset.rewrite(imag);
-        if (eximag.getValue().isZero()) {
-            return RewriteResult.bestEffort(exreal.getValue());
+        RewriteResult exreal = ruleset.rewrite(real, targetExprType);
+        RewriteResult eximag = ruleset.rewrite(imag, targetExprType);
+        Expr exrv = exreal.isUnmodified() ? real : exreal.getValue();
+        Expr exiv = eximag.isUnmodified() ? imag : eximag.getValue();
+        if (exiv.isZero()) {
+            return RewriteResult.bestEffort(exrv);
         }
-        if (exreal.getValue().getDomain().equals(eximag.getValue().getDomain())) {
-            if (exreal.getValue().isDoubleExpr() && eximag.getValue().isDoubleExpr()) {
+        if (exrv.getDomain().equals(exiv.getDomain())) {
+            if (exrv.isNarrow(ExprType.DOUBLE_EXPR) && exiv.isNarrow(ExprType.DOUBLE_EXPR)) {
                 //FIX ME may be not DoubleValue
-                DoubleValue a = (DoubleValue) exreal.getValue();
-                DoubleValue b = (DoubleValue) eximag.getValue();
-                return RewriteResult.bestEffort(new ComplexValue(Complex.valueOf(a.value, b.value), exreal.getValue().getDomain()));
+                DoubleValue a = (DoubleValue) exrv;
+                DoubleValue b = (DoubleValue) exiv;
+                return RewriteResult.bestEffort(new DefaultComplexValue(Complex.of(a.toDouble(), b.toDouble()), exrv.getDomain()));
             }
         }
         if (exreal.isUnmodified() && eximag.isUnmodified()) {
-            return RewriteResult.unmodified(e);
+            return RewriteResult.unmodified();
         }
-        return RewriteResult.bestEffort(MathsBase.complex(real, imag));
+        DoubleToComplex a = Maths.complex(real, imag);
+        if(a.equals(e)){
+            return RewriteResult.unmodified();
+        }
+        return RewriteResult.bestEffort(a);
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().getName().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
-    }
 
 }

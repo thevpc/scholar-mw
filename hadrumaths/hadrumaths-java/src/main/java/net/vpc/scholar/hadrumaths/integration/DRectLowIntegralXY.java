@@ -1,14 +1,15 @@
 package net.vpc.scholar.hadrumaths.integration;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
-import net.vpc.scholar.hadrumaths.util.dump.Dumpable;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 /**
  * Created by IntelliJ IDEA. User: vpc Date: 29 juil. 2005 Time: 18:55:20 To
  * change this template use File | Settings | File Templates.
  */
-public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
+public class DRectLowIntegralXY implements DIntegralXY {
     private static final long serialVersionUID = 1L;
 
     private int xprecision;
@@ -59,7 +60,7 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
         for (int i = 0; i < xprecision; i++) {
             xx[i] = xmin + i * dx;
         }
-        double[] h = f.computeDouble(xx, y, null, null);
+        double[] h = f.evalDouble(xx, y, null, null);
         for (double v : h) {
             vol += v;
         }
@@ -79,7 +80,7 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
         for (int i = 0; i < xprecision; i++) {
             yy[i] = ymin + i * dy;
         }
-        double[] h = f.computeDouble(x, yy, null, null);
+        double[] h = f.evalDouble(x, yy, null, null);
         for (double v : h) {
             vol += v;
         }
@@ -111,7 +112,7 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
 
         double dxy = dx * dy;
 
-        double[][] h = f.computeDouble(xx, yy, null, null);
+        double[][] h = f.evalDouble(xx, yy, null, null);
         for (double[] hx : h) {
             for (double hxy : hx) {
                 vol += hxy;
@@ -151,7 +152,7 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
 
         double dxy = dx * dy * dz;
 
-        double[][][] h = f.computeDouble(xx, yy, zz, null, null);
+        double[][][] h = f.evalDouble(xx, yy, zz, null, null);
         for (double[][] hz : h) {
             for (double[] hx : hz) {
                 for (double hxy : hx) {
@@ -164,12 +165,26 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
     }
 
     @Override
-    public String dump() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("xprecision", xprecision);
-        h.add("yprecision", yprecision);
-        h.add("zprecision", zprecision);
-        return h.toString();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName(), Tson.elem(xprecision), Tson.elem(yprecision), Tson.elem(zprecision))
+                .build();
+    }
+
+//    @Override
+//    public String dump() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("xprecision", xprecision);
+//        h.add("yprecision", yprecision);
+//        h.add("zprecision", zprecision);
+//        return h.toString();
+//    }
+
+    @Override
+    public int hashCode() {
+        int result = xprecision;
+        result = 31 * result + yprecision;
+        result = 31 * result + zprecision;
+        return result;
     }
 
     @Override
@@ -181,17 +196,7 @@ public class DRectLowIntegralXY implements DIntegralXY, Dumpable {
 
         if (xprecision != that.xprecision) return false;
         if (yprecision != that.yprecision) return false;
-        if (zprecision != that.zprecision) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = xprecision;
-        result = 31 * result + yprecision;
-        result = 31 * result + zprecision;
-        return result;
+        return zprecision == that.zprecision;
     }
 
     @Override

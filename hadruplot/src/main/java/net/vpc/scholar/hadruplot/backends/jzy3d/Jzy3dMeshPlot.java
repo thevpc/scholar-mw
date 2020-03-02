@@ -2,6 +2,7 @@ package net.vpc.scholar.hadruplot.backends.jzy3d;
 
 import net.vpc.common.strings.StringUtils;
 import net.vpc.scholar.hadruplot.*;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.chart.Settings;
@@ -49,6 +50,7 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
     @Override
     public JPopupMenu getPopupMenu() {
         return titleLabel.getComponentPopupMenu();
+        //return PlotUtils.getOrCreateComponentPopupMenu(titleLabel);
     }
 
     public Jzy3dMeshPlot(ValuesPlotXYDoubleModelFace model, PlotModelProvider plotModelProvider) {

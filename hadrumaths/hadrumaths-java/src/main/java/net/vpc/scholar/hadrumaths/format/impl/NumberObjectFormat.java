@@ -7,6 +7,7 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.vpc.scholar.hadrumaths.format.params.DoubleObjectFormatParam;
 
@@ -18,14 +19,15 @@ public class NumberObjectFormat implements ObjectFormat<Number> {
     }
 
     @Override
-    public String format(Number o, ObjectFormatParamSet format) {
+    public String format(Number o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Number o, ObjectFormatParamSet format) {
+    public void format(Number o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         DoubleObjectFormatParam df = format.getParam(DoubleObjectFormatParam.class, false);
         String v = df == null ? o.toString() : df.getFormat().format(o.doubleValue());
         boolean par = format.containsParam(FormatFactory.REQUIRED_PARS);
@@ -33,11 +35,11 @@ public class NumberObjectFormat implements ObjectFormat<Number> {
             par = false;
         }
         if (par) {
-            sb.append("(");
+            context.append("(");
         }
-        sb.append(v);
+        context.append(v);
         if (par) {
-            sb.append(")");
+            context.append(")");
         }
     }
 }

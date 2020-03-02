@@ -10,8 +10,8 @@ import static net.vpc.scholar.hadrumaths.Complex.ZERO;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymOpMul extends SymOperator {
-    private SymExpression left;
-    private SymExpression right;
+    private final SymExpression left;
+    private final SymExpression right;
 
     public SymOpMul(SymExpression left, SymExpression right) {
         this.left = left;

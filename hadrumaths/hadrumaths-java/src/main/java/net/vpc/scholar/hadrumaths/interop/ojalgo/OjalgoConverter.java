@@ -2,14 +2,14 @@ package net.vpc.scholar.hadrumaths.interop.ojalgo;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
-import net.vpc.scholar.hadrumaths.TMatrix;
+import net.vpc.scholar.hadrumaths.Matrix;
 import org.ojalgo.matrix.BasicMatrix;
 import org.ojalgo.matrix.MutableComplexMatrix;
 import org.ojalgo.scalar.ComplexNumber;
 
 public class OjalgoConverter {
     public static Complex toVpcComplex(ComplexNumber complexDouble) {
-        return Complex.valueOf(complexDouble.getReal(), complexDouble.getImaginary());
+        return Complex.of(complexDouble.getReal(), complexDouble.getImaginary());
     }
 
     public static ComplexNumber fromVpcComplex(Complex complex) {
@@ -23,7 +23,7 @@ public class OjalgoConverter {
         throw new IllegalArgumentException("Unsupported");
     }
 
-    public static MutableComplexMatrix fromVpcCMatrix(TMatrix<Complex> matrix) {
+    public static MutableComplexMatrix fromVpcCMatrix(Matrix<Complex> matrix) {
         OjalgoComplexMatrix m = (OjalgoComplexMatrix) OjalgoComplexMatrixFactory.INSTANCE.newMatrix(matrix);
         return m.getBase();
     }

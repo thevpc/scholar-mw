@@ -18,25 +18,22 @@ final class DoubleDoubleValueVsDoubleDoubleValueScalarProduct implements FormalS
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !obj.getClass().equals(getClass())) {
-            return false;
-        }
-        return true;
+        return obj != null && obj.getClass().equals(getClass());
     }
 
-    public double compute(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+    public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
         switch (domain.getDimension()) {
             case 1: {
                 double b1 = domain.xmin();
                 double b2 = domain.xmax();
-                return ((DoubleValue) f1).value * ((DoubleValue) f2).value * (b2 - b1);
+                return ((DoubleValue) f1).toDouble() * ((DoubleValue) f2).toDouble() * (b2 - b1);
             }
             case 2: {
                 double b1 = domain.xmin();
                 double b2 = domain.xmax();
                 double b3 = domain.ymin();
                 double b4 = domain.ymax();
-                return ((DoubleValue) f1).value * ((DoubleValue) f2).value * (b2 - b1) * (b4 - b3);
+                return ((DoubleValue) f1).toDouble() * ((DoubleValue) f2).toDouble() * (b2 - b1) * (b4 - b3);
             }
             case 3: {
                 double b1 = domain.xmin();
@@ -45,7 +42,7 @@ final class DoubleDoubleValueVsDoubleDoubleValueScalarProduct implements FormalS
                 double b4 = domain.ymax();
                 double b5 = domain.zmin();
                 double b6 = domain.zmax();
-                return ((DoubleValue) f1).value * ((DoubleValue) f2).value * (b2 - b1) * (b4 - b3) * (b6 - b5);
+                return ((DoubleValue) f1).toDouble() * ((DoubleValue) f2).toDouble() * (b2 - b1) * (b4 - b3) * (b6 - b5);
             }
         }
         throw new IllegalArgumentException("Unsupported domain");

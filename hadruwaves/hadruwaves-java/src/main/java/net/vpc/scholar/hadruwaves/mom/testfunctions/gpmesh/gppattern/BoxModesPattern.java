@@ -1,17 +1,21 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectBuilder;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
-import net.vpc.scholar.hadrumaths.symbolic.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeType;
 import net.vpc.scholar.hadruwaves.Wall;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.*;
+import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.CutOffModalSources;
 
 import java.util.ArrayList;
@@ -84,8 +88,24 @@ public final class BoxModesPattern implements RectangularGpPattern {
         //this.excludedFunctions = excludedFunctions;
     }
 
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        h.add("complexity", context.elem(complexity));
+        h.add("axisInvariance", context.elem(axisInvariance));
+        h.add("inheritInvariance", context.elem(inheritInvariance));
+        h.add("inheritSymmetry", context.elem(inheritSymmetry));
+        h.add("axisSymmetry", context.elem(axisSymmetry));
+        h.add("keepNormalization", context.elem(keepNormalization));
+        h.add("keepAllModes", context.elem(keepAllModes));
+        h.add("maxLoopCount", context.elem(maxLoopCount));
+        h.add("includedFunctions", context.elem(includedFunctions));
+        h.add("excludedFunctions", context.elem(excludedFunctions));
+        return h.build();
+    }
+
     public static WallBorders getVirtualWalls(MeshZone zone, Domain globalDomain, MomStructure str) {
-        return getVirtualWalls(zone.getDomain(), globalDomain, str.getCircuitType(), str.getModeFunctions().getBorders());
+        return getVirtualWalls(zone.getDomain(), globalDomain, str.getCircuitType(), str.getBorders());
     }
 
     public static WallBorders getVirtualWalls(Domain d, Domain globalDomain, CircuitType circuit, WallBorders b) {
@@ -107,22 +127,6 @@ public final class BoxModesPattern implements RectangularGpPattern {
     public BoxModesPattern setKeepNormalization(boolean keepNormalization) {
         this.keepNormalization = keepNormalization;
         return this;
-    }
-
-    public Dumper getDumpStringHelper() {
-        Dumper h = new Dumper(this);
-        h.add("complexity", complexity);
-        h.add("keepAllModes", isKeepAllModes());
-        h.add("keepNormalization", isKeepNormalization());
-        h.add("inheritInvariance", inheritInvariance);
-        h.addNonNull("includedFunctions", includedFunctions);
-        h.addNonNull("excludedFunctions", excludedFunctions);
-        h.addNonNull("axisIndependent", getAxisInvariance());
-        return h;
-    }
-
-    public String dump() {
-        return getDumpStringHelper().toString();
     }
 
     @Override
@@ -150,25 +154,21 @@ public final class BoxModesPattern implements RectangularGpPattern {
         Wall westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
         Wall northWall = northReached ? b.getNorth() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
         Wall southWall = southReached ? b.getSouth() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        ModeFunctions ff;
+        BoxModeFunctions ff= new BoxModeFunctions();
+        DefaultModeFunctionsEnv env=new DefaultModeFunctionsEnv();
+        ff.setEnv(env);
+        env.setBorders(WallBorders.of(northWall, eastWall, southWall, westWall));
         if (Wall.PERIODIC.equals(eastWall) && Wall.PERIODIC.equals(westWall) && Wall.PERIODIC.equals(northWall) && Wall.PERIODIC.equals(southWall)) {
-            ff = ModeFunctionsFactory.createBox(northWall, eastWall, southWall, westWall, Axis.Y);
-            //            ff.setHintFnModeTypes(new Mode[]{ModeType.TEM, ModeType.TM});
-        } else {
-            ff = ModeFunctionsFactory.createBox(northWall, eastWall, southWall, westWall);
-            //if (isKeepAllModes()) {
-            //    ff.setHintFnMode(Mode.values());//new ModeType[]{ModeType.TEM, ModeType.TM}
-            //}
-
+            ff.setPolarization(Axis.Y);
         }
         if (ff == null) {
             throw new IllegalArgumentException("Unsupported " + northWall + "," + eastWall + "," + southWall + "," + westWall);
         }
-        ff.setDomain(d);
-        ff.setFrequency(str.getFrequency());
+        env.setDomain(d);
+        env.setFrequency(str.getFrequency());
 //        ff.setProjectType(str.getProjectType());
-        ff.setFirstBoxSpace(str.getFirstBoxSpace());
-        ff.setSecondBoxSpace(str.getSecondBoxSpace());
+        env.setFirstBoxSpace(str.getFirstBoxSpace());
+        env.setSecondBoxSpace(str.getSecondBoxSpace());
         if (inheritInvariance) {
             ff.setHintInvariance(str.getHintsManager().getHintInvariance());
         } else {
@@ -184,7 +184,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
         int fnMax = complexity * 3;
         int fnMaxStep = complexity;
         int maxLoops = maxLoopCount;
-        ff.setSources(new CutOffModalSources(1));
+        env.setSources(new CutOffModalSources(1));
         ff.setHintAxisType(str.getHintsManager().getHintAxisType());
         if (!keepAllModes) {
             ModeType[] allowedModes = ff.getAllowedModes();
@@ -228,7 +228,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
         while (maxLoops > 0) {
             all.clear();
             maxLoops--;
-            ff.setMaxSize(fnMax);
+            ff.setSize(fnMax);
             ModeInfo[] fnIndexes = ff.getModes(monitor);
             for (int index = 0; (index < fnIndexes.length && index < complexity); index++) {
                 if (includedFunctions != null && !includedFunctions.contains(index)) {
@@ -246,12 +246,12 @@ public final class BoxModesPattern implements RectangularGpPattern {
                     if (fx.getRealDD() instanceof CosXCosY && fx.getImagDD().isZero()) {
                         ok = true;
                         CosXCosY f = (CosXCosY) fx.getRealDD();
-                        fx = Maths.complex(new CosXCosY(1, f.a, f.b, f.c, f.d, f.getDomain()));
+                        fx = Maths.complex(new CosXCosY(1, f.getA(), f.getB(), f.getC(), f.getD(), f.getDomain()));
                     }
                     if (fy.getRealDD() instanceof CosXCosY && fy.getImagDD().isZero()) {
                         ok = true;
                         CosXCosY f = (CosXCosY) fy.getRealDD();
-                        fy = Maths.complex(new CosXCosY(1, f.a, f.b, f.c, f.d, f.getDomain()));
+                        fy = Maths.complex(new CosXCosY(1, f.getA(), f.getB(), f.getC(), f.getD(), f.getDomain()));
                     }
                     if (ok) {
                         DoubleToVector cfv2d =  Maths.vector(fx, fy).setProperties(d1.getProperties()).toDV();
@@ -262,23 +262,23 @@ public final class BoxModesPattern implements RectangularGpPattern {
                 if (axisIndependent1 != null && !HintAxisType.XY.equals(str.getHintsManager().getHintAxisType())) {
                     //si non XY_COUPLED alors separer les variables
                     if (!d1.getComponent(Axis.X).isZero() && (axisIndependent1 == null || d1.getComponent(Axis.X).isInvariant(axisIndependent1))) {
-                        DoubleToVector f = Maths.vector(d1.getComponent(Axis.X), FunctionFactory.CZEROXY);
+                        Expr f = Maths.vector(d1.getComponent(Axis.X), Maths.CZEROXY);
                         f = f.setTitle(d1.getTitle())
                                 .setMergedProperties(d1.getProperties())
-                                .setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription())
-                                .setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
-                        all.add(f);
+                                .setProperty("Borders.E", env.getBorders().getExDescription() + "," + env.getBorders().getEyDescription())
+                                .setProperty("Borders.J", env.getBorders().getJxDescription() + "," + env.getBorders().getJyDescription()).toDV();
+                        all.add(f.toDV());
 //                        System.out.println(">>OK "+axisIndependent1+" invariant d1.fx " + d1.fx);
                     } else {
 //                        System.out.println("not "+axisIndependent1+" invariant d1.fx " + d1.fx);
                     }
                     if (!d1.getComponent(Axis.Y).isZero() && (axisIndependent1 == null || d1.getComponent(Axis.Y).isInvariant(axisIndependent1))) {
-                        DoubleToVector f = Maths.vector(FunctionFactory.CZEROXY, d1.getComponent(Axis.Y));
+                        Expr f = Maths.vector(Maths.CZEROXY, d1.getComponent(Axis.Y));
                         f = f.setTitle(d1.getTitle())
                                 .setMergedProperties(d1.getProperties())
-                                .setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription())
-                                .setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
-                        all.add(f);
+                                .setProperty("Borders.E", env.getBorders().getExDescription() + "," + env.getBorders().getEyDescription())
+                                .setProperty("Borders.J", env.getBorders().getJxDescription() + "," + env.getBorders().getJyDescription()).toDV();
+                        all.add(f.toDV());
                         //System.out.println(">>> OK   :"+(""+d1.getProperties().get("Mode")+"["+d1.getProperties().get("m")+","+d1.getProperties().get("n")+"]  ")+"is "+axisIndependent1+" invariant d1.fy " + d1.fx);
                     } else {
                         //System.out.println((""+d1.getProperties().get("Mode")+"["+d1.getProperties().get("m")+","+d1.getProperties().get("n")+"]  ")+"not "+axisIndependent1+" invariant d1.fy " + d1.fx);
@@ -287,23 +287,23 @@ public final class BoxModesPattern implements RectangularGpPattern {
                     switch (str.getHintsManager().getHintAxisType()) {
                         case Y_ONLY: {
                             if (!d1.getComponent(Axis.Y).isZero()) {
-                                d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
-                                d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
+                                d1= d1.setProperty("Borders.E", env.getBorders().getExDescription() + "," + env.getBorders().getEyDescription()).toDV();
+                                d1= d1.setProperty("Borders.J", env.getBorders().getJxDescription() + "," + env.getBorders().getJyDescription()).toDV();
                                 all.add(d1);
                             }
                             break;
                         }
                         case X_ONLY: {
                             if (!d1.getComponent(Axis.X).isZero()) {
-                                d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
-                                d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
+                                d1= d1.setProperty("Borders.E", env.getBorders().getExDescription() + "," + env.getBorders().getEyDescription()).toDV();
+                                d1= d1.setProperty("Borders.J", env.getBorders().getJxDescription() + "," + env.getBorders().getJyDescription()).toDV();
                                 all.add(d1);
                             }
                             break;
                         }
                         default: {
-                            d1= d1.setProperty("Borders.E", ff.getBorders().getExDescription() + "," + ff.getBorders().getEyDescription()).toDV();
-                            d1= d1.setProperty("Borders.J", ff.getBorders().getJxDescription() + "," + ff.getBorders().getJyDescription()).toDV();
+                            d1= d1.setProperty("Borders.E", env.getBorders().getExDescription() + "," + env.getBorders().getEyDescription()).toDV();
+                            d1= d1.setProperty("Borders.J", env.getBorders().getJxDescription() + "," + env.getBorders().getJyDescription()).toDV();
                             all.add(d1);
                             break;
                         }

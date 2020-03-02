@@ -17,7 +17,7 @@ object M2018 extends App{
   var g3=gp(p->3)
   var g=gp.inflate(p.in(0,P))
   var expr2=cos(X/a)
-  val complexes: Array[Complex] = expr2.computeComplex((dom/5).xvalues())
+  val complexes: Array[Complex] = expr2.toDC.evalComplex((dom/5).xvalues())
   Plot.title(cos(X/a).toString).domain(dom).plot(cos(X/a))
   Plot.title("g").domain(dom).plot(g)
   Plot.plot(cos(X)*domain(0.0 -> 2*PI))

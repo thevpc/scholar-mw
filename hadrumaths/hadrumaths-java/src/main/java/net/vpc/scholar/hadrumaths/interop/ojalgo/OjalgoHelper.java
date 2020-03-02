@@ -4,7 +4,7 @@
 // */
 //package net.vpc.scholar.hadrumaths.interop.ojalgo;
 //
-//import net.vpc.scholar.hadrumaths.MathsBase;
+//import net.vpc.scholar.hadrumaths.Maths;
 //import net.vpc.scholar.hadrumaths.Matrix;
 //import org.ojalgo.matrix.BasicMatrix;
 //import org.ojalgo.matrix.ComplexMatrix;
@@ -39,15 +39,15 @@
 //    }
 //
 //    public ComplexMatrix exportObj(Matrix matrix) {
-//        Complex[][] elements = matrix.getArray();
-//        int tmpRowDim = elements.length;
-//        int tmpColDim = elements[0].length;
+//        Complex[][] primitiveElement3DS = matrix.getArray();
+//        int tmpRowDim = primitiveElement3DS.length;
+//        int tmpColDim = primitiveElement3DS[0].length;
 //
 //        MatrixBuilder<ComplexNumber> b = ComplexMatrix.FACTORY.getBuilder(tmpRowDim, tmpColDim);
 //        Complex cc;
 //        for (int i = 0; i < tmpRowDim; i++) {
 //            for (int j = 0; j < tmpColDim; j++) {
-//                cc = elements[i][j];
+//                cc = primitiveElement3DS[i][j];
 //                b.set(i, j, ComplexNumber.makeRectangular(cc.getReal(), cc.getImag()));
 //            }
 //        }
@@ -66,7 +66,7 @@
 //                ret[i][j] = Complex.valueOf(cn.getReal(), cn.getImaginary());
 //            }
 //        }
-//        return MathsBase.matrix(ret);
+//        return Maths.matrix(ret);
 //    }
 //
 //}

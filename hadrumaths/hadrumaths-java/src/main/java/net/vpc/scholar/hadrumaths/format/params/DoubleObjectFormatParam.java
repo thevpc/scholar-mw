@@ -5,6 +5,7 @@ import net.vpc.scholar.hadrumaths.format.ObjectFormatParam;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Objects;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import java.text.NumberFormat;
  * To change this template use File | Settings | File Templates.
  */
 public class DoubleObjectFormatParam implements ObjectFormatParam {
-    private NumberFormat format;
+    private final NumberFormat format;
 
     public DoubleObjectFormatParam(int precision) {
         StringBuilder sb = new StringBuilder("0.");
@@ -38,5 +39,18 @@ public class DoubleObjectFormatParam implements ObjectFormatParam {
 
     public NumberFormat getFormat() {
         return format;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DoubleObjectFormatParam that = (DoubleObjectFormatParam) o;
+        return Objects.equals(format, that.format);
+    }
+
+    @Override
+    public int hashCode() {
+        return format.hashCode();
     }
 }

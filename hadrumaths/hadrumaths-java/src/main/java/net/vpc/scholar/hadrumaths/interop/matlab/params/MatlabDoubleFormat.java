@@ -14,7 +14,7 @@ import java.text.NumberFormat;
  * To change this template use File | Settings | File Templates.
  */
 public class MatlabDoubleFormat implements ToMatlabStringParam {
-    private NumberFormat format;
+    private final NumberFormat format;
 
     public MatlabDoubleFormat(int precision) {
         StringBuilder sb = new StringBuilder("0.");

@@ -1,11 +1,14 @@
 package net.vpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.vpc.common.mon.MonitoredAction;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.symbolic.Discrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadrumaths.symbolic.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -22,14 +25,14 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 
     @Override
     public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, ProgressMonitor monitor) {
-//        ProgressMonitor emonitor=ProgressMonitorFactory.nonnull(monitor);
+//        ProgressMonitor emonitor=ProgressMonitors.nonnull(monitor);
         final MomStructure str=(MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 DoubleToVector[] _g = str.getTestFunctions().arr();
 
-                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).computeMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
 
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -48,7 +51,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 MutableComplex[][][] fx = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
                 MutableComplex[][][] fy = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
                 MutableComplex[][][] fz = MutableComplex.createArray(Maths.CZERO, 1,y.length,x.length);
-                TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+                ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
                 MutableComplex tempx;
                 MutableComplex tempy;
                 Complex zmnGammaZ;
@@ -65,13 +68,13 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 for (int i = 0; i < evan_length; i++) {
                     mode = evan[i];
                     int indexIndex = mode.index;
-                    xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                    yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
-                    ProgressMonitorFactory.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
+                    xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                    yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
+                    ProgressMonitors.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
 //            monitor.setProgress((1.0 * i / (indexes.length)));
 //            System.out.println("progress = " + monitor.getProgressValue());
                     zmnGammaZ = /*Complex.ONE.*/mode.impedance.impedanceValue();
-                    TVector<Complex> spc = sp.getColumn(indexIndex);
+                    ComplexVector spc = sp.getColumn(indexIndex);
                     for (int yi = 0; yi < y_length; yi++) {
                         for (int xi = 0; xi < x_length; xi++) {
                             tempx = fx[0][yi][xi];
@@ -86,8 +89,8 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 }
                 for (int i = 0; i < prop_length; i++) {
                     mode = prop[i];
-                    xvals = mode.fn.getComponent(Axis.X).toDC().computeComplex(x, y);
-                    yvals = mode.fn.getComponent(Axis.Y).toDC().computeComplex(x, y);
+                    xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
+                    yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
 //            ComputationMonitorUtils.setProgress(monitor,q,n,gfps.length,max);
                     monitor.setProgress((1.0 * (i + evan_length) / indexes_length), getClass().getSimpleName());
                     for (int xi = 0; xi < x_length; xi++) {
@@ -98,7 +101,11 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                     }
                 }
                 double[] z = new double[]{0};
-                return new VDiscrete(Discrete.create(MutableComplex.toComplex(fx), x, y, z), Discrete.create(MutableComplex.toComplex(fy), x, y, z), Discrete.create(MutableComplex.toComplex(fz), x, y, z));
+                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                return new VDiscrete(CDiscrete.of(domain,MutableComplex.toComplex(fx)),
+                        CDiscrete.of(domain,MutableComplex.toComplex(fy)),
+                        CDiscrete.of(domain,MutableComplex.toComplex(fz))
+                );
             }
         });
 
@@ -108,12 +115,12 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 
     @Override
     public String toString() {
-        return getClass().getName();
+        return dump();
     }
 
 
     @Override
-    public String dump() {
-        return getClass().getName();
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.function(getClass().getSimpleName()).build();
     }
 }

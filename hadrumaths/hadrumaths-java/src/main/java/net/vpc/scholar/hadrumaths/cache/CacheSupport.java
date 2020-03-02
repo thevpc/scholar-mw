@@ -2,48 +2,30 @@ package net.vpc.scholar.hadrumaths.cache;
 
 import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.MathsBase;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 7 juil. 2007 11:45:38
  */
 public abstract class CacheSupport<T> {
-    private String cacheItemName;
-    private PersistenceCache persistenceCache;
-    private ProgressMonitor monitor;
+    private final String cacheItemName;
+    private final PersistenceCache persistenceCache;
+    private final ProgressMonitor monitor;
 
     protected CacheSupport(PersistenceCache persistenceCache, String cacheItemName, ProgressMonitor monitor) {
         this.cacheItemName = cacheItemName;
         this.persistenceCache = persistenceCache;
-        this.monitor = ProgressMonitorFactory.nonnull(monitor);
+        this.monitor = ProgressMonitors.nonnull(monitor);
     }
 
-    /**
-     * compute value.
-     * It is supposed that the calculated variable IS NOT IN THE CACHE.
-     *
-     * @param momCache may be null if persistenceCache is disabled
-     * @return computed cache
-     */
-    protected abstract T compute(ObjectCache momCache);
-
-    public PersistenceCache getPersistenceCache() {
-        return persistenceCache;
+    public T evalCached(CacheKey dump) {
+        return evalCached(dump, null);
     }
 
-    protected void init() {
-
-    }
-
-    public T computeCached(HashValue dump) {
-        return computeCached(dump, null);
-    }
-
-    public T computeCached(HashValue dump, T oldValue) {
-        return MathsBase.invokeMonitoredAction(
+    public T evalCached(CacheKey dump, T oldValue) {
+        return Maths.invokeMonitoredAction(
                 monitor, cacheItemName,
                 new MonitoredAction<T>() {
                     @Override
@@ -54,7 +36,7 @@ public abstract class CacheSupport<T> {
                         final ObjectCache objCache = persistenceCache.getObjectCache(dump, true);
                         if (objCache == null) {
                             //cache is disabled
-                            return compute(null);
+                            return eval(null);
                         }
                         return persistenceCache.evaluate(objCache, cacheItemName, monitor, new CacheEvaluator() {
                             @Override
@@ -64,7 +46,7 @@ public abstract class CacheSupport<T> {
 
                             @Override
                             public Object evaluate(Object[] args) {
-                                return compute(objCache);
+                                return eval(objCache);
                             }
                         });
                     }
@@ -72,19 +54,36 @@ public abstract class CacheSupport<T> {
         );
     }
 
-    public T getOrNull(HashValue dump) {
+    /**
+     * compute value.
+     * It is supposed that the calculated variable IS NOT IN THE CACHE.
+     *
+     * @param momCache may be null if persistenceCache is disabled
+     * @return computed cache
+     */
+    protected abstract T eval(ObjectCache momCache);
+
+    protected void init() {
+
+    }
+
+    public T getOrNull(CacheKey dump) {
         return getPersistenceCache().getOrNull(dump, getCacheItemName());
     }
 
-    public boolean isCached(HashValue dump) {
+    public PersistenceCache getPersistenceCache() {
+        return persistenceCache;
+    }
+
+    public String getCacheItemName() {
+        return cacheItemName;
+    }
+
+    public boolean isCached(CacheKey dump) {
         return getPersistenceCache().isCached(dump, getCacheItemName());
     }
 
     public ProgressMonitor getMonitor() {
         return monitor;
-    }
-
-    public String getCacheItemName() {
-        return cacheItemName;
     }
 }

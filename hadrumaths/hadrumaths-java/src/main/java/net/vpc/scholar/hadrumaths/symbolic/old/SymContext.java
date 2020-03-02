@@ -10,30 +10,19 @@ import java.util.Map;
  * @creationtime 18 juil. 2007 21:56:12
  */
 public class SymContext {
-    private Map<String, SymExpression> vars = new HashMap<String, SymExpression>();
     public static final SymContext NONE = new NONEContext();
-
-    private static class NONEContext extends SymContext implements Cloneable {
-        public SymContext addVar(String name, SymExpression expression) {
-            //
-            return this;
-        }
-
-        public SymContext addVar(String name, Complex value) {
-            //
-            return this;
-        }
-
-        public SymContext removeVar(String name) {
-            return this;
-        }
-
-        public SymContext clone() {
-            return new SymContext();
-        }
-    }
+    private final Map<String, SymExpression> vars = new HashMap<String, SymExpression>();
 
     public SymContext() {
+    }
+
+    public SymContext removeVar(String name) {
+        vars.remove(name);
+        return this;
+    }
+
+    public SymContext addVar(String name, Complex value) {
+        return addVar(name, value == null ? null : new SymComplex(value));
     }
 
     public SymContext addVar(String name, SymExpression expression) {
@@ -45,16 +34,27 @@ public class SymContext {
         return this;
     }
 
-    public SymContext removeVar(String name) {
-        vars.remove(name);
-        return this;
-    }
-
-    public SymContext addVar(String name, Complex value) {
-        return addVar(name, value == null ? (SymExpression) null : new SymComplex(value));
-    }
-
     public SymExpression getValue(String name) {
         return vars.get(name);
+    }
+
+    private static class NONEContext extends SymContext implements Cloneable {
+        public SymContext addVar(String name, SymExpression expression) {
+            //
+            return this;
+        }
+
+        public SymContext removeVar(String name) {
+            return this;
+        }
+
+        public SymContext addVar(String name, Complex value) {
+            //
+            return this;
+        }
+
+        public SymContext clone() {
+            return new SymContext();
+        }
     }
 }

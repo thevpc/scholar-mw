@@ -582,7 +582,7 @@ public class AreaGroup implements AreaZone, Cloneable {
             yminMax.registerValue(d.ymin());
             yminMax.registerValue(d.ymax());
         }
-        return Domain.forBounds(xminMax.getMin(), xminMax.getMax(), yminMax.getMin(), xminMax.getMax());
+        return Domain.ofBounds(xminMax.getMin(), xminMax.getMax(), yminMax.getMin(), xminMax.getMax());
     }
 
     public void setGpMesher(GpMesher gpMesher) {

@@ -1,7 +1,9 @@
 package net.vpc.scholar.hadrumaths.geom;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadrumaths.util.dump.Dumper;
 
 import java.awt.geom.Path2D;
 import java.util.*;
@@ -26,6 +28,14 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         this.domain = null;
     }
 
+    protected void rebuildSmallestDomain() {
+        Domain domain = Domain.EMPTYXY;
+        for (Geometry polygon : this) {
+            domain = domain.expand(polygon.getDomain());
+        }
+        smallestDomain = domain;
+    }
+
     public DefaultGeometryList(Geometry... polygons) {
         list = new ArrayList<Geometry>(Arrays.asList(polygons));
         rebuildSmallestDomain();
@@ -37,14 +47,6 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         for (Geometry polygon : polygons) {
             add(polygon);
         }
-    }
-
-    protected void rebuildSmallestDomain() {
-        Domain domain = Domain.EMPTYXY;
-        for (Geometry polygon : this) {
-            domain = domain.expand(polygon.getDomain());
-        }
-        smallestDomain = domain;
     }
 
     public DefaultGeometryList(Domain domain) {
@@ -60,17 +62,26 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         addAll(c);
     }
 
-    public final String dump() {
-        return getDumpStringHelper().toString();
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj("geometries").addAll(
+                Tson.pair("domain", context.elem(domain)),
+                Tson.pair("polygons", context.elem(list)),
+                Tson.pair("attributes", context.elem(attributes))
+        ).build();
     }
 
-    public Dumper getDumpStringHelper() {
-        Dumper h = new Dumper(getClass().getSimpleName());
-        h.add("domain", domain);
-        h.add("polygons", list);
-        h.add("attributes", attributes);
-        return h;
-    }
+//    public final String dump() {
+//        return getDumpStringHelper().toString();
+//    }
+
+//    public Dumper getDumpStringHelper() {
+//        Dumper h = new Dumper(getClass().getSimpleName());
+//        h.add("domain", domain);
+//        h.add("polygons", list);
+//        h.add("attributes", attributes);
+//        return h;
+//    }
 
     public Geometry set(int index, Geometry element) {
         smallestDomain = null;
@@ -123,27 +134,15 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
 
     public Domain getDomain(Domain rectangle2D, Domain domain) {
         Domain bounds = getDomain();
-        return Domain.forBounds(
+        return Domain.ofBounds(
                 (rectangle2D.getXMin() - bounds.getXMin()) / bounds.getXwidth() * domain.xwidth() + domain.xmin(),
                 (rectangle2D.getXMax() - bounds.getXMin()) / bounds.getXwidth() * domain.xwidth() + domain.xmin(), (rectangle2D.getYMin() - bounds.getYMin()) / bounds.getYwidth() * domain.ywidth() + domain.ymin(),
                 (rectangle2D.getYMax() - bounds.getYMin()) / bounds.getYwidth() * domain.ywidth() + domain.ymin()
         );
     }
 
-
-    public GeometryList clone() {
-        DefaultGeometryList l = (DefaultGeometryList) super.clone();
-        l.list = new ArrayList<Geometry>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            Geometry polygon = list.get(i);
-            l.list.add((Geometry) polygon.clone());
-        }
-        return l;
-    }
-
-
-    public Iterator<Geometry> iterator() {
-        return list.iterator();
+    public Domain getBounds() {
+        return domain;
     }
 
     public int size() {
@@ -173,11 +172,6 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return (name == null || attributes == null) ? null : attributes.get(name);
     }
 
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
     public GeometryList getDual() {
         return null;
     }
@@ -193,32 +187,44 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return smallestDomain;
     }
 
-    @Override
-    public boolean contains(double x, double y) {
-        for (Geometry polygon : list) {
-            if (polygon.contains(x, y)) {
-                return true;
-            }
+    public GeometryList clone() {
+        DefaultGeometryList l = (DefaultGeometryList) super.clone();
+        l.list = new ArrayList<Geometry>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            Geometry polygon = list.get(i);
+            l.list.add(polygon.clone());
         }
-        return false;
+        return l;
     }
 
     @Override
-    public Geometry translateGeometry(double x, double y) {
-        DefaultGeometryList list = new DefaultGeometryList();
-        for (Geometry geometry : list) {
-            list.add(geometry.translateGeometry(x, y));
+    public Surface toSurface() {
+        if (list.isEmpty()) {
+            return Domain.EMPTYXY.toGeometry().toSurface();
         }
-        return list;
+        Surface s = list.get(0).toSurface();
+        for (int i = 1; i < list.size(); i++) {
+            s = s.addGeometry(list.get(i));
+        }
+        return s;
     }
 
-    public Domain getBounds() {
-        return domain;
+    public Iterator<Geometry> iterator() {
+        return list.iterator();
+    }
+
+    @Override
+    public Path2D.Double getPath() {
+        return toSurface().getPath();
     }
 
     @Override
     public Domain getDomain() {
         return domain != null ? domain : getSmallestBounds();
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
     }
 
     @Override
@@ -240,18 +246,6 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     }
 
     @Override
-    public Surface toSurface() {
-        if (list.isEmpty()) {
-            return Domain.EMPTYXY.toGeometry().toSurface();
-        }
-        Surface s = list.get(0).toSurface();
-        for (int i = 1; i < list.size(); i++) {
-            s = s.addGeometry(list.get(i));
-        }
-        return s;
-    }
-
-    @Override
     public boolean isSingular() {
         return list.size() < 2;
     }
@@ -259,6 +253,25 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     @Override
     public boolean isEmpty() {
         return toSurface().isEmpty();
+    }
+
+    @Override
+    public Geometry translateGeometry(double x, double y) {
+        DefaultGeometryList list = new DefaultGeometryList();
+        for (Geometry geometry : list) {
+            list.add(geometry.translateGeometry(x, y));
+        }
+        return list;
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        for (Geometry polygon : list) {
+            if (polygon.contains(x, y)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -277,9 +290,12 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         throw new IllegalArgumentException("Not Triangular");
     }
 
-
     @Override
-    public Path2D.Double getPath() {
-        return toSurface().getPath();
+    public Polygon[] toPolygons() {
+        List<Polygon> all=new ArrayList<>();
+        for (Geometry geometry : list) {
+            all.addAll(Arrays.asList(geometry.toPolygons()));
+        }
+        return all.toArray(new Polygon[0]);
     }
 }

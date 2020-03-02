@@ -1,19 +1,20 @@
 package net.vpc.scholar.hadrumaths.scalarproducts;
 
 import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.TVector;
+import net.vpc.scholar.hadrumaths.ComplexVector;
+import net.vpc.scholar.hadrumaths.Vector;
 
 /**
  * implements CacheObjectSerializerProvider because the inner matrix is not necessary serializable
  */
 public abstract class AbstractScalarProductCache implements ScalarProductCache {
     @Override
-    public TVector<Complex> column(int column) {
+    public ComplexVector column(int column) {
         return getColumn(column);
     }
 
     @Override
-    public TVector<Complex> row(int row) {
+    public ComplexVector row(int row) {
         return getRow(row);
     }
 }

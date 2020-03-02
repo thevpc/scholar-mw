@@ -1,12 +1,12 @@
 package net.vpc.scholar.hadrumaths;
 
-public class MemExprMatrix extends MemTMatrix<Expr> implements ExprMatrix{
+public class MemExprMatrix extends MemMatrix<Expr> implements ExprMatrix {
     public MemExprMatrix(Expr[][] elements) {
-        super(elements, MathsBase.EXPR_VECTOR_SPACE);
+        super(elements, Maths.EXPR_VECTOR_SPACE);
     }
 
     public MemExprMatrix(int rows, int cols) {
-        super(rows, cols, MathsBase.EXPR_VECTOR_SPACE);
+        super(rows, cols, Maths.EXPR_VECTOR_SPACE);
     }
 
     @Override
@@ -16,7 +16,7 @@ public class MemExprMatrix extends MemTMatrix<Expr> implements ExprMatrix{
 
     @Override
     public ExprMatrix simplify(SimplifyOptions options) {
-        return (ExprMatrix) MathsBase.Config.getComplexMatrixFactory(MathsBase.$EXPR).newMatrix(getRowCount(), getColumnCount(), new TMatrixCell<Expr>() {
+        return (ExprMatrix) Maths.Config.getComplexMatrixFactory(Maths.$EXPR).newMatrix(getRowCount(), getColumnCount(), new MatrixCell<Expr>() {
             @Override
             public Expr get(int row, int column) {
                 return MemExprMatrix.this.get(row, column).simplify(options);

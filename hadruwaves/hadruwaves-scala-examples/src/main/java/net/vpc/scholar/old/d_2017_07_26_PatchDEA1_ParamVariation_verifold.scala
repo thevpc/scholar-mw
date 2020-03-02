@@ -8,9 +8,10 @@ import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
 import net.vpc.scholar.hadruplot.Plot
+import net.vpc.scholar.hadruwaves.Material
 import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIterator
 import net.vpc.scholar.hadruwaves.mom.{HintAxisType, MomStructure}
-import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIteratorFactory
 
 
 /**
@@ -22,12 +23,12 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
   Maths.Config.setSimplifierCacheSize(1000000);
   Maths.Config.setAppCacheName("3.1.2")
   var MN = 200000 // number of modes
-  var π = PI
+//  var π = PI
   // Parameters
   var freq = 4.79 * GHZ; // to change
   var wfreq = 2 * π * freq;
   var lambda = C / freq;
-  val epsr = 2.2;
+  val substrate = Material.substrate(2.2);
   val epsilon = EPS0
   val mu = U0
   val Z0 = sqrt(U0 / EPS0)
@@ -69,8 +70,8 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
 
     refineFrequencies.foreach(refineIndex => {
       println("============ Raffinement " + (refineIndex) + "  => " + frequencies)
-      var zinEssaiList = new java.util.ArrayList[TVector[Expr]]();
-      var zinModeList = new java.util.ArrayList[TVector[Expr]]();
+      var zinEssaiList = new java.util.ArrayList[Vector[Expr]]();
+      var zinModeList = new java.util.ArrayList[Vector[Expr]]();
       var zinTitles = new java.util.ArrayList[String]();
       refineEssai.foreach(PIncrement => {
         PPatch = 5 + PIncrement
@@ -96,10 +97,10 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
 
           dBox = domain(0.0 -> dimX(count), -dimY(count) / 2 -> dimY(count) / 2)
           var E0 = normalize(expr(dSource))
-          st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(epsr, ep), matchedLoad(1.0))
+          st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(substrate, ep), matchedLoad(Material.VACUUM))
           st.getHintsManager.setHintAxisType(HintAxisType.X_ONLY);
-          st.getModeFunctions.setModeInfoComparator(null)
-          st.getModeFunctions.setModeIteratorFactory(new SimpleModeIteratorFactory)
+          st.getModeFunctions.setModeComparator(null)
+          st.getModeFunctions.setModeIterator(new SimpleModeIterator)
           st.setSources(E0, 50)
           st.setTestFunctions(gp)
           var fmn = st.getModeFunctions.list()
@@ -118,30 +119,30 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
           var zMode = elist()
           var sp = st.getTestModeScalarProducts()
           //        Plot.title("sp:"+a+","+b+","+freq).asAbs().plot(st.getTestModeScalarProducts);
-          var ss = columnVector(fmn.length(), (i: Int) => complex(E0 ** fmn(i).getComponent(Axis.X)))
+          var ss = columnVector(fmn.length(), (i: Int) => complex(E0 ** fmn(i).toDV().getComponent(Axis.X)))
           var sg = columnVector(gp.length(), (i: Int) => complex(E0 ** gp(i)))
           zinEssaiList.add(zEssai)
           zinModeList.add(zMode)
           zinTitles.add(PLine + "x" + PPatch)
           frequencies.foreach((fr0) => {
-            val zz = st.setFrequency(fr0).inputImpedance().computeComplex()
+            val zz = st.setFrequency(fr0).inputImpedance().evalComplex()
             println(">>>>>>   Zin[fr=" + fr0 + ",ai=" + count + ",g=" + PIncrement + ", box=" + dBox + "]=" + zz + "  ;; " + st.getCurrentCache(false).getFolder)
             println(st.getCurrentCache(false))
             val objectpath = "/structure.dump/3h/81/5z"
-            val c2 = "/home/vpc/.cache/mathcache/3.1.2/" + objectpath + "/test-mode-scalar-products.cacheobj";
+            val c2 = "/home/vpc/.cache/hadrumaths/3.1.2/" + objectpath + "/test-mode-scalar-products.cacheobj";
             //            val cc1 = ObjectCache.loadObject(new java.io.File("/").get(c1),null)
             val cc2 = IOUtils.loadObject(HadrumathsIOUtils.createHFile(c2).getName).asInstanceOf[MemComplexScalarProductCache].toMatrix
             cc2.store(new File("/home/vpc/cmp/sp.v321.m"))
             println("bye")
             //            Plot.asMatrix().plot(cc2)
-            var Xp = st.matrixX().computeMatrix().toVector
-            val AA = st.matrixA().computeMatrix()
+            var Xp = st.matrixX().evalMatrix().toVector
+            val AA = st.matrixA().evalMatrix()
             AA.store("/home/vpc/cmp/A.v321.m");
             AA.inv().store("/home/vpc/cmp/Ainv.v321.m");
-            st.matrixB().computeMatrix().store("/home/vpc/cmp/B.v321.m");
-            st.inputImpedance().computeMatrix().store("/home/vpc/cmp/Zin.v321.m");
+            st.matrixB().evalMatrix().store("/home/vpc/cmp/B.v321.m");
+            st.inputImpedance().evalMatrix().store("/home/vpc/cmp/Zin.v321.m");
             zMode :+= 1.0 / (csum(gp.length(), (pp: Int) => Xp(pp) * csum(fmn.length(), (mm: Int) => (ss(mm) * sp(pp, mm)))));
-            st.matrixX().computeMatrix().store("/home/vpc/cmp/X.v321.m");
+            st.matrixX().evalMatrix().store("/home/vpc/cmp/X.v321.m");
             val dumFile = new PrintStream(new File("/home/vpc/cmp/dump.v321.m"))
             dumFile.println(st.dump());
             dumFile.close()

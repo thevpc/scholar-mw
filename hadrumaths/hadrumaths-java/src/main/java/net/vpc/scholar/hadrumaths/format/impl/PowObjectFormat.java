@@ -6,8 +6,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.vpc.scholar.hadrumaths.symbolic.Pow;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Pow;
 
 /**
  * @author vpc
@@ -15,19 +16,21 @@ import net.vpc.scholar.hadrumaths.symbolic.Pow;
 public class PowObjectFormat implements ObjectFormat<Pow> {
 
     @Override
-    public String format(Pow o, ObjectFormatParamSet format) {
+    public String format(Pow o, ObjectFormatParamSet format, ObjectFormatContext context) {
         StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
+        format(o, context);
         return sb.toString();
     }
 
     @Override
-    public void format(StringBuilder sb, Pow o, ObjectFormatParamSet format) {
+    public void format(Pow o, ObjectFormatContext context) {
+        ObjectFormatParamSet format=context.getParams();
         format = format.add(FormatFactory.REQUIRED_PARS);
-        sb.append("pow(");
-        FormatFactory.format(sb, o.getFirst(), format);
-        sb.append(", ");
-        FormatFactory.format(sb, o.getSecond(), format);
-        sb.append(")");
+        context.append("pow(");
+        context.format( o.getFirst(), format);
+//        sb.append(", ");
+        context.append(",");
+        context.format( o.getSecond(), format);
+        context.append(")");
     }
 }

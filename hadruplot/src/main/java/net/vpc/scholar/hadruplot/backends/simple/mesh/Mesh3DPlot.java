@@ -5,6 +5,7 @@ import net.vpc.common.strings.StringUtils;
 import net.vpc.common.util.MinMax;
 import net.vpc.scholar.hadruplot.*;
 import net.vpc.scholar.hadruplot.actions.AbstractPlotAction;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -158,7 +159,7 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
 
     @Override
     public JPopupMenu getPopupMenu() {
-        return canv.getComponentPopupMenu();
+        return PlotUtils.getOrCreateComponentPopupMenu(canv.getComponentPopupMenu());
     }
 
     private void init() {
@@ -313,7 +314,7 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
             if (model3d.persp) {
                 model3d.minScale = ominScale;
                 model3d.maxScale = omaxScale;
-                model3d.computeMatrix();
+                model3d.evalMatrix();
             } else {
                 ((Mesh3DTransformable) (model3d)).scale.setValues(oscale);
             }

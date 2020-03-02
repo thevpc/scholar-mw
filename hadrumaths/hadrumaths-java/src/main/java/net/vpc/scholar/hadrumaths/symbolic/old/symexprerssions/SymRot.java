@@ -8,10 +8,10 @@ import net.vpc.scholar.hadrumaths.symbolic.old.symop.SymOpSub;
  * @creationtime 18 juil. 2007 21:50:31
  */
 public class SymRot extends SymFunction {
-    private SymExpression value;
-    private String x;
-    private String y;
-    private String z;
+    private final SymExpression value;
+    private final String x;
+    private final String y;
+    private final String z;
 
     public SymRot(SymExpression vector) {
         this(vector, "x", "y", "z");

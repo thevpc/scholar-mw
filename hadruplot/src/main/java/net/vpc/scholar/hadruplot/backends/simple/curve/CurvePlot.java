@@ -1,6 +1,8 @@
 package net.vpc.scholar.hadruplot.backends.simple.curve;
 
 import net.vpc.scholar.hadruplot.*;
+import net.vpc.scholar.hadruplot.util.PlotUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;

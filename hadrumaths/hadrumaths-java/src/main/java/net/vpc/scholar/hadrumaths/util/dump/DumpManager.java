@@ -18,8 +18,8 @@ public class DumpManager {
     private final DumpDelegate primitiveArrayHandler = new PrimitiveArrayDumpDelegate();
     private DumpDelegate nullHandler = new NullDumpDelegate();
     private DumpDelegate defaultHandler = new ToStringDumpDelegate();
-    private DumpDelegate arrayHandler = new ArrayDumpDelegate();
-    private ClassMap<DumpDelegate> registered = new ClassMap<DumpDelegate>(Object.class, DumpDelegate.class);
+    private final DumpDelegate arrayHandler = new ArrayDumpDelegate();
+    private final ClassMap<DumpDelegate> registered = new ClassMap<DumpDelegate>(Object.class, DumpDelegate.class);
 
     {
         register(Dumpable.class, new DumpableDelegate());
@@ -31,6 +31,15 @@ public class DumpManager {
                 return FormatFactory.format(object, new ObjectFormatParamSet(DebugObjectFormatParam.INSTANCE));
             }
         });
+    }
+
+    public static String getStackDepthWhites() {
+        int len = new Throwable().getStackTrace().length;
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
     public DumpDelegate getSimpleArrayHandler() {
@@ -49,10 +58,6 @@ public class DumpManager {
         return defaultHandler;
     }
 
-    public void setDefaultHandler(DumpDelegate defaultHandler) {
-        this.defaultHandler = defaultHandler;
-    }
-
     //    public static void main(String[] args) {
 //        Hashtable t=new Hashtable();
 //        TreeSet ts=new TreeSet();
@@ -63,6 +68,10 @@ public class DumpManager {
 //        System.out.println(dump(t));
 //    }
 
+    public void setDefaultHandler(DumpDelegate defaultHandler) {
+        this.defaultHandler = defaultHandler;
+    }
+
     public void register(Class clz, DumpDelegate h) {
         if (clz == null) {
             nullHandler = h;
@@ -72,7 +81,7 @@ public class DumpManager {
     }
 
     public boolean isPrimitiveArray(Class c) {
-        if(c.isArray()){
+        if (c.isArray()) {
             Class p = c.getComponentType();
             return p.isPrimitive() || isPrimitiveArray(p);
         }
@@ -84,7 +93,7 @@ public class DumpManager {
             return nullHandler;
         }
         if (o.getClass().isArray()) {
-            if(isPrimitiveArray(o.getClass())){
+            if (isPrimitiveArray(o.getClass())) {
                 return primitiveArrayHandler;
             }
             if (simple) {
@@ -102,14 +111,5 @@ public class DumpManager {
             }
         }
         return h;
-    }
-
-    public static String getStackDepthWhites() {
-        int len = new Throwable().getStackTrace().length;
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
     }
 }

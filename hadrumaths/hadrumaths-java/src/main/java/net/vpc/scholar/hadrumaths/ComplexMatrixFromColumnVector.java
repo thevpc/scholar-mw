@@ -5,7 +5,7 @@ package net.vpc.scholar.hadrumaths;
  */
 public class ComplexMatrixFromColumnVector extends AbstractComplexMatrix {
     private static final long serialVersionUID = 1L;
-    private ComplexVector complexVector;
+    private final ComplexVector complexVector;
 
     public ComplexMatrixFromColumnVector(ComplexVector complexVector) {
         this.complexVector = complexVector;
@@ -25,13 +25,13 @@ public class ComplexMatrixFromColumnVector extends AbstractComplexMatrix {
     }
 
     @Override
-    public int getColumnCount() {
-        return 1;
+    public int getRowCount() {
+        return complexVector.size();
     }
 
     @Override
-    public int getRowCount() {
-        return complexVector.size();
+    public int getColumnCount() {
+        return 1;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.FunctionFactory;
+import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
@@ -39,7 +39,7 @@ public final class ArcheSinus2Pattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_ATTACHY: {
                 DoubleToVector f = Maths.vector(
-                        FunctionFactory.DZEROXY
+                        Maths.DZEROXY
                         ,
                         FunctionFactory.archeSinus(Axis.Y, 1, zone.getDomain())
                 )
@@ -52,7 +52,7 @@ public final class ArcheSinus2Pattern extends RectMeshAttachGpPattern {
                 DoubleToVector f = Maths.vector(
                         FunctionFactory.archeSinus(Axis.X, 1, zone.getDomain())
                         ,
-                        FunctionFactory.DZEROXY
+                        Maths.DZEROXY
                 )
                         .setProperty("Type", getClass().getSimpleName() + "-AttachX")
                         .setProperty("p", index).toDV();

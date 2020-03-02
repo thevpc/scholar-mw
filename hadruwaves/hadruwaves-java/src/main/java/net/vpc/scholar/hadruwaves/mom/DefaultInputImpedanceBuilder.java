@@ -14,7 +14,7 @@ class DefaultInputImpedanceBuilder extends AbstractInputImpedanceBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix computeMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl() {
         MomStructure momStructure = (MomStructure)getStructure();
         return new ZinMatrixStrCacheSupport(momStructure, getMonitor()).get();
     }

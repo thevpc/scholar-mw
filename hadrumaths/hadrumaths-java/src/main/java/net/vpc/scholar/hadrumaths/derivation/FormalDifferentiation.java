@@ -5,15 +5,28 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.derivation.formal.*;
-import net.vpc.scholar.hadrumaths.symbolic.*;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToComplex;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.ExprRef;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.double2complex.ComplexParam;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.AxisFunction;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
+import net.vpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
+import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.Neg;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.*;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.trigo.*;
 
 public class FormalDifferentiation implements FunctionDifferentiatorManager {
-    private ClassMap<FunctionDifferentiator> map = new ClassMap<FunctionDifferentiator>(Expr.class, FunctionDifferentiator.class, 40);
+    private final ClassMap<FunctionDifferentiator> map = new ClassMap<FunctionDifferentiator>(Expr.class, FunctionDifferentiator.class, 40);
 
     public FormalDifferentiation() {
         register(Acos.class, new AcosDifferentiator());
         register(Acosh.class, new AcoshDifferentiator());
-        register(Any.class, new AnyDifferentiator());
+        register(ExprRef.class, new ExprRefDifferentiator());
         register(Asin.class, new AsinDifferentiator());
         register(Asinh.class, new AsinhDifferentiator());
         register(Atan.class, new AtanDifferentiator());
@@ -24,7 +37,7 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
         register(CosXCosY.class, new CosXCosYDifferentiator());
         register(Cotan.class, new CotanDifferentiator());
         register(Cotanh.class, new CotanhDifferentiator());
-        register(Discrete.class, new DiscreteDifferentiator());
+        register(CDiscrete.class, new CDiscreteDifferentiator());
         register(Div.class, new DivDifferentiator());
         register(DoubleToComplex.class, new DoubleToComplexDifferentiator());
         register(DoubleToVector.class, new DoubleToVectorDifferentiator());
@@ -32,7 +45,8 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
         register(Inv.class, new InvDifferentiator());
         register(Mul.class, new MulDifferentiator());
         register(Neg.class, new NegDifferentiator());
-        register(ParamExpr.class, new ParamExprDifferentiator());
+        register(DoubleParam.class, new ParamExprDifferentiator());
+        register(ComplexParam.class, new ParamExprDifferentiator());
         register(Plus.class, new PlusDifferentiator());
         register(Pow.class, new PowDifferentiator());
         register(Sin.class, new SinDifferentiator());
@@ -46,16 +60,16 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
         register(DoubleValue.class, new DoubleValueDifferentiator());
     }
 
-    public FunctionDifferentiator getDerivator(Class f1Class) {
-        return map.getRequired(f1Class);
-    }
-
     public void register(Class f1, FunctionDifferentiator differentiator) {
         map.put(f1, differentiator);
     }
 
     public Expr derive(Expr f1, Axis varIndex) {
         return getDerivator(f1.getClass()).derive(f1, varIndex, this);
+    }
+
+    public FunctionDifferentiator getDerivator(Class f1Class) {
+        return map.getRequired(f1Class);
     }
 
 

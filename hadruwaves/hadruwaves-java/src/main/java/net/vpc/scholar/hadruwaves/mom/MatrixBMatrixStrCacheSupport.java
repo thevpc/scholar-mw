@@ -23,9 +23,9 @@ class MatrixBMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public ComplexMatrix compute(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache) {
         MomStructure momStructure = defaultMomMatrixBBuilder.getStructure();
-        ComplexMatrix matrix = momStructure.createMatrixBEvaluator().evaluate(momStructure, mon[1]);
+        ComplexMatrix matrix = momStructure.evaluator().createMatrixBEvaluator().evaluate(momStructure, mon[1]);
         Number ceil = momStructure.getHintsManager().getHintBMatrixSparsify();
         if (ceil != null) {
             matrix = matrix.sparsify(ceil.doubleValue());

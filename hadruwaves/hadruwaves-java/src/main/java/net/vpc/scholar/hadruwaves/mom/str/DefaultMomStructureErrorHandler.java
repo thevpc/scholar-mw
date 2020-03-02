@@ -5,7 +5,7 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
-import net.vpc.common.mon.ProgressMonitorFactory;
+import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.*;
 import net.vpc.scholar.hadruplot.console.PlotConsole;
@@ -33,18 +33,17 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         }
         MomStructure str = (MomStructure) structure;
         JTextArea a = new JTextArea(str.dump());
-        TMatrix<Complex> sp = str.getTestModeScalarProducts(ProgressMonitorFactory.none());
+        ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
         PlotComponent aplot = Plot.nodisplay().asMatrix().title("Matrix A")
-                .plot(str.matrixA().computeMatrix());
+                .plot(str.matrixA().evalMatrix());
         PlotComponent bplot = Plot.nodisplay().asMatrix().title("Matrix B")
-                .plot(str.matrixB().computeMatrix());
+                .plot(str.matrixB().evalMatrix());
         PlotComponent gfplot = Plot.nodisplay().asMatrix().title("<f,g>").plot(sp);
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
                         .setExpressions(str.getTestFunctions().arr())
                         .setPlotType(PlotType.CURVE)
-                        .setLibraries(null)
                         .setTitle("gp")
                 , Plot.getDefaultWindowManager()).toComponent();
 
@@ -52,7 +51,6 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
                 new ExpressionsPlotModel()
                         .setExpressions(str.getModeFunctions().arr())
                         .setPlotType(PlotType.CURVE)
-                        .setLibraries(null)
                         .setTitle("fn")
                 , Plot.getDefaultWindowManager()).toComponent();
 

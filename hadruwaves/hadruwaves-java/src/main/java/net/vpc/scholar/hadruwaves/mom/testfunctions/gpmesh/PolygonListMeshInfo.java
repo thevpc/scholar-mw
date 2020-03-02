@@ -48,9 +48,9 @@ public class PolygonListMeshInfo {
             precision = currBounds.height - 3;
         }
         if (this.from.xwidth() <= this.from.ywidth()) {
-            to = Domain.forBounds(0, precision * this.from.xwidth() / this.from.ywidth(), 0, precision);
+            to = Domain.ofBounds(0, precision * this.from.xwidth() / this.from.ywidth(), 0, precision);
         } else {
-            to = Domain.forBounds(0, precision, 0, precision * this.from.ywidth() / this.from.xwidth());
+            to = Domain.ofBounds(0, precision, 0, precision * this.from.ywidth() / this.from.xwidth());
         }
         return to;
     }

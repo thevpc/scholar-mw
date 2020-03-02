@@ -7,9 +7,9 @@ package net.vpc.scholar.hadrumaths.format.impl;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.FormatFactory;
 import net.vpc.scholar.hadrumaths.format.ObjectFormat;
-import net.vpc.scholar.hadrumaths.format.ObjectFormatParamSet;
+import net.vpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.vpc.scholar.hadrumaths.format.params.ProductObjectFormatParam;
-import net.vpc.scholar.hadrumaths.symbolic.Mul;
+import net.vpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 
 /**
  * @author vpc
@@ -20,23 +20,17 @@ public class DFunctionProductXYObjectFormat implements ObjectFormat<Mul> {
     }
 
     @Override
-    public String format(Mul o, ObjectFormatParamSet format) {
-        StringBuilder sb = new StringBuilder();
-        format(sb, o, format);
-        return sb.toString();
-    }
-
-    @Override
-    public void format(StringBuilder sb, Mul o, ObjectFormatParamSet format) {
-        ProductObjectFormatParam pp = format.getParam(FormatFactory.PRODUCT_STAR);
-        String mul = pp.getOp() == null ? " " : (" " + pp.getOp() + " ");
-        for (Expr expression : o.getSubExpressions()) {
-            if (sb.length() > 0) {
-                sb.append(mul);
+    public void format(Mul o, ObjectFormatContext context) {
+        ProductObjectFormatParam pp = context.getParam(FormatFactory.PRODUCT_STAR);
+//            String mul = pp.getOp() == null ? "" : (" " + pp.getOp() + " ");
+        String mul = pp.getOp() == null || pp.getOp().isEmpty() ? " " : (pp.getOp());
+        for (Expr expression : o.getChildren()) {
+            if (context.length() > 0) {
+                context.append(mul);
             }
-            sb.append("(");
-            FormatFactory.format(sb, expression, format);
-            sb.append(")");
+            context.append("(");
+            context.format(expression);
+            context.append(")");
         }
     }
 }

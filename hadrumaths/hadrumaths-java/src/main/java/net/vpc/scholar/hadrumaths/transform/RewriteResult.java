@@ -5,29 +5,23 @@ import net.vpc.scholar.hadrumaths.Expr;
 /**
  * Created by vpc on 1/24/15.
  */
-public final class RewriteResult {
-
-    public static final byte UNMODIFIED = 1;
-    public static final byte BEST_EFFORT = 2;
-    public static final byte NEW_VAL = 3;
-    private final Expr value;
-    private final byte type;
+public abstract class RewriteResult {
+    private static final Unmodified UU = new Unmodified();
 //    private boolean rewritten;
 //    private boolean bestEffort;
 
     public static RewriteResult newVal(Expr value) {
 //        return new RewriteResult(value);
-        return new RewriteResult(value, NEW_VAL);
+        return new NewVal(value);
     }
 
-    public static RewriteResult unmodified(Expr value) {
-//        return new RewriteResult(value,false,true);
-        return new RewriteResult(value, UNMODIFIED);
+    public static RewriteResult unmodified() {
+        return UU;//new RewriteResult(value, UNMODIFIED);
     }
 
     public static RewriteResult bestEffort(Expr value) {
 //        return new RewriteResult(value,true,true);
-        return new RewriteResult(value, BEST_EFFORT);
+        return new BestEffort(value);
     }
 
     //    private RewriteResult(Expr value) {
@@ -47,50 +41,205 @@ public final class RewriteResult {
 //        this.rewritten = rewritten;
 //        this.bestEffort = bestEffort;
 //    }
-    private RewriteResult(Expr value, byte type) {
-        this.value = value;
-        this.type = type;
-    }
+//    private RewriteResult(Expr value, byte type) {
+//        this.value = value;
+//        this.type = type;
+//    }
 
-    public Expr getValueOrNull() {
+    public abstract Expr getValueOrNull(); /*{
 //        return rewritten?value:null;
         return type == UNMODIFIED ? null : value;
-    }
+    }*/
 
-    public Expr getValue() {
+    public abstract Expr getValue(Expr e);
+
+    public abstract Expr getValue();/*{
         return value;
-    }
+    }*/
 
-    public byte getType() {
+    public abstract RewriteResultType getType();/*{
         return type;
-    }
+    }*/
 
-    public boolean isBestEffort() {
+    public abstract boolean isBestEffort();/*{
 //        return bestEffort || !rewritten;
         return type == BEST_EFFORT;
-    }
+    }*/
 
-    public boolean isRewritten() {
+    public abstract boolean isRewritten();/*{
 //        return rewritten;
         return type != UNMODIFIED;
 //        return type == REWRITTEN || type==BEST_EFFORT;
-    }
+    }*/
 
-    public boolean isUnmodified() {
+    public abstract boolean isUnmodified();/*{
 //        return !rewritten;
         return type == UNMODIFIED;
-    }
+    }*/
 
-    public boolean isNewVal() {
+    public abstract boolean isNewVal();/*{
 //        return !rewritten;
         return type == NEW_VAL;
+    }*/
+
+
+    private static class Unmodified extends RewriteResult {
+        public Unmodified() {
+        }
+
+        @Override
+        public String toString() {
+            return "Unmodified";
+        }
+
+        @Override
+        public Expr getValueOrNull() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Expr getValue() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public RewriteResultType getType() {
+            return RewriteResultType.UNMODIFIED;
+        }
+
+        @Override
+        public boolean isBestEffort() {
+            return false;
+        }
+
+        @Override
+        public boolean isRewritten() {
+            return false;
+        }
+
+        @Override
+        public boolean isUnmodified() {
+            return true;
+        }
+
+        @Override
+        public boolean isNewVal() {
+            return false;
+        }
+
+        @Override
+        public Expr getValue(Expr e) {
+            return e;
+        }
     }
 
-    @Override
-    public String toString() {
-        return "RewriteResult{" +
-                "value=" + value +
-                ", " + (isUnmodified() ? "Unmodified" : isBestEffort() ? "BestEffort" : isNewVal() ? "NewVal" : "Unknown") +
-                '}';
+    private static class NewVal extends RewriteResult {
+        private final Expr value;
+
+        public NewVal(Expr e) {
+            this.value = e;
+        }
+
+        @Override
+        public Expr getValueOrNull() {
+            return getValue();
+        }
+
+        @Override
+        public Expr getValue() {
+            return value;
+        }
+
+        @Override
+        public Expr getValue(Expr e) {
+            return value;
+        }
+
+        @Override
+        public RewriteResultType getType() {
+            return RewriteResultType.NEW_VAL;
+        }
+
+        @Override
+        public boolean isBestEffort() {
+            return false;
+        }
+
+        @Override
+        public boolean isRewritten() {
+            return true;
+        }
+
+        @Override
+        public boolean isUnmodified() {
+            return false;
+        }
+
+        @Override
+        public boolean isNewVal() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "NewVal(" +
+                    value +
+                    ')';
+        }
+    }
+
+    private static class BestEffort extends RewriteResult {
+        private final Expr value;
+
+        public BestEffort(Expr e) {
+            this.value = e;
+        }
+
+        @Override
+        public Expr getValueOrNull() {
+            return getValue();
+        }
+
+        @Override
+        public Expr getValue() {
+            return value;
+        }
+
+        @Override
+        public Expr getValue(Expr e) {
+            return value;
+        }
+
+        @Override
+        public RewriteResultType getType() {
+            return RewriteResultType.BEST_EFFORT;
+        }
+
+        @Override
+        public boolean isBestEffort() {
+            return true;
+        }
+
+        @Override
+        public boolean isRewritten() {
+            return true;
+        }
+
+        @Override
+        public boolean isUnmodified() {
+            return false;
+        }
+
+        @Override
+        public boolean isNewVal() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "BestEffort(" +
+                    value +
+                    ')';
+        }
     }
 }

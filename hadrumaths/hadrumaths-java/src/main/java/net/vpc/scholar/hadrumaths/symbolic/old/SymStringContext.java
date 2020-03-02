@@ -18,20 +18,20 @@ public class SymStringContext implements Cloneable {
         this.preferParentheses = preferParentheses;
     }
 
-    public int getOperatorPrecedence() {
-        return operatorPrecedence;
-    }
-
-    public void setOperatorPrecedence(int operatorPrecedence) {
-        this.operatorPrecedence = operatorPrecedence;
-    }
-
     public boolean isPreferParentheses(int precedence) {
         return isPreferParentheses() || getOperatorPrecedence() > precedence;
     }
 
     public boolean isPreferParentheses() {
         return preferParentheses;
+    }
+
+    public int getOperatorPrecedence() {
+        return operatorPrecedence;
+    }
+
+    public void setOperatorPrecedence(int operatorPrecedence) {
+        this.operatorPrecedence = operatorPrecedence;
     }
 
     public void setPreferParentheses(boolean preferParentheses) {
