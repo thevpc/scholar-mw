@@ -1,0 +1,210 @@
+package net.vpc.scholar.hadrumaths.symbolic.double2double;
+
+import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+
+import static net.vpc.scholar.hadrumaths.Maths.*;
+
+/**
+ * Created by vpc on 5/7/14.
+ */
+public class SinSeqXY extends RefDoubleToDouble {
+    private static final long serialVersionUID = 1L;
+    private boolean maxEast;
+    private boolean maxSouth;
+    private boolean maxWest;
+    private DoubleParam m;
+    private DoubleParam n;
+    private Domain domain;
+    private boolean maxNorth;
+    private DoubleToDouble exprVal;
+
+    public SinSeqXY(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain) {
+        init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
+    }
+
+    private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain) {
+        this.maxEast = maxEast;
+        this.maxSouth = maxSouth;
+        this.maxWest = maxWest;
+        this.m = m;
+        this.n = n;
+        this.domain = domain;
+        this.maxNorth = maxNorth;
+        Expr fx = null;
+        Expr one = expr(1);
+        Expr two = expr(2);
+        Expr pi = expr(PI);
+        Expr width = expr(domain.xwidth());
+        Expr height = expr(domain.ywidth());
+        Expr xmin = expr(domain.xmin());
+        Expr ymin = expr(domain.ymin());
+        Expr pibyw = Maths.div(pi, width);
+        Expr pibyh = Maths.div(pi, height);
+        if (maxWest) {
+            if (maxEast) {
+                //cos(2 * m * (pi / width) * (X-min))
+                fx = Maths.cos(Maths.prod(two, m, pibyw, Maths.minus(X, xmin))); //ok
+            } else {
+                //cos((m * 2+1)/2 * pi / width * (X-min))
+                fx = Maths.cos(Maths.prod(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.minus(X, xmin))); //ok
+            }
+        } else {
+            if (maxEast) {
+                //fx = sin(((2 * m + 1) / 2 * PI / domain.width) * (X - domain.xmin)); //ok
+                fx = Maths.sin(Maths.prod(Maths.div(Maths.sum(Maths.mul(two, m), one), two), pibyw, Maths.minus(X, xmin))); //ok
+            } else {
+//                fx = sin(((m+1) * PI / domain.width) * (X - domain.xmin)); //ok
+                fx = Maths.sin(Maths.prod(Maths.sum(m, one), pibyw, Maths.minus(X, xmin))); //ok
+            }
+        }
+        Expr fy = null;
+        if (maxNorth) {
+            if (maxSouth) {
+//                fy = cos((n * PI / domain.Height) * (Y - domain.Ymin)); //ok
+                fy = Maths.cos(Maths.prod(n, pibyh, Maths.minus(Y, ymin))); //ok
+            } else {
+//                fy = cos(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
+                fy = Maths.sin(Maths.prod(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.minus(Y, ymin))); //ok
+            }
+        } else {
+            if (maxSouth) {
+                //fy = sin(((2 * n + 1) / 2 * PI / domain.Height) * (Y - domain.Ymin)); //ok
+                fy = Maths.cos(Maths.prod(Maths.div(Maths.sum(Maths.mul(two, n), one), two), pibyh, Maths.minus(Y, ymin))); //ok
+            } else {
+                //fy = sin(((n+1) * PI / domain.Height) * (Y - domain.Ymin)); //ok
+                fy = Maths.sin(Maths.prod(Maths.sum(n, one), pibyh, Maths.minus(Y, ymin))); //ok
+            }
+        }
+        exprVal = (Maths.prod(fx, fy, Maths.expr(domain))).toDD();
+    }
+
+    //@RandomGenerationProperties("DisableRandomCalls")
+    public SinSeqXY(String borders, DoubleParam m, DoubleParam n, Domain domain) {
+        boolean maxNorth = false;
+        boolean maxEast = false;
+        boolean maxSouth = false;
+        boolean maxWest = false;
+        if (borders != null) {
+            for (char c : borders.toCharArray()) {
+                switch (c) {
+                    case 'N':
+                    case 'n':
+                    case '^': {
+                        maxNorth = true;
+                        break;
+                    }
+                    case 'S':
+                    case 's':
+                    case '_': {
+                        maxSouth = true;
+                        break;
+                    }
+                    case 'W':
+                    case 'w':
+                    case '<': {
+                        maxWest = true;
+                        break;
+                    }
+                    case 'E':
+                    case 'e':
+                    case '>': {
+                        maxEast = true;
+                        break;
+                    }
+                    default: {
+                        throw new IllegalArgumentException("Expected N,n,^ for 'north max border' ; S,s,_ for 'south max border' ; W,w,< for 'west max border' ; E,e,> for 'east max border'");
+                    }
+                }
+            }
+        }
+        init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
+    }
+
+    @Override
+    public DoubleToDouble getReference() {
+        return exprVal;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public boolean isMaxEast() {
+        return maxEast;
+    }
+
+    public boolean isMaxSouth() {
+        return maxSouth;
+    }
+
+    public boolean isMaxWest() {
+        return maxWest;
+    }
+
+    public DoubleParam getM() {
+        return m;
+    }
+
+    public DoubleParam getN() {
+        return n;
+    }
+
+    public boolean isMaxNorth() {
+        return maxNorth;
+    }
+
+    //    @Override
+//    public Ref forObject(Expression obj) {
+//        SinSeq s = new SinSeq(obj);
+//        s.maxEast = maxEast;
+//        s.maxSouth = maxSouth;
+//        s.maxWest = maxWest;
+//        s.m = m;
+//        s.n = n;
+//        s.domain = domain;
+//        s.maxNorth = maxNorth;
+//        return s;
+//    }
+
+    @Override
+    public int hashCode() {
+        int result = getClass().getName().hashCode();
+        result = 31 * result + (maxEast ? 1 : 0);
+        result = 31 * result + (maxSouth ? 1 : 0);
+        result = 31 * result + (maxWest ? 1 : 0);
+        result = 31 * result + (m != null ? m.hashCode() : 0);
+        result = 31 * result + (n != null ? n.hashCode() : 0);
+        result = 31 * result + (domain != null ? domain.hashCode() : 0);
+        result = 31 * result + (maxNorth ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SinSeqXY sinSeq = (SinSeqXY) o;
+
+        if (maxEast != sinSeq.maxEast) return false;
+        if (maxNorth != sinSeq.maxNorth) return false;
+        if (maxSouth != sinSeq.maxSouth) return false;
+        if (maxWest != sinSeq.maxWest) return false;
+        if (domain != null ? !domain.equals(sinSeq.domain) : sinSeq.domain != null) return false;
+        if (m != null ? !m.equals(sinSeq.m) : sinSeq.m != null) return false;
+        return n != null ? n.equals(sinSeq.n) : sinSeq.n == null;
+    }
+
+    @Override
+    public Expr newInstance(Expr... subExpressions) {
+        return this;
+    }
+
+    @Override
+    public String toLatex() {
+        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+    }
+}

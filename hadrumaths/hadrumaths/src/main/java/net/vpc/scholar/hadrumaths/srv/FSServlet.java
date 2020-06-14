@@ -1,0 +1,22 @@
+package net.vpc.scholar.hadrumaths.srv;
+
+import net.vpc.scholar.hadrumaths.Maths;
+import net.vpc.scholar.hadrumaths.io.HFileSystem;
+
+public class FSServlet implements HadrumathsServlet {
+    private final String id;
+
+    public FSServlet(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public HFileSystem getFileSystem() {
+        return Maths.Config.getCacheFileSystem();
+    }
+
+}

@@ -1,0 +1,41 @@
+<project name="build" default="distrib_all" basedir="./..">
+    <!-- basedir is developpement -->
+    <description>
+        simple example build file
+    </description>
+    <!-- set global properties for this build -->
+    <property name="rootFolder" location="."/>
+    <property name="sdk_home" location="C:/j2sdk1.4.1_02"/>
+    <!--WINDOW
+    <property name="sdk_home" location="/usr/java/j2sdk1.4.1_02"/>
+    <property name="sdk_home" location="D:/j2sdk1.4.1_01"/>
+    -->
+
+
+    <target name="distrib_all">
+        <mkdir dir="build/dist"/>
+        <copy file="prj/config.txt" todir="build/dist"/>
+        <copy todir="build/dist">
+            <fileset dir="classes"/>
+            <fileset dir="../antlib/classes"/>
+            <fileset dir="../antlib/resources"/>
+            <fileset dir="../launcher/classes"/>
+            <fileset dir="../launcher/resources"/>
+            <fileset dir="../util/classes"/>
+            <fileset dir="../util/resources"/>
+            <fileset dir="resources"/>
+        </copy>
+        <java classname="drjava.marvin.Obfuscate" fork="true" failonerror="true" dir="prj">
+            <arg value="${rootFolder}/build/dist"/>
+            <arg value="${rootFolder}/build/galarkin.jar"/>
+            <classpath>
+                <pathelement location="build/dist"/>
+                <pathelement location="../tiers/obfuscator/marvinobfuscator.jar"/>
+                <pathelement location="${sdk_home}/jre/lib/rt.jar"/>
+            </classpath>
+        </java>
+        <!--<delete dir="build/dist"/>-->
+    </target>
+
+</project>
+
