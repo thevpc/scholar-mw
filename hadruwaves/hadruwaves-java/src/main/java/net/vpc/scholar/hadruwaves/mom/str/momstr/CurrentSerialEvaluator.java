@@ -31,10 +31,10 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
         return Maths.invokeMonitoredAction(monitor, monMessage, new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ProgressMonitor[] mon = monitor.split(new double[]{0.3, 0.2, 0.5});
+                ProgressMonitor[] mon = monitor.split(0.3, 0.2, 0.5);
                 final ComplexMatrix sp = str.getTestModeScalarProducts(mon[0]);
                 ComplexMatrix Testcoeff = str.matrixX().monitor(mon[1]).evalMatrix();
-                final DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.testFunctions().arr();
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
                 final ModeInfo[] indexes = str.getModes();
@@ -79,7 +79,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                     }
                 });
                 double[] z = new double[]{0};
-                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                Domain domain = Domain.ofBounds(x[0], x[x.length-1], y[0], y[y.length-1], z[0], z[z.length-1]);
                 return new VDiscrete(
                         CDiscrete.of(domain, new Complex[][][]{MutableComplex.toComplex(xCube)}),
                         CDiscrete.of(domain, new Complex[][][]{MutableComplex.toComplex(yCube)}),

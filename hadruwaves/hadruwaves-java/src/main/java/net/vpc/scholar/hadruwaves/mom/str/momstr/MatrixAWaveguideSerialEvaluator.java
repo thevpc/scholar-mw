@@ -21,10 +21,10 @@ public class MatrixAWaveguideSerialEvaluator implements MatrixAEvaluator {
     public static final MatrixAWaveguideSerialEvaluator INSTANCE = new MatrixAWaveguideSerialEvaluator();
 
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        TestFunctions gpTestFunctions = str.getTestFunctions();
+        TestFunctions gpTestFunctions = str.testFunctions();
         DoubleToVector[] _g = gpTestFunctions.arr();
         Complex[][] b = new Complex[_g.length][_g.length];
-        ModeFunctions fn = str.getModeFunctions();
+        ModeFunctions fn = str.modeFunctions();
         ModeInfo[] modes = str.getModes();
         ModeInfo[] n_eva = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());

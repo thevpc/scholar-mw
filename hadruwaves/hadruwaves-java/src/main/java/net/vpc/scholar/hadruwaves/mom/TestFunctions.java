@@ -32,6 +32,7 @@ public interface TestFunctions extends HSerializable {
 
     Vector<Expr> toList();
 
+    DoubleToVector[] arr(ProgressMonitor monitor);
     DoubleToVector[] arr();
 
     DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache);

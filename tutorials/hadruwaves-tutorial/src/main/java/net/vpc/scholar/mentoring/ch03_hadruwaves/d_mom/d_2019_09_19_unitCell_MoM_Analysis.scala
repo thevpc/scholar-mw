@@ -3,7 +3,7 @@ package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector
 import net.vpc.scholar.hadrumaths.{Expr, InverseStrategy, Maths, ScalarProductOperatorFactory}
-import net.vpc.scholar.hadruwaves.mom.{BoxSpaceFactory, MomStructure, ProjectType}
+import net.vpc.scholar.hadruwaves.mom.{BoxSpace, MomStructure, ProjectType}
 
 object d_2019_09_19_unitCell_MoM_Analysis {
   Config.setSimplifierCacheSize(1000000);
@@ -66,8 +66,8 @@ object d_2019_09_19_unitCell_MoM_Analysis {
 //    return
 // structure definition: four periodic walls,
     var str=MomStructure.PPPP(dCell,freq,MN,
-      BoxSpaceFactory.matchedLoad(),
-      BoxSpaceFactory.matchedLoad())
+      BoxSpace.matchedLoad(),
+      BoxSpace.matchedLoad())
     str.setProjectType(ProjectType.WAVE_GUIDE)
     str.testFunctions(essai)
     var sparams=dtimes(4*GHZ,6*GHZ,20).map(

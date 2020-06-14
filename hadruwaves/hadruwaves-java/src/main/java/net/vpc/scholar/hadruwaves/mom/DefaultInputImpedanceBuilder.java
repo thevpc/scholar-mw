@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 import net.vpc.scholar.hadruwaves.builders.AbstractInputImpedanceBuilder;
@@ -14,7 +15,7 @@ class DefaultInputImpedanceBuilder extends AbstractInputImpedanceBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix evalMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl(ProgressMonitor evalMonitor) {
         MomStructure momStructure = (MomStructure)getStructure();
         return new ZinMatrixStrCacheSupport(momStructure, getMonitor()).get();
     }

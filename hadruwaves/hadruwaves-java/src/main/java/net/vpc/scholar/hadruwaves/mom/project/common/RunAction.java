@@ -12,10 +12,6 @@ public abstract class RunAction extends AbstractProgressMonitor {
         super(nextId());
     }
 
-    public double getProgress() {
-        return getProgressValue();
-    }
-
     protected abstract Object run();
 
     public Object go() {

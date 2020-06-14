@@ -35,13 +35,13 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         switch (getApertureType()) {
                             case PEC:
-                                return evaluatePEC(theta, phi, r, getMonitor());
+                                return evaluatePEC(theta, phi, r, monitor);
                         }
                         throw new IllegalArgumentException("Unsupported");
                     }
@@ -57,8 +57,8 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         return evalMatrixImpl(theta, phi, r);
@@ -74,8 +74,8 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         return evalMatrixImpl(theta, phi, r);
@@ -168,21 +168,19 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
         final String monText = getClass().getSimpleName();
         for (int i = 0; i < theta.length; i++) {
             for (int j = 0; j < phi.length; j++) {
-                monitor.setProgress(i, j, theta.length, phi.length, monText);
                 final int curr_i = i;
                 final int curr_j = j;
                 final double theta_i = theta[curr_i];
                 final double phi_j = phi[curr_j];
-                System.out.println("TRY EXEC=" + monitor.getProgressValue() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
-                monitor.setProgress(curr_i, curr_j, theta.length, phi.length, monText);
+                System.out.println("TRY EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
                 Complex[] rr = new StrSubCacheSupport<Complex[]>(structure, "spherical-evalMatrix-single",
                         CacheKey.obj("spherical-evalMatrix-single", "theta", theta[i], "phi", phi[j], "r", r,
                                  "apertureType", getApertureType(), "fieldPart", getElectricFieldPart())
-                        , monitor) {
+                        , monitor.translate(i, theta.length, j, phi.length)) {
 
                     @Override
-                    public Complex[] eval(ObjectCache momCache) {
-                        System.out.println("EXEC=" + monitor.getProgressValue() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
+                    public Complex[] eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                        System.out.println("EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
                         double sin_theta = sin(theta_i);
                         double cos_theta = cos(theta_i);
                         double sin_phi = sin(phi_j);
@@ -228,11 +226,11 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
 
                         Complex px_theta = fxtheta.toComplex();
                         Complex py_theta = fytheta.toComplex();
-                        Complex Etheta = (py_theta.mul(cos_phi).sub(px_theta.mul(sin_phi))).mul(C1); // Etheta
+                        Complex Etheta = (py_theta.mul(cos_phi).minus(px_theta.mul(sin_phi))).mul(C1); // Etheta
 
                         Complex px_phi = fxphi.toComplex();
                         Complex py_phi = fyphi.toComplex();
-                        Complex Ephi = (px_phi.mul(cos_theta * cos_phi).add(py_phi.mul(cos_theta * sin_phi))).mul(C1); // Etheta
+                        Complex Ephi = (px_phi.mul(cos_theta * cos_phi).plus(py_phi.mul(cos_theta * sin_phi))).mul(C1); // Etheta
                         return new Complex[]{Etheta, Ephi};
                     }
                 }.evalCached();

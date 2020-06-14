@@ -44,7 +44,7 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
                     } else {
                         for (int xi = 0; xi < x.length; xi++) {
                             for (int yi = 0; yi < y.length; yi++) {
-                                ret[yi][xi] = ret[yi][xi].add(vals[yi][xi]);
+                                ret[yi][xi] = ret[yi][xi].plus(vals[yi][xi]);
                             }
                         }
                     }

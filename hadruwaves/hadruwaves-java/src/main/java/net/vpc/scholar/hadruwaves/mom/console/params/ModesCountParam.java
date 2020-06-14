@@ -11,7 +11,7 @@ public class ModesCountParam extends AbstractCParam implements Cloneable{
 
     @Override
     public void configure(Object source, Object value) {
-        ((MomStructure)source).getModeFunctions().setSize((Integer) value);
+        ((MomStructure)source).modeFunctions().setSize((Integer) value);
     }
 
 }

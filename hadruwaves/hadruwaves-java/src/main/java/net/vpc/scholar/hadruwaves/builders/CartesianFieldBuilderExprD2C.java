@@ -213,4 +213,10 @@ public class CartesianFieldBuilderExprD2C implements DoubleToComplex {
         }
         return builder.evalVector(axis, new double[]{x}, y, z).get(0);
     }
+
+    @Override
+    public String toLatex() {
+        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+    }
+
 }

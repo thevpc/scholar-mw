@@ -29,7 +29,7 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
 //        return Complex.valueOf(sqr(m * PI / a) + sqr(n * PI / b) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();
         Complex eps = space.getEpsrc(freq);
         double mu = Maths.U0;
-        return eps.mul(mu *Maths.sqr(2*PI*freq)).neg().add(sqr(m * PI / a) + sqr(n * PI / b))
+        return eps.mul(mu *Maths.sqr(2*PI*freq)).neg().plus(sqr(m * PI / a) + sqr(n * PI / b))
                .sqrt()
                ;
     }

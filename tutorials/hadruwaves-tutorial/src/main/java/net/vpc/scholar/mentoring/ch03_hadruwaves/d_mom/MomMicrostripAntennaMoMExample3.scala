@@ -44,11 +44,11 @@ object MomMicrostripAntennaMoMExample3 {
     env.setDomain(d)
     env.setFrequency(f)
     modesFunctions.setSize(nbModeFunctions)
-    env.setFirstBoxSpace(BoxSpaceFactory
+    env.setFirstBoxSpace(BoxSpace
       .shortCircuit(Material.substrate(2.2),
         1 * MM
       ))
-    env.setSecondBoxSpace(BoxSpaceFactory
+    env.setSecondBoxSpace(BoxSpace
       .shortCircuit(Material.VACUUM,
         100 * MM
       ))

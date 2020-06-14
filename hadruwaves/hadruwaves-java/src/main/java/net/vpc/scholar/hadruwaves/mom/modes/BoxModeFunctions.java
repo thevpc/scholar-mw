@@ -34,10 +34,9 @@ import static net.vpc.scholar.hadruwaves.Physics.K0;
 import static net.vpc.scholar.hadruwaves.Physics.omega;
 
 //import net.vpc.scholar.tmwlib.mom.ProjectType;
-
 /**
  * FnBaseFunctions must be initialized fnBaseFunctions.setDomain(getDomain());
- * fnBaseFunctions.setFnMax(getModeFunctionsCount());
+ * fnBaseFunctions.setFnMax(modeFunctionsCount());
  * fnBaseFunctions.setHintFnModeTypes(getHintFnModeTypes());
  * fnBaseFunctions.setFirstBoxSpace(getFirstBoxSpace());
  * fnBaseFunctions.setSecondBoxSpace(getSecondBoxSpace());
@@ -129,7 +128,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return this;
     }
 
-
     public ModeFunctionsEnv getEnv() {
         if (env == null) {
             throw new IllegalArgumentException("Missing Environment");
@@ -161,7 +159,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         firePropertyChange("betay", old, betay);
         return this;
     }
-
 
     public ModeFunctions setModesDesc(BoxModes modesDesc) {
         this.modesDesc = modesDesc;
@@ -253,7 +250,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     }
 
     protected ModeInfo[] getIndexesImpl(ProgressMonitor monitor0) {
-        monitor0 = createProgressMonitorNotNull(monitor0,"indexes");
+        monitor0 = createProgressMonitorNotNull(monitor0, "indexes");
         final int max = getSize();
         //System.out.println("lookup for "+max+" fn modes for "+this);
         Chronometer chrono = Chronometer.start();
@@ -270,7 +267,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
                 int bruteMax = max * 100 + 1;
                 int bruteIndex = 0;
                 while (index < max && bruteIndex < bruteMax) {
-                    if(iterator.hasNext()) {
+                    if (iterator.hasNext()) {
                         ModeIndex modeIndex = iterator.next();
                         if (doAcceptModeIndex(modeIndex)) {
                             ModeInfo modeInfo = new ModeInfo(modeIndex);
@@ -278,11 +275,11 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
                             if (doAcceptModeInfo(modeInfo)) {
                                 next.add(modeInfo);
                                 index++;
+                                monitor.inc(message, index, max);
                             }
                         }
                         bruteIndex++;
-                        monitor.inc(message, index, max);
-                    }else{
+                    } else {
                         break;
                     }
                 }
@@ -293,10 +290,10 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     }
 
     private ProgressMonitor createProgressMonitorNotNull(ProgressMonitor m, String name) {
-        if(m==null){
+        if (m == null) {
             ProgressMonitorFactory monitor = getEnv().getMonitorFactory();
-            if(monitor!=null){
-                m=monitor.createMonitor(name,null);
+            if (monitor != null) {
+                m = monitor.createMonitor(name, null);
             }
         }
         return ProgressMonitors.nonnull(m);
@@ -309,12 +306,9 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return modesDesc;
     }
 
-
-
     public double getCutoffFrequency(ModeIndex i) {
         return getModesDesc().getCutoffFrequency(i);
     }
-
 
     protected Complex getGammaImpl(ModeIndex i, BoxSpace bs) {
         return getModesDesc().getGamma(i, getEnv().getFrequency(), bs);
@@ -374,11 +368,11 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
                             y = I(cachedOmega).mul(space.getEpsrc(env.getFrequency())).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                             break;
                         }
-                        case MATCHED_LOAD: {
+                        case INFINITE: {
                             y = I(cachedOmega).mul(space.getEpsrc(env.getFrequency())).div(gamma);
                             break;
                         }
-                        case SHORT: {
+                        case ELECTRIC: {
 //                            y = I.mul(cachedOmega).mul(EPS0 * componentVectorSpace.getEpsr()).div(cotanh(firstBoxSpaceGamma.mul(componentVectorSpace.getWidth()))).div(firstBoxSpaceGamma);
                             y = I.mul(cachedOmega).mul(space.getEpsrc(env.getFrequency())).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                             break;
@@ -402,11 +396,11 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
                             y = gamma.div(cotanh(gamma.mul(space.getWidth())).mul(I.mul(cachedOmega).mul(U0)));
                             break;
                         }
-                        case MATCHED_LOAD: {
+                        case INFINITE: {
                             y = gamma.div(Complex.I.mul(cachedOmega).mul(U0));
                             break;
                         }
-                        case SHORT: {
+                        case ELECTRIC: {
                             y = gamma.mul(cotanh(gamma.mul(space.getWidth()))).div(I.mul(cachedOmega).mul(U0));
                             break;
                         }
@@ -486,7 +480,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 //        this.sources = structure.getNbSources();
 //        this.freq = structure.getF();
 //        this.sources = structure.getSources();
-//        setFnMax(structure.getModeFunctionsCount());
+//        setFnMax(structure.modeFunctionsCount());
 //        invalidateCache();
 //    }
     //    private void setDomain(Domain domain) {
@@ -505,8 +499,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 //        K0 = K0(this.freq);// omega * Math.sqrt(U0 * EPS0);//nombre d'onde
 //        invalidateCache();
     //    }
-
-
     @Override
     public synchronized DoubleToVector apply(int index) {
         return arr()[index];
@@ -534,7 +526,12 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 
     @Override
     public synchronized DoubleToVector[] fn() {
-        return arr();
+        return fn(null);
+    }
+
+    @Override
+    public synchronized DoubleToVector[] fn(ProgressMonitor monitor) {
+        return arr(monitor);
     }
 
     @Override
@@ -554,10 +551,18 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 
     @Override
     public synchronized DoubleToVector[] arr() {
+        return arr(null);
+    }
+
+    @Override
+    public synchronized DoubleToVector[] arr(ProgressMonitor monitor) {
         if (cachedFn != null) {
+            if(monitor!=null){
+                monitor.terminate("mode functions loaded");
+            }
             return cachedFn;
         }
-        ModeInfo[] ind = getModes();
+        ModeInfo[] ind = getModes(monitor);
         DoubleToVector[] fn = new DoubleToVector[ind.length];
         for (int i = 0; i < fn.length; i++) {
             fn[i] = ind[i].fn;
@@ -570,7 +575,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 //    public CFunctionXY2D fn(int n) {
 //        return fn()[n];
 //    }
-
     @Override
     public synchronized Complex[] zn() {
         if (cachedZn != null) {
@@ -669,7 +673,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return getModesDesc().getAllowedModes();
     }
 
-
     public Axis getPolarization() {
         return polarization;
     }
@@ -681,7 +684,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     public double getYphase() {
         return yphase;
     }
-
 
     /**
      * intersection between AllowedModes and hintFnModes
@@ -795,7 +797,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     @Override
     public synchronized ModeInfo[] getModes() {
         ProgressMonitorFactory mf = getEnv().getMonitorFactory();
-        return getModes(mf==null?null:mf.createMonitor("modes",null));
+        return getModes(mf == null ? null : mf.createMonitor("modes", null));
     }
 
     protected void rebuildObj() {
@@ -857,108 +859,110 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 
     @Override
     public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
+        monitor = createProgressMonitorNotNull(monitor, "modes");
         ObjectCache objectCache = cacheResolver == null ? null : cacheResolver.resolveObjectCache();
-        if (cachedIndexes == null) {
-            if (objectCache != null) {
-                try {
-                    cachedIndexes = (ModeInfo[]) objectCache.load("mode-functions", null);
-                } catch (Exception ex) {
-                    //ignore
+        try {
+            if (cachedIndexes == null) {
+                if (objectCache != null) {
+                    try {
+                        cachedIndexes = (ModeInfo[]) objectCache.load("mode-functions", null);
+                    } catch (Exception ex) {
+                        //ignore
+                    }
+                    if (cachedIndexes != null) {
+                        monitor.terminate("mode functions loaded");
+                        return cachedIndexes;
+                    }
                 }
-                if (cachedIndexes != null) {
-                    return cachedIndexes;
-                }
-            }
-            monitor=createProgressMonitorNotNull(monitor,"modes");
-            monitor.start("eval modes");
+                monitor.start("eval modes");
 
-            if (objectCache == null) {
-                System.out.println("Are you sure you want to load modes with no cache for " + this);
-            }
-            rebuildObj();
-            /*
+                if (objectCache == null) {
+                    System.out.println("Are you sure you want to load modes with no cache for " + this);
+                }
+                rebuildObj();
+                /*
              * if (getProjectType().equals(ProjectType.WAVE_GUIDE) &&
-             * (!BoxLimit.MATCHED_LOAD.equals(getFirstBoxSpace().limit) ||
-             * !BoxLimit.MATCHED_LOAD.equals(getSecondBoxSpace().limit))) {
+             * (!BoxLimit.INFINITE.equals(getFirstBoxSpace().limit) ||
+             * !BoxLimit.INFINITE.equals(getSecondBoxSpace().limit))) {
              * throw new IllegalArgumentException("For waveguide projects limits
              * should be charge adaptee");
              }
-             */
+                 */
 
-            ProgressMonitor[] mons = ProgressMonitors.split(monitor, new double[]{0.5,0.4,0.1});
-            final ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
-            Comparator<ModeInfo> comparator = getModeComparator();
-            if (comparator != null) {
-                Arrays.sort(_cachedIndexes, comparator);
-            }
-            final int _cacheSize = _cachedIndexes.length;
-            for (int i = 0; i < _cacheSize; i++) {
-                _cachedIndexes[i].index = i;
-            }
-            ModeIndex[] propagativeModes = (env.getSources() instanceof ModalSources) ?
-                    ((ModalSources) env.getSources()).getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount())
-                    : new ModeIndex[]{_cachedIndexes[0].mode};
-            final HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
-            final ProgressMonitor mon2 = mons[1];//ProgressMonitors.createIncrementalMonitor(mons[1], _cacheSize);
-            final String message = toString() + ", evaluate mode properties";
-            final String str = toString();
-            Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
-                @Override
-                public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                    int propagativeCount = 0;
-                    int nonPropagativeCount = 0;
-                    boolean _enableDefaultFunctionProperties = isHintEnableFunctionProperties();
-                    for (int i = 0; i < _cacheSize; i++) {
-                        ModeInfo index = _cachedIndexes[i];
-                        index.propagating = propagativeModesSet.contains(index.getMode());
-                        if (index.propagating) {
-                            propagativeCount++;
-                        } else {
-                            nonPropagativeCount++;
-                        }
-                        if (_enableDefaultFunctionProperties) {
-                            HashMap<String, Object> properties = new HashMap<String, Object>(15);
-                            properties.put("Type", str);
-                            properties.put("Mode", index.mode.mtype.toString());
-                            properties.put("m", index.mode.m);
-                            properties.put("n", index.mode.n);
-                            properties.put("CutOffFrequency", Maths.formatFrequency(index.cutOffFrequency));
-                            properties.put("Zmn", index.impedance);
-                            properties.put("Gamma First Space", index.firstBoxSpaceGamma);
-                            properties.put("Gamma Second Space", index.secondBoxSpaceGamma);
-                            properties.put("InitialIndex", index.initialIndex);
-                            properties.put("index", index.index);
-                            properties.put("invariance", (index.fn.isInvariant(Axis.X) ? "X" : "") + (index.fn.isInvariant(Axis.Y) ? "Y" : ""));
-                            properties.put("Domain", env.getDomain().toString());
-                            properties.put("symmetry", (isXSymmetric(index.fn) ? "X" : "") + (isYSymmetric(index.fn) ? "Y" : ""));
-                            properties.put("propagating", index.propagating);
-                            index.fn = index.fn.setProperties(properties).toDV();
-                        }
-                        mon2.setProgress(i, _cacheSize, message);
-                    }
-                    if (propagativeCount == 0) {
-                        System.err.println("propagatingCount = " + propagativeCount);
-                    }
-                    if (nonPropagativeCount == 0) {
-                        System.err.println("nonPropagatingCount = " + propagativeCount);
-                    }
+                ProgressMonitor[] mons = ProgressMonitors.split(monitor, 0.5, 0.4, 0.1);
+                final ModeInfo[] _cachedIndexes = getIndexesImpl(mons[0]);
+                Comparator<ModeInfo> comparator = getModeComparator();
+                if (comparator != null) {
+                    Arrays.sort(_cachedIndexes, comparator);
                 }
-            });
-
-            cachedIndexes = _cachedIndexes;
-
-            if (objectCache != null) {
-                try {
-                    objectCache.store("mode-functions", cachedIndexes, mons[2]);
-                } catch (Exception ex) {
-                    //ignore
+                final int _cacheSize = _cachedIndexes.length;
+                for (int i = 0; i < _cacheSize; i++) {
+                    _cachedIndexes[i].index = i;
                 }
-            }else{
-                mons[2].terminate();
+                ModeIndex[] propagativeModes = (env.getSources() instanceof ModalSources)
+                        ? ((ModalSources) env.getSources()).getPropagatingModes(this, _cachedIndexes, getPropagativeModesCount())
+                        : new ModeIndex[]{_cachedIndexes[0].mode};
+                final HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
+                final ProgressMonitor mon2 = mons[1];//ProgressMonitors.createIncrementalMonitor(mons[1], _cacheSize);
+                final String message = toString() + ", evaluate mode properties";
+                final String str = toString();
+                Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
+                    @Override
+                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                        int propagativeCount = 0;
+                        int nonPropagativeCount = 0;
+                        boolean _enableDefaultFunctionProperties = isHintEnableFunctionProperties();
+                        for (int i = 0; i < _cacheSize; i++) {
+                            ModeInfo index = _cachedIndexes[i];
+                            index.propagating = propagativeModesSet.contains(index.getMode());
+                            if (index.propagating) {
+                                propagativeCount++;
+                            } else {
+                                nonPropagativeCount++;
+                            }
+                            if (_enableDefaultFunctionProperties) {
+                                HashMap<String, Object> properties = new HashMap<String, Object>(15);
+                                properties.put("Type", str);
+                                properties.put("Mode", index.mode.mtype.toString());
+                                properties.put("m", index.mode.m);
+                                properties.put("n", index.mode.n);
+                                properties.put("CutOffFrequency", Maths.formatFrequency(index.cutOffFrequency));
+                                properties.put("Zmn", index.impedance);
+                                properties.put("Gamma First Space", index.firstBoxSpaceGamma);
+                                properties.put("Gamma Second Space", index.secondBoxSpaceGamma);
+                                properties.put("InitialIndex", index.initialIndex);
+                                properties.put("index", index.index);
+                                properties.put("invariance", (index.fn.isInvariant(Axis.X) ? "X" : "") + (index.fn.isInvariant(Axis.Y) ? "Y" : ""));
+                                properties.put("Domain", env.getDomain().toString());
+                                properties.put("symmetry", (isXSymmetric(index.fn) ? "X" : "") + (isYSymmetric(index.fn) ? "Y" : ""));
+                                properties.put("propagating", index.propagating);
+                                index.fn = index.fn.setProperties(properties).toDV();
+                            }
+                            mon2.setProgress(i, _cacheSize, message);
+                        }
+                        if (propagativeCount == 0) {
+                            System.err.println("propagatingCount = " + propagativeCount);
+                        }
+                        if (nonPropagativeCount == 0) {
+                            System.err.println("nonPropagatingCount = " + propagativeCount);
+                        }
+                    }
+                });
+
+                cachedIndexes = _cachedIndexes;
+
+                if (objectCache != null) {
+                    try {
+                        objectCache.store("mode-functions", cachedIndexes, mons[2]);
+                    } catch (Exception ex) {
+                        //ignore
+                    }
+                } else {
+                    mons[2].terminate();
+                }
             }
-            monitor.terminate();
-        }else{
-            monitor.terminate();
+        } finally {
+            monitor.terminate("mode functions loaded");
         }
         return cachedIndexes;
     }
@@ -1044,7 +1048,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 
     //    public int getSources() {
 //        return sources;
-
     //    }
 //    public ProjectType getProjectType() {
 //        return projectType;
@@ -1054,8 +1057,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 //        this.projectType = projectType;
 //        invalidateCache();
 //    }
-
-
     @Override
     public ModeFunctions setHintFnModes(ModeType... hintFnModeTypes) {
         ModeIndexFilter found = null;
@@ -1137,7 +1138,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return this;
     }
 
-
     /**
      * should not be called with true
      *
@@ -1162,7 +1162,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return this;
     }
 
-
     public double getK0() {
         return cachedk0;
     }
@@ -1179,7 +1178,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         }
         return hintAxisType;
     }
-
 
     @Override
     public ModeType[] getHintFnModes() {
@@ -1220,7 +1218,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 //    public Dumper getDumpStringHelper() {
 //        return getDumpStringHelper(true, true);
 //    }
-
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
         return toTsonElement(context, true, true);
@@ -1232,15 +1229,15 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         if (!includeFreq && isDefinitionFrequencyDependent()) {
             includeFreq = true;
         }
-        TsonObjectBuilder env=Tson.obj();
-        env.add("domain",context.elem(getEnv().getDomain()));
-        env.add("borders",context.elem(getEnv().getBorders()));
-        env.add("sources",context.elem(getEnv().getSources()));
-        env.add("layers",context.elem(getEnv().getLayers()));
-        env.add("firstBoxSpace",context.elem(getEnv().getFirstBoxSpace()));
-        env.add("secondBoxSpace",context.elem(getEnv().getSecondBoxSpace()));
+        TsonObjectBuilder env = Tson.obj();
+        env.add("domain", context.elem(getEnv().getDomain()));
+        env.add("borders", context.elem(getEnv().getBorders()));
+        env.add("sources", context.elem(getEnv().getSources()));
+        env.add("layers", context.elem(getEnv().getLayers()));
+        env.add("firstBoxSpace", context.elem(getEnv().getFirstBoxSpace()));
+        env.add("secondBoxSpace", context.elem(getEnv().getSecondBoxSpace()));
 
-        if(includeFreq) {
+        if (includeFreq) {
             env.add("frequency", context.elem(getEnv().getFrequency()));
         }
         if (includeSize) {
@@ -1249,7 +1246,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         if (complex) {
             h.add("complex", context.elem(complex));
         }
-        List<Object> modeFilters=new ArrayList<>();
+        List<Object> modeFilters = new ArrayList<>();
         if (modeIndexFilters != null) {
             modeFilters.addAll(modeIndexFilters);
         }
@@ -1273,31 +1270,28 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
             }
         }
 
-        h.add("environment",env);
+        h.add("environment", env);
 
-        TsonObjectBuilder hints=Tson.obj();
+        TsonObjectBuilder hints = Tson.obj();
         hints.add("hintInvariance", context.elem(getHintInvariantAxis()));
         hints.add("hintFnModes", context.elem(getHintFnModes()));
         hints.add("hintAxisType", context.elem(getHintAxisType()));
         hints.add("hintInvariantAxis", context.elem(getHintInvariantAxis()));
         hints.add("hintSymmetryAxis", context.elem(getHintSymmetry()));
         hints.add("hintInvertTETMForZin", context.elem(isHintInvertTETMForZmode()));
-        h.add("hints",hints);
+        h.add("hints", hints);
         return h.build();
     }
-
 
 //    public Dumper getDumpStringHelper(boolean includeFreq, boolean includeSize) {
 //        Dumper h = new Dumper(this);
 //
 //        return h;
 //    }
-
 //    @Override
 //    public String dump() {
 //        return getDumpStringHelper().toString();
 //    }
-
     @Override
     public boolean isComplex() {
         return complex;
@@ -1448,7 +1442,6 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         return modeIndexFilters == null ? MODE_INDEX_FILTER_0 : modeIndexFilters.toArray(new ModeIndexFilter[modeIndexFilters.size()]);
     }
 
-
     @Override
     public boolean isHintInvertTETMForZmode() {
         return hintInvertTETMForZmode;
@@ -1488,14 +1481,12 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         invalidateCache();
     }
 
-
     private ObjectCache getSingleTestFunctionObjectCache(Expr testFunction) {
         TsonObjectContext context = Tson.serializer().context();
-        TsonElement node=Tson.obj("SingleTestModeScalarProducts")
-                .add("modeFunction",toTsonElement(context, false, false))
+        TsonElement node = Tson.obj("SingleTestModeScalarProducts")
+                .add("modeFunction", toTsonElement(context, false, false))
                 .add("testFunction", context.elem(testFunction.simplify()))
-                .build()
-        ;
+                .build();
         PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("SingleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
     }
@@ -1506,11 +1497,10 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         for (Expr testFunction : testFunctions) {
             testFunction2.addAll(context.elem(testFunction.simplify()));
         }
-        TsonElement node=Tson.obj("MultipleTestModeScalarProducts")
-                .add("modeFunction",toTsonElement(context, false, false))
+        TsonElement node = Tson.obj("MultipleTestModeScalarProducts")
+                .add("modeFunction", toTsonElement(context, false, false))
                 .add("testFunctions", testFunction2)
-                .build()
-                ;
+                .build();
         PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("MultipleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
     }
@@ -1529,22 +1519,27 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
             }
         }
         if (!Maths.Config.isCacheEnabled()) {
-            return scalarProduct0(dd, testFunction, arr(),monitor);
+            return scalarProduct0(dd, testFunction, arr(), monitor);
         }
         final ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
         if (objectCache == null) {
-            return scalarProduct0(dd, testFunction, arr(),monitor);
+            return scalarProduct0(dd, testFunction, arr(), monitor);
         }
-        final int currentCount = count(monitor);
+        ProgressMonitor[] mons = monitor.split(1, 9);
+        final int currentCount = count(mons[0]);
         boolean finalDd = dd;
-        String id="all-test-mode-scalar-products-" + currentCount;
-        return objectCache.evaluate("test-mode-scalar-products-" + currentCount, monitor, new CacheEvaluator() {
+        String id = "all-test-mode-scalar-products-" + currentCount;
+        return objectCache.evaluate("test-mode-scalar-products-" + currentCount, mons[1], new CacheEvaluator() {
 
             @Override
-            public Object evaluate(Object[] args) {
-                ComplexVector found = loadCacheScalarProduct(finalDd, testFunction, objectCache, currentCount,monitor);
+            public Object evaluate(Object[] args, ProgressMonitor cacheMonitor) {
+                ProgressMonitor[] mons = monitor.split(1,9);
+                ComplexVector found = loadCacheScalarProduct(finalDd, testFunction, objectCache, currentCount, mons[0]);
                 if (found == null) {
-                    found = scalarProduct0(finalDd, testFunction, arr(),monitor);
+                    ProgressMonitor[] mons2 = mons[1].split(1,9);
+                    found = scalarProduct0(finalDd, testFunction, arr(mons2[0]), mons[1]);
+                }else{
+                    mons[1].terminate();
                 }
                 return found;
             }
@@ -1552,7 +1547,8 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     }
 
     @Override
-    public ComplexMatrix scalarProduct(final Vector<Expr> testFunctions, final ProgressMonitor monitor) {
+    public ComplexMatrix scalarProduct(final Vector<Expr> testFunctions, ProgressMonitor monitor0) {
+        ProgressMonitor monitor = createProgressMonitorNotNull(monitor0, "scalar-product");
         if (!Maths.Config.isCacheEnabled()) {
             return scalarProductCache0(testFunctions, monitor);
         }
@@ -1568,13 +1564,13 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         if (objectCache == null) {
             return scalarProductCache0(testFunctions, monitor);
         }
-        ProgressMonitor[] mon = monitor.split(new double[]{0.8, 0.2});
+        ProgressMonitor[] mon = monitor.split(0.8, 0.2);
         int currentCount = count(mon[0]);
-        String id="all-test-mode-scalar-products-" + currentCount;
+        String id = "all-test-mode-scalar-products-" + currentCount;
         ComplexMatrix evaluated = objectCache.evaluate(id, mon[1], new CacheEvaluator() {
             @Override
-            public Object evaluate(Object[] args) {
-                return scalarProductCache0(testFunctions, monitor);
+            public Object evaluate(Object[] args, ProgressMonitor cacheMonitor) {
+                return scalarProductCache0(testFunctions, mon[1]);
             }
         });
         monitor.terminate();
@@ -1583,8 +1579,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
 
     public ComplexMatrix scalarProductCache0(Vector<Expr> testFunctions, ProgressMonitor monitor) {
 
-
-        ProgressMonitor m = ProgressMonitors.nonnull(monitor).incremental(testFunctions.length());
+        ProgressMonitor m = createProgressMonitorNotNull(monitor, "scalar-product").incremental(testFunctions.length());
         boolean dd = getModesDesc().getBorders() != WallBorders.PPPP;
         if (dd) {
             for (Expr testFunction : testFunctions) {
@@ -1596,18 +1591,20 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         }
         if (dd) {
             double[][] rows = new double[testFunctions.size()][];
+            m.start();
             for (int i = 0; i < rows.length; i++) {
                 ProgressMonitor sub = m.translate(i, rows.length);
-                rows[i] = ((DoubleVector) scalarProduct(testFunctions.get(i),sub).to(Maths.$DOUBLE)).toDoubleArray();
-                sub.terminate("test function "+(i+1)/rows.length);
+                rows[i] = ((DoubleVector) scalarProduct(testFunctions.get(i), sub).to(Maths.$DOUBLE)).toDoubleArray();
+                sub.terminate("test function " + (i + 1) / rows.length);
             }
             m.terminate();
             return (ComplexMatrix) new DMatrix(rows).to(Maths.$COMPLEX);
         } else {
             Complex[][] rows = new Complex[testFunctions.size()][];
+            m.start();
             for (int i = 0; i < rows.length; i++) {
-                m.inc();
-                rows[i] = scalarProduct(testFunctions.get(i),m.translate(i,rows.length)).toArray();
+//                m.inc();
+                rows[i] = scalarProduct(testFunctions.get(i), m.translate(i, rows.length)).toArray();
             }
             m.terminate();
             return Maths.Config.getComplexMatrixFactory().newMatrix(rows);
@@ -1615,6 +1612,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     }
 
     private ComplexVector loadCacheScalarProduct(boolean dd, Expr testFunction, ObjectCache objectCache, int currentCount, ProgressMonitor monitor) {
+        monitor = createProgressMonitorNotNull(monitor, "scalar-product");
         if (!getModeIterator().isAbsoluteIterator(this)) {
             //could guess indexes from existing cached files...
             monitor.terminate();
@@ -1630,7 +1628,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
         });
         HFile best = null;
         int bestCount = 0;
-        ProgressMonitor[] mon = monitor.split(new double[]{0.1,0.9});
+        ProgressMonitor[] mon = monitor.split(0.1, 0.9);
         for (HFile hFile : hFiles) {
             int sn = Integer.parseInt(hFile.getSimpleName().substring("test-mode-scala-products-".length()));
             if (best == null) {
@@ -1673,7 +1671,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
                     Vector<Expr> list = list();
                     list = list.sublist(copy.size(), list.length());
 
-                    ComplexVector extra = scalarProduct0(dd, testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[0]),monitor);
+                    ComplexVector extra = scalarProduct0(dd, testFunction, (DoubleToVector[]) list.toArray(new DoubleToVector[0]), monitor);
                     copy.appendAll(extra);
                     monitor.terminate();
                     return copy;
@@ -1685,16 +1683,17 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
     }
 
     private ComplexVector scalarProduct0(boolean dd, Expr testFunction, DoubleToVector[] arr, ProgressMonitor monitor) {
+        monitor = createProgressMonitorNotNull(monitor, "scalar-product");
         ScalarProductOperator sp = Maths.Config.getScalarProductOperator();
         if (dd) {
-            return (ComplexVector) Maths.dvector(sp.evalVDD(null, testFunction.toDV(), arr,monitor)).to(Maths.$COMPLEX);
+            return (ComplexVector) Maths.dvector(sp.evalVDD(null, testFunction.toDV(), arr, monitor)).to(Maths.$COMPLEX);
         }
-        return Maths.columnVector(sp.evalVDC(null, testFunction.toDV(), arr,monitor));
+        return Maths.columnVector(sp.evalVDC(null, testFunction.toDV(), arr, monitor));
     }
 
-    private InputStream createMonitor(InputStream is, String name, long length){
+    private InputStream createMonitor(InputStream is, String name, long length) {
         ProgressMonitorFactory f = getEnv().getMonitorFactory();
-        if(f==null){
+        if (f == null) {
             return new ProgressMonitorInputStream2(is, length,
                     new DialogProgressMonitor(null,
                             "Reading (" + Maths.formatMemory(length) + ") " + name
@@ -1702,7 +1701,7 @@ public class BoxModeFunctions implements net.vpc.scholar.hadruwaves.mom.ModeFunc
             );
         }
         return new ProgressMonitorInputStream2(is, length,
-                f.createMonitor("Reading (" + Maths.formatMemory(length) + ") " + name,null)
+                f.createMonitor("Reading (" + Maths.formatMemory(length) + ") " + name, null)
         );
     }
 

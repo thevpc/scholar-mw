@@ -20,8 +20,8 @@ public class DefaultModeFunctionsEnv implements ModeFunctionsEnv {
     //    private AbstractStructure2D structure;
     private StrLayer[] layers = new StrLayer[0];
     //    private ProjectType projectType;
-    private BoxSpace firstBoxSpace = BoxSpaceFactory.nothing();
-    private BoxSpace secondBoxSpace = BoxSpaceFactory.nothing();
+    private BoxSpace firstBoxSpace = BoxSpace.nothing();
+    private BoxSpace secondBoxSpace = BoxSpace.nothing();
     private ModalSources sources = new CutOffModalSources(1);
     /**
      * defaults to 1GGz

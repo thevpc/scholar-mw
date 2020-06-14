@@ -23,7 +23,7 @@ public class PlotZmode extends PlotAxisSeriesSingleValue implements Cloneable {
     }
 
     protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        ModeInfo indexes = ((MomStructure)structure).getModeFunctions().getMode(mode, m, n);
+        ModeInfo indexes = ((MomStructure)structure).modeFunctions().getMode(mode, m, n);
         return indexes==null?Complex.NaN :indexes.impedance.impedanceValue();
     }
 

@@ -5,7 +5,7 @@ import net.vpc.scholar.hadruwaves.{Material, ModeIndex}
 import net.vpc.scholar.hadruwaves.Physics._
 import net.vpc.scholar.hadruwaves.WallBorders.EEEE
 import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadruplot.console.PlotData
+import net.vpc.scholar.hadruplot.console.{ConsoleParams, PlotData}
 import net.vpc.scholar.hadruwaves.mom._
 
 object MomMicrostripAntennaMoMExample5 {
@@ -34,8 +34,8 @@ object MomMicrostripAntennaMoMExample5 {
 
 
     var m: MomStructure = MomStructure.EEEE(d, f, nbBaseFunctions
-      , BoxSpaceFactory.shortCircuit(Material.substrate(2.2),1*MM)
-      , BoxSpaceFactory.shortCircuit(Material.VACUUM,100*MM)
+      , BoxSpace.shortCircuit(Material.substrate(2.2),1*MM)
+      , BoxSpace.shortCircuit(Material.VACUUM,100*MM)
     )
 
     m.setSources(sd*1, 50)
@@ -47,7 +47,7 @@ object MomMicrostripAntennaMoMExample5 {
       .buildBoxModes()
     )
 //    m.setTestFunctionsCount(4);
-    val arr: Array[DoubleToVector] = m.getTestFunctions.arr()
+    val arr: Array[DoubleToVector] = m.testFunctions.arr()
     println(arr(0).toDM()(0.01,0.5))
     var c = Plot.console()
     c.run(
@@ -57,7 +57,7 @@ object MomMicrostripAntennaMoMExample5 {
     )
     c.createPlot()
         .setStructure(m)
-        .setX(xyParamSet(100, 100))
+        .setX(ConsoleParams.xyParamSet(100, 100))
         .addY(MomParamFactory.axis.testFunctions())
         .addY(MomParamFactory.axis.modeFunctions())
         .addY(MomParamFactory.axis.current2D(Axis.X))

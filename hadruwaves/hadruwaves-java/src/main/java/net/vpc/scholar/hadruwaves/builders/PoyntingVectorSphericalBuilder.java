@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.ComplexVector;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface PoyntingVectorSphericalBuilder extends ValueBuilder {
-    PoyntingVectorSphericalBuilder monitor(TaskMonitorManager monitor);
+    PoyntingVectorSphericalBuilder monitor(ProgressMonitorFactory monitor);
 
     PoyntingVectorSphericalBuilder monitor(ProgressMonitor monitor);
 

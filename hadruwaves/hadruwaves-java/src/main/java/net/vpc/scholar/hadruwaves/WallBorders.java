@@ -19,28 +19,28 @@ public enum WallBorders {
     , MMMM //
     , PPPP;
 
-    public Wall north;
-    public Wall south;
-    public Wall east;
-    public Wall west;
+    public Boundary north;
+    public Boundary south;
+    public Boundary east;
+    public Boundary west;
 
     WallBorders() {
         String pattern = toString();
         init(
-                Wall.wallForChar(pattern.charAt(0)),
-                Wall.wallForChar(pattern.charAt(1)),
-                Wall.wallForChar(pattern.charAt(2)),
-                Wall.wallForChar(pattern.charAt(3))
+                Boundary.of(pattern.charAt(0)),
+                Boundary.of(pattern.charAt(1)),
+                Boundary.of(pattern.charAt(2)),
+                Boundary.of(pattern.charAt(3))
         );
     }
 
-    public static WallBorders of(Wall north, Wall east, Wall south, Wall west) {
+    public static WallBorders of(Boundary north, Boundary east, Boundary south, Boundary west) {
         return valueOf(new String(
                 new char[]{
-                        north.charForWall(),
-                        east.charForWall(),
-                        south.charForWall(),
-                        west.charForWall(),
+                        north.idChar(),
+                        east.idChar(),
+                        south.idChar(),
+                        west.idChar(),
                 }
         ));
     }
@@ -49,43 +49,43 @@ public enum WallBorders {
         return valueOf(str);
     }
 
-    public static WallBorders valueOf(Wall north, Wall east, Wall south, Wall west) {
+    public static WallBorders valueOf(Boundary north, Boundary east, Boundary south, Boundary west) {
         return valueOf(new String(
                 new char[]{
-                        north.charForWall(),
-                        east.charForWall(),
-                        south.charForWall(),
-                        west.charForWall(),
+                        north.idChar(),
+                        east.idChar(),
+                        south.idChar(),
+                        west.idChar(),
                 }
         ));
     }
 
-    private void init(Wall north, Wall east, Wall south, Wall west) {
+    private void init(Boundary north, Boundary east, Boundary south, Boundary west) {
         this.north = north;
         this.east = east;
         this.south = south;
         this.west = west;
     }
 
-    public Wall[] toArray() {
-        return new Wall[]{
+    public Boundary[] toArray() {
+        return new Boundary[]{
                 north, east, south, west
         };
     }
 
-    public Wall getEast() {
+    public Boundary getEast() {
         return east;
     }
 
-    public Wall getNorth() {
+    public Boundary getNorth() {
         return north;
     }
 
-    public Wall getSouth() {
+    public Boundary getSouth() {
         return south;
     }
 
-    public Wall getWest() {
+    public Boundary getWest() {
         return west;
     }
 

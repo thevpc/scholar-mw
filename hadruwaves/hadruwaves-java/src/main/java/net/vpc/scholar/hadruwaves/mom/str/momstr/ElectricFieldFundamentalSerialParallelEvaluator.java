@@ -28,8 +28,8 @@ public class ElectricFieldFundamentalSerialParallelEvaluator implements Electric
         ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
 
         final ModeInfo[] indexes = str.getModes(monitor);
-        ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
-        ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
+        ModeInfo[] evan = str.modeFunctions().getVanishingModes();
+        ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
         if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
             evan = indexes;
             prop = new ModeInfo[0];

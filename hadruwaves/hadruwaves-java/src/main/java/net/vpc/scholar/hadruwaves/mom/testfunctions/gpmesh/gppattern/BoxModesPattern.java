@@ -12,7 +12,7 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeInfo;
 import net.vpc.scholar.hadruwaves.ModeType;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.*;
 import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions;
@@ -113,10 +113,10 @@ public final class BoxModesPattern implements RectangularGpPattern {
         boolean eastReached = Math.abs(d.xmax() - globalDomain.xmax()) / globalDomain.xwidth() < EPS;
         boolean northReached = Math.abs(d.ymin() - globalDomain.ymin()) / globalDomain.ywidth() < EPS;
         boolean southReached = Math.abs(d.ymax() - globalDomain.ymax()) / globalDomain.ywidth() < EPS;
-        Wall eastWall = eastReached ? b.getEast() : CircuitType.SERIAL.equals(circuit) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuit) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall northWall = northReached ? b.getNorth() : CircuitType.SERIAL.equals(circuit) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall southWall = southReached ? b.getSouth() : CircuitType.SERIAL.equals(circuit) ? Wall.MAGNETIC : Wall.ELECTRIC;
+        Boundary eastWall = eastReached ? b.getEast() : CircuitType.SERIAL.equals(circuit) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuit) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary northWall = northReached ? b.getNorth() : CircuitType.SERIAL.equals(circuit) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary southWall = southReached ? b.getSouth() : CircuitType.SERIAL.equals(circuit) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
         return WallBorders.valueOf(northWall, eastWall, southWall, westWall);
     }
 
@@ -150,15 +150,15 @@ public final class BoxModesPattern implements RectangularGpPattern {
             circuitType = str.getCircuitType();
             b = str.getBorders();
         }
-        Wall eastWall = eastReached ? b.getEast() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall northWall = northReached ? b.getNorth() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall southWall = southReached ? b.getSouth() : CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
+        Boundary eastWall = eastReached ? b.getEast() : CircuitType.SERIAL.equals(circuitType) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary westWall = westReached ? b.getWest() : CircuitType.SERIAL.equals(circuitType) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary northWall = northReached ? b.getNorth() : CircuitType.SERIAL.equals(circuitType) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary southWall = southReached ? b.getSouth() : CircuitType.SERIAL.equals(circuitType) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
         BoxModeFunctions ff= new BoxModeFunctions();
         DefaultModeFunctionsEnv env=new DefaultModeFunctionsEnv();
         ff.setEnv(env);
         env.setBorders(WallBorders.of(northWall, eastWall, southWall, westWall));
-        if (Wall.PERIODIC.equals(eastWall) && Wall.PERIODIC.equals(westWall) && Wall.PERIODIC.equals(northWall) && Wall.PERIODIC.equals(southWall)) {
+        if (Boundary.PERIODIC.equals(eastWall) && Boundary.PERIODIC.equals(westWall) && Boundary.PERIODIC.equals(northWall) && Boundary.PERIODIC.equals(southWall)) {
             ff.setPolarization(Axis.Y);
         }
         if (ff == null) {

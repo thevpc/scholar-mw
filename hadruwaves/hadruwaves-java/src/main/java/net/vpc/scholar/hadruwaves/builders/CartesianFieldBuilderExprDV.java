@@ -128,4 +128,10 @@ public class CartesianFieldBuilderExprDV extends AbstractDoubleToVector implemen
     public Expr newInstance(Expr... subExpressions) {
         return this;
     }
+
+    @Override
+    public String toLatex() {
+        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+    }
+
 }

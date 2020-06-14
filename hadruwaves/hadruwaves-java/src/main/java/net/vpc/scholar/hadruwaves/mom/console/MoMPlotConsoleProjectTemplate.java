@@ -139,15 +139,15 @@
 //                , getHeightOverWidth()
 //                , getXminOverWidth()
 ////                , getIrisOverWidth()
-//                , getModeFunctionsCount()
+//                , modeFunctionsCount()
 //                , getFractal()
 //                , getFractalModelBase()
 //                , getPropagatingModeSelectorParam()
 //                , getHintAMatrixSparsify()
 //                , getHintBMatrixSparsify()
 //                , getHintSubModelEquivalent()
-////                , getTestFunctionsCount()
-//                , getModeFunctionsParam()
+////                , testFunctionsCount()
+//                , modeFunctionsParam()
 //                , getFnConvergenceInfo()
 //                , getGpGridModel()
 //                , getGpGridSubModel()
@@ -353,7 +353,7 @@
 //        this.fractalModelBase = fractalModelBase;
 //    }
 //
-//    public ModeFunctionsCountParamSet getModeFunctionsCount() {
+//    public ModeFunctionsCountParamSet modeFunctionsCount() {
 //        return modesCount;
 //    }
 //
@@ -361,7 +361,7 @@
 //        this.modesCount = fnBaseMax;
 //    }
 //
-////    public TestFunctionsCountPlotParam getTestFunctionsCount() {
+////    public TestFunctionsCountPlotParam testFunctionsCount() {
 ////        return gpTestCount;
 ////    }
 ////
@@ -369,7 +369,7 @@
 ////        this.gpTestCount = gpTestCount;
 ////    }
 //
-//    public ModeFunctionsParamSet getModeFunctionsParam() {
+//    public ModeFunctionsParamSet modeFunctionsParam() {
 //        return modeFunctionsParam;
 //    }
 //

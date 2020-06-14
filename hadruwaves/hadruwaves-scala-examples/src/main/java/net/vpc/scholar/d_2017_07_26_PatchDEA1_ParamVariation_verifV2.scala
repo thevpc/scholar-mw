@@ -3,7 +3,7 @@ package net.vpc.scholar
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadruwaves.Material
-import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.BoxSpace._
 import net.vpc.scholar.hadruwaves.mom._
 
 
@@ -85,7 +85,7 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verifV2 {
     st.setTestFunctions(gp)
     st.setFrequency(fr0);
     val tst = vector((sin((828.1878700148839 * X) + (-4.71238898038469)) * cos((1049.1209395858382 * Y) + 3.1415926535897927) * (171.30368691960348 * domain(0.005690000000000001 -> 0.028450000000000003, -0.0029945 -> 0.0029945))), 0);
-    val fnn = st.getModeFunctions.fn()
+    val fnn = st.modeFunctions.fn()
     val ps = columnVector(fnn.length, (i: Int) => complex(tst ** fnn(i)))
     Plot.title(String.valueOf(fr0)).plot(ps.transpose())
     ps;

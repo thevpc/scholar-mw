@@ -56,7 +56,7 @@ object PatchAntennaNoStr {
 
   // Matrix A (Z operator), B (Source Projection)n sp (gp fn scalar product matrix)
   var A, B, sp: ComplexMatrix = null;
-  // gp (test functions list), zmn (modes impedance list), fm (mode functions : Green Function)
+  // gp (test functions list), zmn (modes impedance list), fm (mode functions : Green JFunction)
   var gp, fmn: ExprVector = null;
   var zmn : ComplexVector =null
 

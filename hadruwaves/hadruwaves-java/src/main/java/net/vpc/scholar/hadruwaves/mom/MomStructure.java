@@ -10,6 +10,7 @@ import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.cache.PersistenceCache;
+import net.vpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils;
@@ -30,6 +31,7 @@ import net.vpc.scholar.hadruwaves.mom.sources.Sources;
 import net.vpc.scholar.hadruwaves.mom.sources.modal.ModalSources;
 import net.vpc.scholar.hadruwaves.mom.str.MomConvergenceManager;
 import net.vpc.scholar.hadruwaves.mom.str.RequiredRebuildException;
+import net.vpc.scholar.hadruwaves.project.DefaultHWcene;
 import net.vpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
 import net.vpc.scholar.hadruwaves.project.scene.*;
 import net.vpc.scholar.hadruwaves.str.AbstractMWStructure;
@@ -44,6 +46,25 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import net.vpc.scholar.hadrumaths.geom.GeometryList;
+import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgoType;
+import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
+import net.vpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
+import net.vpc.scholar.hadruplot.libraries.calc3d.math.Epsilon;
+import net.vpc.scholar.hadruwaves.mom.solver.HWSolverTemplateMoM;
+import net.vpc.scholar.hadruwaves.mom.solver.test.MomSolverTestTemplateList;
+import net.vpc.scholar.hadruwaves.mom.solver.test.MomSolverTestTemplateMesh;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpModes;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpPolyedron;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpRWG;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpRooftop;
+import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPatternType;
+import net.vpc.scholar.hadruwaves.project.HWProject;
+import net.vpc.scholar.hadruwaves.project.Props2;
+import net.vpc.scholar.hadruwaves.project.scene.elem.Element3DPolygonTemplate;
+import net.vpc.scholar.hadruwaves.props.WritablePExpression;
+import net.vpc.scholar.hadruwaves.util.ProjectFormatter;
 
 public class MomStructure extends AbstractMWStructure<MomStructure> implements Cloneable, ModeFunctionsEnv {
 
@@ -81,8 +102,8 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
      * echelons selons choisis
      */
 //    private int testFunctionsCount = 4;
-    private BoxSpace firstBoxSpace = BoxSpaceFactory.nothing();
-    private BoxSpace secondBoxSpace = BoxSpaceFactory.nothing();
+    private BoxSpace firstBoxSpace = BoxSpace.nothing();
+    private BoxSpace secondBoxSpace = BoxSpace.nothing();
     private Domain domain;
     /**
      * frequency
@@ -118,7 +139,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         m.setSecondBoxSpace(upper);
         m.setDomain(domain);
         m.setFrequency(frequency);
-        m.getModeFunctions().setSize(modes);
+        m.modeFunctions().setSize(modes);
 //        m.build();
         return m;
     }
@@ -252,7 +273,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return evaluator;
     }
 
-    public ModeFunctions getModeFunctions() {
+    public ModeFunctions modeFunctions() {
         return this.modeFunctions;
     }
 
@@ -296,11 +317,11 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public void forceRebuild() {
         if (ProjectType.WAVE_GUIDE.equals(projectType)) {
-            if (BoxLimit.NOTHING.equals(firstBoxSpace.getLimit())) {
-                setFirstBoxSpace(BoxSpaceFactory.matchedLoad(firstBoxSpace.getMaterial()));
+            if (Boundary.NOTHING.equals(firstBoxSpace.getLimit())) {
+                setFirstBoxSpace(BoxSpace.matchedLoad(firstBoxSpace.getMaterial()));
             }
-            if (BoxLimit.NOTHING.equals(secondBoxSpace.getLimit())) {
-                setSecondBoxSpace(BoxSpaceFactory.matchedLoad(secondBoxSpace.getMaterial()));
+            if (Boundary.NOTHING.equals(secondBoxSpace.getLimit())) {
+                setSecondBoxSpace(BoxSpace.matchedLoad(secondBoxSpace.getMaterial()));
             }
         }
         ArrayList<DiscardFnByScalarProductModeInfoFilter> discardFnByScalarProductModeInfoFilterToRemove = new ArrayList<DiscardFnByScalarProductModeInfoFilter>();
@@ -390,7 +411,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 this.secondBoxSpace = other.secondBoxSpace;
                 setDomain(other.domain);
                 setFrequency(other.frequency);
-                setModeFunctions(other.getModeFunctions().clone());
+                setModeFunctions(other.modeFunctions().clone());
                 this.serialZs = other.serialZs;
                 invalidateCache();
             }
@@ -427,7 +448,6 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 //        //freq * xdim/C=wol;
 //        return setXwidth(wol / getFrequency() * Maths.C);
 //    }
-
     protected TestFunctions getGpTestFunctionsTemplateImpl() {
         return testFunctions == null ? null : testFunctions.clone();
     }
@@ -469,18 +489,18 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         }
         setLayers(ll.toArray(new StrLayer[0]));
         setFirstBoxSpace(new BoxSpace(
-                        structureConfig.getLayers().getTopLimit(),
-                        new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity()),
-                        structureConfig.getLayers().getTopThickness()
-                )
+                structureConfig.getLayers().getTopLimit(),
+                new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity()),
+                structureConfig.getLayers().getTopThickness()
+        )
         );
         setSecondBoxSpace(new BoxSpace(
-                        structureConfig.getLayers().getBottomLimit(),
-                        new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity()),
-                        structureConfig.getLayers().getBottomThickness()
-                )
+                structureConfig.getLayers().getBottomLimit(),
+                new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity()),
+                structureConfig.getLayers().getBottomThickness()
+        )
         );
-        getModeFunctions().setSize(structureConfig.getMaxModes());
+        modeFunctions().setSize(structureConfig.getMaxModes());
         setFrequency(structureConfig.getFrequency());
         getHintsManager().setHintRegularZnOperator(structureConfig.isHintRegularZOperator() ? Boolean.TRUE : null);
         Float aFloat = structureConfig.getHintDiscardFnByScalarProduct() <= 0 ? null : structureConfig.getHintDiscardFnByScalarProduct();
@@ -584,7 +604,6 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         }
     }
 
-
     public double getLambda() {
         return Physics.lambda(getFrequency());
     }
@@ -656,6 +675,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return new DefaultSelfBuilder(this);
     }
 
+    @Override
     public InputImpedanceBuilder inputImpedance() {
         return new DefaultInputImpedanceBuilder(this);
     }
@@ -665,6 +685,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return new DefaultSParametersBuilder(this);
     }
 
+    @Override
     public ObjectCache getCurrentCache(boolean autoCreate) {
         if (getPersistentCache().isEnabled()) {
             return getPersistentCache().getObjectCache(getKey(), autoCreate);
@@ -672,13 +693,14 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return null;
     }
 
+    @Override
     public CacheKey getKey() {
         build();
         return buildHash;
     }
 
     public DoubleToVector[] fn() {
-        return getModeFunctions().fn();
+        return modeFunctions().fn();
     }
 
     public TestFunctions getGpTestFunctionsTemplate() {
@@ -731,7 +753,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return setSources(src);
     }
 
-    public TestFunctions getTestFunctions() {
+    public TestFunctions testFunctions() {
 
         return testFunctions;
     }
@@ -739,7 +761,6 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     public MomStructure setTestFunctions(Vector<Expr> expr) {
         return setTestFunctions(TestFunctionsFactory.createList().addAll(expr));
     }
-
 
     public MomStructure setTestFunctions(TestFunctions testFunctions) {
         TestFunctions old = this.testFunctions;
@@ -812,18 +833,18 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public final ComplexMatrix getTestModeScalarProducts() {
-        return getTestModeScalarProducts(createDefaultMonitor("TestModeScalarProducts"));
+        return getTestModeScalarProducts(null);
     }
 
     public final ComplexMatrix getTestModeScalarProducts(ProgressMonitor monitor) {
         build();
-        return getModeFunctions().scalarProduct(Maths.evector(testFunctions.arr()), monitor);
+        return modeFunctions().scalarProduct(Maths.evector(testFunctions.arr()), monitorOf("TestModeScalarProducts", monitor));
     }
 
-    protected ProgressMonitor createDefaultMonitor(String name) {
-        ProgressMonitorFactory m = getMonitorFactory();
-        return m == null ? null : m.createMonitor(name, null);
-    }
+//    protected ProgressMonitor createDefaultMonitor(String name) {
+//        ProgressMonitorFactory m = getMonitorFactory();
+//        return m == null ? ProgressMonitors.none() : m.createMonitor(name, null);
+//    }
 
     public final ComplexMatrix testModeScalarProducts(ProgressMonitor monitor) {
         return getTestModeScalarProducts(monitor);
@@ -834,7 +855,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public final ComplexMatrix getTestSourceScalarProducts(ProgressMonitor monitor) {
-        final ProgressMonitor monitor0 = ProgressMonitors.nonnull(monitor);
+        final ProgressMonitor monitor0 = monitorOf("TestSourceScalarProducts", monitor);
         build();
         return new SrcGpScalarProductCacheStrCacheSupport(this, monitor0).get();
     }
@@ -844,7 +865,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public final ComplexMatrix getTestSourceScalarProducts() {
-        return getTestSourceScalarProducts(createDefaultMonitor("TestSourceScalarProducts"));
+        return getTestSourceScalarProducts(null);
     }
 
     public CircuitType getCircuitType() {
@@ -923,7 +944,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public void checkBuildIsRequired() throws RequiredRebuildException {
-        boolean found = new MatrixXMatrixStrCacheSupport2(this, createDefaultMonitor("checkBuildIsRequired")).isCached();
+        boolean found = new MatrixXMatrixStrCacheSupport2(this, monitorOf("checkBuildIsRequired",null)).isCached();
         if (!found) {
             throw new RequiredRebuildException();
         }
@@ -932,9 +953,9 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     public long getExecutionTime(String type) {
         Chronometer chrono = Chronometer.start();
         if (CACHE_SRCGP.equals(type)) {
-            getTestSourceScalarProducts(ProgressMonitors.none());//insure it is calculated
+            getTestSourceScalarProducts();//insure it is calculated
         } else if (CACHE_FNGP.equals(type)) {
-            getTestModeScalarProducts(ProgressMonitors.none());//insure it is calculated
+            getTestModeScalarProducts();//insure it is calculated
         } else if (CACHE_MATRIX_A.equals(type)) {
             matrixA().evalMatrix();//insure it is calculated
         } else if (CACHE_MATRIX_B.equals(type)) {
@@ -973,7 +994,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public Collection<MomCache> getSimilarCaches(String property) {
         ArrayList<MomCache> found = new ArrayList<MomCache>();
-        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext(); ) {
+        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext();) {
             ObjectCache c = i.next();
             MomCache mc = new MomCache(c);
             Map<String, String> indexes = mc.parseCacheValues();
@@ -998,28 +1019,27 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public Collection<MomCache> getAllCaches() {
         ArrayList<MomCache> found = new ArrayList<MomCache>();
-        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext(); ) {
+        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext();) {
             ObjectCache c = i.next();
             found.add(new MomCache(c));
         }
         return found;
     }
 
-
     public MomConvergenceManager createMomConvergenceManager() {
         return new MomConvergenceManager(this);
     }
 
     public ModeInfo mode(int n) {
-        return getModeFunctions().getMode(n);
+        return modeFunctions().getMode(n);
     }
 
     public ModeInfo getMode(int n) {
-        return getModeFunctions().getMode(n);
+        return modeFunctions().getMode(n);
     }
 
     public ModeInfo getMode(ModeType mode, int m, int n) {
-        return getModeFunctions().getMode(mode, m, n);
+        return modeFunctions().getMode(mode, m, n);
     }
 
     public synchronized ModeInfo[] modes() {
@@ -1027,11 +1047,11 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public synchronized ModeInfo[] getModes() {
-        return getModes(createDefaultMonitor("Modes"));
+        return getModes(null);
     }
 
     public synchronized ModeInfo[] getModes(ProgressMonitor monitor) {
-        return getModeFunctions().getModes(monitor);
+        return modeFunctions().getModes(monitor);
     }
 
     public synchronized ModeInfo[] modes(ProgressMonitor monitor) {
@@ -1055,15 +1075,19 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         setBorders(WallBorders.valueOf(wallBorders));
     }
 
+    public HWProjectScene createScene() {
+        return createScene(null);
+    }
 
-    public HWScene createScene() {
+    public HWProjectScene createScene(HWProject project) {
         Domain domain = getDomain();
         Domain domain3D = domain.toDomainXYZ();
+        domain3D = domain3D.expandPercent(0.1f);
         double zinf = SceneHelper.resolveInfinityValue(domain);
-        HWScene scene = new DefaultHWScene();
+        HWProjectScene scene = new DefaultHWcene(project);
 //        Point3D p=new Point3D(-2,-2,-2);
 //        Point3D p=new Point3D(-2,-2,-2);
-//        scene.components().add(new MaterialNode(
+//        scene.components().add(new HWProjectElementMaterial(
 //                new Material("dielectric",
 //                        firstBoxSpace.getEpsr(),
 //                        1,
@@ -1080,138 +1104,166 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 //            return scene;
 //        }
         double zw = 0;
-        Material zmaterial = null;
+        Boundary zmaterial = null;
 
         zw = firstBoxSpace.getWidth();
-        zmaterial = null;
-        switch (firstBoxSpace.getLimit()) {
-            case NOTHING: {
-                zw = 0;
-                zmaterial = Material.VACUUM;
-                break;
-            }
-            case SHORT: {
-                zmaterial = Material.PEC;
-                break;
-            }
-            case OPEN: {
-                zmaterial = Material.VACUUM;
-                break;
-            }
-            case MATCHED_LOAD: {
-                zmaterial = Material.INFINITE_FACE;
-                zw = zinf;
-                break;
-            }
-        }
+        zmaterial = firstBoxSpace.getLimit();
+        double zeroZlevel = 0 - Epsilon.E;
         if (zw != 0) {
-            domain3D = Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), -zw, 0);
-            MaterialBrick mb = new MaterialBrick(new HWMaterialTemplate(firstBoxSpace.getMaterial()),
+            domain3D = Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), -zw, zeroZlevel);
+            HWProjectBrick mb = new HWProjectBrick("Bottom Space", new HWMaterialTemplate(firstBoxSpace.getMaterial(), project),
                     SceneHelper.createBrickTemplate(
                             new DomainTemplate(
-                                    Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymin(), domain.ymax(), -zw, 0))
-                    ),
-                    "Bottom Space"
-            );
+                                    Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymin(), domain.ymax(), -zw, zeroZlevel))
+                    ));
 //            mb.setFaceMaterial(5, firstBoxSpace.getMaterial());
-            mb.setFaceMaterial(4, zmaterial);
-            Wall[] walls = getBorders().toArray();
+            mb.face(HWProjectBrick.Face.BOTTOM).boundary().set(zmaterial.name());
+            Boundary[] walls = getBorders().toArray();
             for (int i = 0; i < walls.length; i++) {
                 switch (walls[i]) {
                     case ELECTRIC: {
-                        mb.setFaceMaterial(i, Material.PEC);
+                        mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.ELECTRIC.name());
                         break;
                     }
                     case MAGNETIC: {
-                        mb.setFaceMaterial(i, Material.PMC);
+                        mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.MAGNETIC.name());
                         break;
                     }
                     case PERIODIC: {
-                        mb.setFaceMaterial(i, Material.PERIODIC_FACE);
+                        mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.PERIODIC.name());
                         break;
                     }
                 }
             }
+            mb.visible().userObjects().putUserObject("visible-of-BottomSpace-" + project.name().get(), "visible-of-BottomSpace-" + project.name().get());
             scene.components().add(mb);
         }
         double h = 0;
 
+        HWMaterialTemplate PEC_TEMPLATE = project.materials().get("PEC");//new HWMaterialTemplate(Material.PEC, project);
+        HWMaterialTemplate VACUUM_TEMPLATE = project.materials().get("Vacuum");// new HWMaterialTemplate(Material.VACUUM, project);
         if (true) {
-            LinkedHashSet<Polygon> polygons=new LinkedHashSet<>();
-            for (Geometry geometry : getTestFunctions().getGeometries()) {
+            LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
+            for (Geometry geometry : testFunctions().getGeometries()) {
                 Collections.addAll(polygons, geometry.toPolygons());
             }
-            int index=0;
+            int index = 0;
             for (Polygon polygon : polygons) {
                 index++;
-                scene.components().add(
-                        new MaterialNode(
-                                new HWMaterialTemplate(Material.PEC),
-                                SceneHelper.createPolygonTemplate(polygon, 0)
-                                ,"Microstrip Element #"+index));
+                scene.components().add(new HWProjectPolygon(
+                        "Microstrip Element #" + index, PEC_TEMPLATE,
+                        SceneHelper.createPolygonTemplate(polygon, 0)));
+            }
+        }
+        if (true) {
+            HWSolverTemplateMoM mom = new HWSolverTemplateMoM();
+            mom.frequency().set(ProjectFormatter.formatFrequency(project, getFrequency(), ProjectFormatter.Mode.LONG));
+            mom.modesCount().set(String.valueOf(this.modeFunctions().count()));
+            mom.circuitType().set(String.valueOf(this.getCircuitType()));
+            if (testFunctions() instanceof GpModes) {
+                GpModes gp = (GpModes) testFunctions();
+                MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
+                m.complexity().set(String.valueOf(gp.getPattern().getCount()));
+                m.pattern().set(String.valueOf(GpPatternType.MODES));
+                m.mesh().set(String.valueOf(MeshAlgoType.RECT));
+                for (Element3DPolygonTemplate polygon : polygonsOf(gp)) {
+                    m.polygons().add(new HWProjectPolygon(CACHE_ZIN, PEC_TEMPLATE, polygon));
+                }
+                mom.testFunctions().add(m);
+            } else if (testFunctions() instanceof GpRWG) {
+                GpRWG gp = (GpRWG) testFunctions();
+                MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
+                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxTriangles()));
+                m.pattern().set(String.valueOf(GpPatternType.RWG));
+                m.mesh().set(String.valueOf(MeshAlgoType.TRIANGLE_CONS_DES));
+                m.symmetry().set(String.valueOf(gp.getSymmetry()));
+                m.invariance().set(String.valueOf(gp.getInvariance()));
+                for (Element3DPolygonTemplate polygon : polygonsOf(gp)) {
+                    m.polygons().add(new HWProjectPolygon(CACHE_ZIN, PEC_TEMPLATE, polygon));
+                }
+                mom.testFunctions().add(m);
+            } else if (testFunctions() instanceof GpPolyedron) {
+                GpPolyedron gp = (GpPolyedron) testFunctions();
+                MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
+                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxTriangles()));
+                m.pattern().set(String.valueOf(GpPatternType.POLYEDRON));
+                m.mesh().set(String.valueOf(MeshAlgoType.TRIANGLE_CONS_DES));
+                m.symmetry().set(String.valueOf(gp.getSymmetry()));
+                m.invariance().set(String.valueOf(gp.getInvariance()));
+                for (Element3DPolygonTemplate polygon : polygonsOf(gp)) {
+                    m.polygons().add(new HWProjectPolygon(CACHE_ZIN, PEC_TEMPLATE, polygon));
+                }
+                mom.testFunctions().add(m);
+            } else if (testFunctions() instanceof GpRooftop) {
+                GpRooftop gp = (GpRooftop) testFunctions();
+                MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
+                MeshAlgoRect rr = (MeshAlgoRect) gp.getMeshAlgo();
+                m.complexity().set(String.valueOf(1));
+                m.pattern().set(String.valueOf(GpPatternType.ROOFTOP));
+                m.mesh().set(String.valueOf(MeshAlgoType.RECT));
+                m.symmetry().set(String.valueOf(gp.getSymmetry()));
+                m.invariance().set(String.valueOf(gp.getInvariance()));
+                for (Element3DPolygonTemplate polygon : polygonsOf(gp)) {
+                    m.polygons().add(new HWProjectPolygon(CACHE_ZIN, PEC_TEMPLATE, polygon));
+                }
+                mom.testFunctions().add(m);
+            } else {
+                TestFunctions gp = (TestFunctions) testFunctions();
+                MomSolverTestTemplateList m = new MomSolverTestTemplateList();
+                int findex = 1;
+                for (DoubleToVector ex : gp.arr()) {
+                    WritablePExpression<Expr> ees = Props2.of("fct_" + findex).exprOf(Maths.expr(0));
+                    String fctExpr = ex.toString();
+                    Expr pe = Maths.parseExpression(fctExpr);
+                    ees.set(fctExpr);
+                    m.expressions().add(ees);
+                    findex++;
+                }
+                m.complexity().set(String.valueOf(m.expressions().size()));
+                mom.testFunctions().add(m);
+            }
+            if (project != null) {
+                project.configurations().activeConfiguration().get().solver().set(mom);
             }
         }
 
         if (true) {
             for (StrLayer layer : getLayers()) {
-                scene.components().add(
-                        new MaterialNode(
-                                new HWMaterialTemplate(Material.VACUUM),
+                scene.components().add(new HWProjectBrick(
+                        layer.getName(), VACUUM_TEMPLATE,
                                 SceneHelper.createBrickTemplate(
                                         new DomainTemplate(
                                                 Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymax(), domain.ymax(), h, h + layer.getWidth())
-                                        )),
-                                layer.getName()
-                        )
+                                        )))
                 );
             }
         }
 
         if (true) {
             zw = secondBoxSpace.getWidth();
-            zmaterial = null;
-            switch (secondBoxSpace.getLimit()) {
-                case NOTHING: {
-                    zw = 0;
-                    zmaterial = Material.VACUUM;
-                    break;
-                }
-                case SHORT: {
-                    zmaterial = Material.PEC;
-                    break;
-                }
-                case OPEN: {
-                    zmaterial = Material.VACUUM;
-                    break;
-                }
-                case MATCHED_LOAD: {
-                    zmaterial = Material.INFINITE_FACE;
-                    zw = zinf;
-                    break;
-                }
-            }
+            zmaterial = secondBoxSpace.getLimit();
+
             if (zw != 0) {
-                MaterialBrick mb = new MaterialBrick(
-                        new HWMaterialTemplate(secondBoxSpace.getMaterial()),
+                HWProjectBrick mb = new HWProjectBrick(
+                        "Top Space", new HWMaterialTemplate(secondBoxSpace.getMaterial(), project),
                         SceneHelper.createBrickTemplate(
                                 new DomainTemplate(Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymin(), domain.ymax(), h, h + zw))
-                        ),
-                        "Top Space"
-                );
-                mb.setFaceMaterial(5, zmaterial);
-                Wall[] walls = getBorders().toArray();
+                        ));
+                mb.visible().userObjects().putUserObject("visible-of-TopSpace-" + project.name().get(), "visible-of-TopSpace-" + project.name().get());
+                mb.face(HWProjectBrick.Face.TOP).boundary().set(zmaterial.name());
+                Boundary[] walls = getBorders().toArray();
                 for (int i = 0; i < walls.length; i++) {
                     switch (walls[i]) {
                         case ELECTRIC: {
-                            mb.setFaceMaterial(i, Material.PEC);
+                            mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.ELECTRIC.name());
                             break;
                         }
                         case MAGNETIC: {
-                            mb.setFaceMaterial(i, Material.PMC);
+                            mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.MAGNETIC.name());
                             break;
                         }
                         case PERIODIC: {
-                            mb.setFaceMaterial(i, Material.PERIODIC_FACE);
+                            mb.face(HWProjectBrick.Face.values()[i]).boundary().set(Boundary.PERIODIC.name());
                             break;
                         }
                     }
@@ -1219,43 +1271,76 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 scene.components().add(mb);
             }
         }
-        Sources sources = getSources();
-        if(sources instanceof PlanarSources){
-            for (DoubleToVector sourceFunction : ((PlanarSources) sources).getSourceFunctions()) {
-                LinkedHashSet<Polygon> polygons=new LinkedHashSet<>();
-                for (Geometry geometry : sourceFunction.getDomain().toGeometry().toPolygons()) {
+        if (true) {
+            Sources sources = getSources();
+            if (sources instanceof PlanarSources) {
+                for (DoubleToVector sourceFunction : ((PlanarSources) sources).getSourceFunctions()) {
+                    LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
+                    for (Geometry geometry : sourceFunction.getDomain().toGeometry().toPolygons()) {
+                        Collections.addAll(polygons, geometry.toPolygons());
+                    }
+                    int index = 0;
+                    for (Polygon polygon : polygons) {
+                        index++;
+                        scene.components().add(new HWPlanarPort(
+                                                                                "Planar Source #" + index, SceneHelper.createPolygonTemplate(polygon, 0)));
+                    }
+                }
+            } else if (sources instanceof ModalSources) {
+                LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
+                for (Geometry geometry : Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), domain3D.zmin(), h + zw)
+                        .toGeometry().toPolygons()) {
                     Collections.addAll(polygons, geometry.toPolygons());
                 }
-                int index=0;
+                int index = 0;
                 for (Polygon polygon : polygons) {
                     index++;
                     scene.components().add(
-                            new PlanarPortNode(
-                                    SceneHelper.createPolygonTemplate(polygon, 0)
-                                    ,"Planar Source #"+index));
+                            new HWModalPort(
+                                    SceneHelper.createPolygonTemplate(polygon, 0),
+                                    "Modal Source #" + index));
                 }
             }
-        }else if(sources instanceof ModalSources){
-            LinkedHashSet<Polygon> polygons=new LinkedHashSet<>();
-            for (Geometry geometry : Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), domain3D.zmin(), h + zw)
-                    .toGeometry().toPolygons()) {
-                Collections.addAll(polygons, geometry.toPolygons());
-            }
-            int index=0;
-            for (Polygon polygon : polygons) {
-                index++;
-                scene.components().add(
-                        new ModalPortNode(
-                                SceneHelper.createPolygonTemplate(polygon, 0)
-                                ,"Modal Source #"+index));
-            }
         }
-        domain3D = Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), domain3D.zmin(), h + zw);
+        domain3D = domain3D.expandPercent(0.1f);
         scene.domain().set(domain3D);
+        if (project != null) {
+            project.scene().set(scene);
+        }
         return scene;
     }
 
+    protected ProgressMonitor monitorOf(String name, ProgressMonitor other) {
+        if (other == null) {
+            ProgressMonitorFactory f = getMonitorFactory();
+            if (f != null) {
+                other = f.createMonitor(name, null);
+            } else {
+                other = ProgressMonitors.none();
+            }
+        }
+        return other;
+    }
+
+    private List<Element3DPolygonTemplate> polygonsOf(GpAdaptiveMesh gp) {
+        List<Element3DPolygonTemplate> ret = new ArrayList<>();
+        LinkedHashSet<Polygon> polygons = new LinkedHashSet<Polygon>();
+
+        for (GeometryList polygon : gp.getPolygons()) {
+            for (Geometry geometry : polygon) {
+                for (Polygon pp : geometry.toPolygons()) {
+                    polygons.add(pp);
+                }
+            }
+        }
+        for (Polygon polygon : polygons) {
+            ret.add(new Element3DPolygonTemplate(polygon));
+        }
+        return ret;
+    }
+
     private class CacheResolverDelegate implements ObjectCacheResolver {
+
         @Override
         public ObjectCache resolveObjectCache() {
             return getCurrentCache(true);
@@ -1263,6 +1348,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     private class DelegateModeFunctionsPropertyChangeListener implements PropertyChangeListener {
+
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             firePropertyChange("modeFunctions." + evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
@@ -1270,6 +1356,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     private class DelegateTestFunctionsPropertyChangeListener implements PropertyChangeListener {
+
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             firePropertyChange("testFunctions." + evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());

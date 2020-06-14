@@ -36,7 +36,7 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
         return Maths.invokeMonitoredAction(cmonitor, getClass().getSimpleName(), new MonitoredAction<PlotMatrix>() {
             @Override
             public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                TestFunctions _testFunctions = structure.getTestFunctions();
+                TestFunctions _testFunctions = structure.testFunctions();
                 Complex[][] gfps = new Complex[_testFunctions.count()][_testFunctions.count()];
                 int max = _testFunctions.count();
 //        int progress=0;

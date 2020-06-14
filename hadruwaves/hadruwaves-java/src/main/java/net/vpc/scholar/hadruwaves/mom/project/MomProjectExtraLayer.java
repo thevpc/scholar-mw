@@ -53,7 +53,7 @@ public class MomProjectExtraLayer implements Cloneable, Comparable<MomProjectExt
         if (r == 0) {
             r = this.getWidth() - o.getWidth();
             if (r == 0) {
-                r = this.getImpedance().sub(o.getImpedance()).absdbl();
+                r = this.getImpedance().minus(o.getImpedance()).absdbl();
             }
         }
         return r<0?-1:r>0?1:0;

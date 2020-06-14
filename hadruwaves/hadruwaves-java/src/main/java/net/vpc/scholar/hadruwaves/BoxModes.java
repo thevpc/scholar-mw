@@ -16,7 +16,7 @@ import static net.vpc.scholar.hadrumaths.Maths.*;
 /**
  * Created by vpc on 5/20/17.
  */
-public abstract class BoxModes implements Iterable<ModeIndex>{
+public abstract class BoxModes implements Iterable<ModeIndex> {
 
     protected Axis axis;
     protected double ma;
@@ -41,7 +41,6 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
         return borders;
     }
 
-
     public ModeType[] getAllowedModes() {
         return allowedModes;
     }
@@ -53,22 +52,25 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
         switch (i.getModeType()) {
             case TM: {
                 switch (space.getLimit()) {
-                    case OPEN: {
-                        y = I(cachedOmega).mul(space.getEpsrc(freq)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
-                        break;
-                    }
-                    case MATCHED_LOAD: {
-                        // i omega
-                        //------------ * cotanh( gamma thikness)
-                        // eps gamma
+                    case INFINITE: {
+                        //   i omega eps
+                        //  -------------
+                        //      gamma
                         y = I(cachedOmega).mul(space.getEpsrc(freq)).div(gamma);
                         break;
                     }
-                    case SHORT: {
-                        // i omega   cotanh( gamma thikness)
-                        //-------- * -------------------------
-                        // eps            gamma
+                    case ELECTRIC: {
+                        //   i omega eps            
+                        //  -------------  cotanh(gamma thikness)
+                        //      gamma                
                         y = I.mul(cachedOmega).mul(space.getEpsrc(freq)).mul(cotanh(gamma.mul(space.getWidth()))).div(gamma);
+                        break;
+                    }
+                    case OPEN: {
+                        //  i omega eps          1                 
+                        // ------------- ------------------------
+                        //      gamma     cotanh(gamma thikness)
+                        y = I(cachedOmega).mul(space.getEpsrc(freq)).div(cotanh(gamma.mul(space.getWidth()))).div(gamma);
                         break;
                     }
                     case NOTHING: {
@@ -81,22 +83,26 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
             case TE: {
 
                 switch (space.getLimit()) {
-                    case OPEN: {
-                        y = gamma.div(cotanh(gamma.mul(space.getWidth())).mul(I.mul(cachedOmega).mul(U0)));
-                        break;
-                    }
                     //         gamma
-                    //    --------------
+                    //    -------------- 
                     //      i omega U0
-                    case MATCHED_LOAD: {
+                    case INFINITE: {
                         y = gamma.div(Complex.I.mul(cachedOmega).mul(U0));
                         break;
                     }
-                    case SHORT: {
-                        //         gamma
-                        //    ------------- * cotanh( gamma thikness)
-                        //      i omega U0
+                    //         gamma
+                    //    ------------- * cotanh( gamma thikness)
+                    //      i omega U0
+                    //short
+                    case ELECTRIC: {
                         y = gamma.mul(cotanh(gamma.mul(space.getWidth()))).div(I.mul(cachedOmega).mul(U0));
+                        break;
+                    }
+                    //         gamma                 1
+                    //    ------------- * -------------------------
+                    //      i omega U0     cotanh( gamma thikness)
+                    case OPEN: {
+                        y = gamma.div(cotanh(gamma.mul(space.getWidth())).mul(I.mul(cachedOmega).mul(U0)));
                         break;
                     }
                     case NOTHING: {
@@ -116,7 +122,6 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
         }
     }
 
-
     public ModeFct[] getModeFcts(int max) {
         return getModeFcts(max, null);
     }
@@ -131,27 +136,27 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
-                    @Override
-                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                        int index = 0;
-                        int bruteMax = max * 100 + 1;
-                        int bruteIndex = 0;
-                        while (index < max && bruteIndex < bruteMax) {
-                            if(iterator.hasNext()) {
-                                ModeIndex modeIndex = iterator.next();
-                                if (accept(modeIndex)) {
-                                    ModeFct modeInfo = new ModeFct(modeIndex, getFunction(modeIndex));
-                                    next.add(modeInfo);
-                                    index++;
-                                }
-                                bruteIndex++;
-                                mon.inc(message, index, max);
-                            }else{
-                                break;
-                            }
+            @Override
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                int index = 0;
+                int bruteMax = max * 100 + 1;
+                int bruteIndex = 0;
+                while (index < max && bruteIndex < bruteMax) {
+                    if (iterator.hasNext()) {
+                        ModeIndex modeIndex = iterator.next();
+                        if (accept(modeIndex)) {
+                            ModeFct modeInfo = new ModeFct(modeIndex, getFunction(modeIndex));
+                            next.add(modeInfo);
+                            index++;
                         }
+                        bruteIndex++;
+                        mon.inc(message, index, max);
+                    } else {
+                        break;
                     }
                 }
+            }
+        }
         );
 
         //System.out.println("found " + next.size()+" modes in "+chrono);
@@ -211,30 +216,29 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
         Maths.invokeMonitoredAction(
                 mon, tostr,
                 new VoidMonitoredAction() {
-                    @Override
-                    public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                        int index = 0;
-                        int bruteMax = max * 100 + 1;
-                        int bruteIndex = 0;
-                        while (index < max && bruteIndex < bruteMax) {
-                            if(iterator.hasNext()) {
-                                ModeIndex modeIndex = iterator.next();
-                                if (accept(modeIndex)) {
-                                    next.add(modeIndex);
-                                    index++;
-                                }
-                                bruteIndex++;
-                                mon.inc(message, index, max);
-                            }else{
-                                break;
-                            }
+            @Override
+            public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
+                int index = 0;
+                int bruteMax = max * 100 + 1;
+                int bruteIndex = 0;
+                while (index < max && bruteIndex < bruteMax) {
+                    if (iterator.hasNext()) {
+                        ModeIndex modeIndex = iterator.next();
+                        if (accept(modeIndex)) {
+                            next.add(modeIndex);
+                            index++;
                         }
+                        bruteIndex++;
+                        mon.inc(message, index, max);
+                    } else {
+                        break;
                     }
-                });
+                }
+            }
+        });
         //System.out.println("found " + next.size()+" modes in "+chrono);
         return next.toArray(new ModeIndex[0]);
     }
-
 
     public Complex impedance(ModeIndex i, double freq, BoxSpace space) {
         return getAdmittance(i, freq, space).inv();
@@ -259,7 +263,6 @@ public abstract class BoxModes implements Iterable<ModeIndex>{
     public double cutoffFrequency(ModeIndex i) {
         return getCutoffFrequency(i);
     }
-
 
     public abstract DoubleToVector getFunction(ModeIndex i);
 

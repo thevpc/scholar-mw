@@ -20,6 +20,7 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.mom.TestFunctions;
 
 import java.util.*;
+import net.vpc.scholar.hadrumaths.symbolic.ExprDefaults;
 
 /**
  * @author vpc
@@ -41,7 +42,6 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
 //            }
 //        }
 //    }
-
     public ListTestFunctions add(Expr f) {
         if (f != null) {
             list.add(f);
@@ -97,14 +97,23 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
             Expr ie = (Expr) i;
             switch (ie.getType()) {
                 case DOUBLE_DOUBLE: {
-                    return Arrays.asList(Maths.vector(ie.toDD()).toDV());
+                    DoubleToVector v = Maths.vector(ie.toDD()).toDV();
+                    v = (DoubleToVector) ExprDefaults.copyProperties(ie, v);
+                    return Arrays.asList(v);
                 }
+
                 case DOUBLE_COMPLEX: {
-                    return Arrays.asList(Maths.vector(ie.toDC()).toDV());
+                    DoubleToVector v = Maths.vector(ie.toDC()).toDV();
+                    v = (DoubleToVector) ExprDefaults.copyProperties(ie, v);
+                    return Arrays.asList(v);
                 }
+
                 case DOUBLE_CVECTOR: {
-                    return Arrays.asList(ie.toDV());
+                    DoubleToVector v = ie.toDV();
+                    v = (DoubleToVector) ExprDefaults.copyProperties(ie, v);
+                    return Arrays.asList(v);
                 }
+
             }
             throw new IllegalArgumentException("Unsupported Expr " + i);
         } else if (i instanceof Vector && Maths.$EXPR.isAssignableFrom(((Vector) i).getComponentType())) {
@@ -228,7 +237,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
 
     @Override
     public Geometry[] getGeometries() {
-        Set<Geometry> ss=new HashSet<>();
+        Set<Geometry> ss = new HashSet<>();
         List<DoubleToVector> found = new ArrayList<DoubleToVector>();
         for (Object expr : list) {
             for (DoubleToVector linearizeFunction : linearizeFunctions(expr)) {

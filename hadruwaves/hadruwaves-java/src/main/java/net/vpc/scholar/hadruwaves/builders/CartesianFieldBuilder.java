@@ -1,20 +1,20 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Expr;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.ComplexVector;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.vpc.scholar.hadruplot.Samples;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.Samples;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface CartesianFieldBuilder extends ValueBuilder {
-    CartesianFieldBuilder monitor(TaskMonitorManager monitor);
+    CartesianFieldBuilder monitor(ProgressMonitorFactory monitor);
 
     CartesianFieldBuilder monitor(ProgressMonitor monitor);
 

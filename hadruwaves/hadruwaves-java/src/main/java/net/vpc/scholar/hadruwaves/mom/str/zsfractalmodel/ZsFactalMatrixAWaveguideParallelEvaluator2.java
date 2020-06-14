@@ -46,14 +46,14 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
     @Override
     public ComplexMatrix evaluate(final MomStructure str, ProgressMonitor monitor) {
         final MomStructureFractalZop str2 = (MomStructureFractalZop) str;
-        final TestFunctions gpTestFunctions = str.getTestFunctions();
+        final TestFunctions gpTestFunctions = str.testFunctions();
         final String simpleName = getClass().getSimpleName();
         return Maths.invokeMonitoredAction(monitor, simpleName, new MonitoredAction<ComplexMatrix>() {
             @Override
             public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 final DoubleToVector[] g = gpTestFunctions.arr();
                 final Complex[][] b = new Complex[g.length][g.length];
-                ModeFunctions fn = str.getModeFunctions();
+                ModeFunctions fn = str.modeFunctions();
                 ModeInfo[] modes = str.getModes();
                 final ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
                 final ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
@@ -73,7 +73,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                                     Complex c = Maths.CZERO;
                                     for (ModeInfo n : n_evan) {
                                         Complex yn = n.impedance.admittanceValue();
-                                        c = c.add(yn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                                        c = c.plus(yn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                                     }
                                     b[p][q] = c;
                                     m0.inc(monMessage);
@@ -111,11 +111,11 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 //                                    Complex sp2 = spc2.gf(q, n_propa[m].index);
                                                     Complex sp1 = spc2p.get(n_propa[m].index);
                                                     Complex sp2 = spc2q.get(n_propa[n].index).conj();
-                                                    c = c.add((op[m][n]).mul(sp1).mul(sp2));
+                                                    c = c.plus((op[m][n]).mul(sp1).mul(sp2));
                                                     //#@   END
                                                 }
                                             }
-                                            b[p][q] = b[p][q].add(c);
+                                            b[p][q] = b[p][q].plus(c);
                                             m2.inc(monMessage);
                                         }
                                     }
@@ -141,7 +141,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                                     ComplexVector spq = sp.getRow(q);
                                     Complex c = Maths.CZERO;
                                     for (ModeInfo n : n_evan) {
-                                        c = c.add(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                                        c = c.plus(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                                     }
                                     b[p][q] = c;
                                     m0.inc(monMessage);
@@ -175,11 +175,11 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                                                     //#@   NEW
                                                     Complex sp1 = spp2.get(n_propa[n].index);
                                                     Complex sp2 = spq2.get(n_propa[m].index).conj();
-                                                    c = c.add((op[m][n]).mul(sp1).mul(sp2));
+                                                    c = c.plus((op[m][n]).mul(sp1).mul(sp2));
                                                     //#@   END
                                                 }
                                             }
-                                            b[p][q] = b[p][q].add(c);
+                                            b[p][q] = b[p][q].plus(c);
                                             m2.inc(monMessage);
                                         }
                                     }
@@ -221,7 +221,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                         str.setFractalScale(str2.realK - 1);
                         str.setDomain(polygon.getDomain(transform[i].getDomain(), domain));
                         if (isSimple) {
-                            GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.getTestFunctions());
+                            GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.testFunctions());
                             MeshAlgo meshAlgo = gpAdaptatif2.getMeshAlgo();
                             if (meshAlgo instanceof MeshAlgoRect) {
                                 ((MeshAlgoRect) meshAlgo).setGridPrecision(str2.getSubModelGridPrecision());
@@ -242,7 +242,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                             cMatrix = str.self().evalMatrix().inv();
                         }
 //                System.out.println("op"+(i+1)+" = " + cMatrix);
-                        ops[i] = new Yoperator(cMatrix, str.getModeFunctions());
+                        ops[i] = new Yoperator(cMatrix, str.modeFunctions());
                         monitor.setProgress((i + 1.0) / transform.length, getClass().getSimpleName());
                     }
                     return ops;

@@ -34,7 +34,7 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
                 ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
-                DoubleToVector[] _g = str.getTestFunctions().arr();
+                DoubleToVector[] _g = str.testFunctions().arr();
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();
                 ModeInfo[] indexes = str.getModes();

@@ -2,9 +2,8 @@ package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ObjectEvaluator;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -22,7 +21,7 @@ public abstract class AbstractFarFieldBuilder extends AbstractValueBuilder imple
     }
 
     @Override
-    public FarFieldBuilder monitor(TaskMonitorManager monitor) {
+    public FarFieldBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (FarFieldBuilder) super.monitor(monitor);
     }
 

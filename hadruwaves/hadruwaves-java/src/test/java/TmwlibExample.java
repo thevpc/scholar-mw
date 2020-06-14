@@ -9,8 +9,8 @@ import net.vpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
 import static net.vpc.scholar.hadrumaths.Domain.ofWidth;
 import static net.vpc.scholar.hadrumaths.Maths.*;
 
-import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.matchedLoad;
-import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.shortCircuit;
+import static net.vpc.scholar.hadruwaves.mom.BoxSpace.matchedLoad;
+import static net.vpc.scholar.hadruwaves.mom.BoxSpace.shortCircuit;
 import static net.vpc.scholar.hadruwaves.mom.SourceFactory.createPlanarSource;
 
 /**
@@ -34,11 +34,11 @@ public class TmwlibExample {
                 .addGeometry(attachBox).complexity(1).applyBoxModes() //attach test function
                 .build()
         );
-//        Plot.plot(str.getModeFunctions().arr());
-//        Plot.plot(str.getTestFunctions().arr());
-//        Plot.plot(str.getTestFunctions().arr()[0].toDV().getComponent(Axis.X));
-//        Plot.plot(str.getTestFunctions().arr()[0].toDV());
-        Plot.plot(str.getTestFunctions().arr());
+//        Plot.plot(str.modeFunctions().arr());
+//        Plot.plot(str.testFunctions().arr());
+//        Plot.plot(str.testFunctions().arr()[0].toDV().getComponent(Axis.X));
+//        Plot.plot(str.testFunctions().arr()[0].toDV());
+        Plot.plot(str.testFunctions().arr());
 //        ComplexMatrix JJ = str.current().monitor(ProgressMonitors.temporize(ProgressMonitors.logger(), 1000)).computeMatrix(Axis.X, Samples.relative(100));
 //        Plot.plot(JJ);
 //        Plot.console().createPlot().setStructure(str)

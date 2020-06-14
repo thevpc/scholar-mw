@@ -2,12 +2,11 @@ package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ObjectEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.vpc.scholar.hadruplot.AbsoluteSamples;
-import net.vpc.scholar.hadruplot.Samples;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.AbsoluteSamples;
+import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
@@ -25,7 +24,7 @@ public abstract class AbstractVDiscreteBuilder extends AbstractValueBuilder impl
     }
 
     @Override
-    public CartesianFieldBuilder monitor(TaskMonitorManager monitor) {
+    public CartesianFieldBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (CartesianFieldBuilder) super.monitor(monitor);
     }
 

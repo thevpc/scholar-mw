@@ -40,7 +40,7 @@ public class PeriodicBoxModes extends BoxModes {
 
         Complex eps = space.getEpsrc(freq);
         double mu = U0;
-        return eps.mul(mu * sqr(2 * PI * freq)).neg().add(sqr(2 * m * PI / a) + sqr(2 * n * PI / b))
+        return eps.mul(mu * sqr(2 * PI * freq)).neg().plus(sqr(2 * m * PI / a) + sqr(2 * n * PI / b))
                 .sqrt()
                 ;
 //        return Complex.valueOf(Maths.sqr(2 * i.getM() * Math.PI / domain.xwidth()) + Maths.sqr(2 * i.getN() * Math.PI / domain.ywidth()) - Maths.sqr(Physics.K0(freq)) * space.getEpsr()).sqrt();

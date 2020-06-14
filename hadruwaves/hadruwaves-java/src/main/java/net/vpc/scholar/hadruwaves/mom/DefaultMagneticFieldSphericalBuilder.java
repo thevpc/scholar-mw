@@ -6,14 +6,9 @@ import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
-import net.vpc.scholar.hadrumaths.symbolic.double2double.Linear;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.vpc.scholar.hadrumaths.util.ArrayUtils;
 import net.vpc.scholar.hadruwaves.ApertureType;
-import net.vpc.scholar.hadruwaves.Physics;
-import net.vpc.scholar.hadruwaves.builders.AbstractElectricFieldSphericalBuilder;
 import net.vpc.scholar.hadruwaves.builders.AbstractMagneticFieldSphericalBuilder;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
@@ -36,8 +31,8 @@ public class DefaultMagneticFieldSphericalBuilder extends AbstractMagneticFieldS
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         switch (getApertureType()) {
@@ -58,8 +53,8 @@ public class DefaultMagneticFieldSphericalBuilder extends AbstractMagneticFieldS
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         return evalMatrixImpl(theta, phi, r);
@@ -75,8 +70,8 @@ public class DefaultMagneticFieldSphericalBuilder extends AbstractMagneticFieldS
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<Vector<ComplexMatrix>>() {
                     @Override
                     public Vector<ComplexMatrix> process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         return evalMatrixImpl(theta, phi, r);

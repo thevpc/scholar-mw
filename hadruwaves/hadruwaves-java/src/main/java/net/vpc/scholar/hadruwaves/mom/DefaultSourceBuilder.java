@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
@@ -25,7 +26,7 @@ class DefaultSourceBuilder extends AbstractSourceBuilder {
         return new StrSubCacheSupport<ComplexMatrix>(momStructure, "sources-planar", CacheKey.obj("computePlanarSources","x",x,"axis",axis),getMonitor()) {
 
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                 return momStructure.evaluator().createSourceEvaluator().evalPlanarSources(momStructure,x0, y0, axis, getMonitor());
             }
         }.evalCached();

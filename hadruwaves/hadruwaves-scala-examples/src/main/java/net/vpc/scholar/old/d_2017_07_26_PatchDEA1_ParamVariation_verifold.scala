@@ -9,7 +9,7 @@ import net.vpc.scholar.hadrumaths.io.HadrumathsIOUtils
 import net.vpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
 import net.vpc.scholar.hadruplot.Plot
 import net.vpc.scholar.hadruwaves.Material
-import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.BoxSpace._
 import net.vpc.scholar.hadruwaves.mom.modes.SimpleModeIterator
 import net.vpc.scholar.hadruwaves.mom.{HintAxisType, MomStructure}
 
@@ -99,11 +99,11 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
           var E0 = normalize(expr(dSource))
           st = MomStructure.EEEE(dBox, freq, MN, shortCircuit(substrate, ep), matchedLoad(Material.VACUUM))
           st.getHintsManager.setHintAxisType(HintAxisType.X_ONLY);
-          st.getModeFunctions.setModeComparator(null)
-          st.getModeFunctions.setModeIterator(new SimpleModeIterator)
+          st.modeFunctions.setModeComparator(null)
+          st.modeFunctions.setModeIterator(new SimpleModeIterator)
           st.setSources(E0, 50)
           st.setTestFunctions(gp)
-          var fmn = st.getModeFunctions.list()
+          var fmn = st.modeFunctions.list()
 
           //          val azerty = fmn.sublist(0, 100).toArray
           ////          val zzz1 =new MemDoubleScalarProductCache(true).evaluate(Maths.Config.getDefaultScalarProductOperator, azerty, azerty, false, AxisXY.XY, monitor);
@@ -114,7 +114,7 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
           //          if(true){
           //            return;
           //          }
-          //          println(st.getModeFunctions.get(0));
+          //          println(st.modeFunctions.get(0));
           var zEssai = elist()
           var zMode = elist()
           var sp = st.getTestModeScalarProducts()

@@ -27,7 +27,7 @@ class DefaultTestFieldBuilder extends AbstractTestFieldBuilder {
         return new StrSubCacheSupport<VDiscrete>(getStructure(), "current-test",  CacheKey.obj("computeTestField","x",x,"y",y),monitor) {
 
             @Override
-            public VDiscrete eval(ObjectCache momCache) {
+            public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                 MomStructure momStructure = getStructure();
                 return momStructure.evaluator().createTestFieldEvaluator().evaluate(getStructure(), x0, y0, getMonitor());
             }

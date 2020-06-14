@@ -7,8 +7,7 @@ import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruwaves.ApertureType;
 import net.vpc.scholar.hadruwaves.mom.ElectricFieldPart;
 import net.vpc.scholar.hadruwaves.mom.StrSubCacheSupport;
@@ -43,7 +42,7 @@ public abstract class AbstractElectricFieldSphericalBuilder extends AbstractValu
     }
 
     @Override
-    public ElectricFieldSphericalBuilder monitor(TaskMonitorManager monitor) {
+    public ElectricFieldSphericalBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (ElectricFieldSphericalBuilder) super.monitor(monitor);
     }
 
@@ -61,8 +60,8 @@ public abstract class AbstractElectricFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().electricField().spherical().monitor(monitor)
@@ -83,8 +82,8 @@ public abstract class AbstractElectricFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().electricField().spherical().monitor(monitor)
@@ -105,8 +104,8 @@ public abstract class AbstractElectricFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType(), "fieldPart", getElectricFieldPart()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().electricField().spherical().monitor(monitor)

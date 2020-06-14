@@ -5,7 +5,7 @@
 package net.vpc.scholar.hadruwaves.mom.util;
 
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.mom.str.*;
 import net.vpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
@@ -29,11 +29,11 @@ public class MomUtils {
      * @param wallAxis
      * @return
      */
-    public static boolean isElectricFieldMaximumForWall(Axis currentAxis, Wall wall, Axis wallAxis) {
+    public static boolean isElectricFieldMaximumForWall(Axis currentAxis, Boundary wall, Axis wallAxis) {
         return isCurrentMaximumForWall(currentAxis, wall, wallAxis);
     }
 
-    public static boolean isCurrentMaximumForWall(Axis currentAxis, Wall wall, Axis wallAxis) {
+    public static boolean isCurrentMaximumForWall(Axis currentAxis, Boundary wall, Axis wallAxis) {
         switch (currentAxis) {
             case X: {
                 switch (wallAxis) {

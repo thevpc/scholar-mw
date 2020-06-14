@@ -32,7 +32,7 @@ import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.ModeIndex;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;
 import net.vpc.scholar.hadrumaths.geom.DefaultGeometryList;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.mom.project.areamaterial.ModalSourceMaterial;
 import net.vpc.scholar.hadruwaves.mom.project.areamaterial.PecMaterial;
 import net.vpc.scholar.hadruwaves.mom.project.areamaterial.PlanarSourceMaterial;
@@ -88,10 +88,10 @@ public class MomProject implements Serializable, Cloneable {
     public String yExpression = "0";
     public String widthExpression = "10";
     public String heightExpression = "10";
-    public String southWallExpression = Wall.ELECTRIC.toString().toLowerCase();
-    public String northWallExpression = Wall.ELECTRIC.toString().toLowerCase();
-    public String westWallExpression = Wall.ELECTRIC.toString().toLowerCase();
-    public String eastWallExpression = Wall.ELECTRIC.toString().toLowerCase();
+    public String southWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
+    public String northWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
+    public String westWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
+    public String eastWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
     public boolean cacheEnabled = true;
     private IndexedMap<String, VariableExpression> expressions = new IndexedMap<String, VariableExpression>();
     private double dimensionUnit = 1;
@@ -716,10 +716,10 @@ public class MomProject implements Serializable, Cloneable {
     }
 
     public WallBorders getWallBorders() {
-        Wall n = (Wall) evaluate(northWallExpression, VarUnit.WALL);
-        Wall s = (Wall) evaluate(southWallExpression, VarUnit.WALL);
-        Wall e = (Wall) evaluate(eastWallExpression, VarUnit.WALL);
-        Wall w = (Wall) evaluate(westWallExpression, VarUnit.WALL);
+        Boundary n = (Boundary) evaluate(northWallExpression, VarUnit.WALL);
+        Boundary s = (Boundary) evaluate(southWallExpression, VarUnit.WALL);
+        Boundary e = (Boundary) evaluate(eastWallExpression, VarUnit.WALL);
+        Boundary w = (Boundary) evaluate(westWallExpression, VarUnit.WALL);
         if (n == null || s == null || e == null || w == null) {
             return null;
         }
@@ -745,7 +745,7 @@ public class MomProject implements Serializable, Cloneable {
     }
 
     public void setSouthWallExpression(String southWallExpression) {
-        this.southWallExpression = MomUtils.toValidEnumString(southWallExpression, Wall.class);
+        this.southWallExpression = MomUtils.toValidEnumString(southWallExpression, Boundary.class);
     }
 
     public String getNorthWallExpression() {
@@ -753,7 +753,7 @@ public class MomProject implements Serializable, Cloneable {
     }
 
     public void setNorthWallExpression(String northWallExpression) {
-        this.northWallExpression = MomUtils.toValidEnumString(northWallExpression, Wall.class);
+        this.northWallExpression = MomUtils.toValidEnumString(northWallExpression, Boundary.class);
     }
 
     public String getWestWallExpression() {
@@ -761,7 +761,7 @@ public class MomProject implements Serializable, Cloneable {
     }
 
     public void setWestWallExpression(String westWallExpression) {
-        this.westWallExpression = MomUtils.toValidEnumString(westWallExpression, Wall.class);
+        this.westWallExpression = MomUtils.toValidEnumString(westWallExpression, Boundary.class);
     }
 
     public String getEastWallExpression() {
@@ -769,7 +769,7 @@ public class MomProject implements Serializable, Cloneable {
     }
 
     public void setEastWallExpression(String eastWallExpression) {
-        this.eastWallExpression = MomUtils.toValidEnumString(eastWallExpression, Wall.class);
+        this.eastWallExpression = MomUtils.toValidEnumString(eastWallExpression, Boundary.class);
     }
 
     public Domain getDomain() {
@@ -866,10 +866,10 @@ public class MomProject implements Serializable, Cloneable {
         if (modesStr == null) {
             modesStr = "";
         }
-        northWallExpression = configuration.getString(structureConfigurationPrefix + ".northWall", MomUtils.toValidEnumString(Wall.ELECTRIC));
-        southWallExpression = configuration.getString(structureConfigurationPrefix + ".southWall", MomUtils.toValidEnumString(Wall.ELECTRIC));
-        eastWallExpression = configuration.getString(structureConfigurationPrefix + ".eastWall", MomUtils.toValidEnumString(Wall.ELECTRIC));
-        westWallExpression = configuration.getString(structureConfigurationPrefix + ".westWall", MomUtils.toValidEnumString(Wall.ELECTRIC));
+        northWallExpression = configuration.getString(structureConfigurationPrefix + ".northWall", MomUtils.toValidEnumString(Boundary.ELECTRIC));
+        southWallExpression = configuration.getString(structureConfigurationPrefix + ".southWall", MomUtils.toValidEnumString(Boundary.ELECTRIC));
+        eastWallExpression = configuration.getString(structureConfigurationPrefix + ".eastWall", MomUtils.toValidEnumString(Boundary.ELECTRIC));
+        westWallExpression = configuration.getString(structureConfigurationPrefix + ".westWall", MomUtils.toValidEnumString(Boundary.ELECTRIC));
         layersInfo.load(configuration, structureConfigurationPrefix + ".layers");
 
         this.name = sname;

@@ -35,7 +35,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
             //la division
             ZinPaire = cMatrix.inv();
             if (str.getHintsManager().isHintRegularZnOperator()) {
-                ModeFunctions fn = str.getModeFunctions();
+                ModeFunctions fn = str.modeFunctions();
                 for (ModeInfo fnIndexes : fn.getPropagatingModes()) {
                     ZinPaire = ZinPaire.sub(fnIndexes.impedance.impedanceValue());
                 }

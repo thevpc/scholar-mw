@@ -23,9 +23,9 @@ public class MatrixBWaveguideSerialParallelEvaluator implements MatrixBEvaluator
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         final String monitorMessage = getClass().getSimpleName();
-        TestFunctions gpTestFunctions = str.getTestFunctions();
+        TestFunctions gpTestFunctions = str.testFunctions();
         final DoubleToVector[] _g = gpTestFunctions.arr();
-        final ModeInfo[] n_propa = str.getModeFunctions().getPropagatingModes();
+        final ModeInfo[] n_propa = str.modeFunctions().getPropagatingModes();
         if (n_propa.length == 0) {
             throw new IllegalArgumentException("WAVE_GUIDE Structure with no Propagative modes");
         }

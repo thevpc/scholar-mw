@@ -1,8 +1,8 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ObjectEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
 
 import net.vpc.common.mon.MonitoredAction;
@@ -17,30 +17,30 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
         super(structure);
     }
 
-    protected abstract ComplexMatrix evalMatrixImpl();
+    protected abstract ComplexMatrix evalMatrixImpl(ProgressMonitor evalMonitor);
 
-    protected final ComplexMatrix evalMatrixImplLog(){
-        return Maths.invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+    protected final ComplexMatrix evalMatrixImplLog(ProgressMonitor evalMonitor){
+        return Maths.invokeMonitoredAction(evalMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
             @Override
             public ComplexMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                return evalMatrixImpl();
+                return evalMatrixImpl(monitor);
             }
         });
     }
 
-    public Complex evalComplexImpl() {
-        return evalMatrixImplLog().toComplex();
+    public Complex evalComplexImpl(ProgressMonitor evalMonitor) {
+        return evalMatrixImplLog(evalMonitor).toComplex();
     }
 
     public ComplexMatrix evalMatrix() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return evalMatrixImplLog();
+            return evalMatrixImplLog(getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public ComplexMatrix evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return evalMatrixImplLog();
+                    return evalMatrixImplLog(monitor);
                 }
             }, getMonitor()));
         }
@@ -50,12 +50,12 @@ public abstract class AbstractComplexBuilder extends AbstractValueBuilder {
     public Complex evalComplex() {
         ConvergenceEvaluator conv = getConvergenceEvaluator();
         if (conv == null) {
-            return evalComplexImpl();
+            return evalComplexImpl(getMonitor());
         } else {
             return storeConvergenceResult(conv.evaluate(getStructure(), new ObjectEvaluator() {
                 @Override
                 public Complex evaluate(Object momStructure, ProgressMonitor monitor) {
-                    return evalComplexImpl();
+                    return evalComplexImpl(monitor);
                 }
             }, getMonitor()));
         }

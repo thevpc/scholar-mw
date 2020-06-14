@@ -4,8 +4,8 @@ import net.vpc.common.mon.MonitoredAction;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.convergence.ObjectEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ObjectEvaluator;
 import net.vpc.scholar.hadruwaves.mom.builders.AbstractMomMatrixABuilder;
 
 /**

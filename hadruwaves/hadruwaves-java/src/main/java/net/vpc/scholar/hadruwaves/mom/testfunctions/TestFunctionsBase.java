@@ -90,42 +90,59 @@ public abstract class TestFunctionsBase implements net.vpc.scholar.hadruwaves.mo
     }
 
     @Override
+    public DoubleToVector[] arr(ProgressMonitor monitor) {
+        return arr(monitor, null);
+    }
+
+    @Override
     public DoubleToVector[] arr() {
         return arr(null, null);
     }
 
     @Override
     public DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache) {
-        if (cachedFunctions == null) {
-            if (objectCache != null) {
-                try {
-                    cachedFunctions = (DoubleToVector[]) objectCache.load("test-functions", null);
-                } catch (Exception ex) {
-                    //ignore
-                }
-                if (cachedFunctions != null) {
-                    if (cachedFunctions.length == 0) {
-                        throw new IllegalArgumentException("No Test Functions defined.");
+        try {
+            if (cachedFunctions == null) {
+                if (objectCache != null) {
+                    try {
+                        cachedFunctions = (DoubleToVector[]) objectCache.load("test-functions", null);
+                    } catch (Exception ex) {
+                        //ignore
                     }
-                    reEvalComplexField();
-                    return cachedFunctions;
+                    if (cachedFunctions != null) {
+                        if (cachedFunctions.length == 0) {
+                            throw new IllegalArgumentException("No Test Functions defined.");
+                        }
+                        reEvalComplexField();
+                        if (monitor != null) {
+                            monitor.terminate("Test functions rebuilt");
+                        }
+                        return cachedFunctions;
+                    }
                 }
-            }
+                ProgressMonitor[] mons = ProgressMonitors.nonnull(monitor).split(8, 2);
 
-            cachedFunctions = rebuildCachedFunctions(monitor);
-            reEvalComplexField();
-            if (objectCache != null) {
-                try {
-                    objectCache.store("test-functions", cachedFunctions, monitor);
-                } catch (Exception ex) {
-                    //ignore
+                cachedFunctions = rebuildCachedFunctions(mons[0]);
+                reEvalComplexField();
+                if (objectCache != null) {
+                    try {
+                        objectCache.store("test-functions", cachedFunctions, mons[1]);
+                    } catch (Exception ex) {
+                        //ignore
+                    }
+                } else {
+                    mons[1].terminate("Test functions reloaded");
                 }
             }
+            if (cachedFunctions.length == 0) {
+                throw new IllegalArgumentException("No Test Functions defined.");
+            }
+            return cachedFunctions;
+        }finally {
+            if(monitor!=null && monitor.isTerminated()){
+                monitor.terminate("Test functions rebuilt");
+            }
         }
-        if (cachedFunctions.length == 0) {
-            throw new IllegalArgumentException("No Test Functions defined.");
-        }
-        return cachedFunctions;
     }
 
     @Override

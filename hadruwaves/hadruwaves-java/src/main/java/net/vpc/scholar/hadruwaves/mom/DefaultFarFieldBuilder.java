@@ -25,8 +25,8 @@ class DefaultFarFieldBuilder extends AbstractFarFieldBuilder {
                 ,monitor) {
 
             @Override
-            public Vector<ComplexMatrix> eval(ObjectCache momCache) {
-                double progressValue = getMonitor().getProgressValue();
+            public Vector<ComplexMatrix> eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                double progressValue = getMonitor().getProgress();
                 MomStructure momStructure = getStructure();
                 return momStructure.evaluator().createFarFieldEvaluator().evaluate(getStructure(), theta0, phi0, r, getMonitor());
             }

@@ -28,15 +28,15 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
         Complex z0 = Maths.CZERO;
-        ModeFunctions fn = structure.getModeFunctions();
-        DoubleToVector g = structure.getTestFunctions().arr()[0];
+        ModeFunctions fn = structure.modeFunctions();
+        DoubleToVector g = structure.testFunctions().arr()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
 //        System.out.println("------------------------------------------------------------------------");
 //        System.out.println("freq="+structure.getF());
         for (ModeInfo fi : evan) {
 //            System.out.println(fi.mode+"[m"+fi.m+",n"+fi.n+"] ; "+ "GAMMAmn = " + fi.firstBoxSpaceGamma+"  : Zmn = " + fi.zn);
-            z0 = z0.add(Maths.scalarProduct(g, fi.fn).toComplex().sqr().mul(fi.impedance.impedanceValue()));
+            z0 = z0.plus(Maths.scalarProduct(g, fi.fn).toComplex().sqr().mul(fi.impedance.impedanceValue()));
         }
         Complex gf02 = Maths.scalarProduct(g, f0.fn).toComplex().sqr();
         z0 = z0.div(gf02);
@@ -52,8 +52,8 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
 //        Complex z = structure.getZin().get(this.x, this.y);
 
         MutableComplex z0 = new MutableComplex();
-        ModeFunctions fn = structure.getModeFunctions();
-        DoubleToVector g = structure.getTestFunctions().arr()[0];
+        ModeFunctions fn = structure.modeFunctions();
+        DoubleToVector g = structure.testFunctions().arr()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
         System.out.println("------------------------------------------------------------------------");

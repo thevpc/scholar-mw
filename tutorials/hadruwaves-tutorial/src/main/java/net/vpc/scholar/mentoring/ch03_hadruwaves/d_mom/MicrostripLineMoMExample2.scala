@@ -53,7 +53,7 @@ object MicrostripLineMoMExample2 extends App {
     .testFunctions(g).monitorFactory(console)
   str.setSerialZs(impedance(î*1E-3)) //serial
   str.setLayers(new StrLayer(1*MM,1*î)) //parallel
-  console.Plot.title("fn").plot(str.getModeFunctions.fn())
+  console.Plot.title("fn").plot(str.modeFunctions.fn())
   var xprec=100
   var yprec=50
   console.Plot.title("schema").xsamples(1000).plot(lineDomain+lineDomain.scale(Align.CENTER,1.2)+box)

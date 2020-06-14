@@ -30,7 +30,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                DoubleToVector[] _g = str.getTestFunctions().arr();
+                DoubleToVector[] _g = str.testFunctions().arr();
 
                 ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
 
@@ -39,8 +39,8 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
 
 //        FnIndexes[] n_eva = isHint(HINT_REGULAR_ZN_OPERATOR) ? fnBaseFunctions.getModes() : fnBaseFunctions.getVanishingModes();
                 ModeInfo[] indexes = str.getModes();
-                ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
-                ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
+                ModeInfo[] evan = str.modeFunctions().getVanishingModes();
+                ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
                 if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
                     evan = indexes;
                     prop = new ModeInfo[0];

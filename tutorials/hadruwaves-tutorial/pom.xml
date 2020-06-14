@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.vpc.scholar.tutorial</groupId>
     <artifactId>hadruwaves-tutorial</artifactId>
+    <name>net.vpc.scholar.hadruwaves-tutorial</name>
     <version>1.7</version>
     <url>http://scala-lang.org</url>
     <properties>

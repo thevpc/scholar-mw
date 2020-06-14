@@ -1,29 +1,26 @@
 package net.vpc.scholar.hadruwaves.project;
 
-import net.vpc.common.prpbind.Props;
-import net.vpc.common.prpbind.WritablePValue;
+import net.vpc.common.props.WritablePLMap;
 
-public class HWSolutionFolder implements HWSolutionElement {
-    private WritablePValue<String> name = Props.of("name").valueOf( String.class, null);
-    private WritablePValue<String> description = Props.of("description").valueOf( String.class, null);
-    private WritablePValue<String> parentPath = Props.of("parentPath").valueOf( String.class, null);
+import java.util.List;
+import java.util.function.Predicate;
 
-    public HWSolutionFolder(String name) {
-        name().set(name);
-    }
+public interface HWSolutionFolder extends HWSolutionElement {
+    WritablePLMap<String, HWSolutionElement> children();
 
+    List<HWProject> findModifiedProjects();
 
-    public WritablePValue<String> parentPath() {
-        return parentPath;
-    }
+    List<HWProject> findProjects();
 
-    @Override
-    public WritablePValue<String> name() {
-        return name;
-    }
+    HWSolutionElement findElement(String path);
 
-    @Override
-    public WritablePValue<String> description() {
-        return description;
-    }
+    HWSolutionElement findElement(String path, boolean createFolder);
+
+    HWSolutionElement remove(String path);
+
+    void add(HWSolutionElement element, String path);
+
+    HWProject addProject(String namePrefix, String path);
+
+    List<HWSolutionElement> removeDeepComponents(Predicate<HWSolutionElement> filter, boolean prune);
 }

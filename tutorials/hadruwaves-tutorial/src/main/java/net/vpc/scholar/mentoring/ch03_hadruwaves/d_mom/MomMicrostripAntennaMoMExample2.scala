@@ -56,9 +56,9 @@ object MomMicrostripAntennaMoMExample2 {
     mm.setTestFunctions(g)
     //    mm.setSources(src,50)
     mm.setSources(src)
-    mm.getModeFunctions.setHintEnableFunctionProperties(true)
+    mm.modeFunctions.setHintEnableFunctionProperties(true)
 
-    val fn = mm.getModeFunctions.fn()//.slice(1, 100)
+    val fn = mm.modeFunctions.fn()//.slice(1, 100)
     PlotConfig.setDefaultWindowTitle("v57")
     Plot.title("fn").domain(boxDomain).plot(fn)
     Plot.title("g").domain(boxDomain).plot(g)

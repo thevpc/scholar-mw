@@ -1,17 +1,22 @@
 package net.vpc.scholar.hadruwaves.project.scene;
 
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
+import net.vpc.common.tson.TsonSerializable;
 import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadruwaves.project.HWProjectEnv;
 import net.vpc.scholar.hadruwaves.project.Props2;
+import net.vpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.vpc.scholar.hadruwaves.props.WritablePExpression;
 
-public class DomainTemplate {
-    private WritablePExpression<Double> xmin = Props2.of("xmin").doubleOf(Double.NEGATIVE_INFINITY);
-    private WritablePExpression<Double> xmax = Props2.of("xmax").doubleOf(Double.POSITIVE_INFINITY);
-    private WritablePExpression<Double> ymin = Props2.of("ymin").doubleOf(Double.NEGATIVE_INFINITY);
-    private WritablePExpression<Double> ymax = Props2.of("ymax").doubleOf(Double.POSITIVE_INFINITY);
-    private WritablePExpression<Double> zmin = Props2.of("zmin").doubleOf(Double.NEGATIVE_INFINITY);
-    private WritablePExpression<Double> zmax = Props2.of("zmax").doubleOf(Double.POSITIVE_INFINITY);
+public class DomainTemplate implements TsonSerializable {
+
+    private final WritablePExpression<Double> xmin = Props2.of("xmin").exprLenOf(Double.NEGATIVE_INFINITY);
+    private final WritablePExpression<Double> xmax = Props2.of("xmax").exprLenOf(Double.POSITIVE_INFINITY);
+    private final WritablePExpression<Double> ymin = Props2.of("ymin").exprLenOf(Double.NEGATIVE_INFINITY);
+    private final WritablePExpression<Double> ymax = Props2.of("ymax").exprLenOf(Double.POSITIVE_INFINITY);
+    private final WritablePExpression<Double> zmin = Props2.of("zmin").exprLenOf(Double.NEGATIVE_INFINITY);
+    private final WritablePExpression<Double> zmax = Props2.of("zmax").exprLenOf(Double.POSITIVE_INFINITY);
 
     public DomainTemplate() {
     }
@@ -62,14 +67,27 @@ public class DomainTemplate {
         zmax.set(String.valueOf(d.zmax()));
     }
 
-    public Domain eval(HWProjectEnv env) {
+    public Domain eval(HWConfigurationRun configuration) {
         return Domain.ofBounds(
-                xmin().eval(env),
-                xmax().eval(env),
-                ymin().eval(env),
-                ymax().eval(env),
-                zmin().eval(env),
-                zmax().eval(env)
+                xmin().eval(configuration),
+                xmax().eval(configuration),
+                ymin().eval(configuration),
+                ymax().eval(configuration),
+                zmin().eval(configuration),
+                zmax().eval(configuration)
         );
     }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return Tson.obj("domain")
+                .add("xmin", xmin().get())
+                .add("xmax", xmax().get())
+                .add("ymin", ymin().get())
+                .add("ymax", ymax().get())
+                .add("zmin", zmin().get())
+                .add("zmax", zmax().get())
+                .build();
+    }
+
 }

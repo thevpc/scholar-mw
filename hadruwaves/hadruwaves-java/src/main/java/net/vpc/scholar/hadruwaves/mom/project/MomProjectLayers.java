@@ -7,8 +7,8 @@ package net.vpc.scholar.hadruwaves.mom.project;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import net.vpc.scholar.hadruwaves.mom.BoxLimit;
 import net.vpc.scholar.hadrumaths.util.config.Configuration;
+import net.vpc.scholar.hadruwaves.Boundary;
 
 /**
  *
@@ -23,8 +23,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
     public String bottomEpsrExpression;
     public String topEpsrExpression;
     public String maxExpression;
-    public BoxLimit topLimit;
-    public BoxLimit bottomLimit;
+    public Boundary topLimit;
+    public Boundary bottomLimit;
     private MomProject context;
     private List<MomProjectExtraLayer> extraLayers = new ArrayList<MomProjectExtraLayer>();
 
@@ -59,8 +59,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         bottomEpsrExpression = c.getString(key + ".bottomEpsr", "1");
         topEpsrExpression = c.getString(key + ".topEpsr", "1");
         maxExpression = c.getString(key + ".max", "1000");
-        topLimit = BoxLimit.valueOf(c.getString(key + ".topLimit", BoxLimit.NOTHING.toString()));
-        bottomLimit = BoxLimit.valueOf(c.getString(key + ".bottomLimit", BoxLimit.NOTHING.toString()));
+        topLimit = Boundary.valueOf(c.getString(key + ".topLimit", Boundary.NOTHING.toString()));
+        bottomLimit = Boundary.valueOf(c.getString(key + ".bottomLimit", Boundary.NOTHING.toString()));
         MomProjectList list = (MomProjectList) MomProjectFactory.INSTANCE.load(c, key + ".extraLayers");
         extraLayers = new ArrayList<MomProjectExtraLayer>();
         if (list != null) {
@@ -171,11 +171,11 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         return getContext().evaluateDouble(topEpsrExpression);
     }
 
-    public BoxLimit getTopLimit() {
+    public Boundary getTopLimit() {
         return topLimit;
     }
 
-    public BoxLimit getBottomLimit() {
+    public Boundary getBottomLimit() {
         return bottomLimit;
     }
 
@@ -205,11 +205,11 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         recompile();
     }
 
-    public void setTopLimit(BoxLimit topLimit) {
+    public void setTopLimit(Boundary topLimit) {
         this.topLimit = topLimit;
     }
 
-    public void setBottomLimit(BoxLimit bottomLimit) {
+    public void setBottomLimit(Boundary bottomLimit) {
         this.bottomLimit = bottomLimit;
     }
 

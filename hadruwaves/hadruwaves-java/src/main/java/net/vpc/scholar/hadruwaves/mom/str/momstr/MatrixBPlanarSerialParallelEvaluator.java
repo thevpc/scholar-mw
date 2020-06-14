@@ -21,7 +21,7 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         final String monitorMessage = getClass().getSimpleName();
-        TestFunctions gpTestFunctions = str.getTestFunctions();
+        TestFunctions gpTestFunctions = str.testFunctions();
         PlanarSources planarSources1 = (PlanarSources) str.getSources();
         if (planarSources1 == null) {
             throw new IllegalArgumentException("Missing Planar Sources");

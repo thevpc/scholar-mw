@@ -1,32 +1,38 @@
 package net.vpc.scholar.hadruwaves.props;
 
-import net.vpc.common.prpbind.PropertyEvent;
-import net.vpc.common.prpbind.PropertyType;
-import net.vpc.common.prpbind.PropertyUpdate;
-import net.vpc.common.prpbind.WithListeners;
-import net.vpc.common.prpbind.impl.AbstractProperty;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadruwaves.project.HWProjectEnv;
+import net.vpc.common.props.PropertyEvent;
+import net.vpc.common.props.PropertyType;
+import net.vpc.common.props.PropertyUpdate;
+import net.vpc.common.props.impl.AbstractProperty;
 
 import java.util.Objects;
+import net.vpc.scholar.hadrumaths.units.UnitType;
+import net.vpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public class WritablePExpressionImpl<T> extends AbstractProperty implements WritablePExpression<T> {
+
     private String expression;
     private PExpression<T> ro;
     private PropertyType valueType;
     private T defaultValue;
+    private UnitType unitType;
 
-    public WritablePExpressionImpl(String name, PropertyType type,T defaultValue) {
+    public WritablePExpressionImpl(String name, PropertyType type, T defaultValue, UnitType unitType) {
         super(name, PropertyType.of(String.class));
         if (type.getArgs().length > 0) {
             throw new IllegalArgumentException("Unsupported");
         }
-        valueType = type;
+        this.valueType = type;
+        this.unitType = unitType;
         this.defaultValue = defaultValue;
     }
 
+    public UnitType unitType() {
+        return unitType;
+    }
+
     @Override
-    public PropertyType getValueType() {
+    public PropertyType valueType() {
         return valueType;
     }
 
@@ -36,28 +42,8 @@ public class WritablePExpressionImpl<T> extends AbstractProperty implements Writ
     }
 
     @Override
-    public T eval(HWProjectEnv env) {
-        switch (getValueType().getName()) {
-            case "java.lang.String": {
-                return (T) env.evalString(expression);
-            }
-            case "double":
-            case "java.lang.Double": {
-                return (T) env.evalExprDouble(expression, (Double)defaultValue);
-            }
-            case "net.vpc.scholar.hadrumaths.Expr": {
-                return (T) env.evalExpr(expression);
-            }
-            case "net.vpc.scholar.hadrumaths.Complex": {
-                return (T) env.evalExprComplex(expression, (Complex) defaultValue);
-            }
-            case "int":
-            case "java.lang.Integer": {
-                Number defaultValue = (Number) this.defaultValue;
-                return (T) (Integer) (((Number) env.evalExprDouble(expression, defaultValue==null?null:defaultValue.doubleValue())).intValue());
-            }
-        }
-        throw new IllegalArgumentException("Unsupported type " + getType().getName());
+    public T eval(HWConfigurationRun configuration) {
+        return (T) configuration.evalResult(expression, unitType, null, defaultValue).getValueOrError();
     }
 
     @Override
@@ -83,22 +69,13 @@ public class WritablePExpressionImpl<T> extends AbstractProperty implements Writ
     }
 
     @Override
-    public boolean isRefWritable() {
-        return true;
-    }
-
-    @Override
-    public boolean isValueWritable() {
+    public boolean isWritable() {
         return true;
     }
 
     @Override
     public String toString() {
-        return "WritablePExpression{" +
-                "name='" + getPropertyName() + '\'' +
-                ", type=" + getType() +
-                " value='" + expression + '\'' +
-                '}';
+        return String.valueOf(expression);
     }
 
 }

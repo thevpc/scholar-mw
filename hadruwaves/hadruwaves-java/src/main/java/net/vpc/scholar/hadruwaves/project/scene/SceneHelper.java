@@ -5,14 +5,14 @@ import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadruplot.backends.calc3d.elements.Element3D;
-import net.vpc.scholar.hadruplot.backends.calc3d.elements.Element3DPolygon;
-import net.vpc.scholar.hadruplot.backends.calc3d.math.Vector3D;
-import net.vpc.scholar.hadruplot.backends.calc3d.vpc.Point3D;
-import net.vpc.scholar.hadruplot.backends.calc3d.vpc.element3d.Calc3dFactory;
-import net.vpc.scholar.hadruplot.backends.calc3d.vpc.element3d.Element3DCurve2;
-import net.vpc.scholar.hadruplot.backends.calc3d.vpc.element3d.Element3DParallelipiped;
-import net.vpc.scholar.hadruplot.backends.calc3d.vpc.element3d.Element3DPrism;
+import net.vpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
+import net.vpc.scholar.hadruplot.libraries.calc3d.elements.Element3DPolygon;
+import net.vpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
+import net.vpc.scholar.hadruplot.libraries.calc3d.vpc.Point3D;
+import net.vpc.scholar.hadruplot.libraries.calc3d.vpc.element3d.Calc3dFactory;
+import net.vpc.scholar.hadruplot.libraries.calc3d.vpc.element3d.Element3DCurve2;
+import net.vpc.scholar.hadruplot.libraries.calc3d.vpc.element3d.Element3DParallelipiped;
+import net.vpc.scholar.hadruplot.libraries.calc3d.vpc.element3d.Element3DPrism;
 import net.vpc.scholar.hadruwaves.project.scene.elem.Element3DParallelipipedTemplate;
 import net.vpc.scholar.hadruwaves.project.scene.elem.Element3DPolygonTemplate;
 
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SceneHelper {
+
     public static Element3D createCurve(Point3D... a) {
         return new Element3DCurve2(a);
     }
@@ -33,7 +34,20 @@ public class SceneHelper {
         return Calc3dFactory.createPolygon(a.toArray(new Point3D[0]));
     }
 
-    public static Element3DTemplate createPolygonTemplate(Geometry geometry, double z) {
+    public static Element3DPolygonTemplate createRectangleXY(
+            String xmin, String xmax,
+            String ymin, String ymax,
+            String z) {
+
+        List<Point3DTemplate> a = new ArrayList<>();
+        a.add(new Point3DTemplate(xmin, ymin, z));
+        a.add(new Point3DTemplate(xmax, ymin, z));
+        a.add(new Point3DTemplate(xmax, ymax, z));
+        a.add(new Point3DTemplate(xmin, ymax, z));
+        return new Element3DPolygonTemplate(a.toArray(new Point3DTemplate[0]));
+    }
+
+    public static Element3DPolygonTemplate createPolygonTemplate(Geometry geometry, double z) {
 
         List<Point3DTemplate> a = new ArrayList<>();
         for (Point point : geometry.toPolygon().getPoints()) {
@@ -64,6 +78,16 @@ public class SceneHelper {
         return p;
     }
 
+    public static Element3DParallelipipedTemplate createBrickTemplate(
+            String xmin, String xmax,
+            String ymin, String ymax,
+            String zmin, String zmax
+    ) {
+        return new Element3DParallelipipedTemplate(xmin, xmax,
+                ymin, ymax,
+                zmin, zmax
+        );
+    }
 
     public static Element3DParallelipipedTemplate createBrickTemplate(DomainTemplate domain) {
         return new Element3DParallelipipedTemplate(
@@ -99,7 +123,7 @@ public class SceneHelper {
             m.registerValue(-1);
             m.registerValue(1);
         }
-        return m.getMax()-m.getMin();
+        return m.getMax() - m.getMin();
     }
 
     public static Domain ensureBounds(Domain domain) {

@@ -2,10 +2,11 @@ package net.vpc.scholar.mentoring.ch03_hadruwaves.d_mom;
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadruwaves.mom._
-import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.BoxSpace._
 import net.vpc.scholar.hadruwaves.mom.SourceFactory._
 import net.vpc.scholar.hadruwaves.mom.MomParamFactory.axis._
 import net.vpc.scholar.hadruplot.PlotType._
+import net.vpc.scholar.hadruplot.console.ConsoleParams
 import net.vpc.scholar.hadruwaves.Material
 
 object MomMicrostripAntennaMoMExample6 {
@@ -28,7 +29,7 @@ object MomMicrostripAntennaMoMExample6 {
     )
     Plot.plot(str.current().evalVector(Axis.X,relativeSamples(100,1)))
     Plot.console.createPlot.setStructure(str)
-      .setX(xyParamSet(100, 50)) // precision (100 samples on X axis, ...)
+      .setX(ConsoleParams.xyParamSet(100, 50)) // precision (100 samples on X axis, ...)
       .addY(testFunctions()) //plot test functions
       .addY(current3D().setPlotType(HEATMAP)) // plot current density
       .addY(electricField3D()) // plot surface electric field

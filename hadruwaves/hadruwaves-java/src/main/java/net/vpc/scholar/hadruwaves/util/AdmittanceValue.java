@@ -26,11 +26,11 @@ public final class AdmittanceValue implements Impedance {
     }
 
     private AdmittanceValue parallel(Complex b){
-        return new AdmittanceValue(value.add(b));
+        return new AdmittanceValue(value.plus(b));
     }
 
     private AdmittanceValue serial(Complex b){
-        return new AdmittanceValue((value.inv().add(b.inv())).inv());
+        return new AdmittanceValue((value.inv().plus(b.inv())).inv());
     }
 
     @Override

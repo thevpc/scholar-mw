@@ -36,8 +36,8 @@ public class PlotTestModeFunctionsYScalarProducts extends PlotAxisSeries impleme
 
     protected PlotMatrix evalMatrix(MomStructure structure, ProgressMonitor cmonitor, ConsoleActionParams p) {
         ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
-        ModeFunctions fnModeFunctions = structure.getModeFunctions();
-        TestFunctions gpTestFunctions = structure.getTestFunctions();
+        ModeFunctions fnModeFunctions = structure.modeFunctions();
+        TestFunctions gpTestFunctions = structure.testFunctions();
         DoubleToVector[] cache_essai = gpTestFunctions.arr();
 //        monitor.startm(getClass().getSimpleName());
         Complex[][] gfps = new Complex[cache_essai.length][fnModeFunctions.count()];

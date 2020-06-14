@@ -81,7 +81,11 @@ public class SourceFactory extends AbstractFactory{
     }
 
     public static PlanarSource createPlanarSource(Expr fct, Complex characteristicImpedance) {
-        return new ExprPlanarSource(fct, characteristicImpedance);
+        return createPlanarSource(fct,characteristicImpedance,null);
+    }
+
+    public static PlanarSource createPlanarSource(Expr fct, Complex characteristicImpedance,Geometry geometry) {
+        return new ExprPlanarSource(fct, characteristicImpedance,geometry);
     }
 
 

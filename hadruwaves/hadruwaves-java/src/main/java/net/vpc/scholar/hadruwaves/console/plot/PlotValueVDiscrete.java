@@ -6,7 +6,9 @@ import net.vpc.scholar.hadruplot.console.yaxis.PlotAxisCubes;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadruplot.PlotEvaluator;
+import net.vpc.scholar.hadruplot.console.PlotEvaluator;
+import net.vpc.scholar.hadruplot.PlotHyperCube;
+import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 
 public class PlotValueVDiscrete extends PlotAxisCubes implements Cloneable {
     private PlotEvaluator<VDiscrete> value;
@@ -15,7 +17,8 @@ public class PlotValueVDiscrete extends PlotAxisCubes implements Cloneable {
         this.value=value;
     }
 
-    protected VDiscrete evalValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
-        return value.evalValue(o,monitor,p);
+    protected PlotHyperCube evalValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
+        VDiscrete d = value.evalValue(o,monitor,p);
+        return PlotConfigManager.getPlotHyperCubeResolvers().resolve(d);
     }
 }

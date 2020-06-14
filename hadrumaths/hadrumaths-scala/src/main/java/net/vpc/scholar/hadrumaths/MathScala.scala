@@ -9,9 +9,9 @@ package net.vpc.scholar.hadrumaths
 import java.io.{File, UncheckedIOException}
 import java.util.concurrent.Callable
 import java.util.function
-import java.util.function.{DoublePredicate, IntPredicate, Supplier}
+import java.util.function.{DoublePredicate, Function, IntPredicate, Supplier, ToDoubleFunction}
 
-import net.vpc.common.jeep.ExpressionManager
+import net.vpc.common.jeep.JContext
 import net.vpc.common.mon.{MonitoredAction, ProgressMonitor}
 import net.vpc.common.util._
 import net.vpc.scholar.hadrumaths.MathScala.SComplexVector
@@ -26,7 +26,7 @@ import net.vpc.scholar.hadrumaths.symbolic.polymorph.cond.IfExpr
 import net.vpc.scholar.hadrumaths.symbolic.polymorph.{Any, ParametrizedScalarProduct}
 import net.vpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromComplexMatrix
 import net.vpc.scholar.hadruplot.console.params._
-import net.vpc.scholar.hadruplot.{AbsoluteSamples, PlotConfig, PlotDoubleConverter, Samples}
+import net.vpc.scholar.hadruplot.{PlotConfig, PlotDoubleConverter}
 //import java.util
 
 import net.vpc.scholar
@@ -406,7 +406,7 @@ object MathScala {
 
 
   implicit class SExpr(val value: Expr) {
-    def +(v: Expr): Expr = value.add(v)
+    def +(v: Expr): Expr = value.plus(v)
 
     def !!(): Expr = {
       simplify(value, SIMPLIFY_OPTION_PRESERVE_ROOT_NAME).asInstanceOf[Expr]
@@ -501,9 +501,9 @@ object MathScala {
 
   implicit class SComplex(val value: Complex) {
 
-    def +(v: Complex): Complex = value.add(v)
+    def +(v: Complex): Complex = value.plus(v)
 
-    def -(v: Complex): Complex = value.sub(v)
+    def -(v: Complex): Complex = value.minus(v)
 
     def *(v: Complex): Complex = value.mul(v)
 
@@ -511,9 +511,9 @@ object MathScala {
 
     def %(v: Complex): Complex = value.rem(v)
 
-    def +(v: DoubleExpr): Complex = value.add(v)
+    def +(v: DoubleExpr): Complex = value.plus(v)
 
-    def -(v: DoubleExpr): Complex = value.sub(v)
+    def -(v: DoubleExpr): Complex = value.minus(v)
 
     def *(v: DoubleExpr): Complex = value.mul(v)
 
@@ -521,7 +521,7 @@ object MathScala {
 
     def %(v: DoubleExpr): Complex = value.rem(v)
 
-    def +(v: Double): Complex = value.add(v)
+    def +(v: Double): Complex = value.plus(v)
 
     def -(v: Double): Complex = value.sub(v)
 
@@ -537,7 +537,7 @@ object MathScala {
 
     def unary_- : Complex = value.neg()
 
-    def +(v: Expr): Expr = value.add(v)
+    def +(v: Expr): Expr = value.plus(v)
 
     def :+(v: Vector[Expr]): Vector[Expr] = {
       var e = Maths.evector();
@@ -612,7 +612,7 @@ object MathScala {
 
     def unary_- : DoubleExpr = value.neg()
 
-    def +(v: Expr): Expr = value.add(v)
+    def +(v: Expr): Expr = value.plus(v)
 
     def :+(v: Vector[Expr]): Vector[Expr] = {
       var e = Maths.evector();
@@ -1021,7 +1021,7 @@ object MathScala {
 
     def +(v: java.lang.Double): Vector[java.lang.Double] = scholar.hadrumaths.Maths.add[java.lang.Double](value, v)
 
-    def -(v: java.lang.Double): Vector[java.lang.Double] = scholar.hadrumaths.Maths.sub[java.lang.Double](value, v)
+    def -(v: java.lang.Double): Vector[java.lang.Double] = scholar.hadrumaths.Maths.minus[java.lang.Double](value, v)
 
     def *(v: java.lang.Double): Vector[java.lang.Double] = Maths.mul[java.lang.Double](value, v)
 
@@ -1146,7 +1146,7 @@ object MathScala {
 
     def ^^(v: Complex): Complex = toNumber.pow(v);
 
-    def +(v: Expr): Expr = toNumber.add(v.value)
+    def +(v: Expr): Expr = toNumber.plus(v.value)
 
     def -(v: Expr): Expr = toNumber.sub(v.value)
 
@@ -1218,7 +1218,7 @@ object MathScala {
   }
 
   implicit class SInt(val value: Int) {
-    def +(v: Expr): Expr = Maths.expr(value).add(v.value)
+    def +(v: Expr): Expr = Maths.expr(value).plus(v.value)
 
     def -(v: Expr): Expr = Maths.expr(value).sub(v.value)
 
@@ -1635,66 +1635,66 @@ object MathScala {
     Maths.param(name)
   }
 
-  def doubleParamSet(param: CParam): DoubleArrayParamSet = {
-    Maths.doubleParamSet(param)
-  }
-
-  def paramSet(param: CParam, values: Array[Double]): DoubleArrayParamSet = {
-    Maths.paramSet(param, values)
-  }
-
-  def paramSet(param: CParam, values: Array[Float]): FloatArrayParamSet = {
-    Maths.paramSet(param, values)
-  }
-
-  def floatParamSet(param: CParam): FloatArrayParamSet = {
-    Maths.floatParamSet(param)
-  }
-
-  def paramSet(param: CParam, values: Array[Long]): LongArrayParamSet = {
-    Maths.paramSet(param, values)
-  }
-
-  def longParamSet(param: CParam): LongArrayParamSet = {
-    Maths.longParamSet(param)
-  }
-
-  def paramSet[T](param: CParam, values: Array[T]): ArrayParamSet[T] = {
-    //Ignore Idea Error, this compiles in maven
-    Maths.paramSet(param, values.asInstanceOf[Array[T with Object]])
-  }
-
-  def objectParamSet[T](param: CParam): ArrayParamSet[T] = {
-    Maths.objectParamSet(param)
-  }
-
-  def paramSet(param: CParam, values: Array[Int]): IntArrayParamSet = {
-    Maths.paramSet(param, values)
-  }
-
-  def intParamSet(param: CParam): IntArrayParamSet = {
-    Maths.intParamSet(param)
-  }
-
-  def paramSet(param: CParam, values: Array[Boolean]): BooleanArrayParamSet = {
-    Maths.paramSet(param, values)
-  }
-
-  def boolParamSet(param: CParam): BooleanArrayParamSet = {
-    Maths.boolParamSet(param)
-  }
-
-  def xParamSet(xsamples: Int): XParamSet = {
-    Maths.xParamSet(xsamples)
-  }
-
-  def xyParamSet(xsamples: Int, ysamples: Int): XParamSet = {
-    Maths.xyParamSet(xsamples, ysamples)
-  }
-
-  def xyzParamSet(xsamples: Int, ysamples: Int, zsamples: Int): XParamSet = {
-    Maths.xyzParamSet(xsamples, ysamples, zsamples)
-  }
+//  def doubleParamSet(param: CParam): DoubleArrayParamSet = {
+//    Maths.doubleParamSet(param)
+//  }
+//
+//  def paramSet(param: CParam, values: Array[Double]): DoubleArrayParamSet = {
+//    Maths.paramSet(param, values)
+//  }
+//
+//  def paramSet(param: CParam, values: Array[Float]): FloatArrayParamSet = {
+//    Maths.paramSet(param, values)
+//  }
+//
+//  def floatParamSet(param: CParam): FloatArrayParamSet = {
+//    Maths.floatParamSet(param)
+//  }
+//
+//  def paramSet(param: CParam, values: Array[Long]): LongArrayParamSet = {
+//    Maths.paramSet(param, values)
+//  }
+//
+//  def longParamSet(param: CParam): LongArrayParamSet = {
+//    Maths.longParamSet(param)
+//  }
+//
+//  def paramSet[T](param: CParam, values: Array[T]): ArrayParamSet[T] = {
+//    //Ignore Idea Error, this compiles in maven
+//    Maths.paramSet(param, values.asInstanceOf[Array[T with Object]])
+//  }
+//
+//  def objectParamSet[T](param: CParam): ArrayParamSet[T] = {
+//    Maths.objectParamSet(param)
+//  }
+//
+//  def paramSet(param: CParam, values: Array[Int]): IntArrayParamSet = {
+//    Maths.paramSet(param, values)
+//  }
+//
+//  def intParamSet(param: CParam): IntArrayParamSet = {
+//    Maths.intParamSet(param)
+//  }
+//
+//  def paramSet(param: CParam, values: Array[Boolean]): BooleanArrayParamSet = {
+//    Maths.paramSet(param, values)
+//  }
+//
+//  def boolParamSet(param: CParam): BooleanArrayParamSet = {
+//    Maths.boolParamSet(param)
+//  }
+//
+//  def xParamSet(xsamples: Int): XParamSet = {
+//    Maths.xParamSet(xsamples)
+//  }
+//
+//  def xyParamSet(xsamples: Int, ysamples: Int): XParamSet = {
+//    Maths.xyParamSet(xsamples, ysamples)
+//  }
+//
+//  def xyzParamSet(xsamples: Int, ysamples: Int, zsamples: Int): XParamSet = {
+//    Maths.xyzParamSet(xsamples, ysamples, zsamples)
+//  }
 
   def zerosMatrix(other: ComplexMatrix): ComplexMatrix = {
     Maths.zerosMatrix(other)
@@ -2343,11 +2343,11 @@ object MathScala {
   }
 
   def add(a: Complex, b: Complex): Complex = {
-    Maths.add(a, b)
+    Maths.plus(a, b)
   }
 
   def sub(a: Complex, b: Complex): Complex = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def norm(a: ComplexMatrix): Double = {
@@ -2712,37 +2712,37 @@ object MathScala {
     Maths.almostEqualRelative(a, b, maxRelativeError)
   }
 
-  def dtimes(param: CParam, min: Double, max: Double, times: Int): DoubleArrayParamSet = {
-    Maths.dtimes(param, min, max, times)
-  }
-
-  def dsteps(param: CParam, min: Double, max: Double, step: Double): DoubleArrayParamSet = {
-    Maths.dsteps(param, min, max, step)
-  }
-
-  def itimes(param: CParam, min: Int, max: Int, times: Int): IntArrayParamSet = {
-    Maths.itimes(param, min, max, times)
-  }
-
-  def isteps(param: CParam, min: Int, max: Int, step: Int): IntArrayParamSet = {
-    Maths.isteps(param, min, max, step)
-  }
-
-  def ftimes(param: CParam, min: Int, max: Int, times: Int): FloatArrayParamSet = {
-    Maths.ftimes(param, min, max, times)
-  }
-
-  def fsteps(param: CParam, min: Int, max: Int, step: Int): FloatArrayParamSet = {
-    Maths.fsteps(param, min, max, step)
-  }
-
-  def ltimes(param: CParam, min: Int, max: Int, times: Int): LongArrayParamSet = {
-    Maths.ltimes(param, min, max, times)
-  }
-
-  def lsteps(param: CParam, min: Int, max: Int, step: Long): LongArrayParamSet = {
-    Maths.lsteps(param, min, max, step)
-  }
+//  def dtimes(param: CParam, min: Double, max: Double, times: Int): DoubleArrayParamSet = {
+//    Maths.dtimes(param, min, max, times)
+//  }
+//
+//  def dsteps(param: CParam, min: Double, max: Double, step: Double): DoubleArrayParamSet = {
+//    Maths.dsteps(param, min, max, step)
+//  }
+//
+//  def itimes(param: CParam, min: Int, max: Int, times: Int): IntArrayParamSet = {
+//    Maths.itimes(param, min, max, times)
+//  }
+//
+//  def isteps(param: CParam, min: Int, max: Int, step: Int): IntArrayParamSet = {
+//    Maths.isteps(param, min, max, step)
+//  }
+//
+//  def ftimes(param: CParam, min: Int, max: Int, times: Int): FloatArrayParamSet = {
+//    Maths.ftimes(param, min, max, times)
+//  }
+//
+//  def fsteps(param: CParam, min: Int, max: Int, step: Int): FloatArrayParamSet = {
+//    Maths.fsteps(param, min, max, step)
+//  }
+//
+//  def ltimes(param: CParam, min: Int, max: Int, times: Int): LongArrayParamSet = {
+//    Maths.ltimes(param, min, max, times)
+//  }
+//
+//  def lsteps(param: CParam, min: Int, max: Int, step: Long): LongArrayParamSet = {
+//    Maths.lsteps(param, min, max, step)
+//  }
 
   def sin(v: ComplexVector): ComplexVector = {
     Maths.sin(v)
@@ -3121,11 +3121,11 @@ object MathScala {
   }
 
   def sub(a: Array[Double], b: Array[Double]): Array[Double] = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def sub(a: Array[Double], b: Double): Array[Double] = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def add(a: Array[Double], b: Array[Double]): Array[Double] = {
@@ -3217,7 +3217,7 @@ object MathScala {
   }
 
   def add(x: Array[Double], v: Double): Array[Double] = {
-    Maths.add(x, v)
+    Maths.plus(x, v)
   }
 
   def addSelf(x: Array[Double], v: Double): Array[Double] = {
@@ -3253,11 +3253,11 @@ object MathScala {
   }
 
   def add(a: Array[Array[Double]], b: Array[Array[Double]]): Array[Array[Double]] = {
-    Maths.add(a, b)
+    Maths.plus(a, b)
   }
 
   def sub(a: Array[Array[Double]], b: Array[Array[Double]]): Array[Array[Double]] = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def div(a: Array[Array[Double]], b: Array[Array[Double]]): Array[Array[Double]] = {
@@ -3797,7 +3797,7 @@ object MathScala {
   }
 
   def mul(e: Expr*): Expr = {
-    Maths.mul(e: _ *)
+    Maths.prod(e: _ *)
   }
 
   def pow(a: Expr, b: Expr): Expr = {
@@ -3805,11 +3805,11 @@ object MathScala {
   }
 
   def sub(a: Expr, b: Expr): Expr = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def add(a: Expr, b: java.lang.Double): Expr = {
-    Maths.add(a, b)
+    Maths.plus(a, b)
   }
 
   def mul(a: Expr, b: java.lang.Double): Expr = {
@@ -3817,7 +3817,7 @@ object MathScala {
   }
 
   def sub(a: Expr, b: java.lang.Double): Expr = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def div(a: Expr, b: java.lang.Double): Expr = {
@@ -3825,11 +3825,11 @@ object MathScala {
   }
 
   def add(a: Expr, b: Expr): Expr = {
-    Maths.add(a, b)
+    Maths.plus(a, b)
   }
 
   def add(a: Expr*): Expr = {
-    Maths.add(a: _ *)
+    Maths.sum(a: _ *)
   }
 
   def div(a: Expr, b: Expr): Expr = {
@@ -3973,7 +3973,7 @@ object MathScala {
   }
 
   def sub[T](a: Vector[T], b: T): Vector[T] = {
-    Maths.sub(a, b)
+    Maths.minus(a, b)
   }
 
   def div[T](a: Vector[T], b: T): Vector[T] = {
@@ -4153,7 +4153,7 @@ object MathScala {
     Maths.toDoubleArray(c)
   }
 
-  def toDouble(c: Complex, d: PlotDoubleConverter): Double = {
+  def toDouble(c: Complex, d: ToDoubleFunction[AnyRef]): Double = {
     Maths.toDouble(c, d)
   }
 
@@ -4241,11 +4241,11 @@ object MathScala {
     Maths.parseExpression(expression)
   }
 
-  def createExpressionEvaluator: ExpressionManager = {
+  def createExpressionEvaluator: JContext = {
     Maths.createExpressionEvaluator
   }
 
-  def createExpressionParser: ExpressionManager = {
+  def createExpressionParser: JContext = {
     Maths.createExpressionParser
   }
 

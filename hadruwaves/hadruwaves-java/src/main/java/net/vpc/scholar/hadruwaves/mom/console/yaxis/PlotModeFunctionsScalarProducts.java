@@ -43,7 +43,7 @@ public class PlotModeFunctionsScalarProducts extends PlotAxisSeries implements C
                 new MonitoredAction<PlotMatrix>() {
                     @Override
                     public PlotMatrix process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                        ModeFunctions fnModeFunctions = structure.getModeFunctions();
+                        ModeFunctions fnModeFunctions = structure.modeFunctions();
                         Complex[][] gfps = new Complex[fnModeFunctions.count()][fnModeFunctions.count()];
                         ModeInfo[] indexes = structure.getModes();
                         int max = fnModeFunctions.count();

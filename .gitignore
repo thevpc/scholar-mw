@@ -35,3 +35,5 @@
 *.iml
 /hadruwaves-studio/hadruwaves-studio-standalone/.idea/
 /hadruwaves-studio/hadruwaves-studio-standalone/.idea/
+/hadrumaths/hadrucommon-params/target/
+/hadrumaths/hadrumaths-plot/target/

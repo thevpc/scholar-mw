@@ -47,7 +47,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : ";
 //                }
-//                st += "Fn" + direct.getModeFunctionsCount();
+//                st += "Fn" + direct.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }
@@ -58,7 +58,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : ";
 //                }
-//                st += "Fn" + modele.getModeFunctionsCount();
+//                st += "Fn" + modele.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }
@@ -69,7 +69,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : dir ";
 //                }
-//                st += "Fn" + direct.getModeFunctionsCount();
+//                st += "Fn" + direct.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }
@@ -77,7 +77,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : mod ";
 //                }
-//                st += "Fn" + modele.getModeFunctionsCount();
+//                st += "Fn" + modele.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }
@@ -88,7 +88,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : dir ";
 //                }
-//                st += "Fn" + direct.getModeFunctionsCount();
+//                st += "Fn" + direct.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }
@@ -96,7 +96,7 @@ package net.vpc.scholar.hadruwaves.mom.console.yaxis;
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " : mod ";
 //                }
-//                st += "Fn" + modele.getModeFunctionsCount();
+//                st += "Fn" + modele.modeFunctionsCount();
 //                if (st.length() > 0 && serieTitle.toString().length() > 0) {
 //                    st += " / ";
 //                }

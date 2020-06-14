@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -19,7 +18,7 @@ public abstract class AbstractDirectivitySphericalBuilder extends AbstractValueB
     }
 
     @Override
-    public DirectivitySphericalBuilder monitor(TaskMonitorManager monitor) {
+    public DirectivitySphericalBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (DirectivitySphericalBuilder) super.monitor(monitor);
     }
 

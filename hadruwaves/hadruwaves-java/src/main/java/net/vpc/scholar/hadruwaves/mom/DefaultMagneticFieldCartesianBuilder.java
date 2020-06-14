@@ -4,7 +4,6 @@ import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.vpc.scholar.hadruwaves.builders.AbstractMagneticFieldBuilder;
 import net.vpc.scholar.hadruwaves.builders.AbstractMagneticFieldCartesianBuilder;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
@@ -23,7 +22,7 @@ class DefaultMagneticFieldCartesianBuilder extends AbstractMagneticFieldCartesia
         final double[] z0 = z == null ? new double[]{0} : z;
         return new StrSubCacheSupport<VDiscrete>(getStructure(), "magnetic-field", CacheKey.obj("computeMagneticField","x",x,"y",y,"z",z), monitor) {
 
-            public VDiscrete eval(ObjectCache momCache) {
+            public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                 MomStructure momStructure = getStructure();
                 return momStructure.evaluator().createMagneticFieldEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
             }

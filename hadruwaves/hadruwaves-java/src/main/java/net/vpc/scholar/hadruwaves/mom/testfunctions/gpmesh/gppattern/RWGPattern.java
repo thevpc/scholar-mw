@@ -209,7 +209,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
                         throw new IllegalArgumentException("Problem");
                     }
                     Point[] nonBasePoints = nonBase.toArray(new Point[nonBase.size()]);
-                    Polygon area = new Polygon(
+                    Polygon area = GeometryFactory.createPolygon(
                             nonBasePoints[0],
                             inter.get(0),
                             nonBasePoints[1],

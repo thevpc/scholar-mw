@@ -2,10 +2,9 @@ package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.common.mon.ProgressMonitors;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceResult;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceResult;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 
@@ -33,7 +32,7 @@ public abstract class AbstractValueBuilder implements ValueBuilder {
     }
 
     @Override
-    public ValueBuilder monitor(TaskMonitorManager monitor) {
+    public ValueBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         this.monitor = monitor == null ? null : monitor.createMonitor(toString(), getClass().getSimpleName());
         return this;
     }
@@ -64,7 +63,7 @@ public abstract class AbstractValueBuilder implements ValueBuilder {
                 return ProgressMonitors.nonnull(p);
             }
         }
-        return ProgressMonitors.nonnull(null);
+        return ProgressMonitors.none();
     }
 
     public ConvergenceEvaluator getConvergenceEvaluator() {

@@ -7,17 +7,18 @@ import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruwaves.Material;
 
 import java.util.Objects;
+import net.vpc.scholar.hadruwaves.Boundary;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 24 mai 2007 20:45:41
  */
 public final class BoxSpace implements HSerializable {
-    private final BoxLimit limit;
+    private final Boundary limit;
     private final Material material;
     private final double width;
 
-    public BoxSpace(BoxLimit limit, Material material, double width) {
+    public BoxSpace(Boundary limit, Material material, double width) {
         if (limit == null) {
             throw new IllegalArgumentException("Null Box Limit");
         }
@@ -29,11 +30,31 @@ public final class BoxSpace implements HSerializable {
         this.width = width;
     }
 
+    public static BoxSpace openCircuit(Material material, double width) {
+        return new BoxSpace(Boundary.OPEN, material, width);
+    }
+
+    public static BoxSpace matchedLoad() {
+        return matchedLoad(Material.VACUUM);
+    }
+
+    public static BoxSpace matchedLoad(Material material) {
+        return new BoxSpace(Boundary.INFINITE, material, Double.POSITIVE_INFINITY);
+    }
+
+    public static BoxSpace shortCircuit(Material material, double width) {
+        return new BoxSpace(Boundary.ELECTRIC, material, width);
+    }
+
+    public static BoxSpace nothing() {
+        return new BoxSpace(Boundary.NOTHING, Material.VACUUM, 0);
+    }
+
     public Material getMaterial() {
         return material;
     }
 
-    public BoxSpace setLimit(BoxLimit limit) {
+    public BoxSpace setLimit(Boundary limit) {
         return new BoxSpace(limit, material, width);
     }
 
@@ -48,11 +69,11 @@ public final class BoxSpace implements HSerializable {
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
         TsonFunctionBuilder h = Tson.function(limit.name());
-        if (!limit.equals(BoxLimit.NOTHING) && !limit.equals(BoxLimit.MATCHED_LOAD)) {
+        if (!limit.equals(Boundary.NOTHING) && !limit.equals(Boundary.INFINITE)) {
             h.add(Tson.pair("width", context.elem(width)));
         }
 
-        if (!limit.equals(BoxLimit.NOTHING)) {
+        if (!limit.equals(Boundary.NOTHING)) {
             h.add(Tson.pair("material", context.elem(material)));
         }
         return h.build();
@@ -63,7 +84,7 @@ public final class BoxSpace implements HSerializable {
         return dump();
     }
 
-    public BoxLimit getLimit() {
+    public Boundary getLimit() {
         return limit;
     }
 

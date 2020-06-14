@@ -22,8 +22,10 @@ abstract class StrCacheSupport<T> extends CacheSupport<T> {
             momStructure.getMemoryCache().set(cacheItemName,t);
             return t;
         }
-        init();
-        return eval(null);
+        ProgressMonitor monitor = getMonitor();
+        ProgressMonitor[] mons = monitor.split(0.2, 0.8);
+        init(mons[0]);
+        return eval(null, mons[1]);
     }
 
     public T getOrNull() {
@@ -48,7 +50,9 @@ abstract class StrCacheSupport<T> extends CacheSupport<T> {
         if (getPersistenceCache().isEnabled()) {
             return evalCached(momStructure.getKey(), oldValue);
         }
-        init();
-        return eval(null);
+        ProgressMonitor monitor = getMonitor();
+        ProgressMonitor[] mons = monitor.split(0.2, 0.8);
+        init(mons[0]);
+        return eval(null, mons[1]);
     }
 }

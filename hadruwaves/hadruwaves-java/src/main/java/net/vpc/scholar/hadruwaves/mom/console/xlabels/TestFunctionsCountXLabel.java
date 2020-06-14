@@ -17,6 +17,6 @@ public class TestFunctionsCountXLabel extends AbstractXLabel {
     }
 
     public Number getValue(int index, ParamSet x, Object structure) {
-        return ((MomStructure )structure).getTestFunctions().count();
+        return ((MomStructure )structure).testFunctions().count();
     }
 }

@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
@@ -18,7 +19,7 @@ class DefaultSelfBuilder extends AbstractSelfBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix evalMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl(ProgressMonitor evalMonitor) {
         MomStructure momStructure = (MomStructure) getStructure();
         ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).evalMatrix();
         Complex[][] cc = z.getArrayCopy();

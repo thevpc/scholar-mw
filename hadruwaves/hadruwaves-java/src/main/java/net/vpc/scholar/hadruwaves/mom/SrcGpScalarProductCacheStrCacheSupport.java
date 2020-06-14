@@ -21,12 +21,12 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatr
     }
 
     @Override
-    public ComplexMatrix eval(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
         Sources ss = momStructure.getSources();
         if (ss == null || !(ss instanceof PlanarSources)) {
             throw new IllegalArgumentException();
         }
         DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
-        return (ComplexMatrix) Maths.scalarProductCache(momStructure.getTestFunctions().arr(), _g, getMonitor()).to(Maths.$COMPLEX);
+        return (ComplexMatrix) Maths.scalarProductCache(momStructure.testFunctions().arr(), _g, getMonitor()).to(Maths.$COMPLEX);
     }
 }

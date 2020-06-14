@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruwaves.ApertureType;
 import net.vpc.scholar.hadruwaves.mom.DefaultElectricFieldCartesianBuilder;
 import net.vpc.scholar.hadruwaves.mom.DefaultElectricFieldSphericalBuilder;
@@ -40,9 +39,7 @@ public class DefaultElectricFieldBuilder extends AbstractValueBuilder implements
     @Override
     public ElectricFieldSphericalBuilder spherical() {
         DefaultElectricFieldSphericalBuilder p = new DefaultElectricFieldSphericalBuilder(getStructure(), part, apertureType);
-        if (getMonitor() != null) {
-            p.monitor(getMonitor());
-        }
+        p.monitor(getMonitor());
         if (getConvergenceEvaluator() != null) {
             p.converge(getConvergenceEvaluator());
         }
@@ -52,9 +49,7 @@ public class DefaultElectricFieldBuilder extends AbstractValueBuilder implements
     @Override
     public ElectricFieldCartesianBuilder cartesian() {
         DefaultElectricFieldCartesianBuilder p = new DefaultElectricFieldCartesianBuilder(getStructure(), part);
-        if (getMonitor() != null) {
-            p.monitor(getMonitor());
-        }
+        p.monitor(getMonitor());
         if (getConvergenceEvaluator() != null) {
             p.converge(getConvergenceEvaluator());
         }
@@ -67,7 +62,7 @@ public class DefaultElectricFieldBuilder extends AbstractValueBuilder implements
     }
 
     @Override
-    public ElectricFieldBuilder monitor(TaskMonitorManager monitor) {
+    public ElectricFieldBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (ElectricFieldBuilder) super.monitor(monitor);
     }
 

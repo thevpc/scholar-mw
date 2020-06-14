@@ -46,7 +46,7 @@ object MicrostripLineMoMExampleLayer extends App {
   var str=MomStructure.EEEE(box,f,N,mass,space).sources(e0).testFunctions(g).monitorFactory(console)
 //  str.setScalarSurfaceImpedance(impedance(î*1E-3)) //serial
   str.setLayers(new StrLayer(1*MM,1*î)) //parallel
-  Plot.title("fn").plot(str.getModeFunctions.fn())
+  Plot.title("fn").plot(str.modeFunctions.fn())
   var xprec=100
   var yprec=50
   Plot.title("schema").xsamples(1000).plot(lineDomain+lineDomain.scale(Align.CENTER,1.2)+box)

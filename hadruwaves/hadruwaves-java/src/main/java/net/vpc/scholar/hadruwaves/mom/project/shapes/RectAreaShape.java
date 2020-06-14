@@ -5,7 +5,9 @@
 package net.vpc.scholar.hadruwaves.mom.project.shapes;
 
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.GeometryFactory;
 import net.vpc.scholar.hadrumaths.geom.DefaultGeometryList;
+import net.vpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.vpc.scholar.hadrumaths.geom.GeometryList;
 import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
@@ -131,7 +133,7 @@ public class RectAreaShape extends AbstractMomProjectItem implements AreaShape{
 //            if (xfactor > 1 || yfactor>1) {
 //                dd = new DomainXY((dd.xmin - polygonsDomain0.xmin) * xfactor, (dd.ymin - polygonsDomain0.ymin) * yfactor, dd.width * xfactor, dd.height * yfactor, DomainXY.Type.LENGTH);
 //            }
-            Polygon pp = new Polygon(dd);
+            Polygon pp = GeometryFactory.createPolygon(dd);
             return new DefaultGeometryList(globalDomain,pp);
     }
 

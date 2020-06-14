@@ -2,7 +2,7 @@ package net.vpc.scholar.hadruwaves.examples;
 
 import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadruplot.Samples;
+import net.vpc.scholar.hadrumaths.Samples;
 import net.vpc.scholar.hadruwaves.Material;
 import net.vpc.scholar.hadruwaves.Physics;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -11,8 +11,8 @@ import net.vpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
 import static net.vpc.scholar.hadrumaths.Domain.ofWidth;
 import static net.vpc.scholar.hadrumaths.Maths.*;
 import net.vpc.scholar.hadrumaths.cache.CacheMode;
-import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.matchedLoad;
-import static net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory.shortCircuit;
+import static net.vpc.scholar.hadruwaves.mom.BoxSpace.matchedLoad;
+import static net.vpc.scholar.hadruwaves.mom.BoxSpace.shortCircuit;
 import static net.vpc.scholar.hadruwaves.mom.SourceFactory.createPlanarSource;
 
 /**

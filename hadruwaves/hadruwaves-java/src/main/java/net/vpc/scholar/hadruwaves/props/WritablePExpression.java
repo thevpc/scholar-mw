@@ -1,7 +1,6 @@
 package net.vpc.scholar.hadruwaves.props;
 
-import net.vpc.common.prpbind.PValue;
-import net.vpc.common.prpbind.PropertyVetos;
+import net.vpc.common.props.PropertyVetos;
 
 public interface WritablePExpression<T> extends PExpression<T> {
     void set(String v);

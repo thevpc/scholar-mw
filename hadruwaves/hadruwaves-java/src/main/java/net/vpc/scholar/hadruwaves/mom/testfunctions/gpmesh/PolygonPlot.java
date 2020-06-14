@@ -163,7 +163,7 @@ public class PolygonPlot extends JPanel {
         this.polygonComponent.setPolygonEdgeColor(polygonEdgeColor);
         this.polygonComponent.setPolygonForegroundColor(polygonForegroundColor);
 
-        polygonComponent.setPreferredSize(new Dimension(500, 500));
+        polygonComponent.setPreferredSize(new java.awt.Dimension(500, 500));
         JPanel p0;
         zoomSpliderX.setMinorTickSpacing(10);
         zoomSpliderX.setPaintTicks(true);

@@ -4,7 +4,7 @@ import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Maths;
 import net.vpc.scholar.hadruplot.PlotMatrix;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruplot.PlotType;
 import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.scholar.hadruplot.console.ConsoleAwareObject;
@@ -49,7 +49,7 @@ public class PlotCurrent2D extends PlotAxisSeries implements Cloneable {
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
         VDiscrete j = null;
         if (convergenceFn) {
-            int fnMax_start = structure.getModeFunctions().getSize();
+            int fnMax_start = structure.modeFunctions().getSize();
             int[] fnMax_all = Maths.isteps(fnMax_start, fnMax_start + fnstep * 10000, fnstep);
             j = structure.current().monitor(monitor)
                     .converge(

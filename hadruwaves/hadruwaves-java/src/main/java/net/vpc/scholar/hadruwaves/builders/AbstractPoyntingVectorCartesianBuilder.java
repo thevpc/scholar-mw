@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -19,7 +18,7 @@ public abstract class AbstractPoyntingVectorCartesianBuilder extends AbstractVDi
     }
 
     @Override
-    public PoyntingVectorCartesianBuilder monitor(TaskMonitorManager monitor) {
+    public PoyntingVectorCartesianBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (PoyntingVectorCartesianBuilder) super.monitor(monitor);
     }
 

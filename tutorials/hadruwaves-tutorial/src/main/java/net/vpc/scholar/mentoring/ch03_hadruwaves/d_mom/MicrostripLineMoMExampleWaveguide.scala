@@ -53,7 +53,7 @@ object MicrostripLineMoMExampleWaveguide extends App {
 
 //  str.setScalarSurfaceImpedance(impedance(î*1E-3)) //serial
 //  str.setLayers(Array(new StrLayer(1*MM,1*MM,1*î))) //parallel
-  private val vectors = str.getModeFunctions.fn()
+  private val vectors = str.modeFunctions.fn()
   Plot.title("fn").plot(vectors)
   var xprec=100
   var yprec=50

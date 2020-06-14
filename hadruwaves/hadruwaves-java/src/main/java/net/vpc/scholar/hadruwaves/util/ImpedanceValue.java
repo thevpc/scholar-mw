@@ -25,11 +25,11 @@ public final class ImpedanceValue implements Impedance {
     }
 
     private ImpedanceValue serial(Complex b) {
-        return new ImpedanceValue(value.add(b));
+        return new ImpedanceValue(value.plus(b));
     }
 
     private ImpedanceValue parallel(Complex b) {
-        return new ImpedanceValue((value.inv().add(b.inv())).inv());
+        return new ImpedanceValue((value.inv().plus(b.inv())).inv());
     }
 
     public AdmittanceValue admittance() {

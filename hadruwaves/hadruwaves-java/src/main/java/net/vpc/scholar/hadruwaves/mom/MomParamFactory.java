@@ -13,12 +13,13 @@ import net.vpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadruwaves.ModeType;
-import net.vpc.scholar.hadruplot.PlotEvaluator;
+import net.vpc.scholar.hadruplot.console.PlotEvaluator;
 import net.vpc.scholar.hadruwaves.console.params.FreqParam;
 import net.vpc.scholar.hadruwaves.console.params.OmegaParam;
 import net.vpc.scholar.hadruplot.PlotConstantMatrix;
 import net.vpc.scholar.hadruwaves.console.plot.PlotConstantVDiscrete;
-import net.vpc.scholar.hadruplot.PlotValueMatrix;
+import net.vpc.scholar.hadruplot.model.value.PlotValueMatrix;
+import net.vpc.scholar.hadruplot.console.ConsoleParams;
 import net.vpc.scholar.hadruwaves.console.plot.PlotValueVDiscrete;
 import net.vpc.scholar.hadruwaves.console.yaxis.*;
 import net.vpc.scholar.hadruwaves.mom.console.params.*;
@@ -389,27 +390,27 @@ public class MomParamFactory extends AbstractFactory {
 //        }
 
         public static ArrayParamSet<TestFunctions> testFunctions() {
-            return Maths.objectParamSet(params.testFunctions());
+            return ConsoleParams.objectParamSet(params.testFunctions());
         }
 
         public static ArrayParamSet<TestFunctions> testFunctions(net.vpc.scholar.hadruwaves.mom.TestFunctions[] functions) {
-            return Maths.paramSet(params.testFunctions(), functions);
+            return ConsoleParams.paramSet(params.testFunctions(), functions);
         }
 
         public static ArrayParamSet<ModeFunctions> modeFunctions() {
-            return Maths.objectParamSet(params.modeFunctions());
+            return ConsoleParams.objectParamSet(params.modeFunctions());
         }
 
         public static ArrayParamSet<ModeFunctions> modeFunctions(net.vpc.scholar.hadruwaves.mom.ModeFunctions[] functions) {
-            return Maths.paramSet(params.modeFunctions(), functions);
+            return ConsoleParams.paramSet(params.modeFunctions(), functions);
         }
 
         public static ArrayParamSet<Source> sources(Source[] functions) {
-            return Maths.paramSet(params.source(), functions);
+            return ConsoleParams.paramSet(params.source(), functions);
         }
 
         public static ArrayParamSet<Sources> sources(Sources[] functions) {
-            return Maths.paramSet(params.sources(), functions);
+            return ConsoleParams.paramSet(params.sources(), functions);
         }
 
 //        public static TestFunctionsCountPlotParam testFunctionsCount() {
@@ -417,23 +418,23 @@ public class MomParamFactory extends AbstractFactory {
 //        }
 
         public static IntArrayParamSet modeFunctionsCount() {
-            return Maths.intParamSet(params.modesCount());
+            return ConsoleParams.intParamSet(params.modesCount());
         }
 
         public static DoubleArrayParamSet frequency() {
-            return Maths.doubleParamSet(params.frequency());
+            return ConsoleParams.doubleParamSet(params.frequency());
         }
 
         public static DoubleArrayParamSet width() {
-            return Maths.doubleParamSet(params.width());
+            return ConsoleParams.doubleParamSet(params.width());
         }
 
         public static DoubleArrayParamSet height() {
-            return Maths.doubleParamSet(params.height());
+            return ConsoleParams.doubleParamSet(params.height());
         }
 
         public static DoubleArrayParamSet xmin() {
-            return Maths.doubleParamSet(params.xmin());
+            return ConsoleParams.doubleParamSet(params.xmin());
         }
 
 //        public static DoubleArrayParamSet xminFactor() {
@@ -441,7 +442,7 @@ public class MomParamFactory extends AbstractFactory {
 //        }
 
         public static DoubleArrayParamSet ymin() {
-            return Maths.doubleParamSet(params.ymin());
+            return ConsoleParams.doubleParamSet(params.ymin());
         }
 
 //        public static DoubleArrayParamSet widthFactor() {
@@ -449,44 +450,44 @@ public class MomParamFactory extends AbstractFactory {
 //        }
 
         public static DoubleArrayParamSet freqByWidthFactor() {
-            return Maths.doubleParamSet(params.frequencyByWidthFactor());
+            return ConsoleParams.doubleParamSet(params.frequencyByWidthFactor());
         }
 
         public static DoubleArrayParamSet omega() {
-            return Maths.doubleParamSet(params.omega());
+            return ConsoleParams.doubleParamSet(params.omega());
         }
 
         public static ArrayParamSet<GridPrecision> gridPrecision() {
-            return Maths.objectParamSet(params.gridPrecision());
+            return ConsoleParams.objectParamSet(params.gridPrecision());
         }
 
 
         public static FloatArrayParamSet hintAMatrixSparsify() {
-            return Maths.floatParamSet(params.hintAMatrixSparsify());
+            return ConsoleParams.floatParamSet(params.hintAMatrixSparsify());
         }
 
         public static FloatArrayParamSet hintBMatrixSparsify() {
-            return Maths.floatParamSet(params.hintBMatrixSparsify());
+            return ConsoleParams.floatParamSet(params.hintBMatrixSparsify());
         }
 
         public static FloatArrayParamSet hintDiscardFnByScalarProduct() {
-            return Maths.floatParamSet(params.hintDiscardFnByScalarProduct());
+            return ConsoleParams.floatParamSet(params.hintDiscardFnByScalarProduct());
         }
 
         public static ArrayParamSet<ModeType> hintFnMode() {
-            return Maths.objectParamSet(params.hintFnMode());
+            return ConsoleParams.objectParamSet(params.hintFnMode());
         }
 
         public static ArrayParamSet<HintAxisType> hintGpFnAxis() {
-            return Maths.objectParamSet(params.hintGpFnAxis());
+            return ConsoleParams.objectParamSet(params.hintGpFnAxis());
         }
 
         public static BooleanArrayParamSet hintRegularZnOperator() {
-            return Maths.boolParamSet(params.hintRegularZnOperator());
+            return ConsoleParams.boolParamSet(params.hintRegularZnOperator());
         }
 
         public static BooleanArrayParamSet hintSubModelEquivalent() {
-            return Maths.boolParamSet(params.hintSubModelEquivalent());
+            return ConsoleParams.boolParamSet(params.hintSubModelEquivalent());
         }
 
 

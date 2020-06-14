@@ -13,6 +13,7 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import net.vpc.scholar.hadruplot.LibraryPlotType;
 
 public class PlotTestFunctions extends PlotAxisCustom implements Cloneable {
     public PlotTestFunctions(YType... type) {
@@ -28,16 +29,16 @@ public class PlotTestFunctions extends PlotAxisCustom implements Cloneable {
             Domain d = str1.getDomain();
             //TODO FIX ME
             all.add(new FunctionsXYPlotConsoleAction("Test Functions", "Direct Test Functions " + p.getSerieTitle().toString(),
-                    str1.getTestFunctions().arr(),
+                    str1.testFunctions().arr(),
                     d,
-                    p.getPreferredPath(), getPlotType()
+                    p.getPreferredPath(), new LibraryPlotType(getPlotType())
                     ,getLibraries()
             ));
         }
         if (containsType(YType.MODELED)) {
             MomStructure str2 = (MomStructure)p.getStructure2();
             if (str2 != null) {
-                all.add(new FunctionsXYPlotConsoleAction("Test Functions", "Model Test Functions " + p.getSerieTitle().toString(), str2.getTestFunctions().arr(), str2.getDomain(), p.getPreferredPath(), getPlotType(),getLibraries()));
+                all.add(new FunctionsXYPlotConsoleAction("Test Functions", "Model Test Functions " + p.getSerieTitle().toString(), str2.testFunctions().arr(), str2.getDomain(), p.getPreferredPath(), new LibraryPlotType(getPlotType()),getLibraries()));
             }
         }
 //        mon.terminatem(getName());

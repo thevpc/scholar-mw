@@ -19,7 +19,7 @@ import net.vpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
 import net.vpc.scholar.hadrumaths.symbolic.double2double.Rooftop2DFunctionXY;
 import net.vpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
 import net.vpc.scholar.hadruwaves.mom.CircuitType;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.mom.util.MomUtils;
 
 /**
@@ -101,8 +101,8 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
         CircuitType circuitType = str.getCircuitType();
         boolean neededAttachForX = false;
         boolean neededAttachForY = false;
-        Wall defaultWall = CircuitType.SERIAL.equals(circuitType) ? Wall.MAGNETIC : Wall.ELECTRIC;
-        Wall wall = null;
+        Boundary defaultWall = CircuitType.SERIAL.equals(circuitType) ? Boundary.MAGNETIC : Boundary.ELECTRIC;
+        Boundary wall = null;
         switch (zoneType.getValue()) {
             case MeshZoneType.ID_MAIN: {
                 DoubleToVector f = Maths.vector(

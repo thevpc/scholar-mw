@@ -11,7 +11,7 @@ import net.vpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -81,10 +81,9 @@ public final class ArcheSinusPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_BORDER_NORTH: {
                 Domain dd = zone.getDomain();
-                DoubleToVector f = Maths.vector(
-                        walls.getNorth().equals(Wall.MAGNETIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1) : Maths.DZEROXY
+                DoubleToVector f = Maths.vector(walls.getNorth().equals(Boundary.MAGNETIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1) : Maths.DZEROXY
                         ,
-                        walls.getNorth().equals(Wall.ELECTRIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1) : Maths.DZEROXY
+                        walls.getNorth().equals(Boundary.ELECTRIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymin() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(1) : Maths.DZEROXY
 
                 )
                         .setProperty("Type", getClass().getSimpleName() + "-BorderNorth")
@@ -95,10 +94,9 @@ public final class ArcheSinusPattern extends RectMeshAttachGpPattern {
             }
             case MeshZoneType.ID_BORDER_SOUTH: {
                 Domain dd = zone.getDomain();
-                DoubleToVector f = Maths.vector(
-                        walls.getSouth().equals(Wall.MAGNETIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(0) : Maths.DZEROXY
+                DoubleToVector f = Maths.vector(walls.getSouth().equals(Boundary.MAGNETIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(0) : Maths.DZEROXY
                         ,
-                        walls.getSouth().equals(Wall.ELECTRIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(0) : Maths.DZEROXY
+                        walls.getSouth().equals(Boundary.ELECTRIC) ? FunctionFactory.archeSinus(Axis.Y, 1, Domain.ofWidth(dd.xmin(), dd.xwidth(), dd.ymax() - dd.ywidth() * 1, dd.ywidth() * 2)).getSegmentAt(0) : Maths.DZEROXY
 
                 )
                         .setProperty("Type", getClass().getSimpleName() + "-BorderSouth")

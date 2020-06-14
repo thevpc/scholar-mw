@@ -30,12 +30,12 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
 //    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
 //        VDiscrete v2=null;
 //        MomStructure str=(MomStructure) structure;
-//        str.getTestFunctions().arr();
+//        str.testFunctions().arr();
 //        Matrix Testcoeff = str.matrixX().monitor(ProgressMonitors.none()).computeMatrix();
 //        Testcoeff.getColumn(0).toArray();
 //        ModeInfo[] indexes = str.getModes();
-//        ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
-//        ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
+//        ModeInfo[] evan = str.modeFunctions().getVanishingModes();
+//        ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
 //        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitors.none());
 //        for (int i = 0; i < 4; i++) {
 //            Chronometer cr1=chrono();
@@ -55,11 +55,12 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
+                ProgressMonitor[] mons = monitor.split(.1, .2,.2,.5);
 //        this.invalidateCache();
-                final DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.testFunctions().arr(mons[0]);
+                final ModeInfo[] indexes = str.getModes(mons[1]);
 
-                ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).evalMatrix();
+                ComplexMatrix Testcoeff = str.matrixX().monitor(mons[2]).evalMatrix();
 
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
@@ -67,9 +68,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                     throw new IllegalStateException();
                 }
 //        FnIndexes[] n_eva = isHint(HINT_REGULAR_ZN_OPERATOR) ? fnBaseFunctions.getModes() : fnBaseFunctions.getVanishingModes();
-                final ModeInfo[] indexes = str.getModes();
-                ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
-                ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
+                ModeInfo[] evan = str.modeFunctions().getVanishingModes();
+                ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
                 if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
                     evan = indexes;
                     prop = new ModeInfo[0];
@@ -77,7 +77,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 if (str.getHintsManager().isHintRegularZnOperator()) {
                     evan = indexes;
                 }
-                final ProgressMonitor mon1 = mon[1];
+                final ProgressMonitor mon1 = mons[3];
                 final ModeInfo[] finalProp = prop;
                 final ModeInfo[] finalEvan = evan;
                 return Maths.invokeMonitoredAction(mon1, "Loop 1", new MonitoredAction<VDiscrete>() {
@@ -147,7 +147,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                                 }
                             }
                         }
-                        Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                        Domain domain = Domain.ofBounds(x[0], x[x.length-1], y[0], y[y.length-1], z[0], z[z.length-1]);
                         return new VDiscrete(CDiscrete.of(domain, MutableComplex.toComplex(fx)),
                                 CDiscrete.of(domain, MutableComplex.toComplex(fy)),
                                 CDiscrete.of(domain, MutableComplex.toComplex(fz)));
@@ -164,9 +164,9 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ProgressMonitor[] mon = monitor.split(new double[]{2, 8});
+                ProgressMonitor[] mon = monitor.split(.2, .8);
 //        this.invalidateCache();
-                final DoubleToVector[] _g = str.getTestFunctions().arr();
+                final DoubleToVector[] _g = str.testFunctions().arr();
 
                 ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).evalMatrix();
 
@@ -177,8 +177,8 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                 }
 //        FnIndexes[] n_eva = isHint(HINT_REGULAR_ZN_OPERATOR) ? fnBaseFunctions.getModes() : fnBaseFunctions.getVanishingModes();
                 final ModeInfo[] indexes = str.getModes();
-                ModeInfo[] evan = str.getModeFunctions().getVanishingModes();
-                ModeInfo[] prop = str.getModeFunctions().getPropagatingModes();
+                ModeInfo[] evan = str.modeFunctions().getVanishingModes();
+                ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
                 if (str.getProjectType().equals(ProjectType.PLANAR_STRUCTURE)) {
                     evan = indexes;
                     prop = new ModeInfo[0];

@@ -15,6 +15,6 @@ public class ModeModeFunctionsConvergence extends PlotAxisSeriesSingleValue impl
     }
 
     protected Complex evalComplex(ConsoleAwareObject structure, ParamSet x, ConsoleActionParams p) {
-        return Complex.of(((MomStructure)structure).getModeFunctions().getSize());
+        return Complex.of(((MomStructure)structure).modeFunctions().getSize());
     }
 }

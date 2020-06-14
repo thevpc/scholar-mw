@@ -10,20 +10,24 @@ import net.vpc.scholar.hadruwaves.mom.MomStructure;
 import net.vpc.scholar.hadruplot.console.yaxis.YType;
 import net.vpc.scholar.hadruplot.console.ConsoleActionParams;
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.scholar.hadruplot.PlotHyperCube;
+import net.vpc.scholar.hadruplot.console.PlotConfigManager;
 
 public class PlotElectricFieldFondamental3D extends PlotAxisCubes implements Cloneable {
+
     public PlotElectricFieldFondamental3D(YType... type) {
-        super("ElectricFieldFondamental3D",type);
+        super("ElectricFieldFondamental3D", type);
     }
 
-    protected VDiscrete evalValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
-        MomStructure structure=(MomStructure) o;
+    protected PlotHyperCube evalValue(ConsoleAwareObject o, ProgressMonitor monitor, ConsoleActionParams p) {
+        MomStructure structure = (MomStructure) o;
         XParamSet xAxis = (XParamSet) p.getAxis().getX();
         double[] x = structure.toXForDomainCoeff(xAxis.getValues());
         double[] z = structure.toZForDomainCoeff(xAxis.getZ());
         double[] y = structure.toYForDomainCoeff(xAxis.getY());
 
-        return structure.electricField().electricPart(ElectricFieldPart.FUNDAMENTAL).monitor(monitor)
+        VDiscrete d = structure.electricField().electricPart(ElectricFieldPart.FUNDAMENTAL).monitor(monitor)
                 .cartesian().evalVDiscrete(x, y, z);
+        return PlotConfigManager.getPlotHyperCubeResolvers().resolve(d);
     }
 }

@@ -5,8 +5,8 @@ import net.vpc.common.tson.TsonElement;
 import net.vpc.common.tson.TsonObjectBuilder;
 import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceConfig;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceConfig;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
@@ -93,7 +93,7 @@ public class MomStructureFractalZop extends MomStructure {
     private static GeometryList asRect(GeometryList other) {
         Geometry[] transform = ((FractalAreaGeometryList) other).getTransform();
         for (int i = 0; i < transform.length; i++) {
-            transform[i] = new Polygon(transform[i].getDomain());
+            transform[i] = GeometryFactory.createPolygon(transform[i].getDomain());
         }
         return new DefaultGeometryList(other.getBounds(), transform);
     }
@@ -136,10 +136,10 @@ public class MomStructureFractalZop extends MomStructure {
 
 
     ComplexMatrix getAMatrix(ComplexMatrix ZopValue) {
-        TestFunctions gpTestFunctions = getTestFunctions();
+        TestFunctions gpTestFunctions = testFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
         Complex[][] b = new Complex[g.length][g.length];
-        ModeFunctions fn = getModeFunctions();
+        ModeFunctions fn = modeFunctions();
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         ModeInfo[] n_propa = fn.getPropagatingModes();
@@ -153,7 +153,7 @@ public class MomStructureFractalZop extends MomStructure {
                     Complex zn = n.impedance.impedanceValue();
                     Complex sp1 = spp.get(n.index);
                     Complex sp2 = spq.get(n.index).conj();
-                    c = c.add(zn.mul(sp1).mul(sp2));
+                    c = c.plus(zn.mul(sp1).mul(sp2));
                 }
                 b[p][q] = c;
             }
@@ -171,11 +171,11 @@ public class MomStructureFractalZop extends MomStructure {
                             Complex sp1 = spp.get(n_propa[n].index);
                             Complex sp2 = spq.get(n_propa[m].index).conj();
                             Complex zs = zop[n_propa[m].index][n_propa[n].index];
-                            c = c.add(zs.mul(sp1).mul(sp2));
+                            c = c.plus(zs.mul(sp1).mul(sp2));
                         }
                     }
                 }
-                b[p][q] = b[p][q].add(c);
+                b[p][q] = b[p][q].plus(c);
             }
         }
 
@@ -183,10 +183,10 @@ public class MomStructureFractalZop extends MomStructure {
     }
 
     ComplexMatrix Bevan() {
-        TestFunctions gpTestFunctions = getTestFunctions();
+        TestFunctions gpTestFunctions = testFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
         Complex[][] b = new Complex[g.length][g.length];
-        ModeFunctions fn = getModeFunctions();
+        ModeFunctions fn = modeFunctions();
         ModeInfo[] modes = this.getModes();
         ModeInfo[] n_evan = getHintsManager().isHintRegularZnOperator() ? modes : fn.getVanishingModes();
         ComplexMatrix sp = getTestModeScalarProducts(ProgressMonitors.none());
@@ -199,7 +199,7 @@ public class MomStructureFractalZop extends MomStructure {
                     Complex zn = n.impedance.impedanceValue();
                     Complex sp1 = spp.get(n.index);
                     Complex sp2 = spq.get(n.index).conj();
-                    c = c.add(zn.mul(sp1).mul(sp2));
+                    c = c.plus(zn.mul(sp1).mul(sp2));
                 }
                 b[p][q] = c;
             }
@@ -422,7 +422,7 @@ public class MomStructureFractalZop extends MomStructure {
                 if (isSimple) {
                     ZsFractalGeneratorConfigurator generatorConfigurator = str2.getZsFractalGeneratorConfigurator();
                     if (generatorConfigurator == null) {
-                        GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.getTestFunctions());
+                        GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.testFunctions());
                         MeshAlgo meshAlgo = gpAdaptatif2.getMeshAlgo();
                         if (meshAlgo instanceof MeshAlgoRect) {
                             ((MeshAlgoRect) meshAlgo).setGridPrecision(str2.getSubModelGridPrecision());
@@ -458,7 +458,7 @@ public class MomStructureFractalZop extends MomStructure {
                     }
                 }
 //                System.out.println("op"+(i+1)+" = " + cMatrix);
-                ops[i] = new Zoperator(cMatrix, str.getModeFunctions());
+                ops[i] = new Zoperator(cMatrix, str.modeFunctions());
             }
             return ops;
         }
@@ -491,7 +491,7 @@ public class MomStructureFractalZop extends MomStructure {
                 str.setFractalScale(str2.realK - 1);
                 str.setDomain(polygon.getDomain(transform[i].getDomain(), domain));
                 if (isSimple) {
-                    GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.getTestFunctions());
+                    GpAdaptiveMesh gpAdaptatif2 = ((GpAdaptiveMesh) str.testFunctions());
                     MeshAlgo meshAlgo = gpAdaptatif2.getMeshAlgo();
                     if (meshAlgo instanceof MeshAlgoRect) {
                         ((MeshAlgoRect) meshAlgo).setGridPrecision(str2.getSubModelGridPrecision());
@@ -520,7 +520,7 @@ public class MomStructureFractalZop extends MomStructure {
                     cMatrix = cMatrix.inv();
                 }
 //                System.out.println("op"+(i+1)+" = " + cMatrix);
-                ops[i] = new Yoperator(cMatrix, str.getModeFunctions());
+                ops[i] = new Yoperator(cMatrix, str.modeFunctions());
             }
             return ops;
         }

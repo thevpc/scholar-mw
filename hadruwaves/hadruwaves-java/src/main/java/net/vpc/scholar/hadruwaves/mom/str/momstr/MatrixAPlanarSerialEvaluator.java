@@ -24,19 +24,22 @@ import net.vpc.scholar.hadruwaves.util.Impedance;
 public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
     public static final MatrixAPlanarSerialEvaluator INSTANCE = new MatrixAPlanarSerialEvaluator();
 
-    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        TestFunctions gpTestFunctions = str.getTestFunctions();
+    public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor1) {
+        TestFunctions gpTestFunctions = str.testFunctions();
         final DoubleToVector[] _g = gpTestFunctions.arr();
         final Complex[][] b = new Complex[_g.length][_g.length];
-        ModeFunctions fn = str.getModeFunctions();
+        ProgressMonitor[] mons=monitor1.split(2,2,6);
+
+        ModeFunctions fn = str.modeFunctions();
 //        ModeInfo[] n_eva = str.isParameter(AbstractStructure2D.HINT_REGULAR_ZN_OPERATOR) ? fn.getModes() : fn.getVanishingModes();
-        final ModeInfo[] n_eva = str.getModes();
-        final ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
+        final ModeInfo[] n_eva = str.getModes(mons[0]);
+        final ComplexMatrix sp = str.getTestModeScalarProducts(mons[1]);
         boolean complex = fn.isComplex() || gpTestFunctions.isComplex();
         boolean symMatrix = !complex;
         //boolean hermMatrix=complex;
         final String monMessage = getClass().getSimpleName();
         Impedance scalarSurfaceImpedance = str.getSerialZs()==null?Physics.impedance(Complex.ZERO):str.getSerialZs();
+        ProgressMonitor monitor=mons[2];
         if (symMatrix) {
             if (sp.isConvertibleTo(Maths.$DOUBLE)) {
                 final DoubleMatrix dsp = (DoubleMatrix) sp.to(Maths.$DOUBLE);

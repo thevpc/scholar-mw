@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.vpc.scholar</groupId>
+    <artifactId>hadrumaths-build</artifactId>
+    <name>net.vpc.scholar.hadrumaths-build</name>
+    <version>3.2.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hadrumaths</module>
+        <module>hadrumaths-units</module>
+        <module>hadrumaths-jama</module>
+        <module>hadrumaths-jblas</module>
+        <module>hadrumaths-ojalgo</module>
+        <module>hadrumaths-apache-math3</module>
+        <module>hadrumaths-jts</module>
+        <module>hadrumaths-plot</module>
+        <module>hadrumaths-scala</module>
+    </modules>
+
+</project>

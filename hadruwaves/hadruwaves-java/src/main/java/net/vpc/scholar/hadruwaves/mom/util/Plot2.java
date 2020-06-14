@@ -18,7 +18,7 @@ import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 public class Plot2 {
     public static void show(String title, MomStructure str){
         JFrame jFrame = new JFrame(title);
-        GpAdaptiveMesh functions = (GpAdaptiveMesh) str.getTestFunctions();
+        GpAdaptiveMesh functions = (GpAdaptiveMesh) str.testFunctions();
         jFrame.add(new PolygonPlot(functions.getPolygons()[0],functions.getMeshAlgo(),functions.getPattern(),str.getDomain()));
         jFrame.setVisible(true);
     }

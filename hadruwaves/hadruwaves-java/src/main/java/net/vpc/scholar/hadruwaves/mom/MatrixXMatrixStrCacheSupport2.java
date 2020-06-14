@@ -17,7 +17,7 @@ class MatrixXMatrixStrCacheSupport2 extends StrCacheSupport<ComplexMatrix> {
     }
 
     @Override
-    public ComplexMatrix eval(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
         return null;
     }
 }

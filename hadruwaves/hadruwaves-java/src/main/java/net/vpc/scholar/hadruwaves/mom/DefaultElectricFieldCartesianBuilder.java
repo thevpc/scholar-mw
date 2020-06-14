@@ -29,10 +29,9 @@ public class DefaultElectricFieldCartesianBuilder extends AbstractElectricFieldC
                 return new StrSubCacheSupport<VDiscrete>(getStructure(), "electric-field", CacheKey.obj("computeElectricField","x",x,"y",y,"z",z),monitor) {
 
                     @Override
-                    public VDiscrete eval(ObjectCache momCache) {
-                        double progressValue = getMonitor().getProgressValue();
+                    public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                         MomStructure momStructure = getStructure();
-                        return momStructure.evaluator().createElectricFieldEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
+                        return momStructure.evaluator().createElectricFieldEvaluator().evaluate(getStructure(), x0, y0, z0, cacheMonitor);
                     }
                 }.evalCached();
             }
@@ -40,9 +39,9 @@ public class DefaultElectricFieldCartesianBuilder extends AbstractElectricFieldC
                 return new StrSubCacheSupport<VDiscrete>(getStructure(), "electric-field-0",
                         CacheKey.obj("computeElectricFieldFundamental","x",x,"y",y,"z",z),monitor) {
 
-                    public VDiscrete eval(ObjectCache momCache) {
+                    public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                         MomStructure momStructure = getStructure();
-                        return momStructure.evaluator().createElectricFieldFundamentalEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
+                        return momStructure.evaluator().createElectricFieldFundamentalEvaluator().evaluate(getStructure(), x0, y0, z0, cacheMonitor);
                     }
                 }.evalCached();
             }

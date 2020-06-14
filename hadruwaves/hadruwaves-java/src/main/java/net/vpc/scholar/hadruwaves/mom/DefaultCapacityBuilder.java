@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
@@ -19,9 +20,10 @@ class DefaultCapacityBuilder extends AbstractCapacityBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix evalMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl(ProgressMonitor evalMonitor) {
         MomStructure momStructure = (MomStructure)getStructure();
-        ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).evalMatrix();
+        ProgressMonitor[] mons = evalMonitor.split(.9, .1);
+        ComplexMatrix z = momStructure.inputImpedance().monitor(mons[0]).evalMatrix();
         Complex[][] cc = z.getArrayCopy();
         double o = omega(momStructure.getFrequency());
         for (int i = 0; i < cc.length; i++) {
@@ -30,6 +32,7 @@ class DefaultCapacityBuilder extends AbstractCapacityBuilder {
                 Complex zz = complexes[j];
                 cc[i][j] = Maths.inv(zz.mul(I).mul(o));
             }
+            mons[1].setProgress(i,cc.length);
         }
         return Maths.matrix(cc);
     }

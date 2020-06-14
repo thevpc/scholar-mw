@@ -654,19 +654,19 @@ public final class Physics {
 
 
     public static BoxSpace openCircuitBoxSpace(Material material, double width) {
-        return BoxSpaceFactory.openCircuit(material, width);
+        return BoxSpace.openCircuit(material, width);
     }
 
     public static BoxSpace matchedLoadBoxSpace(Material material) {
-        return BoxSpaceFactory.matchedLoad(material);
+        return BoxSpace.matchedLoad(material);
     }
 
     public static BoxSpace shortCircuitBoxSpace(Material material, double width) {
-        return BoxSpaceFactory.shortCircuit(material, width);
+        return BoxSpace.shortCircuit(material, width);
     }
 
     public static BoxSpace nothingBoxSpace() {
-        return BoxSpaceFactory.nothing();
+        return BoxSpace.nothing();
     }
 
 
@@ -685,8 +685,8 @@ public final class Physics {
         env.setDomain(Domain.ofWidth(x, w, y, h));
         env.setHintFnModes(ModeType.TEM, ModeType.TM, ModeType.TE);
         //fnBaseFunctions.setHintFnModeTypes(Mode.TEM, ModeType.TM);
-        env.setFirstBoxSpace(BoxSpaceFactory.shortCircuit(Material.substrate(2.2), 1.59 * 1E-3));
-        env.setSecondBoxSpace(BoxSpaceFactory.matchedLoad(Material.VACUUM));
+        env.setFirstBoxSpace(BoxSpace.shortCircuit(Material.substrate(2.2), 1.59 * 1E-3));
+        env.setSecondBoxSpace(BoxSpace.matchedLoad(Material.VACUUM));
         env.setFrequency(f);
 //        fnBaseFunctions.setProjectType(ProjectType.PLANAR_STRUCTURE);
         env.setHintAxisType(HintAxisType.XY_SEPARATED);
@@ -728,8 +728,8 @@ public final class Physics {
             Complex gamma=l<0?gamma1:gamma2;
             Complex zt = layer.getImpedance().impedanceValue();//
             Complex z=z0.mul(
-                    zt.add(z0.mul(tanh(gamma.mul(l)))).div(
-                            z0.add(zt.mul(tanh(gamma.mul(l))))
+                    zt.plus(z0.mul(tanh(gamma.mul(l)))).div(
+                            z0.plus(zt.mul(tanh(gamma.mul(l))))
                     )
             );
             yl=yl.parallel(impedance(z));
@@ -738,19 +738,19 @@ public final class Physics {
     }
 
     public static Complex addSerialImpedance(Complex impedance1, Complex impedance2) {
-        return impedance1.add(impedance2);
+        return impedance1.plus(impedance2);
     }
 
     public static Complex addParallelImpedance(Complex impedance1, Complex impedance2) {
-        return (impedance1.inv().add(impedance2.inv())).inv();
+        return (impedance1.inv().plus(impedance2.inv())).inv();
     }
 
     public static Complex addParallelAdmittance(Complex admittance1, Complex admittance2) {
-        return admittance1.add(admittance2);
+        return admittance1.plus(admittance2);
     }
 
     public static Complex addSerialAdmittance(Complex admittance1, Complex admittance2) {
-        return (admittance1.inv().add(admittance2.inv())).inv();
+        return (admittance1.inv().plus(admittance2.inv())).inv();
     }
 
     public static ImpedanceValue impedance(Complex c) {

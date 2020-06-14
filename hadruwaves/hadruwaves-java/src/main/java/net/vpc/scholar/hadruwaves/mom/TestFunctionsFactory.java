@@ -8,9 +8,9 @@ package net.vpc.scholar.hadruwaves.mom;
 import net.vpc.scholar.hadrumaths.AbstractFactory;
 import net.vpc.scholar.hadrumaths.Axis;
 import net.vpc.scholar.hadrumaths.Domain;
+import net.vpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
 import net.vpc.scholar.hadrumaths.GeometryFactory;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
@@ -41,7 +41,7 @@ public class TestFunctionsFactory extends AbstractFactory {
 
     public static TestFunctionsBuilder addGeometry(Point... points) {
 
-        return createBuilder().addGeometry(new Polygon(points));
+        return createBuilder().addGeometry(GeometryFactory.createPolygon(points));
     }
 
     public static TestFunctionsBuilder addGeometry(Domain geometry) {

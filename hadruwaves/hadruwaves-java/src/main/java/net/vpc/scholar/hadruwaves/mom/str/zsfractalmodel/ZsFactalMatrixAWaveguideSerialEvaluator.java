@@ -26,10 +26,10 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
     @Override
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         MomStructureFractalZop str2 = (MomStructureFractalZop) str;
-        TestFunctions gpTestFunctions = str.getTestFunctions();
+        TestFunctions gpTestFunctions = str.testFunctions();
         DoubleToVector[] g = gpTestFunctions.arr();
         Complex[][] b = new Complex[g.length][g.length];
-        ModeFunctions fn = str.getModeFunctions();
+        ModeFunctions fn = str.modeFunctions();
         str.getModes();//just to load it
         ModeInfo[] n_evan = str.getHintsManager().isHintRegularZnOperator() ? str.getModes() : fn.getVanishingModes();
         ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
@@ -47,7 +47,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
                         Complex zn = n.impedance.impedanceValue();
-                        c = c.add(zn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                        c = c.plus(zn.mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
                 }
@@ -68,7 +68,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int p = 0; p < g.length; p++) {
                         ComplexVector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
-                            b[p][q] = b[p][q].add(zs.mul(spc2p.get(q)));
+                            b[p][q] = b[p][q].plus(zs.mul(spc2p.get(q)));
                         }
                     }
                 } else {
@@ -95,11 +95,11 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                                         Complex sp1 = spc2p.get(n_propa[m].index);
                                         Complex sp2 = spc2q.get(n_propa[n].index).conj();
                                         Complex zs = op[m][n];
-                                        c = c.add(zs.mul(sp1).mul(sp2));
+                                        c = c.plus(zs.mul(sp1).mul(sp2));
                                         //#@   END
                                     }
                                 }
-                                b[p][q] = b[p][q].add(c);
+                                b[p][q] = b[p][q].plus(c);
                             }
                         }
                     }
@@ -118,7 +118,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     ComplexVector spq = sp.getRow(q);
                     Complex c = Maths.CZERO;
                     for (ModeInfo n : n_evan) {
-                        c = c.add(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
+                        c = c.plus(n.impedance.impedanceValue().mul(spp.get(n.index)).mul(spq.get(n.index).conj()));
                     }
                     b[p][q] = c;
                 }
@@ -139,7 +139,7 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                     for (int p = 0; p < g.length; p++) {
                         ComplexVector spc2p = spc2.getRow(p);
                         for (int q = p; q < g.length; q++) {
-                            b[p][q] = b[p][q].add(zs.mul(spc2p.get(q)));
+                            b[p][q] = b[p][q].plus(zs.mul(spc2p.get(q)));
                         }
                     }
                 } else {
@@ -163,11 +163,11 @@ public class ZsFactalMatrixAWaveguideSerialEvaluator implements MatrixAEvaluator
                                         Complex sp1 = spc2p.get(n_propa[n].index);
                                         Complex sp2 = spc2q.get(n_propa[m].index).conj();
                                         Complex zs = op[m][n];
-                                        c = c.add(zs.mul(sp1).mul(sp2));
+                                        c = c.plus(zs.mul(sp1).mul(sp2));
                                         //#@   END
                                     }
                                 }
-                                b[p][q] = b[p][q].add(c);
+                                b[p][q] = b[p][q].plus(c);
                             }
                         }
                     }

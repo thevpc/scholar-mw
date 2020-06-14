@@ -38,7 +38,7 @@ public class PolygonComponent extends JComponent {
         p.add(new PolygonComponent(
                 geometryList, meshalgo, pattern, globalDomain
         ));
-        p.setSize(new Dimension(400, 400));
+        p.setSize(new java.awt.Dimension(400, 400));
         JFrame f = new JFrame();
         f.add(p);
         f.setVisible(true);

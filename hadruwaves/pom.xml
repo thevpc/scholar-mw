@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.vpc.scholar</groupId>
+    <artifactId>hadruwaves-build</artifactId>
+    <name>net.vpc.scholar.hadruwaves-build</name>
+    <version>3.2.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hadruwaves-java</module>
+        <module>hadruwaves-java-examples</module>
+        <module>hadruwaves-puppets</module>
+        <module>hadruwaves-scala</module>
+        <module>hadruwaves-scala-examples</module>
+    </modules>
+
+</project>

@@ -1,12 +1,20 @@
 package net.vpc.scholar.hadruwaves.props;
 
-import net.vpc.common.prpbind.PropertyType;
-import net.vpc.common.prpbind.impl.DelegateProperty;
-import net.vpc.scholar.hadruwaves.project.HWProjectEnv;
+import net.vpc.common.props.Property;
+import net.vpc.common.props.PropertyType;
+import net.vpc.common.props.impl.DelegateProperty;
+import net.vpc.scholar.hadrumaths.units.UnitType;
+import net.vpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public class ReadOnlyPExpression<T> extends DelegateProperty<T> implements PExpression<T> {
+
     public ReadOnlyPExpression(PExpression<T> v) {
         super(v);
+    }
+
+    @Override
+    public UnitType unitType() {
+        return getBase().unitType();
     }
 
     @Override
@@ -22,11 +30,9 @@ public class ReadOnlyPExpression<T> extends DelegateProperty<T> implements PExpr
 //        }
 //        return new ReadOnlyPValue<T>(v);
 //    }
-
-
     @Override
-    public PropertyType getValueType() {
-        return getBase().getValueType();
+    public PropertyType valueType() {
+        return getBase().valueType();
     }
 
     @Override
@@ -35,7 +41,18 @@ public class ReadOnlyPExpression<T> extends DelegateProperty<T> implements PExpr
     }
 
     @Override
-    public T eval(HWProjectEnv env) {
-        return getBase().eval(env);
+    public T eval(HWConfigurationRun configuration) {
+        return getBase().eval(configuration);
     }
+
+    @Override
+    public String toString() {
+        return getBase().toString();
+    }
+
+    @Override
+    public Property readOnly() {
+        return this;
+    }
+
 }

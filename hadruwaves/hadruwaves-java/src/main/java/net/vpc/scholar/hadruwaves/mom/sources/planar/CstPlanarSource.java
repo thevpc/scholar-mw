@@ -46,6 +46,10 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
         this.polarization = polarization;
     }
 
+    @Override
+    public Geometry getGeometry() {
+        return geometryList;
+    }
 
     public Complex getCharacteristicImpedance() {
         return characteristicImpedance;

@@ -34,12 +34,6 @@
             <artifactId>hadruwaves</artifactId>
             <version>${scholar-version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>junit</groupId>-->
-<!--            <artifactId>junit</artifactId>-->
-<!--            <version>3.8.1</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
     <repositories>
         <repository>

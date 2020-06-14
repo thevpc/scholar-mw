@@ -1,5 +1,6 @@
 package net.vpc.scholar.hadruwaves.mom;
 
+import net.vpc.common.mon.ProgressMonitor;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Maths;
@@ -18,13 +19,13 @@ class DefaultSParametersBuilder extends AbstractSParametersBuilder {
         super(momStructure);
     }
 
-    public ComplexMatrix evalMatrixImpl() {
+    public ComplexMatrix evalMatrixImpl(ProgressMonitor evalMonitor) {
         MomStructure momStructure=(MomStructure) getStructure();
         ComplexMatrix z = momStructure.inputImpedance().monitor(getMonitor()).evalMatrix();
         ComplexMatrix z0 = null;
         switch (momStructure.getProjectType()) {
             case WAVE_GUIDE: {
-                z0 = Maths.matrix(new Complex[][]{{momStructure.getModeFunctions().getPropagatingModes()[0].impedance.impedanceValue()}});
+                z0 = Maths.matrix(new Complex[][]{{momStructure.modeFunctions().getPropagatingModes()[0].impedance.impedanceValue()}});
                 break;
             }
             case PLANAR_STRUCTURE: {

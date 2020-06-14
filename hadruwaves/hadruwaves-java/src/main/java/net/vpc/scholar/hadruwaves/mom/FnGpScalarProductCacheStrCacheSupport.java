@@ -17,9 +17,9 @@ class FnGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatri
     }
 
     @Override
-    public ComplexMatrix eval(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
         ProgressMonitor monitor = getMonitor();
-        ProgressMonitor[] mon = monitor.split(new double[]{.1, .9});
+        ProgressMonitor[] mon = monitor.split(.1, .9);
         momStructure.initComputation(mon[0]);
         return momStructure.createScalarProductCache(mon[1]);
     }

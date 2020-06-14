@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.TaskMonitorManager;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -20,7 +19,7 @@ public abstract class AbstractSelfBuilder extends AbstractComplexBuilder impleme
     }
 
     @Override
-    public SelfBuilder monitor(TaskMonitorManager monitor) {
+    public SelfBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (SelfBuilder) super.monitor(monitor);
     }
 

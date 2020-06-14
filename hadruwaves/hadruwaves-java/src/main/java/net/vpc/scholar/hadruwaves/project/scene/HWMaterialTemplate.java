@@ -1,28 +1,57 @@
 package net.vpc.scholar.hadruwaves.project.scene;
 
-import net.vpc.common.prpbind.Props;
-import net.vpc.common.prpbind.WritablePValue;
+import net.vpc.common.props.PValue;
+import net.vpc.common.props.Props;
+import net.vpc.common.props.WritablePValue;
+import net.vpc.common.tson.Tson;
+import net.vpc.common.tson.TsonElement;
+import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadruwaves.Material;
-import net.vpc.scholar.hadruwaves.project.HWProjectEnv;
+import net.vpc.scholar.hadruwaves.project.HWProject;
+import net.vpc.scholar.hadruwaves.project.HWProjectElement;
+import net.vpc.scholar.hadruwaves.project.HWSolution;
 import net.vpc.scholar.hadruwaves.project.Props2;
+import net.vpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.vpc.scholar.hadruwaves.props.WritablePExpression;
 
-public class HWMaterialTemplate {
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritablePExpression<Double> permettivity = Props2.of("permettivity").doubleOf(1.0);
-    private WritablePExpression<Double> permeability = Props2.of("permeability").doubleOf(1.0);
-    private WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").doubleOf(0.0);
+public class HWMaterialTemplate implements HWProjectElement {
 
-    public HWMaterialTemplate() {
+    private final WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    private final WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    private final WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
+    private final WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritablePExpression<Double> permettivity = Props2.of("permettivity").exprDoubleOf(1.0);
+    private final WritablePExpression<Double> permeability = Props2.of("permeability").exprDoubleOf(1.0);
+    private final WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").exprDoubleOf(0.0);
+
+    public HWMaterialTemplate(HWProject project) {
+        this.project.set(project);
+        this.solution.set(project.solution().get());
     }
 
-    public HWMaterialTemplate(Material m) {
+    public HWMaterialTemplate(Material m, HWProject project) {
         set(m);
+        this.project.set(project);
+        this.solution.set(project.solution().get());
     }
 
+    @Override
+    public PValue<HWSolution> solution() {
+        return solution.readOnly();
+    }
 
+    @Override
+    public WritablePValue<HWProject> project() {
+        return project;
+    }
+
+    @Override
     public WritablePValue<String> name() {
         return name;
+    }
+
+    public WritablePValue<String> description() {
+        return description;
     }
 
     public WritablePExpression<Double> permettivity() {
@@ -47,7 +76,7 @@ public class HWMaterialTemplate {
         electricConductivity.set(String.valueOf(material.getElectricConductivity()));
     }
 
-    public Material eval(HWProjectEnv env) {
+    public Material eval(HWConfigurationRun configuration) {
         String n = name.get();
         if (n == null) {
             n = "";
@@ -59,14 +88,30 @@ public class HWMaterialTemplate {
                 return Material.VACUUM;
             case "pec":
                 return Material.PEC;
-            case "pmc":
-                return Material.PMC;
         }
         return new Material(
                 n,
-                permettivity.eval(env),
-                permeability.eval(env),
-                electricConductivity.eval(env)
+                permettivity.eval(configuration),
+                permeability.eval(configuration),
+                electricConductivity.eval(configuration)
         );
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(name.get());
+    }
+
+    @Override
+    public TsonElement toTsonElement(TsonObjectContext context) {
+        return 
+                Tson.obj("Material")
+                .add("name",name.get())
+                .add("description",description.get())
+                .add("permettivity",permettivity.get())
+                .add("permeability",permeability.get())
+                .add("Conductivity",electricConductivity.get())
+                .build();
+    }
+    
 }

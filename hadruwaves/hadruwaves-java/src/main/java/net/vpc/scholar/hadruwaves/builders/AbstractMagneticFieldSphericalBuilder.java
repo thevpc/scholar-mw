@@ -7,8 +7,7 @@ import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Vector;
 import net.vpc.scholar.hadrumaths.cache.CacheKey;
 import net.vpc.scholar.hadrumaths.cache.ObjectCache;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruwaves.ApertureType;
 import net.vpc.scholar.hadruwaves.mom.StrSubCacheSupport;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
@@ -36,7 +35,7 @@ public abstract class AbstractMagneticFieldSphericalBuilder extends AbstractValu
     }
 
     @Override
-    public MagneticFieldSphericalBuilder monitor(TaskMonitorManager monitor) {
+    public MagneticFieldSphericalBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (MagneticFieldSphericalBuilder) super.monitor(monitor);
     }
 
@@ -54,8 +53,8 @@ public abstract class AbstractMagneticFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().magneticField().spherical().monitor(monitor)
@@ -76,8 +75,8 @@ public abstract class AbstractMagneticFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().magneticField().spherical().monitor(monitor)
@@ -98,8 +97,8 @@ public abstract class AbstractMagneticFieldSphericalBuilder extends AbstractValu
                 , "apertureType", getApertureType()
         ), getMonitor()) {
             @Override
-            public ComplexMatrix eval(ObjectCache momCache) {
-                return invokeMonitoredAction(getMonitor(), getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
+            public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                return invokeMonitoredAction(cacheMonitor, getClass().getSimpleName(), new MonitoredAction<ComplexMatrix>() {
                     @Override
                     public ComplexMatrix process(final ProgressMonitor monitor, String messagePrefix) throws Exception {
                         Vector<ComplexMatrix> thetaPhi = getStructure().magneticField().spherical().monitor(monitor)

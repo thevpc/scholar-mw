@@ -6,17 +6,13 @@
 package net.vpc.scholar.hadruwaves.mom;
 
 import net.vpc.scholar.hadrumaths.*;
-import net.vpc.scholar.hadrumaths.geom.Geometry;
-import net.vpc.scholar.hadrumaths.geom.GeometryList;
-import net.vpc.scholar.hadrumaths.geom.Point;
-import net.vpc.scholar.hadrumaths.geom.Polygon;
+import net.vpc.scholar.hadrumaths.geom.*;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.vpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.vpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.vpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
-import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.ListTestFunctions;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.vpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.BoxModesPattern;
@@ -51,7 +47,7 @@ public class TestFunctionsBuilder {
 
 
     public TestFunctionsBuilder addGeometry(Point... points) {
-        return addGeometry(new Polygon(points));
+        return addGeometry(GeometryFactory.createPolygon(points));
     }
 
     public TestFunctionsBuilder addGeometry(Domain geometry) {

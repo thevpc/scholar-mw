@@ -35,7 +35,7 @@ public class PlotStructure extends PlotAxisCustom implements Cloneable {
                         st += " : ";
                     }
                     st += p.getSerieTitle();
-                    net.vpc.scholar.hadruwaves.mom.TestFunctions gp = str.getTestFunctions();
+                    net.vpc.scholar.hadruwaves.mom.TestFunctions gp = str.testFunctions();
                     if(gp instanceof GpAdaptiveMesh){
                         GpAdaptiveMesh gpa=(GpAdaptiveMesh) gp;
                         all.add(new PolygonPlotConsoleAction(st+"["+ str.getCircuitType()+"]", gpa.getPolygons(str.getCircuitType()).clone(),gpa.getMeshAlgo().clone(), gpa.getPattern(),str.getDomain(), p.getPreferredPath()));
@@ -53,7 +53,7 @@ public class PlotStructure extends PlotAxisCustom implements Cloneable {
                     }
                     st += p.getSerieTitle();
                     st += "-[Model]";
-                    net.vpc.scholar.hadruwaves.mom.TestFunctions gp = str2.getTestFunctions();
+                    net.vpc.scholar.hadruwaves.mom.TestFunctions gp = str2.testFunctions();
                     if(gp instanceof GpAdaptiveMesh){
                         GpAdaptiveMesh gpa=(GpAdaptiveMesh) gp;
                         all.add(new PolygonPlotConsoleAction(

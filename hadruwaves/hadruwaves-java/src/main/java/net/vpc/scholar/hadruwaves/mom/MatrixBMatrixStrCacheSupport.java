@@ -15,15 +15,15 @@ class MatrixBMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
     public MatrixBMatrixStrCacheSupport(DefaultMomMatrixBBuilder defaultMomMatrixBBuilder, ProgressMonitor mon) {
         super(defaultMomMatrixBBuilder.getStructure(), MomStructure.CACHE_MATRIX_B,mon);
         this.defaultMomMatrixBBuilder = defaultMomMatrixBBuilder;
-        this.mon = getMonitor().split(new double[]{2,8});
+        this.mon = getMonitor().split(2,8);
     }
 
-    protected void init() {
+    protected void init(ProgressMonitor cacheMonitor) {
         MomStructure momStructure = defaultMomMatrixBBuilder.getStructure();
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public ComplexMatrix eval(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
         MomStructure momStructure = defaultMomMatrixBBuilder.getStructure();
         ComplexMatrix matrix = momStructure.evaluator().createMatrixBEvaluator().evaluate(momStructure, mon[1]);
         Number ceil = momStructure.getHintsManager().getHintBMatrixSparsify();

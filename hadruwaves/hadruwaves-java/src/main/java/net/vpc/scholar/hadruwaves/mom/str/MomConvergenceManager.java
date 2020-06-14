@@ -64,13 +64,13 @@ public class MomConvergenceManager {
      * @return fn at convergence
      */
     public int getConvergenceFn(int maxFn, int step, double error) {
-        int oldMaxFn = momStructure.getModeFunctions().getSize();
+        int oldMaxFn = momStructure.modeFunctions().getSize();
 //        momStructure.applyModeFunctionsChanges(fn);
 
-        TestFunctions gp = momStructure.getTestFunctions();
+        TestFunctions gp = momStructure.testFunctions();
         ComplexMatrix sp = momStructure.createScalarProductCache(ProgressMonitors.none());
-        ModeInfo[] n_pro = momStructure.getModeFunctions().getPropagatingModes();
-        ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : momStructure.getModeFunctions().getVanishingModes();
+        ModeInfo[] n_pro = momStructure.modeFunctions().getPropagatingModes();
+        ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : momStructure.modeFunctions().getVanishingModes();
 
         DoubleToVector[] _g = gp.arr();
 
@@ -102,7 +102,7 @@ public class MomConvergenceManager {
                         Complex c = a[p][q];
                         Complex sp1 = spc.get(p);
                         Complex sp2 = spc.get(q).conj();
-                        a[p][q] = c.add(zn.mul(sp1).mul(sp2));
+                        a[p][q] = c.plus(zn.mul(sp1).mul(sp2));
                     }
                 }
                 n++;
@@ -130,7 +130,7 @@ public class MomConvergenceManager {
         } else {
             momStructure.getLog().debug("Convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "] = " + (n - 1 + n_pro.length));
         }
-        momStructure.getModeFunctions().setSize(oldMaxFn);
+        momStructure.modeFunctions().setSize(oldMaxFn);
         return n - 1 + n_pro.length;
     }
 }

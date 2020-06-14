@@ -16,7 +16,7 @@ public class DefaultMatrixUnknownEvaluator implements MatrixUnknownEvaluator {
     public static final DefaultMatrixUnknownEvaluator INSTANCE=new DefaultMatrixUnknownEvaluator();
     @Override
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
-        ProgressMonitor[] mons = ProgressMonitors.split(monitor, new double[]{1, 4}, new boolean[]{true, true});
+        ProgressMonitor[] mons = ProgressMonitors.split(monitor, new double[]{1, 4});
         ComplexMatrix B_ = str.matrixB().monitor(mons[0]).evalMatrix();
         ComplexMatrix A_ = str.matrixA().monitor(mons[1]).evalMatrix();
 

@@ -31,7 +31,7 @@ class DefaultCurrentBuilder extends AbstractCurrentBuilder {
                 ,monitor) {
 
             @Override
-            public VDiscrete eval(ObjectCache momCache) {
+            public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                 MomStructure momStructure = getStructure();
                 return momStructure.evaluator().createCurrentEvaluator().evaluate(getStructure(), x0, y0, getMonitor());
             }

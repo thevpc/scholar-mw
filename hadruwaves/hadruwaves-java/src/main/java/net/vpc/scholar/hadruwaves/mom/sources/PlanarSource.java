@@ -6,6 +6,7 @@ package net.vpc.scholar.hadruwaves.mom.sources;
 
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.HSerializable;
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 /**
@@ -14,6 +15,8 @@ import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 public interface PlanarSource extends Source, HSerializable, Cloneable {
 
     Complex getCharacteristicImpedance();
+
+    Geometry getGeometry();
 
     DoubleToVector getFunction();
 

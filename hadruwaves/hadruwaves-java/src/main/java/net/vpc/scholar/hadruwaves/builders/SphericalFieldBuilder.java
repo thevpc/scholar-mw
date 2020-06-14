@@ -1,17 +1,17 @@
 package net.vpc.scholar.hadruwaves.builders;
 
 import net.vpc.common.mon.ProgressMonitor;
+import net.vpc.common.mon.ProgressMonitorFactory;
 import net.vpc.scholar.hadrumaths.ComplexMatrix;
 import net.vpc.scholar.hadrumaths.Vector;
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.vpc.common.mon.TaskMonitorManager;
 
 /**
  * @author taha.bensalah@gmail.com on 7/16/16.
  */
 public interface SphericalFieldBuilder extends ValueBuilder {
-    SphericalFieldBuilder monitor(TaskMonitorManager monitor);
+    SphericalFieldBuilder monitor(ProgressMonitorFactory monitor);
 
     SphericalFieldBuilder monitor(ProgressMonitor monitor);
 

@@ -17,12 +17,12 @@ class ZinMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
         this.momStructure = momStructure;
     }
 
-    protected void init() {
-        mon = getMonitor().split(new double[]{2,8});
+    protected void init(ProgressMonitor cacheMonitor) {
+        mon = getMonitor().split(.2,.8);
         momStructure.getTestModeScalarProducts(mon[0]);
     }
 
-    public ComplexMatrix eval(ObjectCache momCache) {
+    public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
         return momStructure.evaluator().createZinEvaluator().evaluate(momStructure, mon[1]);
     }
 }

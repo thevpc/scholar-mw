@@ -39,7 +39,7 @@
 //     */
 //    public int computeTestConvergenceForZs(MomStructure str,int start, double relativeError, boolean returnActualGpCount, ProgressMonitor monitor) {
 //        int i = start;
-//        int x = str.getTestFunctionsCount();
+//        int x = str.testFunctionsCount();
 //        str.setTestFunctionsCount(i);
 //        Matrix old = str.inputImpedance().monitor(monitor).computeMatrix();
 //        //        System.out.println("old="+old);
@@ -54,7 +54,7 @@
 //            }
 //            old = m;
 //        }
-//        int realCount = str.getTestFunctions().arr().length;
+//        int realCount = str.testFunctions().arr().length;
 //        str.setTestFunctionsCount(x);
 //        return returnActualGpCount ? realCount : i;
 //    }

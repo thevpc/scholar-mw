@@ -10,6 +10,7 @@ import net.vpc.common.tson.TsonObjectBuilder;
 import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Complex;
 import net.vpc.scholar.hadrumaths.Expr;
+import net.vpc.scholar.hadrumaths.geom.Geometry;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
@@ -23,12 +24,24 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
 
     private DoubleToVector fct;
     private Complex characteristicImpedance;
+    private Geometry geometry;
 
-    public ExprPlanarSource(Expr fct, Complex characteristicImpedance) {
+    public ExprPlanarSource(Expr fct, Complex characteristicImpedance,Geometry geometry) {
         this.fct = fct.toDV();
+        if(geometry==null){
+            geometry=fct.getDomain().toGeometry();
+        }
+        if(characteristicImpedance==null){
+            characteristicImpedance=Complex.of(50);
+        }
+        this.geometry = geometry;
         this.characteristicImpedance = characteristicImpedance;
     }
 
+    @Override
+    public Geometry getGeometry() {
+        return geometry;
+    }
 
     public Complex getCharacteristicImpedance() {
         return characteristicImpedance;

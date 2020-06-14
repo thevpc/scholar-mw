@@ -24,7 +24,7 @@ public class DefaultPoyntingVectorCartesianBuilder extends AbstractPoyntingVecto
         return new StrSubCacheSupport<VDiscrete>(getStructure(), "poynting-vector", CacheKey.obj("computePoyntingVector","x",x,"y",y),monitor) {
 
             @Override
-            public VDiscrete eval(ObjectCache momCache) {
+            public VDiscrete eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                 MomStructure momStructure = getStructure();
                 return momStructure.evaluator().createPoyntingVectorEvaluator().evaluate(getStructure(), x0, y0, z0, getMonitor());
             }

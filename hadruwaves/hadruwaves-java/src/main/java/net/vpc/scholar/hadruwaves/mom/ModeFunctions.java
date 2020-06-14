@@ -65,7 +65,11 @@ public interface ModeFunctions extends Cloneable, HSerializable {
 
     DoubleToVector[] arr();
 
+    DoubleToVector[] arr(ProgressMonitor monitor);
+
     DoubleToVector[] fn();
+
+    DoubleToVector[] fn(ProgressMonitor monitor);
 
     Complex[] zn();
 

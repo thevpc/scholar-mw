@@ -1,8 +1,7 @@
 package net.vpc.scholar.hadruwaves.builders;
 
-import net.vpc.scholar.hadrumaths.convergence.ConvergenceEvaluator;
 import net.vpc.common.mon.ProgressMonitor;
-import net.vpc.common.mon.TaskMonitorManager;
+import net.vpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
 import net.vpc.scholar.hadruwaves.str.MWStructure;
 
 /**
@@ -20,7 +19,7 @@ public abstract class AbstractElectricFieldCartesianBuilder extends AbstractVDis
     }
 
     @Override
-    public ElectricFieldCartesianBuilder monitor(TaskMonitorManager monitor) {
+    public ElectricFieldCartesianBuilder monitor(net.vpc.common.mon.ProgressMonitorFactory monitor) {
         return (ElectricFieldCartesianBuilder) super.monitor(monitor);
     }
 

@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>net.vpc.scholar.hadruwaves.studio</groupId>
-            <artifactId>hadruwaves-studio-standalone</artifactId>
+            <artifactId>hadruwaves-studio-standalone-old</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

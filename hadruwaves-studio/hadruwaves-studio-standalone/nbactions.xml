@@ -9,7 +9,7 @@
             <properties>
                 <exec.classpathScope>runtime</exec.classpathScope>
                 <exec.workingdir>/home/vpc/Data/xprojects/net/vpc/scholar/tmwlab/runtime/</exec.workingdir>
-                <exec.args>-classpath %classpath net.vpc.research.tmwlab.TMWLabApplication</exec.args>
+                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -22,7 +22,7 @@
             <properties>
                 <exec.workingdir>/home/vpc/Data/xprojects/net/vpc/scholar/tmwlab/runtime/</exec.workingdir>
                 <exec.classpathScope>runtime</exec.classpathScope>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath net.vpc.research.tmwlab.TMWLabApplication</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath net.vpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudioV2Impl</exec.args>
                 <jpda.listen>true</jpda.listen>
                 <exec.executable>java</exec.executable>
             </properties>
@@ -35,7 +35,7 @@
             </goals>
             <properties>
                 <exec.workingdir>/home/vpc/Data/xprojects/net/vpc/scholar/tmwlab/runtime/</exec.workingdir>
-                <exec.args>${profiler.args} -classpath %classpath ${packageClassName}</exec.args>
+                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
                 <profiler.action>profile</profiler.action>
                 <exec.executable>${profiler.java}</exec.executable>
             </properties>

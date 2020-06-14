@@ -6,7 +6,7 @@ import net.vpc.common.tson.TsonObjectContext;
 import net.vpc.scholar.hadrumaths.Domain;
 import net.vpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadruwaves.Wall;
+import net.vpc.scholar.hadruwaves.Boundary;
 import net.vpc.scholar.hadruwaves.WallBorders;
 import net.vpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.vpc.scholar.hadruwaves.mom.MomStructure;
@@ -80,25 +80,25 @@ public final class SinIntelliPattern extends AbstractGpPatternPQ {
         boolean northReached = Math.abs(d.ymin() - globalDomain.ymin()) < EPS;
         boolean southReached = Math.abs(d.ymax ()- globalDomain.ymax()) < EPS;
         CircuitType circuit = str.getCircuitType();
-        ModeFunctions fn = str.getModeFunctions();
+        ModeFunctions fn = str.modeFunctions();
         WallBorders b=str.getBorders();
-        Wall eastWall= eastReached ?b.getEast():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
-        Wall westWall= westReached ?b.getWest():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
-        Wall northWall= northReached ?b.getNorth():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
-        Wall southWall= southReached ?b.getSouth():CircuitType.SERIAL.equals(circuit)?Wall.MAGNETIC:Wall.ELECTRIC;
+        Boundary eastWall= eastReached ?b.getEast():CircuitType.SERIAL.equals(circuit)?Boundary.MAGNETIC:Boundary.ELECTRIC;
+        Boundary westWall= westReached ?b.getWest():CircuitType.SERIAL.equals(circuit)?Boundary.MAGNETIC:Boundary.ELECTRIC;
+        Boundary northWall= northReached ?b.getNorth():CircuitType.SERIAL.equals(circuit)?Boundary.MAGNETIC:Boundary.ELECTRIC;
+        Boundary southWall= southReached ?b.getSouth():CircuitType.SERIAL.equals(circuit)?Boundary.MAGNETIC:Boundary.ELECTRIC;
         switch(axis){
             case X:{
-                boolean eastMax= Wall.ELECTRIC.equals(eastWall);
-                boolean westMax= Wall.ELECTRIC.equals(westWall);
-                boolean northMax= Wall.MAGNETIC.equals(northWall);
-                boolean southMax= Wall.MAGNETIC.equals(southWall);
+                boolean eastMax= Boundary.ELECTRIC.equals(eastWall);
+                boolean westMax= Boundary.ELECTRIC.equals(westWall);
+                boolean northMax= Boundary.MAGNETIC.equals(northWall);
+                boolean southMax= Boundary.MAGNETIC.equals(southWall);
                 return CellBoundaries.eval(eastMax, westMax, northMax, southMax);
             }
             case Y:{
-                boolean eastMax= Wall.MAGNETIC.equals(eastWall);
-                boolean westMax= Wall.MAGNETIC.equals(westWall);
-                boolean northMax= Wall.ELECTRIC.equals(northWall);
-                boolean southMax= Wall.ELECTRIC.equals(southWall);
+                boolean eastMax= Boundary.MAGNETIC.equals(eastWall);
+                boolean westMax= Boundary.MAGNETIC.equals(westWall);
+                boolean northMax= Boundary.ELECTRIC.equals(northWall);
+                boolean southMax= Boundary.ELECTRIC.equals(southWall);
                 return CellBoundaries.eval(eastMax, westMax, northMax, southMax);
             }
         }

@@ -39,18 +39,18 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                 final String monText = getClass().getSimpleName();
                 for (int i = 0; i < thetaArr.length; i++) {
                     for (int j = 0; j < phiArr.length; j++) {
-                        monitor.setProgress(i, j,thetaArr.length,phiArr.length,monText);
+                        monitor.setProgress(i, thetaArr.length, j, phiArr.length,monText);
                         final int finalI = i;
                         final int finalJ = j;
-                        System.out.println("TRY EXEC="+monitor.getProgressValue()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
+                        System.out.println("TRY EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
                         Complex[] rr= new StrSubCacheSupport<Complex[]>(structure, "far-field-angle",
                                 CacheKey.obj("computeFarFieldThetaPhiElement","theta",thetaArr[i],"phi", phiArr[i],"r",r)
                                 ,monitor) {
 
                             @Override
-                            public Complex[] eval(ObjectCache momCache) {
-                                monitor.setProgress(finalI, finalJ,thetaArr.length,phiArr.length,monText);
-                                System.out.println("EXEC="+monitor.getProgressValue()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
+                            public Complex[] eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
+                                monitor.setProgress(finalI, thetaArr.length, finalJ, phiArr.length,monText);
+                                System.out.println("EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
                                 double sin_theta = sin(thetaArr[finalI]);
                                 double cos_theta = cos(thetaArr[finalI]);
                                 double sin_phi = sin(phiArr[finalJ]);
@@ -91,11 +91,11 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
 
                                 Complex px_theta = fxtheta.toComplex();
                                 Complex py_theta = fytheta.toComplex();
-                                Complex Etheta = (py_theta.mul(cos_phi).sub(px_theta.mul(sin_phi))).mul(C1); // Etheta
+                                Complex Etheta = (py_theta.mul(cos_phi).minus(px_theta.mul(sin_phi))).mul(C1); // Etheta
 
                                 Complex px_phi = fxphi.toComplex();
                                 Complex py_phi = fyphi.toComplex();
-                                Complex Ephi = (px_phi.mul(cos_theta * cos_phi).add(py_phi.mul(cos_theta * sin_phi))).mul(C1); // Etheta
+                                Complex Ephi = (px_phi.mul(cos_theta * cos_phi).plus(py_phi.mul(cos_theta * sin_phi))).mul(C1); // Etheta
                                 return new Complex[]{Etheta,Ephi};
                             }
                         }.evalCached();

@@ -8,7 +8,7 @@ package net.vpc.scholar.mentoring.ch0x.s4
 import net.vpc.scholar.hadrumaths.MathScala._
 import net.vpc.scholar.hadrumaths._
 import net.vpc.scholar.hadruwaves.{Material, WallBorders}
-import net.vpc.scholar.hadruwaves.mom.BoxSpaceFactory._
+import net.vpc.scholar.hadruwaves.mom.BoxSpace._
 import net.vpc.scholar.hadruwaves.mom.DefaultModeFunctionsEnv
 import net.vpc.scholar.hadruwaves.mom.ModeFunctionsFactory._
 import net.vpc.scholar.hadruwaves.mom.modes.BoxModeFunctions

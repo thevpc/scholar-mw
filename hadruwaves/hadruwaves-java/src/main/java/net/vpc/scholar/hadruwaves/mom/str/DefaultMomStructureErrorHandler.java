@@ -5,6 +5,7 @@
 
 package net.vpc.scholar.hadruwaves.mom.str;
 
+import net.vpc.scholar.hadrumaths.plot.model.ExpressionsPlotModel;
 import net.vpc.common.mon.ProgressMonitors;
 import net.vpc.scholar.hadrumaths.*;
 import net.vpc.scholar.hadrumaths.plot.*;
@@ -20,6 +21,7 @@ import net.vpc.scholar.hadruwaves.str.MWStructure;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import net.vpc.scholar.hadruplot.LibraryPlotType;
 
 /**
  * @author vpc
@@ -42,15 +44,15 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
 
         JComponent gplot = Plot.create(
                 new ExpressionsPlotModel()
-                        .setExpressions(str.getTestFunctions().arr())
-                        .setPlotType(PlotType.CURVE)
+                        .setExpressions(str.testFunctions().arr())
+                        .setPlotType(new LibraryPlotType(PlotType.CURVE))
                         .setTitle("gp")
                 , Plot.getDefaultWindowManager()).toComponent();
 
         JComponent fplot = Plot.create(
                 new ExpressionsPlotModel()
-                        .setExpressions(str.getModeFunctions().arr())
-                        .setPlotType(PlotType.CURVE)
+                        .setExpressions(str.modeFunctions().arr())
+                        .setPlotType(new LibraryPlotType(PlotType.CURVE))
                         .setTitle("fn")
                 , Plot.getDefaultWindowManager()).toComponent();
 
@@ -86,7 +88,7 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
         p.addTab("fn", fplot);
         p.addTab("gn", gplot);
         p.addTab("dump", new JScrollPane(a));
-        net.vpc.scholar.hadruwaves.mom.TestFunctions gtf = str.getTestFunctions();
+        net.vpc.scholar.hadruwaves.mom.TestFunctions gtf = str.testFunctions();
         if (gtf instanceof GpAdaptiveMesh) {
             GpAdaptiveMesh gam = (GpAdaptiveMesh) gtf;
             p.addTab("str", new PolygonPlot(gam.getPolygons(str.getCircuitType()), gam.getMeshAlgo(), gam.getPattern(), str.getDomain()));
