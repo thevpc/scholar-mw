@@ -1,17 +1,17 @@
-import net.vpc.scholar.hadrumaths.Axis;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.Domain;
-import net.vpc.scholar.hadruplot.Plot;
-import net.vpc.scholar.hadruwaves.Material;
-import net.vpc.scholar.hadruwaves.mom.MomStructure;
-import net.vpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
+import net.thevpc.scholar.hadrumaths.Axis;
+import net.thevpc.scholar.hadrumaths.Complex;
+import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadruplot.Plot;
+import net.thevpc.scholar.hadruwaves.Material;
+import net.thevpc.scholar.hadruwaves.mom.MomStructure;
+import net.thevpc.scholar.hadruwaves.mom.TestFunctionsBuilder;
 
-import static net.vpc.scholar.hadrumaths.Domain.ofWidth;
-import static net.vpc.scholar.hadrumaths.Maths.*;
+import static net.thevpc.scholar.hadrumaths.Domain.ofWidth;
+import static net.thevpc.scholar.hadrumaths.Maths.*;
 
-import static net.vpc.scholar.hadruwaves.mom.BoxSpace.matchedLoad;
-import static net.vpc.scholar.hadruwaves.mom.BoxSpace.shortCircuit;
-import static net.vpc.scholar.hadruwaves.mom.SourceFactory.createPlanarSource;
+import static net.thevpc.scholar.hadruwaves.mom.BoxSpace.matchedLoad;
+import static net.thevpc.scholar.hadruwaves.mom.BoxSpace.shortCircuit;
+import static net.thevpc.scholar.hadruwaves.mom.SourceFactory.createPlanarSource;
 
 /**
  * Created by vpc on 4/7/17.

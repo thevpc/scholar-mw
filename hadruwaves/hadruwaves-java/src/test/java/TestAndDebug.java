@@ -1,8 +1,8 @@
 //package test;
 //
-//import net.vpc.scholar.math.functions.dfxy.DCosCosFunctionXY;
-//import net.vpc.scholar.math.functions.DomainXY;
-//import net.vpc.scholar.math.Math2;
+//import net.thevpc.scholar.math.functions.dfxy.DCosCosFunctionXY;
+//import net.thevpc.scholar.math.functions.DomainXY;
+//import net.thevpc.scholar.math.Math2;
 //
 ///**
 // * Created by IntelliJ IDEA.

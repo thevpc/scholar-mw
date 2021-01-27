@@ -1,32 +1,32 @@
 //package test;
 //
-//import static net.vpc.scholar.math.functions.FunctionFactory.cosXcosY;
-//import static net.vpc.scholar.math.functions.FunctionFactory.cst;
-//import static net.vpc.scholar.math.functions.FunctionFactory.line;
+//import static net.thevpc.scholar.math.functions.FunctionFactory.cosXcosY;
+//import static net.thevpc.scholar.math.functions.FunctionFactory.cst;
+//import static net.thevpc.scholar.math.functions.FunctionFactory.line;
 //
 //import java.text.DecimalFormat;
 //import java.text.DecimalFormatSymbols;
 //import java.util.ArrayList;
 //
-//import net.vpc.scholar.math.functions.DomainXY;
-//import net.vpc.scholar.math.functions.FunctionFactory;
-//import net.vpc.scholar.math.functions.dfx.DFunctionYIntegralX;
-//import net.vpc.scholar.math.functions.dfxy.DCosCosFunctionXY;
-//import net.vpc.scholar.math.functions.dfxy.DCstFunctionXY;
-//import net.vpc.scholar.math.functions.dfxy.DFunctionProductXY;
-//import net.vpc.scholar.math.functions.dfxy.DSumFunctionXY;
-//import net.vpc.scholar.math.functions.dfxy.DFunctionXY;
-//import net.vpc.scholar.math.functions.dfxy.DFunctionXYFromX;
-//import net.vpc.scholar.math.functions.dfxy.DLinearFunctionXY;
-//import net.vpc.scholar.math.functions.dfxy.RooftopXFunctionXY;
-//import net.vpc.scholar.math.integration.DQuadIntegralX;
-//import net.vpc.scholar.math.integration.DQuadIntegralXY;
-//import net.vpc.scholar.math.interop.matlab.MatlabDoubleFomat;
-//import net.vpc.scholar.math.plot.Plot;
-//import net.vpc.scholar.math.scalarproducts.ScalarProduct;
-//import net.vpc.scholar.math.scalarproducts.numeric.NumericScalarProduct;
-//import net.vpc.scholar.math.Axis;
-//import net.vpc.scholar.math.Math2;
+//import net.thevpc.scholar.math.functions.DomainXY;
+//import net.thevpc.scholar.math.functions.FunctionFactory;
+//import net.thevpc.scholar.math.functions.dfx.DFunctionYIntegralX;
+//import net.thevpc.scholar.math.functions.dfxy.DCosCosFunctionXY;
+//import net.thevpc.scholar.math.functions.dfxy.DCstFunctionXY;
+//import net.thevpc.scholar.math.functions.dfxy.DFunctionProductXY;
+//import net.thevpc.scholar.math.functions.dfxy.DSumFunctionXY;
+//import net.thevpc.scholar.math.functions.dfxy.DFunctionXY;
+//import net.thevpc.scholar.math.functions.dfxy.DFunctionXYFromX;
+//import net.thevpc.scholar.math.functions.dfxy.DLinearFunctionXY;
+//import net.thevpc.scholar.math.functions.dfxy.RooftopXFunctionXY;
+//import net.thevpc.scholar.math.integration.DQuadIntegralX;
+//import net.thevpc.scholar.math.integration.DQuadIntegralXY;
+//import net.thevpc.scholar.math.interop.matlab.MatlabDoubleFomat;
+//import net.thevpc.scholar.math.plot.Plot;
+//import net.thevpc.scholar.math.scalarproducts.ScalarProduct;
+//import net.thevpc.scholar.math.scalarproducts.numeric.NumericScalarProduct;
+//import net.thevpc.scholar.math.Axis;
+//import net.thevpc.scholar.math.Math2;
 //
 //public class McegTest {
 //    public static void main(String[] args) {

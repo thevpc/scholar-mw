@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.vpc.scholar</groupId>
+    <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruwaves-puppets</artifactId>
-    <name>net.vpc.scholar.hadruwaves-puppets</name>
+    <name>net.thevpc.scholar.hadruwaves-puppets</name>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-desktop-automation</artifactId>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-desktop-automation</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-strings</artifactId>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-strings</artifactId>
             <version>1.2.18</version>
         </dependency>
     </dependencies>

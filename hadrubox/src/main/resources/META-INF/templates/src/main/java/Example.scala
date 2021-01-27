@@ -1,11 +1,11 @@
 package ${{packageName(ProjectGroup)}}
 
-import net.vpc.scholar.hadrumaths.Maths
+import net.thevpc.scholar.hadrumaths.Maths
 
-import net.vpc.scholar.hadrumaths.MathScala._
-import net.vpc.scholar.hadruwaves._
-import net.vpc.scholar.hadruwaves.Physics._
-import net.vpc.scholar.hadruplot._
+import net.thevpc.scholar.hadrumaths.MathScala._
+import net.thevpc.scholar.hadruwaves._
+import net.thevpc.scholar.hadruwaves.Physics._
+import net.thevpc.scholar.hadruplot._
 
 object ${{className(ObjectName)}} {
   def main(args: Array[String]): Unit = {

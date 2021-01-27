@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.vpc.scholar</groupId>
+    <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadrumaths-scala</artifactId>
-    <name>net.vpc.scholar.hadrumaths-scala</name>
+    <name>net.thevpc.scholar.hadrumaths-scala</name>
     <packaging>jar</packaging>
     <version>3.2.0</version>
     <url>https://github.com/thevpc/scholar-mw</url>
@@ -25,17 +25,17 @@
     </distributionManagement>    
     <dependencies>
         <dependency>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadrumaths</artifactId>
             <version>${scholar-version}</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadrumaths-plot</artifactId>
             <version>${scholar-version}</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadruplot</artifactId>
             <version>${scholar-version}</version>
         </dependency>

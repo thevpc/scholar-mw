@@ -5,6 +5,6 @@
  */
 //@TemplateRegistration(folder = "Other", content = "HadruwavesProjectTemplate.hwp")
 @TemplateRegistration(folder = "Other", content = "HWSProjectTemplate.hwsp")
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 import org.netbeans.api.templates.TemplateRegistration;

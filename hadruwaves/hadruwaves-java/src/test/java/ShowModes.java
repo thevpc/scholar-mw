@@ -1,6 +1,6 @@
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadruwaves.Physics;
-import net.vpc.scholar.hadruwaves.WallBorders;
+import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadruwaves.Physics;
+import net.thevpc.scholar.hadruwaves.WallBorders;
 
 /**
  * Created by vpc on 5/20/17.

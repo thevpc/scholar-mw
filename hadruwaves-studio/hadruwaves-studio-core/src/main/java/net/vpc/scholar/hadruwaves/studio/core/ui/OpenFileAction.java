@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 /**
  *
@@ -22,7 +22,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
-@ActionID(category = "File", id = "net.vpc.scholar.hadruwaves.studio.core.ui.OpenFileAction")
+@ActionID(category = "File", id = "net.thevpc.scholar.hadruwaves.studio.core.ui.OpenFileAction")
 @ActionRegistration(displayName = "#CTL_OpenFileAction")
 @ActionReference(path = "Menu/File", position = 10)
 @Messages("CTL_OpenFileAction=Open File")

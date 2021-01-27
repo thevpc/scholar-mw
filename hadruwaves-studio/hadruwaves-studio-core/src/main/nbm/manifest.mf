@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Install: net/vpc/scholar/hadruwaves/studio/core/Installer.class
-OpenIDE-Module-Layer: net/vpc/scholar/hadruwaves/studio/layer.xml
-OpenIDE-Module-Localizing-Bundle: net/vpc/scholar/hadruwaves/studio/Bundle.properties
+OpenIDE-Module-Install: net/thevpc/scholar/hadruwaves/studio/core/Installer.class
+OpenIDE-Module-Layer: net/thevpc/scholar/hadruwaves/studio/layer.xml
+OpenIDE-Module-Localizing-Bundle: net/thevpc/scholar/hadruwaves/studio/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
 

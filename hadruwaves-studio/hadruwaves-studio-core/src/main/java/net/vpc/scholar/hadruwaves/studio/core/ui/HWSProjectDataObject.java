@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 import java.io.IOException;
 import org.netbeans.core.spi.multiview.MultiViewElement;
@@ -32,7 +32,7 @@ import org.openide.windows.TopComponent;
 )
 @DataObject.Registration(
         mimeType = "application/hadruwaves-studio-project",
-        iconBase = "net/vpc/scholar/hadruwaves/studio/core/icon-16.png",
+        iconBase = "net/thevpc/scholar/hadruwaves/studio/core/icon-16.png",
         displayName = "#LBL_HWSProject_LOADER",
         position = 300
 )

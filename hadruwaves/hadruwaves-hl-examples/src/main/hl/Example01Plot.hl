@@ -1,4 +1,4 @@
-import net.vpc.scholar.hadruwaves.Hadruwaves.**;
+import net.thevpc.scholar.hadruwaves.Hadruwaves.**;
 
 val f = 3.5 * GHZ ;
 val λ = lambda(f) ;

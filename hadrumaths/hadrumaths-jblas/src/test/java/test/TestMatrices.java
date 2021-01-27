@@ -1,14 +1,14 @@
 package test;
 
-import net.vpc.common.util.Chronometer;
-import net.vpc.scholar.hadrumaths.Complex;
-import net.vpc.scholar.hadrumaths.ComplexMatrix;
-import net.vpc.scholar.hadrumaths.ComplexMatrixFactory;
-import net.vpc.scholar.hadrumaths.DMatrix;
-import net.vpc.scholar.hadrumaths.Maths;
-import net.vpc.scholar.hadrumaths.MemComplexMatrixFactory;
-import net.vpc.scholar.hadrumaths.MutableComplex;
-import net.vpc.scholar.hadrumaths.interop.jblas.JBlasComplexMatrixFactory;
+import net.thevpc.common.util.Chronometer;
+import net.thevpc.scholar.hadrumaths.Complex;
+import net.thevpc.scholar.hadrumaths.ComplexMatrix;
+import net.thevpc.scholar.hadrumaths.ComplexMatrixFactory;
+import net.thevpc.scholar.hadrumaths.DMatrix;
+import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.MemComplexMatrixFactory;
+import net.thevpc.scholar.hadrumaths.MutableComplex;
+import net.thevpc.scholar.hadrumaths.interop.jblas.JBlasComplexMatrixFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

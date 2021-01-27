@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.vpc.scholar.tutorial</groupId>
+    <groupId>net.thevpc.scholar.tutorial</groupId>
     <artifactId>hadruwaves-tutorial</artifactId>
-    <name>net.vpc.scholar.hadruwaves-tutorial</name>
+    <name>net.thevpc.scholar.hadruwaves-tutorial</name>
     <version>1.7</version>
     <url>http://scala-lang.org</url>
     <properties>
@@ -14,14 +14,15 @@
     <dependencies>
         <dependency>
             <artifactId>hadruwaves-scala</artifactId>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <version>${scholar-version}</version>
         </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>vpc-public-maven</id>
-            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
+<!--            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>-->
+            <url>http://tahabensalah.net/maven</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>

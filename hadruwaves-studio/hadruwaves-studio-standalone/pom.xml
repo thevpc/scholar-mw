@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.vpc.scholar.hadruwaves.studio</groupId>
+    <groupId>net.thevpc.scholar.hadruwaves.studio</groupId>
     <artifactId>hadruwaves-studio-standalone</artifactId>
     <version>1.0.0</version>
-    <name>net.vpc.scholar.hadruwaves.studio.hadruwaves-studio-standalone</name>
+    <name>net.thevpc.scholar.hadruwaves.studio.hadruwaves-studio-standalone</name>
     <packaging>jar</packaging>
 
     <url>http://maven.apache.org</url>
@@ -23,18 +23,18 @@
             <version>1.0.7</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-app-swing</artifactId>
+            <groupId>net.thevpc.echo</groupId>
+            <artifactId>echo-swing</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-app-swingx</artifactId>
+            <groupId>net.thevpc.echo</groupId>
+            <artifactId>echo-swing-swingx</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-app-swing-dock-mydoggy</artifactId>
+            <groupId>net.thevpc.echo</groupId>
+            <artifactId>echo-swing-mydoggy</artifactId>
             <version>1.0.0</version>
         </dependency>
        
@@ -50,19 +50,19 @@
         </dependency>
        
         <dependency>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadruwaves</artifactId>
             <version>3.2.0</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
+            <groupId>net.thevpc</groupId>
             <artifactId>tson</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.vpc.common</groupId>
-            <artifactId>vpc-common-utils</artifactId>
-            <version>1.22.8</version>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-utils</artifactId>
+            <version>1.23.0</version>
         </dependency>
     </dependencies>
 

@@ -1,4 +1,4 @@
-package net.vpc.scholar.hadruwaves.studio;
+package net.thevpc.scholar.hadruwaves.studio;
 
 import java.util.logging.Level;
 import junit.framework.Test;

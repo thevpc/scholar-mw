@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;

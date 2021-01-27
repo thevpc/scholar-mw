@@ -1,10 +1,10 @@
 //package test;
 //
-//import net.vpc.scholar.math.functions.DomainXY;
-//import net.vpc.scholar.math.functions.cfxy.CFunctionVector2D;
-//import net.vpc.scholar.math.plot.Plot;
-//import net.vpc.scholar.tmwlib.mom.testfunctions.gpmesh.gppattern.CellBoundaries;
-//import net.vpc.scholar.tmwlib.mom.testfunctions.gpmesh.gppattern.UserSinePattern;
+//import net.thevpc.scholar.math.functions.DomainXY;
+//import net.thevpc.scholar.math.functions.cfxy.CFunctionVector2D;
+//import net.thevpc.scholar.math.plot.Plot;
+//import net.thevpc.scholar.tmwlib.mom.testfunctions.gpmesh.gppattern.CellBoundaries;
+//import net.thevpc.scholar.tmwlib.mom.testfunctions.gpmesh.gppattern.UserSinePattern;
 //
 //import java.util.ArrayList;
 //

@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <artifactId>hadruwaves-scala</artifactId>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <version>${scholar-version}</version>
         </dependency>
     </dependencies>

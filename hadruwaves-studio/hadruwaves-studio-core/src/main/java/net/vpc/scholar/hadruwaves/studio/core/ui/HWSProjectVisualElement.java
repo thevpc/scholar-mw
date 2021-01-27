@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -13,8 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import net.vpc.scholar.hadruwaves.mom.project.MomProjectListener;
-import net.vpc.scholar.hadruwaves.studio.standalone.v1.editors.MomProjectEditor;
+import net.thevpc.scholar.hadruwaves.mom.project.MomProjectListener;
+import net.thevpc.scholar.hadruwaves.studio.standalone.v1.editors.MomProjectEditor;
 import org.netbeans.core.spi.multiview.CloseOperationState;
 import org.netbeans.core.spi.multiview.MultiViewElement;
 import org.netbeans.core.spi.multiview.MultiViewElementCallback;
@@ -30,7 +30,7 @@ import org.openide.util.lookup.InstanceContent;
 
 //@MultiViewElement.Registration(
 //        displayName = "#LBL_HWSProject_VISUAL",
-//        iconBase = "net/vpc/scholar/hadruwaves/studio/core/icon-16.png",
+//        iconBase = "net/thevpc/scholar/hadruwaves/studio/core/icon-16.png",
 //        mimeType = "application/hadruwaves-studio-project",
 //        persistenceType = TopComponent.PERSISTENCE_NEVER,
 //        preferredID = "HWSProjectVisual",

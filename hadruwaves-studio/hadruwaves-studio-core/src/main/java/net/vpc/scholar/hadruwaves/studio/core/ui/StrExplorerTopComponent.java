@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.vpc.scholar.hadruwaves.studio.core.ui;
+package net.thevpc.scholar.hadruwaves.studio.core.ui;
 
 import java.awt.BorderLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -19,7 +19,7 @@ import org.openide.util.NbBundle.Messages;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//net.vpc.scholar.hadruwaves.studio//StrExplorer//EN",
+        dtd = "-//net.thevpc.scholar.hadruwaves.studio//StrExplorer//EN",
         autostore = false
 )
 @TopComponent.Description(
@@ -28,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(mode = "explorer", openAtStartup = true)
-@ActionID(category = "Window", id = "net.vpc.scholar.hadruwaves.studio.StrExplorerTopComponent")
+@ActionID(category = "Window", id = "net.thevpc.scholar.hadruwaves.studio.StrExplorerTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_StrExplorerAction",

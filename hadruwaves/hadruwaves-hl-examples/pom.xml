@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.vpc.scholar</groupId>
+    <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruwaves-hl-examples</artifactId>
     <version>1.0.0</version>
-    <name>net.vpc.scholar.hadruwaves-hl-examples</name>
+    <name>net.thevpc.scholar.hadruwaves-hl-examples</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +18,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.vpc.scholar</groupId>
+            <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadruwaves</artifactId>
             <version>${scholar-version}</version>
         </dependency>
@@ -26,15 +26,15 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>net.vpc.hadra-lang</groupId>
+                <groupId>net.thevpc.hl.build</groupId>
                 <artifactId>hadra-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>0.1.0</version>
                 <configuration>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>hlc</goal>
+                            <goal>hl</goal>
                         </goals>
                     </execution>
                 </executions>
