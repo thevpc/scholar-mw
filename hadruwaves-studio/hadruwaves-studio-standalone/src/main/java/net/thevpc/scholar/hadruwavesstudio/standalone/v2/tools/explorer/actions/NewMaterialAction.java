@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
@@ -62,7 +62,7 @@ public class NewMaterialAction extends AppUndoableAction {
                             parent = oo.getProject();
                             created = m;
                             explorer.reload(oo);
-                            return new FormattedMessage(Level.INFO, "Add Material {0}", new Object[]{created.name().get()});
+                            return new JFormattedMessage(Level.INFO, "Add Material {0}", new Object[]{created.name().get()});
                         }
                         explorer.refreshTools();
                     }

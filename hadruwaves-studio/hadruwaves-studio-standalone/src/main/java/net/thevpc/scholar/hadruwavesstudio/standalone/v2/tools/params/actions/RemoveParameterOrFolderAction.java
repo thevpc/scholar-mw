@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.actions;
 
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
@@ -53,7 +53,7 @@ public class RemoveParameterOrFolderAction extends AppUndoableAction {
                     project = removed.project().get();
                     removed.remove();
                     toolWindow.updateRoot();
-                    return new FormattedMessage(Level.WARNING, "Removed {0}", new Object[]{removed.name().get()});
+                    return new JFormattedMessage(Level.WARNING, "Removed {0}", new Object[]{removed.name().get()});
                 }
                 return null;
             }

@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.common.i18n.I18nResourceBundle;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.*;
 import net.thevpc.common.swing.win.InternalWindowsHelper;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.swings.plaf.UIPlafManager;
+import net.thevpc.echo.swing.actions.TileWindowsAction;
+import net.thevpc.swing.plaf.UIPlafManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +35,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
         app = Applications.Apps.Default();
         UIPlafManager.INSTANCE.apply("FlatLight");
         app.builder().mainWindowBuilder().get().workspaceFactory().set(Applications.Workspaces.Default(wins.getDesktop()));
+        app.i18n().bundles().add(new I18nResourceBundle("net.thevpc.scholar.hadruplot.console.HadrumathsPlot"));
         app.start();
 
         wins.addWindowInfoListener(new WindowInfoListener() {
@@ -42,7 +45,16 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
                 JInternalFrame internalFrame = (JInternalFrame) component.getClientProperty(JInternalFrame.class);
                 final JMenuItem windowMenu = createWindowMenu(internalFrame);
                 component.putClientProperty("menu",windowMenu);
-                //windowsMenu.add(windowMenu);
+                app.tools().addAction(new AbstractFrameAction(
+                        DefaultPlotConsoleFrame2.this,
+                        internalFrame.getTitle(),
+                        null
+                        ){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        wins.ensureVisible(internalFrame);
+                    }
+                }, "/mainWindow/menuBar/Windows/"+windowInfo.getTitle());
             }
 
             @Override
@@ -107,6 +119,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
         Applications.Helper.addViewActions(app);
 
         Applications.Helper.addWindowsActions(app,wins.getDesktop());
+        tools.addSeparator("/mainWindow/menuBar/Windows/Separator");
 
 //        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
 //        recentFilesMenu.addFileSelectedListener(

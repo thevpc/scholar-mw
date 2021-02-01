@@ -2,8 +2,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWUtils;
-import net.thevpc.swings.plaf.UIPlaf;
-import net.thevpc.swings.plaf.UIPlafManager;
+import net.thevpc.swing.plaf.UIPlaf;
+import net.thevpc.swing.plaf.UIPlafManager;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;

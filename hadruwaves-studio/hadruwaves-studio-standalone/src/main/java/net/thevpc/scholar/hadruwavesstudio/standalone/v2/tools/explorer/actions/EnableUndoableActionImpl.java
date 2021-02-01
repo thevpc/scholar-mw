@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
@@ -52,7 +52,7 @@ public class EnableUndoableActionImpl extends AppUndoableAction {
                         explorer.refreshTools();
                     }
                 }
-                return new FormattedMessage(Level.INFO, "Enable {0}", new Object[]{String.join(",", toProcess.stream().map((x) -> x.toString()).collect(Collectors.toList()))});
+                return new JFormattedMessage(Level.INFO, "Enable {0}", new Object[]{String.join(",", toProcess.stream().map((x) -> x.toString()).collect(Collectors.toList()))});
             }
 
             @Override

@@ -41,7 +41,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.view3d.actions.Re
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.view3d.actions.ZoomInAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.view3d.actions.ZoomOutAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWAppIconResolver;
-import net.thevpc.swings.plaf.UIPlafManager;
+import net.thevpc.swing.plaf.UIPlafManager;
 
 import javax.swing.*;
 import java.awt.*;

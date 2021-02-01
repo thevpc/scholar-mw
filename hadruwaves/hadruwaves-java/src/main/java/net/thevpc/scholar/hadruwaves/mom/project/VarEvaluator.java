@@ -164,14 +164,14 @@ public class VarEvaluator {
             throw new IllegalArgumentException("Expression too complex");
         }
 
-        JTokenizer tok = new JTokenizerImpl(new DefaultJTokenizerReader(new StringReader(expr)), true,true,
+        JTokenizer tok = new JTokenizerImpl(new DefaultJTokenizerReader(new StringReader(expr)),
                 new JTokenConfigBuilder()
                         .addOperators(
                                 "+", "-", "*", "/", "<", ">", "!",
                                 "**"
                         )
                         .readOnly()
-        );
+        ).setSkipComments(true).setSkipSpaces(true);
         StringBuilder expr2 = new StringBuilder();
         try {
             JToken token;

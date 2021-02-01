@@ -12,11 +12,13 @@ public abstract class AbstractFrameAction extends AbstractPlotAction {
     public AbstractFrameAction(PlotConsoleFrame frame, String name, String icon) {
         this.frame = frame;
         putValue(NAME, name);
-        URL resource = DefaultPlotConsoleFrame.class.getResource(icon);
-        if(resource==null){
-            throw new NoSuchElementException("icon resource not found: "+icon);
+        if(icon!=null) {
+            URL resource = DefaultPlotConsoleFrame.class.getResource(icon);
+            if (resource == null) {
+                throw new NoSuchElementException("icon resource not found: " + icon);
+            }
+            putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(resource, 16, 16));
         }
-        putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(resource, 16, 16));
     }
 
 }

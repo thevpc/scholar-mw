@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import net.thevpc.echo.AppEvent;
 import net.thevpc.echo.AppPropertiesNode;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
@@ -67,7 +67,7 @@ public class RemoveFromPropsAction extends AppUndoableAction {
                             this.removed = TestFunctionListItem_list.expressions().remove(index);
                             studio.app().activeProperties().get().refresh();
                             studio.props().updateRoot();
-                            return new FormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
+                            return new JFormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
                         }
                     }
                     if ("TestFunctionGroup".equals(removeType)) {
@@ -76,7 +76,7 @@ public class RemoveFromPropsAction extends AppUndoableAction {
                             this.removed = ((HWSolverTemplateMoM) msolver).testFunctions().remove(index);
                             studio.app().activeProperties().get().refresh();
                             studio.props().updateRoot();
-                            return new FormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
+                            return new JFormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
                         }
                     }
                     if ("MomSolverTestTemplateSeqParam".equals(removeType)) {
@@ -86,7 +86,7 @@ public class RemoveFromPropsAction extends AppUndoableAction {
                             this.removed = MomSolverTestTemplateSeqParam_seq.params().remove(indexName);
                             studio.app().activeProperties().get().refresh();
                             studio.props().updateRoot();
-                            return new FormattedMessage(Level.INFO, "Remove Seq Param {0}", new Object[]{indexName});
+                            return new JFormattedMessage(Level.INFO, "Remove Seq Param {0}", new Object[]{indexName});
                         }
                     }
 

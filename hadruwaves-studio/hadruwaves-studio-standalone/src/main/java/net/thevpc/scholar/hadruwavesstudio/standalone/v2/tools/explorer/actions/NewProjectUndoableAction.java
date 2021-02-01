@@ -11,7 +11,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.common.props.impl.PropsHelper;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.echo.AppUndoableAction;
@@ -52,11 +52,11 @@ public class NewProjectUndoableAction extends AppUndoableAction {
                     Object v = s[0].getItemValue();
                     if (v instanceof HWSolution) {
                         created = ((HWSolution) v).addProject(null, "/");
-                        return new FormattedMessage(Level.INFO, "Add project {0}", new Object[]{created.name().get()});
+                        return new JFormattedMessage(Level.INFO, "Add project {0}", new Object[]{created.name().get()});
                     } else if (v instanceof DefaultHWSolutionFolder) {
                         HWSolutionFolder f = (HWSolutionFolder) v;
                         created = ((HWSolution) v).addProject(null, PropsHelper.buildPath(f.parentPath().get() + "/" + f.name()));
-                        return new FormattedMessage(Level.INFO, "Add project {0}", new Object[]{created.name().get()});
+                        return new JFormattedMessage(Level.INFO, "Add project {0}", new Object[]{created.name().get()});
                     }
                     explorer.refreshTools();
                 }

@@ -13,7 +13,7 @@ import javax.swing.event.TreeSelectionListener;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritablePNamedNode;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.echo.AppUndoableAction;
@@ -55,12 +55,12 @@ public class NewFolderUndoableAction extends AppUndoableAction {
                     added = new DefaultHWSolutionFolder(folderName);
                     if (parent.getItemValue() instanceof HWSolution) {
                         ((HWSolution) parent.getItemValue()).children().add(added);
-                        return new FormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
+                        return new JFormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
                     } else if (parent.getItemValue() instanceof DefaultHWSolutionFolder) {
                         WritablePNamedNode<HWSolutionElement> newNode = Props.of(folderName).nnodeOf(HWSolutionElement.class, added);
                         WritablePNamedNode<HWSolutionElement> parentNode = (WritablePNamedNode<HWSolutionElement>) parent.getItem();
                         parentNode.children().put(folderName, newNode);
-                        return new FormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
+                        return new JFormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
                     }
                     explorer.refreshTools();
                 }

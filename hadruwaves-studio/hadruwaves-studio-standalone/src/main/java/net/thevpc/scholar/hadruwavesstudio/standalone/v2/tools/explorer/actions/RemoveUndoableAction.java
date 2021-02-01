@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.DefaultHWSolutionFolder;
@@ -95,7 +95,7 @@ public class RemoveUndoableAction extends AppUndoableAction {
                             }
                         }
                         explorer.refreshTools();
-                        return new FormattedMessage(Level.INFO, "Remove {0}", new Object[]{String.join(",", toProcess.stream().map((x) -> x.toString()).collect(Collectors.toList()))});
+                        return new JFormattedMessage(Level.INFO, "Remove {0}", new Object[]{String.join(",", toProcess.stream().map((x) -> x.toString()).collect(Collectors.toList()))});
                     }
                 }
                 return null;

@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions;
 
 import java.util.logging.Level;
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
@@ -52,7 +52,7 @@ public abstract class MoMNewFunctionGroupActionBase extends AppUndoableAction {
                         ((HWSolverTemplateMoM) msolver).testFunctions().add(added);
                         studio.app().activeProperties().get().refresh();
                         studio.props().updateRoot();
-                        return new FormattedMessage(Level.INFO, "Add Test JFunction {0}", new Object[]{added});
+                        return new JFormattedMessage(Level.INFO, "Add Test JFunction {0}", new Object[]{added});
                     }
                 }
                 return null;

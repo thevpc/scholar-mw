@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.actions;
 
 import net.thevpc.echo.AppEvent;
-import net.thevpc.common.msg.FormattedMessage;
+import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
 import net.thevpc.echo.AppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterFolder;
@@ -52,17 +52,17 @@ public abstract class AddParameterActionBase extends AppUndoableAction {
                             HWParameterFolder folder = (HWParameterFolder) selectedElement;
                             folder.children().add(added);
                             outer.updateRoot();
-                            return new FormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
+                            return new JFormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
                         } else if (selectedElement instanceof HWConfigurationRun) {
                             HWConfigurationRun p = (HWConfigurationRun) selectedElement;
                             p.project().get().parameters().children().add(added);
                             outer.updateRoot();
-                            return new FormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
+                            return new JFormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
                         }
                     }
                     return null;
                 } else {
-                    return new FormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
+                    return new JFormattedMessage(Level.INFO, "Created {0}", new Object[]{added.name().get()});
                 }
             }
 
